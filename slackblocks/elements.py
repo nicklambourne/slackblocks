@@ -1,5 +1,6 @@
 from enum import Enum
 from json import dumps
+from typing import Dict
 
 
 class ElementType(Enum):
@@ -23,7 +24,6 @@ class Text(Element):
                  emoji: bool = False,
                  verbatim: bool = False):
         super().__init__(type_=ElementType.TEXT)
-        self.type = type_
         self.text = text
         if self.type == TextType.MARKDOWN:
             self.verbatim = verbatim
@@ -32,7 +32,7 @@ class Text(Element):
             self.verbatim = None
             self.emoji = emoji
 
-    def __repr__(self) -> str:
+    def _attributes(self) -> Dict[str, str]:
         text = {
             "type": self.type.value,
             "text": self.text,
@@ -41,7 +41,7 @@ class Text(Element):
             text["verbatim"] = self.verbatim
         else:
             text["emoji"] = self.emoji
-        return dumps(text)
+        return text
 
     def __str__(self) -> str:
-        return self.__repr__()
+        return dumps(self.__repr__())
