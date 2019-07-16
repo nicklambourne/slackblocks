@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
 from typing import Dict
@@ -12,9 +13,13 @@ class TextType(Enum):
     PLAINTEXT = "plain_text"
 
 
-class Element:
+class Element(ABC):
     def __init__(self, type_: ElementType):
         self.type = type_
+
+    @abstractmethod
+    def _resolve(self):
+        pass
 
 
 class Text(Element):
@@ -24,15 +29,16 @@ class Text(Element):
                  emoji: bool = False,
                  verbatim: bool = False):
         super().__init__(type_=ElementType.TEXT)
+        self.text_type = type_
         self.text = text
-        if self.type == TextType.MARKDOWN:
+        if self.text_type == TextType.MARKDOWN:
             self.verbatim = verbatim
             self.emoji = None
-        elif self.type == TextType.PLAINTEXT:
+        elif self.text_type == TextType.PLAINTEXT:
             self.verbatim = None
             self.emoji = emoji
 
-    def _attributes(self) -> Dict[str, str]:
+    def _resolve(self) -> Dict[str, str]:
         text = {
             "type": self.type.value,
             "text": self.text,
@@ -44,4 +50,4 @@ class Text(Element):
         return text
 
     def __str__(self) -> str:
-        return dumps(self.__repr__())
+        return dumps(self._resolve())
