@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
-from typing import Dict
+from typing import Any, Dict
 
 
 class ElementType(Enum):
     TEXT = "text"
+    IMAGE = "image"
 
 
 class TextType(Enum):
@@ -17,8 +18,13 @@ class Element(ABC):
     def __init__(self, type_: ElementType):
         self.type = type_
 
+    def _attributes(self) -> Dict[str, Any]:
+        return {
+            "type": self.type.value
+        }
+
     @abstractmethod
-    def _resolve(self):
+    def _resolve(self) -> Dict[str, Any]:
         pass
 
 
@@ -38,7 +44,7 @@ class Text(Element):
             self.verbatim = None
             self.emoji = emoji
 
-    def _resolve(self) -> Dict[str, str]:
+    def _resolve(self) -> Dict[str, Any]:
         text = {
             "type": self.type.value,
             "text": self.text,
@@ -51,3 +57,19 @@ class Text(Element):
 
     def __str__(self) -> str:
         return dumps(self._resolve())
+
+
+class Image(Element):
+    def __init__(self,
+                 image_url: str,
+                 alt_text: str):
+        super().__init__(type_=ElementType.IMAGE)
+        self.image_url = image_url
+        self.alt_text = alt_text
+
+    def _resolve(self) -> Dict[str, Any]:
+        image = self._attributes()
+        image["image_url"] = self.image_url
+        image["alt_text"] = self.alt_text
+        return image
+

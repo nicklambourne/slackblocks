@@ -3,7 +3,8 @@ from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 from uuid import uuid4
-from .elements import Element, Text, TextType
+from .elements import Element, ElementType, Text, TextType
+from .error import InvalidUsageError
 
 
 class BlockType(Enum):
@@ -137,8 +138,27 @@ class ActionsBlock(Block):
         return actions
 
 
-class ContextBlock():
+class ContextBlock(Block):
+    """
+    Displays message context, which can include both images and text.
+    """
     def __init__(self,
-                 block_id: Optional[str]):
-        super().__init__(block_id=block_id)
-        self.type = BlockType.CONTEXT
+                 elements: Optional[Element] = None,
+                 block_id: Optional[str] = None):
+        super().__init__(type_=BlockType.CONTEXT,
+                         block_id=block_id)
+        self.elements = []
+        for element in elements:
+            if element.type == ElementType.TEXT or \
+                    element.type == ElementType.IMAGE:
+                self.elements.append(element)
+            else:
+                raise InvalidUsageError("Context blocks can only hold image and text"
+                                        "elements")
+        if len(self.elements) > 10:
+            raise InvalidUsageError("Context blocks can hold a maximum of ten elements")
+
+    def _resolve(self) -> Dict[str, any]:
+        context = self._attributes()
+        context["elements"] = [element._resolve() for element in self.elements]
+        return context
