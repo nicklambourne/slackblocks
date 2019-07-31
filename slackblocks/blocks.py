@@ -13,6 +13,7 @@ class BlockType(Enum):
     IMAGE = "image"
     ACTIONS = "actions"
     CONTEXT = "context"
+    FILE = "file"
 
 
 class Block(ABC):
@@ -143,7 +144,7 @@ class ContextBlock(Block):
     Displays message context, which can include both images and text.
     """
     def __init__(self,
-                 elements: Optional[Element] = None,
+                 elements: Optional[List[Element]] = None,
                  block_id: Optional[str] = None):
         super().__init__(type_=BlockType.CONTEXT,
                          block_id=block_id)
@@ -162,3 +163,23 @@ class ContextBlock(Block):
         context = self._attributes()
         context["elements"] = [element._resolve() for element in self.elements]
         return context
+
+
+class FileBlock(Block):
+    """
+    Displays a remote file.
+    """
+    def __init__(self,
+                 external_id: str,
+                 source: str,
+                 block_id: Optional[str]):
+        super().__init__(type_=BlockType.FILE,
+                         block_id=block_id)
+        self.external_id = external_id
+        self.source = source
+
+    def _resolve(self) -> Dict[str, any]:
+        file = self._attributes()
+        file["external_id"] = self.external_id
+        file["source"] = self.source
+        return file
