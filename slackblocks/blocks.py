@@ -97,7 +97,7 @@ class ImageBlock(Block):
     """
     def __init__(self,
                  image_url: str,
-                 alt_text: str = "",
+                 alt_text: Optional[str] = "",
                  title: Optional[Union[Text, str]] = None,
                  block_id: Optional[str] = None):
         super().__init__(type_=BlockType.IMAGE,
