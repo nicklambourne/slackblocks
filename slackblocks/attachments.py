@@ -18,11 +18,33 @@ class Color(Enum):
     BLACK = "#000000"
 
 
+class Field:
+    """
+    Field text objects for use with Slack's secondary attachment API.
+    """
+    def __init__(self,
+                 title: Optional[str] = None,
+                 value: Optional[str] = None,
+                 short: Optional[bool] = False):
+        self.title = title
+        self.value = value
+        self.short = short
+
+    def _resolve(self):
+        field = dict()
+        field["short"] = self.short
+        if self.title:
+            field["title"] = self.title
+        if self.value:
+            field["value"] = self.value
+        return dumps(field)
+
+
 class Attachment:
     """
     Secondary content can be attached to messages to include lower priority content
      - content that doesn't necessarily need to be seen to appreciate the intent of
-     the message, but perhaps adds further context or additional information.
+    the message, but perhaps adds further context or additional information.
     """
     def __init__(self,
                  blocks: Optional[List[Block]],
