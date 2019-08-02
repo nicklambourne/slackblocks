@@ -46,12 +46,12 @@ class Text(Element):
 
     def _resolve(self) -> Dict[str, Any]:
         text = {
-            "type": self.type.value,
+            "type": self.text_type.value,
             "text": self.text,
         }
-        if self.type == TextType.MARKDOWN:
+        if self.text_type == TextType.MARKDOWN:
             text["verbatim"] = self.verbatim
-        else:
+        elif self.type == TextType.PLAINTEXT and self.emoji:
             text["emoji"] = self.emoji
         return text
 

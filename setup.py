@@ -10,6 +10,11 @@ setuptools.setup(
     author="Nicholas Lambourne",
     author_email="",
     description="Python wrapper for the Slack Blocks API",
+    extras_requires={
+        "dev": [
+            "pytest"
+        ]
+    },
     long_description=long_description,
     long_description_content_time="text/markdown",
     url="https://github.com/nicklambourne/slackblocks",

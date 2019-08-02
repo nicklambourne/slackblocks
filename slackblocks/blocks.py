@@ -4,7 +4,7 @@ from json import dumps
 from typing import Any, Dict, List, Optional, Union
 from uuid import uuid4
 from .elements import Element, ElementType, Text, TextType
-from .error import InvalidUsageError
+from .errors import InvalidUsageError
 
 
 class BlockType(Enum):
@@ -26,6 +26,9 @@ class Block(ABC):
                  block_id: Optional[str] = None):
         self.type = type_
         self.block_id = block_id if block_id else str(uuid4())
+
+    def __add__(self, other: "Block"):
+        return [self, other]
 
     def _attributes(self):
         return {

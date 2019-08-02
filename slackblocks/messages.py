@@ -10,15 +10,17 @@ class Message:
     the Slack message API.
     """
     def __init__(self,
-                 text: Optional[str],
+                 text: Optional[str] = None,
                  blocks: Optional[Union[List[Block], Block]] = None,
                  attachments: Optional[List[Attachment]] = None,
                  thread_ts: Optional[str] = None,
                  mrkdwn: bool = True):
-        if type(blocks) is List:
+        if isinstance(blocks, List):
             self.blocks = blocks
-        elif type(blocks) is Block:
-            self.blocks = [blocks]
+        elif isinstance(blocks, Block):
+            self.blocks = [blocks, ]
+        else:
+            self.blocks = None
         self.text = text
         self.attachments = attachments
         self.thread_ts = thread_ts
@@ -26,9 +28,11 @@ class Message:
 
     def _resolve(self) -> Dict[str, Any]:
         message = dict()
-        message["blocks"] = [block._resolve() for block in self.blocks]
-        message["attachments"] = [attachment._resolve() for attachment in self.attachments]
         message["mrkdwn"] = self.mrkdwn
+        if self.blocks:
+            message["blocks"] = [block._resolve() for block in self.blocks]
+        if self.attachments:
+            message["attachments"] = [attachment._resolve() for attachment in self.attachments]
         if self.thread_ts:
             message["thread_ts"] = self.thread_ts
         if self.text:
@@ -36,7 +40,7 @@ class Message:
         return message
 
     def json(self) -> str:
-        return dumps(self._resolve())
+        return dumps(self._resolve(), indent=4)
 
     def __repr__(self) -> str:
         return self.json()
