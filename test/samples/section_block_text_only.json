@@ -1,6 +1,6 @@
 {
     "type": "section",
-    "block_id": "df8acef1-2298-4701-bdb9-dfeac68a7b9b",
+    "block_id": "fake_block_id",
     "text": {
         "type": "mrkdwn",
         "text": "Hello, world!",

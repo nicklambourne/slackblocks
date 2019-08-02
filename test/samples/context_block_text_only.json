@@ -1,0 +1,11 @@
+{
+    "type": "context",
+    "block_id": "fake_block_id",
+    "elements": [
+        {
+            "type": "mrkdwn",
+            "text": "Hello, world!",
+            "verbatim": false
+        }
+    ]
+}
