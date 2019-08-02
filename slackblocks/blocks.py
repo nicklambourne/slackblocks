@@ -129,20 +129,18 @@ class ActionsBlock(Block):
     A block that is used to hold interactive elements.
     """
     def __init__(self,
-                 element: Optional[Element] = None,
                  elements: Optional[List[Element]] = None,
                  block_id: Optional[str] = None):
         super().__init__(type_=BlockType.ACTIONS,
                          block_id=block_id)
-        self.all_elements = []
-        if element:
-            self.all_elements.append(element)
-        if elements:
-            self.all_elements.extend(elements)
+        if type(elements) is List[Element]:
+            self.elements = elements
+        elif type(elements) is Element:
+            self.elements = [elements, ]
 
     def _resolve(self):
         actions = self._attributes()
-        actions["elements"] = [element._resolve() for element in self.all_elements]
+        actions["elements"] = [element._resolve() for element in self.elements]
         return actions
 
 
