@@ -19,6 +19,7 @@ class BlockType(Enum):
 class Block(ABC):
     """
     Basis block containing attributes and behaviour common to all blocks.
+    N.B: Block is an abstract class and cannot be sent directly.
     """
     def __init__(self,
                  type_: BlockType,
