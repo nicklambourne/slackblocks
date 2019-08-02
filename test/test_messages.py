@@ -1,6 +1,8 @@
+import pytest
 from slackblocks import Message, SectionBlock
 
 
-def basic_message_test() -> None:
+def test_basic_messaget() -> None:
     x = SectionBlock("Hello, world!")
     m = Message(blocks=x)
+    assert 1 == 1

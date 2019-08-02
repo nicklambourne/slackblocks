@@ -8,6 +8,10 @@ from .errors import InvalidUsageError
 
 
 class BlockType(Enum):
+    """
+    Convenience class for identifying the different types of blocks available
+    in the Slack Blocks API and their programmatic names.
+    """
     SECTION = "section"
     DIVIDER = "divider"
     IMAGE = "image"
@@ -84,8 +88,7 @@ class DividerBlock(Block):
                          block_id=block_id)
 
     def _resolve(self):
-        divider = self._attributes()
-        return dumps(divider)
+        return self._attributes()
 
 
 class ImageBlock(Block):
