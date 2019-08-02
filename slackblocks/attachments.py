@@ -2,7 +2,7 @@ from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 from .blocks import Block
-from .error import InvalidUsageError
+from .errors import InvalidUsageError
 
 
 class Color(Enum):
