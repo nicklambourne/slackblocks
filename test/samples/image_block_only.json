@@ -1,0 +1,10 @@
+{
+    "type": "image",
+    "block_id": "fake_block_id",
+    "image_url": "https://api.slack.com/img/blocks/bkb_template_images/beagle.png",
+    "alt_text": "image1",
+    "title": {
+        "type": "plain_text",
+        "text": "image1"
+    }
+}
