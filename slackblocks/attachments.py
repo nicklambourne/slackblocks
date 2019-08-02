@@ -6,6 +6,9 @@ from .error import InvalidUsageError
 
 
 class Color(Enum):
+    """
+    Color utility class for use with the Slack secondary attachments API.
+    """
     GOOD = "good"
     WARNING = "warning"
     DANGER = "danger"

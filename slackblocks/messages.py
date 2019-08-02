@@ -1,5 +1,5 @@
 from json import dumps
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from .attachments import Attachment
 from .blocks import Block
 
@@ -11,11 +11,14 @@ class Message:
     """
     def __init__(self,
                  text: Optional[str],
-                 blocks: Optional[List[Block]],
-                 attachments: Optional[List[Attachment]],
+                 blocks: Optional[Union[List[Block], Block]] = None,
+                 attachments: Optional[List[Attachment]] = None,
                  thread_ts: Optional[str] = None,
                  mrkdwn: bool = True):
-        self.blocks = blocks
+        if type(blocks) is List:
+            self.blocks = blocks
+        elif type(blocks) is Block:
+            self.blocks = [blocks]
         self.text = text
         self.attachments = attachments
         self.thread_ts = thread_ts
@@ -32,5 +35,8 @@ class Message:
             message["text"] = self.text
         return message
 
-    def __repr__(self) -> str:
+    def json(self) -> str:
         return dumps(self._resolve())
+
+    def __repr__(self) -> str:
+        return self.json()
