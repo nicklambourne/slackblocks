@@ -1,27 +1,28 @@
 from setuptools import find_packages, setup
 
 
-development_requirements = [
-    "pytest"
-]
+production_requirements = []
 
 with open("README.md", "r") as file_:
     long_description = file_.read()
 
 setup(
     name="slackblocks",
-    version="0.0.1",
+    version="0.1.0",
     author="Nicholas Lambourne",
-    author_email="",
+    author_email="nick@ndl.im",
     description="Python wrapper for the Slack Blocks API",
-    #  install_requires=[],
-    extras_requires={
-        "dev": development_requirements
-    },
+    install_requires=production_requirements,
     long_description=long_description,
-    long_description_content_time="text/markdown",
+    long_description_content_type="text/markdown",
     url="https://github.com/nicklambourne/slackblocks",
-    packages=find_packages(),
+    packages=find_packages(".", exclude=["test"]),
+    include_package_data=True,
+    setup_requires=[
+        "pytest",
+        "twine",
+        "wheel"
+    ],
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "License :: OSI Approved :: BSD License",
