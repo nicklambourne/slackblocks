@@ -21,7 +21,8 @@ setup(
     setup_requires=[
         "pytest",
         "twine",
-        "wheel"
+        "wheel",
+        "slackclient"
     ],
     classifiers=[
         "Programming Language :: Python :: 3.6",
