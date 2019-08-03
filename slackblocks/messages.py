@@ -11,7 +11,7 @@ class Message:
     """
     def __init__(self,
                  channel: str,
-                 text: Optional[str] = None,
+                 text: Optional[str] = "",
                  blocks: Optional[Union[List[Block], Block]] = None,
                  attachments: Optional[List[Attachment]] = None,
                  thread_ts: Optional[str] = None,
@@ -38,7 +38,7 @@ class Message:
             message["attachments"] = [attachment._resolve() for attachment in self.attachments]
         if self.thread_ts:
             message["thread_ts"] = self.thread_ts
-        if self.text:
+        if self.text or self.text == "":
             message["text"] = self.text
         return message
 
