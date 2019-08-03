@@ -70,7 +70,7 @@ message = Message(channel="#general", blocks=block)
 response = client.chat_postMessage(**message)
 ```
 
-Note the `**` operator in front of the Message object.
+Note the `**` operator in front of the `message` object.
 
 ## Can I use this in my project?
 
