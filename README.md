@@ -1,4 +1,4 @@
-# slackblocks <img src="./docs/img/sb.png" align="right" width="250px"/>
+# slackblocks <img src="https://github.com/nicklambourne/slackblocks/blob/master/docs/img/sb.png" align="right" width="250px"/>
 
 ![Build Status](https://api.travis-ci.org/nicklambourne/slackblocks.svg?branch=master)
 
