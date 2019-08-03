@@ -6,7 +6,7 @@
 
 It was created by [Nicholas Lambourne](https://github.com/nicklambourne) for the [UQCS Slack Bot](https://github.com/UQComputingSociety/uqcsbot) because he hates writing JSON.
 
-Turns out the functionality that he was actually after exists in the outdated Slack Secondary Attachments API, but he was already in too deep to turn back.
+As it turns out the functionality that he was actually after exists in the outdated Slack Secondary Attachments API, but he was already in too deep to turn back.
 
 ## Requirements
 `slackblocks` requires Python >= 3.6.
@@ -15,7 +15,9 @@ As of version 0.1.0 it has no dependencies outside the Python standard library.
 
 ## Installation
 
-`pip install slackblocks`
+```bash
+pip install slackblocks
+```
 
 ## Usage
 
