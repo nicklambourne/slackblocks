@@ -1,5 +1,7 @@
 # slackblocks <img src="./docs/img/sb.png" align="right" width="250px"/>
 
+![Build Status](https://api.travis-ci.org/nicklambourne/slackblocks.svg?branch=master)
+
 ## What is it?
 
 `slackblocks` is Python API for building messages in the fancy new Slack Block Kit API.
