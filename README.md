@@ -8,7 +8,9 @@
 
 It was created by [Nicholas Lambourne](https://github.com/nicklambourne) for the [UQCS Slack Bot](https://github.com/UQComputingSociety/uqcsbot) because he hates writing JSON.
 
-As it turns out the functionality that he was actually after exists in the outdated Slack Secondary Attachments API, but he was already in too deep to turn back.
+As it turns out, the functionality that he was actually after exists in the outdated Slack Secondary Attachments API, but he was already in too deep to turn back.
+
+N.B: This is still WIP software and I some of the more tricky interactive Block elements have yet to be implemented.
 
 ## Requirements
 `slackblocks` requires Python >= 3.6.
