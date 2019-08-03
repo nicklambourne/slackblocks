@@ -8,7 +8,7 @@ with open("README.md", "r") as file_:
 
 setup(
     name="slackblocks",
-    version="0.1.1",
+    version="0.1.2",
     author="Nicholas Lambourne",
     author_email="nick@ndl.im",
     description="Python wrapper for the Slack Blocks API",
