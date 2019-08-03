@@ -50,9 +50,12 @@ class Attachment:
     the message, but perhaps adds further context or additional information.
     """
     def __init__(self,
-                 blocks: Optional[List[Block]],
+                 blocks: Optional[Union[List[Block], Block]],
                  color: Optional[Union[str, Color]]):
-        self.blocks = blocks
+        if isinstance(blocks, List):
+            self.blocks = blocks
+        elif isinstance(blocks, Block):
+            self.blocks = [blocks, ]
         if type(color) is Color:
             self.color = color.value
         elif type(color) is str:
@@ -64,6 +67,8 @@ class Attachment:
     def _resolve(self) -> Dict[str, Any]:
         attachment = dict()
         attachment["blocks"] = [block._resolve() for block in self.blocks]
+        if self.color:
+            attachment["color"] = self.color
         return attachment
 
     def __repr__(self) -> str:

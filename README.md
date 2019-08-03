@@ -1,4 +1,4 @@
-# slackblocks <img src="https://github.com/nicklambourne/slackblocks/blob/master/docs/img/sb.png" align="right" width="250px"/>
+# slackblocks <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/img/sb.png" align="right" width="250px"/>
 
 ![Build Status](https://api.travis-ci.org/nicklambourne/slackblocks.svg?branch=master)
 
@@ -53,7 +53,7 @@ Will produce the following JSON string:
     ]
 }
 ```
-Which can be send as payload to the Slack message API HTTP endpoints.
+Which can be sent as payload to the Slack message API HTTP endpoints.
 
 Of more practical use is the ability to unpack the objects directly into 
 the Python Slack Client to send messages:
@@ -69,6 +69,8 @@ message = Message(channel="#general", blocks=block)
 
 response = client.chat_postMessage(**message)
 ```
+
+Note the `**` operator in front of the Message object.
 
 ## Can I use this in my project?
 
