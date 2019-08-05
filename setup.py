@@ -1,10 +1,10 @@
 from setuptools import find_packages, setup
 
 
-production_requirements = []
-
 with open("README.md", "r") as file_:
     long_description = file_.read()
+
+production_requirements = []
 
 setup(
     name="slackblocks",
