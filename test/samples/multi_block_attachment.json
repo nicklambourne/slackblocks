@@ -1,0 +1,23 @@
+{
+    "blocks": [
+        {
+            "type": "section",
+            "block_id": "fake_block_id_0",
+            "text": {
+                "type": "mrkdwn",
+                "text": "I like pretty colours",
+                "verbatim": false
+            }
+        },
+        {
+            "type": "section",
+            "block_id": "fake_block_id_1",
+            "text": {
+                "type": "mrkdwn",
+                "text": "I don't like pretty colours",
+                "verbatim": false
+            }
+        }
+    ],
+    "color": "#8800ff"
+}

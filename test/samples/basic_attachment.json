@@ -1,0 +1,14 @@
+{
+    "blocks": [
+        {
+            "type": "section",
+            "block_id": "fake_block_id",
+            "text": {
+                "type": "mrkdwn",
+                "text": "I like pretty colours",
+                "verbatim": false
+            }
+        }
+    ],
+    "color": "#000000"
+}

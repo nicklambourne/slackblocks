@@ -50,23 +50,28 @@ class Attachment:
     the message, but perhaps adds further context or additional information.
     """
     def __init__(self,
-                 blocks: Optional[Union[List[Block], Block]],
-                 color: Optional[Union[str, Color]]):
+                 blocks: Optional[Union[List[Block], Block]] = None,
+                 color: Optional[Union[str, Color]] = None):
         if isinstance(blocks, List):
             self.blocks = blocks
         elif isinstance(blocks, Block):
             self.blocks = [blocks, ]
+        else:
+            self.blocks = None
         if type(color) is Color:
             self.color = color.value
         elif type(color) is str:
-            if len(color) == 7 and color[0] == "#":
+            if len(color) == 7 and color.startswith("#"):
                 self.color = color
             else:
                 raise InvalidUsageError("Color must be a valid hex code (e.g. #ffffff)")
+        else:
+            self.color = None
 
     def _resolve(self) -> Dict[str, Any]:
         attachment = dict()
-        attachment["blocks"] = [block._resolve() for block in self.blocks]
+        if self.blocks:
+            attachment["blocks"] = [block._resolve() for block in self.blocks]
         if self.color:
             attachment["color"] = self.color
         return attachment
