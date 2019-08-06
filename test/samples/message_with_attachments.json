@@ -1,0 +1,21 @@
+{
+    "channel": "#general",
+    "mrkdwn": true,
+    "attachments": [
+        {
+            "blocks": [
+                {
+                    "type": "section",
+                    "block_id": "fake_block_id",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Hello, world!",
+                        "verbatim": false
+                    }
+                }
+            ],
+            "color": "#ffff00"
+        }
+    ],
+    "text": ""
+}
