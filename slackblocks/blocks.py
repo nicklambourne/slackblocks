@@ -104,7 +104,7 @@ class ImageBlock(Block):
                          block_id=block_id)
         self.image_url = image_url
         self.alt_text = alt_text
-        if type(title) == Text:
+        if title and type(title) is Text:
             if title.text_type == TextType.MARKDOWN:
                 self.title = Text(text=title.text,
                                   type_=TextType.PLAINTEXT,
@@ -113,14 +113,15 @@ class ImageBlock(Block):
             else:
                 self.title = title
         else:
-            self.title = Text(text=title,
+            self.title = Text(text=" ",
                               type_=TextType.PLAINTEXT)
 
     def _resolve(self) -> Dict[str, Any]:
         image = self._attributes()
         image["image_url"] = self.image_url
         image["alt_text"] = self.alt_text
-        image["title"] = self.title._resolve()
+        if self.title:
+            image["title"] = self.title._resolve()
         return image
 
 

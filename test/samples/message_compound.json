@@ -1,0 +1,66 @@
+{
+    "channel": "#general",
+    "mrkdwn": true,
+    "blocks": [
+        {
+            "type": "section",
+            "block_id": "ee3a40da-5835-4d92-bd9a-7104cce0cf94",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Block, One",
+                "verbatim": false
+            }
+        },
+        {
+            "type": "image",
+            "block_id": "63b0b1ba-962b-436e-93cc-31877d44f000",
+            "image_url": "http://bit.ly/slack-block-test-image",
+            "alt_text": "crash",
+            "title": {
+                "type": "plain_text",
+                "text": " "
+            }
+        }
+    ],
+    "attachments": [
+        {
+            "blocks": [
+                {
+                    "type": "section",
+                    "block_id": "ee3a40da-5835-4d92-bd9a-7104cce0cf94",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Block, One",
+                        "verbatim": false
+                    }
+                }
+            ],
+            "color": "#8800ff"
+        },
+        {
+            "blocks": [
+                {
+                    "type": "section",
+                    "block_id": "76ee68ca-f6af-4a9c-b080-2aab08acb9ef",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Block, Two",
+                        "verbatim": false
+                    }
+                },
+                {
+                    "type": "image",
+                    "block_id": "63b0b1ba-962b-436e-93cc-31877d44f000",
+                    "image_url": "http://bit.ly/slack-block-test-image",
+                    "alt_text": "crash",
+                    "title": {
+                        "type": "plain_text",
+                        "text": " "
+                    }
+                }
+            ],
+            "color": "#ffff00"
+        }
+    ],
+    "text": ""
+}
