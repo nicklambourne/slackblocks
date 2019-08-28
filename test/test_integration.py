@@ -4,18 +4,22 @@ from slackblocks import Attachment, Color, ImageBlock, Message, SectionBlock
 
 
 def test_basic_attachment_message() -> None:
-    block = SectionBlock("Hello, world!")
+    block = SectionBlock("Hello, world!", block_id="block1")
     attachment = Attachment(blocks=block, color=Color.BLACK)
     message = Message(channel="#general", attachments=[attachment, ])
     client = WebClient(token=environ['SLACK_BOT_TOKEN'])
     response = client.chat_postMessage(**message)
     assert response.status_code == 200
+    with open("test/samples/message_basic_attachment.json", "r") as expected:
+        assert expected.read() == repr(message)
 
 
 def test_compound_message() -> None:
-    block1 = SectionBlock("Block, One")
-    block2 = SectionBlock("Block, Two")
-    block3 = ImageBlock(image_url="http://bit.ly/slack-block-test-image", alt_text="crash")
+    block1 = SectionBlock("Block, One", block_id="fake_block1")
+    block2 = SectionBlock("Block, Two", block_id="fake_block2")
+    block3 = ImageBlock(image_url="http://bit.ly/slack-block-test-image",
+                        alt_text="crash",
+                        block_id="fake_block3")
     attachment1 = Attachment(blocks=block1, color=Color.PURPLE)
     attachment2 = Attachment(blocks=[block2, block3], color=Color.YELLOW)
     message = Message(channel="#general",
@@ -24,3 +28,5 @@ def test_compound_message() -> None:
     client = WebClient(token=environ['SLACK_BOT_TOKEN'])
     response = client.chat_postMessage(**message)
     assert response.status_code == 200
+    with open("test/samples/message_compound.json", "r") as expected:
+        assert expected.read() == repr(message)

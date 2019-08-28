@@ -112,6 +112,9 @@ class ImageBlock(Block):
                                   verbatim=title.verbatim)
             else:
                 self.title = title
+        elif title:
+            self.title = Text(text=title,
+                              type_=TextType.PLAINTEXT)
         else:
             self.title = Text(text=" ",
                               type_=TextType.PLAINTEXT)
