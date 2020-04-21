@@ -74,7 +74,7 @@ class SectionBlock(Block):
         if self.fields:
             section["fields"] = self.fields
         if self.accessory:
-            section["accessory"] = self.accessory
+            section["accessory"] = self.accessory._resolve()
         return section
 
 
