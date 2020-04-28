@@ -24,7 +24,7 @@ class Message:
         else:
             self.blocks = None
         self.text = text
-        self.attachments = attachments
+        self.attachments = attachments or []
         self.thread_ts = thread_ts
         self.mrkdwn = mrkdwn
 
