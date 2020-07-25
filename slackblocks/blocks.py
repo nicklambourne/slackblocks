@@ -137,10 +137,11 @@ class ActionsBlock(Block):
                  block_id: Optional[str] = None):
         super().__init__(type_=BlockType.ACTIONS,
                          block_id=block_id)
-        if type(elements) is List[Element]:
-            self.elements = elements
-        elif type(elements) is Element:
+        if isinstance(elements, Element):
             self.elements = [elements, ]
+        elif (isinstance(elements, list) and
+              all([isinstance(el, Element) for el in elements])):
+            self.elements = elements
 
     def _resolve(self):
         actions = self._attributes()
