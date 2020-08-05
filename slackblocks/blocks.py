@@ -18,6 +18,7 @@ class BlockType(Enum):
     ACTIONS = "actions"
     CONTEXT = "context"
     FILE = "file"
+    HEADER = "header"
 
 
 class Block(ABC):
@@ -164,8 +165,7 @@ class ContextBlock(Block):
                     element.type == ElementType.IMAGE:
                 self.elements.append(element)
             else:
-                raise InvalidUsageError("Context blocks can only hold image and text"
-                                        "elements")
+                raise InvalidUsageError("Context blocks can only hold image and text elements")
         if len(self.elements) > 10:
             raise InvalidUsageError("Context blocks can hold a maximum of ten elements")
 
@@ -193,3 +193,22 @@ class FileBlock(Block):
         file["external_id"] = self.external_id
         file["source"] = self.source
         return file
+
+
+class HeaderBlock(Block):
+    """
+    A header is a plain-text block that displays in a larger, bold font.
+    """
+    def __init__(self,
+                 text: Union[str, Text],
+                 block_id: Optional[str] = None):
+        super().__init__(type_=BlockType.HEADER, block_id=block_id)
+        if type(text) is Text:
+            self.text = text
+        else:
+            self.text = Text(text, type_=TextType.PLAINTEXT, verbatim=False)
+
+    def _resolve(self) -> Dict[str, any]:
+        header = self._attributes()
+        header["text"] = self.text._resolve()
+        return header
