@@ -1,10 +1,20 @@
-from slackblocks import ContextBlock, DividerBlock, ImageBlock, SectionBlock, Text, HeaderBlock
+from slackblocks import ContextBlock, DividerBlock, ImageBlock, SectionBlock, Text, HeaderBlock, \
+    TextType
 
 
 def test_basic_section_block() -> None:
     block = SectionBlock("Hello, world!",
                          block_id="fake_block_id")
     with open("test/samples/section_block_text_only.json", "r") as expected:
+        assert expected.read() == repr(block)
+
+
+def test_basic_section_fields() -> None:
+    block = SectionBlock("Test:",
+                         fields=[Text(text='foo', type_=TextType.PLAINTEXT),
+                                 Text(text='bar')],
+                         block_id="fake_block_id")
+    with open("test/samples/section_block_fields.json", "r") as expected:
         assert expected.read() == repr(block)
 
 
