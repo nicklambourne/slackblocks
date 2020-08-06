@@ -1,4 +1,4 @@
-from slackblocks import ContextBlock, DividerBlock, ImageBlock, SectionBlock, Text
+from slackblocks import ContextBlock, DividerBlock, ImageBlock, SectionBlock, Text, HeaderBlock
 
 
 def test_basic_section_block() -> None:
@@ -27,4 +27,10 @@ def test_basic_image_block() -> None:
                        title="image1",
                        block_id="fake_block_id")
     with open("test/samples/image_block_only.json", "r") as expected:
+        assert expected.read() == repr(block)
+
+
+def test_basic_header_block() -> None:
+    block = HeaderBlock(text="AloHa!", block_id="fake_block_id")
+    with open("test/samples/header_block_only.json", "r") as expected:
         assert expected.read() == repr(block)

@@ -152,7 +152,7 @@ class Button(Element):
                  action_id: str,
                  url: Optional[str] = None,
                  value: Optional[str] = None,
-                 style: Optional[str] = "default",
+                 style: Optional[str] = None,
                  confirm: Optional[Confirm] = None):
         super().__init__(type_=ElementType.BUTTON)
         self.text = Text.to_text(text, max_length=75, force_plaintext=True)
@@ -166,7 +166,8 @@ class Button(Element):
         button = self._attributes()
         button["text"] = self.text._resolve()
         button["action_id"] = self.action_id
-        button["style"] = self.style
+        if self.style:
+            button["style"] = self.style
         if self.url:
             button["url"] = self.url
         if self.value:
