@@ -10,7 +10,7 @@ class Message:
     the Slack message API.
     """
     def __init__(self,
-                 channel: str,
+                 channel: Optional[str],
                  text: Optional[str] = "",
                  blocks: Optional[Union[List[Block], Block]] = None,
                  attachments: Optional[List[Attachment]] = None,
