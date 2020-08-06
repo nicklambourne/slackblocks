@@ -6,7 +6,7 @@ from slackblocks import Attachment, Color, ImageBlock, Message, SectionBlock
 def test_basic_attachment_message() -> None:
     block = SectionBlock("Hello, world!", block_id="block1")
     attachment = Attachment(blocks=block, color=Color.BLACK)
-    message = Message(channel="#general", attachments=[attachment, ])
+    message = Message(channel="#slackblocks", attachments=[attachment, ])
     client = WebClient(token=environ['SLACK_BOT_TOKEN'])
     response = client.chat_postMessage(**message)
     assert response.status_code == 200
@@ -22,7 +22,7 @@ def test_compound_message() -> None:
                         block_id="fake_block3")
     attachment1 = Attachment(blocks=block1, color=Color.PURPLE)
     attachment2 = Attachment(blocks=[block2, block3], color=Color.YELLOW)
-    message = Message(channel="#general",
+    message = Message(channel="#slackblocks",
                       blocks=[block1, block3],
                       attachments=[attachment1, attachment2])
     client = WebClient(token=environ['SLACK_BOT_TOKEN'])

@@ -1,6 +1,7 @@
 # slackblocks <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/img/sb.png" align="right" width="250px"/>
 
-![Build Status](https://api.travis-ci.org/nicklambourne/slackblocks.svg?branch=master)
+[![Build Status](https://api.travis-ci.org/nicklambourne/slackblocks.svg?branch=master)](https://travis-ci.org/github/nicklambourne/slackblocks)
+[![PyPI version](https://badge.fury.io/py/slackblocks.svg)](https://pypi.org/project/slackblocks/)
 
 ## What is it?
 
