@@ -6,7 +6,7 @@ def test_basic_section_block() -> None:
     block = SectionBlock("Hello, world!",
                          block_id="fake_block_id")
     with open("test/samples/section_block_text_only.json", "r") as expected:
-        assert expected.read() == repr(block)
+        assert repr(block) == expected.read()
 
 
 def test_basic_section_fields() -> None:
@@ -15,20 +15,20 @@ def test_basic_section_fields() -> None:
                                  Text(text='bar')],
                          block_id="fake_block_id")
     with open("test/samples/section_block_fields.json", "r") as expected:
-        assert expected.read() == repr(block)
+        assert repr(block) == expected.read()
 
 
 def test_basic_context_block() -> None:
     block = ContextBlock(elements=[Text("Hello, world!")],
                          block_id="fake_block_id")
     with open("test/samples/context_block_text_only.json", "r") as expected:
-        assert expected.read() == repr(block)
+        assert repr(block) == expected.read()
 
 
 def test_basic_divider_block() -> None:
     block = DividerBlock(block_id="fake_block_id")
     with open("test/samples/divider_block_only.json", "r") as expected:
-        assert expected.read() == repr(block)
+        assert repr(block) == expected.read()
 
 
 def test_basic_image_block() -> None:
@@ -37,10 +37,10 @@ def test_basic_image_block() -> None:
                        title="image1",
                        block_id="fake_block_id")
     with open("test/samples/image_block_only.json", "r") as expected:
-        assert expected.read() == repr(block)
+        assert repr(block) == expected.read()
 
 
 def test_basic_header_block() -> None:
     block = HeaderBlock(text="AloHa!", block_id="fake_block_id")
     with open("test/samples/header_block_only.json", "r") as expected:
-        assert expected.read() == repr(block)
+        assert repr(block) == expected.read()
