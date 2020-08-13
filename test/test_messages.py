@@ -1,4 +1,5 @@
-from slackblocks import Attachment, Color, Message, SectionBlock
+from slackblocks import Attachment, AcknowledgementResponse, Color, Message,\
+    SectionBlock
 
 
 def test_basic_message() -> None:
@@ -13,4 +14,11 @@ def test_message_with_attachment() -> None:
     attachment = Attachment(blocks=block, color=Color.YELLOW)
     message = Message(channel="#slackblocks", attachments=[attachment, ])
     with open("test/samples/message_with_attachments.json", "r") as expected:
+        assert repr(message) == expected.read()
+
+
+def test_ack_response() -> None:
+    block = SectionBlock("Hello, world!", block_id="fake_block_id")
+    message = AcknowledgementResponse(blocks=block)
+    with open("test/samples/ack_response.json", "r") as expected:
         assert repr(message) == expected.read()
