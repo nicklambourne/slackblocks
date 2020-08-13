@@ -12,5 +12,6 @@
         }
     ],
     "text": "",
-    "replace_original": true
+    "replace_original": false,
+    "ephemeral": false
 }

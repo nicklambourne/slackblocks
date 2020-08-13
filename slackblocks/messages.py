@@ -71,7 +71,7 @@ class Message(BaseMessage):
         super().__init__(channel, text, blocks, attachments, thread_ts, mrkdwn)
 
 
-class AcknowledgementResponse(BaseMessage):
+class MessageResponse(BaseMessage):
     """
     A required, immediate response that confirms your app received the payload.
     """
@@ -81,14 +81,17 @@ class AcknowledgementResponse(BaseMessage):
                  attachments: Optional[List[Attachment]] = None,
                  thread_ts: Optional[str] = None,
                  mrkdwn: bool = True,
-                 replace_original: bool = True):
+                 replace_original: bool = False,
+                 ephemeral: bool = False):
         super().__init__(text=text,
                          blocks=blocks,
                          attachments=attachments,
                          thread_ts=thread_ts,
                          mrkdwn=mrkdwn)
         self.replace_original = replace_original
+        self.ephemeral = ephemeral
 
     def _resolve(self) -> Dict[str, Any]:
         return {**super()._resolve(),
-                "replace_original": self.replace_original}
+                "replace_original": self.replace_original,
+                "ephemeral": self.ephemeral}
