@@ -11,7 +11,7 @@ def test_basic_attachment_message() -> None:
     response = client.chat_postMessage(**message)
     assert response.status_code == 200
     with open("test/samples/message_basic_attachment.json", "r") as expected:
-        assert expected.read() == repr(message)
+        assert repr(message) == expected.read()
 
 
 def test_compound_message() -> None:
@@ -29,4 +29,4 @@ def test_compound_message() -> None:
     response = client.chat_postMessage(**message)
     assert response.status_code == 200
     with open("test/samples/message_compound.json", "r") as expected:
-        assert expected.read() == repr(message)
+        assert repr(message) == expected.read()
