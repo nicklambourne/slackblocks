@@ -12,12 +12,11 @@ python:
   - "3.8-dev"
 
 script:
-  - pytest
+  - coverage run -m pytest
   - flake8
 
 after_success:
     - codecov
-    - bash <(curl -s https://codecov.io/bash)
 
 deploy:
   provider: pypi
