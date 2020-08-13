@@ -2,6 +2,7 @@
 
 [![Build Status](https://api.travis-ci.org/nicklambourne/slackblocks.svg?branch=master)](https://travis-ci.org/github/nicklambourne/slackblocks)
 [![PyPI version](https://badge.fury.io/py/slackblocks.svg)](https://pypi.org/project/slackblocks/)
+![Python Versions](https://img.shields.io/pypi/pyversions/slackblocks)
 
 ## What is it?
 
