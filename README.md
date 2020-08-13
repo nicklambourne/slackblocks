@@ -1,12 +1,13 @@
 # slackblocks <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/img/sb.png" align="right" width="250px"/>
 
-[![Build Status](https://api.travis-ci.org/nicklambourne/slackblocks.svg?branch=master)](https://travis-ci.org/github/nicklambourne/slackblocks)
-[![PyPI version](https://badge.fury.io/py/slackblocks.svg)](https://pypi.org/project/slackblocks/)
+![PyPI - License](https://img.shields.io/pypi/l/slackblocks)
 ![Python Versions](https://img.shields.io/pypi/pyversions/slackblocks)
+[![PyPI version](https://badge.fury.io/py/slackblocks.svg)](https://pypi.org/project/slackblocks/)
+[![Build Status](https://api.travis-ci.org/nicklambourne/slackblocks.svg?branch=master)](https://travis-ci.org/github/nicklambourne/slackblocks)
 
 ## What is it?
 
-`slackblocks` is Python API for building messages in the fancy new Slack Block Kit API.
+`slackblocks` is a Python API for building messages in the fancy new Slack Block Kit API.
 
 It was created by [Nicholas Lambourne](https://github.com/nicklambourne) for the [UQCS Slack Bot](https://github.com/UQComputingSociety/uqcsbot) because he hates writing JSON.
 
