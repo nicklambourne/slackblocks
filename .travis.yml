@@ -1,16 +1,24 @@
 dist: bionic
 language: python
+
 install:
-  - pip install flake8
+  - pip install flake8 pytest-cov pytest codecov
   - pip install slackclient
+
 python:
   - "3.6"
   - "3.7"
   - "3.8"
   - "3.8-dev"
+
 script:
   - pytest
   - flake8
+
+after_success:
+    - codecov
+    - bash <(curl -s https://codecov.io/bash)
+
 deploy:
   provider: pypi
   user: nicklambourne
