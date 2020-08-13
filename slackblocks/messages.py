@@ -93,5 +93,5 @@ class MessageResponse(BaseMessage):
 
     def _resolve(self) -> Dict[str, Any]:
         return {**super()._resolve(),
-                "ephemeral": self.ephemeral,
-                "replace_original": self.replace_original}
+                "replace_original": self.replace_original,
+                "ephemeral": self.ephemeral}
