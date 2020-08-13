@@ -4,25 +4,25 @@ from .attachments import Attachment
 from .blocks import Block
 
 
-class Message:
+class BaseMessage:
     """
-    A Slack message object that can be converted to a JSON string for use with
-    the Slack message API.
+    Abstract class for shared functionality between Messages and
+    Acknowledgement responses.
     """
     def __init__(self,
-                 channel: Optional[str],
+                 channel: Optional[str] = None,
                  text: Optional[str] = "",
                  blocks: Optional[Union[List[Block], Block]] = None,
                  attachments: Optional[List[Attachment]] = None,
                  thread_ts: Optional[str] = None,
                  mrkdwn: bool = True):
-        self.channel = channel
         if isinstance(blocks, List):
             self.blocks = blocks
         elif isinstance(blocks, Block):
             self.blocks = [blocks, ]
         else:
             self.blocks = None
+        self.channel = channel
         self.text = text
         self.attachments = attachments or []
         self.thread_ts = thread_ts
@@ -30,7 +30,8 @@ class Message:
 
     def _resolve(self) -> Dict[str, Any]:
         message = dict()
-        message["channel"] = self.channel
+        if self.channel:
+            message["channel"] = self.channel
         message["mrkdwn"] = self.mrkdwn
         if self.blocks:
             message["blocks"] = [block._resolve() for block in self.blocks]
@@ -55,3 +56,39 @@ class Message:
         return self._resolve()
 
 
+class Message(BaseMessage):
+    """
+    A Slack message object that can be converted to a JSON string for use with
+    the Slack message API.
+    """
+    def __init__(self,
+                 channel: str,
+                 text: Optional[str] = "",
+                 blocks: Optional[Union[List[Block], Block]] = None,
+                 attachments: Optional[List[Attachment]] = None,
+                 thread_ts: Optional[str] = None,
+                 mrkdwn: bool = True):
+        super().__init__(channel, text, blocks, attachments, thread_ts, mrkdwn)
+
+
+class AcknowledgementResponse(BaseMessage):
+    """
+    A required, immediate response that confirms your app received the payload.
+    """
+    def __init__(self,
+                 text: Optional[str] = "",
+                 blocks: Optional[Union[List[Block], Block]] = None,
+                 attachments: Optional[List[Attachment]] = None,
+                 thread_ts: Optional[str] = None,
+                 mrkdwn: bool = True,
+                 replace_original: bool = True):
+        super().__init__(text=text,
+                         blocks=blocks,
+                         attachments=attachments,
+                         thread_ts=thread_ts,
+                         mrkdwn=mrkdwn)
+        self.replace_original = replace_original
+
+    def _resolve(self) -> Dict[str, Any]:
+        return {**super()._resolve(),
+                "replace_original": self.replace_original}
