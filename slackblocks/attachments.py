@@ -78,5 +78,3 @@ class Attachment:
 
     def __repr__(self) -> str:
         return dumps(self._resolve(), indent=4)
-
-
