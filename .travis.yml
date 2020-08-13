@@ -1,6 +1,7 @@
 dist: bionic
 language: python
 install:
+  - pip install flake8
   - pip install slackclient
 python:
   - "3.6"
@@ -9,6 +10,7 @@ python:
   - "3.8-dev"
 script:
   - pytest
+  - flake8
 deploy:
   provider: pypi
   user: nicklambourne
