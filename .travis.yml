@@ -12,7 +12,7 @@ python:
   - "3.8-dev"
 
 script:
-  - coverage run -m pytest
+  - coverage run -m pytest test
   - flake8
 
 after_success:
