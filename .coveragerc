@@ -3,4 +3,4 @@ omit =
     */test/*
     */venv/*
 source =
-    ./slackblocks/slackblocks
+    ./slackblocks

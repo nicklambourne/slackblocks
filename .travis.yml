@@ -14,7 +14,7 @@ python:
 
 script:
   - pwd
-  - coverage run -m pytest slackblocks/test
+  - coverage run -m pytest test
   - flake8
 
 after_success:
