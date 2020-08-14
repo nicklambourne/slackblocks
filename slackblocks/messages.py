@@ -92,6 +92,8 @@ class MessageResponse(BaseMessage):
         self.ephemeral = ephemeral
 
     def _resolve(self) -> Dict[str, Any]:
-        return {**super()._resolve(),
-                "replace_original": self.replace_original,
-                "ephemeral": self.ephemeral}
+        result = {**super()._resolve(),
+                "replace_original": self.replace_original}
+        if self.ephemeral:
+            result["response_type"] = "ephemeral"
+        return result
