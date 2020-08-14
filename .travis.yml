@@ -2,7 +2,7 @@ dist: bionic
 language: python
 
 install:
-  - pip install flake8 pytest-cov pytest codecov
+  - pip install flake8 pytest coverage==4.5.4 python-coveralls
   - pip install slackclient
 
 python:
@@ -16,7 +16,7 @@ script:
   - flake8
 
 after_success:
-    - codecov
+  - coveralls
 
 deploy:
   provider: pypi
