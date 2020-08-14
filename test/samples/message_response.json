@@ -13,5 +13,5 @@
     ],
     "text": "",
     "replace_original": false,
-    "ephemeral": false
+    "response_type": "ephemeral"
 }
