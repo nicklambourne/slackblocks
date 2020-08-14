@@ -3,7 +3,9 @@
 ![PyPI - License](https://img.shields.io/pypi/l/slackblocks)
 ![Python Versions](https://img.shields.io/pypi/pyversions/slackblocks)
 [![PyPI version](https://badge.fury.io/py/slackblocks.svg)](https://pypi.org/project/slackblocks/)
+[![Downloads](https://pepy.tech/badge/slackblocks)](https://pepy.tech/project/slackblocks)
 [![Build Status](https://api.travis-ci.org/nicklambourne/slackblocks.svg?branch=master)](https://travis-ci.org/github/nicklambourne/slackblocks)
+![Codecov](https://img.shields.io/codecov/c/github/nicklambourne/slackblocks)
 
 ## What is it?
 
