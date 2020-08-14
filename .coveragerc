@@ -1,8 +1,7 @@
 [run]
 omit =
-    */test*
-    */venv*
-
-[paths]
+    */test/*
+    */venv/*
+    */virtualenv/*
 source =
     ./slackblocks
