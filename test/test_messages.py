@@ -19,6 +19,6 @@ def test_message_with_attachment() -> None:
 
 def test_message_response() -> None:
     block = SectionBlock("Hello, world!", block_id="fake_block_id")
-    message = MessageResponse(blocks=block)
+    message = MessageResponse(blocks=block, ephemeral=True)
     with open("test/samples/message_response.json", "r") as expected:
         assert repr(message) == expected.read()
