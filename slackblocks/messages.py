@@ -43,6 +43,9 @@ class BaseMessage:
             message["text"] = self.text
         return message
 
+    def to_dict(self) -> Dict[str, Any]:
+        return self._resolve()
+
     def json(self) -> str:
         return dumps(self._resolve(), indent=4)
 

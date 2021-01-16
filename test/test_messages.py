@@ -1,4 +1,4 @@
-from slackblocks import Attachment, MessageResponse, Color, Message,\
+from slackblocks import Attachment, MessageResponse, Color, Message, \
     SectionBlock
 
 
@@ -22,3 +22,25 @@ def test_message_response() -> None:
     message = MessageResponse(blocks=block, ephemeral=True)
     with open("test/samples/message_response.json", "r") as expected:
         assert repr(message) == expected.read()
+
+
+def test_to_dict() -> None:
+    block = SectionBlock("Hello, world!", block_id="fake_block_id")
+    message = MessageResponse(blocks=block, ephemeral=True)
+    assert message.to_dict() == {
+        "mrkdwn": True,
+        "blocks": [
+            {
+                "type": "section",
+                "block_id": "fake_block_id",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "Hello, world!",
+                    "verbatim": False
+                }
+            }
+        ],
+        "text": "",
+        "replace_original": False,
+        "response_type": "ephemeral"
+    }
