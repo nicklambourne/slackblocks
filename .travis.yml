@@ -2,6 +2,7 @@ os:
   - linux
   - osx
 dist: bionic
+osx_image: xcode12.2
 language: python
 
 install:
