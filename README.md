@@ -2,7 +2,7 @@
 
 ![PyPI - License](https://img.shields.io/pypi/l/slackblocks)
 ![Python Versions](https://img.shields.io/pypi/pyversions/slackblocks)
-[![PyPI version](https://badge.fury.io/py/slackblocks.svg)](https://pypi.org/project/slackblocks/)
+![PyPI](https://img.shields.io/pypi/v/slackblocks?color=yellow&label=PyPI&logo=python&logoColor=white)
 [![Downloads](https://pepy.tech/badge/slackblocks)](https://pepy.tech/project/slackblocks)
 [![Build Status](https://api.travis-ci.org/nicklambourne/slackblocks.svg?branch=master)](https://travis-ci.org/github/nicklambourne/slackblocks)
 [![Coverage Status](https://coveralls.io/repos/github/nicklambourne/slackblocks/badge.svg?branch=master)](https://coveralls.io/github/nicklambourne/slackblocks?branch=master)
