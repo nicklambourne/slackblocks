@@ -58,8 +58,8 @@ Will produce the following JSON string:
 ```
 Which can be sent as payload to the Slack message API HTTP endpoints.
 
-Of more practical use is the ability to unpack the objects directly into 
-the Python Slack Client to send messages:
+Of more practical uses is the ability to unpack the objects directly into 
+the Python Slack Client in order to send messages:
 ```python
 from os import environ
 from slack import WebClient
