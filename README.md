@@ -13,7 +13,7 @@
 
 It was created by [Nicholas Lambourne](https://github.com/nicklambourne) for the [UQCS Slack Bot](https://github.com/UQComputingSociety/uqcsbot) because he hates writing JSON.
 
-N.B: This is still WIP software and I some of the more tricky interactive Block elements have yet to be implemented.
+N.B: This is still WIP software and some of the more tricky interactive Block elements have yet to be implemented.
 
 ## Requirements
 `slackblocks` requires Python >= 3.6.
