@@ -86,7 +86,7 @@ class Text(Element):
             return Text(text=text,
                         type_=type_)
         else:
-            if max_length and len(text) > max_length:
+            if max_length and len(text.text) > max_length:
                 raise InvalidUsageError("Text length exceeds Slack-imposed limit")
             return Text(text=text.text,
                         type_=type_)
