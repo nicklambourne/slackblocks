@@ -1,0 +1,16 @@
+{
+    "type": "modal",
+    "title": {
+        "type": "plain_text",
+        "text": "Hello, world!"
+    },
+    "close": {
+        "type": "plain_text",
+        "text": "Close button"
+    },
+    "submit": {
+        "type": "plain_text",
+        "text": "Submit button"
+    },
+    "blocks": []
+}

@@ -3,5 +3,6 @@ from .blocks import ActionsBlock, ContextBlock, DividerBlock, FileBlock, ImageBl
     HeaderBlock
 from .elements import Button, Confirm, Element, Image, Text, TextType
 from .messages import MessageResponse, Message
+from .modals import Modal
 
 name = "slackblocks"
