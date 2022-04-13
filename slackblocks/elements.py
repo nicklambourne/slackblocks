@@ -30,6 +30,7 @@ class Element(ABC):
     Basis element containing attributes and behaviour common to all elements.
     N.B: Element is an abstract class and cannot be used directly.
     """
+
     def __init__(self, type_: ElementType):
         super().__init__()
         self.type = type_
@@ -49,6 +50,7 @@ class Text(Element):
     An object containing some text, formatted either as plain_text or using
     Slack's "mrkdwn"
     """
+
     def __init__(self,
                  text: str,
                  type_: TextType = TextType.MARKDOWN,
@@ -101,6 +103,7 @@ class Image(Element):
     and context blocks only. If you want a block with only an image in it,
     you're looking for the image block.
     """
+
     def __init__(self,
                  image_url: str,
                  alt_text: str):
@@ -121,6 +124,7 @@ class Confirm(Element):
     to any interactive element. This dialog will ask the user to confirm
     their action by offering confirm and deny buttons.
     """
+
     def __init__(self,
                  title: Union[str, Text],
                  text: Union[str, Text],
@@ -147,6 +151,7 @@ class Button(Element):
     trigger for anything from opening a simple link to starting a complex
     workflow.
     """
+
     def __init__(self,
                  text: Union[str, Text],
                  action_id: str,

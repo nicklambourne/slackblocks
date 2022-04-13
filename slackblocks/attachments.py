@@ -25,6 +25,7 @@ class Field:
     """
     Field text objects for use with Slack's secondary attachment API.
     """
+
     def __init__(self,
                  title: Optional[str] = None,
                  value: Optional[str] = None,
@@ -49,6 +50,7 @@ class Attachment:
      - content that doesn't necessarily need to be seen to appreciate the intent of
     the message, but perhaps adds further context or additional information.
     """
+
     def __init__(self,
                  blocks: Optional[Union[List[Block], Block]] = None,
                  color: Optional[Union[str, Color]] = None):

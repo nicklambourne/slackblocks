@@ -9,6 +9,7 @@ class BaseMessage:
     Abstract class for shared functionality between Messages and
     Acknowledgement responses.
     """
+
     def __init__(self,
                  channel: Optional[str] = None,
                  text: Optional[str] = "",
@@ -64,6 +65,7 @@ class Message(BaseMessage):
     A Slack message object that can be converted to a JSON string for use with
     the Slack message API.
     """
+
     def __init__(self,
                  channel: str,
                  text: Optional[str] = "",
@@ -78,6 +80,7 @@ class MessageResponse(BaseMessage):
     """
     A required, immediate response that confirms your app received the payload.
     """
+
     def __init__(self,
                  text: Optional[str] = "",
                  blocks: Optional[Union[List[Block], Block]] = None,

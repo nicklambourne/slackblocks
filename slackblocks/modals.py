@@ -6,6 +6,7 @@ from .blocks import Block
 from .elements import Text
 from enum import Enum
 
+
 class ModalType(Enum):
     """
     Convenience class for holding modal types
@@ -13,17 +14,19 @@ class ModalType(Enum):
     """
     MODAL = "modal"
 
+
 class Modal:
     """
     A Slack modal object that can be converted into JSON
     for use with the Slack API 
     """
+
     def __init__(self,
-        title: Union[str, Text],
-        close: Union[str, Text],
-        submit: Optional[Union[str, Text]] = None,
-        blocks: Optional[Union[List[Block], Block]] = None):
-        
+                 title: Union[str, Text],
+                 close: Union[str, Text],
+                 submit: Optional[Union[str, Text]] = None,
+                 blocks: Optional[Union[List[Block], Block]] = None):
+
         self.type = ModalType.MODAL
 
         if isinstance(blocks, List):
@@ -33,7 +36,7 @@ class Modal:
         else:
             # Even if there's no blocks - an empty blocks entry is required.
             self.blocks = []
-        
+
         self.title = Text.to_text(title, force_plaintext=True)
         self.submit = submit
         self.close = Text.to_text(close, force_plaintext=True)
@@ -45,7 +48,7 @@ class Modal:
         return {
             "type": self.type.value
         }
-    
+
     @abstractmethod
     def _resolve(self) -> Dict[str, Any]:
         modal = dict()
