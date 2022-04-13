@@ -1,0 +1,39 @@
+{
+    "type": "modal",
+    "title": {
+        "type": "plain_text",
+        "text": "Hello, world!"
+    },
+    "close": {
+        "type": "plain_text",
+        "text": "Close button"
+    },
+    "submit": {
+        "type": "plain_text",
+        "text": "Submit button"
+    },
+    "blocks": [
+        {
+            "type": "section",
+            "block_id": "1",
+            "text": {
+                "type": "mrkdwn",
+                "text": "first section block",
+                "verbatim": false
+            }
+        },
+        {
+            "type": "divider",
+            "block_id": "2"
+        },
+        {
+            "type": "section",
+            "block_id": "3",
+            "text": {
+                "type": "mrkdwn",
+                "text": "second section block",
+                "verbatim": false
+            }
+        }
+    ]
+}
