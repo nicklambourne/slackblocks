@@ -26,6 +26,7 @@ class Block(ABC):
     Basis block containing attributes and behaviour common to all blocks.
     N.B: Block is an abstract class and cannot be sent directly.
     """
+
     def __init__(self,
                  type_: BlockType,
                  block_id: Optional[str] = None):
@@ -55,6 +56,7 @@ class SectionBlock(Block):
     it can be used as a simple text block, in combination with text fields,
     or side-by-side with any of the available block elements.
     """
+
     def __init__(self,
                  text: Union[str, Text],
                  block_id: Optional[str] = None,
@@ -84,6 +86,7 @@ class DividerBlock(Block):
     A content divider, like an <hr>, to split up different blocks inside of
     a message. The divider block is nice and neat, requiring only a type.
     """
+
     def __init__(self, block_id: Optional[str] = None):
         super().__init__(type_=BlockType.DIVIDER,
                          block_id=block_id)
@@ -96,6 +99,7 @@ class ImageBlock(Block):
     """
     A simple image block, designed to make those cat photos really pop.
     """
+
     def __init__(self,
                  image_url: str,
                  alt_text: Optional[str] = "",
@@ -133,6 +137,7 @@ class ActionsBlock(Block):
     """
     A block that is used to hold interactive elements.
     """
+
     def __init__(self,
                  elements: Optional[List[Element]] = None,
                  block_id: Optional[str] = None):
@@ -154,6 +159,7 @@ class ContextBlock(Block):
     """
     Displays message context, which can include both images and text.
     """
+
     def __init__(self,
                  elements: Optional[List[Element]] = None,
                  block_id: Optional[str] = None):
@@ -179,6 +185,7 @@ class FileBlock(Block):
     """
     Displays a remote file.
     """
+
     def __init__(self,
                  external_id: str,
                  source: str,
@@ -199,6 +206,7 @@ class HeaderBlock(Block):
     """
     A header is a plain-text block that displays in a larger, bold font.
     """
+
     def __init__(self,
                  text: Union[str, Text],
                  block_id: Optional[str] = None):
