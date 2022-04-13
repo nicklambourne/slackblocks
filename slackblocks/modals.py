@@ -1,7 +1,6 @@
 from abc import abstractmethod
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
-from .attachments import Attachment
 from .blocks import Block
 from .elements import Text
 from enum import Enum
@@ -18,7 +17,7 @@ class ModalType(Enum):
 class Modal:
     """
     A Slack modal object that can be converted into JSON
-    for use with the Slack API 
+    for use with the Slack API
     """
 
     def __init__(self,
