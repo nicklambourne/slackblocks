@@ -10,17 +10,21 @@ class BaseMessage:
     Acknowledgement responses.
     """
 
-    def __init__(self,
-                 channel: Optional[str] = None,
-                 text: Optional[str] = "",
-                 blocks: Optional[Union[List[Block], Block]] = None,
-                 attachments: Optional[List[Attachment]] = None,
-                 thread_ts: Optional[str] = None,
-                 mrkdwn: bool = True):
+    def __init__(
+        self,
+        channel: Optional[str] = None,
+        text: Optional[str] = "",
+        blocks: Optional[Union[List[Block], Block]] = None,
+        attachments: Optional[List[Attachment]] = None,
+        thread_ts: Optional[str] = None,
+        mrkdwn: bool = True,
+    ):
         if isinstance(blocks, List):
             self.blocks = blocks
         elif isinstance(blocks, Block):
-            self.blocks = [blocks, ]
+            self.blocks = [
+                blocks,
+            ]
         else:
             self.blocks = None
         self.channel = channel
@@ -37,7 +41,9 @@ class BaseMessage:
         if self.blocks:
             message["blocks"] = [block._resolve() for block in self.blocks]
         if self.attachments:
-            message["attachments"] = [attachment._resolve() for attachment in self.attachments]
+            message["attachments"] = [
+                attachment._resolve() for attachment in self.attachments
+            ]
         if self.thread_ts:
             message["thread_ts"] = self.thread_ts
         if self.text or self.text == "":
@@ -66,13 +72,15 @@ class Message(BaseMessage):
     the Slack message API.
     """
 
-    def __init__(self,
-                 channel: str,
-                 text: Optional[str] = "",
-                 blocks: Optional[Union[List[Block], Block]] = None,
-                 attachments: Optional[List[Attachment]] = None,
-                 thread_ts: Optional[str] = None,
-                 mrkdwn: bool = True):
+    def __init__(
+        self,
+        channel: str,
+        text: Optional[str] = "",
+        blocks: Optional[Union[List[Block], Block]] = None,
+        attachments: Optional[List[Attachment]] = None,
+        thread_ts: Optional[str] = None,
+        mrkdwn: bool = True,
+    ):
         super().__init__(channel, text, blocks, attachments, thread_ts, mrkdwn)
 
 
@@ -81,25 +89,28 @@ class MessageResponse(BaseMessage):
     A required, immediate response that confirms your app received the payload.
     """
 
-    def __init__(self,
-                 text: Optional[str] = "",
-                 blocks: Optional[Union[List[Block], Block]] = None,
-                 attachments: Optional[List[Attachment]] = None,
-                 thread_ts: Optional[str] = None,
-                 mrkdwn: bool = True,
-                 replace_original: bool = False,
-                 ephemeral: bool = False):
-        super().__init__(text=text,
-                         blocks=blocks,
-                         attachments=attachments,
-                         thread_ts=thread_ts,
-                         mrkdwn=mrkdwn)
+    def __init__(
+        self,
+        text: Optional[str] = "",
+        blocks: Optional[Union[List[Block], Block]] = None,
+        attachments: Optional[List[Attachment]] = None,
+        thread_ts: Optional[str] = None,
+        mrkdwn: bool = True,
+        replace_original: bool = False,
+        ephemeral: bool = False,
+    ):
+        super().__init__(
+            text=text,
+            blocks=blocks,
+            attachments=attachments,
+            thread_ts=thread_ts,
+            mrkdwn=mrkdwn,
+        )
         self.replace_original = replace_original
         self.ephemeral = ephemeral
 
     def _resolve(self) -> Dict[str, Any]:
-        result = {**super()._resolve(),
-                  "replace_original": self.replace_original}
+        result = {**super()._resolve(), "replace_original": self.replace_original}
         if self.ephemeral:
             result["response_type"] = "ephemeral"
         return result

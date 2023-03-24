@@ -12,6 +12,7 @@ class BlockType(Enum):
     Convenience class for identifying the different types of blocks available
     in the Slack Blocks API and their programmatic names.
     """
+
     SECTION = "section"
     DIVIDER = "divider"
     IMAGE = "image"
@@ -27,9 +28,7 @@ class Block(ABC):
     N.B: Block is an abstract class and cannot be sent directly.
     """
 
-    def __init__(self,
-                 type_: BlockType,
-                 block_id: Optional[str] = None):
+    def __init__(self, type_: BlockType, block_id: Optional[str] = None):
         self.type = type_
         self.block_id = block_id if block_id else str(uuid4())
 
@@ -37,10 +36,7 @@ class Block(ABC):
         return [self, other]
 
     def _attributes(self):
-        return {
-            "type": self.type.value,
-            "block_id": self.block_id
-        }
+        return {"type": self.type.value, "block_id": self.block_id}
 
     @abstractmethod
     def _resolve(self) -> Dict[str, any]:
@@ -57,13 +53,14 @@ class SectionBlock(Block):
     or side-by-side with any of the available block elements.
     """
 
-    def __init__(self,
-                 text: Optional[Union[str, Text]] = None,
-                 block_id: Optional[str] = None,
-                 fields: Optional[List[Text]] = None,
-                 accessory: Optional[Element] = None):
-        super().__init__(type_=BlockType.SECTION,
-                         block_id=block_id)
+    def __init__(
+        self,
+        text: Optional[Union[str, Text]] = None,
+        block_id: Optional[str] = None,
+        fields: Optional[List[Text]] = None,
+        accessory: Optional[Element] = None,
+    ):
+        super().__init__(type_=BlockType.SECTION, block_id=block_id)
         if text:
             if type(text) is Text:
                 self.text = text
@@ -92,8 +89,7 @@ class DividerBlock(Block):
     """
 
     def __init__(self, block_id: Optional[str] = None):
-        super().__init__(type_=BlockType.DIVIDER,
-                         block_id=block_id)
+        super().__init__(type_=BlockType.DIVIDER, block_id=block_id)
 
     def _resolve(self):
         return self._attributes()
@@ -104,29 +100,30 @@ class ImageBlock(Block):
     A simple image block, designed to make those cat photos really pop.
     """
 
-    def __init__(self,
-                 image_url: str,
-                 alt_text: Optional[str] = "",
-                 title: Optional[Union[Text, str]] = None,
-                 block_id: Optional[str] = None):
-        super().__init__(type_=BlockType.IMAGE,
-                         block_id=block_id)
+    def __init__(
+        self,
+        image_url: str,
+        alt_text: Optional[str] = "",
+        title: Optional[Union[Text, str]] = None,
+        block_id: Optional[str] = None,
+    ):
+        super().__init__(type_=BlockType.IMAGE, block_id=block_id)
         self.image_url = image_url
         self.alt_text = alt_text
         if title and type(title) is Text:
             if title.text_type == TextType.MARKDOWN:
-                self.title = Text(text=title.text,
-                                  type_=TextType.PLAINTEXT,
-                                  emoji=title.emoji,
-                                  verbatim=title.verbatim)
+                self.title = Text(
+                    text=title.text,
+                    type_=TextType.PLAINTEXT,
+                    emoji=title.emoji,
+                    verbatim=title.verbatim,
+                )
             else:
                 self.title = title
         elif title:
-            self.title = Text(text=title,
-                              type_=TextType.PLAINTEXT)
+            self.title = Text(text=title, type_=TextType.PLAINTEXT)
         else:
-            self.title = Text(text=" ",
-                              type_=TextType.PLAINTEXT)
+            self.title = Text(text=" ", type_=TextType.PLAINTEXT)
 
     def _resolve(self) -> Dict[str, Any]:
         image = self._attributes()
@@ -142,15 +139,17 @@ class ActionsBlock(Block):
     A block that is used to hold interactive elements.
     """
 
-    def __init__(self,
-                 elements: Optional[List[Element]] = None,
-                 block_id: Optional[str] = None):
-        super().__init__(type_=BlockType.ACTIONS,
-                         block_id=block_id)
+    def __init__(
+        self, elements: Optional[List[Element]] = None, block_id: Optional[str] = None
+    ):
+        super().__init__(type_=BlockType.ACTIONS, block_id=block_id)
         if isinstance(elements, Element):
-            self.elements = [elements, ]
-        elif (isinstance(elements, list) and
-              all([isinstance(el, Element) for el in elements])):
+            self.elements = [
+                elements,
+            ]
+        elif isinstance(elements, list) and all(
+            [isinstance(el, Element) for el in elements]
+        ):
             self.elements = elements
 
     def _resolve(self):
@@ -164,18 +163,18 @@ class ContextBlock(Block):
     Displays message context, which can include both images and text.
     """
 
-    def __init__(self,
-                 elements: Optional[List[Element]] = None,
-                 block_id: Optional[str] = None):
-        super().__init__(type_=BlockType.CONTEXT,
-                         block_id=block_id)
+    def __init__(
+        self, elements: Optional[List[Element]] = None, block_id: Optional[str] = None
+    ):
+        super().__init__(type_=BlockType.CONTEXT, block_id=block_id)
         self.elements = []
         for element in elements:
-            if element.type == ElementType.TEXT or \
-                    element.type == ElementType.IMAGE:
+            if element.type == ElementType.TEXT or element.type == ElementType.IMAGE:
                 self.elements.append(element)
             else:
-                raise InvalidUsageError("Context blocks can only hold image and text elements")
+                raise InvalidUsageError(
+                    "Context blocks can only hold image and text elements"
+                )
         if len(self.elements) > 10:
             raise InvalidUsageError("Context blocks can hold a maximum of ten elements")
 
@@ -190,12 +189,8 @@ class FileBlock(Block):
     Displays a remote file.
     """
 
-    def __init__(self,
-                 external_id: str,
-                 source: str,
-                 block_id: Optional[str]):
-        super().__init__(type_=BlockType.FILE,
-                         block_id=block_id)
+    def __init__(self, external_id: str, source: str, block_id: Optional[str]):
+        super().__init__(type_=BlockType.FILE, block_id=block_id)
         self.external_id = external_id
         self.source = source
 
@@ -211,9 +206,7 @@ class HeaderBlock(Block):
     A header is a plain-text block that displays in a larger, bold font.
     """
 
-    def __init__(self,
-                 text: Union[str, Text],
-                 block_id: Optional[str] = None):
+    def __init__(self, text: Union[str, Text], block_id: Optional[str] = None):
         super().__init__(type_=BlockType.HEADER, block_id=block_id)
         if type(text) is Text:
             self.text = text
