@@ -9,6 +9,7 @@ class Color(Enum):
     """
     Color utility class for use with the Slack secondary attachments API.
     """
+
     GOOD = "good"
     WARNING = "warning"
     DANGER = "danger"
@@ -26,10 +27,12 @@ class Field:
     Field text objects for use with Slack's secondary attachment API.
     """
 
-    def __init__(self,
-                 title: Optional[str] = None,
-                 value: Optional[str] = None,
-                 short: Optional[bool] = False):
+    def __init__(
+        self,
+        title: Optional[str] = None,
+        value: Optional[str] = None,
+        short: Optional[bool] = False,
+    ):
         self.title = title
         self.value = value
         self.short = short
@@ -51,13 +54,17 @@ class Attachment:
     the message, but perhaps adds further context or additional information.
     """
 
-    def __init__(self,
-                 blocks: Optional[Union[List[Block], Block]] = None,
-                 color: Optional[Union[str, Color]] = None):
+    def __init__(
+        self,
+        blocks: Optional[Union[List[Block], Block]] = None,
+        color: Optional[Union[str, Color]] = None,
+    ):
         if isinstance(blocks, List):
             self.blocks = blocks
         elif isinstance(blocks, Block):
-            self.blocks = [blocks, ]
+            self.blocks = [
+                blocks,
+            ]
         else:
             self.blocks = None
         if type(color) is Color:
