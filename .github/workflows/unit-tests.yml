@@ -55,7 +55,7 @@ jobs:
       - name: Linting
         uses: py-actions/flake8@v2
         with:
-          plugins: "flake8-black,Flake8-pyproject"
+          plugins: "flake8-black Flake8-pyproject"
 
   test:
     name: Unit Tests (${{ matrix.os }}, Python ${{ matrix.python-version }})
