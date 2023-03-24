@@ -4,6 +4,9 @@ on: [push]
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
 
     strategy:
       matrix:
@@ -13,7 +16,7 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
-        
+
       - name: Set up python ${{ matrix.python-version }}
         id: setup-python
         uses: actions/setup-python@v4
@@ -26,6 +29,8 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
+      - name: 
+
       - name: Load cached venv
         id: cached-poetry-dependencies
         uses: actions/cache@v3
@@ -35,13 +40,18 @@ jobs:
 
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
+        run: 
+          source $VENV
+          poetry install --no-interaction --no-root
 
       - name: Install library
+        source $VENV
         run: poetry install --no-interaction
 
       - name: Code Quality
+        source $VENV
         run: poetry run black . --check
 
       - name: Test With pytest
+        source $VENV
         run: poetry run pytest test/unit
