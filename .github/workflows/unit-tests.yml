@@ -29,32 +29,30 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
-      - name: 
-
       - name: Load cached venv
         id: cached-poetry-dependencies
         uses: actions/cache@v3
-        with:
+        with: |
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: 
+        run: |
           source $VENV
           poetry install --no-interaction --no-root
 
       - name: Install library
-        run: 
+        run: |
           source $VENV
           poetry install --no-interaction
 
       - name: Code Quality
-        run: 
+        run: |
           source $VENV
           poetry run black . --check
 
       - name: Test With pytest
-        run: 
+        run: |
           source $VENV
           poetry run pytest test/unit
