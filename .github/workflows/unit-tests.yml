@@ -1,4 +1,4 @@
-name: Unit Test SlackBlocks
+name: Test, Format & Lint SlackBlocks
 on: [push]
 
 jobs:
@@ -71,7 +71,7 @@ jobs:
         with:
           plugins: "flake8-black Flake8-pyproject"
 
-  test:
+  unit-tests:
     name: Unit Tests (${{ matrix.os }}, Python ${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
     defaults:
