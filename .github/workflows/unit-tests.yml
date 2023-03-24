@@ -1,0 +1,32 @@
+name: Unit Test SlackBlocks
+on: [push]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest,  windows-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: dschep/install-poetry-action@v1.3
+
+      - name: Install Dependencies
+        run: poetry install
+
+      - name: Code Quality
+        run: poetry run black . --check
+
+      - name: Test With pytest
+        env:
+        run: poetry run pytest test/unit
