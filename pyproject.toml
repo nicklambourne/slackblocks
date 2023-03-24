@@ -32,8 +32,8 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.flake8]
-    exclude = ".venv"
-    max-line-length = 100
-    per-file-ignores = """
-        slackblocks/__init__.py:F401
-    """
+exclude = [".venv", "./build", "./dist", ".eggs", ".git"]
+max-line-length = 100
+per-file-ignores = [
+    "slackblocks/__init__.py:F401",
+]
