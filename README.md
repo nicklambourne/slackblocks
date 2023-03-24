@@ -15,7 +15,7 @@ It was created by [Nicholas Lambourne](https://github.com/nicklambourne) for the
 N.B: This is still WIP software and some of the more tricky interactive Block elements have yet to be implemented.
 
 ## Requirements
-`slackblocks` requires Python >= 3.6.
+`slackblocks` requires Python >= 3.7.
 
 As of version 0.1.0 it has no dependencies outside the Python standard library.
 
