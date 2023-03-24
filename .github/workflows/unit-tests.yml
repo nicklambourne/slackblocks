@@ -45,7 +45,6 @@ jobs:
           poetry install --no-interaction --no-root
 
       - name: Install library
-        
         run: 
           source $VENV
           poetry install --no-interaction
