@@ -1,5 +1,4 @@
-from slackblocks import Attachment, MessageResponse, Color, Message, \
-    SectionBlock
+from slackblocks import Attachment, MessageResponse, Color, Message, SectionBlock
 
 
 def test_basic_message() -> None:
@@ -12,7 +11,12 @@ def test_basic_message() -> None:
 def test_message_with_attachment() -> None:
     block = SectionBlock("Hello, world!", block_id="fake_block_id")
     attachment = Attachment(blocks=block, color=Color.YELLOW)
-    message = Message(channel="#slackblocks", attachments=[attachment, ])
+    message = Message(
+        channel="#slackblocks",
+        attachments=[
+            attachment,
+        ],
+    )
     with open("test/samples/message_with_attachments.json", "r") as expected:
         assert repr(message) == expected.read()
 
@@ -33,14 +37,10 @@ def test_to_dict() -> None:
             {
                 "type": "section",
                 "block_id": "fake_block_id",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "Hello, world!",
-                    "verbatim": False
-                }
+                "text": {"type": "mrkdwn", "text": "Hello, world!", "verbatim": False},
             }
         ],
         "text": "",
         "replace_original": False,
-        "response_type": "ephemeral"
+        "response_type": "ephemeral",
     }

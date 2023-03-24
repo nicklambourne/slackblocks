@@ -11,6 +11,7 @@ class ModalType(Enum):
     Convenience class for holding modal types
     though currently there is only one.
     """
+
     MODAL = "modal"
 
 
@@ -20,18 +21,21 @@ class Modal:
     for use with the Slack API
     """
 
-    def __init__(self,
-                 title: Union[str, Text],
-                 close: Union[str, Text],
-                 submit: Optional[Union[str, Text]] = None,
-                 blocks: Optional[Union[List[Block], Block]] = None):
-
+    def __init__(
+        self,
+        title: Union[str, Text],
+        close: Union[str, Text],
+        submit: Optional[Union[str, Text]] = None,
+        blocks: Optional[Union[List[Block], Block]] = None,
+    ):
         self.type = ModalType.MODAL
 
         if isinstance(blocks, List):
             self.blocks = blocks
         elif isinstance(blocks, Block):
-            self.blocks = [blocks, ]
+            self.blocks = [
+                blocks,
+            ]
         else:
             # Even if there's no blocks - an empty blocks entry is required.
             self.blocks = []
@@ -44,9 +48,7 @@ class Modal:
         return dumps(self._resolve(), indent=4)
 
     def _attributes(self) -> Dict[str, Any]:
-        return {
-            "type": self.type.value
-        }
+        return {"type": self.type.value}
 
     @abstractmethod
     def _resolve(self) -> Dict[str, Any]:

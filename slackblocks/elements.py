@@ -10,6 +10,7 @@ class ElementType(Enum):
     Convenience class for referencing the various message elements Slack
     provides.
     """
+
     TEXT = "text"
     IMAGE = "image"
     BUTTON = "button"
@@ -21,6 +22,7 @@ class TextType(Enum):
     Allowable types for Slack Text objects.
     N.B: some usages of Text objects only allow the plaintext variety.
     """
+
     MARKDOWN = "mrkdwn"
     PLAINTEXT = "plain_text"
 
@@ -36,9 +38,7 @@ class Element(ABC):
         self.type = type_
 
     def _attributes(self) -> Dict[str, Any]:
-        return {
-            "type": self.type.value
-        }
+        return {"type": self.type.value}
 
     @abstractmethod
     def _resolve(self) -> Dict[str, Any]:
@@ -51,11 +51,13 @@ class Text(Element):
     Slack's "mrkdwn"
     """
 
-    def __init__(self,
-                 text: str,
-                 type_: TextType = TextType.MARKDOWN,
-                 emoji: bool = False,
-                 verbatim: bool = False):
+    def __init__(
+        self,
+        text: str,
+        type_: TextType = TextType.MARKDOWN,
+        emoji: bool = False,
+        verbatim: bool = False,
+    ):
         super().__init__(type_=ElementType.TEXT)
         self.text_type = type_
         self.text = text
@@ -78,20 +80,20 @@ class Text(Element):
         return text
 
     @staticmethod
-    def to_text(text: Union[str, "Text"],
-                force_plaintext=False,
-                max_length: Optional[int] = None) -> "Text":
+    def to_text(
+        text: Union[str, "Text"],
+        force_plaintext=False,
+        max_length: Optional[int] = None,
+    ) -> "Text":
         type_ = TextType.PLAINTEXT if force_plaintext else TextType.MARKDOWN
         if type(text) is str:
             if max_length and len(text) > max_length:
                 raise InvalidUsageError("Text length exceeds Slack-imposed limit")
-            return Text(text=text,
-                        type_=type_)
+            return Text(text=text, type_=type_)
         else:
             if max_length and len(text) > max_length:
                 raise InvalidUsageError("Text length exceeds Slack-imposed limit")
-            return Text(text=text.text,
-                        type_=type_)
+            return Text(text=text.text, type_=type_)
 
     def __str__(self) -> str:
         return dumps(self._resolve())
@@ -104,9 +106,7 @@ class Image(Element):
     you're looking for the image block.
     """
 
-    def __init__(self,
-                 image_url: str,
-                 alt_text: str):
+    def __init__(self, image_url: str, alt_text: str):
         super().__init__(type_=ElementType.IMAGE)
         self.image_url = image_url
         self.alt_text = alt_text
@@ -125,11 +125,13 @@ class Confirm(Element):
     their action by offering confirm and deny buttons.
     """
 
-    def __init__(self,
-                 title: Union[str, Text],
-                 text: Union[str, Text],
-                 confirm: Union[str, Text],
-                 deny: Union[str, Text]):
+    def __init__(
+        self,
+        title: Union[str, Text],
+        text: Union[str, Text],
+        confirm: Union[str, Text],
+        deny: Union[str, Text],
+    ):
         super().__init__(type_=ElementType.CONFIRM)
         self.title = Text.to_text(title, max_length=100, force_plaintext=True)
         self.text = Text.to_text(text, max_length=300)
@@ -141,7 +143,7 @@ class Confirm(Element):
             "title": self.title._resolve(),
             "text": self.text._resolve(),
             "confirm": self.confirm._resolve(),
-            "deny": self.deny._resolve()
+            "deny": self.deny._resolve(),
         }
 
 
@@ -152,13 +154,15 @@ class Button(Element):
     workflow.
     """
 
-    def __init__(self,
-                 text: Union[str, Text],
-                 action_id: str,
-                 url: Optional[str] = None,
-                 value: Optional[str] = None,
-                 style: Optional[str] = None,
-                 confirm: Optional[Confirm] = None):
+    def __init__(
+        self,
+        text: Union[str, Text],
+        action_id: str,
+        url: Optional[str] = None,
+        value: Optional[str] = None,
+        style: Optional[str] = None,
+        confirm: Optional[Confirm] = None,
+    ):
         super().__init__(type_=ElementType.BUTTON)
         self.text = Text.to_text(text, max_length=75, force_plaintext=True)
         self.action_id = action_id

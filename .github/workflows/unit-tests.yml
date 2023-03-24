@@ -1,0 +1,120 @@
+name: Test, Format & Lint SlackBlocks
+on: [push]
+
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    name: black Formatting
+    steps:
+      - name: Check Out Source Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Python Environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      
+      - name: Load Cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install Dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: 
+          poetry install --no-interaction --no-root --only dev  
+
+      - name: Formatting
+        run: 
+          poetry run black . --check
+
+  linting:
+    runs-on: ubuntu-latest
+    name: flake8 Linting
+    steps:
+      - name: Check Out Source Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Python Environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load Cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install Dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: 
+          poetry install --no-interaction --no-root --only dev     
+
+      - name: Linting
+        uses: py-actions/flake8@v2
+        with:
+          plugins: "flake8-black Flake8-pyproject"
+
+  unit-tests:
+    name: Unit Tests (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - name: Check Out Source Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Python ${{ matrix.python-version }}
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load Cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install Dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: 
+          poetry install --no-interaction --no-root
+
+      - name: Install SlackBlocks Library
+        run: 
+          poetry install --no-interaction
+
+      - name: Test With pytest
+        run: 
+          poetry run pytest test/unit
