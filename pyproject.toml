@@ -18,7 +18,7 @@ keywords = [
     "messaging", 
     "message generation", 
     "slack blocks", 
-    "blocks
+    "blocks"
 ]
 classifiers=[
     "Programming Language :: Python :: 3.7",
