@@ -1,4 +1,4 @@
-name: Test, Format & Lint SlackBlocks
+name: Test, Format & Lint
 on: [push]
 
 jobs:
