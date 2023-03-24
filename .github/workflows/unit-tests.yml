@@ -20,7 +20,8 @@ jobs:
 
       - name: Lint
         uses: py-actions/flake8@v2
-        plugins: "flake8-black,Flake8-pyproject"
+        with:
+          plugins: "flake8-black,Flake8-pyproject"
 
   test:
     runs-on: ${{ matrix.os }}
