@@ -26,6 +26,7 @@ twine = "^4.0.2"
 wheel = "^0.40.0"
 slackclient = "^2.9.4" 
 black = "^23.1.0"
+flake8-pyproject = "^1.2.3"
 
 [build-system]
 requires = ["poetry-core"]
