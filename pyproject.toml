@@ -3,10 +3,10 @@ name = "slackblocks"
 version = "0.3.1"
 description = "Python wrapper for the Slack Blocks API"
 authors = [
-    "Nicholas Lambourne" <dev@ndl.im>,
+    "Nicholas Lambourne <dev@ndl.im>",
 ]
 maintainers = [
-    "Nicholas Lambourne" <dev@ndl.im>,
+    "Nicholas Lambourne <dev@ndl.im>",
 ]
 homepage = "https://github.com/nicklambourne/slackblocks"
 repository = "https://github.com/nicklambourne/slackblocks"
