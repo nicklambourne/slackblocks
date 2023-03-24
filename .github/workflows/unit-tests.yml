@@ -2,9 +2,9 @@ name: Unit Test SlackBlocks
 on: [push]
 
 jobs:
-  lint:
+  formatting:
     runs-on: ubuntu-latest
-    name: flake8 Linting & black Formatting
+    name: black Formatting
     steps:
       - name: Check Out Source Repository
         uses: actions/checkout@v3
@@ -20,9 +20,37 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
       
+      - name: Install Dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: 
+          poetry install --no-interaction --no-root --only dev  
+
       - name: Formatting
         run: 
           poetry run black . --check
+
+  linting:
+    runs-on: ubuntu-latest
+    name: flake8 Linting
+    steps:
+      - name: Check Out Source Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Python Environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      
+      - name: Install Dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: 
+          poetry install --no-interaction --no-root --only dev     
 
       - name: Linting
         uses: py-actions/flake8@v2
