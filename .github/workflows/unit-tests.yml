@@ -45,13 +45,17 @@ jobs:
           poetry install --no-interaction --no-root
 
       - name: Install library
-        source $VENV
-        run: poetry install --no-interaction
+        
+        run: 
+          source $VENV
+          poetry install --no-interaction
 
       - name: Code Quality
-        source $VENV
-        run: poetry run black . --check
+        run: 
+          source $VENV
+          poetry run black . --check
 
       - name: Test With pytest
-        source $VENV
-        run: poetry run pytest test/unit
+        run: 
+          source $VENV
+          poetry run pytest test/unit
