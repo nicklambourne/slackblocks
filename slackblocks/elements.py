@@ -118,7 +118,9 @@ class DatePicker:
             self.initial_date = datetime.strptime("%Y-%m-%d").strftime("%Y-%m-%d")
         self.confirm = confirm
         self.focus_on_load = focus_on_load
-        self.placeholder = placeholder
+        self.placeholder = Text.to_text(
+            placeholder, force_plaintext=True, max_length=150, allow_none=True
+        )
 
     def _resolve(self) -> Dict[str, Any]:
         date_picker = self._attributes()
@@ -130,7 +132,7 @@ class DatePicker:
         if self.focus_on_load:
             date_picker["focus_on_load"] = self.focus_on_load
         if self.placeholder:
-            date_picker["placeholder"] = self.placeholder
+            date_picker["placeholder"] = self.placeholder._resolve()
         return date_picker
 
 
@@ -163,7 +165,7 @@ class DateTimePicker:
         return datetime_picker
 
 
-class EmailInput:
+class EmailInput(Element):
     def __init__(
         self,
         action_id: str, 
@@ -179,14 +181,21 @@ class EmailInput:
         self.initial_value = initial_value
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
-        self.placeholder = placeholder
+        self.placeholder = Text.to_text(
+            placeholder, force_plaintext=True, max_length=150, allow_none=True
+        )
 
     def _resolve(self):
         email_input = self._attributes()
         email_input["action_id"] = self.action_id 
-        email_input[""] = 
-        email_input[""] = 
-        email_input[""] = 
+        if self.initial_value:
+            email_input["initial_value"] = self.initial_value
+        if self.dispatch_action_config:
+            email_input["dispatch_action_config"] = self.dispatch_action_config._resolve()
+        if self.focus_on_load:
+            email_input["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            email_input["placeholder"] = self.placeholder._resolve()
 
 
 
