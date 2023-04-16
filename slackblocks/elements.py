@@ -1,8 +1,14 @@
-from abc import ABC, abstractmethod
+import re
+
+from abc import abstractmethod, ABC
+from datetime import datetime
 from enum import Enum
 from json import dumps
 from typing import Any, Dict, Optional, Union
-from .errors import InvalidUsageError
+
+from slackblocks.errors import InvalidUsageError
+from slackblocks.objects import ConfirmationDialogue, DispatchActionConfiguration, Text, TextLike, Option
+from slackblocks.utils import coerce_to_list
 
 
 class ElementType(Enum):
@@ -14,17 +20,10 @@ class ElementType(Enum):
     TEXT = "text"
     IMAGE = "image"
     BUTTON = "button"
-    CONFIRM = "confirm"
-
-
-class TextType(Enum):
-    """
-    Allowable types for Slack Text objects.
-    N.B: some usages of Text objects only allow the plaintext variety.
-    """
-
-    MARKDOWN = "mrkdwn"
-    PLAINTEXT = "plain_text"
+    CHECKBOXES = "checkboxes"
+    DATE_PICKER = "datepicker"
+    DATETIME_PICKER = "datetimepicker"
+    EMAIL_INPUT = "email_text_input"
 
 
 class Element(ABC):
@@ -45,108 +44,6 @@ class Element(ABC):
         pass
 
 
-class Text(Element):
-    """
-    An object containing some text, formatted either as plain_text or using
-    Slack's "mrkdwn"
-    """
-
-    def __init__(
-        self,
-        text: str,
-        type_: TextType = TextType.MARKDOWN,
-        emoji: bool = False,
-        verbatim: bool = False,
-    ):
-        super().__init__(type_=ElementType.TEXT)
-        self.text_type = type_
-        self.text = text
-        if self.text_type == TextType.MARKDOWN:
-            self.verbatim = verbatim
-            self.emoji = None
-        elif self.text_type == TextType.PLAINTEXT:
-            self.verbatim = None
-            self.emoji = emoji
-
-    def _resolve(self) -> Dict[str, Any]:
-        text = {
-            "type": self.text_type.value,
-            "text": self.text,
-        }
-        if self.text_type == TextType.MARKDOWN:
-            text["verbatim"] = self.verbatim
-        elif self.type == TextType.PLAINTEXT and self.emoji:
-            text["emoji"] = self.emoji
-        return text
-
-    @staticmethod
-    def to_text(
-        text: Union[str, "Text"],
-        force_plaintext=False,
-        max_length: Optional[int] = None,
-    ) -> "Text":
-        type_ = TextType.PLAINTEXT if force_plaintext else TextType.MARKDOWN
-        if type(text) is str:
-            if max_length and len(text) > max_length:
-                raise InvalidUsageError("Text length exceeds Slack-imposed limit")
-            return Text(text=text, type_=type_)
-        else:
-            if max_length and len(text) > max_length:
-                raise InvalidUsageError("Text length exceeds Slack-imposed limit")
-            return Text(text=text.text, type_=type_)
-
-    def __str__(self) -> str:
-        return dumps(self._resolve())
-
-
-class Image(Element):
-    """
-    An element to insert an image - this element can be used in section
-    and context blocks only. If you want a block with only an image in it,
-    you're looking for the image block.
-    """
-
-    def __init__(self, image_url: str, alt_text: str):
-        super().__init__(type_=ElementType.IMAGE)
-        self.image_url = image_url
-        self.alt_text = alt_text
-
-    def _resolve(self) -> Dict[str, Any]:
-        image = self._attributes()
-        image["image_url"] = self.image_url
-        image["alt_text"] = self.alt_text
-        return image
-
-
-class Confirm(Element):
-    """
-    An object that defines a dialog that provides a confirmation step
-    to any interactive element. This dialog will ask the user to confirm
-    their action by offering confirm and deny buttons.
-    """
-
-    def __init__(
-        self,
-        title: Union[str, Text],
-        text: Union[str, Text],
-        confirm: Union[str, Text],
-        deny: Union[str, Text],
-    ):
-        super().__init__(type_=ElementType.CONFIRM)
-        self.title = Text.to_text(title, max_length=100, force_plaintext=True)
-        self.text = Text.to_text(text, max_length=300)
-        self.confirm = Text.to_text(confirm, max_length=30, force_plaintext=True)
-        self.deny = Text.to_text(deny, max_length=30, force_plaintext=True)
-
-    def _resolve(self) -> Dict[str, Any]:
-        return {
-            "title": self.title._resolve(),
-            "text": self.text._resolve(),
-            "confirm": self.confirm._resolve(),
-            "deny": self.deny._resolve(),
-        }
-
-
 class Button(Element):
     """
     An interactive element that inserts a button. The button can be a
@@ -156,12 +53,12 @@ class Button(Element):
 
     def __init__(
         self,
-        text: Union[str, Text],
+        text: TextLike,
         action_id: str,
         url: Optional[str] = None,
         value: Optional[str] = None,
         style: Optional[str] = None,
-        confirm: Optional[Confirm] = None,
+        confirm: Optional["Confirm"] = None,
     ):
         super().__init__(type_=ElementType.BUTTON)
         self.text = Text.to_text(text, max_length=75, force_plaintext=True)
@@ -184,3 +81,177 @@ class Button(Element):
         if self.confirm:
             button["confirm"] = self.confirm._resolve()
         return button
+    
+
+class CheckboxGroup:
+    """
+    A checkbox group that allows a user to choose multiple items from a list 
+    of possible options.
+    """
+    def __init__(self, action_id: str, options: Union[Option, List[Option]]):
+        super().__init__(type_=ElementType.CHECKBOXES)
+        self.action_id = action_id
+        self.options = coerce_to_list(options, Option)
+        
+    def _resolve(self) -> Dict[str, Any]:
+        checkbox_group = self._attributes()
+        checkbox_group["action_id"] = self.action_id
+        checkbox_group["options"] = [
+            option._resolve() for option in self.options
+        ]
+    
+
+class DatePicker:
+    def __init__(
+            self, 
+            action_id: str, 
+            initial_date: Optional[str] = None, 
+            confirm: ConfirmationDialogue = None,
+            focus_on_load: bool = False,
+            placeholder: Optional[TextLike] = None,
+        ):
+        super().__init__(type_=ElementType.DATE_PICKER)
+        if len(action_id) > 255:
+            raise InvalidUsageError("`action_id` must be less than 255 chars")
+        self.action_id = action_id
+        if initial_date:
+            self.initial_date = datetime.strptime("%Y-%m-%d").strftime("%Y-%m-%d")
+        self.confirm = confirm
+        self.focus_on_load = focus_on_load
+        self.placeholder = placeholder
+
+    def _resolve(self) -> Dict[str, Any]:
+        date_picker = self._attributes()
+        date_picker["action_id"] = self.action_id
+        if self.initial_date:
+            date_picker["initial_date"] = self.initial_date
+        if self.confirm:
+            date_picker["confirm"] = self.confirm
+        if self.focus_on_load:
+            date_picker["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            date_picker["placeholder"] = self.placeholder
+        return date_picker
+
+
+class DateTimePicker:
+    def __init__(
+        self,
+        action_id: str, 
+        initial_datetime: Optional[int] = None, 
+        confirm: ConfirmationDialogue = None,
+        focus_on_load: bool = False,
+    ):
+        super().__init__(type_=ElementType.DATETIME_PICKER)
+        if len(action_id) > 255:
+            raise InvalidUsageError("`action_id` must be less than 255 chars")
+        self.action_id = action_id
+        if initial_datetime:
+            self.initial_datetime = initial_datetime
+        self.confirm = confirm
+        self.focus_on_load = focus_on_load
+
+    def _resolve(self) -> Dict[str, Any]:
+        datetime_picker = self._attributes()
+        datetime_picker["action_id"] = self.action_id
+        if self.initial_date:
+            datetime_picker["initial_date"] = self.initial_date
+        if self.confirm:
+            datetime_picker["confirm"] = self.confirm
+        if self.focus_on_load:
+            datetime_picker["focus_on_load"] = self.focus_on_load
+        return datetime_picker
+
+
+class EmailInput:
+    def __init__(
+        self,
+        action_id: str, 
+        initial_value: Optional[str] = None,
+        dispatch_action_config: Optional[DispatchActionConfiguration] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ):
+        super().__init__(type_=ElementType.EMAIL_INPUT)
+        if len(action_id) > 255:
+            raise InvalidUsageError("`action_id` must be less than 255 chars")
+        self.action_id = action_id
+        self.initial_value = initial_value
+        self.dispatch_action_config = dispatch_action_config
+        self.focus_on_load = focus_on_load
+        self.placeholder = placeholder
+
+    def _resolve(self):
+        email_input = self._attributes()
+        email_input["action_id"] = self.action_id 
+        email_input[""] = 
+        email_input[""] = 
+        email_input[""] = 
+
+
+
+class Image(Element):
+    """
+    An element to insert an image - this element can be used in section
+    and context blocks only. If you want a block with only an image in it,
+    you're looking for the Image block.
+    """
+
+    def __init__(self, image_url: str, alt_text: str):
+        super().__init__(type_=ElementType.IMAGE)
+        self.image_url = image_url
+        self.alt_text = alt_text
+
+    def _resolve(self) -> Dict[str, Any]:
+        image = self._attributes()
+        image["image_url"] = self.image_url
+        image["alt_text"] = self.alt_text
+        return image
+
+
+class MultiSelectMenu:
+    def __init__(self):
+        raise NotImplementedError
+
+
+class NumberInput:
+    def __init__(self):
+        raise NotImplementedError
+
+
+class OverflowMenu:
+    def __init__(self):
+        raise NotImplementedError
+
+
+class PlainTextInputs:
+    def __init__(self):
+        raise NotImplementedError
+
+
+class RadioButtonGroup:
+    def __init__(self):
+        raise NotImplementedError
+
+
+class SelectMenu:
+    def __init__(self):
+        raise NotImplementedError
+
+
+class TimePicker:
+    def __init__(self):
+        raise NotImplementedError
+
+
+class URLInput:
+    def __init__(self):
+        raise NotImplementedError
+
+
+class WorkflowButton:
+    def __init__(self):
+        raise NotImplementedError
+
+
+        

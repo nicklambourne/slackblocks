@@ -1,0 +1,22 @@
+{
+    "blocks": [
+        {
+            "type": "actions",
+            "elements": [
+                {
+                    "type": "checkboxes",
+                    "options": [
+                        {
+                            "text": {
+                                "type": "plain_text",
+                                "text": "a",
+                                "emoji": true
+                            },
+                            "value": "a"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

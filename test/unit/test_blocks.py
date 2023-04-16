@@ -1,7 +1,9 @@
 from slackblocks import (
+    ActionsBlock,
     ContextBlock,
     DividerBlock,
     ImageBlock,
+    Option,
     SectionBlock,
     Text,
     HeaderBlock,
@@ -51,4 +53,16 @@ def test_basic_image_block() -> None:
 def test_basic_header_block() -> None:
     block = HeaderBlock(text="AloHa!", block_id="fake_block_id")
     with open("test/samples/header_block_only.json", "r") as expected:
+        assert repr(block) == expected.read()
+
+
+def test_basic_action_block() -> None:
+    block = ActionsBlock(elements=[Option()])
+    with open("test/samples/actions_block_only.json", "r") as expected:
+        assert repr(block) == expected.read()
+
+
+def test_checkbox_action_block() -> None:
+    block = ActionsBlock(elements=[Text("Hi")])
+    with open("test/samples/actions_block_checkboxes.json", "r") as expected:
         assert repr(block) == expected.read()
