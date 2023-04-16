@@ -24,6 +24,12 @@ class ElementType(Enum):
     DATE_PICKER = "datepicker"
     DATETIME_PICKER = "datetimepicker"
     EMAIL_INPUT = "email_text_input"
+    MULTI_SELECT_STATIC = "multi_static_select"
+    MULTI_SELECT_EXTERNAL = "multi_external_select"
+    MULTI_SELECT_USER_LIST = "multi_users_select"
+    MULTI_SELECT_CONVERSATION_LIST = "multi_conversations_select"
+    MULTI_SELECT_PUBLIC_CHANNELS = "multi_channels_select"
+    NUMBER_INPUT = "number_input"
 
 
 class Element(ABC):
@@ -83,7 +89,7 @@ class Button(Element):
         return button
     
 
-class CheckboxGroup:
+class CheckboxGroup(Element):
     """
     A checkbox group that allows a user to choose multiple items from a list 
     of possible options.
@@ -101,7 +107,7 @@ class CheckboxGroup:
         ]
     
 
-class DatePicker:
+class DatePicker(Element):
     def __init__(
             self, 
             action_id: str, 
@@ -136,7 +142,7 @@ class DatePicker:
         return date_picker
 
 
-class DateTimePicker:
+class DateTimePicker(Element):
     def __init__(
         self,
         action_id: str, 
@@ -156,8 +162,8 @@ class DateTimePicker:
     def _resolve(self) -> Dict[str, Any]:
         datetime_picker = self._attributes()
         datetime_picker["action_id"] = self.action_id
-        if self.initial_date:
-            datetime_picker["initial_date"] = self.initial_date
+        if self.initial_datetime:
+            datetime_picker["initial_date"] = self.initial_datetime
         if self.confirm:
             datetime_picker["confirm"] = self.confirm
         if self.focus_on_load:
@@ -166,6 +172,9 @@ class DateTimePicker:
 
 
 class EmailInput(Element):
+    """
+    Interactive element for the input of emails.
+    """
     def __init__(
         self,
         action_id: str, 
@@ -187,7 +196,7 @@ class EmailInput(Element):
 
     def _resolve(self):
         email_input = self._attributes()
-        email_input["action_id"] = self.action_id 
+        email_input["action_id"] = self.action_id
         if self.initial_value:
             email_input["initial_value"] = self.initial_value
         if self.dispatch_action_config:
@@ -196,7 +205,6 @@ class EmailInput(Element):
             email_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
             email_input["placeholder"] = self.placeholder._resolve()
-
 
 
 class Image(Element):
@@ -218,47 +226,106 @@ class Image(Element):
         return image
 
 
-class MultiSelectMenu:
+class StaticMultiSelectMenu(Element):
+    def __init__(self):
+        super().__init__(type_=ElementType.MULTI_SELECT_STATIC)
+
+
+class ExternalMultiSelectMenu(Element):
+    def __init__(self):
+        super().__init__(type_=ElementType.MULTI_SELECT_EXTERNAL)
+
+
+class UserList(Element):
+    def __init__(self):
+        super().__init__(type_=ElementType.MULTI_SELECT_USER_LIST)
+
+
+class NumberInput(Element):
+    """
+    This input elements accepts both whole and decimal numbers. 
+    e.g. 0.25, 5.5, and -10 are all valid input values. 
+    Decimal numbers are only allowed when is_decimal_allowed is 
+    equal to true
+    """
+    def __init__(
+        self,
+        is_decimal_allowed: bool = True,
+        action_id: Optional[str] = None,
+        initial_value: Optional[str] = None,
+        min_value: Optional[Union[int, float]] = None,
+        max_value: Optional[Union[int, float]] = None,
+        dispatch_action_config: Optional[DispatchActionConfiguration] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ):
+        super().__init__(type_=ElementType.NUMBER_INPUT)
+        if min_value > max_value:
+            raise InvalidUsageError(
+                f"Min value ({min_value}) cannot be greated than max value ({max_value})"
+            )
+        self.is_decimal_allowed = is_decimal_allowed
+        self.action_id = action_id
+        self.initial_value = initial_value
+        self.min_value = min_value
+        self.max_value = max_value
+        self.dispatch_action_config = dispatch_action_config
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, force_plaintext=True, max_length=150, allow_none=True
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        number_input = self._attributes()
+        number_input["is_decimal_allowed "] = self.is_decimal_allowed
+        if self.action_id:
+            number_input["action_id"] = self.action_id
+        if self.initial_value:
+            number_input["initial_value"] = self.initial_value
+        if self.min_value:
+            number_input["min_value"] = self.min_value
+        if self.max_value:
+            number_input["max_value"] = self.max_value
+        if self.dispatch_action_config:
+            number_input["dispatch_action_config"] = self.dispatch_action_config._resolve()
+        if self.focus_on_load:
+            number_input["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            number_input["placeholder"] = self.placeholder._resolve()
+        return number_input
+
+
+class OverflowMenu(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class NumberInput:
+class PlainTextInputs(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class OverflowMenu:
+class RadioButtonGroup(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class PlainTextInputs:
+class SelectMenu(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class RadioButtonGroup:
+class TimePicker(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class SelectMenu:
+class URLInput(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class TimePicker:
-    def __init__(self):
-        raise NotImplementedError
-
-
-class URLInput:
-    def __init__(self):
-        raise NotImplementedError
-
-
-class WorkflowButton:
+class WorkflowButton(Element):
     def __init__(self):
         raise NotImplementedError
 
