@@ -150,7 +150,16 @@ class ActionsBlock(Block):
         elif isinstance(elements, list) and all(
             [isinstance(el, Element) for el in elements]
         ):
+            if len(elements) > 25:
+                raise InvalidUsageError(
+                    "There is maximum of 25 elements per action block"
+                )
             self.elements = elements
+        else:
+            raise InvalidUsageError(
+               
+                "Elements must be a single element or list of elements"
+            )
 
     def _resolve(self):
         actions = self._attributes()
