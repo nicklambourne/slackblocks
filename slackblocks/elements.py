@@ -3,19 +3,18 @@ import re
 from abc import abstractmethod, ABC
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from json import dumps
+from typing import Any, Dict, Optional, Union
 
 from slackblocks.errors import InvalidUsageError
-from slackblocks.objects import ConfirmationDialogue, DispatchActionConfiguration, Text, TextLike, Option
-from slackblocks.utils import coerce_to_list, MAX_ACTION_ID_LENGTH
-
-
-def validate_action_id(action_id: Optional[str], is_required=True, class_: Optional[Element] = None) -> str:
-    if action_id is None and is_required:
-         raise InvalidUsageError(f"`action_id` is required for this interactive element {type(class_) if class_ else ''}")
-    if len(action_id) > MAX_ACTION_ID_LENGTH:
-            raise InvalidUsageError("`action_id` must be less than 255 chars")
-    return action_id
+from slackblocks.objects import (
+    ConfirmationDialogue,
+    DispatchActionConfiguration,
+    Text,
+    TextLike,
+    Option,
+)
+from slackblocks.utils import coerce_to_list
 
 
 class ElementType(Enum):
@@ -31,13 +30,7 @@ class ElementType(Enum):
     DATE_PICKER = "datepicker"
     DATETIME_PICKER = "datetimepicker"
     EMAIL_INPUT = "email_text_input"
-    MULTI_SELECT_STATIC = "multi_static_select"
-    MULTI_SELECT_EXTERNAL = "multi_external_select"
-    MULTI_SELECT_USER_LIST = "multi_users_select"
-    MULTI_SELECT_CONVERSATION_LIST = "multi_conversations_select"
-    MULTI_SELECT_PUBLIC_CHANNELS = "multi_channels_select"
     NUMBER_INPUT = "number_input"
-    OVERFLOW = "overflow"
 
 
 class Element(ABC):
@@ -95,44 +88,43 @@ class Button(Element):
         if self.confirm:
             button["confirm"] = self.confirm._resolve()
         return button
-    
 
-class CheckboxGroup(Element):
+
+class CheckboxGroup:
     """
-    A checkbox group that allows a user to choose multiple items from a list 
+    A checkbox group that allows a user to choose multiple items from a list
     of possible options.
     """
+
     def __init__(self, action_id: str, options: Union[Option, List[Option]]):
         super().__init__(type_=ElementType.CHECKBOXES)
-        self.action_id = validate_action_id(action_id, class_=self)
+        self.action_id = action_id
         self.options = coerce_to_list(options, Option)
-        
+
     def _resolve(self) -> Dict[str, Any]:
         checkbox_group = self._attributes()
         checkbox_group["action_id"] = self.action_id
-        checkbox_group["options"] = [
-            option._resolve() for option in self.options
-        ]
-    
+        checkbox_group["options"] = [option._resolve() for option in self.options]
 
-class DatePicker(Element):
+
+class DatePicker:
     def __init__(
-            self, 
-            action_id: str, 
-            initial_date: Optional[str] = None, 
-            confirm: ConfirmationDialogue = None,
-            focus_on_load: bool = False,
-            placeholder: Optional[TextLike] = None,
-        ):
+        self,
+        action_id: str,
+        initial_date: Optional[str] = None,
+        confirm: ConfirmationDialogue = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ):
         super().__init__(type_=ElementType.DATE_PICKER)
-        self.action_id = validate_action_id(action_id, class_=self)
+        if len(action_id) > 255:
+            raise InvalidUsageError("`action_id` must be less than 255 chars")
+        self.action_id = action_id
         if initial_date:
             self.initial_date = datetime.strptime("%Y-%m-%d").strftime("%Y-%m-%d")
         self.confirm = confirm
         self.focus_on_load = focus_on_load
-        self.placeholder = Text.to_text(
-            placeholder, force_plaintext=True, max_length=150, allow_none=True
-        )
+        self.placeholder = placeholder
 
     def _resolve(self) -> Dict[str, Any]:
         date_picker = self._attributes()
@@ -144,20 +136,22 @@ class DatePicker(Element):
         if self.focus_on_load:
             date_picker["focus_on_load"] = self.focus_on_load
         if self.placeholder:
-            date_picker["placeholder"] = self.placeholder._resolve()
+            date_picker["placeholder"] = self.placeholder
         return date_picker
 
 
-class DateTimePicker(Element):
+class DateTimePicker:
     def __init__(
         self,
-        action_id: str, 
-        initial_datetime: Optional[int] = None, 
+        action_id: str,
+        initial_datetime: Optional[int] = None,
         confirm: ConfirmationDialogue = None,
         focus_on_load: bool = False,
     ):
         super().__init__(type_=ElementType.DATETIME_PICKER)
-        self.action_id = validate_action_id(action_id, class_=self)
+        if len(action_id) > 255:
+            raise InvalidUsageError("`action_id` must be less than 255 chars")
+        self.action_id = action_id
         if initial_datetime:
             self.initial_datetime = initial_datetime
         self.confirm = confirm
@@ -166,8 +160,8 @@ class DateTimePicker(Element):
     def _resolve(self) -> Dict[str, Any]:
         datetime_picker = self._attributes()
         datetime_picker["action_id"] = self.action_id
-        if self.initial_datetime:
-            datetime_picker["initial_date"] = self.initial_datetime
+        if self.initial_date:
+            datetime_picker["initial_date"] = self.initial_date
         if self.confirm:
             datetime_picker["confirm"] = self.confirm
         if self.focus_on_load:
@@ -175,13 +169,10 @@ class DateTimePicker(Element):
         return datetime_picker
 
 
-class EmailInput(Element):
-    """
-    Interactive element for the input of emails.
-    """
+class EmailInput:
     def __init__(
         self,
-        action_id: str, 
+        action_id: str,
         initial_value: Optional[str] = None,
         dispatch_action_config: Optional[DispatchActionConfiguration] = None,
         focus_on_load: bool = False,
@@ -190,12 +181,12 @@ class EmailInput(Element):
         super().__init__(type_=ElementType.EMAIL_INPUT)
         if len(action_id) > 255:
             raise InvalidUsageError("`action_id` must be less than 255 chars")
-        self.action_id = validate_action_id(action_id, class_=self)
+        self.action_id = action_id
         self.initial_value = initial_value
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, force_plaintext=True, max_length=150, allow_none=True
+            placeholder, max_length=150, force_plaintext=True
         )
 
     def _resolve(self):
@@ -204,11 +195,14 @@ class EmailInput(Element):
         if self.initial_value:
             email_input["initial_value"] = self.initial_value
         if self.dispatch_action_config:
-            email_input["dispatch_action_config"] = self.dispatch_action_config._resolve()
+            email_input[
+                "dispatch_action_config"
+            ] = self.dispatch_action_config._resolve()
         if self.focus_on_load:
             email_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
             email_input["placeholder"] = self.placeholder._resolve()
+        return email_input
 
 
 class Image(Element):
@@ -230,62 +224,53 @@ class Image(Element):
         return image
 
 
-class StaticMultiSelectMenu(Element):
+class MultiSelectMenu:
     def __init__(self):
-        super().__init__(type_=ElementType.MULTI_SELECT_STATIC)
+        raise NotImplementedError
 
 
-class ExternalMultiSelectMenu(Element):
-    def __init__(self):
-        super().__init__(type_=ElementType.MULTI_SELECT_EXTERNAL)
-
-
-class UserList(Element):
-    def __init__(self):
-        super().__init__(type_=ElementType.MULTI_SELECT_USER_LIST)
-
-
-class NumberInput(Element):
-    """
-    This input elements accepts both whole and decimal numbers. 
-    e.g. 0.25, 5.5, and -10 are all valid input values. 
-    Decimal numbers are only allowed when is_decimal_allowed is 
-    equal to true
-    """
+class NumberInput:
     def __init__(
         self,
-        is_decimal_allowed: bool = True,
+        is_decimal_allowed: bool,
         action_id: Optional[str] = None,
         initial_value: Optional[str] = None,
-        min_value: Optional[Union[int, float]] = None,
-        max_value: Optional[Union[int, float]] = None,
+        min_value: Optional[Union[float, int]] = None,
+        max_value: Optional[Union[float, int]] = None,
         dispatch_action_config: Optional[DispatchActionConfiguration] = None,
         focus_on_load: bool = False,
         placeholder: Optional[TextLike] = None,
     ):
         super().__init__(type_=ElementType.NUMBER_INPUT)
         self.is_decimal_allowed = is_decimal_allowed
-        self.action_id = validate_action_id(action_id, class_=self, is_required=False)
-        if min_value > max_value:
-            raise InvalidUsageError(
-                f"Min value ({min_value}) cannot be greated than max value ({max_value})"
-            )
-        if not (initial_value < max_value and min_value < initial_value):
-            raise InvalidUsageError(
-                f"Initial value should be between min ({min_value}) and max ({max_value})"
-            )
+        self.action_id = action_id
         self.initial_value = initial_value
         self.min_value = min_value
         self.max_value = max_value
+        if min_value:
+            if not is_decimal_allowed:
+                if isinstance(min_value, float):
+                    raise InvalidUsageError(
+                        f"`min_value` ({min_value}) cannot be a float when `is_decimal_allowed` is `False`"
+                    )
+        if max_value:
+            if not is_decimal_allowed:
+                if isinstance(max_value, float):
+                    raise InvalidUsageError(
+                        f"`max_value` ({max_value}) cannot be a float when `is_decimal_allowed` is `False`"
+                    )
+        if (min_value or min_value == 0) and (max_value or max_value == 0):
+            if min_value > max_value:
+                raise InvalidUsageError(
+                    f"`min_value` ({min_value}) cannot be greater than `max_value` ({min_value})"
+                )
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
-        self.placeholder = Text.to_text(
-            placeholder, force_plaintext=True, max_length=150, allow_none=True
-        )
+        self.placeholder = placeholder
 
-    def _resolve(self) -> Dict[str, Any]:
+    def _resove() -> Dict[str, Any]:
         number_input = self._attributes()
-        number_input["is_decimal_allowed "] = self.is_decimal_allowed
+        number_input["is_decimal_allowed"] = is_decimal_allowed
         if self.action_id:
             number_input["action_id"] = self.action_id
         if self.initial_value:
@@ -295,7 +280,9 @@ class NumberInput(Element):
         if self.max_value:
             number_input["max_value"] = self.max_value
         if self.dispatch_action_config:
-            number_input["dispatch_action_config"] = self.dispatch_action_config._resolve()
+            number_input[
+                "dispatch_action_config"
+            ] = self.dispatch_action_config._resolve()
         if self.focus_on_load:
             number_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
@@ -303,79 +290,36 @@ class NumberInput(Element):
         return number_input
 
 
-class OverflowMenu(Element):
-    """
-    This is like a cross between a button and a select menu - 
-    when a user clicks on this overflow button, they will be 
-    presented with a list of options to choose from. Unlike 
-    the select menu, there is no typeahead field, and the 
-    button always appears with an ellipsis ("…") rather than 
-    customisable text.
-    """
-    def __init__(
-        self, 
-        action_id: str,
-        options: Union[Option, List[Option]],
-        confirm: Optional[ConfirmationDialogue]
-    ):
-        super().__init__(type_=ElementType.OVERFLOW)
-        self.action_id = validate_action_id(action_id, class_=self)
-        self.options = coerce_to_list(options, Option)
-        self.confirm = confirm
-
-    def _resolve(self) -> Dict[str, Any]:
-        overflow = self._attributes()
-        overflow["action_id"] = self.action_id
-        overflow["options"] = [
-            option._resolve() for option in self.options
-        ]
-        if self.confirm:
-            overflow["confirm"] = self.confirm._resolve()
-        return overflow
-
-
-class PlainTextInput(Element):
+class OverflowMenu:
     def __init__(self):
         raise NotImplementedError
 
 
-class RadioButtonGroup(Element):
+class PlainTextInputs:
     def __init__(self):
         raise NotImplementedError
 
 
-class SelectMenu(Element):
+class RadioButtonGroup:
     def __init__(self):
         raise NotImplementedError
 
 
-class TimePicker(Element):
+class SelectMenu:
     def __init__(self):
         raise NotImplementedError
 
 
-class URLInput(Element):
+class TimePicker:
     def __init__(self):
         raise NotImplementedError
 
 
-class WorkflowButton(Element):
+class URLInput:
     def __init__(self):
         raise NotImplementedError
 
 
-InputElement = Union[
-    Button,
-    CheckboxGroup, 
-    DatePicker, 
-    DateTimePicker, 
-    EmailInput, 
-    ExternalMultiSelectMenu,
-    NumberInput,
-    OverflowMenu,
-    PlainTextInput,
-    RadioButtonGroup,
-    StaticMultiSelectMenu,
-    TimePicker,
-    URLInput,
-]
+class WorkflowButton:
+    def __init__(self):
+        raise NotImplementedError
