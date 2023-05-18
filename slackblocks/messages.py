@@ -1,5 +1,6 @@
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
+
 from .attachments import Attachment
 from .blocks import Block
 

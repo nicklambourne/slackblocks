@@ -1,20 +1,15 @@
 import re
-
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from json import dumps
 from typing import Any, Dict, Optional, Union
 
-from slackblocks.errors import InvalidUsageError
-from slackblocks.objects import (
-    ConfirmationDialogue,
-    DispatchActionConfiguration,
-    Text,
-    TextLike,
-    Option,
-)
 from slackblocks.utils import coerce_to_list
+
+from .errors import InvalidUsageError
+from .objects import (ConfirmationDialogue, DispatchActionConfiguration,
+                      Option, Text, TextLike)
 
 
 class ElementType(Enum):
@@ -90,7 +85,7 @@ class Button(Element):
         return button
 
 
-class CheckboxGroup:
+class CheckboxGroup(Element):
     """
     A checkbox group that allows a user to choose multiple items from a list
     of possible options.
@@ -107,7 +102,7 @@ class CheckboxGroup:
         checkbox_group["options"] = [option._resolve() for option in self.options]
 
 
-class DatePicker:
+class DatePicker(Element):
     def __init__(
         self,
         action_id: str,
@@ -140,7 +135,7 @@ class DatePicker:
         return date_picker
 
 
-class DateTimePicker:
+class DateTimePicker(Element):
     def __init__(
         self,
         action_id: str,
@@ -169,7 +164,7 @@ class DateTimePicker:
         return datetime_picker
 
 
-class EmailInput:
+class EmailInput(Element):
     def __init__(
         self,
         action_id: str,
@@ -224,12 +219,12 @@ class Image(Element):
         return image
 
 
-class MultiSelectMenu:
+class MultiSelectMenu(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class NumberInput:
+class NumberInput(Element):
     def __init__(
         self,
         is_decimal_allowed: bool,
@@ -290,36 +285,36 @@ class NumberInput:
         return number_input
 
 
-class OverflowMenu:
+class OverflowMenu(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class PlainTextInputs:
+class PlainTextInputs(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class RadioButtonGroup:
+class RadioButtonGroup(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class SelectMenu:
+class SelectMenu(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class TimePicker:
+class TimePicker(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class URLInput:
+class URLInput(Element):
     def __init__(self):
         raise NotImplementedError
 
 
-class WorkflowButton:
+class WorkflowButton(Element):
     def __init__(self):
         raise NotImplementedError

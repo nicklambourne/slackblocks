@@ -3,7 +3,7 @@ from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 
-from slackblocks.errors import InvalidUsageError
+from .errors import InvalidUsageError
 
 
 class CompositionObjectType(Enum):
@@ -114,7 +114,7 @@ class Text(CompositionObject):
 TextLike = Union[str, Text]
 
 
-class ConfirmationDialogue(Element):
+class ConfirmationDialogue(CompositionObject):
     """
     An object that defines a dialog that provides a confirmation step
     to any interactive element. This dialog will ask the user to confirm
@@ -152,7 +152,7 @@ class Confirm(ConfirmationDialogue):
         super(*args, **kwargs)
 
 
-class Option(Element):
+class Option(CompositionObject):
     """
     An object that represents a single selectable item in a select menu, multi-select
     menu, checkbox group, radio button group, or overflow menu.
@@ -186,7 +186,7 @@ class Option(Element):
         return option
 
 
-class OptionGroup(Element):
+class OptionGroup(CompositionObject):
     """
     Provides a way to group options in a select menu or multi-select menu.
     """
@@ -206,11 +206,11 @@ class OptionGroup(Element):
         return option_group
 
 
-class DispatchActionConfiguration:
+class DispatchActionConfiguration(CompositionObject):
     def __init__(self):
         raise NotImplementedError
 
 
-class ConversationFilter:
+class ConversationFilter(CompositionObject):
     def __init__(self):
         raise NotImplementedError

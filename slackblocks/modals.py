@@ -1,9 +1,10 @@
 from abc import abstractmethod
+from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
+
 from .blocks import Block
 from .elements import Text
-from enum import Enum
 
 
 class ModalType(Enum):

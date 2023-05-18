@@ -1,8 +1,7 @@
 from string import hexdigits
 from typing import List
 
-from slackblocks.errors import InvalidUsageError
-
+from .errors import InvalidUsageError
 
 T = TypeVar("T")
 

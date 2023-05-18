@@ -1,8 +1,9 @@
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 from uuid import uuid4
+
 from .elements import Element, ElementType, Text, TextType
 from .errors import InvalidUsageError
 

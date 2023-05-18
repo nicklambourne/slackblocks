@@ -3,9 +3,9 @@ from json import dumps
 from string import hexdigits
 from typing import Any, Dict, List, Optional, Union
 
-from slackblocks.blocks import Block
-from slackblocks.errors import InvalidUsageError
-from slackblocks.utils import is_hex
+from .blocks import Block
+from .errors import InvalidUsageError
+from .utils import is_hex
 
 
 class Color(Enum):
