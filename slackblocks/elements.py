@@ -26,6 +26,7 @@ class ElementType(Enum):
     DATETIME_PICKER = "datetimepicker"
     EMAIL_INPUT = "email_text_input"
     NUMBER_INPUT = "number_input"
+    OVERFLOW_MENU = "overflow"
 
 
 class Element(ABC):
@@ -225,6 +226,10 @@ class MultiSelectMenu(Element):
 
 
 class NumberInput(Element):
+    """
+    This input elements accepts both whole and decimal numbers. For example, 
+    0.25, 5.5, and -10 are all valid input values.
+    """
     def __init__(
         self,
         is_decimal_allowed: bool,
@@ -286,11 +291,36 @@ class NumberInput(Element):
 
 
 class OverflowMenu(Element):
-    def __init__(self):
-        raise NotImplementedError
+    """
+    This is like a cross between a button and a select menu - when a user clicks 
+    on this overflow button, they will be presented with a list of options to choose 
+    from. Unlike the select menu, there is no typeahead field, and the button always 
+    appears with an ellipsis ("…") rather than customizable text.
+
+    As such, it is usually used if you want a more compact layout than a select menu, 
+    or to supply a list of less visually important actions after a row of buttons. 
+    You can also specify simple URL links as overflow menu options, instead of actions.
+    """
+    def __init__(self, action_id: str, options: List[Option], confirm: ConfirmationDialogue = None):
+        super().__init__(type_=ElementType.OVERFLOW_MENU)
+        self.action_id = action_id
+        if len(options) == 0 or len(options) > 5:
+            raise InvalidUsageError("`options` must include between 1 and 5 `Option` objects")
+        self.options = options
+        self.confirm = confirm
+    
+    def _resolve() -> Dict[str, Any]:
+        overflow_menu = self._attributes()
+        overflow_menu["action_id"] = self.action_id
+        overflow_menu["options"] = [
+            option._resolve for option in self.options
+        ]
+        if self.confirm:
+            overflow_menu["confirm"] = self.confirm
+        return overflow_menu
 
 
-class PlainTextInputs(Element):
+class PlainTextInput(Element):
     def __init__(self):
         raise NotImplementedError
 
