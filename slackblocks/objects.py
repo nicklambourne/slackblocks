@@ -110,6 +110,14 @@ class Text(CompositionObject):
     def __str__(self) -> str:
         return dumps(self._resolve())
 
+    def __eq__(self, other) -> bool:
+        return (
+            self.text_type == other.text_type and 
+            self.text == other.text and 
+            self.emoji == other.emoji and
+            self.vertbatim == other.verbatim
+        )
+
 
 TextLike = Union[str, Text]
 
@@ -128,7 +136,7 @@ class ConfirmationDialogue(CompositionObject):
         confirm: Union[str, Text],
         deny: Union[str, Text],
     ):
-        super().__init__(type_=CompositionType.CONFIRM)
+        super().__init__(type_=CompositionObjectType.CONFIRM)
         self.title = Text.to_text(title, max_length=100, force_plaintext=True)
         self.text = Text.to_text(text, max_length=300)
         self.confirm = Text.to_text(confirm, max_length=30, force_plaintext=True)
@@ -165,7 +173,7 @@ class Option(CompositionObject):
         description: Optional[Union[str, Text]] = None,
         url: Optional[str] = None,
     ):
-        super().__init__(type_=CompositionType.OPTION)
+        super().__init__(type_=CompositionObjectType.OPTION)
         self.text = Text.to_text(text, max_length=75)
         self.value = Text.to_text(value, max_length=75)
         self.description = Text.to_text(
@@ -184,6 +192,15 @@ class Option(CompositionObject):
         if self.url is not None:
             option["url"] = self.url
         return option
+    
+    def __eq__(self, other) -> bool:
+        return (
+            self.type == other.type and
+            self.text == other.text and
+            self.value == other.value and
+            self.description == other.description and
+            self.url == other.url
+        )
 
 
 class OptionGroup(CompositionObject):
