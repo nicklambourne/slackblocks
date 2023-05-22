@@ -5,16 +5,17 @@ from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 
-from slackblocks.utils import coerce_to_list
-
 from .errors import InvalidUsageError
 from .objects import (
     ConfirmationDialogue,
+    ConversationFilter,
     DispatchActionConfiguration,
     Option,
+    OptionGroup,
     Text,
     TextLike,
 )
+from .utils import coerce_to_list
 
 
 class ElementType(Enum):
@@ -23,17 +24,24 @@ class ElementType(Enum):
     provides.
     """
 
-    TEXT = "text"
-    IMAGE = "image"
     BUTTON = "button"
     CHECKBOXES = "checkboxes"
     DATE_PICKER = "datepicker"
     DATETIME_PICKER = "datetimepicker"
     EMAIL_INPUT = "email_text_input"
+    IMAGE = "image"
     NUMBER_INPUT = "number_input"
     OVERFLOW_MENU = "overflow"
     PLAIN_TEXT_INPUT = "plain_text_input"
     RADIO_BUTTON_GROUP = "radio_buttons"
+    STATIC_SELECT_MENU = "static_select"
+    EXTERNAL_SELECT_MENU = "external_select"
+    USERS_SELECT_MENU = "users_select"
+    CONVERSATIONS_SELECT_MENU = "conversations_select"
+    CHANNELS_SELECT_MENU = "channels_select"
+    TIME_PICKER = "timepicker"
+    URL_INPUT = "url_text_input"
+    WORKFLOW_BUTTON = "workflow_button"
 
 
 class Element(ABC):
@@ -44,14 +52,18 @@ class Element(ABC):
 
     def __init__(self, type_: ElementType):
         super().__init__()
-        self.type = type_
+        self._type = type_
 
     def _attributes(self) -> Dict[str, Any]:
-        return {"type": self.type.value}
+        return {"type": self._type.value}
 
     @abstractmethod
     def _resolve(self) -> Dict[str, Any]:
         pass
+
+    @property
+    def type(self) -> ElementType:
+        return self._type
 
 
 class Button(Element):
@@ -332,7 +344,7 @@ class OverflowMenu(Element):
         overflow_menu["action_id"] = self.action_id
         overflow_menu["options"] = [option._resolve for option in self.options]
         if self.confirm:
-            overflow_menu["confirm"] = self.confirm
+            overflow_menu["confirm"] = self.confirm._resolve()
         return overflow_menu
 
 
@@ -411,21 +423,265 @@ class RadioButtonGroup(Element):
         if initial_option is not None and initial_option not in options:
             raise InvalidUsageError("`initial_option` must be a member of `options`")
         self.initial_option = initial_option
+        self.confirm = confirm
+        self.focus_on_load = focus_on_load
+
+    def _resolve(self) -> Dict[str, Any]:
+        radio_button_group = self._attributes()
+        radio_button_group["action_id"] = self.action_id
+        radio_button_group["options"] = [
+            option._resolve() for option in self.option
+        ]
+        if self.initial_option:
+            radio_button_group["initial_option"] = self.initial_option._resolve()
+        if self.confirm:
+            radio_button_group["confirm"] = self.confirm._resolve()
+        if self.focus_on_load is not None:
+            radio_button_group["focus_on_load"] = self.focus_on_load
+        return
 
 
+class StaticSelectMenu(Element):
+    def __init__(
+            self,
+            action_id: str, 
+            options: List[Option] = None,
+            option_groups: List[OptionGroup] = None,
+            initial_option: Optional[Union[Option, OptionGroup]] = None,
+            confirm: Optional[ConfirmationDialogue] = None,
+            focus_on_load: bool = False,
+            placeholder: Optional[TextLike] = None,
+        ):
+        super().__init__(type_=ElementType.STATIC_SELECT_MENU)
+        self.action_id = action_id
+        if options and option_groups:
+            raise InvalidUsageError("Cannot set both `options` and `option_groups` parameters.")
+        if len(options) > 100:
+            raise InvalidUsageError(f"`options` count ({len(options)}) exceeds Maximum number of 100.")
+        self.options = options
+        if len(option_groups) > 100:
+            raise InvalidUsageError(f"`option_groups` count ({len(option_groups)}) exceeds Maximum number of 100.")
+        self.option_groups = option_groups
+        self.initial_option = initial_option
+        self.confirm = confirm
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, max_length=150, force_plaintext=True
+        )
 
-class SelectMenu(Element):
-    def __init__(self):
-        raise NotImplementedError
+        def _resolve(self) -> Dict[str, Any]:
+            static_select_menu = self._attributes()
+            static_select_menu["action_id"] = self.action_id
+            if self.options:
+                static_select_menu["options"] = self.options
+            if self.option_groups:
+                static_select_menu["option_groups"] = self.option_groups
+            if self.initial_option:
+                static_select_menu["initial_option"] = self.initial_option
+            if self.confirm:
+                static_select_menu["confirm"] = self.confirm._resolve()
+            if self.focus_on_load:
+                static_select_menu["focus_on_load"] = self.focus_on_load
+            if self.placeholder:
+                static_select_menu["placeholder"] = self.placeholder._resolve()
+            return static_select_menu
+
+
+class ExternalSelectMenu(Element):
+    def __init__(
+            self,
+            action_id: str,
+            initial_option: Union[Option, OptionGroup] = None,
+            min_query_length: Optional[int] = None,
+            confirm: Optional[ConfirmationDialogue] = None,
+            focus_on_load: bool = False,
+            placeholder: Optional[TextLike] = None,
+        ):
+        super().__init__(type_=ElementType.EXTERNAL_SELECT_MENU)
+        self.action_id = action_id
+        self.initial_option = initial_option
+        self.min_query_length = min_query_length
+        self.confirm = confirm
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, max_length=150, force_plaintext=True
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        external_select_menu = self._attributes()
+        external_select_menu["action_id"] = self.action_id
+        if self.initial_option:
+            external_select_menu["initial_option"] = self.initial_option
+        if self.min_query_length is not None:
+            external_select_menu["min_query_length"] = self.min_query_length
+        if self.confirm:
+            external_select_menu["confirm"] = self.confirm._resolve()
+        if self.focus_on_load:
+            external_select_menu["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            external_select_menu["placeholder"] = self.placeholder._resolve()
+        return external_select_menu
+
+
+class UserSelectMenu(Element):
+    def __init__(
+        self,
+        action_id: str,
+        initial_user: Optional[str] = None,
+        confirm: Optional[ConfirmationDialogue] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ):
+        super().__init__(type_=ElementType.USERS_SELECT_MENU)
+        self.action_id = action_id
+        self.initial_user = initial_user
+        self.confirm = confirm
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, max_length=150, force_plaintext=True
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        user_select_menu = self._attributes()
+        user_select_menu["action_id"] = self.action_id
+        if self.initial_user:
+            user_select_menu["initial_user"] = self.initial_user
+        if self.confirm:
+            user_select_menu["confirm"] = self.confirm._resolve()
+        if self.focus_on_load:
+            user_select_menu["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            user_select_menu["placeholder"] = self.placeholder._resolve()
+        return user_select_menu
+
+
+class ConversationSelectMenu(Element):
+    def __init__(
+        self,
+        action_id: str,
+        initial_conversation: Optional[str] = None,
+        default_to_current_conversation: Optional[bool] = False,
+        confirm: Optional[ConfirmationDialogue] = None,
+        response_url_enabled: Optional[bool] = False,
+        filter: Optional[ConversationFilter] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ):
+        super().__init__(type_=ElementType.CONVERSATIONS_SELECT_MENU)
+        self.action_id = action_id
+        self.initial_conversation = initial_conversation
+        self.default_to_current_conversation = default_to_current_conversation
+        self.confirm = confirm
+        self.response_url_enabled = response_url_enabled
+        self.filter = filter
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, max_length=150, force_plaintext=True
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        conversation_select_menu = self._attributes()
+        conversation_select_menu["action_id"] = self.action_id
+        if self.initial_conversation:
+            conversation_select_menu["initial_conversation"] = self.initial_conversation
+        if self.default_to_current_conversation is not None:
+            conversation_select_menu["default_to_current_conversation"] = self.default_to_current_conversation
+        if self.confirm:
+            conversation_select_menu["confirm"] = self.confirm
+        if self.response_url_enabled is not None:
+            conversation_select_menu["response_url_enabled"] = self.response_url_enabled
+        if self.filter:
+            conversation_select_menu["filter"] = self.filter
+        if self.focus_on_load is not None:
+            conversation_select_menu["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            conversation_select_menu["placeholder"] = self.placeholder
+        return conversation_select_menu
+
+
+class ChannelSelectMenu(Element):
+    def __init__(
+            self,
+            action_id: str,
+            initial_channel: Optional[str] = None,
+            confirm: Optional[ConfirmationDialogue] = None,
+            response_url_enabled: Optional[bool] = False,
+            focus_on_load: bool = False,
+            placeholder: Optional[TextLike] = None,
+        ):
+        super().__init__(type_=ElementType.CHANNELS_SELECT_MENU)
+        self.action_id = action_id
+        self.initial_channel = initial_channel
+        self.confirm = confirm
+        self.response_url_enabled = response_url_enabled
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, max_length=150, force_plaintext=True
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        channel_select_menu = self._attributes()
+        channel_select_menu["action_id"] = self.action_id
+        if self.initial_channel:
+            channel_select_menu["initial_channel"] = self.initial_channel
+        if self.default_to_current_conversation is not None:
+            channel_select_menu["default_to_current_conversation"] = self.default_to_current_conversation
+        if self.confirm:
+            channel_select_menu["confirm"] = self.confirm
+        if self.response_url_enabled is not None:
+            channel_select_menu["response_url_enabled"] = self.response_url_enabled
+        if self.focus_on_load is not None:
+            channel_select_menu["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            channel_select_menu["placeholder"] = self.placeholder
+        return channel_select_menu
 
 
 class TimePicker(Element):
-    def __init__(self):
-        raise NotImplementedError
+    def __init__(
+        self,
+        action_id: str,
+        initial_time: Optional[str] = None,
+        confirm: Optional[ConfirmationDialogue] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+        timezone: Optional[str] = None,
+    ):
+        super().__init__(type_=ElementType.TIME_PICKER)
+        self.action_id = action_id
+        self.initial_time = initial_time
+        self.confirm = confirm
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, max_length=150, force_plaintext=True
+        )
+        self.timezone = timezone
+
+    def _resolve(self) -> Dict[str, Any]:
+        time_picker = self._attributes()
+        time_picker["action_id"] = self.action_id
+        if self.initial_time:
+            time_picker["initial_time"] = self.initial_time
+        if self.confirm:
+            time_picker["confirm"] = self.confirm
+        if self.focus_on_load is not None:
+            time_picker["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            time_picker["placeholder"] = self.placeholder
+        if self.timezone is not None:
+            time_picker["timezone"] = self.timezone
+        return time_picker
 
 
 class URLInput(Element):
-    def __init__(self):
+    def __init__(
+        self,
+        action_id: str, 
+        initial_value: Optional[str], 
+        dispatch_action_config: Optional[DispatchActionConfiguration] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None
+    ):
         raise NotImplementedError
 
 

@@ -4,8 +4,9 @@ from json import dumps
 from typing import Any, Dict, List, Optional, Union
 from uuid import uuid4
 
-from .elements import Element, ElementType, Text, TextType
+from .elements import Element, ElementType
 from .errors import InvalidUsageError
+from .objects import CompositionObjectType, Text, TextType
 
 
 class BlockType(Enum):
@@ -90,7 +91,7 @@ class ContextBlock(Block):
         super().__init__(type_=BlockType.CONTEXT, block_id=block_id)
         self.elements = []
         for element in elements:
-            if element.type == ElementType.TEXT or element.type == ElementType.IMAGE:
+            if element.type == CompositionObjectType.TEXT or element.type == ElementType.IMAGE:
                 self.elements.append(element)
             else:
                 raise InvalidUsageError(
