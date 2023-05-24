@@ -6,7 +6,7 @@ from uuid import uuid4
 
 from .elements import Element, ElementType
 from .errors import InvalidUsageError
-from .objects import CompositionObjectType, Text, TextType
+from .objects import CompositionObjectType, Text, TextLike, TextType
 
 
 class BlockType(Enum):
@@ -202,19 +202,13 @@ class SectionBlock(Block):
 
     def __init__(
         self,
-        text: Optional[Union[str, Text]] = None,
+        text: Optional[TextLike] = None,
         block_id: Optional[str] = None,
         fields: Optional[List[Text]] = None,
         accessory: Optional[Element] = None,
     ):
         super().__init__(type_=BlockType.SECTION, block_id=block_id)
-        if text:
-            if type(text) is Text:
-                self.text = text
-            else:
-                self.text = Text(text)
-        else:
-            self.text = text
+        self.text = Text.to_text(text)
         self.fields = fields
         self.accessory = accessory
 

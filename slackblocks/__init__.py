@@ -8,9 +8,11 @@ from .blocks import (
     ImageBlock,
     SectionBlock,
 )
-from .elements import Button, Element, Image, Text, TextType
+from .elements import Button, Element, Image
 from .messages import Message, MessageResponse
 from .modals import Modal
-from .objects import Confirm, ConfirmationDialogue, Option, OptionGroup
+from .objects import Confirm, ConfirmationDialogue, Option, OptionGroup, Text, TextType
+
+# TODO(nick): expose new objects
 
 name = "slackblocks"

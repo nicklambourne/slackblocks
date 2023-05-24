@@ -15,7 +15,7 @@ from .objects import (
     Text,
     TextLike,
 )
-from .utils import coerce_to_list
+from .utils import coerce_to_list, validate_action_id
 
 
 class ElementType(Enum):
@@ -84,7 +84,7 @@ class Button(Element):
     ):
         super().__init__(type_=ElementType.BUTTON)
         self.text = Text.to_text(text, max_length=75, force_plaintext=True)
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         self.url = url
         self.value = value
         self.style = style
@@ -113,7 +113,7 @@ class CheckboxGroup(Element):
 
     def __init__(self, action_id: str, options: Union[Option, List[Option]]):
         super().__init__(type_=ElementType.CHECKBOXES)
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         self.options = coerce_to_list(options, Option)
 
     def _resolve(self) -> Dict[str, Any]:
@@ -134,7 +134,7 @@ class DatePicker(Element):
         super().__init__(type_=ElementType.DATE_PICKER)
         if len(action_id) > 255:
             raise InvalidUsageError("`action_id` must be less than 255 chars")
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         if initial_date:
             self.initial_date = datetime.strptime("%Y-%m-%d").strftime("%Y-%m-%d")
         self.confirm = confirm
@@ -166,7 +166,7 @@ class DateTimePicker(Element):
         super().__init__(type_=ElementType.DATETIME_PICKER)
         if len(action_id) > 255:
             raise InvalidUsageError("`action_id` must be less than 255 chars")
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         if initial_datetime:
             self.initial_datetime = initial_datetime
         self.confirm = confirm
@@ -196,7 +196,7 @@ class EmailInput(Element):
         super().__init__(type_=ElementType.EMAIL_INPUT)
         if len(action_id) > 255:
             raise InvalidUsageError("`action_id` must be less than 255 chars")
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         self.initial_value = initial_value
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
@@ -263,7 +263,7 @@ class NumberInput(Element):
     ):
         super().__init__(type_=ElementType.NUMBER_INPUT)
         self.is_decimal_allowed = is_decimal_allowed
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_value = initial_value
         self.min_value = min_value
         self.max_value = max_value
@@ -331,7 +331,7 @@ class OverflowMenu(Element):
         confirm: ConfirmationDialogue = None,
     ):
         super().__init__(type_=ElementType.OVERFLOW_MENU)
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         if len(options) == 0 or len(options) > 5:
             raise InvalidUsageError(
                 "`options` must include between 1 and 5 `Option` objects"
@@ -367,7 +367,7 @@ class PlainTextInput(Element):
         placeholder: Optional[TextLike] = None
     ):
         super().__init__(type_=ElementType.PLAIN_TEXT_INPUT)
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         self.multiline = multiline
         self.initial_value = initial_value
         self.min_length = min_length
@@ -416,7 +416,7 @@ class RadioButtonGroup(Element):
         focus_on_load: bool = False,
     ):
         super().__init__(type_=ElementType.RADIO_BUTTON_GROUP)
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         if len(options) < 1 or len(options) > 10:
             raise InvalidUsageError("Number of options to RadioButtonGroup must be between 1 and 10 (inclusive).")
         self.options = coerce_to_list(options, class_=Option, allow_none=False)
@@ -453,7 +453,7 @@ class StaticSelectMenu(Element):
             placeholder: Optional[TextLike] = None,
         ):
         super().__init__(type_=ElementType.STATIC_SELECT_MENU)
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         if options and option_groups:
             raise InvalidUsageError("Cannot set both `options` and `option_groups` parameters.")
         if len(options) > 100:
@@ -498,7 +498,7 @@ class ExternalSelectMenu(Element):
             placeholder: Optional[TextLike] = None,
         ):
         super().__init__(type_=ElementType.EXTERNAL_SELECT_MENU)
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         self.initial_option = initial_option
         self.min_query_length = min_query_length
         self.confirm = confirm
@@ -533,7 +533,7 @@ class UserSelectMenu(Element):
         placeholder: Optional[TextLike] = None,
     ):
         super().__init__(type_=ElementType.USERS_SELECT_MENU)
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         self.initial_user = initial_user
         self.confirm = confirm
         self.focus_on_load = focus_on_load
@@ -568,7 +568,7 @@ class ConversationSelectMenu(Element):
         placeholder: Optional[TextLike] = None,
     ):
         super().__init__(type_=ElementType.CONVERSATIONS_SELECT_MENU)
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         self.initial_conversation = initial_conversation
         self.default_to_current_conversation = default_to_current_conversation
         self.confirm = confirm
@@ -610,7 +610,7 @@ class ChannelSelectMenu(Element):
             placeholder: Optional[TextLike] = None,
         ):
         super().__init__(type_=ElementType.CHANNELS_SELECT_MENU)
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         self.initial_channel = initial_channel
         self.confirm = confirm
         self.response_url_enabled = response_url_enabled
@@ -648,7 +648,7 @@ class TimePicker(Element):
         timezone: Optional[str] = None,
     ):
         super().__init__(type_=ElementType.TIME_PICKER)
-        self.action_id = action_id
+        self.action_id = validate_action_id(action_id)
         self.initial_time = initial_time
         self.confirm = confirm
         self.focus_on_load = focus_on_load
@@ -682,9 +682,11 @@ class URLInput(Element):
         focus_on_load: bool = False,
         placeholder: Optional[TextLike] = None
     ):
+        # TODO(nick): finish implementation
         raise NotImplementedError
 
 
 class WorkflowButton(Element):
     def __init__(self):
+        # TODO(nick): finish implementation
         raise NotImplementedError
