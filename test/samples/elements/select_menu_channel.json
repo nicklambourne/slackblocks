@@ -1,0 +1,18 @@
+[
+    {
+        "type": "section",
+        "block_id": "section678",
+        "text": {
+            "type": "mrkdwn",
+            "text": "Pick a channel from the dropdown list"
+        },
+        "accessory": {
+            "action_id": "text1234",
+            "type": "channels_select",
+            "placeholder": {
+                "type": "plain_text",
+                "text": "Select an item"
+            }
+        }
+    }
+]

@@ -1,17 +1,5 @@
 {
     "type": "modal",
-    "title": {
-        "type": "plain_text",
-        "text": "Hello, world!"
-    },
-    "close": {
-        "type": "plain_text",
-        "text": "Close button"
-    },
-    "submit": {
-        "type": "plain_text",
-        "text": "Submit button"
-    },
     "blocks": [
         {
             "type": "section",
@@ -35,5 +23,20 @@
                 "verbatim": false
             }
         }
-    ]
+    ],
+    "title": {
+        "type": "plain_text",
+        "text": "Hello, world!"
+    },
+    "close": {
+        "type": "plain_text",
+        "text": "Close button"
+    },
+    "submit": {
+        "type": "plain_text",
+        "text": "Submit button"
+    },
+    "clear_on_close": false,
+    "notify_on_close": false,
+    "submit_disabled": false
 }

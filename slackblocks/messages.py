@@ -3,12 +3,13 @@ from typing import Any, Dict, List, Optional, Union
 
 from .attachments import Attachment
 from .blocks import Block
+from slackblocks.utils import coerce_to_list
 
 
 class BaseMessage:
     """
     Abstract class for shared functionality between Messages and
-    Acknowledgement responses.
+    MessageResponses.
     """
 
     def __init__(
@@ -20,14 +21,7 @@ class BaseMessage:
         thread_ts: Optional[str] = None,
         mrkdwn: bool = True,
     ):
-        if isinstance(blocks, List):
-            self.blocks = blocks
-        elif isinstance(blocks, Block):
-            self.blocks = [
-                blocks,
-            ]
-        else:
-            self.blocks = None
+        self.blocks = coerce_to_list(blocks, class_=Block, allow_none=True)
         self.channel = channel
         self.text = text
         self.attachments = attachments or []
@@ -64,7 +58,7 @@ class BaseMessage:
         return self._resolve()[item]
 
     def keys(self) -> Dict[str, Any]:
-        return self._resolve()
+        return self._resolve().keys()
 
 
 class Message(BaseMessage):

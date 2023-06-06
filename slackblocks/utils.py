@@ -1,5 +1,5 @@
 from string import hexdigits
-from typing import Any, List, Optional, Union, TypeVar
+from typing import Any, List, Optional, Union, Tuple, TypeVar
 
 from .errors import InvalidUsageError
 
@@ -7,13 +7,19 @@ T = TypeVar("T")
 
 
 def coerce_to_list(
-    object_or_objects: Union[T, List[T]], class_: Any, allow_none: bool = False, max_size: Optional[int] = None
+    object_or_objects: Union[T, List[T]],
+    class_: Union[Any, List[Any]],
+    allow_none: bool = False,
+    min_size: Optional[int] = None,
+    max_size: Optional[int] = None,
 ) -> List[T]:
+    if object_or_objects is None and allow_none:
+        return None
     if object_or_objects is None and not allow_none:
         raise InvalidUsageError(
             f"Type of {object_or_objects} ({type(object_or_objects)})) is None should be type {class_}."
         )
-    
+
     if isinstance(object_or_objects, List):
         items = object_or_objects
     else:
@@ -22,13 +28,24 @@ def coerce_to_list(
         ]
 
     for item in items:
+        if not isinstance(class_, Tuple):
+            class_ = (class_,)
         if not isinstance(item, class_):
             raise InvalidUsageError(
                 f"Type of {item} ({type(item)})) inconsistent with expected type {class_}."
             )
-        
-    if max_size and len(items) > max_size:
-        raise InvalidUsageError(f"Size of list of {type(class_)} exceeds `max_size` ({max_size})")
+
+    if items is not None:
+        length = len(items)
+        if min_size is not None and length < min_size:
+            raise InvalidUsageError(
+                f"Size ({length}) of list of {type(class_)} is less than `min_size` ({min_size})"
+            )
+
+        if max_size is not None and length > max_size:
+            raise InvalidUsageError(
+                f"Size ({length}) of list of {type(class_)} exceeds `max_size` ({max_size})"
+            )
 
     return items
 
@@ -48,5 +65,25 @@ def validate_action_id(action_id: str, allow_none: bool = False) -> Optional[str
         if length > 255:
             raise InvalidUsageError(
                 f"`action_id` length ({length}) exceeds limit of 255 characters (id: {action_id})."
-        )
+            )
     return action_id
+
+
+def validate_string(
+    string: Optional[str],
+    field_name: str,
+    max_length: Optional[int] = None,
+    allow_none: bool = False,
+) -> Optional[str]:
+    if string is None:
+        if not allow_none:
+            raise InvalidUsageError(
+                f"Expecting string for field `{field_name}`, cannot be None."
+            )
+    else:
+        length = len(string)
+        if max_length and length > max_length:
+            raise InvalidUsageError(
+                f"Argument to field `{field_name}` ({length} characters) exceeds length limit of {max_length} characters"
+            )
+    return string

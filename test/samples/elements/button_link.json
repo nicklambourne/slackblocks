@@ -1,0 +1,8 @@
+{
+    "type": "button",
+    "text": {
+      "type": "plain_text",
+      "text": "Link Button"
+    },
+    "url": "https://api.slack.com/block-kit"
+}

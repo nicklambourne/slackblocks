@@ -1,9 +1,15 @@
+"""
+Composition objects used inside of Block objects.
+See: https://api.slack.com/reference/block-kit/composition-objects?ref=bk
+"""
+
 from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 
-from .errors import InvalidUsageError
+from slackblocks.errors import InvalidUsageError
+from slackblocks.utils import coerce_to_list, validate_string
 
 
 class CompositionObjectType(Enum):
@@ -15,9 +21,12 @@ class CompositionObjectType(Enum):
     CONFIRM = "confirm"
     DISPATCH = "dispatch"
     FILTER = "conversations_select"
+    INPUT_PARAMETER = "input_parameter"
     OPTION = "option"
     OPTION_GROUP = "option_groups"
     TEXT = "text"
+    TRIGGER = "trigger"
+    WORKFLOW = "workflow"
 
 
 class CompositionObject:
@@ -38,6 +47,12 @@ class CompositionObject:
     @abstractmethod
     def _resolve(self) -> Dict[str, Any]:
         pass
+
+    def json(self) -> str:
+        return dumps(self._resolve(), indent=4)
+
+    def __repr__(self) -> str:
+        return self.json()
 
 
 class TextType(Enum):
@@ -75,6 +90,7 @@ class Text(CompositionObject):
 
     def _resolve(self) -> Dict[str, Any]:
         text = self._attributes()
+        text["type"] = self.text_type.value
         text["text"] = self.text
         if self.text_type == TextType.MARKDOWN:
             text["verbatim"] = self.verbatim
@@ -112,10 +128,10 @@ class Text(CompositionObject):
 
     def __eq__(self, other) -> bool:
         return (
-            self.text_type == other.text_type and 
-            self.text == other.text and 
-            self.emoji == other.emoji and
-            self.vertbatim == other.verbatim
+            self.text_type == other.text_type
+            and self.text == other.text
+            and self.emoji == other.emoji
+            and self.vertbatim == other.verbatim
         )
 
 
@@ -175,7 +191,7 @@ class Option(CompositionObject):
     ):
         super().__init__(type_=CompositionObjectType.OPTION)
         self.text = Text.to_text(text, max_length=75)
-        self.value = Text.to_text(value, max_length=75)
+        self.value = validate_string(value, field_name="value", max_length=75)
         self.description = Text.to_text(
             description, max_length=75, force_plaintext=True, allow_none=True
         )
@@ -184,22 +200,22 @@ class Option(CompositionObject):
         self.url = url
 
     def _resolve(self) -> Dict[str, Any]:
-        option = self._attributes()
+        option = {}  ## Does not include type in JSON
         option["text"] = self.text._resolve()
-        option["value"] = self.value._resolve()
+        option["value"] = self.value
         if self.description is not None:
             option["description"] = self.description._resolve()
         if self.url is not None:
             option["url"] = self.url
         return option
-    
+
     def __eq__(self, other) -> bool:
         return (
-            self.type == other.type and
-            self.text == other.text and
-            self.value == other.value and
-            self.description == other.description and
-            self.url == other.url
+            self.type == other.type
+            and self.text == other.text
+            and self.value == other.value
+            and self.description == other.description
+            and self.url == other.url
         )
 
 
@@ -223,11 +239,122 @@ class OptionGroup(CompositionObject):
         return option_group
 
 
+ALLOWABLE_TRIGGERS = ["on_enter_pressed", "on_character_entered"]
+
+
 class DispatchActionConfiguration(CompositionObject):
-    def __init__(self):
-        raise NotImplementedError
+    """
+    Determines when a plain-text input element will return a block_actions interaction payload.
+    """
+
+    def __init__(self, trigger_actions_on: Union[str, List[str]] = None):
+        self.trigger_actions_on = list(
+            set(coerce_to_list(trigger_actions_on, str, min_size=1, max_size=2))
+        )
+        for trigger in self.trigger_actions_on:
+            if trigger not in ALLOWABLE_TRIGGERS:
+                raise InvalidUsageError(
+                    f"Trigger {trigger} not in allowable values ({ALLOWABLE_TRIGGERS})"
+                )
+
+    def _resolve(self) -> Dict[str, Any]:
+        dispatch_action_config = {}  # Does not include type in JSON
+        dispatch_action_config["trigger_actions_on"] = self.trigger_actions_on
+        return dispatch_action_config
 
 
 class ConversationFilter(CompositionObject):
-    def __init__(self):
-        raise NotImplementedError
+    """
+    Provides a way to filter the list of options in a conversations select menu or conversations multi-select menu.
+    """
+
+    def __init__(
+        self,
+        include: Optional[Union[str, List[str]]] = None,
+        exclude_external_shared_channels: Optional[bool] = None,
+        exclude_bot_users: Optional[bool] = None,
+    ):
+        super().__init__(type_=CompositionObjectType.FILTER)
+        if not (
+            include
+            or exclude_external_shared_channels is not None
+            or exclude_bot_users is not None
+        ):
+            raise InvalidUsageError(
+                "One of `include`, `exclude_external_shared_channels`, or `exclude_bot_users` is required."
+            )
+        self.include = coerce_to_list(include, str, allow_none=True)
+        self.exclude_external_shared_channels = exclude_external_shared_channels
+        self.exclude_bot_users = exclude_bot_users
+
+    def _resolve(self) -> Dict[str, Any]:
+        filter = {}  # Does not include type in JSON
+        if self.include:
+            filter["include"] = self.include
+        if self.exclude_external_shared_channels is not None:
+            filter[
+                "exclude_external_shared_channels"
+            ] = self.exclude_external_shared_channels
+        if self.exclude_bot_users is not None:
+            filter["exclude_bot_users"] = self.exclude_bot_users
+        return filter
+
+
+class InputParameter(CompositionObject):
+    """
+    Contains information about an input parameter.
+    """
+
+    def __init__(self, name: str, value: str):
+        super().__init__(type_=CompositionObjectType.INPUT_PARAMETER)
+        self.name = name
+        self.value = value
+
+    def _resolve(self) -> Dict[str, Any]:
+        input_parameter = {}  # Does not include type in JSON
+        input_parameter["name"] = self.name
+        input_parameter["value"] = self.value
+        return input_parameter
+
+
+class Trigger(CompositionObject):
+    """
+    Contains information about a trigger.
+    """
+
+    def __init__(
+        self,
+        url: str,
+        customizable_input_parameters: Optional[
+            Union[InputParameter, List[InputParameter]]
+        ],
+    ):
+        super().__init__(type_=CompositionObjectType.TRIGGER)
+        self.url = url
+        self.customizable_input_parameters = coerce_to_list(
+            customizable_input_parameters, InputParameter, allow_none=True
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        trigger = {}  # Does not include type in JSON
+        trigger["url"] = self.url
+        if self.customizable_input_parameters:
+            trigger["customizable_input_parameters"] = [
+                parameter._resolve() for parameter in self.customizable_input_parameters
+            ]
+        return trigger
+
+
+class Workflow(CompositionObject):
+    """
+    Contains information about a workflow.
+    """
+
+    def __init__(self, trigger: Trigger):
+        super().__init__(type_=CompositionObjectType.WORKFLOW)
+        self.trigger = trigger
+
+    def _resolve(self) -> Dict[str, Any]:
+        workflow = {}  # Does not include type in JSON
+        workflow["trigger"] = self.trigger._resolve()
+        return workflow

@@ -1,9 +1,13 @@
+"""
+Block elements can be used inside of section, context, input and actions layout blocks.
+See: https://api.slack.com/reference/block-kit/block-elements?ref=bk
+"""
 import re
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from json import dumps
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from .errors import InvalidUsageError
 from .objects import (
@@ -14,6 +18,7 @@ from .objects import (
     OptionGroup,
     Text,
     TextLike,
+    Workflow,
 )
 from .utils import coerce_to_list, validate_action_id
 
@@ -64,6 +69,9 @@ class Element(ABC):
     @property
     def type(self) -> ElementType:
         return self._type
+    
+    def __repr__(self) -> str:
+        return dumps(self._resolve(), indent=4)
 
 
 class Button(Element):
@@ -80,7 +88,7 @@ class Button(Element):
         url: Optional[str] = None,
         value: Optional[str] = None,
         style: Optional[str] = None,
-        confirm: Optional["Confirm"] = None,
+        confirm: Optional[ConfirmationDialogue] = None,
     ):
         super().__init__(type_=ElementType.BUTTON)
         self.text = Text.to_text(text, max_length=75, force_plaintext=True)
@@ -120,6 +128,7 @@ class CheckboxGroup(Element):
         checkbox_group = self._attributes()
         checkbox_group["action_id"] = self.action_id
         checkbox_group["options"] = [option._resolve() for option in self.options]
+        return checkbox_group
 
 
 class DatePicker(Element):
@@ -132,8 +141,6 @@ class DatePicker(Element):
         placeholder: Optional[TextLike] = None,
     ):
         super().__init__(type_=ElementType.DATE_PICKER)
-        if len(action_id) > 255:
-            raise InvalidUsageError("`action_id` must be less than 255 chars")
         self.action_id = validate_action_id(action_id)
         if initial_date:
             self.initial_date = datetime.strptime("%Y-%m-%d").strftime("%Y-%m-%d")
@@ -164,8 +171,6 @@ class DateTimePicker(Element):
         focus_on_load: bool = False,
     ):
         super().__init__(type_=ElementType.DATETIME_PICKER)
-        if len(action_id) > 255:
-            raise InvalidUsageError("`action_id` must be less than 255 chars")
         self.action_id = validate_action_id(action_id)
         if initial_datetime:
             self.initial_datetime = initial_datetime
@@ -194,8 +199,6 @@ class EmailInput(Element):
         placeholder: Optional[TextLike] = None,
     ):
         super().__init__(type_=ElementType.EMAIL_INPUT)
-        if len(action_id) > 255:
-            raise InvalidUsageError("`action_id` must be less than 255 chars")
         self.action_id = validate_action_id(action_id)
         self.initial_value = initial_value
         self.dispatch_action_config = dispatch_action_config
@@ -356,15 +359,15 @@ class PlainTextInput(Element):
     """
 
     def __init__(
-        self, 
-        action_id: str, 
-        initial_value: Optional[str], 
-        multiline: bool = False, 
+        self,
+        action_id: str,
+        initial_value: Optional[str],
+        multiline: bool = False,
         min_length: Optional[int] = None,
         max_length: Optional[int] = None,
         dispatch_action_config: Optional[DispatchActionConfiguration] = None,
         focus_on_load: bool = False,
-        placeholder: Optional[TextLike] = None
+        placeholder: Optional[TextLike] = None,
     ):
         super().__init__(type_=ElementType.PLAIN_TEXT_INPUT)
         self.action_id = validate_action_id(action_id)
@@ -407,10 +410,11 @@ class RadioButtonGroup(Element):
     """
     A radio button group that allows a user to choose one item from a list of possible options.
     """
+
     def __init__(
-        self, 
-        action_id: str, 
-        options: List[Option], 
+        self,
+        action_id: str,
+        options: List[Option],
         initial_option: Optional[Option] = None,
         confirm: Optional[ConfirmationDialogue] = None,
         focus_on_load: bool = False,
@@ -418,7 +422,9 @@ class RadioButtonGroup(Element):
         super().__init__(type_=ElementType.RADIO_BUTTON_GROUP)
         self.action_id = validate_action_id(action_id)
         if len(options) < 1 or len(options) > 10:
-            raise InvalidUsageError("Number of options to RadioButtonGroup must be between 1 and 10 (inclusive).")
+            raise InvalidUsageError(
+                "Number of options to RadioButtonGroup must be between 1 and 10 (inclusive)."
+            )
         self.options = coerce_to_list(options, class_=Option, allow_none=False)
         if initial_option is not None and initial_option not in options:
             raise InvalidUsageError("`initial_option` must be a member of `options`")
@@ -429,9 +435,7 @@ class RadioButtonGroup(Element):
     def _resolve(self) -> Dict[str, Any]:
         radio_button_group = self._attributes()
         radio_button_group["action_id"] = self.action_id
-        radio_button_group["options"] = [
-            option._resolve() for option in self.option
-        ]
+        radio_button_group["options"] = [option._resolve() for option in self.option]
         if self.initial_option:
             radio_button_group["initial_option"] = self.initial_option._resolve()
         if self.confirm:
@@ -443,24 +447,30 @@ class RadioButtonGroup(Element):
 
 class StaticSelectMenu(Element):
     def __init__(
-            self,
-            action_id: str, 
-            options: List[Option] = None,
-            option_groups: List[OptionGroup] = None,
-            initial_option: Optional[Union[Option, OptionGroup]] = None,
-            confirm: Optional[ConfirmationDialogue] = None,
-            focus_on_load: bool = False,
-            placeholder: Optional[TextLike] = None,
-        ):
+        self,
+        action_id: str,
+        options: List[Option] = None,
+        option_groups: List[OptionGroup] = None,
+        initial_option: Optional[Union[Option, OptionGroup]] = None,
+        confirm: Optional[ConfirmationDialogue] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ):
         super().__init__(type_=ElementType.STATIC_SELECT_MENU)
         self.action_id = validate_action_id(action_id)
         if options and option_groups:
-            raise InvalidUsageError("Cannot set both `options` and `option_groups` parameters.")
+            raise InvalidUsageError(
+                "Cannot set both `options` and `option_groups` parameters."
+            )
         if len(options) > 100:
-            raise InvalidUsageError(f"`options` count ({len(options)}) exceeds Maximum number of 100.")
+            raise InvalidUsageError(
+                f"`options` count ({len(options)}) exceeds Maximum number of 100."
+            )
         self.options = options
         if len(option_groups) > 100:
-            raise InvalidUsageError(f"`option_groups` count ({len(option_groups)}) exceeds Maximum number of 100.")
+            raise InvalidUsageError(
+                f"`option_groups` count ({len(option_groups)}) exceeds Maximum number of 100."
+            )
         self.option_groups = option_groups
         self.initial_option = initial_option
         self.confirm = confirm
@@ -489,14 +499,14 @@ class StaticSelectMenu(Element):
 
 class ExternalSelectMenu(Element):
     def __init__(
-            self,
-            action_id: str,
-            initial_option: Union[Option, OptionGroup] = None,
-            min_query_length: Optional[int] = None,
-            confirm: Optional[ConfirmationDialogue] = None,
-            focus_on_load: bool = False,
-            placeholder: Optional[TextLike] = None,
-        ):
+        self,
+        action_id: str,
+        initial_option: Union[Option, OptionGroup] = None,
+        min_query_length: Optional[int] = None,
+        confirm: Optional[ConfirmationDialogue] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ):
         super().__init__(type_=ElementType.EXTERNAL_SELECT_MENU)
         self.action_id = validate_action_id(action_id)
         self.initial_option = initial_option
@@ -585,7 +595,9 @@ class ConversationSelectMenu(Element):
         if self.initial_conversation:
             conversation_select_menu["initial_conversation"] = self.initial_conversation
         if self.default_to_current_conversation is not None:
-            conversation_select_menu["default_to_current_conversation"] = self.default_to_current_conversation
+            conversation_select_menu[
+                "default_to_current_conversation"
+            ] = self.default_to_current_conversation
         if self.confirm:
             conversation_select_menu["confirm"] = self.confirm
         if self.response_url_enabled is not None:
@@ -601,14 +613,14 @@ class ConversationSelectMenu(Element):
 
 class ChannelSelectMenu(Element):
     def __init__(
-            self,
-            action_id: str,
-            initial_channel: Optional[str] = None,
-            confirm: Optional[ConfirmationDialogue] = None,
-            response_url_enabled: Optional[bool] = False,
-            focus_on_load: bool = False,
-            placeholder: Optional[TextLike] = None,
-        ):
+        self,
+        action_id: str,
+        initial_channel: Optional[str] = None,
+        confirm: Optional[ConfirmationDialogue] = None,
+        response_url_enabled: Optional[bool] = False,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ):
         super().__init__(type_=ElementType.CHANNELS_SELECT_MENU)
         self.action_id = validate_action_id(action_id)
         self.initial_channel = initial_channel
@@ -625,7 +637,9 @@ class ChannelSelectMenu(Element):
         if self.initial_channel:
             channel_select_menu["initial_channel"] = self.initial_channel
         if self.default_to_current_conversation is not None:
-            channel_select_menu["default_to_current_conversation"] = self.default_to_current_conversation
+            channel_select_menu[
+                "default_to_current_conversation"
+            ] = self.default_to_current_conversation
         if self.confirm:
             channel_select_menu["confirm"] = self.confirm
         if self.response_url_enabled is not None:
@@ -676,17 +690,75 @@ class TimePicker(Element):
 class URLInput(Element):
     def __init__(
         self,
-        action_id: str, 
-        initial_value: Optional[str], 
+        action_id: str,
+        initial_value: Optional[str],
         dispatch_action_config: Optional[DispatchActionConfiguration] = None,
         focus_on_load: bool = False,
-        placeholder: Optional[TextLike] = None
+        placeholder: Optional[TextLike] = None,
     ):
-        # TODO(nick): finish implementation
-        raise NotImplementedError
+        super().__init__(type_=ElementType.URL_INPUT)
+        self.action_id = validate_action_id(action_id)
+        self.initial_value = initial_value
+        self.dispatch_action_config = dispatch_action_config
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, force_plaintext=True, max_length=150
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        url_input = self._attributes()
+        url_input["action_id"] = self.action_id
+        if self.initial_value is not None:
+            url_input["initial_value"] = self.initial_value
+        if self.dispatch_action_config:
+            url_input["dispatch_action_config"] = self.dispatch_action_config._resolve()
+        if self.focus_on_load is not None:
+            url_input["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            url_input["placeholder"] = self.placeholder
+        return url_input
+
+
+class ButtonStyle(Enum):
+    DEFAULT = None
+    PRIMARY = "primary"
+    DANGER = "danger"
+
+    @staticmethod
+    def to_button_style(style: Optional[Union["ButtonStyle", str]]) -> "ButtonStyle":
+        if isinstance(style, ButtonStyle):
+            return style
+        if isinstance(style, (str, None)):
+            return ButtonStyle[style]
+        raise InvalidUsageError(
+            f"Can only coerce to ButtonStyle from ButtonStyle or string."
+        )
+
+
+ButtonStyleLike = Union[ButtonStyle, str]
 
 
 class WorkflowButton(Element):
-    def __init__(self):
-        # TODO(nick): finish implementation
-        raise NotImplementedError
+    def __init__(
+        self,
+        text: TextLike,
+        workflow: Optional[Workflow] = None,
+        style: Optional[ButtonStyleLike] = ButtonStyle.DEFAULT,
+        accessibility_label: Optional[str] = None,
+    ):
+        super().__init__(type_=ElementType.WORKFLOW_BUTTON)
+        self.text = Text.to_text(text, force_plaintext=True, max_length=75)
+        self.workflow = workflow
+        self.style = ButtonStyle.to_button_style(style).value
+        self.accessibility_label = accessibility_label
+
+    def _resolve(self) -> Dict[str, Any]:
+        workflow_button = self._attributes()
+        workflow_button["text"] = self.text
+        if self.workflow:
+            workflow_button["workflow"] = self.workflow
+        if self.style:
+            workflow_button["style"] = self.style
+        if self.accessibility_label:
+            workflow_button["accessibility_label"] = self.accessibility_label
+        return workflow_button

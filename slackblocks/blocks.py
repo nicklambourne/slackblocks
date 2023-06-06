@@ -1,12 +1,18 @@
+"""
+Blocks are a series of components that can be combined to create visually rich and 
+compellingly interactive messages.
+See: https://api.slack.com/reference/block-kit/blocks?ref=bk
+"""
 from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 from uuid import uuid4
 
-from .elements import Element, ElementType
-from .errors import InvalidUsageError
-from .objects import CompositionObjectType, Text, TextLike, TextType
+from slackblocks.elements import Element, ElementType
+from slackblocks.errors import InvalidUsageError
+from slackblocks.objects import CompositionObject, CompositionObjectType, Text, TextLike, TextType
+from slackblocks.utils import coerce_to_list
 
 
 class BlockType(Enum):
@@ -54,25 +60,10 @@ class ActionsBlock(Block):
     """
 
     def __init__(
-        self, elements: Optional[List[Element]] = None, block_id: Optional[str] = None
+        self, elements: Optional[List[Union[Element, CompositionObject]]] = None, block_id: Optional[str] = None
     ):
         super().__init__(type_=BlockType.ACTIONS, block_id=block_id)
-        if isinstance(elements, Element):
-            self.elements = [
-                elements,
-            ]
-        elif isinstance(elements, list) and all(
-            [isinstance(el, Element) for el in elements]
-        ):
-            if len(elements) > 25:
-                raise InvalidUsageError(
-                    "There is maximum of 25 elements per action block"
-                )
-            self.elements = elements
-        else:
-            raise InvalidUsageError(
-                "Elements must be a single element or list of elements"
-            )
+        self.elements = coerce_to_list(elements, (Element, CompositionObject), allow_none=True, max_size=25)
 
     def _resolve(self):
         actions = self._attributes()
@@ -86,16 +77,19 @@ class ContextBlock(Block):
     """
 
     def __init__(
-        self, elements: Optional[List[Element]] = None, block_id: Optional[str] = None
+        self, elements: Optional[List[Union[Element, CompositionObjectType]]] = None, block_id: Optional[str] = None
     ):
         super().__init__(type_=BlockType.CONTEXT, block_id=block_id)
         self.elements = []
         for element in elements:
-            if element.type == CompositionObjectType.TEXT or element.type == ElementType.IMAGE:
+            if (
+                element.type == CompositionObjectType.TEXT
+                or element.type == ElementType.IMAGE
+            ):
                 self.elements.append(element)
             else:
                 raise InvalidUsageError(
-                    "Context blocks can only hold image and text elements"
+                    f"Context blocks can only hold image and text elements, not {element.type}"
                 )
         if len(self.elements) > 10:
             raise InvalidUsageError("Context blocks can hold a maximum of ten elements")

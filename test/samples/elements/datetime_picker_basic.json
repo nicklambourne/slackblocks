@@ -1,0 +1,12 @@
+{
+    "type": "input",
+    "element": {
+        "type": "datetimepicker",
+        "action_id": "datetime_input",
+        "initial_date_time": 1628633820
+    },
+    "label": {
+        "type": "plain_text",
+        "text": "Pick a date & time for the deadline"
+    }
+}

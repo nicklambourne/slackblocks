@@ -1,0 +1,13 @@
+{
+    "type": "input",
+    "element": {
+        "type": "number_input",
+        "is_decimal_allowed": false,
+        "action_id": "number_input-action"
+    },
+    "label": {
+        "type": "plain_text",
+        "text": "Label",
+        "emoji": true
+    }
+}

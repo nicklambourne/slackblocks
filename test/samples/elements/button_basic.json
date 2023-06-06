@@ -1,0 +1,9 @@
+{
+    "type": "button",
+    "text": {
+      "type": "plain_text",
+      "text": "Click Me"
+    },
+    "value": "click_me_123",
+    "action_id": "button"
+}
