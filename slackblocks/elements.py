@@ -69,7 +69,7 @@ class Element(ABC):
     @property
     def type(self) -> ElementType:
         return self._type
-    
+
     def __repr__(self) -> str:
         return dumps(self._resolve(), indent=4)
 

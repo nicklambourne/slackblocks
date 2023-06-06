@@ -58,7 +58,10 @@ def test_basic_header_block() -> None:
 
 
 def test_basic_action_block() -> None:
-    block = ActionsBlock(block_id="5d1d342f-d65c-4ac5-a2f5-690e48ef207e", elements=[Option(text="Hi", value="Hi")])
+    block = ActionsBlock(
+        block_id="5d1d342f-d65c-4ac5-a2f5-690e48ef207e",
+        elements=[Option(text="Hi", value="Hi")],
+    )
     with open("test/samples/blocks/actions_block_only.json", "r") as expected:
         assert repr(block) == expected.read()
 
@@ -69,6 +72,9 @@ def test_checkbox_action_block() -> None:
         Option(text="*b*", value="b", description="*b*"),
         Option(text="*c*", value="c", description="*c*"),
     ]
-    block = ActionsBlock(block_id="fake_block_id", elements=CheckboxGroup(action_id="actionId-0", options=options))
+    block = ActionsBlock(
+        block_id="fake_block_id",
+        elements=CheckboxGroup(action_id="actionId-0", options=options),
+    )
     with open("test/samples/blocks/actions_block_checkboxes.json", "r") as expected:
         assert repr(block) == expected.read()

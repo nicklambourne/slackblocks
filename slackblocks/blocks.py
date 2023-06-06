@@ -11,7 +11,13 @@ from uuid import uuid4
 
 from slackblocks.elements import Element, ElementType
 from slackblocks.errors import InvalidUsageError
-from slackblocks.objects import CompositionObject, CompositionObjectType, Text, TextLike, TextType
+from slackblocks.objects import (
+    CompositionObject,
+    CompositionObjectType,
+    Text,
+    TextLike,
+    TextType,
+)
 from slackblocks.utils import coerce_to_list
 
 
@@ -60,10 +66,14 @@ class ActionsBlock(Block):
     """
 
     def __init__(
-        self, elements: Optional[List[Union[Element, CompositionObject]]] = None, block_id: Optional[str] = None
+        self,
+        elements: Optional[List[Union[Element, CompositionObject]]] = None,
+        block_id: Optional[str] = None,
     ):
         super().__init__(type_=BlockType.ACTIONS, block_id=block_id)
-        self.elements = coerce_to_list(elements, (Element, CompositionObject), allow_none=True, max_size=25)
+        self.elements = coerce_to_list(
+            elements, (Element, CompositionObject), allow_none=True, max_size=25
+        )
 
     def _resolve(self):
         actions = self._attributes()
@@ -77,7 +87,9 @@ class ContextBlock(Block):
     """
 
     def __init__(
-        self, elements: Optional[List[Union[Element, CompositionObjectType]]] = None, block_id: Optional[str] = None
+        self,
+        elements: Optional[List[Union[Element, CompositionObjectType]]] = None,
+        block_id: Optional[str] = None,
     ):
         super().__init__(type_=BlockType.CONTEXT, block_id=block_id)
         self.elements = []
