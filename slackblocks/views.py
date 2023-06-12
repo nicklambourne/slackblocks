@@ -3,6 +3,7 @@ Views are app-customized visual areas within modals and Home tabs.
 See: https://api.slack.com/reference/surfaces/views
 """
 from enum import Enum
+from json import dumps
 from typing import Any, Dict, List, Optional, Union
 
 from slackblocks.blocks import Block
@@ -48,6 +49,9 @@ class View:
         if self.external_id:
             view["external_id"] = self.external_id
         return view
+
+    def __repr__(self) -> str:
+        return dumps(self._resolve(), indent=4)
 
 
 class ModalView(View):

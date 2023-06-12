@@ -1,24 +1,24 @@
 {
-    "action_id": "multi_select_static",
     "type": "multi_static_select",
-    "placeholder": {
-        "type": "plain_text",
-        "text": "Select one or more"
-    },
+    "action_id": "multi_static_select",
     "options": [
         {
             "text": {
                 "type": "plain_text",
-                "text": "a"
+                "text": "A"
             },
-            "value": "a"
+            "value": "A"
         },
         {
             "text": {
                 "type": "plain_text",
-                "text": "b"
+                "text": "B"
             },
-            "value": "b"
+            "value": "B"
         }
-    ]
+    ],
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Select one or more"
+    }
 }

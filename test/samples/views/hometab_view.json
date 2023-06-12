@@ -1,13 +1,13 @@
 {
+    "type": "home",
     "blocks": [
         {
             "type": "section",
-            "block_id": "fake_block_id",
+            "block_id": "fake_id",
             "text": {
                 "type": "mrkdwn",
-                "text": "I like pretty colours"
+                "text": "Example Block"
             }
         }
-    ],
-    "color": "#000000"
+    ]
 }

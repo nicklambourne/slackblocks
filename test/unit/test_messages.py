@@ -37,7 +37,7 @@ def test_to_dict() -> None:
             {
                 "type": "section",
                 "block_id": "fake_block_id",
-                "text": {"type": "mrkdwn", "text": "Hello, world!", "verbatim": False},
+                "text": {"type": "mrkdwn", "text": "Hello, world!"},
             }
         ],
         "text": "",

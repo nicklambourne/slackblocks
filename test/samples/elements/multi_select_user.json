@@ -1,8 +1,8 @@
 {
-    "action_id": "multi_conversations_select",
-    "type": "multi_conversations_select",
+    "type": "multi_users_select",
+    "action_id": "multi_users_select",
     "placeholder": {
         "type": "plain_text",
-        "text": "Select one or more conversations"
+        "text": "Select one or more users"
     }
 }

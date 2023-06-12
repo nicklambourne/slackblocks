@@ -1,3 +1,8 @@
+"""
+Messages are the core unit of Slack messaging functionality. They can be
+built out using blocks, elements and objects.
+See: https://api.slack.com/messaging
+"""
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 

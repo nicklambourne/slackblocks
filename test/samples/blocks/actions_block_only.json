@@ -5,8 +5,7 @@
         {
             "text": {
                 "type": "mrkdwn",
-                "text": "Hi",
-                "verbatim": false
+                "text": "Hi"
             },
             "value": "Hi"
         }

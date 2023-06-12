@@ -92,7 +92,7 @@ class Text(CompositionObject):
         text = self._attributes()
         text["type"] = self.text_type.value
         text["text"] = self.text
-        if self.text_type == TextType.MARKDOWN:
+        if self.text_type == TextType.MARKDOWN and self.verbatim:
             text["verbatim"] = self.verbatim
         elif self.text_type == TextType.PLAINTEXT and self.emoji:
             text["emoji"] = self.emoji

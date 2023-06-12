@@ -1,5 +1,7 @@
-from slackblocks import Modal
+from slackblocks import Modal, HomeTabView
 from slackblocks.blocks import DividerBlock, SectionBlock
+
+from .utils import fetch_sample
 
 
 def test_modal_with_blocks() -> None:
@@ -13,8 +15,12 @@ def test_modal_with_blocks() -> None:
             SectionBlock(text="second section block", block_id="3"),
         ],
     )
-    with open("test/samples/views/modal_with_blocks.json", "r") as expected:
-        assert repr(modal) == expected.read()
+    assert fetch_sample("test/samples/views/modal_with_blocks.json") == repr(modal)
+
+
+def test_hometab_view() -> None:
+    view = HomeTabView(blocks=[SectionBlock(text="Example Block", block_id="fake_id")])
+    assert fetch_sample("test/samples/views/hometab_view.json") == repr(view)
 
 
 def test_to_dict() -> None:
@@ -36,7 +42,6 @@ def test_to_dict() -> None:
                 "text": {
                     "type": "mrkdwn",
                     "text": "first section block",
-                    "verbatim": False,
                 },
             }
         ],

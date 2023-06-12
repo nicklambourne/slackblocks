@@ -34,6 +34,11 @@ class ElementType(Enum):
     DATETIME_PICKER = "datetimepicker"
     EMAIL_INPUT = "email_text_input"
     IMAGE = "image"
+    MULTI_SELECT_STATIC = "multi_static_select"
+    MULTI_SELECT_EXTERNAL = "multi_external_select"
+    MULTI_SELECT_USERS = "multi_users_select"
+    MULTI_SELECT_CONVERSATIONS = "multi_conversations_select"
+    MULTI_SELECT_CHANNELS = "multi_channels_select"
     NUMBER_INPUT = "number_input"
     OVERFLOW_MENU = "overflow"
     PLAIN_TEXT_INPUT = "plain_text_input"
@@ -263,9 +268,264 @@ class Image(Element):
         return image
 
 
-class MultiSelectMenu(Element):
-    def __init__(self):
-        raise NotImplementedError
+class StaticMultiSelectMenu(Element):
+    def __init__(
+        self,
+        action_id: str,
+        options: Union[Option, List[Option]],
+        option_groups: List[OptionGroup] = None,
+        initial_options: Optional[
+            Union[Option, List[Option], OptionGroup, List[OptionGroup]]
+        ] = None,
+        confirm: ConfirmationDialogue = None,
+        max_selected_items: Optional[int] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ):
+        super().__init__(type_=ElementType.MULTI_SELECT_STATIC)
+        self.action_id = validate_action_id(action_id)
+        if options and option_groups:
+            raise InvalidUsageError(
+                "Cannot set both `options` and `option_groups` parameters."
+            )
+        self.options = coerce_to_list(
+            options, class_=Option, allow_none=True, max_size=100
+        )
+        self.option_groups = coerce_to_list(
+            option_groups, class_=OptionGroup, allow_none=True, max_size=100
+        )
+        self.initial_options = coerce_to_list(
+            initial_options, class_=(Option, OptionGroup), allow_none=True, max_size=100
+        )
+        if (
+            options
+            and self.initial_options
+            and not isinstance(self.initial_options, List[Option])
+        ):
+            raise InvalidUsageError(
+                "If using `options` then `initial_options` must also be of type `List[Option]`, "
+                f"not `{type(self.initial_options)}`."
+            )
+        if (
+            option_groups
+            and self.initial_options
+            and not isinstance(self.initial_options, List[OptionGroup])
+        ):
+            raise InvalidUsageError(
+                "If using `option_groups` then `initial_options` must also be of type "
+                f"`List[OptionGroup]`, not `{type(self.initial_options)}`."
+            )
+        self.options = coerce_to_list(
+            options, class_=Option, allow_none=True, max_size=100
+        )
+        self.option_groups = coerce_to_list(
+            option_groups, class_=OptionGroup, allow_none=True, max_size=100
+        )
+        self.confirm = confirm
+        self.max_selected_items = max_selected_items
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, force_plaintext=True, max_length=150, allow_none=True
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        static_multi_select = self._attributes()
+        static_multi_select["action_id"] = self.action_id
+        if self.options:
+            static_multi_select["options"] = [
+                option._resolve() for option in self.options
+            ]
+        if self.option_groups:
+            static_multi_select["option_groups"] = [
+                option_group._resolve() for option_group in self.option_groups
+            ]
+        if self.initial_options:
+            static_multi_select["initial_options"] = [
+                initial_option._resolve() for initial_option in self.initial_options
+            ]
+        if self.confirm:
+            static_multi_select["confirm"] = self.confirm._resolve()
+        if self.max_selected_items:
+            static_multi_select["max_selected_items"] = self.max_selected_items
+        if self.focus_on_load:
+            static_multi_select["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            static_multi_select["placeholder"] = self.placeholder._resolve()
+        return static_multi_select
+
+
+class ExternalMultiSelectMenu(Element):
+    def __init__(
+        self,
+        action_id: str,
+        min_query_length: Optional[int] = None,
+        initial_options: Optional[
+            Union[Option, List[Option], OptionGroup, List[OptionGroup]]
+        ] = None,
+        confirm: ConfirmationDialogue = None,
+        max_selected_items: Optional[int] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ):
+        super().__init__(type_=ElementType.MULTI_SELECT_EXTERNAL)
+        self.action_id = validate_action_id(action_id)
+        self.min_query_length = min_query_length
+        self.initial_options = coerce_to_list(
+            initial_options, class_=(Option, OptionGroup), allow_none=True, max_size=100
+        )
+        self.confirm = confirm
+        self.max_selected_items = max_selected_items
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, force_plaintext=True, max_length=150, allow_none=True
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        external_select_menu = self._attributes()
+        external_select_menu["action_id"] = self.action_id
+        if self.min_query_length:
+            external_select_menu["min_query_length"] = self.min_query_length
+        if self.initial_options:
+            external_select_menu["initial_options"] = [
+                initial_option._resolve() for initial_option in self.initial_options
+            ]
+        if self.confirm:
+            external_select_menu["confirm"] = self.confirm._resolve()
+        if self.max_selected_items:
+            external_select_menu["max_selected_items"] = self.max_selected_items
+        if self.focus_on_load:
+            external_select_menu["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            external_select_menu["placeholder"] = self.placeholder._resolve()
+        return external_select_menu
+
+
+class UserMultiSelectMenu(Element):
+    def __init__(
+        self,
+        action_id: str,
+        initial_users: Optional[List[str]] = None,
+        confirm: ConfirmationDialogue = None,
+        max_selected_items: Optional[int] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ):
+        super().__init__(type_=ElementType.MULTI_SELECT_USERS)
+        self.action_id = validate_action_id(action_id)
+        self.initial_users = coerce_to_list(initial_users, str, allow_none=True)
+        self.confirm = confirm
+        self.max_selected_items = max_selected_items
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, force_plaintext=True, max_length=150, allow_none=True
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        user_multi_select = self._attributes()
+        user_multi_select["action_id"] = self.action_id
+        if self.initial_users:
+            user_multi_select["initial_users"] = [
+                initial_option._resolve() for initial_option in self.initial_users
+            ]
+        if self.confirm:
+            user_multi_select["confirm"] = self.confirm._resolve()
+        if self.max_selected_items:
+            user_multi_select["max_selected_items"] = self.max_selected_items
+        if self.focus_on_load:
+            user_multi_select["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            user_multi_select["placeholder"] = self.placeholder._resolve()
+        return user_multi_select
+
+
+class ConversationMultiSelectMenu(Element):
+    def __init__(
+        self,
+        action_id: str,
+        initial_conversations: Optional[List[str]] = None,
+        default_to_current_conversation: Optional[bool] = False,
+        confirm: ConfirmationDialogue = None,
+        max_selected_items: Optional[int] = None,
+        filter: Optional[ConversationFilter] = None,
+        focus_on_load: Optional[bool] = False,
+        placeholder: Optional[TextLike] = None,
+    ):
+        super().__init__(type_=ElementType.MULTI_SELECT_CONVERSATIONS)
+        self.action_id = validate_action_id(action_id)
+        self.initial_conversations = coerce_to_list(
+            initial_conversations, str, allow_none=True
+        )
+        self.default_to_current_conversation = default_to_current_conversation
+        self.confirm = confirm
+        self.max_selected_items = max_selected_items
+        self.filter = filter
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, force_plaintext=True, max_length=150, allow_none=True
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        conversation_multi_select = self._attributes()
+        conversation_multi_select["action_id"] = self.action_id
+        if self.initial_conversations:
+            conversation_multi_select[
+                "intial_conversations"
+            ] = self.initial_conversations
+        if self.default_to_current_conversation:
+            conversation_multi_select[
+                "default_to_current_conversation"
+            ] = self.default_to_current_conversation
+        if self.confirm:
+            conversation_multi_select["confirm"] = self.confirm._resolve()
+        if self.max_selected_items:
+            conversation_multi_select["max_selected_items"] = self.max_selected_items
+        if self.filter:
+            conversation_multi_select["filter"] = self.filter._resolve()
+        if self.focus_on_load:
+            conversation_multi_select["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            conversation_multi_select["placeholder"] = self.placeholder._resolve()
+        return conversation_multi_select
+
+
+class ChannelMultiSelectMenu(Element):
+    def __init__(
+        self,
+        action_id: str,
+        initial_channels: Optional[List[str]] = None,
+        confirm: ConfirmationDialogue = None,
+        max_selected_items: Optional[int] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ):
+        super().__init__(type_=ElementType.MULTI_SELECT_CHANNELS)
+        self.action_id = validate_action_id(action_id)
+        self.initial_channels = coerce_to_list(
+            initial_channels, class_=str, allow_none=True
+        )
+        self.confirm = confirm
+        self.max_selected_items = max_selected_items
+        self.focus_on_load = focus_on_load
+        self.placeholder = Text.to_text(
+            placeholder, force_plaintext=True, max_length=150, allow_none=True
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        channel_multi_select = self._attributes()
+        channel_multi_select["action_id"] = self.action_id
+        if self.initial_channels:
+            channel_multi_select["initial_channels"] = [
+                initial_option._resolve() for initial_option in self.initial_channels
+            ]
+        if self.confirm:
+            channel_multi_select["confirm"] = self.confirm._resolve()
+        if self.max_selected_items:
+            channel_multi_select["max_selected_items"] = self.max_selected_items
+        if self.focus_on_load:
+            channel_multi_select["focus_on_load"] = self.focus_on_load
+        if self.placeholder:
+            channel_multi_select["placeholder"] = self.placeholder._resolve()
+        return channel_multi_select
 
 
 class NumberInput(Element):
@@ -341,14 +601,7 @@ class NumberInput(Element):
 
 class OverflowMenu(Element):
     """
-    This is like a cross between a button and a select menu - when a user clicks
-    on this overflow button, they will be presented with a list of options to choose
-    from. Unlike the select menu, there is no typeahead field, and the button always
-    appears with an ellipsis ("…") rather than customizable text.
-
-    As such, it is usually used if you want a more compact layout than a select menu,
-    or to supply a list of less visually important actions after a row of buttons.
-    You can also specify simple URL links as overflow menu options, instead of actions.
+    Context menu for additional options (think '...').
     """
 
     def __init__(
@@ -482,16 +735,12 @@ class StaticSelectMenu(Element):
             raise InvalidUsageError(
                 "Cannot set both `options` and `option_groups` parameters."
             )
-        if options and len(options) > 100:
-            raise InvalidUsageError(
-                f"`options` count ({len(options)}) exceeds Maximum number of 100."
-            )
-        self.options = options
-        if option_groups and len(option_groups) > 100:
-            raise InvalidUsageError(
-                f"`option_groups` count ({len(option_groups)}) exceeds Maximum number of 100."
-            )
-        self.option_groups = option_groups
+        self.options = coerce_to_list(
+            options, class_=Option, allow_none=True, max_size=100
+        )
+        self.option_groups = coerce_to_list(
+            option_groups, class_=OptionGroup, allow_none=True, max_size=100
+        )
         if options and initial_option and not isinstance(initial_option, Option):
             raise InvalidUsageError(
                 "If using `options` then `initial_option` must also be of type `Option`, "

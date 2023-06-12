@@ -6,8 +6,7 @@
             "block_id": "1",
             "text": {
                 "type": "mrkdwn",
-                "text": "first section block",
-                "verbatim": false
+                "text": "first section block"
             }
         },
         {
@@ -19,8 +18,7 @@
             "block_id": "3",
             "text": {
                 "type": "mrkdwn",
-                "text": "second section block",
-                "verbatim": false
+                "text": "second section block"
             }
         }
     ],
