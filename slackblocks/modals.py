@@ -1,4 +1,3 @@
-from enum import Enum
 from json import dumps
 from typing import Any, Dict
 

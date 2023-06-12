@@ -295,7 +295,7 @@ class NumberInput(Element):
             if not is_decimal_allowed:
                 if isinstance(min_value, float):
                     raise InvalidUsageError(
-                        f"`min_value` ({min_value}) cannot be a float when " 
+                        f"`min_value` ({min_value}) cannot be a float when "
                         "`is_decimal_allowed` is `False`"
                     )
         if max_value:
@@ -494,8 +494,8 @@ class StaticSelectMenu(Element):
         self.option_groups = option_groups
         if options and initial_option and not isinstance(initial_option, Option):
             raise InvalidUsageError(
-                f"If using `options` then `initial_option` must also be of type `Option`, "
-                "not `{type(initial_option)}`."
+                "If using `options` then `initial_option` must also be of type `Option`, "
+                f"not `{type(initial_option)}`."
             )
         if (
             option_groups
@@ -503,8 +503,8 @@ class StaticSelectMenu(Element):
             and not isinstance(initial_option, OptionGroup)
         ):
             raise InvalidUsageError(
-                f"If using `option_groups` then `initial_option` must also be of type "
-                "`OptionGroup`, not `{type(initial_option)}`."
+                "If using `option_groups` then `initial_option` must also be of type "
+                f"`OptionGroup`, not `{type(initial_option)}`."
             )
         self.initial_option = initial_option
         self.confirm = confirm
