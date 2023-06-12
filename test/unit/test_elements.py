@@ -21,7 +21,6 @@ from slackblocks.elements import (
 )
 from slackblocks.objects import (
     InputParameter,
-    Option,
     Text,
     TextType,
     Trigger,
