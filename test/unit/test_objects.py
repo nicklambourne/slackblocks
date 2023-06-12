@@ -62,7 +62,7 @@ def test_text_coerce_from_text() -> None:
 
 
 def test_text_allow_none() -> None:
-    assert Text.to_text(None, allow_none=True) == None
+    assert Text.to_text(None, allow_none=True) is None
 
 
 def test_text_disallow_none() -> None:
