@@ -48,11 +48,8 @@ class CompositionObject:
     def _resolve(self) -> Dict[str, Any]:
         pass
 
-    def json(self) -> str:
-        return dumps(self._resolve(), indent=4)
-
     def __repr__(self) -> str:
-        return self.json()
+        return dumps(self._resolve(), indent=4)
 
 
 class TextType(Enum):

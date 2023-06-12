@@ -1,3 +1,6 @@
+import pytest
+
+from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
     ConfirmationDialogue,
     ConversationFilter,
@@ -23,6 +26,58 @@ INPUT_PARAMETERS = [
         value="B",
     ),
 ]
+
+
+def test_text_basic() -> None:
+    assert fetch_sample(path="test/samples/objects/text_plaintext_basic.json") == repr(
+        Text(text="hi", type_=TextType.PLAINTEXT)
+    )
+    assert fetch_sample(path="test/samples/objects/text_markdown_basic.json") == repr(
+        Text(text="hi", type_=TextType.MARKDOWN)
+    )
+
+
+def test_text_plaintext_emoji() -> None:
+    assert fetch_sample(path="test/samples/objects/text_plaintext_emoji.json") == repr(
+        Text(text="hi", type_=TextType.PLAINTEXT, emoji=True)
+    )
+
+
+def test_text_markdown_verbatim() -> None:
+    assert fetch_sample(
+        path="test/samples/objects/text_markdown_verbatim.json"
+    ) == repr(Text(text="hi", type_=TextType.MARKDOWN, verbatim=True))
+
+
+def test_text_coerce_from_string() -> None:
+    assert fetch_sample(path="test/samples/objects/text_markdown_basic.json") == repr(
+        Text.to_text("hi")
+    )
+
+
+def test_text_coerce_from_text() -> None:
+    assert fetch_sample(path="test/samples/objects/text_markdown_basic.json") == repr(
+        Text.to_text(Text("hi"))
+    )
+
+
+def test_text_allow_none() -> None:
+    assert Text.to_text(None, allow_none=True) == None
+
+
+def test_text_disallow_none() -> None:
+    with pytest.raises(InvalidUsageError):
+        assert Text.to_text(None)
+
+
+def test_text_coerce_from_invalid() -> None:
+    with pytest.raises(InvalidUsageError):
+        assert Text.to_text(123)
+
+
+def test_text_coerce_max_length_exceeded() -> None:
+    with pytest.raises(InvalidUsageError):
+        assert Text.to_text("abcdef", max_length=5)
 
 
 def test_confirmation_dialogue_basic() -> None:
