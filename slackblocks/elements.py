@@ -129,7 +129,7 @@ class CheckboxGroup(Element):
         super().__init__(type_=ElementType.CHECKBOXES)
         self.action_id = validate_action_id(action_id)
         self.options = coerce_to_list(options, Option)
-        self.initial_options = coerce_to_list(initial_options, Option)
+        self.initial_options = coerce_to_list(initial_options, Option, allow_none=True)
         self.confirm = confirm
         self.focus_on_load = focus_on_load
 
