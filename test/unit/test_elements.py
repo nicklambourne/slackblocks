@@ -24,13 +24,7 @@ from slackblocks.elements import (
     UserSelectMenu,
     WorkflowButton,
 )
-from slackblocks.objects import (
-    InputParameter,
-    Text,
-    TextType,
-    Trigger,
-    Workflow,
-)
+from slackblocks.objects import InputParameter, Text, TextType, Trigger, Workflow
 
 from .utils import OPTION_A, THREE_OPTIONS, TWO_OPTIONS, fetch_sample
 
@@ -99,35 +93,52 @@ def test_image_basic() -> None:
 
 
 def test_multi_select_channel() -> None:
-    multi_select_channel = ChannelMultiSelectMenu(action_id="multi_channels_select", placeholder=Text("Select channels", type_=TextType.PLAINTEXT))
+    multi_select_channel = ChannelMultiSelectMenu(
+        action_id="multi_channels_select",
+        placeholder=Text("Select channels", type_=TextType.PLAINTEXT),
+    )
     assert fetch_sample(path="test/samples/elements/multi_select_channel.json") == repr(
         multi_select_channel
     )
 
 
 def test_multi_select_conversation() -> None:
-    multi_select_conversation = ConversationMultiSelectMenu(action_id="multi_conversations_select", placeholder=Text("Select conversations", type_=TextType.PLAINTEXT))
+    multi_select_conversation = ConversationMultiSelectMenu(
+        action_id="multi_conversations_select",
+        placeholder=Text("Select conversations", type_=TextType.PLAINTEXT),
+    )
     assert fetch_sample(
         path="test/samples/elements/multi_select_conversation.json"
     ) == repr(multi_select_conversation)
 
 
 def test_multi_select_external() -> None:
-    multi_select_external = ExternalMultiSelectMenu(action_id="multi_external_select", placeholder=Text("Select items", type_=TextType.PLAINTEXT), min_query_length=3)
+    multi_select_external = ExternalMultiSelectMenu(
+        action_id="multi_external_select",
+        placeholder=Text("Select items", type_=TextType.PLAINTEXT),
+        min_query_length=3,
+    )
     assert fetch_sample(
         path="test/samples/elements/multi_select_external.json"
     ) == repr(multi_select_external)
 
 
 def test_multi_select_static() -> None:
-    multi_select_static = StaticMultiSelectMenu(action_id="multi_static_select", placeholder=Text("Select one or more", type_=TextType.PLAINTEXT), options=TWO_OPTIONS)
+    multi_select_static = StaticMultiSelectMenu(
+        action_id="multi_static_select",
+        placeholder=Text("Select one or more", type_=TextType.PLAINTEXT),
+        options=TWO_OPTIONS,
+    )
     assert fetch_sample(path="test/samples/elements/multi_select_static.json") == repr(
         multi_select_static
     )
 
 
 def test_multi_select_user() -> None:
-    multi_select_user = UserMultiSelectMenu(action_id="multi_users_select", placeholder=Text("Select one or more users", type_=TextType.PLAINTEXT))
+    multi_select_user = UserMultiSelectMenu(
+        action_id="multi_users_select",
+        placeholder=Text("Select one or more users", type_=TextType.PLAINTEXT),
+    )
     assert fetch_sample(path="test/samples/elements/multi_select_user.json") == repr(
         multi_select_user
     )

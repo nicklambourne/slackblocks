@@ -1,4 +1,4 @@
-from slackblocks import Modal, HomeTabView
+from slackblocks import HomeTabView, Modal
 from slackblocks.blocks import DividerBlock, SectionBlock
 
 from .utils import fetch_sample
