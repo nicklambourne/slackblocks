@@ -1,10 +1,7 @@
-from abc import abstractmethod
 from enum import Enum
 from json import dumps
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict
 
-from slackblocks.blocks import Block
-from slackblocks.objects import Text, TextLike
 from slackblocks.views import ModalView
 
 

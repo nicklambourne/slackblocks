@@ -2,12 +2,11 @@
 Block elements can be used inside of section, context, input and actions layout blocks.
 See: https://api.slack.com/reference/block-kit/block-elements?ref=bk
 """
-import re
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from json import dumps
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from .errors import InvalidUsageError
 from .objects import (
@@ -296,18 +295,21 @@ class NumberInput(Element):
             if not is_decimal_allowed:
                 if isinstance(min_value, float):
                     raise InvalidUsageError(
-                        f"`min_value` ({min_value}) cannot be a float when `is_decimal_allowed` is `False`"
+                        f"`min_value` ({min_value}) cannot be a float when " 
+                        "`is_decimal_allowed` is `False`"
                     )
         if max_value:
             if not is_decimal_allowed:
                 if isinstance(max_value, float):
                     raise InvalidUsageError(
-                        f"`max_value` ({max_value}) cannot be a float when `is_decimal_allowed` is `False`"
+                        f"`max_value` ({max_value}) cannot be a float when "
+                        "`is_decimal_allowed` is `False`"
                     )
         if (min_value or min_value == 0) and (max_value or max_value == 0):
             if min_value > max_value:
                 raise InvalidUsageError(
-                    f"`min_value` ({min_value}) cannot be greater than `max_value` ({min_value})"
+                    f"`min_value` ({min_value}) cannot be greater than "
+                    "`max_value` ({min_value})"
                 )
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
@@ -492,7 +494,8 @@ class StaticSelectMenu(Element):
         self.option_groups = option_groups
         if options and initial_option and not isinstance(initial_option, Option):
             raise InvalidUsageError(
-                f"If using `options` then `initial_option` must also be of type `Option`, not `{type(initial_option)}`."
+                f"If using `options` then `initial_option` must also be of type `Option`, "
+                "not `{type(initial_option)}`."
             )
         if (
             option_groups
@@ -500,7 +503,8 @@ class StaticSelectMenu(Element):
             and not isinstance(initial_option, OptionGroup)
         ):
             raise InvalidUsageError(
-                f"If using `option_groups` then `initial_option` must also be of type `OptionGroup`, not `{type(initial_option)}`."
+                f"If using `option_groups` then `initial_option` must also be of type "
+                "`OptionGroup`, not `{type(initial_option)}`."
             )
         self.initial_option = initial_option
         self.confirm = confirm
@@ -761,7 +765,7 @@ class ButtonStyle(Enum):
         if isinstance(style, (str, None)):
             return ButtonStyle[style]
         raise InvalidUsageError(
-            f"Can only coerce to ButtonStyle from ButtonStyle or string."
+            f"Can only coerce to ButtonStyle from ButtonStyle or string, not {type(style)}."
         )
 
 

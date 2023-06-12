@@ -3,7 +3,7 @@ Composition objects used inside of Block objects.
 See: https://api.slack.com/reference/block-kit/composition-objects?ref=bk
 """
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
@@ -118,13 +118,13 @@ class Text(CompositionObject):
         elif isinstance(text, str):
             if max_length and len(text) > max_length:
                 raise InvalidUsageError(
-                    f"Text length exceeds Slack-imposed limit (max_length)"
+                    f"Text length exceeds Slack-imposed limit ({max_length})"
                 )
             return Text(text=text, type_=type_)
         elif isinstance(text, Text):
             if max_length and len(text.text) > max_length:
                 raise InvalidUsageError(
-                    f"Text length exceeds Slack-imposed limit (max_length)"
+                    f"Text length exceeds Slack-imposed limit ({max_length})"
                 )
             return Text(
                 text=text.text, type_=type_, emoji=text.emoji, verbatim=text.verbatim
@@ -211,7 +211,7 @@ class Option(CompositionObject):
         self.url = url
 
     def _resolve(self) -> Dict[str, Any]:
-        option = {}  ## Does not include type in JSON
+        option = {}  # Does not include type in JSON
         option["text"] = self.text._resolve()
         option["value"] = self.value
         if self.description is not None:
@@ -276,7 +276,8 @@ class DispatchActionConfiguration(CompositionObject):
 
 class ConversationFilter(CompositionObject):
     """
-    Provides a way to filter the list of options in a conversations select menu or conversations multi-select menu.
+    Provides a way to filter the list of options in a conversations select menu or
+    conversations multi-select menu.
     """
 
     def __init__(
@@ -292,7 +293,8 @@ class ConversationFilter(CompositionObject):
             or exclude_bot_users is not None
         ):
             raise InvalidUsageError(
-                "One of `include`, `exclude_external_shared_channels`, or `exclude_bot_users` is required."
+                "One of `include`, `exclude_external_shared_channels`, or "
+                "`exclude_bot_users` is required."
             )
         self.include = coerce_to_list(include, str, allow_none=True)
         self.exclude_external_shared_channels = exclude_external_shared_channels

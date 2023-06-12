@@ -17,7 +17,8 @@ def coerce_to_list(
         return None
     if object_or_objects is None and not allow_none:
         raise InvalidUsageError(
-            f"Type of {object_or_objects} ({type(object_or_objects)})) is None should be type {class_}."
+            f"Type of {object_or_objects} ({type(object_or_objects)})) is "
+            "None should be type {class_}."
         )
 
     if isinstance(object_or_objects, List):
@@ -84,6 +85,7 @@ def validate_string(
         length = len(string)
         if max_length and length > max_length:
             raise InvalidUsageError(
-                f"Argument to field `{field_name}` ({length} characters) exceeds length limit of {max_length} characters"
+                f"Argument to field `{field_name}` ({length} characters) "
+                "exceeds length limit of {max_length} characters"
             )
     return string
