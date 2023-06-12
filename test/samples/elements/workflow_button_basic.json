@@ -1,0 +1,22 @@
+{
+    "type": "workflow_button",
+    "text": {
+        "type": "plain_text",
+        "text": "Run Your Workflow"
+    },
+    "workflow": {
+        "trigger": {
+            "url": "https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c",
+            "customizable_input_parameters": [
+                {
+                    "name": "name_a",
+                    "value": "value_a"
+                },
+                {
+                    "name": "name_b",
+                    "value": "value_b"
+                }
+            ]
+        }
+    }
+}

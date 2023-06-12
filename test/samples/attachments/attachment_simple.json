@@ -5,8 +5,7 @@
             "block_id": "fake_block_id",
             "text": {
                 "type": "mrkdwn",
-                "text": "I like pretty colours",
-                "verbatim": false
+                "text": "I like pretty colours"
             }
         }
     ],

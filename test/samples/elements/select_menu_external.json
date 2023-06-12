@@ -1,0 +1,9 @@
+{
+    "type": "external_select",
+    "action_id": "external_select",
+    "min_query_length": 4,
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Select one item"
+    }
+}

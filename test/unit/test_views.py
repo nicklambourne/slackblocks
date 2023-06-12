@@ -1,16 +1,12 @@
-from slackblocks import Modal
+from slackblocks import HomeTabView, Modal
 from slackblocks.blocks import DividerBlock, SectionBlock
 
-
-def test_modal_without_blocks() -> None:
-    modal = Modal("Hello, world!", close="Close button", submit="Submit button")
-    with open("test/samples/modal_without_blocks.json", "r") as expected:
-        assert repr(modal) == expected.read()
+from .utils import fetch_sample
 
 
 def test_modal_with_blocks() -> None:
     modal = Modal(
-        "Hello, world!",
+        title="Hello, world!",
         close="Close button",
         submit="Submit button",
         blocks=[
@@ -19,13 +15,17 @@ def test_modal_with_blocks() -> None:
             SectionBlock(text="second section block", block_id="3"),
         ],
     )
-    with open("test/samples/modal_with_blocks.json", "r") as expected:
-        assert repr(modal) == expected.read()
+    assert fetch_sample("test/samples/views/modal_with_blocks.json") == repr(modal)
+
+
+def test_hometab_view() -> None:
+    view = HomeTabView(blocks=[SectionBlock(text="Example Block", block_id="fake_id")])
+    assert fetch_sample("test/samples/views/hometab_view.json") == repr(view)
 
 
 def test_to_dict() -> None:
     modal = Modal(
-        "Hello, world!",
+        title="Hello, world!",
         close="Close button",
         submit="Submit button",
         blocks=[SectionBlock(text="first section block", block_id="1")],
@@ -42,8 +42,10 @@ def test_to_dict() -> None:
                 "text": {
                     "type": "mrkdwn",
                     "text": "first section block",
-                    "verbatim": False,
                 },
             }
         ],
+        "clear_on_close": False,
+        "notify_on_close": False,
+        "submit_disabled": False,
     }

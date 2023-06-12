@@ -1,0 +1,8 @@
+{
+    "type": "channels_select",
+    "action_id": "channels_select",
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Select a channel"
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "type": "email_text_input",
+    "action_id": "email_input",
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Enter your email"
+    }
+}

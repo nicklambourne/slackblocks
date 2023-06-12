@@ -7,8 +7,7 @@
             "block_id": "fake_block1",
             "text": {
                 "type": "mrkdwn",
-                "text": "Block, One",
-                "verbatim": false
+                "text": "Block, One"
             }
         },
         {
@@ -30,8 +29,7 @@
                     "block_id": "fake_block1",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Block, One",
-                        "verbatim": false
+                        "text": "Block, One"
                     }
                 }
             ],
@@ -44,8 +42,7 @@
                     "block_id": "fake_block2",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Block, Two",
-                        "verbatim": false
+                        "text": "Block, Two"
                     }
                 },
                 {

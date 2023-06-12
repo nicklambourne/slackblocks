@@ -1,8 +1,15 @@
+"""
+Secondary (less important) content can be attached using the deprecated
+attachments API.
+See: https://api.slack.com/reference/messaging/attachments
+"""
 from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
-from .blocks import Block
-from .errors import InvalidUsageError
+
+from slackblocks.blocks import Block
+from slackblocks.errors import InvalidUsageError
+from slackblocks.utils import coerce_to_list, is_hex
 
 
 class Color(Enum):
@@ -20,6 +27,9 @@ class Color(Enum):
     ORANGE = "#ff8800"
     PURPLE = "#8800ff"
     BLACK = "#000000"
+
+    def __repr__(self) -> str:
+        return f"<slackblocks Color {self.name}: {self.value}>"
 
 
 class Field:
@@ -56,24 +66,21 @@ class Attachment:
 
     def __init__(
         self,
-        blocks: Optional[Union[List[Block], Block]] = None,
+        blocks: Optional[Union[Block, List[Block]]] = None,
         color: Optional[Union[str, Color]] = None,
     ):
-        if isinstance(blocks, List):
-            self.blocks = blocks
-        elif isinstance(blocks, Block):
-            self.blocks = [
-                blocks,
-            ]
-        else:
-            self.blocks = None
+        self.blocks = coerce_to_list(blocks, Block, allow_none=True)
         if type(color) is Color:
             self.color = color.value
         elif type(color) is str:
-            if len(color) == 7 and color.startswith("#"):
+            if len(color) == 7 and color.startswith("#") and is_hex(color[1:]):
                 self.color = color
+            elif len(color) == 6 and is_hex(color):
+                self.color = f"#{color}"
             else:
-                raise InvalidUsageError("Color must be a valid hex code (e.g. #ffffff)")
+                raise InvalidUsageError(
+                    "Color must be a valid hex code (e.g. `#ffffff`)"
+                )
         else:
             self.color = None
 

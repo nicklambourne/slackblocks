@@ -3,8 +3,7 @@
     "block_id": "fake_block_id",
     "text": {
         "type": "mrkdwn",
-        "text": "Test:",
-        "verbatim": false
+        "text": "Test:"
     },
     "fields": [
         {
@@ -13,8 +12,7 @@
         },
         {
             "type": "mrkdwn",
-            "text": "bar",
-            "verbatim": false
+            "text": "bar"
         }
     ]
 }
