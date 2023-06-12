@@ -94,7 +94,7 @@ class Text(CompositionObject):
         text["text"] = self.text
         if self.text_type == TextType.MARKDOWN:
             text["verbatim"] = self.verbatim
-        elif self.type == TextType.PLAINTEXT and self.emoji:
+        elif self.text_type == TextType.PLAINTEXT and self.emoji:
             text["emoji"] = self.emoji
         return text
 
@@ -105,23 +105,34 @@ class Text(CompositionObject):
         max_length: Optional[int] = None,
         allow_none: bool = False,
     ) -> Optional["Text"]:
-        type_ = TextType.PLAINTEXT if force_plaintext else TextType.MARKDOWN
+        original_type = text.text_type if isinstance(text, Text) else None
+        type_ = (
+            TextType.PLAINTEXT
+            if force_plaintext
+            else original_type or TextType.MARKDOWN
+        )
         if text is None:
             if allow_none:
                 return None
-            raise InvalidUsageError("This field cannon have the value None or ''")
-        elif type(text) is str:
+            raise InvalidUsageError("This field cannot have the value None or ''")
+        elif isinstance(text, str):
             if max_length and len(text) > max_length:
                 raise InvalidUsageError(
                     f"Text length exceeds Slack-imposed limit (max_length)"
                 )
             return Text(text=text, type_=type_)
-        else:
-            if max_length and len(text) > max_length:
+        elif isinstance(text, Text):
+            if max_length and len(text.text) > max_length:
                 raise InvalidUsageError(
                     f"Text length exceeds Slack-imposed limit (max_length)"
                 )
-            return Text(text=text.text, type_=type_)
+            return Text(
+                text=text.text, type_=type_, emoji=text.emoji, verbatim=text.verbatim
+            )
+        else:
+            raise InvalidUsageError(
+                f"Can only coerce Text object from `str` or `Text`, not `{type(text)}`"
+            )
 
     def __str__(self) -> str:
         return dumps(self._resolve())

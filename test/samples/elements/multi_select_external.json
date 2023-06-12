@@ -1,19 +1,9 @@
-[
-    {
-        "type": "section",
-        "block_id": "section678",
-        "text": {
-            "type": "mrkdwn",
-            "text": "Pick items from the list"
-        },
-        "accessory": {
-            "action_id": "text1234",
-            "type": "multi_external_select",
-            "placeholder": {
-                "type": "plain_text",
-                "text": "Select items"
-            },
-            "min_query_length": 3
-        }
-    }
-]
+{
+    "action_id": "text1234",
+    "type": "multi_external_select",
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Select items"
+    },
+    "min_query_length": 3
+}

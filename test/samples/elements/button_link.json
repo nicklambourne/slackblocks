@@ -1,8 +1,9 @@
 {
     "type": "button",
     "text": {
-      "type": "plain_text",
-      "text": "Link Button"
+        "type": "plain_text",
+        "text": "Link!"
     },
-    "url": "https://api.slack.com/block-kit"
+    "action_id": "button",
+    "url": "https://ndl.im/"
 }

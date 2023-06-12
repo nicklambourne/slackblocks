@@ -1,16 +1,8 @@
 {
-    "type": "input",
-    "block_id": "input123",
-    "label": {
+    "type": "email_text_input",
+    "action_id": "email_input",
+    "placeholder": {
         "type": "plain_text",
-        "text": "Email Address"
-    },
-    "element": {
-        "type": "email_text_input",
-        "action_id": "email_text_input-action",
-        "placeholder": {
-            "type": "plain_text",
-            "text": "Enter an email"
-        }
+        "text": "Enter your email"
     }
 }

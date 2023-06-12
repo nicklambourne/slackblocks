@@ -1,0 +1,10 @@
+{
+    "type": "timepicker",
+    "action_id": "timepicker",
+    "initial_time": "12:00",
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Select your time"
+    },
+    "timezone": "Australia/Sydney"
+}

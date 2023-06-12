@@ -1,12 +1,4 @@
 {
-    "type": "input",
-    "element": {
-        "type": "url_text_input",
-        "action_id": "url_text_input-action"
-    },
-    "label": {
-        "type": "plain_text",
-        "text": "Label",
-        "emoji": true
-    }
+    "type": "url_text_input",
+    "action_id": "url_text_input"
 }

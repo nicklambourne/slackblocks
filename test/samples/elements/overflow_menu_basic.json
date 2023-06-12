@@ -1,49 +1,27 @@
 {
-    "type": "section",
-    "block_id": "section 890",
-    "text": {
-        "type": "mrkdwn",
-        "text": "This is a section block with an overflow menu."
-    },
-    "accessory": {
-        "type": "overflow",
-        "options": [
-            {
-                "text": {
-                    "type": "plain_text",
-                    "text": "*this is plain_text text*"
-                },
-                "value": "value-0"
+    "type": "overflow",
+    "action_id": "overflow",
+    "options": [
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "A"
             },
-            {
-                "text": {
-                    "type": "plain_text",
-                    "text": "*this is plain_text text*"
-                },
-                "value": "value-1"
+            "value": "A"
+        },
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "B"
             },
-            {
-                "text": {
-                    "type": "plain_text",
-                    "text": "*this is plain_text text*"
-                },
-                "value": "value-2"
+            "value": "B"
+        },
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "C"
             },
-            {
-                "text": {
-                    "type": "plain_text",
-                    "text": "*this is plain_text text*"
-                },
-                "value": "value-3"
-            },
-            {
-                "text": {
-                    "type": "plain_text",
-                    "text": "*this is plain_text text*"
-                },
-                "value": "value-4"
-            }
-        ],
-        "action_id": "overflow"
-    }
+            "value": "C"
+        }
+    ]
 }

@@ -1,10 +1,10 @@
 {
     "type": "button",
     "text": {
-      "type": "plain_text",
-      "text": "Save"
+        "type": "plain_text",
+        "text": "Load"
     },
+    "action_id": "button",
     "style": "primary",
-    "value": "click_me_123",
-    "action_id": "button"
+    "value": "im_a_style_button"
 }

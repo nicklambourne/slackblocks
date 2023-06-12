@@ -1,19 +1,9 @@
-[
-    {
-        "type": "section",
-        "block_id": "section678",
-        "text": {
-            "type": "mrkdwn",
-            "text": "Pick an item from the dropdown list"
-        },
-        "accessory": {
-            "action_id": "text1234",
-            "type": "external_select",
-            "placeholder": {
-                "type": "plain_text",
-                "text": "Select an item"
-            },
-            "min_query_length": 3
-        }
+{
+    "type": "external_select",
+    "action_id": "external_select",
+    "min_query_length": 4,
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Select one item"
     }
-]
+}

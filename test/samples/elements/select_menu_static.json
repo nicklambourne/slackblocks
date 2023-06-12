@@ -1,6 +1,6 @@
 {
-    "type": "radio_buttons",
-    "action_id": "radio_buttons",
+    "type": "static_select",
+    "action_id": "static_select",
     "options": [
         {
             "text": {
@@ -24,11 +24,8 @@
             "value": "C"
         }
     ],
-    "initial_option": {
-        "text": {
-            "type": "plain_text",
-            "text": "A"
-        },
-        "value": "A"
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Select one item"
     }
 }
