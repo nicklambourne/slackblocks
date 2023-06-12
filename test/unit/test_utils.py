@@ -25,7 +25,7 @@ def test_coerce_to_list_wrong_class() -> None:
 
 
 def test_coerce_to_list_allow_none() -> None:
-    assert coerce_to_list(None, class_=str, allow_none=True) == None
+    assert coerce_to_list(None, class_=str, allow_none=True) is None
 
 
 def test_coerce_to_list_disallow_none() -> None:
@@ -56,7 +56,7 @@ def test_validate_validate_action_id_basic() -> None:
 
 
 def test_validate_validate_action_id_allow_none() -> None:
-    assert validate_action_id(None, allow_none=True) == None
+    assert validate_action_id(None, allow_none=True) is None
 
 
 def test_validate_validate_action_id_disallow_none() -> None:
@@ -79,7 +79,7 @@ def test_validate_string_basic() -> None:
 
 
 def test_validate_string_allow_none() -> None:
-    assert validate_string(None, field_name="field", allow_none=True) == None
+    assert validate_string(None, field_name="field", allow_none=True) is None
 
 
 def test_validate_string_disallow_none() -> None:
