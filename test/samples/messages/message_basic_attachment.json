@@ -6,15 +6,14 @@
             "blocks": [
                 {
                     "type": "section",
-                    "block_id": "fake_block_id",
+                    "block_id": "block1",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Hello, world!",
-                        "verbatim": false
+                        "text": "Hello, world!"
                     }
                 }
             ],
-            "color": "#ffff00"
+            "color": "#000000"
         }
     ],
     "text": ""

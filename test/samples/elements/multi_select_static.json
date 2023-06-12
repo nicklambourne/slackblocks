@@ -1,0 +1,24 @@
+{
+    "type": "multi_static_select",
+    "action_id": "multi_static_select",
+    "options": [
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "A"
+            },
+            "value": "A"
+        },
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "B"
+            },
+            "value": "B"
+        }
+    ],
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Select one or more"
+    }
+}

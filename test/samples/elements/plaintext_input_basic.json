@@ -1,0 +1,8 @@
+{
+    "type": "plain_text_input",
+    "action_id": "plaintext_input",
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Enter your plain text"
+    }
+}

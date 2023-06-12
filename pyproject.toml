@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "slackblocks"
-version = "0.3.1"
+version = "0.9.6"
 description = "Python wrapper for the Slack Blocks API"
 authors = [
     "Nicholas Lambourne <dev@ndl.im>",
@@ -18,7 +18,7 @@ keywords = [
     "messaging", 
     "message generation", 
     "slack blocks", 
-    "blocks"
+    "blocks",
 ]
 classifiers=[
     "Programming Language :: Python :: 3.7",

@@ -1,0 +1,5 @@
+{
+    "type": "number_input",
+    "is_decimal_allowed": false,
+    "action_id": "number_input"
+}

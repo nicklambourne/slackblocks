@@ -1,0 +1,27 @@
+{
+    "type": "overflow",
+    "action_id": "overflow",
+    "options": [
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "A"
+            },
+            "value": "A"
+        },
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "B"
+            },
+            "value": "B"
+        },
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "C"
+            },
+            "value": "C"
+        }
+    ]
+}

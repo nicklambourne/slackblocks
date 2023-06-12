@@ -1,10 +1,24 @@
-from abc import abstractmethod, ABC
+"""
+Blocks are a series of components that can be combined to create rich and
+interactive messages.
+See: https://api.slack.com/reference/block-kit/blocks?ref=bk
+"""
+from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 from uuid import uuid4
-from .elements import Element, ElementType, Text, TextType
-from .errors import InvalidUsageError
+
+from slackblocks.elements import Element, ElementType
+from slackblocks.errors import InvalidUsageError
+from slackblocks.objects import (
+    CompositionObject,
+    CompositionObjectType,
+    Text,
+    TextLike,
+    TextType,
+)
+from slackblocks.utils import coerce_to_list
 
 
 class BlockType(Enum):
@@ -46,40 +60,56 @@ class Block(ABC):
         return dumps(self._resolve(), indent=4)
 
 
-class SectionBlock(Block):
+class ActionsBlock(Block):
     """
-    A section is one of the most flexible blocks available -
-    it can be used as a simple text block, in combination with text fields,
-    or side-by-side with any of the available block elements.
+    A block that is used to hold interactive elements.
     """
 
     def __init__(
         self,
-        text: Optional[Union[str, Text]] = None,
+        elements: Optional[List[Union[Element, CompositionObject]]] = None,
         block_id: Optional[str] = None,
-        fields: Optional[List[Text]] = None,
-        accessory: Optional[Element] = None,
     ):
-        super().__init__(type_=BlockType.SECTION, block_id=block_id)
-        if text:
-            if type(text) is Text:
-                self.text = text
-            else:
-                self.text = Text(text)
-        else:
-            self.text = text
-        self.fields = fields
-        self.accessory = accessory
+        super().__init__(type_=BlockType.ACTIONS, block_id=block_id)
+        self.elements = coerce_to_list(
+            elements, (Element, CompositionObject), allow_none=True, max_size=25
+        )
 
-    def _resolve(self) -> Dict[str, Any]:
-        section = self._attributes()
-        if self.text:
-            section["text"] = self.text._resolve()
-        if self.fields:
-            section["fields"] = [field._resolve() for field in self.fields]
-        if self.accessory:
-            section["accessory"] = self.accessory._resolve()
-        return section
+    def _resolve(self):
+        actions = self._attributes()
+        actions["elements"] = [element._resolve() for element in self.elements]
+        return actions
+
+
+class ContextBlock(Block):
+    """
+    Displays message context, which can include both images and text.
+    """
+
+    def __init__(
+        self,
+        elements: Optional[List[Union[Element, CompositionObjectType]]] = None,
+        block_id: Optional[str] = None,
+    ):
+        super().__init__(type_=BlockType.CONTEXT, block_id=block_id)
+        self.elements = []
+        for element in elements:
+            if (
+                element.type == CompositionObjectType.TEXT
+                or element.type == ElementType.IMAGE
+            ):
+                self.elements.append(element)
+            else:
+                raise InvalidUsageError(
+                    f"Context blocks can only hold image and text elements, not {element.type}"
+                )
+        if len(self.elements) > 10:
+            raise InvalidUsageError("Context blocks can hold a maximum of ten elements")
+
+    def _resolve(self) -> Dict[str, any]:
+        context = self._attributes()
+        context["elements"] = [element._resolve() for element in self.elements]
+        return context
 
 
 class DividerBlock(Block):
@@ -93,6 +123,41 @@ class DividerBlock(Block):
 
     def _resolve(self):
         return self._attributes()
+
+
+class FileBlock(Block):
+    """
+    Displays a remote file.
+    """
+
+    def __init__(self, external_id: str, source: str, block_id: Optional[str]):
+        super().__init__(type_=BlockType.FILE, block_id=block_id)
+        self.external_id = external_id
+        self.source = source
+
+    def _resolve(self) -> Dict[str, any]:
+        file = self._attributes()
+        file["external_id"] = self.external_id
+        file["source"] = self.source
+        return file
+
+
+class HeaderBlock(Block):
+    """
+    A header is a plain-text block that displays in a larger, bold font.
+    """
+
+    def __init__(self, text: Union[str, Text], block_id: Optional[str] = None):
+        super().__init__(type_=BlockType.HEADER, block_id=block_id)
+        if type(text) is Text:
+            self.text = text
+        else:
+            self.text = Text(text, type_=TextType.PLAINTEXT, verbatim=False)
+
+    def _resolve(self) -> Dict[str, any]:
+        header = self._attributes()
+        header["text"] = self.text._resolve()
+        return header
 
 
 class ImageBlock(Block):
@@ -134,86 +199,31 @@ class ImageBlock(Block):
         return image
 
 
-class ActionsBlock(Block):
+class SectionBlock(Block):
     """
-    A block that is used to hold interactive elements.
-    """
-
-    def __init__(
-        self, elements: Optional[List[Element]] = None, block_id: Optional[str] = None
-    ):
-        super().__init__(type_=BlockType.ACTIONS, block_id=block_id)
-        if isinstance(elements, Element):
-            self.elements = [
-                elements,
-            ]
-        elif isinstance(elements, list) and all(
-            [isinstance(el, Element) for el in elements]
-        ):
-            self.elements = elements
-
-    def _resolve(self):
-        actions = self._attributes()
-        actions["elements"] = [element._resolve() for element in self.elements]
-        return actions
-
-
-class ContextBlock(Block):
-    """
-    Displays message context, which can include both images and text.
+    A section is one of the most flexible blocks available -
+    it can be used as a simple text block, in combination with text fields,
+    or side-by-side with any of the available block elements.
     """
 
     def __init__(
-        self, elements: Optional[List[Element]] = None, block_id: Optional[str] = None
+        self,
+        text: Optional[TextLike] = None,
+        block_id: Optional[str] = None,
+        fields: Optional[List[Text]] = None,
+        accessory: Optional[Element] = None,
     ):
-        super().__init__(type_=BlockType.CONTEXT, block_id=block_id)
-        self.elements = []
-        for element in elements:
-            if element.type == ElementType.TEXT or element.type == ElementType.IMAGE:
-                self.elements.append(element)
-            else:
-                raise InvalidUsageError(
-                    "Context blocks can only hold image and text elements"
-                )
-        if len(self.elements) > 10:
-            raise InvalidUsageError("Context blocks can hold a maximum of ten elements")
+        super().__init__(type_=BlockType.SECTION, block_id=block_id)
+        self.text = Text.to_text(text)
+        self.fields = fields
+        self.accessory = accessory
 
-    def _resolve(self) -> Dict[str, any]:
-        context = self._attributes()
-        context["elements"] = [element._resolve() for element in self.elements]
-        return context
-
-
-class FileBlock(Block):
-    """
-    Displays a remote file.
-    """
-
-    def __init__(self, external_id: str, source: str, block_id: Optional[str]):
-        super().__init__(type_=BlockType.FILE, block_id=block_id)
-        self.external_id = external_id
-        self.source = source
-
-    def _resolve(self) -> Dict[str, any]:
-        file = self._attributes()
-        file["external_id"] = self.external_id
-        file["source"] = self.source
-        return file
-
-
-class HeaderBlock(Block):
-    """
-    A header is a plain-text block that displays in a larger, bold font.
-    """
-
-    def __init__(self, text: Union[str, Text], block_id: Optional[str] = None):
-        super().__init__(type_=BlockType.HEADER, block_id=block_id)
-        if type(text) is Text:
-            self.text = text
-        else:
-            self.text = Text(text, type_=TextType.PLAINTEXT, verbatim=False)
-
-    def _resolve(self) -> Dict[str, any]:
-        header = self._attributes()
-        header["text"] = self.text._resolve()
-        return header
+    def _resolve(self) -> Dict[str, Any]:
+        section = self._attributes()
+        if self.text:
+            section["text"] = self.text._resolve()
+        if self.fields:
+            section["fields"] = [field._resolve() for field in self.fields]
+        if self.accessory:
+            section["accessory"] = self.accessory._resolve()
+        return section

@@ -1,0 +1,10 @@
+{
+    "type": "button",
+    "text": {
+        "type": "plain_text",
+        "text": "Load"
+    },
+    "action_id": "button",
+    "style": "primary",
+    "value": "im_a_style_button"
+}

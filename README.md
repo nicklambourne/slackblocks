@@ -8,11 +8,9 @@
 
 ## What is it?
 
-`slackblocks` is a Python API for building messages in the fancy new Slack Block Kit API.
+`slackblocks` is a Python API for building messages in the fancy Slack Block Kit API.
 
-It was created by [Nicholas Lambourne](https://github.com/nicklambourne) for the [UQCS Slack Bot](https://github.com/UQComputingSociety/uqcsbot) because he hates writing JSON.
-
-N.B: This is still WIP software and some of the more tricky interactive Block elements have yet to be implemented.
+It was created by [Nicholas Lambourne](https://github.com/nicklambourne) for the [UQCS Slack Bot](https://github.com/UQComputingSociety/uqcsbot) because he hates writing JSON, naturally this project has subsequently involved writing more JSON than if he'd done the original task by hand.
 
 ## Requirements
 `slackblocks` requires Python >= 3.7.
@@ -48,8 +46,7 @@ Will produce the following JSON string:
             "block_id": "992ceb6b-9ad4-496b-b8e6-1bd8a632e8b3",
             "text": {
                 "type": "mrkdwn",
-                "text": "Hello, world!",
-                "verbatim": false
+                "text": "Hello, world!"
             }
         }
     ]

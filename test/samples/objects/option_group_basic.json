@@ -1,0 +1,29 @@
+{
+    "label": {
+        "type": "plain_text",
+        "text": "Group A"
+    },
+    "options": [
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "A"
+            },
+            "value": "A"
+        },
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "B"
+            },
+            "value": "B"
+        },
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "C"
+            },
+            "value": "C"
+        }
+    ]
+}

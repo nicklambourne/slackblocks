@@ -1,0 +1,8 @@
+{
+    "type": "users_select",
+    "action_id": "users_select",
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Select one user"
+    }
+}

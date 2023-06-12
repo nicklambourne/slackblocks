@@ -1,0 +1,31 @@
+{
+    "type": "static_select",
+    "action_id": "static_select",
+    "options": [
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "A"
+            },
+            "value": "A"
+        },
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "B"
+            },
+            "value": "B"
+        },
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "C"
+            },
+            "value": "C"
+        }
+    ],
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Select one item"
+    }
+}

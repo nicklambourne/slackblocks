@@ -1,0 +1,45 @@
+{
+    "type": "actions",
+    "block_id": "fake_block_id",
+    "elements": [
+        {
+            "type": "checkboxes",
+            "action_id": "actionId-0",
+            "options": [
+                {
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*a*"
+                    },
+                    "value": "a",
+                    "description": {
+                        "type": "plain_text",
+                        "text": "*a*"
+                    }
+                },
+                {
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*b*"
+                    },
+                    "value": "b",
+                    "description": {
+                        "type": "plain_text",
+                        "text": "*b*"
+                    }
+                },
+                {
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*c*"
+                    },
+                    "value": "c",
+                    "description": {
+                        "type": "plain_text",
+                        "text": "*c*"
+                    }
+                }
+            ]
+        }
+    ]
+}

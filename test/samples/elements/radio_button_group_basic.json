@@ -1,0 +1,34 @@
+{
+    "type": "radio_buttons",
+    "action_id": "radio_buttons",
+    "options": [
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "A"
+            },
+            "value": "A"
+        },
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "B"
+            },
+            "value": "B"
+        },
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "C"
+            },
+            "value": "C"
+        }
+    ],
+    "initial_option": {
+        "text": {
+            "type": "plain_text",
+            "text": "A"
+        },
+        "value": "A"
+    }
+}
