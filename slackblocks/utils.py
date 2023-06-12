@@ -1,5 +1,5 @@
 from string import hexdigits
-from typing import Any, List, Optional, Union, Tuple, TypeVar
+from typing import Any, List, Optional, Tuple, TypeVar, Union
 
 from .errors import InvalidUsageError
 

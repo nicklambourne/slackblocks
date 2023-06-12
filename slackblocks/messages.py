@@ -1,9 +1,10 @@
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 
+from slackblocks.utils import coerce_to_list
+
 from .attachments import Attachment
 from .blocks import Block
-from slackblocks.utils import coerce_to_list
 
 
 class BaseMessage:

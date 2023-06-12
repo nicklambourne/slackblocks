@@ -1,4 +1,5 @@
 import pytest
+
 from slackblocks import Attachment
 from slackblocks.errors import InvalidUsageError
 

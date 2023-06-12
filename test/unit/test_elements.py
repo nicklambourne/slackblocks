@@ -1,23 +1,22 @@
 from slackblocks.elements import (
-    Button,
+    Button,  # TODO(nick): Multiselects
     ButtonStyle,
+    ChannelSelectMenu,
     CheckboxGroup,
+    ConversationSelectMenu,
     DatePicker,
     DateTimePicker,
     EmailInput,
+    ExternalSelectMenu,
     Image,
-    # TODO(nick): Multiselects
     NumberInput,
     OverflowMenu,
     PlainTextInput,
     RadioButtonGroup,
     StaticSelectMenu,
-    ChannelSelectMenu,
-    ConversationSelectMenu,
-    ExternalSelectMenu,
-    UserSelectMenu,
     TimePicker,
     URLInput,
+    UserSelectMenu,
     WorkflowButton,
 )
 from slackblocks.objects import (
@@ -29,16 +28,7 @@ from slackblocks.objects import (
     Workflow,
 )
 
-from ..utils import fetch_sample
-
-
-OPTION_A = Option(text=Text("A", type_=TextType.PLAINTEXT), value="A")
-OPTION_B = Option(text=Text("B", type_=TextType.PLAINTEXT), value="B")
-OPTION_C = Option(text=Text("C", type_=TextType.PLAINTEXT), value="C")
-TWO_OPTIONS = [OPTION_A, OPTION_B]
-THREE_OPTIONS = TWO_OPTIONS + [
-    OPTION_C,
-]
+from .utils import OPTION_A, THREE_OPTIONS, TWO_OPTIONS, fetch_sample
 
 
 def test_button_basic() -> None:

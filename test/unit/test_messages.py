@@ -1,4 +1,4 @@
-from slackblocks import Attachment, MessageResponse, Color, Message, SectionBlock
+from slackblocks import Attachment, Color, Message, MessageResponse, SectionBlock
 
 
 def test_basic_message() -> None:

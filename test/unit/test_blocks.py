@@ -3,11 +3,11 @@ from slackblocks import (
     CheckboxGroup,
     ContextBlock,
     DividerBlock,
+    HeaderBlock,
     ImageBlock,
     Option,
     SectionBlock,
     Text,
-    HeaderBlock,
     TextType,
 )
 

@@ -237,14 +237,14 @@ class OptionGroup(CompositionObject):
 
     def __init__(self, label: Union[str, Text], options: List[Option]):
         super().__init__(type_=CompositionObjectType.OPTION_GROUP)
-        self.label = Text.to_text(label, max_length=75)
+        self.label = Text.to_text(label, max_length=75, force_plaintext=True)
         if options:
             self.options = options
         else:
             raise InvalidUsageError("Field `options` cannot be empty")
 
     def _resolve(self) -> Dict[str, Any]:
-        option_group = self._attributes()
+        option_group = {}  # Does not include type in JSON
         option_group["label"] = self.label._resolve()
         option_group["options"] = [option._resolve() for option in self.options]
         return option_group

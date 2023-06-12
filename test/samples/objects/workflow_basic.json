@@ -1,0 +1,15 @@
+{
+    "trigger": {
+        "url": "https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c",
+        "customizable_input_parameters": [
+            {
+                "name": "A",
+                "value": "A"
+            },
+            {
+                "name": "B",
+                "value": "B"
+            }
+        ]
+    }
+}

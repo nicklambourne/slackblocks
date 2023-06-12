@@ -1,7 +1,9 @@
 # TODO(nick): enable in GH actions
 
 from os import environ
+
 from slack import WebClient
+
 from slackblocks import Attachment, Color, ImageBlock, Message, SectionBlock
 
 
