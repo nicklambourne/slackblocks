@@ -4,7 +4,7 @@ from slackblocks import Attachment, Color, Message, MessageResponse, SectionBloc
 def test_basic_message() -> None:
     block = SectionBlock("Hello, world!", block_id="fake_block_id")
     message = Message(channel="#slackblocks", blocks=block)
-    with open("test/samples/messages/message_simple.json", "r") as expected:
+    with open("test/samples/messages/message_basic.json", "r") as expected:
         assert repr(message) == expected.read()
 
 
