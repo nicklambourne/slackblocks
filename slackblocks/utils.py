@@ -18,7 +18,7 @@ def coerce_to_list(
     if object_or_objects is None and not allow_none:
         raise InvalidUsageError(
             f"Type of {object_or_objects} ({type(object_or_objects)})) is "
-            "None should be type {class_}."
+            f"None should be type {class_}."
         )
 
     if isinstance(object_or_objects, List):
