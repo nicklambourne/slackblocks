@@ -86,6 +86,6 @@ def validate_string(
         if max_length and length > max_length:
             raise InvalidUsageError(
                 f"Argument to field `{field_name}` ({length} characters) "
-                "exceeds length limit of {max_length} characters"
+                f"exceeds length limit of {max_length} characters"
             )
     return string
