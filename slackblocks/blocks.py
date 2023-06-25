@@ -215,15 +215,22 @@ class SectionBlock(Block):
     ):
         super().__init__(type_=BlockType.SECTION, block_id=block_id)
         if not text and not fields:
-            raise InvalidUsageError("Must supply either `text` or `fields` or `both` to SectionBlock.")
+            raise InvalidUsageError(
+                "Must supply either `text` or `fields` or `both` to SectionBlock."
+            )
         self.text = Text.to_text(text, max_length=3000, allow_none=True)
         self.fields = coerce_to_list(
-            [Text.to_text(field, max_length=2000, allow_none=False) for field in fields] if fields else None, 
-            class_=Text, 
+            [
+                Text.to_text(field, max_length=2000, allow_none=False)
+                for field in coerce_to_list(fields, class_=(str, Text), allow_none=True)
+            ]
+            if fields
+            else None,
+            class_=Text,
             allow_none=True,
             max_size=10,
         )
-        
+
         self.accessory = accessory
 
     def _resolve(self) -> Dict[str, Any]:
