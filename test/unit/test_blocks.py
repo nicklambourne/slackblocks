@@ -14,7 +14,7 @@ from slackblocks import (
     TextType,
 )
 
-from .utils import OPTION_A, THREE_OPTIONS, TWO_OPTIONS, fetch_sample
+from .utils import fetch_sample
 
 
 def test_basic_section_block() -> None:
