@@ -45,7 +45,4 @@ def test_to_dict() -> None:
                 },
             }
         ],
-        "clear_on_close": False,
-        "notify_on_close": False,
-        "submit_disabled": False,
     }
