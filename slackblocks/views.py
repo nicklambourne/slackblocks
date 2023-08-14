@@ -89,11 +89,11 @@ class ModalView(View):
             modal_view["close"] = self.close._resolve()
         if self.submit:
             modal_view["submit"] = self.submit._resolve()
-        if self.clear_on_close is not None:
+        if self.clear_on_close:
             modal_view["clear_on_close"] = self.clear_on_close
-        if self.notify_on_close is not None:
+        if self.notify_on_close:
             modal_view["notify_on_close"] = self.notify_on_close
-        if self.submit_disabled is not None:
+        if self.submit_disabled:
             modal_view["submit_disabled"] = self.submit_disabled
         return modal_view
 
