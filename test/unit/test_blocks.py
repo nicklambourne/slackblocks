@@ -157,14 +157,12 @@ def test_basic_input_block() -> None:
         block_id="fake_block_id",
         optional=True,
     )
-    assert fetch_sample(
-        path="test/samples/blocks/input_block_only.json"
-    ) == repr(block)
+    assert fetch_sample(path="test/samples/blocks/input_block_only.json") == repr(block)
 
 
 def test_input_block_invalid_element() -> None:
     with pytest.raises(InvalidUsageError):
-        block = InputBlock(
+        InputBlock(
             label=Text("Label", type_=TextType.PLAINTEXT, emoji=True),
             hint=Text("Hint", type_=TextType.PLAINTEXT, emoji=True),
             element=Text("hello"),
@@ -174,7 +172,7 @@ def test_input_block_invalid_element() -> None:
 
 def test_input_block_invalid_label_type() -> None:
     with pytest.raises(InvalidUsageError):
-        block = InputBlock(
+        InputBlock(
             label=Text("Label", type_=TextType.MARKDOWN),
             hint=Text("Hint", type_=TextType.PLAINTEXT, emoji=True),
             element=Text("hello"),

@@ -10,22 +10,22 @@ from typing import Any, Dict, List, Optional, Union
 from uuid import uuid4
 
 from slackblocks.elements import (
-    Element, 
-    ElementType,
-    PlainTextInput,
-    CheckboxGroup,
-    RadioButtonGroup,
-    DatePicker,
-    ChannelSelectMenu,
     ChannelMultiSelectMenu,
-    ConversationSelectMenu,
+    ChannelSelectMenu,
+    CheckboxGroup,
     ConversationMultiSelectMenu,
-    ExternalSelectMenu,
+    ConversationSelectMenu,
+    DatePicker,
+    Element,
+    ElementType,
     ExternalMultiSelectMenu,
-    StaticSelectMenu,
+    ExternalSelectMenu,
+    PlainTextInput,
+    RadioButtonGroup,
     StaticMultiSelectMenu,
-    UserSelectMenu,
+    StaticSelectMenu,
     UserMultiSelectMenu,
+    UserSelectMenu,
 )
 from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
@@ -37,7 +37,6 @@ from slackblocks.objects import (
     TextType,
 )
 from slackblocks.utils import coerce_to_list
-
 
 ALLOWED_INPUT_ELEMENTS = (
     PlainTextInput,
@@ -66,7 +65,7 @@ class BlockType(Enum):
     SECTION = "section"
     DIVIDER = "divider"
     IMAGE = "image"
-    INPUT= "input"
+    INPUT = "input"
     ACTIONS = "actions"
     CONTEXT = "context"
     FILE = "file"
@@ -234,14 +233,15 @@ class ImageBlock(Block):
         if self.title:
             image["title"] = self.title._resolve()
         return image
-    
+
 
 class InputBlock(Block):
     """
-    A block that collects information from users - it can hold a plain-text 
-    input element, a checkbox element, a radio button element, a select 
+    A block that collects information from users - it can hold a plain-text
+    input element, a checkbox element, a radio button element, a select
     menu element, a multi-select menu element, or a datepicker.
     """
+
     def __init__(
         self,
         label: TextLike,
