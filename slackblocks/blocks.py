@@ -9,16 +9,51 @@ from json import dumps
 from typing import Any, Dict, List, Optional, Union
 from uuid import uuid4
 
-from slackblocks.elements import Element, ElementType
+from slackblocks.elements import (
+    ChannelMultiSelectMenu,
+    ChannelSelectMenu,
+    CheckboxGroup,
+    ConversationMultiSelectMenu,
+    ConversationSelectMenu,
+    DatePicker,
+    Element,
+    ElementType,
+    ExternalMultiSelectMenu,
+    ExternalSelectMenu,
+    PlainTextInput,
+    RadioButtonGroup,
+    StaticMultiSelectMenu,
+    StaticSelectMenu,
+    UserMultiSelectMenu,
+    UserSelectMenu,
+)
 from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
     CompositionObject,
     CompositionObjectType,
+    DispatchActionConfiguration,
     Text,
     TextLike,
     TextType,
 )
 from slackblocks.utils import coerce_to_list
+
+ALLOWED_INPUT_ELEMENTS = (
+    PlainTextInput,
+    CheckboxGroup,
+    RadioButtonGroup,
+    DatePicker,
+    ChannelSelectMenu,
+    ChannelMultiSelectMenu,
+    ConversationSelectMenu,
+    ConversationMultiSelectMenu,
+    ExternalSelectMenu,
+    ExternalMultiSelectMenu,
+    StaticSelectMenu,
+    StaticMultiSelectMenu,
+    UserSelectMenu,
+    UserMultiSelectMenu,
+)
 
 
 class BlockType(Enum):
@@ -30,6 +65,7 @@ class BlockType(Enum):
     SECTION = "section"
     DIVIDER = "divider"
     IMAGE = "image"
+    INPUT = "input"
     ACTIONS = "actions"
     CONTEXT = "context"
     FILE = "file"
@@ -197,6 +233,48 @@ class ImageBlock(Block):
         if self.title:
             image["title"] = self.title._resolve()
         return image
+
+
+class InputBlock(Block):
+    """
+    A block that collects information from users - it can hold a plain-text
+    input element, a checkbox element, a radio button element, a select
+    menu element, a multi-select menu element, or a datepicker.
+    """
+
+    def __init__(
+        self,
+        label: TextLike,
+        element: Element,
+        dispatch_action: Optional[DispatchActionConfiguration] = None,
+        block_id: Optional[str] = None,
+        hint: Optional[TextLike] = None,
+        optional: bool = False,
+    ):
+        super().__init__(type_=BlockType.INPUT, block_id=block_id)
+        self.label = Text.to_text(
+            label, force_plaintext=True, max_length=2000, allow_none=False
+        )
+        if not isinstance(element, ALLOWED_INPUT_ELEMENTS):
+            raise InvalidUsageError("")
+        self.element = element
+        self.dispatch_action = dispatch_action
+        self.hint = Text.to_text(
+            hint, force_plaintext=True, max_length=2000, allow_none=True
+        )
+        self.optional = optional
+
+    def _resolve(self) -> Dict[str, Any]:
+        input_block = self._attributes()
+        input_block["label"] = self.label._resolve()
+        input_block["element"] = self.element._resolve()
+        if self.dispatch_action:
+            input_block["dispatch_action"] = self.dispatch_action._resolve()
+        if self.hint:
+            input_block["hint"] = self.hint._resolve()
+        if self.optional:
+            input_block["optional"] = self.optional
+        return input_block
 
 
 class SectionBlock(Block):

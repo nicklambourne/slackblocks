@@ -6,6 +6,7 @@ from .blocks import (
     FileBlock,
     HeaderBlock,
     ImageBlock,
+    InputBlock,
     SectionBlock,
 )
 from .elements import (
