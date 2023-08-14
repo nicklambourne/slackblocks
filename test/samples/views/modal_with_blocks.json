@@ -33,8 +33,5 @@
     "submit": {
         "type": "plain_text",
         "text": "Submit button"
-    },
-    "clear_on_close": false,
-    "notify_on_close": false,
-    "submit_disabled": false
+    }
 }
