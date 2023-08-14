@@ -1,0 +1,19 @@
+{
+    "type": "input",
+    "block_id": "fake_block_id",
+    "label": {
+        "type": "plain_text",
+        "text": "Label",
+        "emoji": true
+    },
+    "element": {
+        "type": "plain_text_input",
+        "action_id": "action"
+    },
+    "hint": {
+        "type": "plain_text",
+        "text": "Hint",
+        "emoji": true
+    },
+    "optional": true
+}

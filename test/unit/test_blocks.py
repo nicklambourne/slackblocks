@@ -7,8 +7,10 @@ from slackblocks import (
     DividerBlock,
     HeaderBlock,
     ImageBlock,
+    InputBlock,
     InvalidUsageError,
     Option,
+    PlainTextInput,
     SectionBlock,
     Text,
     TextType,
@@ -145,3 +147,36 @@ def test_checkbox_action_block() -> None:
     assert fetch_sample(
         path="test/samples/blocks/actions_block_checkboxes.json"
     ) == repr(block)
+
+
+def test_basic_input_block() -> None:
+    block = InputBlock(
+        label=Text("Label", type_=TextType.PLAINTEXT, emoji=True),
+        hint=Text("Hint", type_=TextType.PLAINTEXT, emoji=True),
+        element=PlainTextInput(action_id="action"),
+        block_id="fake_block_id",
+        optional=True,
+    )
+    assert fetch_sample(
+        path="test/samples/blocks/input_block_only.json"
+    ) == repr(block)
+
+
+def test_input_block_invalid_element() -> None:
+    with pytest.raises(InvalidUsageError):
+        block = InputBlock(
+            label=Text("Label", type_=TextType.PLAINTEXT, emoji=True),
+            hint=Text("Hint", type_=TextType.PLAINTEXT, emoji=True),
+            element=Text("hello"),
+            block_id="fake_block_id",
+        )
+
+
+def test_input_block_invalid_label_type() -> None:
+    with pytest.raises(InvalidUsageError):
+        block = InputBlock(
+            label=Text("Label", type_=TextType.MARKDOWN),
+            hint=Text("Hint", type_=TextType.PLAINTEXT, emoji=True),
+            element=Text("hello"),
+            block_id="fake_block_id",
+        )
