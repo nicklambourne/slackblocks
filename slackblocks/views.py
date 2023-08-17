@@ -76,8 +76,8 @@ class ModalView(View):
             external_id=external_id,
         )
         self.title = Text.to_text(title, force_plaintext=True, max_length=24)
-        self.close = Text.to_text(close, force_plaintext=True, max_length=24)
-        self.submit = Text.to_text(submit, force_plaintext=True, max_length=24)
+        self.close = Text.to_text(close, force_plaintext=True, max_length=24, allow_none=True)
+        self.submit = Text.to_text(submit, force_plaintext=True, max_length=24, allow_none=True)
         self.clear_on_close = clear_on_close
         self.notify_on_close = notify_on_close
         self.submit_disabled = submit_disabled
