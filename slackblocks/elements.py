@@ -230,7 +230,7 @@ class EmailInput(Element):
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True
+            placeholder, max_length=150, force_plaintext=True, allow_none=True
         )
 
     def _resolve(self):
@@ -759,7 +759,7 @@ class StaticSelectMenu(Element):
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True
+            placeholder, max_length=150, force_plaintext=True, allow_none=True
         )
 
     def _resolve(self) -> Dict[str, Any]:
@@ -801,7 +801,10 @@ class ExternalSelectMenu(Element):
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True
+            placeholder,
+            max_length=150,
+            force_plaintext=True,
+            allow_none=True,
         )
 
     def _resolve(self) -> Dict[str, Any]:
@@ -835,7 +838,7 @@ class UserSelectMenu(Element):
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True
+            placeholder, max_length=150, force_plaintext=True, allow_none=True
         )
 
     def _resolve(self) -> Dict[str, Any]:
@@ -873,7 +876,10 @@ class ConversationSelectMenu(Element):
         self.filter = filter
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True
+            placeholder,
+            max_length=150,
+            force_plaintext=True,
+            allow_none=True,
         )
 
     def _resolve(self) -> Dict[str, Any]:
@@ -915,7 +921,10 @@ class ChannelSelectMenu(Element):
         self.response_url_enabled = response_url_enabled
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True
+            placeholder,
+            max_length=150,
+            force_plaintext=True,
+            allow_none=True,
         )
 
     def _resolve(self) -> Dict[str, Any]:
@@ -950,7 +959,10 @@ class TimePicker(Element):
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True
+            placeholder,
+            max_length=150,
+            force_plaintext=True,
+            allow_none=True,
         )
         self.timezone = timezone
 
@@ -985,7 +997,10 @@ class URLInput(Element):
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, force_plaintext=True, max_length=150, allow_none=True
+            placeholder,
+            force_plaintext=True,
+            max_length=150,
+            allow_none=True,
         )
 
     def _resolve(self) -> Dict[str, Any]:
