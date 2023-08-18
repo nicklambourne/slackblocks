@@ -3,7 +3,7 @@
 ![PyPI - License](https://img.shields.io/pypi/l/slackblocks)
 ![Python Versions](https://img.shields.io/pypi/pyversions/slackblocks)
 ![PyPI](https://img.shields.io/pypi/v/slackblocks?color=yellow&label=PyPI&logo=python&logoColor=white)
-[![Downloads](https://pepy.tech/badge/slackblocks)](https://pepy.tech/project/slackblocks)
+[![Downloads](https://www.pepy.tech/projects/slackblocks)](https://static.pepy.tech/badge/slackblocks)
 [![Build Status](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
 
 ## What is it?
