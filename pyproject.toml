@@ -43,6 +43,7 @@ wheel = "^0.40.0"
 slackclient = "^2.9.4" 
 black = "^23.1.0"
 flake8-pyproject = "^1.2.3"
+mkdocs = "^1.5.2"
 
 [build-system]
 requires = ["poetry-core"]
