@@ -8,6 +8,20 @@ def test_basic_message() -> None:
         assert repr(message) == expected.read()
 
 
+def test_message_with_optional_arguments() -> None:
+    block = SectionBlock("Hello, world!", block_id="fake_block_id")
+    message = Message(
+        channel="#slackblocks",
+        blocks=block,
+        unfurl_links=False,
+        unfurl_media=False,
+    )
+    with open(
+        "test/samples/messages/message_with_optional_arguments.json", "r"
+    ) as expected:
+        assert repr(message) == expected.read()
+
+
 def test_message_with_attachment() -> None:
     block = SectionBlock("Hello, world!", block_id="fake_block_id")
     attachment = Attachment(blocks=block, color=Color.YELLOW)
