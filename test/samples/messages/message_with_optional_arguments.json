@@ -1,0 +1,17 @@
+{
+    "channel": "#slackblocks",
+    "mrkdwn": true,
+    "blocks": [
+        {
+            "type": "section",
+            "block_id": "fake_block_id",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Hello, world!"
+            }
+        }
+    ],
+    "text": "",
+    "unfurl_links": false,
+    "unfurl_media": false
+}

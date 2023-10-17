@@ -81,8 +81,20 @@ class Message(BaseMessage):
         attachments: Optional[List[Attachment]] = None,
         thread_ts: Optional[str] = None,
         mrkdwn: bool = True,
+        unfurl_links: Optional[bool] = None,
+        unfurl_media: Optional[bool] = None,
     ):
         super().__init__(channel, text, blocks, attachments, thread_ts, mrkdwn)
+        self.unfurl_links = unfurl_links
+        self.unfurl_media = unfurl_media
+
+    def _resolve(self) -> Dict[str, Any]:
+        result = {**super()._resolve()}
+        if self.unfurl_links is not None:
+            result["unfurl_links"] = self.unfurl_links
+        if self.unfurl_media is not None:
+            result["unfurl_media"] = self.unfurl_media
+        return result
 
 
 class MessageResponse(BaseMessage):
