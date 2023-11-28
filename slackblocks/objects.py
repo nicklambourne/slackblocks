@@ -77,7 +77,9 @@ class Text(CompositionObject):
     ):
         super().__init__(type_=CompositionObjectType.TEXT)
         self.text_type = type_
-        self.text = validate_string(text, field_name="text", min_length=1, max_length=3000)
+        self.text = validate_string(
+            text, field_name="text", min_length=1, max_length=3000
+        )
         if self.text_type == TextType.MARKDOWN:
             self.verbatim = verbatim
             self.emoji = None
