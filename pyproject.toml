@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "slackblocks"
-version = "0.9.12"
+version = "0.9.13"
 description = "Python wrapper for the Slack Blocks API"
 authors = [
     "Nicholas Lambourne <dev@ndl.im>",
