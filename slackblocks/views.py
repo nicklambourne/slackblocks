@@ -49,6 +49,9 @@ class View:
         if self.external_id:
             view["external_id"] = self.external_id
         return view
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return self._resolve()
 
     def __repr__(self) -> str:
         return dumps(self._resolve(), indent=4)
