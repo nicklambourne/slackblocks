@@ -74,6 +74,7 @@ def validate_string(
     string: Optional[str],
     field_name: str,
     max_length: Optional[int] = None,
+    min_length: Optional[int] = None,
     allow_none: bool = False,
 ) -> Optional[str]:
     if string is None:
@@ -83,6 +84,11 @@ def validate_string(
             )
     else:
         length = len(string)
+        if min_length and length < min_length:
+            raise InvalidUsageError(
+                f"Argument to field `{field_name}` ({length} characters) "
+                f"is less than minimum length of {max_length} characters"
+            )
         if max_length and length > max_length:
             raise InvalidUsageError(
                 f"Argument to field `{field_name}` ({length} characters) "
