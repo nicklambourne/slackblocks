@@ -31,7 +31,6 @@ from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
     CompositionObject,
     CompositionObjectType,
-    DispatchActionConfiguration,
     Text,
     TextLike,
     TextType,
