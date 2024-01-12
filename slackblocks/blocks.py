@@ -246,7 +246,7 @@ class InputBlock(Block):
         self,
         label: TextLike,
         element: Element,
-        dispatch_action: Optional[DispatchActionConfiguration] = None,
+        dispatch_action: bool = False,
         block_id: Optional[str] = None,
         hint: Optional[TextLike] = None,
         optional: bool = False,
@@ -272,6 +272,8 @@ class InputBlock(Block):
             input_block["dispatch_action"] = self.dispatch_action._resolve()
         if self.hint:
             input_block["hint"] = self.hint._resolve()
+        if self.dispatch_action:
+            input_block["dispatch_action"] = self.dispatch_action
         if self.optional:
             input_block["optional"] = self.optional
         return input_block
