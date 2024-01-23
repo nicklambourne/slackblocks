@@ -267,8 +267,6 @@ class InputBlock(Block):
         input_block = self._attributes()
         input_block["label"] = self.label._resolve()
         input_block["element"] = self.element._resolve()
-        if self.dispatch_action:
-            input_block["dispatch_action"] = self.dispatch_action._resolve()
         if self.hint:
             input_block["hint"] = self.hint._resolve()
         if self.dispatch_action:
