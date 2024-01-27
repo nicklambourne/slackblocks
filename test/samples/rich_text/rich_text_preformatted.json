@@ -1,0 +1,15 @@
+{
+    "type": "rich_text",
+    "elements": [
+        {
+            "type": "rich_text_preformatted",
+            "elements": [
+                {
+                    "type": "text",
+                    "text": "{\n  \"object\": {\n    \"description\": \"this is an example of a json object\"\n  }\n}"
+                }
+            ],
+            "border": 0
+        }
+    ]
+}

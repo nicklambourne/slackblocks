@@ -1,0 +1,24 @@
+{
+    "type": "rich_text",
+    "block_id": "Vrzsu",
+    "elements": [
+        {
+            "type": "rich_text_quote",
+            "elements": [
+                {
+                    "type": "text",
+                    "text": "What we need is good examples in our documentation."
+                }
+            ]
+        },
+        {
+            "type": "rich_text_section",
+            "elements": [
+                {
+                    "type": "text",
+                    "text": "Yes - I completely agree, Luke!"
+                }
+            ]
+        }
+    ]
+}

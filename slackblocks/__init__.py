@@ -51,6 +51,15 @@ from .objects import (
     Trigger,
     Workflow,
 )
+from .rich_text import (
+    ListType,
+    RichText,
+    RichTextLink,
+    RichTextList,
+    RichTextPreformatted,
+    RichTextQuote,
+    RichTextSection,
+)
 from .views import HomeTabView, ModalView, View
 
 name = "slackblocks"

@@ -95,3 +95,20 @@ def validate_string(
                 f"exceeds length limit of {max_length} characters"
             )
     return string
+
+
+def validate_int(
+    num: Union[int, None],
+    min_: Optional[int] = None,
+    max_: Optional[int] = None,
+    allow_none: bool = False,
+) -> int:
+    if num is None and not allow_none:
+        raise InvalidUsageError(f"`num` is None, which is disallowed.")
+    if min_ is not None:
+        if num < min_:
+            raise InvalidUsageError(f"{num} is less than the minimum {min_}")
+    if max_ is not None:
+        if num > max_:
+            raise InvalidUsageError(f"{num} is less than the minimum {max_}")
+    return num
