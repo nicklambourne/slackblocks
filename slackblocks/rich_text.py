@@ -4,7 +4,7 @@ from json import dumps
 from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from .errors import InvalidUsageError
-from .utils import coerce_to_list, validate_int, validate_string
+from .utils import coerce_to_list, validate_int
 
 
 class RichTextObjectType(Enum):

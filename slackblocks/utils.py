@@ -104,7 +104,7 @@ def validate_int(
     allow_none: bool = False,
 ) -> int:
     if num is None and not allow_none:
-        raise InvalidUsageError(f"`num` is None, which is disallowed.")
+        raise InvalidUsageError("`num` is None, which is disallowed.")
     if min_ is not None:
         if num < min_:
             raise InvalidUsageError(f"{num} is less than the minimum {min_}")
