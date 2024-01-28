@@ -199,7 +199,7 @@ def test_basic_rich_text_block() -> None:
                     RichText(
                         "Most hardest, most honest known artist",
                         italic=True,
-                    )
+                    ),
                 ]
             ),
             block_id="fake_block_id",
