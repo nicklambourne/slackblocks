@@ -7,6 +7,7 @@ from .blocks import (
     HeaderBlock,
     ImageBlock,
     InputBlock,
+    RichTextBlock,
     SectionBlock,
 )
 from .elements import (

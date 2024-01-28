@@ -303,7 +303,7 @@ class RichTextBlock(Block):
         )
 
     def _resolve(self) -> Dict[str, Any]:
-        rich_text_block = super()._resolve()
+        rich_text_block = self._attributes()
         rich_text_block["elements"] = [element._resolve() for element in self.elements]
         return rich_text_block
 

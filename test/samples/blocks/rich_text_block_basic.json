@@ -1,0 +1,32 @@
+{
+    "type": "rich_text",
+    "block_id": "fake_block_id",
+    "elements": [
+        {
+            "type": "rich_text_section",
+            "elements": [
+                {
+                    "type": "text",
+                    "text": "You 'bout to witness hip-hop in its most purest",
+                    "style": {
+                        "bold": true
+                    }
+                },
+                {
+                    "type": "text",
+                    "text": "Most rawest form, flow almost flawless",
+                    "style": {
+                        "strike": true
+                    }
+                },
+                {
+                    "type": "text",
+                    "text": "Most hardest, most honest known artist",
+                    "style": {
+                        "italic": true
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -11,6 +11,9 @@ from slackblocks import (
     InvalidUsageError,
     Option,
     PlainTextInput,
+    RichText,
+    RichTextBlock,
+    RichTextSection,
     SectionBlock,
     Text,
     TextType,
@@ -178,3 +181,27 @@ def test_input_block_invalid_label_type() -> None:
             element=Text("hello"),
             block_id="fake_block_id",
         )
+
+
+def test_basic_rich_text_block() -> None:
+    assert fetch_sample(path="test/samples/blocks/rich_text_block_basic.json") == repr(
+        RichTextBlock(
+            RichTextSection(
+                [
+                    RichText(
+                        "You 'bout to witness hip-hop in its most purest",
+                        bold=True,
+                    ),
+                    RichText(
+                        "Most rawest form, flow almost flawless",
+                        strike=True,
+                    ),
+                    RichText(
+                        "Most hardest, most honest known artist",
+                        italic=True,
+                    )
+                ]
+            ),
+            block_id="fake_block_id",
+        )
+    )
