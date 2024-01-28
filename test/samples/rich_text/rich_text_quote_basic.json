@@ -1,0 +1,10 @@
+{
+    "type": "rich_text_quote",
+    "elements": [
+        {
+            "type": "text",
+            "text": "Great and good are seldom the same man"
+        }
+    ],
+    "border": 1
+}

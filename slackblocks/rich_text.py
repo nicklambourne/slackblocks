@@ -24,7 +24,7 @@ class ListType(Enum):
 
 class RichTextObject(ABC):
     def __init__(self, type_: RichTextObjectType) -> None:
-        pass
+        self.type_ = type_
 
     @abstractmethod
     def _resolve(self) -> Dict[str, Any]:
@@ -42,6 +42,7 @@ class RichTextSection(RichTextObject):
     def _resolve(self) -> Dict[str, Any]:
         section = super()._resolve()
         section["elements"] = [element._resolve() for element in self.elements]
+        return section
 
 
 class RichTextList(RichTextObject):
@@ -69,16 +70,17 @@ class RichTextList(RichTextObject):
     def _resolve(self) -> Dict[str, Any]:
         rich_text_list = super()._resolve()
         rich_text_list["elements"] = [element._resolve() for element in self.elements]
+        rich_text_list["style"] = self.style
         if self.indent is not None:
             rich_text_list["indent"] = self.indent
         if self.offset is not None:
             rich_text_list["offset"] = self.offset
         if self.border is not None:
             rich_text_list["border"] = self.border
-        rich_text_list["indent"]
+        return rich_text_list
 
 
-class RichTextSubType(Enum):
+class RichTextSubElement(Enum):
     TEXT = "text"
     LINK = "link"
 
@@ -91,7 +93,7 @@ class RichText(RichTextObject):
         italic: Optional[bool] = None,
         strike: Optional[bool] = None,
     ) -> None:
-        super().__init__(type_=RichTextSubType.TEXT)
+        super().__init__(type_=RichTextSubElement.TEXT)
         self.text = text
         self.bold = bold
         self.italic = italic
@@ -121,7 +123,7 @@ class RichTextLink(RichTextObject):
         bold: Optional[bool] = None,
         italic: Optional[bool] = None,
     ) -> None:
-        super().__init__(type_=RichTextSubType.LINK)
+        super().__init__(type_=RichTextSubElement.LINK)
         self.url = url
         self.text = text
         self.unsafe = unsafe
@@ -139,7 +141,7 @@ class RichTextLink(RichTextObject):
         if self.bold is not None:
             style["bold"] = self.bold
         if self.italic is not None:
-            style["unsafe"] = self.italic
+            style["italic"] = self.italic
         if style:
             link["style"] = style
         return link
@@ -148,11 +150,11 @@ class RichTextLink(RichTextObject):
 class RichTextPreformattedCodeBlock(RichTextObject):
     def __init__(
         self,
-        elements: Union[RichTextSubType, List[RichTextSubType]],
+        elements: Union[RichText, RichTextLink, List[Union[RichText, RichTextLink]]],
         border: Optional[int] = None,
     ) -> None:
         super().__init__(type_=RichTextObjectType.PREFORMATTED)
-        self.elements = coerce_to_list(elements, RichTextSubType)
+        self.elements = coerce_to_list(elements, (RichText, RichTextLink))
         self.border = border
 
     def _resolve(self) -> Dict[str, Any]:
