@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from .errors import InvalidUsageError
 from .utils import coerce_to_list, validate_int, validate_string
@@ -84,13 +84,31 @@ class RichTextSubType(Enum):
 
 
 class RichText(RichTextObject):
-    def __init__(self, text: str) -> None:
+    def __init__(
+        self,
+        text: str,
+        bold: Optional[bool] = None,
+        italic: Optional[bool] = None,
+        strike: Optional[bool] = None,
+    ) -> None:
         super().__init__(type_=RichTextSubType.TEXT)
         self.text = text
+        self.bold = bold
+        self.italic = italic
+        self.strike = strike
 
     def _resolve(self) -> Dict[str, Any]:
         rich_text = super()._resolve()
         rich_text["text"] = self.text
+        style = {}
+        if self.bold is not None:
+            style["bold"] = self.bold
+        if self.italic is not None:
+            style["italic"] = self.italic
+        if self.strike is not None:
+            style["strike"] = self.strike
+        if style:
+            rich_text["style"] = style
         return rich_text
 
 
@@ -127,7 +145,7 @@ class RichTextLink(RichTextObject):
         return link
 
 
-class RichTextPreformatted(RichTextObject):
+class RichTextPreformattedCodeBlock(RichTextObject):
     def __init__(
         self,
         elements: Union[RichTextSubType, List[RichTextSubType]],
@@ -161,3 +179,12 @@ class RichTextQuote(RichTextObject):
         if self.border is not None:
             quote["border"] = self.border
         return quote
+
+
+RichTextElement = TypeVar(
+    "RichTextElement",
+    RichTextList,
+    RichTextPreformattedCodeBlock,
+    RichTextQuote,
+    RichTextSection,
+)

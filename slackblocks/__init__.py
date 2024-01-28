@@ -56,7 +56,7 @@ from .rich_text import (
     RichText,
     RichTextLink,
     RichTextList,
-    RichTextPreformatted,
+    RichTextPreformattedCodeBlock,
     RichTextQuote,
     RichTextSection,
 )
