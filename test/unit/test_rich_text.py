@@ -1,5 +1,3 @@
-import pytest
-
 from slackblocks.rich_text import (
     ListType,
     RichText,
