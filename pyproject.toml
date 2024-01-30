@@ -37,7 +37,8 @@ exclude = ["test/**", "docs/**"]
 python = ">=3.7.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.1.0"
+aiohttp = "^3.9.3"
+black = "^23.3.0"
 flake8 = "^5.0.4"
 flake8-pyproject = "^1.2.3"
 pytest = "^7.2.2"
