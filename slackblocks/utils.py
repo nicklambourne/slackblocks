@@ -24,7 +24,7 @@ def coerce_to_list(
         max_size: if provided, the length of `object_or_objects` cannot be larger than this.
 
     Returns:
-        `object_or_objects` if it was a valid list, `[object_or_objects]` if it was a valid object, or `None` if 
+        `object_or_objects` if it was a valid list, `[object_or_objects]` if it was a valid object, or `None` if
         provided and allowed.
     """
     if object_or_objects is None and allow_none:
@@ -77,7 +77,7 @@ def is_hex(string: str) -> bool:
 
 def validate_action_id(action_id: str, allow_none: bool = False) -> Optional[str]:
     """
-    
+
 
     Args:
         action_id: the action_id string to validate for correctness as per the Slack API.

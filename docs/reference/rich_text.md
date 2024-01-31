@@ -1,3 +1,3 @@
 # Rich Text
 
-::: rich_text
+<!-- ::: rich_text -->

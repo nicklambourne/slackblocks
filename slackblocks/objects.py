@@ -1,9 +1,9 @@
 """
 Composition objects used inside of Block objects.
-See: https://api.slack.com/reference/block-kit/composition-objects?ref=bk
+See: <https://api.slack.com/reference/block-kit/composition-objects?ref=bk>
 """
 
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
@@ -14,7 +14,7 @@ from slackblocks.utils import coerce_to_list, validate_string
 
 class CompositionObjectType(Enum):
     """
-    Convenience class for referencing the various message elements Slack
+    Convenience class for referencing the types of various message elements Slack
     provides.
     """
 
@@ -29,7 +29,7 @@ class CompositionObjectType(Enum):
     WORKFLOW = "workflow"
 
 
-class CompositionObject:
+class CompositionObject(ABC):
     """
     Basis element containing attributes and behaviour common to all
     composition objects.

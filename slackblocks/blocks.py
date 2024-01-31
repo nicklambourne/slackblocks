@@ -1,7 +1,7 @@
 """
 Blocks are a series of components that can be combined to create rich and
 interactive messages.
-See: https://api.slack.com/reference/block-kit/blocks?ref=bk
+See: <https://api.slack.com/reference/block-kit/blocks?ref=bk>
 """
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -98,6 +98,11 @@ class Block(ABC):
 class ActionsBlock(Block):
     """
     A block that is used to hold interactive elements.
+
+    Args:
+
+    Returns:
+        - A `Block` instance with the specified interactive elements.
     """
 
     def __init__(

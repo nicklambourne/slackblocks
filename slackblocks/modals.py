@@ -5,7 +5,7 @@ users.
 This module is kept only for backwards compatibility, modals have
 been largely subsumed as a subtype of view.
 
-See: https://api.slack.com/surfaces/modals
+See: <https://api.slack.com/surfaces/modals>
 """
 from json import dumps
 from typing import Any, Dict

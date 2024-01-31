@@ -1,11 +1,15 @@
 site_name: slackblocks
 
+repo_url: https://github.com/nicklambourne/slackblocks/
+
 theme:
   name: "material"
   logo: img/sb.png
   favicon: img/sb.png
+  features:
+    - navigation.expand
+    - search.suggest
   palette:
-
         # Palette toggle for light mode
     - scheme: default
       toggle:
@@ -23,6 +27,7 @@ theme:
       accent: deep-purple
 
 plugins:
+  - search
   - mkdocstrings:
       default_handler: python
       handlers:
@@ -37,9 +42,18 @@ plugins:
             docstring_style: google
             heading_level: 3
 
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
 nav:
   - Home: index.md
-  - Basic Usage: usage.md
+  - Usage:
+    - Installation: usage/installation.md
+    - Basic Usage: usage/basic_usage.md
+    - Using Blocks: usage/using_blocks.md
+    - Sending Messages: usage/sending_messages.md
   - Reference:
     - Attachments: reference/attachments.md
     - Blocks: reference/blocks.md

@@ -1,6 +1,6 @@
 """
 Block elements can be used inside of section, context, input, and actions layout blocks.
-See: https://api.slack.com/reference/block-kit/block-elements?ref=bk
+See: <https://api.slack.com/reference/block-kit/block-elements?ref=bk>
 """
 from abc import ABC, abstractmethod
 from datetime import datetime
