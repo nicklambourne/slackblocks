@@ -35,6 +35,13 @@ from slackblocks.objects import (
     TextLike,
     TextType,
 )
+from slackblocks.rich_text import (
+    RichTextElement,
+    RichTextList,
+    RichTextPreformattedCodeBlock,
+    RichTextQuote,
+    RichTextSection,
+)
 from slackblocks.utils import coerce_to_list
 
 ALLOWED_INPUT_ELEMENTS = (
@@ -61,14 +68,15 @@ class BlockType(Enum):
     in the Slack Blocks API and their programmatic names.
     """
 
-    SECTION = "section"
-    DIVIDER = "divider"
-    IMAGE = "image"
-    INPUT = "input"
     ACTIONS = "actions"
     CONTEXT = "context"
+    DIVIDER = "divider"
     FILE = "file"
     HEADER = "header"
+    IMAGE = "image"
+    INPUT = "input"
+    RICH_TEXT = "rich_text"
+    SECTION = "section"
 
 
 class Block(ABC):
@@ -274,6 +282,30 @@ class InputBlock(Block):
         if self.optional:
             input_block["optional"] = self.optional
         return input_block
+
+
+class RichTextBlock(Block):
+    def __init__(
+        self,
+        elements: Union[RichTextElement, List[RichTextElement]],
+        block_id: Optional[str] = None,
+    ) -> None:
+        super().__init__(type_=BlockType.RICH_TEXT, block_id=block_id)
+        self.elements = coerce_to_list(
+            elements,
+            (
+                RichTextList,
+                RichTextPreformattedCodeBlock,
+                RichTextQuote,
+                RichTextSection,
+            ),
+            min_size=1,
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        rich_text_block = self._attributes()
+        rich_text_block["elements"] = [element._resolve() for element in self.elements]
+        return rich_text_block
 
 
 class SectionBlock(Block):

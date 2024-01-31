@@ -1,0 +1,27 @@
+{
+    "type": "rich_text_list",
+    "elements": [
+        {
+            "type": "rich_text_section",
+            "elements": [
+                {
+                    "type": "text",
+                    "text": "Oh"
+                }
+            ]
+        },
+        {
+            "type": "rich_text_section",
+            "elements": [
+                {
+                    "type": "text",
+                    "text": "Hi"
+                }
+            ]
+        }
+    ],
+    "style": "ordered",
+    "indent": 1,
+    "offset": 2,
+    "border": 3
+}

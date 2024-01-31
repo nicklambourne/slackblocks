@@ -1,0 +1,9 @@
+{
+    "type": "text",
+    "text": "I am a bold rich text block!",
+    "style": {
+        "bold": true,
+        "italic": true,
+        "strike": false
+    }
+}

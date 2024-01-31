@@ -1,0 +1,36 @@
+{
+    "type": "rich_text_list",
+    "elements": [
+        {
+            "type": "rich_text_section",
+            "elements": [
+                {
+                    "type": "text",
+                    "text": "Oh"
+                }
+            ]
+        },
+        {
+            "type": "rich_text_section",
+            "elements": [
+                {
+                    "type": "text",
+                    "text": "Hi"
+                }
+            ]
+        },
+        {
+            "type": "rich_text_section",
+            "elements": [
+                {
+                    "type": "text",
+                    "text": "Mark"
+                }
+            ]
+        }
+    ],
+    "style": "bullet",
+    "indent": 0,
+    "offset": 0,
+    "border": 1
+}
