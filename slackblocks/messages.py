@@ -4,6 +4,7 @@ built out using blocks, elements, objects, and rich text features.
 
 See: <https://api.slack.com/messaging>
 """
+
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 

@@ -4,6 +4,7 @@ interactive messages.
 
 See: <https://api.slack.com/reference/block-kit/blocks>
 """
+
 from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
@@ -422,12 +423,16 @@ class SectionBlock(Block):
             )
         self.text = Text.to_text(text, max_length=3000, allow_none=True)
         self.fields = coerce_to_list(
-            [
-                Text.to_text(field, max_length=2000, allow_none=False)
-                for field in coerce_to_list(fields, class_=(str, Text), allow_none=True)
-            ]
-            if fields
-            else None,
+            (
+                [
+                    Text.to_text(field, max_length=2000, allow_none=False)
+                    for field in coerce_to_list(
+                        fields, class_=(str, Text), allow_none=True
+                    )
+                ]
+                if fields
+                else None
+            ),
             class_=Text,
             allow_none=True,
             max_size=10,

@@ -3,6 +3,7 @@ Secondary (less important) content can be attached using the deprecated
 attachments API. 
 See: <https://api.slack.com/reference/messaging/attachments>
 """
+
 from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union

@@ -308,9 +308,9 @@ class ConversationFilter(CompositionObject):
         if self.include:
             filter["include"] = self.include
         if self.exclude_external_shared_channels is not None:
-            filter[
-                "exclude_external_shared_channels"
-            ] = self.exclude_external_shared_channels
+            filter["exclude_external_shared_channels"] = (
+                self.exclude_external_shared_channels
+            )
         if self.exclude_bot_users is not None:
             filter["exclude_bot_users"] = self.exclude_bot_users
         return filter

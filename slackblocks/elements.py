@@ -3,6 +3,7 @@ Block elements can be used inside of section, context, input, and actions layout
 
 See: <https://api.slack.com/reference/block-kit/block-elements>
 """
+
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
@@ -246,9 +247,9 @@ class EmailInput(Element):
         if self.initial_value:
             email_input["initial_value"] = self.initial_value
         if self.dispatch_action_config:
-            email_input[
-                "dispatch_action_config"
-            ] = self.dispatch_action_config._resolve()
+            email_input["dispatch_action_config"] = (
+                self.dispatch_action_config._resolve()
+            )
         if self.focus_on_load:
             email_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
@@ -483,13 +484,13 @@ class ConversationMultiSelectMenu(Element):
         conversation_multi_select = self._attributes()
         conversation_multi_select["action_id"] = self.action_id
         if self.initial_conversations:
-            conversation_multi_select[
-                "intial_conversations"
-            ] = self.initial_conversations
+            conversation_multi_select["intial_conversations"] = (
+                self.initial_conversations
+            )
         if self.default_to_current_conversation:
-            conversation_multi_select[
-                "default_to_current_conversation"
-            ] = self.default_to_current_conversation
+            conversation_multi_select["default_to_current_conversation"] = (
+                self.default_to_current_conversation
+            )
         if self.confirm:
             conversation_multi_select["confirm"] = self.confirm._resolve()
         if self.max_selected_items:
@@ -606,9 +607,9 @@ class NumberInput(Element):
         if self.max_value:
             number_input["max_value"] = self.max_value
         if self.dispatch_action_config:
-            number_input[
-                "dispatch_action_config"
-            ] = self.dispatch_action_config._resolve()
+            number_input["dispatch_action_config"] = (
+                self.dispatch_action_config._resolve()
+            )
         if self.focus_on_load:
             number_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
@@ -686,9 +687,9 @@ class PlainTextInput(Element):
         if self.max_length:
             plain_text_input["max_length"] = self.max_length
         if self.dispatch_action_config:
-            plain_text_input[
-                "dispatch_action_config"
-            ] = self.dispatch_action_config._resolve()
+            plain_text_input["dispatch_action_config"] = (
+                self.dispatch_action_config._resolve()
+            )
         if self.focus_on_load:
             plain_text_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
@@ -913,9 +914,9 @@ class ConversationSelectMenu(Element):
         if self.initial_conversation:
             conversation_select_menu["initial_conversation"] = self.initial_conversation
         if self.default_to_current_conversation:
-            conversation_select_menu[
-                "default_to_current_conversation"
-            ] = self.default_to_current_conversation
+            conversation_select_menu["default_to_current_conversation"] = (
+                self.default_to_current_conversation
+            )
         if self.confirm:
             conversation_select_menu["confirm"] = self.confirm._resolve()
         if self.response_url_enabled:
