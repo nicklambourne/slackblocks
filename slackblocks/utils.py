@@ -188,8 +188,8 @@ def validate_int(
         raise InvalidUsageError("`num` is None, which is disallowed.")
     if min_value is not None:
         if num < min_value:
-            raise InvalidUsageError(f"{num} is less than the minimum {min_}")
+            raise InvalidUsageError(f"{num} is less than the minimum {min_value}")
     if max_value is not None:
         if num > max_value:
-            raise InvalidUsageError(f"{num} is less than the minimum {max_}")
+            raise InvalidUsageError(f"{num} is less than the minimum {max_value}")
     return num
