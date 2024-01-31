@@ -13,6 +13,20 @@ def coerce_to_list(
     min_size: Optional[int] = None,
     max_size: Optional[int] = None,
 ) -> List[T]:
+    """
+    Takes and object or list of objects and validates its contents, ensuring that the resulting object is a list.
+
+    Args:
+        object_or_objects: the Python object or objects to validate and convert to a list.
+        class_: the Python type (or class) of objects expected in the list.
+        allow_none: whether or not None is a valid input (and thus output) option.
+        min_size: if provided, the length of `object_or_objects` cannot be smaller than this.
+        max_size: if provided, the length of `object_or_objects` cannot be larger than this.
+
+    Returns:
+        `object_or_objects` if it was a valid list, `[object_or_objects]` if it was a valid object, or `None` if 
+        provided and allowed.
+    """
     if object_or_objects is None and allow_none:
         return None
     if object_or_objects is None and not allow_none:
@@ -52,10 +66,23 @@ def coerce_to_list(
 
 
 def is_hex(string: str) -> bool:
+    """
+    Determines whether a given string is a valid hexadecimal number.
+
+    Args:
+        string: the string to examine for hex characters.
+    """
     return all(char in hexdigits for char in string)
 
 
 def validate_action_id(action_id: str, allow_none: bool = False) -> Optional[str]:
+    """
+    
+
+    Args:
+        action_id: the action_id string to validate for correctness as per the Slack API.
+        allow_none: whether to accept `None` as a valid value for `action_id`.
+    """
     if action_id is None:
         if not allow_none:
             raise InvalidUsageError("`action_id` cannot be None.")

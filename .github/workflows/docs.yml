@@ -1,4 +1,4 @@
-name: Format & Lint
+name: Publish Docs
 on: [push]
 
 jobs:

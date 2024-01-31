@@ -1,6 +1,6 @@
 """
 Messages are the core unit of Slack messaging functionality. They can be
-built out using blocks, elements and objects.
+built out using blocks, elements, objects, and rich text features.
 See: https://api.slack.com/messaging
 """
 from json import dumps

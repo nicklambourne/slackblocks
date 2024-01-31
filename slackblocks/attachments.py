@@ -1,6 +1,6 @@
 """
 Secondary (less important) content can be attached using the deprecated
-attachments API.
+attachments API. 
 See: https://api.slack.com/reference/messaging/attachments
 """
 from enum import Enum
@@ -59,9 +59,9 @@ class Field:
 
 class Attachment:
     """
-    Secondary content can be attached to messages to include lower priority content
-     - content that doesn't necessarily need to be seen to appreciate the intent of
-    the message, but perhaps adds further context or additional information.
+    lower priority content can be attached to messages using Attachments.
+    This is content that doesn't necessarily need to be seen to appreciate 
+    the intent of the message, but perhaps adds further context or additional information.
     """
 
     def __init__(

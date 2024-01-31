@@ -1,0 +1,52 @@
+site_name: slackblocks
+
+theme:
+  name: "material"
+  logo: img/sb.png
+  favicon: img/sb.png
+  palette:
+
+        # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7 
+        name: Switch to dark mode
+      primary: black
+      accent: indigo
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+      primary: black
+      accent: deep-purple
+
+plugins:
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [slackblocks]
+          options:
+            show_root_heading: false
+            show_root_toc_entry: false
+            separate_signature: true
+            show_signature_annotations: false
+            show_symbol_type_heading: true
+            docstring_style: google
+            heading_level: 3
+
+nav:
+  - Home: index.md
+  - Basic Usage: usage.md
+  - Reference:
+    - Attachments: reference/attachments.md
+    - Blocks: reference/blocks.md
+    - Elements: reference/elements.md
+    - Messages: reference/messages.md
+    - Modals: reference/modals.md
+    - Objects: reference/objects.md
+    - Rich Text: reference/rich_text.md
+    - Views: reference/views.md
+    - Utilities: reference/utils.md
