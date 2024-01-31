@@ -7,6 +7,7 @@ from .blocks import (
     HeaderBlock,
     ImageBlock,
     InputBlock,
+    RichTextBlock,
     SectionBlock,
 )
 from .elements import (
@@ -50,6 +51,15 @@ from .objects import (
     TextType,
     Trigger,
     Workflow,
+)
+from .rich_text import (
+    ListType,
+    RichText,
+    RichTextLink,
+    RichTextList,
+    RichTextPreformattedCodeBlock,
+    RichTextQuote,
+    RichTextSection,
 )
 from .views import HomeTabView, ModalView, View
 

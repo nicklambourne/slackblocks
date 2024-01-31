@@ -1,0 +1,10 @@
+{
+    "type": "link",
+    "url": "https://google.com/",
+    "text": "Google",
+    "unsafe": false,
+    "style": {
+        "bold": true,
+        "italic": false
+    }
+}
