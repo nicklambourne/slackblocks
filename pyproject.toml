@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "slackblocks"
-version = "0.9.15"
+version = "0.9.16"
 description = "Python wrapper for the Slack Blocks API"
 authors = [
     "Nicholas Lambourne <dev@ndl.im>",
@@ -57,6 +57,9 @@ build-backend = "poetry.core.masonry.api"
 [tool.flake8]
 exclude = [".venv", "./build", "./dist", ".eggs", ".git"]
 max-line-length = 100
+extend-ignore = """
+    BLK100
+"""
 per-file-ignores = [
     "slackblocks/__init__.py:F401",
 ]
