@@ -1,9 +1,10 @@
 """
-Composition objects used inside of Block objects.
-See: <https://api.slack.com/reference/block-kit/composition-objects?ref=bk>
+Composition objects are the lowest-level primitives used inside of Block objects.
+
+See: <https://api.slack.com/reference/block-kit/composition-objects>
 """
 
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
@@ -135,6 +136,9 @@ class Text(CompositionObject):
 
     def __str__(self) -> str:
         return dumps(self._resolve())
+
+    def __len__(self) -> int:
+        return len(self.text)
 
     def __eq__(self, other) -> bool:
         return (

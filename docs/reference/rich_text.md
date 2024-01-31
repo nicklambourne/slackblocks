@@ -1,3 +1,6 @@
 # Rich Text
 
-<!-- ::: rich_text -->
+::: rich_text
+    options:
+        filters: ["!^RichTextObjectType", "!^RichTextObject", "!^RichTextSubElement"]
+        show_bases: false

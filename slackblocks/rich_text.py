@@ -1,3 +1,13 @@
+"""
+Rich Text elements can be used to enhance text-based messages with 
+code, list, quotations and formatted text (including options not 
+available in traditional markdown like strikethrough).
+
+These formatting elements can only be used within a [`RichTextBlock`](../blocks/#blocks.RichTextBlock).
+
+See: <https://api.slack.com/reference/block-kit/blocks#rich_text>
+"""
+
 from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
@@ -15,6 +25,8 @@ class RichTextObjectType(Enum):
 
 
 class ListType(Enum):
+    """ """
+
     BULLET = "bullet"
     ORDERED = "ordered"
 
@@ -23,6 +35,8 @@ class ListType(Enum):
 
 
 class RichTextObject(ABC):
+    """ """
+
     def __init__(self, type_: RichTextObjectType) -> None:
         self.type_ = type_
 
@@ -35,6 +49,8 @@ class RichTextObject(ABC):
 
 
 class RichTextSection(RichTextObject):
+    """ """
+
     def __init__(self, elements: Union[RichTextObject, List[RichTextObject]]) -> None:
         super().__init__(type_=RichTextObjectType.SECTION)
         self.elements = coerce_to_list(elements, class_=RichTextObject)
@@ -46,6 +62,8 @@ class RichTextSection(RichTextObject):
 
 
 class RichTextList(RichTextObject):
+    """ """
+
     def __init__(
         self,
         style: Union[str, ListType],
@@ -81,11 +99,15 @@ class RichTextList(RichTextObject):
 
 
 class RichTextSubElement(Enum):
+    """ """
+
     TEXT = "text"
     LINK = "link"
 
 
 class RichText(RichTextObject):
+    """ """
+
     def __init__(
         self,
         text: str,
@@ -115,6 +137,8 @@ class RichText(RichTextObject):
 
 
 class RichTextLink(RichTextObject):
+    """ """
+
     def __init__(
         self,
         url: str,
@@ -148,6 +172,8 @@ class RichTextLink(RichTextObject):
 
 
 class RichTextPreformattedCodeBlock(RichTextObject):
+    """ """
+
     def __init__(
         self,
         elements: Union[RichText, RichTextLink, List[Union[RichText, RichTextLink]]],
@@ -166,6 +192,8 @@ class RichTextPreformattedCodeBlock(RichTextObject):
 
 
 class RichTextQuote(RichTextObject):
+    """ """
+
     def __init__(
         self,
         elements: Union[RichTextObject, List[RichTextObject]],

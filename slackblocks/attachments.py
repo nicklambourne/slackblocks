@@ -14,7 +14,7 @@ from slackblocks.utils import coerce_to_list, is_hex
 
 class Color(Enum):
     """
-    Color utility class for use with the Slack secondary attachments API.
+    Color is a utility class for use with the Slack secondary attachments API.
     """
 
     GOOD = "good"
@@ -35,6 +35,14 @@ class Color(Enum):
 class Field:
     """
     Field text objects for use with Slack's secondary attachment API.
+
+    See <https://api.slack.com/reference/messaging/attachments#fields>.
+
+    Args:
+        title: text shown as a bold heading on the field.
+        value: text (`mrkdwn` or `plaintext`) representing the value of the field.
+        short: whether the contents of the field is short enough to be presented in
+            multipe columns.
     """
 
     def __init__(
@@ -62,14 +70,31 @@ class Attachment:
     Lower priority content can be attached to messages using Attachments.
     This is content that doesn't necessarily need to be seen to appreciate
     the intent of the message, but perhaps adds further context or additional information.
+
+    See <https://api.slack.com/reference/messaging/attachments>.
+
+    N.B: `fields` is a deprecated field, included only for legacy purposes. Other legacy
+    fields, e.g. `author_name` are deliberately omitted as they were never implemented in
+    `slackblocks`.
+
+    Args:
+        blocks: an array of Blocks that define the content of the attachment.
+        color: the color (in hex format, e.g. #ffffff) of the vertical bar to the left of the
+            attachment content. Consider using the `Color` enum from this module.
+        fields: a list of `Field` objects to be included in what's rendered in the attachment.
+
+    Throws:
+        InvalidUsageError: if the `color` code provided is invalid.
     """
 
     def __init__(
         self,
         blocks: Optional[Union[Block, List[Block]]] = None,
         color: Optional[Union[str, Color]] = None,
+        fields: Optional[Union[Field, List[Field]]] = None,
     ):
         self.blocks = coerce_to_list(blocks, Block, allow_none=True)
+        self.fields = coerce_to_list(fields, Field, allow_none=True)
         if type(color) is Color:
             self.color = color.value
         elif type(color) is str:

@@ -1,6 +1,7 @@
 """
 Block elements can be used inside of section, context, input, and actions layout blocks.
-See: <https://api.slack.com/reference/block-kit/block-elements?ref=bk>
+
+See: <https://api.slack.com/reference/block-kit/block-elements>
 """
 from abc import ABC, abstractmethod
 from datetime import datetime
@@ -154,6 +155,8 @@ class CheckboxGroup(Element):
 
 
 class DatePicker(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -189,6 +192,8 @@ class DatePicker(Element):
 
 
 class DateTimePicker(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -216,6 +221,8 @@ class DateTimePicker(Element):
 
 
 class EmailInput(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -269,6 +276,8 @@ class Image(Element):
 
 
 class StaticMultiSelectMenu(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -355,6 +364,8 @@ class StaticMultiSelectMenu(Element):
 
 
 class ExternalMultiSelectMenu(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -401,6 +412,8 @@ class ExternalMultiSelectMenu(Element):
 
 
 class UserMultiSelectMenu(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -439,6 +452,8 @@ class UserMultiSelectMenu(Element):
 
 
 class ConversationMultiSelectMenu(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -489,6 +504,8 @@ class ConversationMultiSelectMenu(Element):
 
 
 class ChannelMultiSelectMenu(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -719,6 +736,8 @@ class RadioButtonGroup(Element):
 
 
 class StaticSelectMenu(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -785,6 +804,8 @@ class StaticSelectMenu(Element):
 
 
 class ExternalSelectMenu(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -824,6 +845,8 @@ class ExternalSelectMenu(Element):
 
 
 class UserSelectMenu(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -856,6 +879,8 @@ class UserSelectMenu(Element):
 
 
 class ConversationSelectMenu(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -905,6 +930,8 @@ class ConversationSelectMenu(Element):
 
 
 class ChannelSelectMenu(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -944,6 +971,8 @@ class ChannelSelectMenu(Element):
 
 
 class TimePicker(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -983,6 +1012,8 @@ class TimePicker(Element):
 
 
 class URLInput(Element):
+    """ """
+
     def __init__(
         self,
         action_id: str,
@@ -1018,6 +1049,8 @@ class URLInput(Element):
 
 
 class ButtonStyle(Enum):
+    """ """
+
     DEFAULT = None
     PRIMARY = "primary"
     DANGER = "danger"
@@ -1037,6 +1070,8 @@ ButtonStyleLike = Union[ButtonStyle, str]
 
 
 class WorkflowButton(Element):
+    """ """
+
     def __init__(
         self,
         text: TextLike,

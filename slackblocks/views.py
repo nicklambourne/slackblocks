@@ -17,6 +17,8 @@ class ViewType(Enum):
 
 
 class View:
+    """ """
+
     def __init__(
         self,
         type: ViewType,
@@ -58,6 +60,8 @@ class View:
 
 
 class ModalView(View):
+    """ """
+
     def __init__(
         self,
         title: TextLike,
@@ -106,6 +110,8 @@ class ModalView(View):
 
 
 class HomeTabView(View):
+    """ """
+
     def __init__(
         self,
         blocks: Union[Block, List[Block]],
