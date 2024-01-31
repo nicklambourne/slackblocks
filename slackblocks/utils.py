@@ -1,5 +1,5 @@
 """
-This module collects various utility functions used for validating 
+This module collects various utility functions used for validating
 the input to `Messages`, `Blocks`, `Elements` and `Objects`.
 """
 
@@ -19,7 +19,8 @@ def coerce_to_list(
     max_size: Optional[int] = None,
 ) -> List[T]:
     """
-    Takes and object or list of objects and validates its contents, ensuring that the resulting object is a list.
+    Takes and object or list of objects and validates its contents, ensuring that the
+    resulting object is a list.
 
     Args:
         object_or_objects: the Python object or objects to validate and convert to a list.
@@ -29,8 +30,8 @@ def coerce_to_list(
         max_size: if provided, the length of `object_or_objects` cannot be larger than this.
 
     Returns:
-        `object_or_objects` if it was a valid list, `[object_or_objects]` if it was a valid object, or `None` if
-        provided and allowed.
+        `object_or_objects` if it was a valid list, `[object_or_objects]` if it was a valid
+            object, or `None` if provided and allowed.
 
     Throws:
         InvalidUsageError: if any of the validation checks fail.

@@ -110,7 +110,8 @@ class ActionsBlock(Block):
     A `Block` that is used to hold interactive elements (normally for users to interface with).
 
     Args:
-        elements: a list of [Elements](../../reference/elements) or [Objects](../../reference/objects)
+        elements: a list of [Elements](../../reference/elements) or
+            [Objects](../../reference/objects).
         block_id: you can use this field to provide a deterministic identifier for the block.
 
     Throws:
@@ -191,7 +192,8 @@ class FileBlock(Block):
     """
     Displays a remote file (e.g. a PDF).
 
-    For details on how remote files are exposed to Slack, see <https://api.slack.com/messaging/files#adding>.
+    For details on how remote files are exposed to Slack, see
+    <https://api.slack.com/messaging/files#adding>.
 
     Args:
         external_id: the ID assigned to the remote file when it was added to Slack.

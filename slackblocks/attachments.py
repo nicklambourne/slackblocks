@@ -1,6 +1,6 @@
 """
 Secondary (less important) content can be attached using the deprecated
-attachments API. 
+attachments API.
 See: <https://api.slack.com/reference/messaging/attachments>
 """
 
