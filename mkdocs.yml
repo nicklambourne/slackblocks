@@ -51,7 +51,7 @@ plugins:
       # These fields are all optional; the defaults are as below...
       alias_type: symlink
       redirect_template: null
-      deploy_prefix: 'docs'
+      deploy_prefix: 'versions'
       canonical_version: null
       version_selector: true
       css_dir: css
