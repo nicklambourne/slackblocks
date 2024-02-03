@@ -28,6 +28,7 @@ from .elements import (
     OverflowMenu,
     PlainTextInput,
     RadioButtonGroup,
+    RichTextInput,
     StaticMultiSelectMenu,
     StaticSelectMenu,
     TimePicker,

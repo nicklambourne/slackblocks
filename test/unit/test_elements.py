@@ -16,6 +16,7 @@ from slackblocks.elements import (
     OverflowMenu,
     PlainTextInput,
     RadioButtonGroup,
+    RichTextInput,
     StaticMultiSelectMenu,
     StaticSelectMenu,
     TimePicker,
@@ -25,6 +26,7 @@ from slackblocks.elements import (
     WorkflowButton,
 )
 from slackblocks.objects import InputParameter, Text, TextType, Trigger, Workflow
+from slackblocks.rich_text import RichText
 
 from .utils import OPTION_A, THREE_OPTIONS, TWO_OPTIONS, fetch_sample
 
@@ -262,3 +264,16 @@ def test_workflow_button_basic() -> None:
     assert fetch_sample(
         path="test/samples/elements/workflow_button_basic.json"
     ) == repr(workflow_button)
+
+
+def test_rich_text_input_basic() -> None:
+    assert fetch_sample(
+        path="test/samples/elements/rich_text_input_basic.json"
+    ) == repr(
+        RichTextInput(
+            action_id="action_id",
+            initial_value=RichText("I'm rich"),
+            focus_on_load=False,
+            placeholder="Hello",
+        )
+    )

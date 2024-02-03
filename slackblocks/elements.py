@@ -22,6 +22,7 @@ from .objects import (
     TextLike,
     Workflow,
 )
+from .rich_text import RichText
 from .utils import coerce_to_list, validate_action_id, validate_int, validate_string
 
 
@@ -55,6 +56,7 @@ class ElementType(Enum):
     TIME_PICKER = "timepicker"
     URL_INPUT = "url_text_input"
     WORKFLOW_BUTTON = "workflow_button"
+    RICH_TEXT_INPUT = "rich_text_input"
 
 
 class Element(ABC):
@@ -1636,3 +1638,54 @@ class WorkflowButton(Element):
         if self.accessibility_label:
             workflow_button["accessibility_label"] = self.accessibility_label
         return workflow_button
+
+
+class RichTextInput(Element):
+    """
+    Allows users to enter formatted text in a WYSIWYG editor, similar to the Slack
+        messaging experience.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#rich_text_input>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_value: The initial value in the rich text input when it is loaded.
+        dispatch_action_config: a `DispatchActionConfiguration` object that
+            determines when during text input the element returns a
+            `block_actions` payload.
+        focus_on_load: whether or not the menu will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the menu when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
+    def __init__(
+        self,
+        action_id: str,
+        initial_value: Optional[RichText] = None,
+        dispatch_action_config: Optional[DispatchActionConfiguration] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ) -> "RichTextInput":
+        super().__init__(ElementType.RICH_TEXT_INPUT)
+        self.action_id = validate_action_id(action_id)
+        self.initial_value = initial_value
+        self.dispatch_action_config = dispatch_action_config
+        self.focus_on_load = focus_on_load
+        self.placeholder = placeholder
+
+    def _resolve(self) -> Dict[str, Any]:
+        rich_text_input = super()._attributes()
+        rich_text_input["action_id"] = self.action_id
+        if self.initial_value is not None:
+            rich_text_input["initial_value"] = self.initial_value._resolve()
+        if self.dispatch_action_config is not None:
+            rich_text_input["dispatch_action_config"] = self.dispatch_action_config
+        if self.focus_on_load is not None:
+            rich_text_input["focus_on_load"] = self.focus_on_load
+        if self.placeholder is not None:
+            rich_text_input["placeholder"] = self.placeholder
+        return rich_text_input

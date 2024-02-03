@@ -1,0 +1,6 @@
+{
+    "type": "rich_text_input",
+    "action_id": "action_id",
+    "focus_on_load": false,
+    "placeholder": "Hello"
+}
