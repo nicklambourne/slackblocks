@@ -1,7 +1,7 @@
 # slackblocks <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs_src/img/sb.png" align="right" width="250px"/>
 
 ![Licence: MIT](https://img.shields.io/badge/License-MIT-green.svg)
-![Licence: BSD-3-Clause](https://img.shields.io/badge/License-MIT-green.svg)
+![Licence: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-green.svg)
 ![Python Versions](https://img.shields.io/pypi/pyversions/slackblocks)
 [![PyPI](https://img.shields.io/pypi/v/slackblocks?color=yellow&label=PyPI&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/#history)
 [![Downloads](https://static.pepy.tech/badge/slackblocks)](https://pepy.tech/project/slackblocks)
