@@ -10,7 +10,7 @@ maintainers = [
 ]
 homepage = "https://github.com/nicklambourne/slackblocks"
 repository = "https://github.com/nicklambourne/slackblocks"
-license = "BSD-3-Clause"
+license = "MIT"
 readme = "README.md"
 keywords = [
     "slackblocks", 
