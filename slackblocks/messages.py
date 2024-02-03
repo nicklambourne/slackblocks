@@ -1,8 +1,10 @@
 """
 Messages are the core unit of Slack messaging functionality. They can be
-built out using blocks, elements and objects.
-See: https://api.slack.com/messaging
+built out using blocks, elements, objects, and rich text features.
+
+See: <https://api.slack.com/messaging>
 """
+
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 
@@ -71,6 +73,27 @@ class Message(BaseMessage):
     """
     A Slack message object that can be converted to a JSON string for use with
     the Slack message API.
+
+    Args:
+        channel:
+        text: markdown text to send in the message. If `blocks` are provided
+            then this is a fallback to display in notifications.
+        blocks: a list of [`Blocks`](/reference/blocks) to form the contents
+            of the message instead of the contents of `text`.
+        attachments: a list of
+            [`Attachments`](/reference/attachments/#attachments.Attachment)
+            that form the secondary contents of the message (deprecated).
+        thread_ts: the timestamp ID of another unthreaded message that will
+            become the parent message of this message (now a reply in a thread).
+        mrkdwn: if `True` the contents of `text` will be rendered as markdown
+            rather than plain text.
+        unfurl_links: if `True`, links in the message will be automatically
+            unfurled.
+        unfurl_media: if `True`, media from links (e.g. images) will
+            automatically unfurl.
+    Throws:
+        InvalidUsageException: in the event that the items passed to `blocks`
+            are not valid [`Blocks`](/reference/blocks).
     """
 
     def __init__(
@@ -83,7 +106,7 @@ class Message(BaseMessage):
         mrkdwn: bool = True,
         unfurl_links: Optional[bool] = None,
         unfurl_media: Optional[bool] = None,
-    ):
+    ) -> "Message":
         super().__init__(channel, text, blocks, attachments, thread_ts, mrkdwn)
         self.unfurl_links = unfurl_links
         self.unfurl_media = unfurl_media

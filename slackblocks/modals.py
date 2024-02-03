@@ -5,8 +5,9 @@ users.
 This module is kept only for backwards compatibility, modals have
 been largely subsumed as a subtype of view.
 
-See: https://api.slack.com/surfaces/modals
+See: <https://api.slack.com/surfaces/modals>
 """
+
 from json import dumps
 from typing import Any, Dict
 
@@ -15,7 +16,7 @@ from slackblocks.views import ModalView
 
 class Modal(ModalView):
     """
-    Kept for backwards compatibility - see slackblock.views.ModalView
+    Kept for backwards compatibility - see [`ModalView`](/reference/views/#views.ModalView)
     """
 
     def __repr__(self) -> str:

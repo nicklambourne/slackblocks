@@ -28,6 +28,7 @@ from .elements import (
     OverflowMenu,
     PlainTextInput,
     RadioButtonGroup,
+    RichTextInput,
     StaticMultiSelectMenu,
     StaticSelectMenu,
     TimePicker,
@@ -52,12 +53,19 @@ from .objects import (
     Trigger,
     Workflow,
 )
-from .rich_text import (
-    ListType,
+from .rich_text.elements import (
     RichText,
+    RichTextChannel,
+    RichTextElement,
+    RichTextEmoji,
     RichTextLink,
+    RichTextUser,
+    RichTextUserGroup,
+)
+from .rich_text.objects import (
+    RichTextCodeBlock,
     RichTextList,
-    RichTextPreformattedCodeBlock,
+    RichTextObject,
     RichTextQuote,
     RichTextSection,
 )

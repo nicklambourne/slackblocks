@@ -1,0 +1,10 @@
+{
+    "type": "rich_text_input",
+    "action_id": "action_id",
+    "initial_value": {
+        "type": "text",
+        "text": "I'm rich"
+    },
+    "focus_on_load": false,
+    "placeholder": "Hello"
+}
