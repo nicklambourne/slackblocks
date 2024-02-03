@@ -1,6 +1,7 @@
 """
 Views are app-customized visual areas within modals and Home tabs.
-See: <https://api.slack.com/reference/surfaces/views>
+
+See: <https://api.slack.com/reference/surfaces/views>.
 """
 
 from enum import Enum
@@ -61,7 +62,32 @@ class View:
 
 
 class ModalView(View):
-    """ """
+    """
+    Modal views are used with the `views.open`, `views.update` and `views.push`
+        Slack Web API methods.
+
+    See: <https://api.slack.com/reference/surfaces/views#modal>
+
+    Args:
+        title: heading that appears at the top left of the view.
+        blocks: a list of blocks (max 100) that define the content of the view.
+        close: the text of the close button (max 24 chars) in the view.
+            Must be `Text.PLAINTEXT`.
+        submit: the text of the submit button (max 24 chars) in the view.
+            Must be `Text.PLAINTEXT`.
+        private_metadata: a string (max 3000 chars) that will be sent to your app
+            in `view_submission`.
+        callback_id: A string that will identify submissions of this view.
+        clear_on_close: when `True` all views in the model will be cleared when
+            it is closed.
+        notify_on_close: when `True` a `view_closed` event will be sent when the
+            modal is closed.
+        external_id: A custom identifier that is unique within the views of a
+            given Slack team.
+        submit_disabled: when `True` disabled submitting the form until one or
+            more inputs have been provided. Used only for
+            [`configuaration models`](https://api.slack.com/reference/workflows/configuration-view).
+    """
 
     def __init__(
         self,
@@ -111,7 +137,19 @@ class ModalView(View):
 
 
 class HomeTabView(View):
-    """ """
+    """
+    `HomeTabViews` are used with the `views.publish` Web API method.
+
+    See: <https://api.slack.com/reference/surfaces/views#home>.
+
+    Args:
+        blocks: A list of blocks that defines the content of the view (max 100).
+        private_metadata: a string (max 3000 chars) that will be sent to your app
+            in `view_submission`.
+        callback_id: A string that will identify submissions of this view.
+        external_id: A custom identifier that is unique within the views of a
+            given Slack team.
+    """
 
     def __init__(
         self,
@@ -119,7 +157,7 @@ class HomeTabView(View):
         private_metadata: Optional[str] = None,
         callback_id: Optional[str] = None,
         external_id: Optional[str] = None,
-    ):
+    ) -> "HomeTabView":
         super().__init__(
             type=ViewType.HOME,
             blocks=blocks,

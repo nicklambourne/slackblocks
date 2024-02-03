@@ -1,7 +1,7 @@
 """
 Composition objects are the lowest-level primitives used inside of Block objects.
 
-See: <https://api.slack.com/reference/block-kit/composition-objects>
+See: <https://api.slack.com/reference/block-kit/composition-objects>.
 """
 
 from abc import ABC, abstractmethod
@@ -25,6 +25,7 @@ class CompositionObjectType(Enum):
     INPUT_PARAMETER = "input_parameter"
     OPTION = "option"
     OPTION_GROUP = "option_groups"
+    SLACK_FILE = "file"
     TEXT = "text"
     TRIGGER = "trigger"
     WORKFLOW = "workflow"
@@ -56,7 +57,12 @@ class CompositionObject(ABC):
 class TextType(Enum):
     """
     Allowable types for Slack Text objects.
-    N.B: some usages of Text objects only allow the plaintext variety.
+
+    MARKDOWN: tradional markdown formatting, see
+        <https://api.slack.com/reference/surfaces/formatting#basic-formatting>
+    PLAINTEXT: simple Unicode text with no formatting (e.g. bold) features.
+
+    N.B: some usages of Text objects only allow the `PLAINTEXT` variety.
     """
 
     MARKDOWN = "mrkdwn"
@@ -65,8 +71,19 @@ class TextType(Enum):
 
 class Text(CompositionObject):
     """
-    An object containing some text, formatted either as plain_text or using
-    Slack's "mrkdwn".
+    An object containing some text, formatted either as `plain_text` or using
+    Slack's `mrkdwn`.
+
+    Args:
+        text: the text to be rendered in a message (max 3000 characters).
+        type_: either `TextType.MARKDOWN` or `TextType.PLAINTEXT`.
+        emoji: only usable with `TextType.PLAINTEXT`, if True: emoji will be
+            escaped into text format (e.g. `:smile:`).
+        verbatim: only usable with `TextType.MARKDOWN`, if True: links, channel
+            names, user names will not automatically be rendered as links.
+
+    Throws:
+        InvalidUsageException: if the provided `text` fails validation.
     """
 
     def __init__(
@@ -75,7 +92,7 @@ class Text(CompositionObject):
         type_: TextType = TextType.MARKDOWN,
         emoji: bool = False,
         verbatim: bool = False,
-    ):
+    ) -> "Text":
         super().__init__(type_=CompositionObjectType.TEXT)
         self.text_type = type_
         self.text = validate_string(
@@ -101,10 +118,21 @@ class Text(CompositionObject):
     @staticmethod
     def to_text(
         text: Optional[Union[str, "Text"]],
-        force_plaintext=False,
+        force_plaintext: bool = False,
         max_length: Optional[int] = None,
         allow_none: bool = False,
     ) -> Optional["Text"]:
+        """
+        Coerces `str` or `Text` objects into `Text` objects.
+
+        Args:
+            text: the `str` or `Text` object to ensure is in `Text` format.
+            force_plaintext: if `True`, forces the `str` or `Text` object
+                into a `Text` object with the type `TextType.PLAINTEXT`.
+            max_length: `text` will be checked against this length in addition
+                to the standard `Text` limit of 3000 characters.
+            allow_none: whether to accept `None` as a valid value for `text`.
+        """
         original_type = text.text_type if isinstance(text, Text) else None
         type_ = (
             TextType.PLAINTEXT
@@ -115,17 +143,14 @@ class Text(CompositionObject):
             if allow_none:
                 return None
             raise InvalidUsageError("This field cannot have the value None or ''")
-        elif isinstance(text, str):
-            if max_length and len(text) > max_length:
-                raise InvalidUsageError(
-                    f"Text length exceeds Slack-imposed limit ({max_length})"
-                )
+        if text and max_length and len(text) > max_length:
+            raise InvalidUsageError(
+                f"`text` length ({len(text)}) exceeds `max_length` ({max_length})"
+            )
+        if isinstance(text, str):
             return Text(text=text, type_=type_)
-        elif isinstance(text, Text):
-            if max_length and len(text.text) > max_length:
-                raise InvalidUsageError(
-                    f"Text length exceeds Slack-imposed limit ({max_length})"
-                )
+        if isinstance(text, Text):
+
             return Text(
                 text=text.text, type_=type_, emoji=text.emoji, verbatim=text.verbatim
             )
@@ -149,6 +174,7 @@ class Text(CompositionObject):
         )
 
 
+# Used for accepting strings and `Text`` where coercion to `Text` is desirable.
 TextLike = Union[str, Text]
 
 
@@ -157,14 +183,24 @@ class ConfirmationDialogue(CompositionObject):
     An object that defines a dialog that provides a confirmation step
     to any interactive element. This dialog will ask the user to confirm
     their action by offering confirm and deny buttons.
+
+    Args:
+        title: the text heading presented at the top of the dialogue box (max 100 chars).
+        text: the text explaining the decision being made by the user through
+            the dialogue box (max 300 chars).
+        confirm: the text inside the confirmation button of the dialogue box (max 30 chars).
+        deny: the text inside the deny button of the dialogue box (max 30 chars).
+
+    Throws:
+        InvalidUsageError: if any of the arguments fail to pass validation checks.
     """
 
     def __init__(
         self,
-        title: Union[str, Text],
-        text: Union[str, Text],
-        confirm: Union[str, Text],
-        deny: Union[str, Text],
+        title: TextLike,
+        text: TextLike,
+        confirm: TextLike,
+        deny: TextLike,
     ):
         super().__init__(type_=CompositionObjectType.CONFIRM)
         self.title = Text.to_text(title, max_length=100, force_plaintext=True)
@@ -183,7 +219,9 @@ class ConfirmationDialogue(CompositionObject):
 
 class Confirm(ConfirmationDialogue):
     """
-    Alias for ConfirmationDialogue to retain backwards compatibility.
+    Alias for `ConfirmationDialogue` to retain backwards compatibility.
+
+    See: [`ConfirmationDialogue`](/reference/objects/#objects.ConfirmationDialogue).
     """
 
     def __init__(self, *args, **kwargs):
@@ -194,15 +232,27 @@ class Option(CompositionObject):
     """
     An object that represents a single selectable item in a select menu, multi-select
     menu, checkbox group, radio button group, or overflow menu.
+
+    See <https://api.slack.com/reference/block-kit/composition-objects#option>.
+
+    Args:
+        text: the text identifying the option (that the user will see).
+        value: the underlying value of that option (not seen by the user).
+        description: a more detailed explanation of what the option means (user-facing).
+        url: a URL to load in the user's browser when the option is clicked.
+            Only available in `OverflowMenus`.
+
+    Throws:
+        InvalidUsageError: when any of the provided arguments fail validation.
     """
 
     def __init__(
         self,
-        text: Union[str, Text],
+        text: TextLike,
         value: str,
-        description: Optional[Union[str, Text]] = None,
+        description: Optional[TextLike] = None,
         url: Optional[str] = None,
-    ):
+    ) -> "Option":
         super().__init__(type_=CompositionObjectType.OPTION)
         self.text = Text.to_text(text, max_length=75)
         self.value = validate_string(value, field_name="value", max_length=75)
@@ -236,9 +286,18 @@ class Option(CompositionObject):
 class OptionGroup(CompositionObject):
     """
     Provides a way to group options in a select menu or multi-select menu.
+
+    See <https://api.slack.com/reference/block-kit/composition-objects#option_group>.
+
+    Args:
+        label: a label shown above the group of options.
+        options: a list of `Option` objects that will form the contents of the group.
+
+    Throws:
+        InvalidUsageError: if no options are provided or the label is not valid.
     """
 
-    def __init__(self, label: Union[str, Text], options: List[Option]):
+    def __init__(self, label: TextLike, options: List[Option]):
         super().__init__(type_=CompositionObjectType.OPTION_GROUP)
         self.label = Text.to_text(label, max_length=75, force_plaintext=True)
         if options:
@@ -258,7 +317,15 @@ ALLOWABLE_TRIGGERS = ["on_enter_pressed", "on_character_entered"]
 
 class DispatchActionConfiguration(CompositionObject):
     """
-    Determines when a plain-text input element will return a block_actions interaction payload.
+    Determines when a plain-text input element will return a `block_action`s interaction payload.
+
+    Args:
+        trigger_actions_on: a list of strings representing interaction types that should return
+            a `block_actions` payload. One or both of `on_enter_pressed`, `on_character_entered`.
+
+    Throws:
+        InvalidUsageError: if an invalid value is provided amongst the options for
+            `trigger_actions_on`.
     """
 
     def __init__(self, trigger_actions_on: Union[str, List[str]] = None):
@@ -281,6 +348,21 @@ class ConversationFilter(CompositionObject):
     """
     Provides a way to filter the list of options in a conversations select menu or
     conversations multi-select menu.
+
+    See: <https://api.slack.com/reference/block-kit/composition-objects#filter_conversations>.
+
+    At least one of the available arguments _must_ be provided.
+
+    Args:
+        include: Which types of conversations to include in the list.
+            One of more of `im`, `mpim`, `private`, `public`.
+        exclude_external_shared_channels: whether to remove shared public channels
+            from the list. See <https://api.slack.com/enterprise/shared-channels>.
+        exclude_bot_users: whether to remove bot users from the list of conversations.
+
+    Throws:
+        InvalidUsageException: in the event that the user provides none of `include`,
+            `exclude_external_shared_channels`, or `exclude_bot_users` arguments.
     """
 
     def __init__(
@@ -288,7 +370,7 @@ class ConversationFilter(CompositionObject):
         include: Optional[Union[str, List[str]]] = None,
         exclude_external_shared_channels: Optional[bool] = None,
         exclude_bot_users: Optional[bool] = None,
-    ):
+    ) -> "ConversationFilter":
         super().__init__(type_=CompositionObjectType.FILTER)
         if not (
             include
@@ -319,6 +401,12 @@ class ConversationFilter(CompositionObject):
 class InputParameter(CompositionObject):
     """
     Contains information about an input parameter.
+
+    See <https://api.slack.com/automation/workflows#defining-input-parameters>.
+
+    Args:
+        name: the name of the input parameter.
+        value: the value associated with the input parameter.
     """
 
     def __init__(self, name: str, value: str):
@@ -333,9 +421,61 @@ class InputParameter(CompositionObject):
         return input_parameter
 
 
+class SlackFile(CompositionObject):
+    """
+    Defines an object containing Slack file information to be used in an image
+        block or image element.
+
+    This file must be an image and you must provide either the URL or ID (not both).
+
+    See: <https://api.slack.com/reference/block-kit/composition-objects#slack_file>.
+
+    Args:
+        url: the URL can be the `url_private` or the `permalink` of the Slack file
+            (only one of `url` or `id` can be provided).
+        id: the Slack ID of the file
+            (only one of `url` or `id` can be provided).
+
+    Throws:
+        InvalidUsageError: if both `url` and `id` are provided
+    """
+
+    def __init__(
+        self,
+        url: Optional[str],
+        id: Optional[str],
+    ) -> "SlackFile":
+        super().__init__(CompositionObjectType.SLACK_FILE)
+        if url and id:
+            raise InvalidUsageError("Cannot provide both `url` and `id`.")
+        self.url = url
+        self.id = id
+
+    def _resolve(self) -> Dict[str, Any]:
+        file = {}  # Does not include type in JSON
+        if self.url:
+            file["url"] = self.url
+        if self.id:
+            file["id"] = self.id
+        return file
+
+
 class Trigger(CompositionObject):
     """
     Contains information about a trigger.
+
+    See: <https://api.slack.com/automation/triggers>.
+
+    Args:
+        url: a link trigger URL, see
+            <https://api.slack.com/automation/triggers/link>
+        customizable_input_parameters: a list of `InputParameter` objects
+            which map to those parameters defined on the Workflow in
+            which they are provided.
+
+    Throws:
+        InvalidUsageError: when any of the items in
+            `customizable_input_parameters` is not a valid `InputParameter`.
     """
 
     def __init__(
@@ -344,7 +484,7 @@ class Trigger(CompositionObject):
         customizable_input_parameters: Optional[
             Union[InputParameter, List[InputParameter]]
         ],
-    ):
+    ) -> "Trigger":
         super().__init__(type_=CompositionObjectType.TRIGGER)
         self.url = url
         self.customizable_input_parameters = coerce_to_list(
@@ -364,9 +504,14 @@ class Trigger(CompositionObject):
 class Workflow(CompositionObject):
     """
     Contains information about a workflow.
+
+    See <https://api.slack.com/automation/workflows>.
+
+    Args:
+        trigger: a `Trigger` object that will initiate the workflow.
     """
 
-    def __init__(self, trigger: Trigger):
+    def __init__(self, trigger: Trigger) -> "Workflow":
         super().__init__(type_=CompositionObjectType.WORKFLOW)
         self.trigger = trigger
 
