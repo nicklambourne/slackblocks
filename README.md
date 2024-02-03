@@ -15,7 +15,7 @@
 Full documentation is provided [here](https://nicklambourne.github.io/slackblocks/latest/).
 
 ## Requirements
-`slackblocks` requires Python >= 3.7.
+`slackblocks` requires Python >= 3.8.
 
 As of version 0.1.0 it has no dependencies outside the Python standard library.
 
