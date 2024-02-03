@@ -30,12 +30,7 @@ from slackblocks.elements import (
     UserSelectMenu,
 )
 from slackblocks.errors import InvalidUsageError
-from slackblocks.objects import (
-    CompositionObjectType,
-    Text,
-    TextLike,
-    TextType,
-)
+from slackblocks.objects import CompositionObjectType, Text, TextLike, TextType
 from slackblocks.rich_text import (
     RichTextCodeBlock,
     RichTextList,

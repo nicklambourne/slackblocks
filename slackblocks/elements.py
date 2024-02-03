@@ -124,6 +124,7 @@ class Button(Element):
             value,
             field_name="value",
             max_length=2000,
+            allow_none=True,
         )
         self.style = style.value if isinstance(style, ButtonStyle) else style
         self.confirm = confirm
@@ -428,7 +429,10 @@ class Image(Element):
     """
 
     def __init__(
-        self, alt_text: str, image_url: Optional[str], slack_file: Optional[SlackFile]
+        self,
+        alt_text: str,
+        image_url: Optional[str] = None,
+        slack_file: Optional[SlackFile] = None,
     ):
         super().__init__(type_=ElementType.IMAGE)
         if image_url is None and slack_file is None:
@@ -441,9 +445,11 @@ class Image(Element):
 
     def _resolve(self) -> Dict[str, Any]:
         image = self._attributes()
-        image["image_url"] = self.image_url
+        if self.image_url is not None:
+            image["image_url"] = self.image_url
         image["alt_text"] = self.alt_text
-        image["slack_file"] = self.slack_file
+        if self.slack_file is not None:
+            image["slack_file"] = self.slack_file
         return image
 
 
