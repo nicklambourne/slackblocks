@@ -72,7 +72,6 @@ nav:
   - Home: index.md
   - Usage:
     - Installation: usage/installation.md
-    - Basic Usage: usage/basic_usage.md
     - Using Blocks: usage/using_blocks.md
     - Sending Messages: usage/sending_messages.md
   - Reference:
