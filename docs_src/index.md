@@ -1,7 +1,7 @@
 # Welcome to `slackblocks`!
 
 <p align="center">
-  <img width="30%" src="./img/sb.png" />
+  <img width="30%" src="./docs_src/img/sb.png" />
 </p>
 
 `slackblocks` is Python package for creating complex Slack messages 
