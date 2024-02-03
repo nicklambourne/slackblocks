@@ -5,6 +5,8 @@
     "unsafe": false,
     "style": {
         "bold": true,
-        "italic": false
+        "italic": false,
+        "strike": true,
+        "code": true
     }
 }

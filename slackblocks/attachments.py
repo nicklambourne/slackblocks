@@ -1,8 +1,10 @@
 """
 Secondary (less important) content can be attached using the deprecated
 attachments API.
-See: https://api.slack.com/reference/messaging/attachments
+
+See: <https://api.slack.com/reference/messaging/attachments>.
 """
+
 from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
@@ -14,7 +16,73 @@ from slackblocks.utils import coerce_to_list, is_hex
 
 class Color(Enum):
     """
-    Color utility class for use with the Slack secondary attachments API.
+    Color is a utility class for use with the Slack secondary attachments API.
+
+    Pass these to the `color` argument of
+        [`Attachment`](/reference/attachments/#attachments.Attachment).
+
+    <table style="width:50%">
+    <tr>
+    <td><code>Color.GOOD</code></td>
+    <td>
+    <img valign='middle' alt='good' src='https://readme-swatches.vercel.app/4CAF50?style=round'/>
+    </td>
+    </tr>
+    <tr>
+    <td><code>Color.WARNING</code></td>
+    <td>
+    <img valign='middle' alt='warning' src='https://readme-swatches.vercel.app/FFEB3B?style=round'/>
+    </td>
+    </tr>
+    <tr>
+    <td><code>Color.DANGER</code></td>
+    <td>
+    <img valign='middle' alt='danger' src='https://readme-swatches.vercel.app/F44336?style=round'/>
+    </td>
+    </tr>
+    <tr>
+    <td><code>Color.RED</code></td>
+    <td>
+    <img valign='middle' alt='red' src='https://readme-swatches.vercel.app/ff0000?style=round'/>
+    </td>
+    </tr>
+    <tr>
+    <td><code>Color.BLUE</code></td>
+    <td>
+    <img valign='middle' alt='blue' src='https://readme-swatches.vercel.app/0000ff?style=round'/>
+    </td>
+    </tr>
+    <tr>
+    <td><code>Color.YELLOW</code></td>
+    <td>
+    <img valign='middle' alt='yellow' src='https://readme-swatches.vercel.app/ffff00?style=round'/>
+    </td>
+    </tr>
+    <tr>
+    <td><code>Color.GREEN</code></td>
+    <td>
+    <img valign='middle' alt='green' src='https://readme-swatches.vercel.app/00ff00?style=round'/>
+    </td>
+    </tr>
+    <tr>
+    <td><code>Color.ORANGE</code></td>
+    <td>
+    <img valign='middle' alt='orange' src='https://readme-swatches.vercel.app/ff8800?style=round'/>
+    </td>
+    </tr>
+    <tr>
+    <td><code>Color.PURPLE</code></td>
+    <td>
+    <img valign='middle' alt='purple' src='https://readme-swatches.vercel.app/8800ff?style=round'/>
+    </td>
+    </tr>
+    <tr>
+    <td><code>Color.BLACK</code></td>
+    <td>
+    <img valign='middle' alt='black' src='https://readme-swatches.vercel.app/000000?style=round'/>
+    </td>
+    </tr>
+    </table>
     """
 
     GOOD = "good"
@@ -35,6 +103,14 @@ class Color(Enum):
 class Field:
     """
     Field text objects for use with Slack's secondary attachment API.
+
+    See <https://api.slack.com/reference/messaging/attachments#fields>.
+
+    Args:
+        title: text shown as a bold heading on the field.
+        value: text (`mrkdwn` or `plaintext`) representing the value of the field.
+        short: whether the contents of the field is short enough to be presented in
+            multipe columns.
     """
 
     def __init__(
@@ -59,17 +135,34 @@ class Field:
 
 class Attachment:
     """
-    Secondary content can be attached to messages to include lower priority content
-     - content that doesn't necessarily need to be seen to appreciate the intent of
-    the message, but perhaps adds further context or additional information.
+    Lower priority content can be attached to messages using Attachments.
+    This is content that doesn't necessarily need to be seen to appreciate
+    the intent of the message, but perhaps adds further context or additional information.
+
+    See <https://api.slack.com/reference/messaging/attachments>.
+
+    N.B: `fields` is a deprecated field, included only for legacy purposes. Other legacy
+    fields, e.g. `author_name` are deliberately omitted as they were never implemented in
+    `slackblocks`.
+
+    Args:
+        blocks: an array of Blocks that define the content of the attachment.
+        color: the color (in hex format, e.g. #ffffff) of the vertical bar to the left of the
+            attachment content. Consider using the `Color` enum from this module.
+        fields: a list of `Field` objects to be included in what's rendered in the attachment.
+
+    Throws:
+        InvalidUsageError: if the `color` code provided is invalid.
     """
 
     def __init__(
         self,
         blocks: Optional[Union[Block, List[Block]]] = None,
         color: Optional[Union[str, Color]] = None,
+        fields: Optional[Union[Field, List[Field]]] = None,
     ):
         self.blocks = coerce_to_list(blocks, Block, allow_none=True)
+        self.fields = coerce_to_list(fields, Field, allow_none=True)
         if type(color) is Color:
             self.color = color.value
         elif type(color) is str:

@@ -1,7 +1,9 @@
 """
-Block elements can be used inside of section, context, input and actions layout blocks.
-See: https://api.slack.com/reference/block-kit/block-elements?ref=bk
+Block elements can be used inside of section, context, input, and actions layout blocks.
+
+See: <https://api.slack.com/reference/block-kit/block-elements>
 """
+
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
@@ -15,11 +17,13 @@ from .objects import (
     DispatchActionConfiguration,
     Option,
     OptionGroup,
+    SlackFile,
     Text,
     TextLike,
     Workflow,
 )
-from .utils import coerce_to_list, validate_action_id
+from .rich_text import RichText
+from .utils import coerce_to_list, validate_action_id, validate_int, validate_string
 
 
 class ElementType(Enum):
@@ -33,6 +37,7 @@ class ElementType(Enum):
     DATE_PICKER = "datepicker"
     DATETIME_PICKER = "datetimepicker"
     EMAIL_INPUT = "email_text_input"
+    FILE_INPUT = "file_input"
     IMAGE = "image"
     MULTI_SELECT_STATIC = "multi_static_select"
     MULTI_SELECT_EXTERNAL = "multi_external_select"
@@ -51,6 +56,7 @@ class ElementType(Enum):
     TIME_PICKER = "timepicker"
     URL_INPUT = "url_text_input"
     WORKFLOW_BUTTON = "workflow_button"
+    RICH_TEXT_INPUT = "rich_text_input"
 
 
 class Element(ABC):
@@ -83,6 +89,21 @@ class Button(Element):
     An interactive element that inserts a button. The button can be a
     trigger for anything from opening a simple link to starting a complex
     workflow.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#button>.
+
+    Args:
+        text: text on the button (plaintext only; max 75 chars).
+        action_id: an identifier so the source of the action can be known.
+        url: a URL to load in the user's browser when the button is clicked.
+        value: the value sent with the interaction payload.
+        style: the visual style of the button, one of `primary`, `danger`.
+        confirm: a `ConfirmationDialogue` object that will be presented when
+            the button is clicked.
+        accessibility_label: a string label for longer descriptive text about
+            a button element. Used by screen readers (max 75 chars).
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
     """
 
     def __init__(
@@ -93,14 +114,28 @@ class Button(Element):
         value: Optional[str] = None,
         style: Optional[str] = None,
         confirm: Optional[ConfirmationDialogue] = None,
-    ):
+        accessibility_label: Optional[str] = None,
+    ) -> "Button":
         super().__init__(type_=ElementType.BUTTON)
         self.text = Text.to_text(text, max_length=75, force_plaintext=True)
         self.action_id = validate_action_id(action_id)
-        self.url = url
-        self.value = value
+        self.url = validate_string(
+            url, field_name="url", max_length=3000, allow_none=True
+        )
+        self.value = validate_string(
+            value,
+            field_name="value",
+            max_length=2000,
+            allow_none=True,
+        )
         self.style = style.value if isinstance(style, ButtonStyle) else style
         self.confirm = confirm
+        self.accessibility_label = validate_string(
+            accessibility_label,
+            "accessibility_label",
+            max_length=75,
+            allow_none=True,
+        )
 
     def _resolve(self) -> Dict[str, Any]:
         button = self._attributes()
@@ -114,6 +149,8 @@ class Button(Element):
             button["value"] = self.value
         if self.confirm:
             button["confirm"] = self.confirm._resolve()
+        if self.accessibility_label:
+            button["accessibility_label"] = self.accessibility_label
         return button
 
 
@@ -121,6 +158,24 @@ class CheckboxGroup(Element):
     """
     A checkbox group that allows a user to choose multiple items from a list
     of possible options.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#checkboxes>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        options: a list of
+            [`Option`](/reference/objects/#objects.Option) objects that will form
+            the content of the checkbox group.
+        initial_options: a list of
+            [`Option`](/reference/objects/#objects.Option) objects that will be
+            initially selected when first presented to the user.
+        confirm: a `ConfirmationDialogue` object that will be presented when
+            the checkbox group is used.
+        focus_on_load: whether or not the checkbox group will be set to autofocus
+            within the view object.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
     """
 
     def __init__(
@@ -130,7 +185,7 @@ class CheckboxGroup(Element):
         initial_options: Optional[Union[Option, List[Option]]] = None,
         confirm: ConfirmationDialogue = None,
         focus_on_load: bool = False,
-    ):
+    ) -> "CheckboxGroup":
         super().__init__(type_=ElementType.CHECKBOXES)
         self.action_id = validate_action_id(action_id)
         self.options = coerce_to_list(options, Option)
@@ -154,6 +209,26 @@ class CheckboxGroup(Element):
 
 
 class DatePicker(Element):
+    """
+    Interactive element that allows users to select a date from a calendar.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#datepicker>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_date: the date (in `YYYY-MM-DD` format) that will appear on the
+            picker when it first renders.
+        confirm: a `ConfirmationDialogue` object that will be presented when
+            the date picker is clicked.
+        focus_on_load: whether or not the date picker will be set to autofocus
+            within the view object.
+        placeholder: a `TextType.PLAINTEXT` `Text` object that defines what text
+            will initially appear on the picker.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -161,7 +236,7 @@ class DatePicker(Element):
         confirm: ConfirmationDialogue = None,
         focus_on_load: bool = False,
         placeholder: Optional[TextLike] = None,
-    ):
+    ) -> "DatePicker":
         super().__init__(type_=ElementType.DATE_PICKER)
         self.action_id = validate_action_id(action_id)
         if initial_date:
@@ -189,13 +264,32 @@ class DatePicker(Element):
 
 
 class DateTimePicker(Element):
+    """
+    Allows users to select both a date and a time of day.
+
+    Provides the date-time formatted as a Unix timestamp.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#datetimepicker>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_datetime: the initial value the date-time picker will be set to
+            when it first renders.
+        confirm: a `ConfirmationDialogue` object that will be presented when
+            the button is date-time picker is used.
+        focus_on_load: whether or not the datetime picker will be set to autofocus
+            within the view object.
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
         initial_datetime: Optional[int] = None,
         confirm: ConfirmationDialogue = None,
         focus_on_load: bool = False,
-    ):
+    ) -> "DateTimePicker":
         super().__init__(type_=ElementType.DATETIME_PICKER)
         self.action_id = validate_action_id(action_id)
         if initial_datetime:
@@ -216,6 +310,26 @@ class DateTimePicker(Element):
 
 
 class EmailInput(Element):
+    """
+    Allows user to enter an email into a single-line text field.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#email>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_value: The initial value in the email input when it is loaded.
+        dispatch_action_config: a `DispatchActionConfiguration` object that
+            determines when during text input the element returns a
+            `block_actions` payload.
+        focus_on_load: whether or not the email input will be set to autofocus
+            within the view object.
+        placeholder: a `TextType.PLAINTEXT` `Text` object that defines what text
+            will initially appear in the input field.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -239,9 +353,9 @@ class EmailInput(Element):
         if self.initial_value:
             email_input["initial_value"] = self.initial_value
         if self.dispatch_action_config:
-            email_input[
-                "dispatch_action_config"
-            ] = self.dispatch_action_config._resolve()
+            email_input["dispatch_action_config"] = (
+                self.dispatch_action_config._resolve()
+            )
         if self.focus_on_load:
             email_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
@@ -249,26 +363,128 @@ class EmailInput(Element):
         return email_input
 
 
+class FileInput(Element):
+    """
+    An interactive element that allows users to upload files.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#file_input>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        filetypes: a list of file extensions (as strings) that will be accepted
+            for upload.
+        max_files: the maximum number of files that can be uploaded (between 1
+            and 10).
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
+    def __init__(
+        self,
+        action_id: Optional[str] = None,
+        filetypes: Optional[Union[str, List[str]]] = None,
+        max_files: Optional[int] = None,
+    ) -> "FileInput":
+        super().__init__(ElementType.FILE_INPUT)
+        self.action_id = validate_action_id(action_id)
+        self.filetypes = coerce_to_list(
+            filetypes,
+            (str),
+            allow_none=True,
+        )
+        self.max_files = validate_int(
+            max_files, min_value=1, max_value=10, allow_none=True
+        )
+
+    def _resolve(self) -> Dict[str, Any]:
+        file_input = super()._resolve()
+        if self.action_id is not None:
+            file_input["action_id"] = self.action_id
+        if self.filetypes is not None:
+            file_input["filetypes"] = self.filetypes
+        if self.max_files is not None:
+            file_input["max_files"] = self.max_files
+        return file_input
+
+
 class Image(Element):
     """
     An element to insert an image - this element can be used in section
     and context blocks only. If you want a block with only an image in it,
     you're looking for the Image block.
+
+    You must provide either one of `image_url` or `slack_file`
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#image>.
+
+    Args:
+        alt_text: a plain-text-only summary of the content of the image.
+        image_url: a URL for a publicly hosted image (the user must provide
+            either `image_url` or `slack_file`).
+        slack_file: a [`SlackFile`](/reference/objects/#objects.SlackFile)
+            (the user must provide either `image_url` or `slack_file`).
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation,
+            or both/neither of `image_url` and `slack_file` are provided.
     """
 
-    def __init__(self, image_url: str, alt_text: str):
+    def __init__(
+        self,
+        alt_text: str,
+        image_url: Optional[str] = None,
+        slack_file: Optional[SlackFile] = None,
+    ):
         super().__init__(type_=ElementType.IMAGE)
+        if image_url is None and slack_file is None:
+            raise InvalidUsageError("Must provide one of `image_url` or `slack_file`")
+        if image_url and slack_file:
+            raise InvalidUsageError("Cannot provide both `image_url` or `slack_file`")
         self.image_url = image_url
         self.alt_text = alt_text
+        self.slack_file = slack_file
 
     def _resolve(self) -> Dict[str, Any]:
         image = self._attributes()
-        image["image_url"] = self.image_url
+        if self.image_url is not None:
+            image["image_url"] = self.image_url
         image["alt_text"] = self.alt_text
+        if self.slack_file is not None:
+            image["slack_file"] = self.slack_file
         return image
 
 
 class StaticMultiSelectMenu(Element):
+    """
+    The most basic form of select menu containing a static list of options
+    passed in when defining the element.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#static_multi_select>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        options: a list of [`Options`](/reference/objects/#objects.Option)
+            (max 100). Only one of `options` or `option_groups` must be
+            provided.
+        option_groups: a list of
+            [`OptionGroups`](/reference/objects/#objects.OptionGroup)
+            (max 100). Only one of `options` or `option_groups` can be
+            provided.
+        initial_options: the [`Options`](/reference/objects/#objects.Option)
+            to be intially selected when the element is first rendered.
+        confirm: a `ConfirmationDialogue` object that will be presented when
+            the menu is used.
+        max_selected_items: the
+        focus_on_load: whether or not the menu will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the menu when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -355,6 +571,31 @@ class StaticMultiSelectMenu(Element):
 
 
 class ExternalMultiSelectMenu(Element):
+    """
+    An interactive UI element that loads its options from an external data source,
+        allowing for a dynamic list of options.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#external_multi_select>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        min_query_length: minimum number of characters entered before the query
+            is dispactched (defaults to 3 if not provided).
+        initial_options: the [`Options`](/reference/objects/#objects.Option)
+            to be intially selected when the element is first rendered.
+        confirm: a `ConfirmationDialogue` object that will be presented when
+            the menu is used.
+        max_selected_items: the highest number of items from the list that
+            can be selected at one time.
+        focus_on_load: whether or not the menu will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the menu when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -401,6 +642,29 @@ class ExternalMultiSelectMenu(Element):
 
 
 class UserMultiSelectMenu(Element):
+    """
+    This interactive UI element allows users to select multiple users visible
+        to the current user in the active workspace.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#users_multi_select>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_users: a list of string user IDs to be intially selected
+            when the element is first rendered.
+        confirm: a `ConfirmationDialogue` object that will be presented when
+            the menu is used.
+        max_selected_items: the highest number of items from the list that
+            can be selected at one time.
+        focus_on_load: whether or not the menu will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the menu when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -439,6 +703,35 @@ class UserMultiSelectMenu(Element):
 
 
 class ConversationMultiSelectMenu(Element):
+    """
+    This interactive UI element allows users to select multiple conversations visible
+        to the current user in the active workspace.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#conversation_multi_select>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_conversations: a list of conversation IDs as strings that will
+            already be selected when the menu renders.
+        default_to_current_conversation: Pre-populates the select menu with the
+            conversation that the user was viewing when they opened the modal
+            (defaults to `False`).
+        confirm: a `ConfirmationDialogue` object that will be presented when
+            the menu is used.
+        max_selected_items: the maximum number of items that can be selected
+            in the menu.
+        filter: a [`Filter`](/reference/objects/#objects.ConversationFilter)
+            object that filters out conversations that don't match the settings
+            of the filter.
+        focus_on_load: whether or not the menu will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the menu when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -468,13 +761,13 @@ class ConversationMultiSelectMenu(Element):
         conversation_multi_select = self._attributes()
         conversation_multi_select["action_id"] = self.action_id
         if self.initial_conversations:
-            conversation_multi_select[
-                "intial_conversations"
-            ] = self.initial_conversations
+            conversation_multi_select["intial_conversations"] = (
+                self.initial_conversations
+            )
         if self.default_to_current_conversation:
-            conversation_multi_select[
-                "default_to_current_conversation"
-            ] = self.default_to_current_conversation
+            conversation_multi_select["default_to_current_conversation"] = (
+                self.default_to_current_conversation
+            )
         if self.confirm:
             conversation_multi_select["confirm"] = self.confirm._resolve()
         if self.max_selected_items:
@@ -489,6 +782,29 @@ class ConversationMultiSelectMenu(Element):
 
 
 class ChannelMultiSelectMenu(Element):
+    """
+    This interactive UI element allows users to select multiple channels visible
+        to the current user in the active workspace.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#channel_multi_select>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_channels: a list of conversation IDs as strings that will
+            already be selected when the menu renders.
+        confirm: a `ConfirmationDialogue` object that will be presented when
+            the menu is used.
+        max_selected_items: the maximum number of items that can be selected
+            in the menu.
+        focus_on_load: whether or not the menu will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the menu when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -530,8 +846,27 @@ class ChannelMultiSelectMenu(Element):
 
 class NumberInput(Element):
     """
-    This input elements accepts both whole and decimal numbers. For example,
+    This input elements accepts both integer and decimal numbers. For example,
     0.25, 5.5, and -10 are all valid input values.
+
+    See <https://api.slack.com/reference/block-kit/block-elements#number>.
+
+    Args:
+        is_decimal_allowed: whether to accept decimal values as input.
+        action_id: an identifier so the source of the action can be known.
+        initial_value: the initial value in the number input when it is loaded.
+        min_value: minimum accepted value for the input field.
+        max_value: maximum accepted value for the input field.
+        dispatch_action_config: a `DispatchActionConfiguration` object that
+            determines when during text input the element returns a
+            `block_actions` payload.
+        focus_on_load: whether or not the menu will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the input when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
     """
 
     def __init__(
@@ -589,9 +924,9 @@ class NumberInput(Element):
         if self.max_value:
             number_input["max_value"] = self.max_value
         if self.dispatch_action_config:
-            number_input[
-                "dispatch_action_config"
-            ] = self.dispatch_action_config._resolve()
+            number_input["dispatch_action_config"] = (
+                self.dispatch_action_config._resolve()
+            )
         if self.focus_on_load:
             number_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
@@ -602,6 +937,19 @@ class NumberInput(Element):
 class OverflowMenu(Element):
     """
     Context menu for additional options (think '...').
+
+    See <https://api.slack.com/reference/block-kit/block-elements#overflow>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        options: a list of
+            [`Option`](/reference/objects/#objects.Option) objects that will form
+            the content of the overflow menu.
+        confirm: a `ConfirmationDialogue` object that will be presented when an
+            option in the overflow menu is selected.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
     """
 
     def __init__(
@@ -629,6 +977,25 @@ class PlainTextInput(Element):
     A plain-text input, similar to the HTML <input> tag, creates a field where a user
     can enter freeform data. It can appear as a single-line field or a larger text
     area using the multiline flag.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#input>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_value: the initial value in the plain-text input when it is loaded.
+        multiline: whether to accept multiple lines of input(defaults to false).
+        min_length: minimum number of characters to accept as input.
+        max_length: maximum number of characters to accept as input.
+        dispatch_action_config: a `DispatchActionConfiguration` object that
+            determines when during text input the element returns a
+            `block_actions` payload.
+        focus_on_load: whether or not the input will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the input when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
     """
 
     def __init__(
@@ -669,9 +1036,9 @@ class PlainTextInput(Element):
         if self.max_length:
             plain_text_input["max_length"] = self.max_length
         if self.dispatch_action_config:
-            plain_text_input[
-                "dispatch_action_config"
-            ] = self.dispatch_action_config._resolve()
+            plain_text_input["dispatch_action_config"] = (
+                self.dispatch_action_config._resolve()
+            )
         if self.focus_on_load:
             plain_text_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
@@ -682,6 +1049,24 @@ class PlainTextInput(Element):
 class RadioButtonGroup(Element):
     """
     A radio button group that allows a user to choose one item from a list of possible options.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#radio>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        options: a list of
+            [`Option`](/reference/objects/#objects.Option) objects that will form
+            the content of the radio button group.
+        initial_option: an
+            [`Option`](/reference/objects/#objects.Option) object that will be
+            initially selected when first presented to the user.
+        confirm: a `ConfirmationDialogue` object that will be presented when an
+            option in the overflow menu is selected.
+        focus_on_load: whether or not the input will be set to autofocus
+            within the view object.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
     """
 
     def __init__(
@@ -719,6 +1104,35 @@ class RadioButtonGroup(Element):
 
 
 class StaticSelectMenu(Element):
+    """
+    A simple select menu interactive UI element, with a static list of options passed in when
+        defining the element.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#static_select>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        options: a list of
+            [`Option`](/reference/objects/#objects.Option) objects that will form
+            the content of the menu (max 100).
+        option_groups: a list of
+            [`OptionGroups`](/reference/objects/#objects.OptionGroup)
+            (max 100). Only one of `options` or `option_groups` can be
+            provided.
+        initial_option: an
+            [`Option`](/reference/objects/#objects.Option) object that will be
+            initially selected when first presented to the user.
+        confirm: a `ConfirmationDialogue` object that will be presented when an
+            option in the overflow menu is selected.
+        focus_on_load: whether or not the input will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the input when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -785,6 +1199,29 @@ class StaticSelectMenu(Element):
 
 
 class ExternalSelectMenu(Element):
+    """
+    A select menu interactive UI element, sourced with externally provided options.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#external_select>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_option: an
+            [`Option`](/reference/objects/#objects.Option) object that will be
+            initially selected when first presented to the user.
+        min_query_length: minimum number of characters entered before the query
+            is dispactched (defaults to 3 if not provided).
+        confirm: a `ConfirmationDialogue` object that will be presented when an
+            option in the overflow menu is selected.
+        focus_on_load: whether or not the input will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the input when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -824,6 +1261,27 @@ class ExternalSelectMenu(Element):
 
 
 class UserSelectMenu(Element):
+    """
+    A select menu interactive UI element, sourced automatically with Slack users from the
+        current workspace visible to the current user.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#users_select>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_user: the single (string) user ID that will be initially selected
+            when first presented to the user.
+        confirm: a `ConfirmationDialogue` object that will be presented when an
+            option in the overflow menu is selected.
+        focus_on_load: whether or not the input will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the input when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -856,6 +1314,36 @@ class UserSelectMenu(Element):
 
 
 class ConversationSelectMenu(Element):
+    """
+    A select menu interactive UI element, sourced with a list of public and private channels,
+        DMs, and MPIMs visible to the current user.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#conversations_select>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_conversation: the single (string) coversation ID that will be initially
+            selected when first presented to the user.
+        default_to_current_conversation: Pre-populates the select menu with the
+            conversation that the user was viewing when they opened the modal
+            (defaults to `False`).
+        confirm: a `ConfirmationDialogue` object that will be presented when an
+            option in the overflow menu is selected.
+        response_url_enabled: When set to true, the view_submission payload from the
+            menu's parent view will contain a response_url. (This response_url can be
+            used for message responses).
+        filter: a [`Filter`](/reference/objects/#objects.ConversationFilter)
+            object that filters out conversations that don't match the settings
+            of the filter.
+        focus_on_load: whether or not the input will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the input when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -888,9 +1376,9 @@ class ConversationSelectMenu(Element):
         if self.initial_conversation:
             conversation_select_menu["initial_conversation"] = self.initial_conversation
         if self.default_to_current_conversation:
-            conversation_select_menu[
-                "default_to_current_conversation"
-            ] = self.default_to_current_conversation
+            conversation_select_menu["default_to_current_conversation"] = (
+                self.default_to_current_conversation
+            )
         if self.confirm:
             conversation_select_menu["confirm"] = self.confirm._resolve()
         if self.response_url_enabled:
@@ -905,6 +1393,30 @@ class ConversationSelectMenu(Element):
 
 
 class ChannelSelectMenu(Element):
+    """
+    A select menu interactive UI element, sourced with a list of public channels visible
+        to the current user.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#channels_select>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_channel: the single (string) user ID that will be initially selected
+            when first presented to the user.
+        confirm: a `ConfirmationDialogue` object that will be presented when an
+            option in the overflow menu is selected.
+        response_url_enabled: When set to true, the view_submission payload from the
+            menu's parent view will contain a response_url. (This response_url can be
+            used for message responses).
+        focus_on_load: whether or not the input will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the input when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -944,6 +1456,26 @@ class ChannelSelectMenu(Element):
 
 
 class TimePicker(Element):
+    """
+    An interactive UI element that allows users to select a time of day.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#timepicker>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_time:
+        confirm: a `ConfirmationDialogue` object that will be presented when
+            the input field is used.
+        focus_on_load: whether or not the menu will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the menu when it's initially rendered.
+        timezone: a string in the IANA format, e.g. "America/Chicago".
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -983,6 +1515,27 @@ class TimePicker(Element):
 
 
 class URLInput(Element):
+    """
+    An interactive UI element for collecting URL input from users.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#url>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_value: the text to populate the input field with when it
+            is first rendered.
+        dispatch_action_config: a `DispatchActionConfiguration` object that
+            determines when during text input the element returns a
+            `block_actions` payload.
+        focus_on_load: whether or not the menu will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the input when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         action_id: str,
@@ -1018,6 +1571,10 @@ class URLInput(Element):
 
 
 class ButtonStyle(Enum):
+    """
+    Utility class for determining the style of `Buttons` and `WorkflowButtons`.
+    """
+
     DEFAULT = None
     PRIMARY = "primary"
     DANGER = "danger"
@@ -1037,6 +1594,27 @@ ButtonStyleLike = Union[ButtonStyle, str]
 
 
 class WorkflowButton(Element):
+    """
+    An interactive component that allows users to run a link trigger with
+        customizable inputs.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#workflow_button>.
+
+    Args:
+        text: the text content that will appear in the button.
+        workflow: a [`Workflow`](/reference/objects/#objects.Workflow) object
+            that contains details about the workflow that will run when the
+            button is clicked.
+        style: one of `Default`, `Primary`, or `Danger`, determines the
+            visual style of the button. Consider using the `ButtonStyle`
+            object for this.
+        accessibility_label: a string label for longer descriptive text about
+            a button element. Used by screen readers (max 75 chars).
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
     def __init__(
         self,
         text: TextLike,
@@ -1055,8 +1633,59 @@ class WorkflowButton(Element):
         workflow_button["text"] = self.text._resolve()
         if self.workflow:
             workflow_button["workflow"] = self.workflow._resolve()
-        if self.style:
+        if self.style is not None:
             workflow_button["style"] = self.style
         if self.accessibility_label:
             workflow_button["accessibility_label"] = self.accessibility_label
         return workflow_button
+
+
+class RichTextInput(Element):
+    """
+    Allows users to enter formatted text in a WYSIWYG editor, similar to the Slack
+        messaging experience.
+
+    See: <https://api.slack.com/reference/block-kit/block-elements#rich_text_input>.
+
+    Args:
+        action_id: an identifier so the source of the action can be known.
+        initial_value: The initial value in the rich text input when it is loaded.
+        dispatch_action_config: a `DispatchActionConfiguration` object that
+            determines when during text input the element returns a
+            `block_actions` payload.
+        focus_on_load: whether or not the menu will be set to autofocus
+            within the view object.
+        placeholder: a plain-text `Text` object (max 150 chars) that shows
+            in the menu when it's initially rendered.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
+
+    def __init__(
+        self,
+        action_id: str,
+        initial_value: Optional[RichText] = None,
+        dispatch_action_config: Optional[DispatchActionConfiguration] = None,
+        focus_on_load: bool = False,
+        placeholder: Optional[TextLike] = None,
+    ) -> "RichTextInput":
+        super().__init__(ElementType.RICH_TEXT_INPUT)
+        self.action_id = validate_action_id(action_id)
+        self.initial_value = initial_value
+        self.dispatch_action_config = dispatch_action_config
+        self.focus_on_load = focus_on_load
+        self.placeholder = placeholder
+
+    def _resolve(self) -> Dict[str, Any]:
+        rich_text_input = super()._attributes()
+        rich_text_input["action_id"] = self.action_id
+        if self.initial_value is not None:
+            rich_text_input["initial_value"] = self.initial_value._resolve()
+        if self.dispatch_action_config is not None:
+            rich_text_input["dispatch_action_config"] = self.dispatch_action_config
+        if self.focus_on_load is not None:
+            rich_text_input["focus_on_load"] = self.focus_on_load
+        if self.placeholder is not None:
+            rich_text_input["placeholder"] = self.placeholder
+        return rich_text_input

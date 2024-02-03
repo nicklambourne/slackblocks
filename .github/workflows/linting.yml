@@ -7,10 +7,10 @@ jobs:
     name: black Formatting
     steps:
       - name: Check Out Source Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set Up Python Environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -23,7 +23,7 @@ jobs:
       
       - name: Load Cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
@@ -42,10 +42,10 @@ jobs:
     name: flake8 Linting
     steps:
       - name: Check Out Source Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set Up Python Environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -57,7 +57,7 @@ jobs:
 
       - name: Load Cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}

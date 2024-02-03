@@ -5,6 +5,7 @@ from slackblocks import (
     CheckboxGroup,
     ContextBlock,
     DividerBlock,
+    FileBlock,
     HeaderBlock,
     ImageBlock,
     InputBlock,
@@ -127,16 +128,6 @@ def test_basic_header_block() -> None:
     )
 
 
-def test_basic_action_block() -> None:
-    block = ActionsBlock(
-        block_id="5d1d342f-d65c-4ac5-a2f5-690e48ef207e",
-        elements=[Option(text="Hi", value="Hi")],
-    )
-    assert fetch_sample(path="test/samples/blocks/actions_block_only.json") == repr(
-        block
-    )
-
-
 def test_checkbox_action_block() -> None:
     options = [
         Option(text="*a*", value="a", description="*a*"),
@@ -202,6 +193,15 @@ def test_basic_rich_text_block() -> None:
                     ),
                 ]
             ),
+            block_id="fake_block_id",
+        )
+    )
+
+
+def text_basic_file_block() -> None:
+    assert fetch_sample(path="test/samples/blocks/rich_text_block_basic.json") == repr(
+        FileBlock(
+            external_id="external_id",
             block_id="fake_block_id",
         )
     )

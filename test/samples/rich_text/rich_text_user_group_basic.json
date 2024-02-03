@@ -1,0 +1,12 @@
+{
+    "type": "user_group",
+    "user_group_id": "C01RGRU0RUK",
+    "style": {
+        "bold": true,
+        "italic": false,
+        "strike": true,
+        "highlight": true,
+        "client_highlight": true,
+        "unlink": false
+    }
+}

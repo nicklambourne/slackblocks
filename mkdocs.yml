@@ -1,0 +1,90 @@
+site_name: slackblocks
+
+repo_url: https://github.com/nicklambourne/slackblocks/
+site_url: https://nicklambourne.github.io/slackblocks/
+site_dir: docs
+docs_dir: docs_src
+
+theme:
+  name: "material"
+  logo: img/sb.png
+  favicon: img/sb.png
+  features:
+    - navigation.expand
+    - search.suggest
+  palette:
+        # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7 
+        name: Switch to dark mode
+      primary: black
+      accent: indigo
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+      primary: black
+      accent: deep-purple
+  icon:
+    admonition:
+      warning: material/alert
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [slackblocks]
+          options:
+            show_root_heading: false
+            show_root_toc_entry: false
+            separate_signature: true
+            show_signature_annotations: false
+            show_symbol_type_heading: true
+            docstring_style: google
+            heading_level: 3
+  - mike:
+      # These fields are all optional; the defaults are as below...
+      alias_type: symlink
+      redirect_template: null
+      deploy_prefix: null
+      canonical_version: null
+      version_selector: true
+      css_dir: css
+      javascript_dir: js
+
+markdown_extensions:
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: index.md
+  - Usage:
+    - Installation: usage/installation.md
+    - Using Blocks: usage/using_blocks.md
+    - Sending Messages: usage/sending_messages.md
+  - Reference:
+    - Attachments: reference/attachments.md
+    - Blocks: reference/blocks.md
+    - Elements: reference/elements.md
+    - Messages: reference/messages.md
+    - Modals: reference/modals.md
+    - Objects: reference/objects.md
+    - Rich Text: reference/rich_text.md
+    - Views: reference/views.md
+    - Utilities: reference/utils.md
+
+extra:
+  version:
+    provider: mike
