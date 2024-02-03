@@ -2,6 +2,8 @@ site_name: slackblocks
 
 repo_url: https://github.com/nicklambourne/slackblocks/
 
+site_dir: site
+
 theme:
   name: "material"
   logo: img/sb.png
@@ -48,7 +50,7 @@ plugins:
       # These fields are all optional; the defaults are as below...
       alias_type: symlink
       redirect_template: null
-      deploy_prefix: ''
+      deploy_prefix: 'docs'
       canonical_version: null
       version_selector: true
       css_dir: css
