@@ -311,18 +311,69 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
+  <a href="#components" class="md-nav__link">
     <span class="md-ellipsis">
-      Commands
+      Components
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objects
     </span>
   </a>
   
 </li>
+        
+          <li class="md-nav__item">
+  <a href="#elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Elements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Blocks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Messages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#views" class="md-nav__link">
+    <span class="md-ellipsis">
+      Views
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#project-layout" class="md-nav__link">
+  <a href="#guides" class="md-nav__link">
     <span class="md-ellipsis">
-      Project layout
+      Guides
     </span>
   </a>
   
@@ -387,27 +438,6 @@
   
   <span class="md-ellipsis">
     Installation
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="usage/basic_usage/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Basic Usage
   </span>
   
 
@@ -728,18 +758,69 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
+  <a href="#components" class="md-nav__link">
     <span class="md-ellipsis">
-      Commands
+      Components
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objects
     </span>
   </a>
   
 </li>
+        
+          <li class="md-nav__item">
+  <a href="#elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Elements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#blocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Blocks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Messages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#views" class="md-nav__link">
+    <span class="md-ellipsis">
+      Views
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#project-layout" class="md-nav__link">
+  <a href="#guides" class="md-nav__link">
     <span class="md-ellipsis">
-      Project layout
+      Guides
     </span>
   </a>
   
@@ -764,20 +845,55 @@
 
 
 <h1 id="welcome-to-slackblocks">Welcome to <code>slackblocks</code>!</h1>
-<p>For full documentation visit <a href="https://www.mkdocs.org">mkdocs.org</a>.</p>
-<h2 id="commands">Commands</h2>
+<p align="center">
+  <img width="30%" src="./img/sb.png" />
+</p>
+
+<p><code>slackblocks</code> is Python package for creating complex Slack messages 
+    using the Slack <a href="https://api.slack.com/block-kit">BlockKit API</a>.</p>
+<p>It exists so you don't have to define block-based Slack messages by
+    hand-writing JSON.</p>
+<h2 id="components">Components</h2>
+<p>The <a href="https://api.slack.com/block-kit">Slack BlockKit API</a> defines a number of 
+    different resource types (all defined in JSON) which work together to 
+    define Block-based messages.</p>
+<p><code>slackblocks</code> makes using this API easier by providing a hierarchy of Python
+    classes that represent these resources.</p>
+<h3 id="objects">Objects</h3>
+<p><a href="/reference/objects"><code>Objects</code></a> (e.g. <a href="/reference/objects/#objects.Text"><code>Text</code></a>) 
+    are the lowest level pimitives that are used to populate 
+    <a href="/reference/elements"><code>Elements</code></a> and <a href="/reference/blocks"><code>Blocks</code></a>.</p>
+<h3 id="elements">Elements</h3>
+<p><a href="/reference/elements"><code>Elements</code></a> are typically interactive UI elements that take
+    in <a href="/reference/objects"><code>Object</code></a> to define their content. For example, the 
+    <a href="/elements/#elements.CheckboxGroup"><code>CheckboxGroup</code></a> element takes in one or
+    more <a href="/reference/objects/#objects.Option"><code>Option</code></a> items and presents a
+    checkbox menu to the user with those options.</p>
+<h3 id="blocks">Blocks</h3>
+<p><a href="/reference/blocks"><code>Blocks</code></a> are the core element of the API, with different 
+    <a href="/reference/blocks"><code>Blocks</code></a> used to create different types of visual
+    elements. For example, the <a href="/reference/blocks/#blocks.DividerBlock"><code>DividerBlock</code></a>, 
+    when rendered, will show a visual element similar to a <code>&lt;hr&gt;</code> HTML element. The
+    <a href="/reference/blocks/#blocks.RichTextBlock"><code>RichTextBlock</code></a> on the other hand
+    allows for the display of text elements with visual styling like italics,
+    block quotes, lists and code blocks. </p>
+<h3 id="messages">Messages</h3>
+<p><a href="/reference/messages/"><code>Messages</code></a> are a convenience wrapper around <code>Blocks</code> that
+    can be unpacked as arguments straight into the official Slack Python SDK (or
+    its legacy <code>slackclient</code> counterpart).</p>
+<h3 id="views">Views</h3>
+<p><a href="reference/views/"><code>Views</code></a> are an alternative usage for <a href="/reference/blocks"><code>Blocks</code></a>
+    that allow for the creation of custom UI "surfaces" within Slack, e.g. for 
+    third-party apps.</p>
+<h2 id="guides">Guides</h2>
+<p>In addition to a complete reference of all classes and functions provided by the 
+    <code>slackblocks</code> library, this documentation contains guides on:</p>
 <ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs -h</code> - Print help message and exit.</li>
+<li><a href="">Installing <code>slackblocks</code></a></li>
+<li><a href="./usage/basic_usage.md">Basic Usage</a></li>
+<li><a href="usage/using_blocks/">Using Blocks</a></li>
+<li><a href="usage/sending_messages/">Sending Block-based Messages</a></li>
 </ul>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
-</code></pre>
 
 
 
