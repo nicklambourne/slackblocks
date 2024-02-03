@@ -1,16 +1,18 @@
 # slackblocks <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/img/sb.png" align="right" width="250px"/>
 
-![PyPI - License](https://img.shields.io/pypi/l/slackblocks)
+![Licence: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![Licence: BSD-3-Clause](https://img.shields.io/badge/License-MIT-green.svg)
 ![Python Versions](https://img.shields.io/pypi/pyversions/slackblocks)
 [![PyPI](https://img.shields.io/pypi/v/slackblocks?color=yellow&label=PyPI&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/#history)
 [![Downloads](https://static.pepy.tech/badge/slackblocks)](https://pepy.tech/project/slackblocks)
 [![Build Status](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
+[![Docs](https://img.shields.io/badge/Docs-8A2BE2.svg)](https://nicklambourne.github.io/slackblocks)
 
 ## What is it?
-
 `slackblocks` is a Python API for building messages in the fancy Slack Block Kit API.
 
-It was created by [Nicholas Lambourne](https://github.com/nicklambourne) for the [UQCS Slack Bot](https://github.com/UQComputingSociety/uqcsbot) because he hates writing JSON, naturally this project has subsequently involved writing more JSON than if he'd done the original task by hand.
+## Documentation
+Full documentation is provided [here](https://nicklambourne.github.io/slackblocks/latest/).
 
 ## Requirements
 `slackblocks` requires Python >= 3.7.
@@ -18,13 +20,11 @@ It was created by [Nicholas Lambourne](https://github.com/nicklambourne) for the
 As of version 0.1.0 it has no dependencies outside the Python standard library.
 
 ## Installation
-
 ```bash
 pip install slackblocks
 ```
 
-## Usage
-
+## Basic Usage
 ```python
 from slackblocks import Message, SectionBlock
 
@@ -72,5 +72,5 @@ response = client.chat_postMessage(**message)
 Note the `**` operator in front of the `message` object.
 
 ## Can I use this in my project?
-
-Yes, please do! The code is all open source and BSD-3.0 licensed.
+Yes, please do! The code is all open source and dual BSD-3.0 and MIT licensed
+    (use what suits you best).
