@@ -1,4 +1,4 @@
-# slackblocks <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/img/sb.png" align="right" width="250px"/>
+# slackblocks <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs_src/img/sb.png" align="right" width="250px"/>
 
 ![Licence: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Licence: BSD-3-Clause](https://img.shields.io/badge/License-MIT-green.svg)
