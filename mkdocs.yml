@@ -44,6 +44,15 @@ plugins:
             show_symbol_type_heading: true
             docstring_style: google
             heading_level: 3
+  - mike:
+      # These fields are all optional; the defaults are as below...
+      alias_type: symlink
+      redirect_template: null
+      deploy_prefix: ''
+      canonical_version: null
+      version_selector: true
+      css_dir: css
+      javascript_dir: js
 
 markdown_extensions:
   - attr_list
@@ -73,3 +82,7 @@ nav:
     - Rich Text: reference/rich_text.md
     - Views: reference/views.md
     - Utilities: reference/utils.md
+
+extra:
+  version:
+    provider: mike

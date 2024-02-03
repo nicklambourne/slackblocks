@@ -47,6 +47,7 @@ twine = "^4.0.2"
 wheel = "^0.42.0"
 
 [tool.poetry.group.docs.dependencies]
+mike="^2.0.0"
 mkdocs = "^1.5.3"
 mkdocs-material = "^9.5.6"
 mkdocstrings = {extras = ["python"], version = "^0.24.0"}
