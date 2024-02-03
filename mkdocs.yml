@@ -2,7 +2,8 @@ site_name: slackblocks
 
 repo_url: https://github.com/nicklambourne/slackblocks/
 
-site_dir: site
+site_dir: docs
+docs_dir: doc_src
 
 theme:
   name: "material"
