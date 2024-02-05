@@ -9,7 +9,7 @@
 [![Docs](https://img.shields.io/badge/Docs-8A2BE2.svg)](https://nicklambourne.github.io/slackblocks)
 
 ## What is it?
-`slackblocks` is a Python API for building messages in the fancy Slack Block Kit API.
+`slackblocks` is a Python API for building messages in the fancy Slack [Block Kit API](https://api.slack.com/block-kit)
 
 ## Documentation
 Full documentation is provided [here](https://nicklambourne.github.io/slackblocks/latest/).
