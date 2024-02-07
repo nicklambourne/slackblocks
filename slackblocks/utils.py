@@ -153,7 +153,7 @@ def validate_string(
         if min_length and length < min_length:
             raise InvalidUsageError(
                 f"Argument to field `{field_name}` ({length} characters) "
-                f"is less than minimum length of {max_length} characters"
+                f"is less than minimum length of {min_length} characters"
             )
         if max_length and length > max_length:
             raise InvalidUsageError(
