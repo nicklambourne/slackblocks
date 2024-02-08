@@ -1,7 +1,7 @@
 # Welcome to `slackblocks`!
 
 <p align="center">
-  <img width="30%" src="./docs_src/img/sb.png" />
+  <img width="30%" src="./img/sb.png" />
 </p>
 
 `slackblocks` is Python package for creating complex Slack messages 
@@ -55,6 +55,6 @@ In addition to a complete reference of all classes and functions provided by the
     `slackblocks` library, this documentation contains guides on:
 
 - [Installing `slackblocks`]()
-- [Basic Usage](./usage/basic_usage.md)
-- [Using Blocks](./usage/using_blocks.md)
-- [Sending Block-based Messages](./usage/sending_messages.md)
+- [Basic Usage](./usage/basic_usage)
+- [Using Blocks](./usage/using_blocks)
+- [Sending Block-based Messages](./usage/sending_messages)
