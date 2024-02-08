@@ -54,7 +54,7 @@ The [Slack BlockKit API](https://api.slack.com/block-kit) defines a number of
 In addition to a complete reference of all classes and functions provided by the 
     `slackblocks` library, this documentation contains guides on:
 
-- [Installing `slackblocks`](usage/basic_usage)
-- [Basic Usage](usage/basic_usage)
-- [Using Blocks](usage/using_blocks)
-- [Sending Block-based Messages](usage/sending_messages)
+- [Installing `slackblocks`](usage/basic_usage/)
+- [Basic Usage](usage/basic_usage/)
+- [Using Blocks](usage/using_blocks/)
+- [Sending Block-based Messages](usage/sending_messages/)
