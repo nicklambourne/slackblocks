@@ -20,6 +20,7 @@ from .objects import (
     SlackFile,
     Text,
     TextLike,
+    TextType,
     Workflow,
 )
 from .rich_text import RichText
@@ -252,7 +253,7 @@ class DatePicker(Element):
     def _resolve(self) -> Dict[str, Any]:
         date_picker = self._attributes()
         date_picker["action_id"] = self.action_id
-        if self.initial_date:
+        if self.initial_date is not None:
             date_picker["initial_date"] = self.initial_date
         if self.confirm:
             date_picker["confirm"] = self.confirm
@@ -531,12 +532,20 @@ class StaticMultiSelectMenu(Element):
                 "If using `option_groups` then `initial_options` must also be of type "
                 f"`List[OptionGroup]`, not `{type(self.initial_options)}`."
             )
-        self.options = coerce_to_list(
-            options, class_=Option, allow_none=True, max_size=100
-        )
-        self.option_groups = coerce_to_list(
-            option_groups, class_=OptionGroup, allow_none=True, max_size=100
-        )
+
+        # Check that Option Text is all TextType.PLAINTEXT
+        if self.options:
+            options_to_validate = self.options
+        if self.option_groups:
+            options_to_validate = sum(
+                [option_group.options for option_group in option_groups], []
+            )
+        for option in options_to_validate:
+            if option.text.text_type == TextType.MARKDOWN:
+                raise InvalidUsageError(
+                    "Text in Options for StaticSelectMenu can only be of TextType.PLAINTEXT"
+                )
+
         self.confirm = confirm
         self.max_selected_items = max_selected_items
         self.focus_on_load = focus_on_load
@@ -1169,6 +1178,20 @@ class StaticSelectMenu(Element):
                 "If using `option_groups` then `initial_option` must also be of type "
                 f"`OptionGroup`, not `{type(initial_option)}`."
             )
+
+        # Check that Option Text is all TextType.PLAINTEXT
+        if self.options:
+            options_to_validate = self.options
+        if self.option_groups:
+            options_to_validate = sum(
+                [option_group.options for option_group in option_groups], []
+            )
+        for option in options_to_validate:
+            if option.text.text_type == TextType.MARKDOWN:
+                raise InvalidUsageError(
+                    "Text in Options for StaticSelectMenu can only be of TextType.PLAINTEXT"
+                )
+
         self.initial_option = initial_option
         self.confirm = confirm
         self.focus_on_load = focus_on_load
