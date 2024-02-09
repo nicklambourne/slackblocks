@@ -291,7 +291,7 @@ class OptionGroup(CompositionObject):
 
     Args:
         label: a label shown above the group of options.
-        options: a list of `Option` objects that will form the contents of the group.
+        options: a list of `Option` objects that will form the contents of the group (max 100).
 
     Throws:
         InvalidUsageError: if no options are provided or the label is not valid.
@@ -300,10 +300,13 @@ class OptionGroup(CompositionObject):
     def __init__(self, label: TextLike, options: List[Option]):
         super().__init__(type_=CompositionObjectType.OPTION_GROUP)
         self.label = Text.to_text(label, max_length=75, force_plaintext=True)
-        if options:
-            self.options = options
-        else:
-            raise InvalidUsageError("Field `options` cannot be empty")
+        self.options = coerce_to_list(
+            options,
+            class_=Option,
+            min_size=1,
+            max_size=100,
+            allow_none=False,
+        )
 
     def _resolve(self) -> Dict[str, Any]:
         option_group = {}  # Does not include type in JSON

@@ -1,3 +1,5 @@
+import pytest
+
 from slackblocks.elements import (
     Button,
     ButtonStyle,
@@ -25,7 +27,15 @@ from slackblocks.elements import (
     UserSelectMenu,
     WorkflowButton,
 )
-from slackblocks.objects import InputParameter, Text, TextType, Trigger, Workflow
+from slackblocks.errors import InvalidUsageError
+from slackblocks.objects import (
+    InputParameter,
+    Option,
+    Text,
+    TextType,
+    Trigger,
+    Workflow,
+)
 from slackblocks.rich_text import RichText
 
 from .utils import OPTION_A, THREE_OPTIONS, TWO_OPTIONS, fetch_sample
@@ -136,6 +146,16 @@ def test_multi_select_static() -> None:
     )
 
 
+def test_multi_select_static_invalid_option() -> None:
+    with pytest.raises(InvalidUsageError):
+        StaticMultiSelectMenu(
+            action_id="multi_static_select",
+            placeholder=Text("Select one or more", type_=TextType.PLAINTEXT),
+            options=TWO_OPTIONS
+            + [Option(text=Text("C", type_=TextType.MARKDOWN), value="X")],
+        )
+
+
 def test_multi_select_user() -> None:
     multi_select_user = UserMultiSelectMenu(
         action_id="multi_users_select",
@@ -212,6 +232,16 @@ def test_select_menu_static() -> None:
     assert fetch_sample(path="test/samples/elements/select_menu_static.json") == repr(
         select_menu_static
     )
+
+
+def test_select_menu_static_invalid_option() -> None:
+    with pytest.raises(InvalidUsageError):
+        StaticSelectMenu(
+            action_id="static_select",
+            placeholder="Select one item",
+            options=THREE_OPTIONS
+            + [Option(text=Text("C", type_=TextType.MARKDOWN), value="X")],
+        )
 
 
 def test_select_menu_user() -> None:
