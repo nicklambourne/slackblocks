@@ -148,7 +148,7 @@ def test_multi_select_static() -> None:
 
 def test_multi_select_static_invalid_option() -> None:
     with pytest.raises(InvalidUsageError):
-        multi_select_static = StaticMultiSelectMenu(
+        StaticMultiSelectMenu(
             action_id="multi_static_select",
             placeholder=Text("Select one or more", type_=TextType.PLAINTEXT),
             options=TWO_OPTIONS
@@ -236,7 +236,7 @@ def test_select_menu_static() -> None:
 
 def test_select_menu_static_invalid_option() -> None:
     with pytest.raises(InvalidUsageError):
-        select_menu_static = StaticSelectMenu(
+        StaticSelectMenu(
             action_id="static_select",
             placeholder="Select one item",
             options=THREE_OPTIONS
