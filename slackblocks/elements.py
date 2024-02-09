@@ -244,8 +244,6 @@ class DatePicker(Element):
             self.initial_date = datetime.strptime(initial_date, "%Y-%m-%d").strftime(
                 "%Y-%m-%d"
             )
-        else:
-            self.initial_date = None
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
