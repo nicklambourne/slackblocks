@@ -1,4 +1,6 @@
-from slackblocks import Attachment, Color, Message, MessageResponse, SectionBlock
+from slackblocks import (
+    Attachment, Color, Message, MessageResponse, ResponseType, SectionBlock, Text, WebhookMessage
+) 
 
 
 def test_basic_message() -> None:
@@ -58,3 +60,61 @@ def test_to_dict() -> None:
         "replace_original": False,
         "response_type": "ephemeral",
     }
+
+
+def test_basic_webhook_message() -> None:
+    with open("test/samples/messages/webhook_message_basic.json", "r") as expected:
+        assert repr(
+            WebhookMessage(
+                blocks=[
+                    SectionBlock(
+                        Text("You wouldn't do ol' Hook in now, would you, lad?"),
+                        block_id="fake_block_id",
+                    ),
+                    SectionBlock(
+                        Text("Well, all right... if you... say you're a codfish."),
+                        block_id="fake_block_id",
+                    )
+                ],
+                response_type=ResponseType.EPHEMERAL,
+                replace_original=True,
+                unfurl_links=False,
+                unfurl_media=False,
+                metadata={
+                    "sender": "Walt",
+                }
+            )
+        ) == expected.read()
+
+
+def test_webhook_message_delete() -> None:
+    with open("test/samples/messages/webhook_message_delete.json", "r") as expected:
+        assert repr(
+            WebhookMessage(
+                attachments=[
+                    Attachment(blocks=[
+                        SectionBlock(
+                            Text("I'M A CODFISH!"),
+                            block_id="fake_block_id",
+                        )
+                    ])
+                ],
+                blocks=[
+                    SectionBlock(
+                        Text("I'm a codfish."),
+                        block_id="fake_block_id",
+                    ),
+                    SectionBlock(
+                        Text("Louder!"),
+                        block_id="fake_block_id",
+                    )
+                ],
+                response_type="in_channel",
+                delete_original=True,
+                unfurl_links=True,
+                unfurl_media=True,
+                metadata={
+                    "sender": "Walt",
+                }
+            )
+        ) == expected.read()
