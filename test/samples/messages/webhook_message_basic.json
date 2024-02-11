@@ -1,0 +1,27 @@
+{
+    "blocks": [
+        {
+            "type": "section",
+            "block_id": "fake_block_id",
+            "text": {
+                "type": "mrkdwn",
+                "text": "You wouldn't do ol' Hook in now, would you, lad?"
+            }
+        },
+        {
+            "type": "section",
+            "block_id": "fake_block_id",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Well, all right... if you... say you're a codfish."
+            }
+        }
+    ],
+    "response_type": "ephemeral",
+    "replace_original": true,
+    "unfurl_links": false,
+    "unfurl_media": false,
+    "metadata": {
+        "sender": "Walt"
+    }
+}
