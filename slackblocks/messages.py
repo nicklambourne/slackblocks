@@ -20,6 +20,7 @@ class ResponseType(Enum):
     """
     Types of messages that can be sent via `WebhookMessage`.
     """
+
     EPHEMERAL = "ephemeral"
     IN_CHANNEL = "in_channel"
 
@@ -28,7 +29,9 @@ class ResponseType(Enum):
         if isinstance(value, ResponseType):
             return value.value
         if value not in [response_type.value for response_type in ResponseType]:
-            raise InvalidUsageError("ResponseType must be either `ephemeral` or `in_channel`")
+            raise InvalidUsageError(
+                "ResponseType must be either `ephemeral` or `in_channel`"
+            )
         return value
 
 
@@ -172,11 +175,11 @@ class MessageResponse(BaseMessage):
 
 class WebhookMessage:
     """
-    Messages sent via the Slack `WebhookClient` takes different arguments than 
+    Messages sent via the Slack `WebhookClient` takes different arguments than
         those sent via the regular `WebClient`.
 
-    See: <https://github.com/slackapi/python-slack-sdk/blob/7e71b73/slack_sdk/webhook/client.py#L28>.
-    
+    See: <https://github.com/slackapi/python-slack-sdk/blob/7e71b73/slack_sdk/webhook/client.py#L28>
+
     Args:
         text: markdown text to send in the message. If `blocks` are provided
             then this is a fallback to display in notifications.
@@ -186,9 +189,9 @@ class WebhookMessage:
         blocks: a list of [`Blocks`](/reference/blocks) to form the contents
             of the message instead of the contents of `text`.
         response_type: one of `ResponseType.EPHEMERAL` or `ResponseType.IN_CHANNEL`.
-            Ephemeral messages are shown only to the requesting user whereas 
+            Ephemeral messages are shown only to the requesting user whereas
             "in-channel" messages are shown to all channel participants.
-        replace_orginal: when `True`, the message triggering this response will be 
+        replace_orginal: when `True`, the message triggering this response will be
             replaced by this messaage. Mutually exclusive with `delete_original`.
         delete_original: when `True`, the original message triggering this response
             will be deleted, and any content of this message will be posted as a
@@ -203,6 +206,7 @@ class WebhookMessage:
     Throws:
         InvalidUsageError: when any of the passed fields fail validation.
     """
+
     def __init__(
         self,
         text: Optional[str] = None,
@@ -226,13 +230,15 @@ class WebhookMessage:
         self.unfurl_media = unfurl_media
         self.metadata = metadata
         self.headers = headers
-    
+
     def _resolve(self) -> None:
         webhook_message = {}
         if self.text is not None:
             webhook_message["text"] = self.text
         if self.attachments is not None:
-            webhook_message["attachments"] = [attachment._resolve() for attachment in self.attachments]
+            webhook_message["attachments"] = [
+                attachment._resolve() for attachment in self.attachments
+            ]
         if self.blocks is not None:
             webhook_message["blocks"] = [block._resolve() for block in self.blocks]
         if self.response_type is not None:
