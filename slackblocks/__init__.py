@@ -38,7 +38,7 @@ from .elements import (
     WorkflowButton,
 )
 from .errors import InvalidUsageError
-from .messages import Message, MessageResponse
+from .messages import Message, MessageResponse, ResponseType, WebhookMessage
 from .modals import Modal
 from .objects import (
     Confirm,

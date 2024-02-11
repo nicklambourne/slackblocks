@@ -5,6 +5,7 @@ built out using blocks, elements, objects, and rich text features.
 See: <https://api.slack.com/messaging>
 """
 
+from enum import Enum
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 
@@ -12,6 +13,26 @@ from slackblocks.utils import coerce_to_list
 
 from .attachments import Attachment
 from .blocks import Block
+from .errors import InvalidUsageError
+
+
+class ResponseType(Enum):
+    """
+    Types of messages that can be sent via `WebhookMessage`.
+    """
+
+    EPHEMERAL = "ephemeral"
+    IN_CHANNEL = "in_channel"
+
+    @staticmethod
+    def get_value(value: Union["ResponseType", str]) -> str:
+        if isinstance(value, ResponseType):
+            return value.value
+        if value not in [response_type.value for response_type in ResponseType]:
+            raise InvalidUsageError(
+                "ResponseType must be either `ephemeral` or `in_channel`"
+            )
+        return value
 
 
 class BaseMessage:
@@ -75,7 +96,7 @@ class Message(BaseMessage):
     the Slack message API.
 
     Args:
-        channel:
+        channel: the Slack channel to send the message to, e.g. "#general".
         text: markdown text to send in the message. If `blocks` are provided
             then this is a fallback to display in notifications.
         blocks: a list of [`Blocks`](/reference/blocks) to form the contents
@@ -150,3 +171,103 @@ class MessageResponse(BaseMessage):
         if self.ephemeral:
             result["response_type"] = "ephemeral"
         return result
+
+
+class WebhookMessage:
+    """
+    Messages sent via the Slack `WebhookClient` takes different arguments than
+        those sent via the regular `WebClient`.
+
+    See: <https://github.com/slackapi/python-slack-sdk/blob/7e71b73/slack_sdk/webhook/client.py#L28>
+
+    Args:
+        text: markdown text to send in the message. If `blocks` are provided
+            then this is a fallback to display in notifications.
+        attachments: a list of
+            [`Attachments`](/reference/attachments/#attachments.Attachment)
+            that form the secondary contents of the message (deprecated).
+        blocks: a list of [`Blocks`](/reference/blocks) to form the contents
+            of the message instead of the contents of `text`.
+        response_type: one of `ResponseType.EPHEMERAL` or `ResponseType.IN_CHANNEL`.
+            Ephemeral messages are shown only to the requesting user whereas
+            "in-channel" messages are shown to all channel participants.
+        replace_orginal: when `True`, the message triggering this response will be
+            replaced by this messaage. Mutually exclusive with `delete_original`.
+        delete_original: when `True`, the original message triggering this response
+            will be deleted, and any content of this message will be posted as a
+            new message. Mutually exclusive with `replace_orginal`.
+        unfurl_links: if `True`, links in the message will be automatically
+            unfurled.
+        unfurl_media: if `True`, media from links (e.g. images) will
+            automatically unfurl.
+        metadata: additional metadata to attach to the message.
+        headres: HTTP request headers to include with the message.
+
+    Throws:
+        InvalidUsageError: when any of the passed fields fail validation.
+    """
+
+    def __init__(
+        self,
+        text: Optional[str] = None,
+        attachments: Optional[List[Attachment]] = None,
+        blocks: Optional[Union[List[Block], Block]] = None,
+        response_type: Union[ResponseType, str] = None,
+        replace_original: Optional[bool] = None,
+        delete_original: Optional[bool] = None,
+        unfurl_links: Optional[bool] = None,
+        unfurl_media: Optional[bool] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> "WebhookMessage":
+        self.text = text
+        self.attachments = coerce_to_list(attachments, Attachment, allow_none=True)
+        self.blocks = coerce_to_list(blocks, Block, allow_none=True)
+        self.response_type = ResponseType.get_value(response_type)
+        self.replace_original = replace_original
+        self.delete_original = delete_original
+        self.unfurl_links = unfurl_links
+        self.unfurl_media = unfurl_media
+        self.metadata = metadata
+        self.headers = headers
+
+    def _resolve(self) -> None:
+        webhook_message = {}
+        if self.text is not None:
+            webhook_message["text"] = self.text
+        if self.attachments is not None:
+            webhook_message["attachments"] = [
+                attachment._resolve() for attachment in self.attachments
+            ]
+        if self.blocks is not None:
+            webhook_message["blocks"] = [block._resolve() for block in self.blocks]
+        if self.response_type is not None:
+            webhook_message["response_type"] = self.response_type
+        if self.replace_original is not None:
+            webhook_message["replace_original"] = self.replace_original
+        if self.delete_original is not None:
+            webhook_message["delete_original"] = self.delete_original
+        if self.unfurl_links is not None:
+            webhook_message["unfurl_links"] = self.unfurl_links
+        if self.unfurl_media is not None:
+            webhook_message["unfurl_media"] = self.unfurl_media
+        if self.metadata is not None:
+            webhook_message["metadata"] = self.metadata
+        if self.headers is not None:
+            webhook_message["headers"] = self.headers
+        return webhook_message
+
+    def to_dict(self) -> Dict[str, Any]:
+        return self._resolve()
+
+    def json(self) -> str:
+        return dumps(self._resolve(), indent=4)
+
+    def __repr__(self) -> str:
+        return self.json()
+
+    def __getitem__(self, item):
+        return self._resolve()[item]
+
+    def keys(self) -> Dict[str, Any]:
+        return self._resolve().keys()
