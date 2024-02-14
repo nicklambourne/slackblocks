@@ -165,6 +165,16 @@ def test_multi_select_user() -> None:
         multi_select_user
     )
 
+def test_multi_select_user_with_initial_users() -> None:
+    multi_select_user = UserMultiSelectMenu(
+        action_id="multi_users_select",
+        placeholder=Text("Select one or more users", type_=TextType.PLAINTEXT),
+        initial_users= ["U064B5H1309", "U063JR973UP"],
+    )
+    assert fetch_sample(path="test/samples/elements/multi_select_user_with_initial_users.json") == repr(
+        multi_select_user
+    )
+
 
 def test_number_input_basic() -> None:
     number_input = NumberInput(action_id="number_input", is_decimal_allowed=False)
