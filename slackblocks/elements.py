@@ -697,9 +697,7 @@ class UserMultiSelectMenu(Element):
         user_multi_select = self._attributes()
         user_multi_select["action_id"] = self.action_id
         if self.initial_users:
-            user_multi_select["initial_users"] = [
-                initial_option._resolve() for initial_option in self.initial_users
-            ]
+            user_multi_select["initial_users"] = self.initial_users
         if self.confirm:
             user_multi_select["confirm"] = self.confirm._resolve()
         if self.max_selected_items:
