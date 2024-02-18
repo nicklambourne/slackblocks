@@ -1269,7 +1269,7 @@ class ExternalSelectMenu(Element):
         external_select_menu = self._attributes()
         external_select_menu["action_id"] = self.action_id
         if self.initial_option:
-            external_select_menu["initial_option"] = self.initial_option
+            external_select_menu["initial_option"] = self.initial_option._resolve()
         if self.min_query_length is not None:
             external_select_menu["min_query_length"] = self.min_query_length
         if self.confirm:
