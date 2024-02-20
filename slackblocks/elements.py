@@ -420,11 +420,11 @@ class Image(Element):
     See: <https://api.slack.com/reference/block-kit/block-elements#image>.
 
     Args:
-        alt_text: a plain-text-only summary of the content of the image.
         image_url: a URL for a publicly hosted image (the user must provide
             either `image_url` or `slack_file`).
         slack_file: a [`SlackFile`](/reference/objects/#objects.SlackFile)
             (the user must provide either `image_url` or `slack_file`).
+        alt_text: a plain-text-only summary of the content of the image.
 
     Throws:
         InvalidUsageError: if any of the provided arguments fail validation,
@@ -433,9 +433,9 @@ class Image(Element):
 
     def __init__(
         self,
-        alt_text: str,
         image_url: Optional[str] = None,
         slack_file: Optional[SlackFile] = None,
+        alt_text: str = " ",
     ):
         super().__init__(type_=ElementType.IMAGE)
         if image_url is None and slack_file is None:
