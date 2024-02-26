@@ -526,7 +526,9 @@ class StaticMultiSelectMenu(Element):
         if (
             option_groups
             and self.initial_options
-            and not all(isinstance(option, OptionGroup) for option in self.initial_options)
+            and not all(
+                isinstance(option, OptionGroup) for option in self.initial_options
+            )
         ):
             raise InvalidUsageError(
                 "If using `option_groups` then `initial_options` must also be of type "
