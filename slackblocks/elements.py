@@ -517,7 +517,7 @@ class StaticMultiSelectMenu(Element):
         if (
             options
             and self.initial_options
-            and not isinstance(self.initial_options, List[Option])
+            and not all(isinstance(option, Option) for option in self.initial_options)
         ):
             raise InvalidUsageError(
                 "If using `options` then `initial_options` must also be of type `List[Option]`, "
@@ -526,7 +526,7 @@ class StaticMultiSelectMenu(Element):
         if (
             option_groups
             and self.initial_options
-            and not isinstance(self.initial_options, List[OptionGroup])
+            and not all(isinstance(option, OptionGroup) for option in self.initial_options)
         ):
             raise InvalidUsageError(
                 "If using `option_groups` then `initial_options` must also be of type "
