@@ -433,7 +433,7 @@ class Image(Element):
 
     def __init__(
         self,
-        alt_text: str,
+        alt_text: str = " ",
         image_url: Optional[str] = None,
         slack_file: Optional[SlackFile] = None,
     ):
