@@ -31,7 +31,13 @@ from slackblocks.elements import (
     UserSelectMenu,
 )
 from slackblocks.errors import InvalidUsageError
-from slackblocks.objects import CompositionObjectType, Text, TextLike, TextType
+from slackblocks.objects import (
+    CompositionObject,
+    CompositionObjectType,
+    Text,
+    TextLike,
+    TextType,
+)
 from slackblocks.rich_text import (
     RichTextCodeBlock,
     RichTextList,
@@ -143,7 +149,7 @@ class ContextBlock(Block):
 
     def __init__(
         self,
-        elements: Optional[List[Union[Element, CompositionObjectType]]] = None,
+        elements: Optional[List[Union[Element, CompositionObject]]] = None,
         block_id: Optional[str] = None,
     ) -> "ContextBlock":
         super().__init__(type_=BlockType.CONTEXT, block_id=block_id)
