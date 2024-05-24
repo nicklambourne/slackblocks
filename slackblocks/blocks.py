@@ -25,6 +25,7 @@ from slackblocks.elements import (
     ExternalSelectMenu,
     PlainTextInput,
     RadioButtonGroup,
+    RichTextInput,
     StaticMultiSelectMenu,
     StaticSelectMenu,
     UserMultiSelectMenu,
@@ -63,6 +64,7 @@ ALLOWED_INPUT_ELEMENTS = (
     StaticMultiSelectMenu,
     UserSelectMenu,
     UserMultiSelectMenu,
+    RichTextInput,
 )
 
 
