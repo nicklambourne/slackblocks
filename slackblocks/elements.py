@@ -165,11 +165,11 @@ class CheckboxGroup(Element):
     Args:
         action_id: an identifier so the source of the action can be known.
         options: a list of
-            [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will form
-            the content of the checkbox group.
+            [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will
+            form the content of the checkbox group.
         initial_options: a list of
-            [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will be
-            initially selected when first presented to the user.
+            [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will
+            be initially selected when first presented to the user.
         confirm: a `ConfirmationDialogue` object that will be presented when
             the checkbox group is used.
         focus_on_load: whether or not the checkbox group will be set to autofocus
@@ -423,7 +423,8 @@ class Image(Element):
         alt_text: a plain-text-only summary of the content of the image.
         image_url: a URL for a publicly hosted image (the user must provide
             either `image_url` or `slack_file`).
-        slack_file: a [`SlackFile`](/slackblocks/latest/reference/objects/#objects.SlackFile)
+        slack_file: a
+            [`SlackFile`](/slackblocks/latest/reference/objects/#objects.SlackFile)
             (the user must provide either `image_url` or `slack_file`).
 
     Throws:
@@ -1225,7 +1226,8 @@ class ExternalSelectMenu(Element):
     """
     A select menu interactive UI element, sourced with externally provided options.
 
-    See: <https://api.slack.com/slackblocks/latest/reference/block-kit/block-elements#external_select>.
+    See:
+        <https://api.slack.com/slackblocks/latest/reference/block-kit/block-elements#external_select>. # noqa: E501
 
     Args:
         action_id: an identifier so the source of the action can be known.
