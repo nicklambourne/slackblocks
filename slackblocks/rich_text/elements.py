@@ -238,7 +238,7 @@ class RichTextLink(RichTextElement):
 class RichTextUser(RichTextElement):
     """
     Rich text element for representing users in
-        [`RichTextBlocks`](reference/blocks/#blocks.RichTextBlock).
+        [`RichTextBlocks`](/slackblocks/latest/reference/messages/blocks/#blocks.RichTextBlock).
 
     See: <https://api.slack.com/reference/block-kit/blocks#user-element-type>.
 
@@ -297,7 +297,7 @@ class RichTextUser(RichTextElement):
 class RichTextUserGroup(RichTextElement):
     """
     Rich text element for representing groups of users in
-        [`RichTextBlocks`](reference/blocks/#blocks.RichTextBlock)`.
+        [`RichTextBlocks`](/slackblocks/latest/reference/messages/blocks/#blocks.RichTextBlock)`.
 
     See: <https://api.slack.com/reference/block-kit/blocks#user-element-type>.
 

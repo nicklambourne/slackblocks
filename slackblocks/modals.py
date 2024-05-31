@@ -16,7 +16,7 @@ from slackblocks.views import ModalView
 
 class Modal(ModalView):
     """
-    Kept for backwards compatibility - see [`ModalView`](/reference/views/#views.ModalView)
+    Kept for backwards compatibility - see [`ModalView`](/slackblocks/latest/reference/messages/views/#views.ModalView)
     """
 
     def __repr__(self) -> str:

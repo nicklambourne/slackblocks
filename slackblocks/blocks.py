@@ -114,7 +114,7 @@ class ActionsBlock(Block):
     A `Block` that is used to hold interactive elements (normally for users to interface with).
 
     Args:
-        elements: a list of [Elements](/reference/elements) (up to a maximum of 25).
+        elements: a list of [Elements](/slackblocks/latest/reference/messages/elements) (up to a maximum of 25).
         block_id: you can use this field to provide a deterministic identifier for the block.
 
     Throws:
@@ -304,8 +304,8 @@ class InputBlock(Block):
 
     Args:
         label: the name which identifies the input field.
-        element: an interactive [Element](/reference/elements) (e.g. a text field).
-        dispatch_action: whether the [Element](/reference/elements) should trigger the
+        element: an interactive [Element](/slackblocks/latest/reference/messages/elements) (e.g. a text field).
+        dispatch_action: whether the [Element](/slackblocks/latest/reference/messages/elements) should trigger the
             sending of a `block_actions` payload.
         block_id: you can use this field to provide a deterministic identifier for the block.
         hint: an optional additional guide on what input the user should prodive.
@@ -354,13 +354,13 @@ class RichTextBlock(Block):
     """
     A RichTextBlock is used to provide easier rich text formatting
         than standard markdown text (e.g. in a
-        [`SectionBlock`](/reference/blocks/#blocks.SectionBlock))
+        [`SectionBlock`](/slackblocks/latest/reference/messages/blocks/#blocks.SectionBlock))
         and access to text formatting features not available in traditional
         markdown (e.g. strikethrough). See the various rich text elements
-        you can include [here](/reference/rich_text).
+        you can include [here](/slackblocks/latest/reference/messages/rich_text).
 
     Args:
-        elements: a single [rich text element](../../reference/rich_text)
+        elements: a single [rich text element](rich_text)
             or a list of those elements.
         block_id: you can use this field to provide a deterministic identifier
             for the block.
@@ -400,7 +400,7 @@ class SectionBlock(Block):
     available block elements.
 
     Section blocks can also optionally be given an "accessory,"
-    which is typically one of the interactive [Elements](/reference/elements).
+    which is typically one of the interactive [Elements](/slackblocks/latest/reference/messages/elements).
 
     Args:
         text: text to include in the block. Can be a string or `Text` object (of either
@@ -408,7 +408,7 @@ class SectionBlock(Block):
             `text` or `fields` must be provided.
         block_id: you can use this field to provide a deterministic identifier for the block.
         fields: a list of text objects. One of either `text` or `fields` must be provided.
-        accessory: an optional [Element](/reference/elements) object that will take a
+        accessory: an optional [Element](/slackblocks/latest/reference/messages/elements) object that will take a
             secondary place in the block (after or to the side of  `text` or `fields`).
 
     Throws:
