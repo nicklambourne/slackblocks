@@ -221,7 +221,8 @@ class Confirm(ConfirmationDialogue):
     """
     Alias for `ConfirmationDialogue` to retain backwards compatibility.
 
-    See: [`ConfirmationDialogue`](/reference/objects/#objects.ConfirmationDialogue).
+    See:
+        [`ConfirmationDialogue`](/slackblocks/latest/reference/objects/#objects.ConfirmationDialogue).  # noqa: E501
     """
 
     def __init__(self, *args, **kwargs):

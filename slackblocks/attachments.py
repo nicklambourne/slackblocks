@@ -2,7 +2,7 @@
 Secondary (less important) content can be attached using the deprecated
 attachments API.
 
-See: <https://api.slack.com/reference/messaging/attachments>.
+See: <https://api.slack.com/slackblocks/latest/reference/messaging/attachments>.
 """
 
 from enum import Enum
@@ -19,7 +19,7 @@ class Color(Enum):
     Color is a utility class for use with the Slack secondary attachments API.
 
     Pass these to the `color` argument of
-        [`Attachment`](/reference/attachments/#attachments.Attachment).
+        [`Attachment`](/slackblocks/latest/reference/attachments/#attachments.Attachment).
 
     <table style="width:50%">
     <tr>

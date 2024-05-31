@@ -99,10 +99,10 @@ class Message(BaseMessage):
         channel: the Slack channel to send the message to, e.g. "#general".
         text: markdown text to send in the message. If `blocks` are provided
             then this is a fallback to display in notifications.
-        blocks: a list of [`Blocks`](/reference/blocks) to form the contents
+        blocks: a list of [`Blocks`](/slackblocks/latest/reference/blocks) to form the contents
             of the message instead of the contents of `text`.
         attachments: a list of
-            [`Attachments`](/reference/attachments/#attachments.Attachment)
+            [`Attachments`](/slackblocks/latest/reference/attachments/#attachments.Attachment)
             that form the secondary contents of the message (deprecated).
         thread_ts: the timestamp ID of another unthreaded message that will
             become the parent message of this message (now a reply in a thread).
@@ -114,7 +114,7 @@ class Message(BaseMessage):
             automatically unfurl.
     Throws:
         InvalidUsageException: in the event that the items passed to `blocks`
-            are not valid [`Blocks`](/reference/blocks).
+            are not valid [`Blocks`](/slackblocks/latest/reference/blocks).
     """
 
     def __init__(
@@ -184,9 +184,9 @@ class WebhookMessage:
         text: markdown text to send in the message. If `blocks` are provided
             then this is a fallback to display in notifications.
         attachments: a list of
-            [`Attachments`](/reference/attachments/#attachments.Attachment)
+            [`Attachments`](/slackblocks/latest/reference/attachments/#attachments.Attachment)
             that form the secondary contents of the message (deprecated).
-        blocks: a list of [`Blocks`](/reference/blocks) to form the contents
+        blocks: a list of [`Blocks`](/slackblocks/latest/reference/blocks) to form the contents
             of the message instead of the contents of `text`.
         response_type: one of `ResponseType.EPHEMERAL` or `ResponseType.IN_CHANNEL`.
             Ephemeral messages are shown only to the requesting user whereas
