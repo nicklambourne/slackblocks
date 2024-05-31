@@ -1516,9 +1516,7 @@ a button element. Used by screen readers (max 75 chars).</p>
 
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1596</span>
-<span class="normal">1597</span>
-<span class="normal">1598</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1598</span>
 <span class="normal">1599</span>
 <span class="normal">1600</span>
 <span class="normal">1601</span>
@@ -1533,7 +1531,9 @@ a button element. Used by screen readers (max 75 chars).</p>
 <span class="normal">1610</span>
 <span class="normal">1611</span>
 <span class="normal">1612</span>
-<span class="normal">1613</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ButtonStyle</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="normal">1613</span>
+<span class="normal">1614</span>
+<span class="normal">1615</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ButtonStyle</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility class for determining the style of `Buttons` and `WorkflowButtons`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1704,8 +1704,7 @@ in the menu when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">793</span>
-<span class="normal">794</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">794</span>
 <span class="normal">795</span>
 <span class="normal">796</span>
 <span class="normal">797</span>
@@ -1764,7 +1763,8 @@ in the menu when it's initially rendered.</p>
 <span class="normal">850</span>
 <span class="normal">851</span>
 <span class="normal">852</span>
-<span class="normal">853</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ChannelMultiSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">853</span>
+<span class="normal">854</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ChannelMultiSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This interactive UI element allows users to select multiple channels visible</span>
 <span class="sd">        to the current user in the active workspace.</span>
@@ -1979,9 +1979,7 @@ in the input when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1418</span>
-<span class="normal">1419</span>
-<span class="normal">1420</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1420</span>
 <span class="normal">1421</span>
 <span class="normal">1422</span>
 <span class="normal">1423</span>
@@ -2039,7 +2037,9 @@ in the input when it's initially rendered.</p>
 <span class="normal">1475</span>
 <span class="normal">1476</span>
 <span class="normal">1477</span>
-<span class="normal">1478</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ChannelSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">1478</span>
+<span class="normal">1479</span>
+<span class="normal">1480</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ChannelSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A select menu interactive UI element, sourced with a list of public channels visible</span>
 <span class="sd">        to the current user.</span>
@@ -2177,8 +2177,8 @@ of possible options.</p>
           <td>
             <div class="doc-md-description">
               <p>a list of
-<a href="/slackblocks/latest/reference/objects/#objects.Option"><code>Option</code></a> objects that will form
-the content of the checkbox group.</p>
+<a href="/slackblocks/latest/reference/objects/#objects.Option"><code>Option</code></a> objects that will
+form the content of the checkbox group.</p>
             </div>
           </td>
           <td>
@@ -2193,8 +2193,8 @@ the content of the checkbox group.</p>
           <td>
             <div class="doc-md-description">
               <p>a list of
-<a href="/slackblocks/latest/reference/objects/#objects.Option"><code>Option</code></a> objects that will be
-initially selected when first presented to the user.</p>
+<a href="/slackblocks/latest/reference/objects/#objects.Option"><code>Option</code></a> objects that will
+be initially selected when first presented to the user.</p>
             </div>
           </td>
           <td>
@@ -2301,11 +2301,11 @@ within the view object.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        action_id: an identifier so the source of the action can be known.</span>
 <span class="sd">        options: a list of</span>
-<span class="sd">            [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will form</span>
-<span class="sd">            the content of the checkbox group.</span>
+<span class="sd">            [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will</span>
+<span class="sd">            form the content of the checkbox group.</span>
 <span class="sd">        initial_options: a list of</span>
-<span class="sd">            [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will be</span>
-<span class="sd">            initially selected when first presented to the user.</span>
+<span class="sd">            [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will</span>
+<span class="sd">            be initially selected when first presented to the user.</span>
 <span class="sd">        confirm: a `ConfirmationDialogue` object that will be presented when</span>
 <span class="sd">            the checkbox group is used.</span>
 <span class="sd">        focus_on_load: whether or not the checkbox group will be set to autofocus</span>
@@ -2528,8 +2528,7 @@ in the menu when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">714</span>
-<span class="normal">715</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">715</span>
 <span class="normal">716</span>
 <span class="normal">717</span>
 <span class="normal">718</span>
@@ -2604,7 +2603,8 @@ in the menu when it's initially rendered.</p>
 <span class="normal">787</span>
 <span class="normal">788</span>
 <span class="normal">789</span>
-<span class="normal">790</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConversationMultiSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">790</span>
+<span class="normal">791</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConversationMultiSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This interactive UI element allows users to select multiple conversations visible</span>
 <span class="sd">        to the current user in the active workspace.</span>
@@ -2867,9 +2867,7 @@ in the input when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1339</span>
-<span class="normal">1340</span>
-<span class="normal">1341</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1341</span>
 <span class="normal">1342</span>
 <span class="normal">1343</span>
 <span class="normal">1344</span>
@@ -2943,7 +2941,9 @@ in the input when it's initially rendered.</p>
 <span class="normal">1412</span>
 <span class="normal">1413</span>
 <span class="normal">1414</span>
-<span class="normal">1415</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConversationSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">1415</span>
+<span class="normal">1416</span>
+<span class="normal">1417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConversationSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A select menu interactive UI element, sourced with a list of public and private channels,</span>
 <span class="sd">        DMs, and MPIMs visible to the current user.</span>
@@ -3878,8 +3878,7 @@ in the menu when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">584</span>
-<span class="normal">585</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">585</span>
 <span class="normal">586</span>
 <span class="normal">587</span>
 <span class="normal">588</span>
@@ -3946,7 +3945,8 @@ in the menu when it's initially rendered.</p>
 <span class="normal">649</span>
 <span class="normal">650</span>
 <span class="normal">651</span>
-<span class="normal">652</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ExternalMultiSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">652</span>
+<span class="normal">653</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ExternalMultiSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An interactive UI element that loads its options from an external data source,</span>
 <span class="sd">        allowing for a dynamic list of options.</span>
@@ -4054,8 +4054,11 @@ in the menu when it's initially rendered.</p>
 
   
       <p>A select menu interactive UI element, sourced with externally provided options.</p>
-<p>See: <a href="https://api.slack.com/slackblocks/latest/reference/block-kit/block-elements#external_select">https://api.slack.com/slackblocks/latest/reference/block-kit/block-elements#external_select</a>.</p>
 
+<details class="see" open>
+  <summary>See</summary>
+  <p><a href="https://api.slack.com/slackblocks/latest/reference/block-kit/block-elements#external_select">https://api.slack.com/slackblocks/latest/reference/block-kit/block-elements#external_select</a>. # noqa: E501</p>
+</details>
 
 
   <p><strong>Parameters:</strong></p>
@@ -4168,8 +4171,7 @@ in the input when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1224</span>
-<span class="normal">1225</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1225</span>
 <span class="normal">1226</span>
 <span class="normal">1227</span>
 <span class="normal">1228</span>
@@ -4227,11 +4229,14 @@ in the input when it's initially rendered.</p>
 <span class="normal">1280</span>
 <span class="normal">1281</span>
 <span class="normal">1282</span>
-<span class="normal">1283</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ExternalSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">1283</span>
+<span class="normal">1284</span>
+<span class="normal">1285</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ExternalSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A select menu interactive UI element, sourced with externally provided options.</span>
 
-<span class="sd">    See: &lt;https://api.slack.com/slackblocks/latest/reference/block-kit/block-elements#external_select&gt;.</span>
+<span class="sd">    See:</span>
+<span class="sd">        &lt;https://api.slack.com/slackblocks/latest/reference/block-kit/block-elements#external_select&gt;. # noqa: E501</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        action_id: an identifier so the source of the action can be known.</span>
@@ -4572,7 +4577,8 @@ either <code>image_url</code> or <code>slack_file</code>).</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>a <a href="/slackblocks/latest/reference/objects/#objects.SlackFile"><code>SlackFile</code></a>
+              <p>a
+<a href="/slackblocks/latest/reference/objects/#objects.SlackFile"><code>SlackFile</code></a>
 (the user must provide either <code>image_url</code> or <code>slack_file</code>).</p>
             </div>
           </td>
@@ -4634,7 +4640,8 @@ either <code>image_url</code> or <code>slack_file</code>).</p>
 <span class="normal">453</span>
 <span class="normal">454</span>
 <span class="normal">455</span>
-<span class="normal">456</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Image</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">456</span>
+<span class="normal">457</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Image</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An element to insert an image - this element can be used in section</span>
 <span class="sd">    and context blocks only. If you want a block with only an image in it,</span>
@@ -4648,7 +4655,8 @@ either <code>image_url</code> or <code>slack_file</code>).</p>
 <span class="sd">        alt_text: a plain-text-only summary of the content of the image.</span>
 <span class="sd">        image_url: a URL for a publicly hosted image (the user must provide</span>
 <span class="sd">            either `image_url` or `slack_file`).</span>
-<span class="sd">        slack_file: a [`SlackFile`](/slackblocks/latest/reference/objects/#objects.SlackFile)</span>
+<span class="sd">        slack_file: a</span>
+<span class="sd">            [`SlackFile`](/slackblocks/latest/reference/objects/#objects.SlackFile)</span>
 <span class="sd">            (the user must provide either `image_url` or `slack_file`).</span>
 
 <span class="sd">    Throws:</span>
@@ -4859,8 +4867,7 @@ in the input when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">856</span>
-<span class="normal">857</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">857</span>
 <span class="normal">858</span>
 <span class="normal">859</span>
 <span class="normal">860</span>
@@ -4946,7 +4953,8 @@ in the input when it's initially rendered.</p>
 <span class="normal">940</span>
 <span class="normal">941</span>
 <span class="normal">942</span>
-<span class="normal">943</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">NumberInput</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">943</span>
+<span class="normal">944</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">NumberInput</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This input elements accepts both integer and decimal numbers. For example,</span>
 <span class="sd">    0.25, 5.5, and -10 are all valid input values.</span>
@@ -5142,8 +5150,7 @@ option in the overflow menu is selected.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">946</span>
-<span class="normal">947</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">947</span>
 <span class="normal">948</span>
 <span class="normal">949</span>
 <span class="normal">950</span>
@@ -5177,7 +5184,8 @@ option in the overflow menu is selected.</p>
 <span class="normal">978</span>
 <span class="normal">979</span>
 <span class="normal">980</span>
-<span class="normal">981</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">OverflowMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">981</span>
+<span class="normal">982</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">OverflowMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Context menu for additional options (think &#39;...&#39;).</span>
 
@@ -5394,8 +5402,7 @@ in the input when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 984</span>
-<span class="normal"> 985</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 985</span>
 <span class="normal"> 986</span>
 <span class="normal"> 987</span>
 <span class="normal"> 988</span>
@@ -5465,7 +5472,8 @@ in the input when it's initially rendered.</p>
 <span class="normal">1052</span>
 <span class="normal">1053</span>
 <span class="normal">1054</span>
-<span class="normal">1055</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PlainTextInput</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">1055</span>
+<span class="normal">1056</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PlainTextInput</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A plain-text input, similar to the HTML &lt;input&gt; tag, creates a field where a user</span>
 <span class="sd">    can enter freeform data. It can appear as a single-line field or a larger text</span>
@@ -5676,8 +5684,7 @@ within the view object.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1058</span>
-<span class="normal">1059</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1059</span>
 <span class="normal">1060</span>
 <span class="normal">1061</span>
 <span class="normal">1062</span>
@@ -5730,7 +5737,8 @@ within the view object.</p>
 <span class="normal">1109</span>
 <span class="normal">1110</span>
 <span class="normal">1111</span>
-<span class="normal">1112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RadioButtonGroup</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">1112</span>
+<span class="normal">1113</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RadioButtonGroup</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A radio button group that allows a user to choose one item from a list of possible options.</span>
 
@@ -5923,9 +5931,7 @@ in the menu when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1666</span>
-<span class="normal">1667</span>
-<span class="normal">1668</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1668</span>
 <span class="normal">1669</span>
 <span class="normal">1670</span>
 <span class="normal">1671</span>
@@ -5971,7 +5977,9 @@ in the menu when it's initially rendered.</p>
 <span class="normal">1711</span>
 <span class="normal">1712</span>
 <span class="normal">1713</span>
-<span class="normal">1714</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RichTextInput</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">1714</span>
+<span class="normal">1715</span>
+<span class="normal">1716</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RichTextInput</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Allows users to enter formatted text in a WYSIWYG editor, similar to the Slack</span>
 <span class="sd">        messaging experience.</span>
@@ -6205,8 +6213,7 @@ in the menu when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">459</span>
-<span class="normal">460</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">460</span>
 <span class="normal">461</span>
 <span class="normal">462</span>
 <span class="normal">463</span>
@@ -6327,7 +6334,8 @@ in the menu when it's initially rendered.</p>
 <span class="normal">578</span>
 <span class="normal">579</span>
 <span class="normal">580</span>
-<span class="normal">581</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StaticMultiSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">581</span>
+<span class="normal">582</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StaticMultiSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The most basic form of select menu containing a static list of options</span>
 <span class="sd">    passed in when defining the element.</span>
@@ -6622,8 +6630,7 @@ in the input when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1115</span>
-<span class="normal">1116</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1116</span>
 <span class="normal">1117</span>
 <span class="normal">1118</span>
 <span class="normal">1119</span>
@@ -6728,7 +6735,8 @@ in the input when it's initially rendered.</p>
 <span class="normal">1218</span>
 <span class="normal">1219</span>
 <span class="normal">1220</span>
-<span class="normal">1221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StaticSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">1221</span>
+<span class="normal">1222</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">StaticSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A simple select menu interactive UI element, with a static list of options passed in when</span>
 <span class="sd">        defining the element.</span>
@@ -6985,9 +6993,7 @@ in the menu when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1481</span>
-<span class="normal">1482</span>
-<span class="normal">1483</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1483</span>
 <span class="normal">1484</span>
 <span class="normal">1485</span>
 <span class="normal">1486</span>
@@ -7041,7 +7047,9 @@ in the menu when it's initially rendered.</p>
 <span class="normal">1534</span>
 <span class="normal">1535</span>
 <span class="normal">1536</span>
-<span class="normal">1537</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TimePicker</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">1537</span>
+<span class="normal">1538</span>
+<span class="normal">1539</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TimePicker</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An interactive UI element that allows users to select a time of day.</span>
 
@@ -7236,9 +7244,7 @@ in the input when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1540</span>
-<span class="normal">1541</span>
-<span class="normal">1542</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1542</span>
 <span class="normal">1543</span>
 <span class="normal">1544</span>
 <span class="normal">1545</span>
@@ -7289,7 +7295,9 @@ in the input when it's initially rendered.</p>
 <span class="normal">1590</span>
 <span class="normal">1591</span>
 <span class="normal">1592</span>
-<span class="normal">1593</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">URLInput</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">1593</span>
+<span class="normal">1594</span>
+<span class="normal">1595</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">URLInput</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An interactive UI element for collecting URL input from users.</span>
 
@@ -7496,8 +7504,7 @@ in the menu when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">655</span>
-<span class="normal">656</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">656</span>
 <span class="normal">657</span>
 <span class="normal">658</span>
 <span class="normal">659</span>
@@ -7552,7 +7559,8 @@ in the menu when it's initially rendered.</p>
 <span class="normal">708</span>
 <span class="normal">709</span>
 <span class="normal">710</span>
-<span class="normal">711</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">UserMultiSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">711</span>
+<span class="normal">712</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">UserMultiSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This interactive UI element allows users to select multiple users visible</span>
 <span class="sd">        to the current user in the active workspace.</span>
@@ -7747,9 +7755,7 @@ in the input when it's initially rendered.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1286</span>
-<span class="normal">1287</span>
-<span class="normal">1288</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1288</span>
 <span class="normal">1289</span>
 <span class="normal">1290</span>
 <span class="normal">1291</span>
@@ -7797,7 +7803,9 @@ in the input when it's initially rendered.</p>
 <span class="normal">1333</span>
 <span class="normal">1334</span>
 <span class="normal">1335</span>
-<span class="normal">1336</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">UserSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">1336</span>
+<span class="normal">1337</span>
+<span class="normal">1338</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">UserSelectMenu</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A select menu interactive UI element, sourced automatically with Slack users from the</span>
 <span class="sd">        current workspace visible to the current user.</span>
@@ -7973,9 +7981,7 @@ a button element. Used by screen readers (max 75 chars).</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/elements.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1619</span>
-<span class="normal">1620</span>
-<span class="normal">1621</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1621</span>
 <span class="normal">1622</span>
 <span class="normal">1623</span>
 <span class="normal">1624</span>
@@ -8017,7 +8023,9 @@ a button element. Used by screen readers (max 75 chars).</p>
 <span class="normal">1660</span>
 <span class="normal">1661</span>
 <span class="normal">1662</span>
-<span class="normal">1663</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WorkflowButton</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="normal">1663</span>
+<span class="normal">1664</span>
+<span class="normal">1665</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WorkflowButton</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An interactive component that allows users to run a link trigger with</span>
 <span class="sd">        customizable inputs.</span>
