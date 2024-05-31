@@ -69,7 +69,7 @@ class RichTextSection(RichTextObject):
     """
     The most basic rich text container object, which takes rich text elements
         and renders them when `RichTextSection` is passed to a
-        [`RichTextBlock`](/reference/blocks/#blocks.RichTextBlock).
+        [`RichTextBlock`](/slackblocks/latest/reference/blocks/#blocks.RichTextBlock).
 
     See: <https://api.slack.com/reference/block-kit/blocks#rich_text_section>.
 
@@ -167,7 +167,7 @@ class RichTextCodeBlock(RichTextObject):
 
     Args:
         elements: one or more rich text primitive objexts
-            (e.g. [`RichText`](/reference/rich_text/#rich_text.RichText)).
+            (e.g. [`RichText`](/slackblocks/latest/reference/rich_text/#rich_text.RichText)).
         border: the thickness (in pixels) of the border around the code block.
 
     Throws:
@@ -213,7 +213,7 @@ class RichTextQuote(RichTextObject):
 
     Args:
         elements: one or more rich text primitive objexts
-            (e.g. [`RichText`](/reference/rich_text/#rich_text.RichText)).
+            (e.g. [`RichText`](/slackblocks/latest/reference/rich_text/#rich_text.RichText)).
         border: the thickness (in pixels) of the border around the code block.
     """
 
