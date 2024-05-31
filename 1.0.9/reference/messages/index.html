@@ -853,7 +853,7 @@ then this is a fallback to display in notifications.</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>a list of <a href="/slackblocks/latest/reference/messages/blocks"><code>Blocks</code></a> to form the contents
+              <p>a list of <a href="/slackblocks/latest/reference/blocks"><code>Blocks</code></a> to form the contents
 of the message instead of the contents of <code>text</code>.</p>
             </div>
           </td>
@@ -869,7 +869,7 @@ of the message instead of the contents of <code>text</code>.</p>
           <td>
             <div class="doc-md-description">
               <p>a list of
-<a href="/slackblocks/latest/reference/messages/attachments/#attachments.Attachment"><code>Attachments</code></a>
+<a href="/slackblocks/latest/reference/attachments/#attachments.Attachment"><code>Attachments</code></a>
 that form the secondary contents of the message (deprecated).</p>
             </div>
           </td>
@@ -941,7 +941,7 @@ automatically unfurl.</p>
   </table>
       <p>Throws:
     InvalidUsageException: in the event that the items passed to <code>blocks</code>
-        are not valid <a href="/slackblocks/latest/reference/messages/blocks"><code>Blocks</code></a>.</p>
+        are not valid <a href="/slackblocks/latest/reference/blocks"><code>Blocks</code></a>.</p>
 
             <details class="quote">
               <summary>Source code in <code>slackblocks/messages.py</code></summary>
@@ -1002,10 +1002,10 @@ automatically unfurl.</p>
 <span class="sd">        channel: the Slack channel to send the message to, e.g. &quot;#general&quot;.</span>
 <span class="sd">        text: markdown text to send in the message. If `blocks` are provided</span>
 <span class="sd">            then this is a fallback to display in notifications.</span>
-<span class="sd">        blocks: a list of [`Blocks`](/slackblocks/latest/reference/messages/blocks) to form the contents</span>
+<span class="sd">        blocks: a list of [`Blocks`](/slackblocks/latest/reference/blocks) to form the contents</span>
 <span class="sd">            of the message instead of the contents of `text`.</span>
 <span class="sd">        attachments: a list of</span>
-<span class="sd">            [`Attachments`](/slackblocks/latest/reference/messages/attachments/#attachments.Attachment)</span>
+<span class="sd">            [`Attachments`](/slackblocks/latest/reference/attachments/#attachments.Attachment)</span>
 <span class="sd">            that form the secondary contents of the message (deprecated).</span>
 <span class="sd">        thread_ts: the timestamp ID of another unthreaded message that will</span>
 <span class="sd">            become the parent message of this message (now a reply in a thread).</span>
@@ -1017,7 +1017,7 @@ automatically unfurl.</p>
 <span class="sd">            automatically unfurl.</span>
 <span class="sd">    Throws:</span>
 <span class="sd">        InvalidUsageException: in the event that the items passed to `blocks`</span>
-<span class="sd">            are not valid [`Blocks`](/slackblocks/latest/reference/messages/blocks).</span>
+<span class="sd">            are not valid [`Blocks`](/slackblocks/latest/reference/blocks).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -1195,7 +1195,7 @@ then this is a fallback to display in notifications.</p>
           <td>
             <div class="doc-md-description">
               <p>a list of
-<a href="/slackblocks/latest/reference/messages/attachments/#attachments.Attachment"><code>Attachments</code></a>
+<a href="/slackblocks/latest/reference/attachments/#attachments.Attachment"><code>Attachments</code></a>
 that form the secondary contents of the message (deprecated).</p>
             </div>
           </td>
@@ -1210,7 +1210,7 @@ that form the secondary contents of the message (deprecated).</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>a list of <a href="/slackblocks/latest/reference/messages/blocks"><code>Blocks</code></a> to form the contents
+              <p>a list of <a href="/slackblocks/latest/reference/blocks"><code>Blocks</code></a> to form the contents
 of the message instead of the contents of <code>text</code>.</p>
             </div>
           </td>
@@ -1438,9 +1438,9 @@ automatically unfurl.</p>
 <span class="sd">        text: markdown text to send in the message. If `blocks` are provided</span>
 <span class="sd">            then this is a fallback to display in notifications.</span>
 <span class="sd">        attachments: a list of</span>
-<span class="sd">            [`Attachments`](/slackblocks/latest/reference/messages/attachments/#attachments.Attachment)</span>
+<span class="sd">            [`Attachments`](/slackblocks/latest/reference/attachments/#attachments.Attachment)</span>
 <span class="sd">            that form the secondary contents of the message (deprecated).</span>
-<span class="sd">        blocks: a list of [`Blocks`](/slackblocks/latest/reference/messages/blocks) to form the contents</span>
+<span class="sd">        blocks: a list of [`Blocks`](/slackblocks/latest/reference/blocks) to form the contents</span>
 <span class="sd">            of the message instead of the contents of `text`.</span>
 <span class="sd">        response_type: one of `ResponseType.EPHEMERAL` or `ResponseType.IN_CHANNEL`.</span>
 <span class="sd">            Ephemeral messages are shown only to the requesting user whereas</span>

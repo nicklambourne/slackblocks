@@ -931,7 +931,7 @@ interactive messages.</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>a list of <a href="/slackblocks/latest/reference/messages/elements">Elements</a> (up to a maximum of 25).</p>
+              <p>a list of <a href="/slackblocks/latest/reference/elements">Elements</a> (up to a maximum of 25).</p>
             </div>
           </td>
           <td>
@@ -991,7 +991,7 @@ interactive messages.</p>
 <span class="sd">    A `Block` that is used to hold interactive elements (normally for users to interface with).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        elements: a list of [Elements](/slackblocks/latest/reference/messages/elements) (up to a maximum of 25).</span>
+<span class="sd">        elements: a list of [Elements](/slackblocks/latest/reference/elements) (up to a maximum of 25).</span>
 <span class="sd">        block_id: you can use this field to provide a deterministic identifier for the block.</span>
 
 <span class="sd">    Throws:</span>
@@ -1850,7 +1850,7 @@ menu element, a multi-select menu element, or a datepicker.</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>an interactive <a href="/slackblocks/latest/reference/messages/elements">Element</a> (e.g. a text field).</p>
+              <p>an interactive <a href="/slackblocks/latest/reference/elements">Element</a> (e.g. a text field).</p>
             </div>
           </td>
           <td>
@@ -1864,7 +1864,7 @@ menu element, a multi-select menu element, or a datepicker.</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>whether the <a href="/slackblocks/latest/reference/messages/elements">Element</a> should trigger the
+              <p>whether the <a href="/slackblocks/latest/reference/elements">Element</a> should trigger the
 sending of a <code>block_actions</code> payload.</p>
             </div>
           </td>
@@ -1982,8 +1982,8 @@ sending of a <code>block_actions</code> payload.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        label: the name which identifies the input field.</span>
-<span class="sd">        element: an interactive [Element](/slackblocks/latest/reference/messages/elements) (e.g. a text field).</span>
-<span class="sd">        dispatch_action: whether the [Element](/slackblocks/latest/reference/messages/elements) should trigger the</span>
+<span class="sd">        element: an interactive [Element](/slackblocks/latest/reference/elements) (e.g. a text field).</span>
+<span class="sd">        dispatch_action: whether the [Element](/slackblocks/latest/reference/elements) should trigger the</span>
 <span class="sd">            sending of a `block_actions` payload.</span>
 <span class="sd">        block_id: you can use this field to provide a deterministic identifier for the block.</span>
 <span class="sd">        hint: an optional additional guide on what input the user should prodive.</span>
@@ -2066,10 +2066,10 @@ sending of a <code>block_actions</code> payload.</p>
   
       <p>A RichTextBlock is used to provide easier rich text formatting
     than standard markdown text (e.g. in a
-    <a href="/slackblocks/latest/reference/messages/blocks/#blocks.SectionBlock"><code>SectionBlock</code></a>)
+    <a href="/slackblocks/latest/reference/blocks/#blocks.SectionBlock"><code>SectionBlock</code></a>)
     and access to text formatting features not available in traditional
     markdown (e.g. strikethrough). See the various rich text elements
-    you can include <a href="/slackblocks/latest/reference/messages/rich_text">here</a>.</p>
+    you can include <a href="/slackblocks/latest/reference/rich_text">here</a>.</p>
 
 
 
@@ -2168,10 +2168,10 @@ for the block.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A RichTextBlock is used to provide easier rich text formatting</span>
 <span class="sd">        than standard markdown text (e.g. in a</span>
-<span class="sd">        [`SectionBlock`](/slackblocks/latest/reference/messages/blocks/#blocks.SectionBlock))</span>
+<span class="sd">        [`SectionBlock`](/slackblocks/latest/reference/blocks/#blocks.SectionBlock))</span>
 <span class="sd">        and access to text formatting features not available in traditional</span>
 <span class="sd">        markdown (e.g. strikethrough). See the various rich text elements</span>
-<span class="sd">        you can include [here](/slackblocks/latest/reference/messages/rich_text).</span>
+<span class="sd">        you can include [here](/slackblocks/latest/reference/rich_text).</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        elements: a single [rich text element](rich_text)</span>
@@ -2247,7 +2247,7 @@ for the block.</p>
 it can be used as a simple text block, or with any of the
 available block elements.</p>
 <p>Section blocks can also optionally be given an "accessory,"
-which is typically one of the interactive <a href="/slackblocks/latest/reference/messages/elements">Elements</a>.</p>
+which is typically one of the interactive <a href="/slackblocks/latest/reference/elements">Elements</a>.</p>
 
 
 
@@ -2313,7 +2313,7 @@ which is typically one of the interactive <a href="/slackblocks/latest/reference
           </td>
           <td>
             <div class="doc-md-description">
-              <p>an optional <a href="/slackblocks/latest/reference/messages/elements">Element</a> object that will take a
+              <p>an optional <a href="/slackblocks/latest/reference/elements">Element</a> object that will take a
 secondary place in the block (after or to the side of  <code>text</code> or <code>fields</code>).</p>
             </div>
           </td>
@@ -2398,7 +2398,7 @@ secondary place in the block (after or to the side of  <code>text</code> or <cod
 <span class="sd">    available block elements.</span>
 
 <span class="sd">    Section blocks can also optionally be given an &quot;accessory,&quot;</span>
-<span class="sd">    which is typically one of the interactive [Elements](/slackblocks/latest/reference/messages/elements).</span>
+<span class="sd">    which is typically one of the interactive [Elements](/slackblocks/latest/reference/elements).</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        text: text to include in the block. Can be a string or `Text` object (of either</span>
@@ -2406,7 +2406,7 @@ secondary place in the block (after or to the side of  <code>text</code> or <cod
 <span class="sd">            `text` or `fields` must be provided.</span>
 <span class="sd">        block_id: you can use this field to provide a deterministic identifier for the block.</span>
 <span class="sd">        fields: a list of text objects. One of either `text` or `fields` must be provided.</span>
-<span class="sd">        accessory: an optional [Element](/slackblocks/latest/reference/messages/elements) object that will take a</span>
+<span class="sd">        accessory: an optional [Element](/slackblocks/latest/reference/elements) object that will take a</span>
 <span class="sd">            secondary place in the block (after or to the side of  `text` or `fields`).</span>
 
 <span class="sd">    Throws:</span>

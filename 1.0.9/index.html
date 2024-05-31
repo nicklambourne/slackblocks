@@ -860,29 +860,29 @@
 <p><code>slackblocks</code> makes using this API easier by providing a hierarchy of Python
     classes that represent these resources.</p>
 <h3 id="objects">Objects</h3>
-<p><a href="/slackblocks/latest/reference/messages/objects"><code>Objects</code></a> (e.g. <a href="/slackblocks/latest/reference/messages/objects/#objects.Text"><code>Text</code></a>) 
+<p><a href="/slackblocks/latest/reference/objects"><code>Objects</code></a> (e.g. <a href="/slackblocks/latest/reference/objects/#objects.Text"><code>Text</code></a>) 
     are the lowest level pimitives that are used to populate 
-    <a href="/slackblocks/latest/reference/messages/elements"><code>Elements</code></a> and <a href="/slackblocks/latest/reference/messages/blocks"><code>Blocks</code></a>.</p>
+    <a href="/slackblocks/latest/reference/elements"><code>Elements</code></a> and <a href="/slackblocks/latest/reference/blocks"><code>Blocks</code></a>.</p>
 <h3 id="elements">Elements</h3>
-<p><a href="/slackblocks/latest/reference/messages/elements"><code>Elements</code></a> are typically interactive UI elements that take
-    in <a href="/slackblocks/latest/reference/messages/objects"><code>Object</code></a> to define their content. For example, the 
+<p><a href="/slackblocks/latest/reference/elements"><code>Elements</code></a> are typically interactive UI elements that take
+    in <a href="/slackblocks/latest/reference/objects"><code>Object</code></a> to define their content. For example, the 
     <a href="/elements/#elements.CheckboxGroup"><code>CheckboxGroup</code></a> element takes in one or
-    more <a href="/slackblocks/latest/reference/messages/objects/#objects.Option"><code>Option</code></a> items and presents a
+    more <a href="/slackblocks/latest/reference/objects/#objects.Option"><code>Option</code></a> items and presents a
     checkbox menu to the user with those options.</p>
 <h3 id="blocks">Blocks</h3>
-<p><a href="/slackblocks/latest/reference/messages/blocks"><code>Blocks</code></a> are the core element of the API, with different 
-    <a href="/slackblocks/latest/reference/messages/blocks"><code>Blocks</code></a> used to create different types of visual
-    elements. For example, the <a href="/slackblocks/latest/reference/messages/blocks/#blocks.DividerBlock"><code>DividerBlock</code></a>, 
+<p><a href="/slackblocks/latest/reference/blocks"><code>Blocks</code></a> are the core element of the API, with different 
+    <a href="/slackblocks/latest/reference/blocks"><code>Blocks</code></a> used to create different types of visual
+    elements. For example, the <a href="/slackblocks/latest/reference/blocks/#blocks.DividerBlock"><code>DividerBlock</code></a>, 
     when rendered, will show a visual element similar to a <code>&lt;hr&gt;</code> HTML element. The
-    <a href="/slackblocks/latest/reference/messages/blocks/#blocks.RichTextBlock"><code>RichTextBlock</code></a> on the other hand
+    <a href="/slackblocks/latest/reference/blocks/#blocks.RichTextBlock"><code>RichTextBlock</code></a> on the other hand
     allows for the display of text elements with visual styling like italics,
     block quotes, lists and code blocks. </p>
 <h3 id="messages">Messages</h3>
-<p><a href="/slackblocks/latest/reference/messages/messages/"><code>Messages</code></a> are a convenience wrapper around <code>Blocks</code> that
+<p><a href="/slackblocks/latest/reference/messages/"><code>Messages</code></a> are a convenience wrapper around <code>Blocks</code> that
     can be unpacked as arguments straight into the official Slack Python SDK (or
     its legacy <code>slackclient</code> counterpart).</p>
 <h3 id="views">Views</h3>
-<p><a href="reference/views/"><code>Views</code></a> are an alternative usage for <a href="/slackblocks/latest/reference/messages/blocks"><code>Blocks</code></a>
+<p><a href="reference/views/"><code>Views</code></a> are an alternative usage for <a href="/slackblocks/latest/reference/blocks"><code>Blocks</code></a>
     that allow for the creation of custom UI "surfaces" within Slack, e.g. for 
     third-party apps.</p>
 <h2 id="guides">Guides</h2>
