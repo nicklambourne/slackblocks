@@ -30,6 +30,7 @@ from slackblocks.elements import (
     StaticSelectMenu,
     UserMultiSelectMenu,
     UserSelectMenu,
+    NumberInput,
 )
 from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
@@ -50,6 +51,7 @@ from slackblocks.utils import coerce_to_list, validate_string
 
 ALLOWED_INPUT_ELEMENTS = (
     PlainTextInput,
+    NumberInput,
     CheckboxGroup,
     RadioButtonGroup,
     DatePicker,
