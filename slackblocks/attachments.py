@@ -19,11 +19,7 @@ class Color(Enum):
     Color is a utility class for use with the Slack secondary attachments API.
 
     Pass these to the `color` argument of
-<<<<<<< Updated upstream
         [`Attachment`](/slackblocks/latest/reference/attachments/#attachments.Attachment).
-=======
-        [`Attachment`](/slackblocks/reference/attachments/#attachments.Attachment).
->>>>>>> Stashed changes
 
     <table style="width:50%">
     <tr>

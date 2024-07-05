@@ -2,7 +2,7 @@
 Rich text objects are containers for rich text elements.
 
 These obejects form the contents of the
-    [`RichTextBlock`](../blocks/#blocks.RichTextBlock).
+    [`RichTextBlock`](/slackblocks/latest/reference/blocks/#blocks.RichTextBlock).
 """
 
 from abc import ABC, abstractmethod
@@ -159,7 +159,7 @@ class RichTextList(RichTextObject):
 class RichTextCodeBlock(RichTextObject):
     """
     A rich text element for representing blocks of code in
-        [`RichTextBlocks`](reference/blocks/#blocks.RichTextBlock).
+        [`RichTextBlocks`](/slackblocks/latest/reference/blocks/#blocks.RichTextBlock).
 
     This is roughly equivalent to the triple-backtick \`\`\``code`\`\`\` syntax in markdown.
 

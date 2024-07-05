@@ -165,19 +165,11 @@ class CheckboxGroup(Element):
     Args:
         action_id: an identifier so the source of the action can be known.
         options: a list of
-<<<<<<< Updated upstream
-            [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will
-            form the content of the checkbox group.
-        initial_options: a list of
-            [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will
-            be initially selected when first presented to the user.
-=======
-            [`Option`](/slackblocks/reference/objects/#objects.Option) objects that will form
+            [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will form
             the content of the checkbox group.
         initial_options: a list of
-            [`Option`](/slackblocks/reference/objects/#objects.Option) objects that will be
+            [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will be
             initially selected when first presented to the user.
->>>>>>> Stashed changes
         confirm: a `ConfirmationDialogue` object that will be presented when
             the checkbox group is used.
         focus_on_load: whether or not the checkbox group will be set to autofocus
@@ -431,12 +423,7 @@ class Image(Element):
         alt_text: a plain-text-only summary of the content of the image.
         image_url: a URL for a publicly hosted image (the user must provide
             either `image_url` or `slack_file`).
-<<<<<<< Updated upstream
-        slack_file: a
-            [`SlackFile`](/slackblocks/latest/reference/objects/#objects.SlackFile)
-=======
-        slack_file: a [`SlackFile`](/slackblocks/reference/objects/#objects.SlackFile)
->>>>>>> Stashed changes
+        slack_file: a [`SlackFile`](/slackblocks/latest/reference/objects/#objects.SlackFile)
             (the user must provide either `image_url` or `slack_file`).
 
     Throws:
@@ -478,7 +465,6 @@ class StaticMultiSelectMenu(Element):
 
     Args:
         action_id: an identifier so the source of the action can be known.
-<<<<<<< Updated upstream
         options: a list of [`Options`](/slackblocks/latest/reference/objects/#objects.Option)
             (max 100). Only one of `options` or `option_groups` must be
             provided.
@@ -487,16 +473,6 @@ class StaticMultiSelectMenu(Element):
             (max 100). Only one of `options` or `option_groups` can be
             provided.
         initial_options: the [`Options`](/slackblocks/latest/reference/objects/#objects.Option)
-=======
-        options: a list of [`Options`](/slackblocks/reference/objects/#objects.Option)
-            (max 100). Only one of `options` or `option_groups` must be
-            provided.
-        option_groups: a list of
-            [`OptionGroups`](/slackblocks/reference/objects/#objects.OptionGroup)
-            (max 100). Only one of `options` or `option_groups` can be
-            provided.
-        initial_options: the [`Options`](/slackblocks/reference/objects/#objects.Option)
->>>>>>> Stashed changes
             to be intially selected when the element is first rendered.
         confirm: a `ConfirmationDialogue` object that will be presented when
             the menu is used.
@@ -616,11 +592,7 @@ class ExternalMultiSelectMenu(Element):
         action_id: an identifier so the source of the action can be known.
         min_query_length: minimum number of characters entered before the query
             is dispactched (defaults to 3 if not provided).
-<<<<<<< Updated upstream
         initial_options: the [`Options`](/slackblocks/latest/reference/objects/#objects.Option)
-=======
-        initial_options: the [`Options`](/slackblocks/reference/objects/#objects.Option)
->>>>>>> Stashed changes
             to be intially selected when the element is first rendered.
         confirm: a `ConfirmationDialogue` object that will be presented when
             the menu is used.
@@ -757,11 +729,7 @@ class ConversationMultiSelectMenu(Element):
             the menu is used.
         max_selected_items: the maximum number of items that can be selected
             in the menu.
-<<<<<<< Updated upstream
         filter: a [`Filter`](/slackblocks/latest/reference/objects/#objects.ConversationFilter)
-=======
-        filter: a [`Filter`](/slackblocks/reference/objects/#objects.ConversationFilter)
->>>>>>> Stashed changes
             object that filters out conversations that don't match the settings
             of the filter.
         focus_on_load: whether or not the menu will be set to autofocus
@@ -984,11 +952,7 @@ class OverflowMenu(Element):
     Args:
         action_id: an identifier so the source of the action can be known.
         options: a list of
-<<<<<<< Updated upstream
             [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will form
-=======
-            [`Option`](/slackblocks/reference/objects/#objects.Option) objects that will form
->>>>>>> Stashed changes
             the content of the overflow menu.
         confirm: a `ConfirmationDialogue` object that will be presented when an
             option in the overflow menu is selected.
@@ -1100,17 +1064,10 @@ class RadioButtonGroup(Element):
     Args:
         action_id: an identifier so the source of the action can be known.
         options: a list of
-<<<<<<< Updated upstream
             [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will form
             the content of the radio button group.
         initial_option: an
             [`Option`](/slackblocks/latest/reference/objects/#objects.Option) object that will be
-=======
-            [`Option`](/slackblocks/reference/objects/#objects.Option) objects that will form
-            the content of the radio button group.
-        initial_option: an
-            [`Option`](/slackblocks/reference/objects/#objects.Option) object that will be
->>>>>>> Stashed changes
             initially selected when first presented to the user.
         confirm: a `ConfirmationDialogue` object that will be presented when an
             option in the overflow menu is selected.
@@ -1165,7 +1122,6 @@ class StaticSelectMenu(Element):
     Args:
         action_id: an identifier so the source of the action can be known.
         options: a list of
-<<<<<<< Updated upstream
             [`Option`](/slackblocks/latest/reference/objects/#objects.Option) objects that will form
             the content of the menu (max 100).
         option_groups: a list of
@@ -1174,16 +1130,6 @@ class StaticSelectMenu(Element):
             provided.
         initial_option: an
             [`Option`](/slackblocks/latest/reference/objects/#objects.Option) object that will be
-=======
-            [`Option`](/slackblocks/reference/objects/#objects.Option) objects that will form
-            the content of the menu (max 100).
-        option_groups: a list of
-            [`OptionGroups`](/slackblocks/reference/objects/#objects.OptionGroup)
-            (max 100). Only one of `options` or `option_groups` can be
-            provided.
-        initial_option: an
-            [`Option`](/slackblocks/reference/objects/#objects.Option) object that will be
->>>>>>> Stashed changes
             initially selected when first presented to the user.
         confirm: a `ConfirmationDialogue` object that will be presented when an
             option in the overflow menu is selected.
@@ -1285,11 +1231,7 @@ class ExternalSelectMenu(Element):
     Args:
         action_id: an identifier so the source of the action can be known.
         initial_option: an
-<<<<<<< Updated upstream
             [`Option`](/slackblocks/latest/reference/objects/#objects.Option) object that will be
-=======
-            [`Option`](/slackblocks/reference/objects/#objects.Option) object that will be
->>>>>>> Stashed changes
             initially selected when first presented to the user.
         min_query_length: minimum number of characters entered before the query
             is dispactched (defaults to 3 if not provided).
@@ -1414,11 +1356,7 @@ class ConversationSelectMenu(Element):
         response_url_enabled: When set to true, the view_submission payload from the
             menu's parent view will contain a response_url. (This response_url can be
             used for message responses).
-<<<<<<< Updated upstream
         filter: a [`Filter`](/slackblocks/latest/reference/objects/#objects.ConversationFilter)
-=======
-        filter: a [`Filter`](/slackblocks/reference/objects/#objects.ConversationFilter)
->>>>>>> Stashed changes
             object that filters out conversations that don't match the settings
             of the filter.
         focus_on_load: whether or not the input will be set to autofocus
@@ -1688,11 +1626,7 @@ class WorkflowButton(Element):
 
     Args:
         text: the text content that will appear in the button.
-<<<<<<< Updated upstream
         workflow: a [`Workflow`](/slackblocks/latest/reference/objects/#objects.Workflow) object
-=======
-        workflow: a [`Workflow`](/slackblocks/reference/objects/#objects.Workflow) object
->>>>>>> Stashed changes
             that contains details about the workflow that will run when the
             button is clicked.
         style: one of `Default`, `Primary`, or `Danger`, determines the
