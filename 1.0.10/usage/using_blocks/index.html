@@ -877,91 +877,65 @@
   <div class="doc doc-contents first">
 
   
-      <p>A section is one of the most flexible blocks available -
+      <pre><code>A section is one of the most flexible blocks available -
 it can be used as a simple text block, or with any of the
-available block elements.</p>
-<p>Section blocks can also optionally be given an "accessory,"
-which is typically one of the interactive <a href="/reference/elements">Elements</a>.</p>
+available block elements.
 
+Section blocks can also optionally be given an "accessory,"
+</code></pre>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
+    which is typically one of the interactive
+    <a href="/slackblocks/latest/reference/elements">Elements</a>.
+=======
+    which is typically one of the interactive <a href="/slackblocks/reference/elements">Elements</a>.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Stashed changes</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>Args:
+    text: text to include in the block. Can be a string or `Text` object (of either
+        `mrkdwn` or `plaintext` variety). Defaults to markdown if unspecified. One of either
+        `text` or `fields` must be provided.
+    block_id: you can use this field to provide a deterministic identifier for the block.
+    fields: a list of text objects. One of either `text` or `fields` must be provided.
+</code></pre>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
+        accessory: an optional <a href="/slackblocks/latest/reference/elements">Element</a> object that
+            will take a secondary place in the block (after or to the side of  <code>text</code> or
+            <code>fields</code>).
+=======
+        accessory: an optional <a href="/slackblocks/reference/elements">Element</a> object that will take a
+            secondary place in the block (after or to the side of  <code>text</code> or <code>fields</code>).</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Stashed changes</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>Throws:
+    InvalidUsageError: if any of the provided arguments fail validation checks.
+</code></pre>
 
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>text</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="slackblocks.objects.TextLike">TextLike</span>]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>text to include in the block. Can be a string or <code>Text</code> object (of either
-<code>mrkdwn</code> or <code>plaintext</code> variety). Defaults to markdown if unspecified. One of either
-<code>text</code> or <code>fields</code> must be provided.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>block_id</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[str]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>you can use this field to provide a deterministic identifier for the block.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>fields</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<span title="slackblocks.objects.TextLike">TextLike</span>, <span title="typing.List">List</span>[<span title="slackblocks.objects.TextLike">TextLike</span>]]]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>a list of text objects. One of either <code>text</code> or <code>fields</code> must be provided.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>accessory</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="slackblocks.elements.Element">Element</span>]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>an optional <a href="/reference/elements">Element</a> object that will take a
-secondary place in the block (after or to the side of  <code>text</code> or <code>fields</code>).</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-<details class="throws" open>
-  <summary>Throws</summary>
-  <p>InvalidUsageError: if any of the provided arguments fail validation checks.</p>
-</details>
 
   
 
@@ -1042,64 +1016,45 @@ secondary place in the block (after or to the side of  <code>text</code> or <cod
   <div class="doc doc-contents first">
 
   
-      <p>A RichTextBlock is used to provide easier rich text formatting
+      <pre><code>A RichTextBlock is used to provide easier rich text formatting
     than standard markdown text (e.g. in a
-    <a href="/reference/blocks/#blocks.SectionBlock"><code>SectionBlock</code></a>)
-    and access to text formatting features not available in traditional
-    markdown (e.g. strikethrough). See the various rich text elements
-    you can include <a href="/reference/rich_text">here</a>.</p>
+</code></pre>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
+        <a href="/slackblocks/latest/reference/blocks/#blocks.SectionBlock"><code>SectionBlock</code></a>)
+        and access to text formatting features not available in traditional
+        markdown (e.g. strikethrough). See the various rich text elements
+        you can include <a href="/slackblocks/latest/reference/rich_text">here</a>.
+=======
+        <a href="/slackblocks/reference/blocks/#blocks.SectionBlock"><code>SectionBlock</code></a>)
+        and access to text formatting features not available in traditional
+        markdown (e.g. strikethrough). See the various rich text elements
+        you can include <a href="/slackblocks/reference/rich_text">here</a>.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Stashed changes</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>Args:
+    elements: a single [rich text element](rich_text)
+        or a list of those elements.
+    block_id: you can use this field to provide a deterministic identifier
+        for the block.
 
+Throws:
+    InvalidUsageError: if the elements in `elements` are not valid rich
+        text elements.
+</code></pre>
 
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>elements</code></td>
-          <td>
-                <code><span title="typing.Union">Union</span>[<span title="slackblocks.rich_text.RichTextObject">RichTextObject</span>, <span title="typing.List">List</span>[<span title="slackblocks.rich_text.RichTextObject">RichTextObject</span>]]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>a single <a href="../../reference/rich_text">rich text element</a>
-or a list of those elements.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>block_id</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[str]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>you can use this field to provide a deterministic identifier
-for the block.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-<details class="throws" open>
-  <summary>Throws</summary>
-  <p>InvalidUsageError: if the elements in <code>elements</code> are not valid rich
-    text elements.</p>
-</details>
 
   
 
@@ -1440,115 +1395,44 @@ for the block.</p>
   <div class="doc doc-contents first">
 
   
-      <p>A block that collects information from users - it can hold a plain-text
+      <pre><code>A block that collects information from users - it can hold a plain-text
 input element, a checkbox element, a radio button element, a select
-menu element, a multi-select menu element, or a datepicker.</p>
+menu element, a multi-select menu element, or a datepicker.
 
+Args:
+    label: the name which identifies the input field.
+</code></pre>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
+        element: an interactive <a href="/slackblocks/latest/reference/elements">Element</a>
+            (e.g. a text field).
+        dispatch_action: whether the <a href="/slackblocks/latest/reference/elements">Element</a>
+            should trigger the sending of a <code>block_actions</code> payload.
+=======
+        element: an interactive <a href="/slackblocks/reference/elements">Element</a> (e.g. a text field).
+        dispatch_action: whether the <a href="/slackblocks/reference/elements">Element</a> should trigger the
+            sending of a <code>block_actions</code> payload.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Stashed changes
+        block_id: you can use this field to provide a deterministic identifier for the block.
+        hint: an optional additional guide on what input the user should prodive.
+        optional: whether this input field may be empty when the user submits e.g. the modal.</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>Throws:
+    InvalidUsageError: when any of the provided arguments fail validation.
+</code></pre>
 
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>label</code></td>
-          <td>
-                <code><span title="slackblocks.objects.TextLike">TextLike</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>the name which identifies the input field.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>element</code></td>
-          <td>
-                <code><span title="slackblocks.elements.Element">Element</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>an interactive <a href="/reference/elements">Element</a> (e.g. a text field).</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>dispatch_action</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>whether the <a href="/reference/elements">Element</a> should trigger the
-sending of a <code>block_actions</code> payload.</p>
-            </div>
-          </td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>block_id</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[str]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>you can use this field to provide a deterministic identifier for the block.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>hint</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="slackblocks.objects.TextLike">TextLike</span>]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>an optional additional guide on what input the user should prodive.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>optional</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>whether this input field may be empty when the user submits e.g. the modal.</p>
-            </div>
-          </td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-<details class="throws" open>
-  <summary>Throws</summary>
-  <p>InvalidUsageError: when any of the provided arguments fail validation.</p>
-</details>
 
   
 
@@ -1935,56 +1819,35 @@ a message.</p>
   <div class="doc doc-contents first">
 
   
-      <p>A <code>Block</code> that is used to hold interactive elements (normally for users to interface with).</p>
+      <pre><code>A `Block` that is used to hold interactive elements (normally for users to interface with).
 
+Args:
+</code></pre>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
+        elements: a list of <a href="/slackblocks/latest/reference/elements">Elements</a>
+            (up to a maximum of 25).
+=======
+        elements: a list of <a href="/slackblocks/reference/elements">Elements</a> (up to a maximum of 25).</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Stashed changes
+        block_id: you can use this field to provide a deterministic identifier for the block.</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>Throws:
+    InvalidUsageError: if any of the items in `elements` are invalid.
+</code></pre>
 
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>elements</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[<span title="slackblocks.elements.Element">Element</span>]]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>a list of <a href="/reference/elements">Elements</a> (up to a maximum of 25).</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>block_id</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[str]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>you can use this field to provide a deterministic identifier for the block.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-<details class="throws" open>
-  <summary>Throws</summary>
-  <p>InvalidUsageError: if any of the items in <code>elements</code> are invalid.</p>
-</details>
 
   
 

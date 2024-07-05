@@ -909,61 +909,38 @@ interactive messages.</p>
   <div class="doc doc-contents ">
 
   
-      <p>A <code>Block</code> that is used to hold interactive elements (normally for users to interface with).</p>
+      <pre><code>A `Block` that is used to hold interactive elements (normally for users to interface with).
 
+Args:
+</code></pre>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
+        elements: a list of <a href="/slackblocks/latest/reference/elements">Elements</a>
+            (up to a maximum of 25).
+=======
+        elements: a list of <a href="/slackblocks/reference/elements">Elements</a> (up to a maximum of 25).</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Stashed changes
+        block_id: you can use this field to provide a deterministic identifier for the block.</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>Throws:
+    InvalidUsageError: if any of the items in `elements` are invalid.
+</code></pre>
 
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>elements</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[<span title="slackblocks.elements.Element">Element</span>]]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>a list of <a href="/reference/elements">Elements</a> (up to a maximum of 25).</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>block_id</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[str]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>you can use this field to provide a deterministic identifier for the block.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-<details class="throws" open>
-  <summary>Throws</summary>
-  <p>InvalidUsageError: if any of the items in <code>elements</code> are invalid.</p>
-</details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/blocks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">114</span>
 <span class="normal">115</span>
 <span class="normal">116</span>
 <span class="normal">117</span>
@@ -986,12 +963,24 @@ interactive messages.</p>
 <span class="normal">134</span>
 <span class="normal">135</span>
 <span class="normal">136</span>
-<span class="normal">137</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ActionsBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ActionsBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A `Block` that is used to hold interactive elements (normally for users to interface with).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        elements: a list of [Elements](/reference/elements) (up to a maximum of 25).</span>
+<span class="sd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream</span>
+<span class="sd">        elements: a list of [Elements](/slackblocks/latest/reference/elements)</span>
+<span class="sd">            (up to a maximum of 25).</span>
+<span class="sd">=======</span>
+<span class="sd">        elements: a list of [Elements](/slackblocks/reference/elements) (up to a maximum of 25).</span>
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; Stashed changes</span>
 <span class="sd">        block_id: you can use this field to provide a deterministic identifier for the block.</span>
 
 <span class="sd">    Throws:</span>
@@ -1102,14 +1091,7 @@ interactive messages.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/blocks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">147</span>
 <span class="normal">148</span>
 <span class="normal">149</span>
 <span class="normal">150</span>
@@ -1137,7 +1119,14 @@ interactive messages.</p>
 <span class="normal">172</span>
 <span class="normal">173</span>
 <span class="normal">174</span>
-<span class="normal">175</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ContextBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ContextBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A `ContextBlock` displays contextul message info, including both images and text.</span>
 
@@ -1246,20 +1235,20 @@ a message.</p>
 
             <details class="quote">
               <summary>Source code in <code>slackblocks/blocks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">185</span>
 <span class="normal">186</span>
 <span class="normal">187</span>
 <span class="normal">188</span>
 <span class="normal">189</span>
 <span class="normal">190</span>
-<span class="normal">191</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">DividerBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">DividerBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A content divider, like an `&lt;hr&gt;` in HTML, to split up different blocks inside of</span>
 <span class="sd">    a message.</span>
@@ -1375,14 +1364,7 @@ a message.</p>
 
             <details class="quote">
               <summary>Source code in <code>slackblocks/blocks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">201</span>
 <span class="normal">202</span>
 <span class="normal">203</span>
 <span class="normal">204</span>
@@ -1399,7 +1381,14 @@ a message.</p>
 <span class="normal">215</span>
 <span class="normal">216</span>
 <span class="normal">217</span>
-<span class="normal">218</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">FileBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">FileBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Displays a remote file (e.g. a PDF).</span>
 
@@ -1510,14 +1499,7 @@ a message.</p>
 
             <details class="quote">
               <summary>Source code in <code>slackblocks/blocks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">228</span>
 <span class="normal">229</span>
 <span class="normal">230</span>
 <span class="normal">231</span>
@@ -1531,7 +1513,14 @@ a message.</p>
 <span class="normal">239</span>
 <span class="normal">240</span>
 <span class="normal">241</span>
-<span class="normal">242</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HeaderBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HeaderBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Header Block is a plain-text block that displays in a larger, bold font.</span>
 
@@ -1671,14 +1660,7 @@ a message.</p>
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/blocks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">252</span>
 <span class="normal">253</span>
 <span class="normal">254</span>
 <span class="normal">255</span>
@@ -1722,7 +1704,14 @@ a message.</p>
 <span class="normal">293</span>
 <span class="normal">294</span>
 <span class="normal">295</span>
-<span class="normal">296</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ImageBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ImageBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An Image Block contains a single graphic, accessed by URL.</span>
 
@@ -1812,125 +1801,47 @@ a message.</p>
   <div class="doc doc-contents ">
 
   
-      <p>A block that collects information from users - it can hold a plain-text
+      <pre><code>A block that collects information from users - it can hold a plain-text
 input element, a checkbox element, a radio button element, a select
-menu element, a multi-select menu element, or a datepicker.</p>
+menu element, a multi-select menu element, or a datepicker.
 
+Args:
+    label: the name which identifies the input field.
+</code></pre>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
+        element: an interactive <a href="/slackblocks/latest/reference/elements">Element</a>
+            (e.g. a text field).
+        dispatch_action: whether the <a href="/slackblocks/latest/reference/elements">Element</a>
+            should trigger the sending of a <code>block_actions</code> payload.
+=======
+        element: an interactive <a href="/slackblocks/reference/elements">Element</a> (e.g. a text field).
+        dispatch_action: whether the <a href="/slackblocks/reference/elements">Element</a> should trigger the
+            sending of a <code>block_actions</code> payload.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Stashed changes
+        block_id: you can use this field to provide a deterministic identifier for the block.
+        hint: an optional additional guide on what input the user should prodive.
+        optional: whether this input field may be empty when the user submits e.g. the modal.</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>Throws:
+    InvalidUsageError: when any of the provided arguments fail validation.
+</code></pre>
 
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>label</code></td>
-          <td>
-                <code><span title="slackblocks.objects.TextLike">TextLike</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>the name which identifies the input field.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>element</code></td>
-          <td>
-                <code><span title="slackblocks.elements.Element">Element</span></code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>an interactive <a href="/reference/elements">Element</a> (e.g. a text field).</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>dispatch_action</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>whether the <a href="/reference/elements">Element</a> should trigger the
-sending of a <code>block_actions</code> payload.</p>
-            </div>
-          </td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>block_id</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[str]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>you can use this field to provide a deterministic identifier for the block.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>hint</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="slackblocks.objects.TextLike">TextLike</span>]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>an optional additional guide on what input the user should prodive.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>optional</code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>whether this input field may be empty when the user submits e.g. the modal.</p>
-            </div>
-          </td>
-          <td>
-                <code>False</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-<details class="throws" open>
-  <summary>Throws</summary>
-  <p>InvalidUsageError: when any of the provided arguments fail validation.</p>
-</details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/blocks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">299</span>
-<span class="normal">300</span>
-<span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">306</span>
 <span class="normal">307</span>
 <span class="normal">308</span>
 <span class="normal">309</span>
@@ -1974,7 +1885,21 @@ sending of a <code>block_actions</code> payload.</p>
 <span class="normal">347</span>
 <span class="normal">348</span>
 <span class="normal">349</span>
-<span class="normal">350</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">InputBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">InputBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A block that collects information from users - it can hold a plain-text</span>
 <span class="sd">    input element, a checkbox element, a radio button element, a select</span>
@@ -1982,9 +1907,16 @@ sending of a <code>block_actions</code> payload.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        label: the name which identifies the input field.</span>
-<span class="sd">        element: an interactive [Element](/reference/elements) (e.g. a text field).</span>
-<span class="sd">        dispatch_action: whether the [Element](/reference/elements) should trigger the</span>
+<span class="sd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream</span>
+<span class="sd">        element: an interactive [Element](/slackblocks/latest/reference/elements)</span>
+<span class="sd">            (e.g. a text field).</span>
+<span class="sd">        dispatch_action: whether the [Element](/slackblocks/latest/reference/elements)</span>
+<span class="sd">            should trigger the sending of a `block_actions` payload.</span>
+<span class="sd">=======</span>
+<span class="sd">        element: an interactive [Element](/slackblocks/reference/elements) (e.g. a text field).</span>
+<span class="sd">        dispatch_action: whether the [Element](/slackblocks/reference/elements) should trigger the</span>
 <span class="sd">            sending of a `block_actions` payload.</span>
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; Stashed changes</span>
 <span class="sd">        block_id: you can use this field to provide a deterministic identifier for the block.</span>
 <span class="sd">        hint: an optional additional guide on what input the user should prodive.</span>
 <span class="sd">        optional: whether this input field may be empty when the user submits e.g. the modal.</span>
@@ -2064,81 +1996,48 @@ sending of a <code>block_actions</code> payload.</p>
   <div class="doc doc-contents ">
 
   
-      <p>A RichTextBlock is used to provide easier rich text formatting
+      <pre><code>A RichTextBlock is used to provide easier rich text formatting
     than standard markdown text (e.g. in a
-    <a href="/reference/blocks/#blocks.SectionBlock"><code>SectionBlock</code></a>)
-    and access to text formatting features not available in traditional
-    markdown (e.g. strikethrough). See the various rich text elements
-    you can include <a href="/reference/rich_text">here</a>.</p>
+</code></pre>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
+        <a href="/slackblocks/latest/reference/blocks/#blocks.SectionBlock"><code>SectionBlock</code></a>)
+        and access to text formatting features not available in traditional
+        markdown (e.g. strikethrough). See the various rich text elements
+        you can include <a href="/slackblocks/latest/reference/rich_text">here</a>.
+=======
+        <a href="/slackblocks/reference/blocks/#blocks.SectionBlock"><code>SectionBlock</code></a>)
+        and access to text formatting features not available in traditional
+        markdown (e.g. strikethrough). See the various rich text elements
+        you can include <a href="/slackblocks/reference/rich_text">here</a>.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Stashed changes</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>Args:
+    elements: a single [rich text element](rich_text)
+        or a list of those elements.
+    block_id: you can use this field to provide a deterministic identifier
+        for the block.
 
+Throws:
+    InvalidUsageError: if the elements in `elements` are not valid rich
+        text elements.
+</code></pre>
 
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>elements</code></td>
-          <td>
-                <code><span title="typing.Union">Union</span>[<span title="slackblocks.rich_text.RichTextObject">RichTextObject</span>, <span title="typing.List">List</span>[<span title="slackblocks.rich_text.RichTextObject">RichTextObject</span>]]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>a single <a href="../../reference/rich_text">rich text element</a>
-or a list of those elements.</p>
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>block_id</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[str]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>you can use this field to provide a deterministic identifier
-for the block.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-<details class="throws" open>
-  <summary>Throws</summary>
-  <p>InvalidUsageError: if the elements in <code>elements</code> are not valid rich
-    text elements.</p>
-</details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/blocks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">353</span>
-<span class="normal">354</span>
-<span class="normal">355</span>
-<span class="normal">356</span>
-<span class="normal">357</span>
-<span class="normal">358</span>
-<span class="normal">359</span>
-<span class="normal">360</span>
-<span class="normal">361</span>
-<span class="normal">362</span>
-<span class="normal">363</span>
-<span class="normal">364</span>
-<span class="normal">365</span>
-<span class="normal">366</span>
-<span class="normal">367</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">367</span>
 <span class="normal">368</span>
 <span class="normal">369</span>
 <span class="normal">370</span>
@@ -2164,17 +2063,45 @@ for the block.</p>
 <span class="normal">390</span>
 <span class="normal">391</span>
 <span class="normal">392</span>
-<span class="normal">393</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RichTextBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RichTextBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A RichTextBlock is used to provide easier rich text formatting</span>
 <span class="sd">        than standard markdown text (e.g. in a</span>
-<span class="sd">        [`SectionBlock`](/reference/blocks/#blocks.SectionBlock))</span>
+<span class="sd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream</span>
+<span class="sd">        [`SectionBlock`](/slackblocks/latest/reference/blocks/#blocks.SectionBlock))</span>
 <span class="sd">        and access to text formatting features not available in traditional</span>
 <span class="sd">        markdown (e.g. strikethrough). See the various rich text elements</span>
-<span class="sd">        you can include [here](/reference/rich_text).</span>
+<span class="sd">        you can include [here](/slackblocks/latest/reference/rich_text).</span>
+<span class="sd">=======</span>
+<span class="sd">        [`SectionBlock`](/slackblocks/reference/blocks/#blocks.SectionBlock))</span>
+<span class="sd">        and access to text formatting features not available in traditional</span>
+<span class="sd">        markdown (e.g. strikethrough). See the various rich text elements</span>
+<span class="sd">        you can include [here](/slackblocks/reference/rich_text).</span>
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; Stashed changes</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        elements: a single [rich text element](../../reference/rich_text)</span>
+<span class="sd">        elements: a single [rich text element](rich_text)</span>
 <span class="sd">            or a list of those elements.</span>
 <span class="sd">        block_id: you can use this field to provide a deterministic identifier</span>
 <span class="sd">            for the block.</span>
@@ -2243,115 +2170,68 @@ for the block.</p>
   <div class="doc doc-contents ">
 
   
-      <p>A section is one of the most flexible blocks available -
+      <pre><code>A section is one of the most flexible blocks available -
 it can be used as a simple text block, or with any of the
-available block elements.</p>
-<p>Section blocks can also optionally be given an "accessory,"
-which is typically one of the interactive <a href="/reference/elements">Elements</a>.</p>
+available block elements.
 
+Section blocks can also optionally be given an "accessory,"
+</code></pre>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
+    which is typically one of the interactive
+    <a href="/slackblocks/latest/reference/elements">Elements</a>.
+=======
+    which is typically one of the interactive <a href="/slackblocks/reference/elements">Elements</a>.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Stashed changes</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>Args:
+    text: text to include in the block. Can be a string or `Text` object (of either
+        `mrkdwn` or `plaintext` variety). Defaults to markdown if unspecified. One of either
+        `text` or `fields` must be provided.
+    block_id: you can use this field to provide a deterministic identifier for the block.
+    fields: a list of text objects. One of either `text` or `fields` must be provided.
+</code></pre>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
+        accessory: an optional <a href="/slackblocks/latest/reference/elements">Element</a> object that
+            will take a secondary place in the block (after or to the side of  <code>text</code> or
+            <code>fields</code>).
+=======
+        accessory: an optional <a href="/slackblocks/reference/elements">Element</a> object that will take a
+            secondary place in the block (after or to the side of  <code>text</code> or <code>fields</code>).</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Stashed changes</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>Throws:
+    InvalidUsageError: if any of the provided arguments fail validation checks.
+</code></pre>
 
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>text</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="slackblocks.objects.TextLike">TextLike</span>]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>text to include in the block. Can be a string or <code>Text</code> object (of either
-<code>mrkdwn</code> or <code>plaintext</code> variety). Defaults to markdown if unspecified. One of either
-<code>text</code> or <code>fields</code> must be provided.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>block_id</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[str]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>you can use this field to provide a deterministic identifier for the block.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>fields</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<span title="slackblocks.objects.TextLike">TextLike</span>, <span title="typing.List">List</span>[<span title="slackblocks.objects.TextLike">TextLike</span>]]]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>a list of text objects. One of either <code>text</code> or <code>fields</code> must be provided.</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>accessory</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="slackblocks.elements.Element">Element</span>]</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>an optional <a href="/reference/elements">Element</a> object that will take a
-secondary place in the block (after or to the side of  <code>text</code> or <code>fields</code>).</p>
-            </div>
-          </td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-<details class="throws" open>
-  <summary>Throws</summary>
-  <p>InvalidUsageError: if any of the provided arguments fail validation checks.</p>
-</details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/blocks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">396</span>
-<span class="normal">397</span>
-<span class="normal">398</span>
-<span class="normal">399</span>
-<span class="normal">400</span>
-<span class="normal">401</span>
-<span class="normal">402</span>
-<span class="normal">403</span>
-<span class="normal">404</span>
-<span class="normal">405</span>
-<span class="normal">406</span>
-<span class="normal">407</span>
-<span class="normal">408</span>
-<span class="normal">409</span>
-<span class="normal">410</span>
-<span class="normal">411</span>
-<span class="normal">412</span>
-<span class="normal">413</span>
-<span class="normal">414</span>
-<span class="normal">415</span>
-<span class="normal">416</span>
-<span class="normal">417</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">417</span>
 <span class="normal">418</span>
 <span class="normal">419</span>
 <span class="normal">420</span>
@@ -2391,14 +2271,51 @@ secondary place in the block (after or to the side of  <code>text</code> or <cod
 <span class="normal">454</span>
 <span class="normal">455</span>
 <span class="normal">456</span>
-<span class="normal">457</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SectionBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<span class="normal">457</span>
+<span class="normal">458</span>
+<span class="normal">459</span>
+<span class="normal">460</span>
+<span class="normal">461</span>
+<span class="normal">462</span>
+<span class="normal">463</span>
+<span class="normal">464</span>
+<span class="normal">465</span>
+<span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
+<span class="normal">472</span>
+<span class="normal">473</span>
+<span class="normal">474</span>
+<span class="normal">475</span>
+<span class="normal">476</span>
+<span class="normal">477</span>
+<span class="normal">478</span>
+<span class="normal">479</span>
+<span class="normal">480</span>
+<span class="normal">481</span>
+<span class="normal">482</span>
+<span class="normal">483</span>
+<span class="normal">484</span>
+<span class="normal">485</span>
+<span class="normal">486</span>
+<span class="normal">487</span>
+<span class="normal">488</span>
+<span class="normal">489</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SectionBlock</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A section is one of the most flexible blocks available -</span>
 <span class="sd">    it can be used as a simple text block, or with any of the</span>
 <span class="sd">    available block elements.</span>
 
 <span class="sd">    Section blocks can also optionally be given an &quot;accessory,&quot;</span>
-<span class="sd">    which is typically one of the interactive [Elements](/reference/elements).</span>
+<span class="sd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream</span>
+<span class="sd">    which is typically one of the interactive</span>
+<span class="sd">    [Elements](/slackblocks/latest/reference/elements).</span>
+<span class="sd">=======</span>
+<span class="sd">    which is typically one of the interactive [Elements](/slackblocks/reference/elements).</span>
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; Stashed changes</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        text: text to include in the block. Can be a string or `Text` object (of either</span>
@@ -2406,8 +2323,14 @@ secondary place in the block (after or to the side of  <code>text</code> or <cod
 <span class="sd">            `text` or `fields` must be provided.</span>
 <span class="sd">        block_id: you can use this field to provide a deterministic identifier for the block.</span>
 <span class="sd">        fields: a list of text objects. One of either `text` or `fields` must be provided.</span>
-<span class="sd">        accessory: an optional [Element](/reference/elements) object that will take a</span>
+<span class="sd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream</span>
+<span class="sd">        accessory: an optional [Element](/slackblocks/latest/reference/elements) object that</span>
+<span class="sd">            will take a secondary place in the block (after or to the side of  `text` or</span>
+<span class="sd">            `fields`).</span>
+<span class="sd">=======</span>
+<span class="sd">        accessory: an optional [Element](/slackblocks/reference/elements) object that will take a</span>
 <span class="sd">            secondary place in the block (after or to the side of  `text` or `fields`).</span>
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; Stashed changes</span>
 
 <span class="sd">    Throws:</span>
 <span class="sd">        InvalidUsageError: if any of the provided arguments fail validation checks.</span>

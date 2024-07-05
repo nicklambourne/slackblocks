@@ -779,7 +779,7 @@
   
       <p>Secondary (less important) content can be attached using the deprecated
 attachments API.</p>
-<p>See: <a href="https://api.slack.com/reference/messaging/attachments">https://api.slack.com/reference/messaging/attachments</a>.</p>
+<p>See: <a href="https://api.slack.com/slackblocks/latest/reference/messaging/attachments">https://api.slack.com/slackblocks/latest/reference/messaging/attachments</a>.</p>
 
   
 
@@ -879,11 +879,7 @@ attachment content. Consider using the <code>Color</code> enum from this module.
 </details>
             <details class="quote">
               <summary>Source code in <code>slackblocks/attachments.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">140</span>
 <span class="normal">141</span>
 <span class="normal">142</span>
 <span class="normal">143</span>
@@ -932,7 +928,11 @@ attachment content. Consider using the <code>Color</code> enum from this module.
 <span class="normal">186</span>
 <span class="normal">187</span>
 <span class="normal">188</span>
-<span class="normal">189</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Attachment</span><span class="p">:</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Attachment</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Lower priority content can be attached to messages using Attachments.</span>
 <span class="sd">    This is content that doesn&#39;t necessarily need to be seen to appreciate</span>
@@ -1024,71 +1024,92 @@ attachment content. Consider using the <code>Color</code> enum from this module.
   <div class="doc doc-contents ">
 
   
-      <p>Color is a utility class for use with the Slack secondary attachments API.</p>
-<p>Pass these to the <code>color</code> argument of
-    <a href="/reference/attachments/#attachments.Attachment"><code>Attachment</code></a>.</p>
-<table style="width:50%">
-<tr>
-<td><code>Color.GOOD</code></td>
-<td>
-<img valign='middle' alt='good' src='https://readme-swatches.vercel.app/4CAF50?style=round'/>
-</td>
-</tr>
-<tr>
-<td><code>Color.WARNING</code></td>
-<td>
-<img valign='middle' alt='warning' src='https://readme-swatches.vercel.app/FFEB3B?style=round'/>
-</td>
-</tr>
-<tr>
-<td><code>Color.DANGER</code></td>
-<td>
-<img valign='middle' alt='danger' src='https://readme-swatches.vercel.app/F44336?style=round'/>
-</td>
-</tr>
-<tr>
-<td><code>Color.RED</code></td>
-<td>
-<img valign='middle' alt='red' src='https://readme-swatches.vercel.app/ff0000?style=round'/>
-</td>
-</tr>
-<tr>
-<td><code>Color.BLUE</code></td>
-<td>
-<img valign='middle' alt='blue' src='https://readme-swatches.vercel.app/0000ff?style=round'/>
-</td>
-</tr>
-<tr>
-<td><code>Color.YELLOW</code></td>
-<td>
-<img valign='middle' alt='yellow' src='https://readme-swatches.vercel.app/ffff00?style=round'/>
-</td>
-</tr>
-<tr>
-<td><code>Color.GREEN</code></td>
-<td>
-<img valign='middle' alt='green' src='https://readme-swatches.vercel.app/00ff00?style=round'/>
-</td>
-</tr>
-<tr>
-<td><code>Color.ORANGE</code></td>
-<td>
-<img valign='middle' alt='orange' src='https://readme-swatches.vercel.app/ff8800?style=round'/>
-</td>
-</tr>
-<tr>
-<td><code>Color.PURPLE</code></td>
-<td>
-<img valign='middle' alt='purple' src='https://readme-swatches.vercel.app/8800ff?style=round'/>
-</td>
-</tr>
-<tr>
-<td><code>Color.BLACK</code></td>
-<td>
-<img valign='middle' alt='black' src='https://readme-swatches.vercel.app/000000?style=round'/>
-</td>
-</tr>
-</table>
+      <pre><code>Color is a utility class for use with the Slack secondary attachments API.
+
+Pass these to the `color` argument of
+</code></pre>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream
+        <a href="/slackblocks/latest/reference/attachments/#attachments.Attachment"><code>Attachment</code></a>.
+=======
+        <a href="/slackblocks/reference/attachments/#attachments.Attachment"><code>Attachment</code></a>.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Stashed changes</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>&lt;table style="width:50%"&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Color.GOOD&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;img valign='middle' alt='good' src='https://readme-swatches.vercel.app/4CAF50?style=round'/&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Color.WARNING&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;img valign='middle' alt='warning' src='https://readme-swatches.vercel.app/FFEB3B?style=round'/&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Color.DANGER&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;img valign='middle' alt='danger' src='https://readme-swatches.vercel.app/F44336?style=round'/&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Color.RED&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;img valign='middle' alt='red' src='https://readme-swatches.vercel.app/ff0000?style=round'/&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Color.BLUE&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;img valign='middle' alt='blue' src='https://readme-swatches.vercel.app/0000ff?style=round'/&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Color.YELLOW&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;img valign='middle' alt='yellow' src='https://readme-swatches.vercel.app/ffff00?style=round'/&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Color.GREEN&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;img valign='middle' alt='green' src='https://readme-swatches.vercel.app/00ff00?style=round'/&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Color.ORANGE&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;img valign='middle' alt='orange' src='https://readme-swatches.vercel.app/ff8800?style=round'/&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Color.PURPLE&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;img valign='middle' alt='purple' src='https://readme-swatches.vercel.app/8800ff?style=round'/&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Color.BLACK&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;
+&lt;img valign='middle' alt='black' src='https://readme-swatches.vercel.app/000000?style=round'/&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+</code></pre>
 
             <details class="quote">
               <summary>Source code in <code>slackblocks/attachments.py</code></summary>
@@ -1175,12 +1196,20 @@ attachment content. Consider using the <code>Color</code> enum from this module.
 <span class="normal"> 97</span>
 <span class="normal"> 98</span>
 <span class="normal"> 99</span>
-<span class="normal">100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Color</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Color</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Color is a utility class for use with the Slack secondary attachments API.</span>
 
 <span class="sd">    Pass these to the `color` argument of</span>
-<span class="sd">        [`Attachment`](/reference/attachments/#attachments.Attachment).</span>
+<span class="sd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream</span>
+<span class="sd">        [`Attachment`](/slackblocks/latest/reference/attachments/#attachments.Attachment).</span>
+<span class="sd">=======</span>
+<span class="sd">        [`Attachment`](/slackblocks/reference/attachments/#attachments.Attachment).</span>
+<span class="sd">&gt;&gt;&gt;&gt;&gt;&gt;&gt; Stashed changes</span>
 
 <span class="sd">    &lt;table style=&quot;width:50%&quot;&gt;</span>
 <span class="sd">    &lt;tr&gt;</span>
@@ -1361,11 +1390,7 @@ multipe columns.</p>
 
             <details class="quote">
               <summary>Source code in <code>slackblocks/attachments.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">107</span>
 <span class="normal">108</span>
 <span class="normal">109</span>
 <span class="normal">110</span>
@@ -1391,7 +1416,11 @@ multipe columns.</p>
 <span class="normal">130</span>
 <span class="normal">131</span>
 <span class="normal">132</span>
-<span class="normal">133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Field</span><span class="p">:</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Field</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Field text objects for use with Slack&#39;s secondary attachment API.</span>
 
