@@ -16,8 +16,12 @@ from slackblocks.views import ModalView
 
 class Modal(ModalView):
     """
+<<<<<<< Updated upstream
     Kept for backwards compatibility - see
         [`ModalView`](/slackblocks/latest/reference/views/#views.ModalView)
+=======
+    Kept for backwards compatibility - see [`ModalView`](/slackblocks/reference/views/#views.ModalView)
+>>>>>>> Stashed changes
     """
 
     def __repr__(self) -> str:
