@@ -116,12 +116,8 @@ class ActionsBlock(Block):
     A `Block` that is used to hold interactive elements (normally for users to interface with).
 
     Args:
-<<<<<<< Updated upstream
         elements: a list of [Elements](/slackblocks/latest/reference/elements)
             (up to a maximum of 25).
-=======
-        elements: a list of [Elements](/slackblocks/reference/elements) (up to a maximum of 25).
->>>>>>> Stashed changes
         block_id: you can use this field to provide a deterministic identifier for the block.
 
     Throws:
@@ -311,16 +307,10 @@ class InputBlock(Block):
 
     Args:
         label: the name which identifies the input field.
-<<<<<<< Updated upstream
         element: an interactive [Element](/slackblocks/latest/reference/elements)
             (e.g. a text field).
         dispatch_action: whether the [Element](/slackblocks/latest/reference/elements)
             should trigger the sending of a `block_actions` payload.
-=======
-        element: an interactive [Element](/slackblocks/reference/elements) (e.g. a text field).
-        dispatch_action: whether the [Element](/slackblocks/reference/elements) should trigger the
-            sending of a `block_actions` payload.
->>>>>>> Stashed changes
         block_id: you can use this field to provide a deterministic identifier for the block.
         hint: an optional additional guide on what input the user should prodive.
         optional: whether this input field may be empty when the user submits e.g. the modal.
@@ -368,17 +358,10 @@ class RichTextBlock(Block):
     """
     A RichTextBlock is used to provide easier rich text formatting
         than standard markdown text (e.g. in a
-<<<<<<< Updated upstream
         [`SectionBlock`](/slackblocks/latest/reference/blocks/#blocks.SectionBlock))
         and access to text formatting features not available in traditional
         markdown (e.g. strikethrough). See the various rich text elements
         you can include [here](/slackblocks/latest/reference/rich_text).
-=======
-        [`SectionBlock`](/slackblocks/reference/blocks/#blocks.SectionBlock))
-        and access to text formatting features not available in traditional
-        markdown (e.g. strikethrough). See the various rich text elements
-        you can include [here](/slackblocks/reference/rich_text).
->>>>>>> Stashed changes
 
     Args:
         elements: a single [rich text element](rich_text)
@@ -421,12 +404,8 @@ class SectionBlock(Block):
     available block elements.
 
     Section blocks can also optionally be given an "accessory,"
-<<<<<<< Updated upstream
     which is typically one of the interactive
     [Elements](/slackblocks/latest/reference/elements).
-=======
-    which is typically one of the interactive [Elements](/slackblocks/reference/elements).
->>>>>>> Stashed changes
 
     Args:
         text: text to include in the block. Can be a string or `Text` object (of either
@@ -434,14 +413,9 @@ class SectionBlock(Block):
             `text` or `fields` must be provided.
         block_id: you can use this field to provide a deterministic identifier for the block.
         fields: a list of text objects. One of either `text` or `fields` must be provided.
-<<<<<<< Updated upstream
-        accessory: an optional [Element](/slackblocks/latest/reference/elements) object that
-            will take a secondary place in the block (after or to the side of  `text` or
-            `fields`).
-=======
-        accessory: an optional [Element](/slackblocks/reference/elements) object that will take a
-            secondary place in the block (after or to the side of  `text` or `fields`).
->>>>>>> Stashed changes
+        accessory: an optional [Element](/slackblocks/latest/reference/elements) object
+            that will take a secondary place in the block (after or to the side of  `text`
+            or `fields`).
 
     Throws:
         InvalidUsageError: if any of the provided arguments fail validation checks.

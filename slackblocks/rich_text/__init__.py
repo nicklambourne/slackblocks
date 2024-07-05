@@ -4,7 +4,7 @@ code, list, quotations and formatted text (including options not
 available in traditional markdown like strikethrough).
 
 These formatting elements can only be used within a
-[`RichTextBlock`](../blocks/#blocks.RichTextBlock).
+[`RichTextBlock`](/slackblocks/reference/blocks/#blocks.RichTextBlock).
 
 See: <https://api.slack.com/reference/block-kit/blocks#rich_text>.
 """

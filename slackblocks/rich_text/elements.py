@@ -1,7 +1,7 @@
 """
 Rich text elements are the primitive elements used to populate the rich
     text object "containers", which are then fed into the
-    [`RichTextBlock`](../blocks/#blocks.RichTextBlock).
+    [`RichTextBlock`](/slackblocks/latest/reference/blocks/#blocks.RichTextBlock).
 """
 
 from abc import ABC, abstractmethod
@@ -30,7 +30,7 @@ class RichTextElement(ABC):
     Abstract base class for all rich text element classes.
 
     These are the primitives that form the basis of rich text objects and
-    the [`RichTextBlock`](../blocks/#blocks.RichTextBlock).
+    the [`RichTextBlock`](/slackblocks/latest/reference/blocks/#blocks.RichTextBlock).
     """
 
     def __init__(self, type_: RichTextElementType) -> None:
