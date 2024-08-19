@@ -46,7 +46,6 @@ pytest = "^8.0.0"
 slack-sdk = "^3.31.0"
 twine = "^4.0.2"
 wheel = "^0.42.0"
-ipykernel = "^6.29.5"
 
 [tool.poetry.group.docs.dependencies]
 mike="^2.0.0"
