@@ -58,7 +58,7 @@ Of more practical uses is the ability to unpack the objects directly into
 the Python Slack Client in order to send messages:
 ```python
 from os import environ
-from slack import WebClient
+from slack_sdk import WebClient
 from slackblocks import Message, SectionBlock
 
 
