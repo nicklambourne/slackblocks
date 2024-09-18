@@ -31,6 +31,7 @@ from slackblocks.elements import (
     UserMultiSelectMenu,
     UserSelectMenu,
     NumberInput,
+    EmailInput,
 )
 from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
@@ -67,6 +68,7 @@ ALLOWED_INPUT_ELEMENTS = (
     UserSelectMenu,
     UserMultiSelectMenu,
     RichTextInput,
+    EmailInput,
 )
 
 
