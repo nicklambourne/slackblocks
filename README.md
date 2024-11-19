@@ -54,8 +54,23 @@ Will produce the following JSON string:
 ```
 Which can be sent as payload to the Slack message API HTTP endpoints.
 
-Of more practical uses is the ability to unpack the objects directly into 
-the Python Slack Client in order to send messages:
+Of more practical use is the ability to unpack the objects directly into 
+the [(Legacy) Python Slack Client](https://pypi.org/project/slackclient/) in order to send messages:
+
+```python
+from os import environ
+from slack_sdk import WebClient
+from slackblocks import Message, SectionBlock
+
+
+client = WebClient(token=environ["SLACK_API_TOKEN"])
+block = SectionBlock("Hello, world!")
+message = Message(channel="#general", blocks=block)
+
+response = client.chat_postMessage(**message)
+```
+
+Or the modern Python [Slack SDK](https://pypi.org/project/slack-sdk/):
 ```python
 from os import environ
 from slack_sdk import WebClient

@@ -31,6 +31,8 @@ from slackblocks.elements import (
     UserMultiSelectMenu,
     UserSelectMenu,
     NumberInput,
+    EmailInput,
+    URLInput,
 )
 from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
@@ -67,6 +69,8 @@ ALLOWED_INPUT_ELEMENTS = (
     UserSelectMenu,
     UserMultiSelectMenu,
     RichTextInput,
+    EmailInput,
+    URLInput,
 )
 
 
@@ -333,7 +337,9 @@ class InputBlock(Block):
             label, force_plaintext=True, max_length=2000, allow_none=False
         )
         if not isinstance(element, ALLOWED_INPUT_ELEMENTS):
-            raise InvalidUsageError("")
+            raise InvalidUsageError(
+                f"InputBlocks can only hold elements of type: {ALLOWED_INPUT_ELEMENTS}"
+            )
         self.element = element
         self.dispatch_action = dispatch_action
         self.hint = Text.to_text(
