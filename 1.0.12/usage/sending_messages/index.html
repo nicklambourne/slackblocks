@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#sending-a-message-with-the-slack-sdk-library" class="md-skip">
+        <a href="#sending-a-message-with-the-modern-slack-sdk-library" class="md-skip">
           Skip to content
         </a>
       
@@ -410,9 +410,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sending-a-message-with-the-slack-sdk-library" class="md-nav__link">
+  <a href="#sending-a-message-with-the-modern-slack-sdk-library" class="md-nav__link">
     <span class="md-ellipsis">
-      Sending a Message with the slack-sdk Library
+      Sending a Message with the (Modern) slack-sdk Library
     </span>
   </a>
   
@@ -703,9 +703,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sending-a-message-with-the-slack-sdk-library" class="md-nav__link">
+  <a href="#sending-a-message-with-the-modern-slack-sdk-library" class="md-nav__link">
     <span class="md-ellipsis">
-      Sending a Message with the slack-sdk Library
+      Sending a Message with the (Modern) slack-sdk Library
     </span>
   </a>
   
@@ -743,7 +743,7 @@
 <p><code>slackblocks</code> is designed primarily for use with either the <a href="https://pypi.org/project/slack-sdk/"><code>slack-sdk</code></a> or (legacy) <a href="https://pypi.org/project/slackclient/"><code>slackclient</code></a> Python packages. Usage of <code>slackblocks</code> remains identical regardless of which Slack client library you're using.</p>
 <p>While there's nothing stopping you from sending the rendered messages directly with <code>curl</code> or <code>requests</code>, we recommend using the <code>**</code> (dictionary unpacking)operator to unpack <code>slackblocks</code> <code>Messages</code> directly into the Slack <code>client</code>'s <code>chat_postMessage</code> function.</p>
 <p>An example of this is provided below along with the JSON result of rendering the message, an equivalent <code>curl</code> command, and finally the result of the message as it appears in the Slack user interface.</p>
-<h3 id="sending-a-message-with-the-slack-sdk-library">Sending a Message with the <code>slack-sdk</code> Library</h3>
+<h3 id="sending-a-message-with-the-modern-slack-sdk-library">Sending a Message with the (Modern) <code>slack-sdk</code> Library</h3>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Python (<code>slackblocks</code>)</label><label for="__tabbed_1_2">JSON Message</label><label for="__tabbed_1_3">Equivalent <code>curl</code> Command</label><label for="__tabbed_1_4">Slack UI Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
