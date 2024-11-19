@@ -54,7 +54,7 @@ An example of this is provided below along with the JSON result of rendering the
 === "Python (`slackblocks`)"
     ```python
     from os import environ
-    from slack_sdk import WebClient
+    from slack import WebClient
     from slackblocks import Message, SectionBlock
 
 

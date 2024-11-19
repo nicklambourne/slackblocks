@@ -59,7 +59,7 @@ the [(Legacy) Python Slack Client](https://pypi.org/project/slackclient/) in ord
 
 ```python
 from os import environ
-from slack_sdk import WebClient
+from slack import WebClient
 from slackblocks import Message, SectionBlock
 
 
