@@ -2,7 +2,7 @@
 
 from os import environ
 
-from slack import WebClient
+from slack_sdk import WebClient
 
 from slackblocks import Attachment, Color, ImageBlock, Message, SectionBlock
 
@@ -27,6 +27,7 @@ def test_compound_message() -> None:
     block1 = SectionBlock("Block, One", block_id="fake_block1")
     block2 = SectionBlock("Block, Two", block_id="fake_block2")
     block3 = ImageBlock(
+        title="Crash",
         image_url="http://bit.ly/slack-block-test-image",
         alt_text="crash",
         block_id="fake_block3",
