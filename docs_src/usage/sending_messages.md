@@ -4,7 +4,7 @@ While there's nothing stopping you from sending the rendered messages directly w
 
 An example of this is provided below along with the JSON result of rendering the message, an equivalent `curl` command, and finally the result of the message as it appears in the Slack user interface.
 
-### Sending a Message with the `slack-sdk` Library
+### Sending a Message with the (Modern) `slack-sdk` Library
 === "Python (`slackblocks`)"
     ```python
     from os import environ
