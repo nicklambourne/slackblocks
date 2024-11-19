@@ -38,11 +38,12 @@ exclude = ["test/**", "docs/**"]
 python = ">=3.8.0"
 
 [tool.poetry.group.dev.dependencies]
+aiohttp = "^3.10.4"
 black = "^24.1.1"
 flake8 = "^5.0.4"
 flake8-pyproject = "^1.2.3"
 pytest = "^8.0.0"
-slackclient = "^2.9.4" 
+slack-sdk = "^3.31.0"
 twine = "^4.0.2"
 wheel = "^0.42.0"
 
