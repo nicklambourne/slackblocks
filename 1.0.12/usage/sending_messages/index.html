@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../img/sb.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.6">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.7">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.f2e4d321.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -82,6 +82,11 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
+      
+        
+        <a href="#sending-a-message-with-the-slack-sdk-library" class="md-skip">
+          Skip to content
+        </a>
       
     </div>
     <div data-md-component="announce">
@@ -370,6 +375,17 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Sending Messages
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -379,6 +395,41 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sending-a-message-with-the-slack-sdk-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sending a Message with the slack-sdk Library
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sending-a-message-with-the-legacy-slackclient-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sending a Message with the (Legacy) slackclient Library
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -645,6 +696,32 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sending-a-message-with-the-slack-sdk-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sending a Message with the slack-sdk Library
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sending-a-message-with-the-legacy-slackclient-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sending a Message with the (Legacy) slackclient Library
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -666,7 +743,54 @@
 <p><code>slackblocks</code> is designed primarily for use with either the <a href="https://pypi.org/project/slack-sdk/"><code>slack-sdk</code></a> or (legacy) <a href="https://pypi.org/project/slackclient/"><code>slackclient</code></a> Python packages. Usage of <code>slackblocks</code> remains identical regardless of which Slack client library you're using.</p>
 <p>While there's nothing stopping you from sending the rendered messages directly with <code>curl</code> or <code>requests</code>, we recommend using the <code>**</code> (dictionary unpacking)operator to unpack <code>slackblocks</code> <code>Messages</code> directly into the Slack <code>client</code>'s <code>chat_postMessage</code> function.</p>
 <p>An example of this is provided below along with the JSON result of rendering the message, an equivalent <code>curl</code> command, and finally the result of the message as it appears in the Slack user interface.</p>
+<h3 id="sending-a-message-with-the-slack-sdk-library">Sending a Message with the <code>slack-sdk</code> Library</h3>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Python (<code>slackblocks</code>)</label><label for="__tabbed_1_2">JSON Message</label><label for="__tabbed_1_3">Equivalent <code>curl</code> Command</label><label for="__tabbed_1_4">Slack UI Output</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">environ</span>
+<span class="kn">from</span> <span class="nn">slack_sdk</span> <span class="kn">import</span> <span class="n">WebClient</span>
+<span class="kn">from</span> <span class="nn">slackblocks</span> <span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">SectionBlock</span>
+
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">WebClient</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;SLACK_API_TOKEN&quot;</span><span class="p">])</span>
+<span class="n">block</span> <span class="o">=</span> <span class="n">SectionBlock</span><span class="p">(</span><span class="s2">&quot;Hello, world!&quot;</span><span class="p">)</span>
+<span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;#general&quot;</span><span class="p">,</span> <span class="n">blocks</span><span class="o">=</span><span class="n">block</span><span class="p">)</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span><span class="o">**</span><span class="n">message</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p><div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#general&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;mrkdwn&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;blocks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;section&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;block_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;992ceb6b-9ad4-496b-b8e6-1bd8a632e8b3&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mrkdwn&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello, world!&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+* Note that the <code>block_id</code> field is a pseudorandomly generated UUID. You can pass a value to <code>Block</code> constructors should you desire deterministic <code>Blocks</code>.</p>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+--data<span class="w"> </span><span class="s1">&#39;{&quot;channel&quot;:&quot;#general&quot;,&quot;blocks&quot;:[{&quot;type&quot;:&quot;section&quot;, &quot;block_id&quot;: &quot;992ceb6b-9ad4-496b-b8e6-1bd8a632e8b3&quot;, &quot;text&quot;:{&quot;type&quot;:&quot;mrkdwn&quot;,&quot;text&quot;:&quot;Hello, world&quot;}}]}&#39;</span><span class="w"> </span><span class="se">\</span>
+-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">SLACK_API_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+-X<span class="w"> </span>POST<span class="w"> </span>https://slack.com/api/chat.postMessage
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p><img alt="Hello World Slack Image" src="../../img/hello_world.png" /></p>
+</div>
+</div>
+</div>
+<h3 id="sending-a-message-with-the-legacy-slackclient-library">Sending a Message with the (Legacy) <code>slackclient</code> Library</h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:4"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><input id="__tabbed_2_4" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Python (<code>slackblocks</code>)</label><label for="__tabbed_2_2">JSON Message</label><label for="__tabbed_2_3">Equivalent <code>curl</code> Command</label><label for="__tabbed_2_4">Slack UI Output</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">environ</span>
@@ -760,7 +884,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "search.suggest"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1c3ead8.min.js"></script>
+      <script src="../../assets/javascripts/bundle.caa56a14.min.js"></script>
       
     
   </body>
