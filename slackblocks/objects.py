@@ -170,7 +170,7 @@ class Text(CompositionObject):
             self.text_type == other.text_type
             and self.text == other.text
             and self.emoji == other.emoji
-            and self.vertbatim == other.verbatim
+            and self.verbatim == other.verbatim
         )
 
 
