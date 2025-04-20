@@ -161,7 +161,7 @@ class RichTextCodeBlock(RichTextObject):
     A rich text element for representing blocks of code in
         [`RichTextBlocks`](/slackblocks/latest/reference/blocks/#blocks.RichTextBlock).
 
-    This is roughly equivalent to the triple-backtick \`\`\``code`\`\`\` syntax in markdown.
+    This is roughly equivalent to the triple-backtick ```code``` syntax in markdown.
 
     See: <https://api.slack.com/reference/block-kit/blocks#rich_text_preformatted>.
 

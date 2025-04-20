@@ -69,3 +69,11 @@ per-file-ignores = [
     "slackblocks/rich_text/__init__.py:F401",
     "slackblocks/rich_text/objects.py:W605",
 ]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    #transform warnings into errors so they are not possible to ignore
+    "error",
+    #except when defined explicitly as per example below. See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#controlling-warnings
+    #"ignore::UserWarning",
+]
