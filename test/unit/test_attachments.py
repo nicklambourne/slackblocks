@@ -3,7 +3,9 @@ from slackblocks import Attachment, Color, SectionBlock
 
 def test_single_attachment() -> None:
     block = SectionBlock("I like pretty colours", block_id="fake_block_id")
-    attachment = Attachment(blocks=block, color=Color.BLACK, fallback="Colours preference")
+    attachment = Attachment(
+        blocks=block, color=Color.BLACK, fallback="Colours preference"
+    )
     with open("test/samples/attachments/attachment_simple.json", "r") as expected:
         assert repr(attachment) == expected.read()
 
