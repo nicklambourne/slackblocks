@@ -150,7 +150,9 @@ class Attachment:
         color: the color (in hex format, e.g. #ffffff) of the vertical bar to the left of the
             attachment content. Consider using the `Color` enum from this module.
         fields: a list of `Field` objects to be included in what's rendered in the attachment.
-
+        fallback: A plain text summary of the attachment used in clients that don't show 
+            formatted text (eg. IRC, mobile notifications).
+        
     Throws:
         InvalidUsageError: if the `color` code provided is invalid.
     """
@@ -160,9 +162,11 @@ class Attachment:
         blocks: Optional[Union[Block, List[Block]]] = None,
         color: Optional[Union[str, Color]] = None,
         fields: Optional[Union[Field, List[Field]]] = None,
+        fallback: Optional[str] = None,
     ):
         self.blocks = coerce_to_list(blocks, Block, allow_none=True)
         self.fields = coerce_to_list(fields, Field, allow_none=True)
+        self.fallback = fallback
         if type(color) is Color:
             self.color = color.value
         elif type(color) is str:
@@ -183,6 +187,8 @@ class Attachment:
             attachment["blocks"] = [block._resolve() for block in self.blocks]
         if self.color:
             attachment["color"] = self.color
+        if self.fallback:
+            attachment["fallback"] = self.fallback
         return attachment
 
     def __repr__(self) -> str:
