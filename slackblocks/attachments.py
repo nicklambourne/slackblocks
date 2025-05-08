@@ -150,9 +150,9 @@ class Attachment:
         color: the color (in hex format, e.g. #ffffff) of the vertical bar to the left of the
             attachment content. Consider using the `Color` enum from this module.
         fields: a list of `Field` objects to be included in what's rendered in the attachment.
-        fallback: A plain text summary of the attachment used in clients that don't show 
+        fallback: A plain text summary of the attachment used in clients that don't show
             formatted text (eg. IRC, mobile notifications).
-        
+
     Throws:
         InvalidUsageError: if the `color` code provided is invalid.
     """
