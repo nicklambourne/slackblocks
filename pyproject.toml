@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "slackblocks"
-version = "1.0.16"
+version = "1.1.1"
 description = "Python wrapper for the Slack Blocks API"
 authors = [
     "Nicholas Lambourne <dev@ndl.im>",
@@ -26,6 +26,7 @@ classifiers=[
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: BSD License",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
@@ -42,6 +43,7 @@ aiohttp = "^3.10.4"
 black = "^24.1.1"
 flake8 = "^5.0.4"
 flake8-pyproject = "^1.2.3"
+mypy = "^1.14.0"
 pytest = "^8.0.0"
 slack-sdk = "^3.31.0"
 twine = "^4.0.2"

@@ -41,7 +41,8 @@ class ListType(Enum):
     BULLET = "bullet"
     ORDERED = "ordered"
 
-    def all() -> List[str]:
+    @classmethod
+    def all(cls) -> List[str]:
         return [list_type.value for list_type in ListType]
 
 
@@ -99,7 +100,8 @@ class RichTextSection(RichTextObject):
 
     def _resolve(self) -> Dict[str, Any]:
         section = super()._resolve()
-        section["elements"] = [element._resolve() for element in self.elements]
+        if self.elements is not None:
+            section["elements"] = [element._resolve() for element in self.elements]
         return section
 
 
@@ -144,8 +146,11 @@ class RichTextList(RichTextObject):
         self.border = validate_int(border, allow_none=True)
 
     def _resolve(self) -> Dict[str, Any]:
-        rich_text_list = super()._resolve()
-        rich_text_list["elements"] = [element._resolve() for element in self.elements]
+        rich_text_list: Dict[str, Any] = super()._resolve()
+        if self.elements is not None:
+            rich_text_list["elements"] = [
+                element._resolve() for element in self.elements if element is not None
+            ]
         rich_text_list["style"] = self.style
         if self.indent is not None:
             rich_text_list["indent"] = self.indent
@@ -196,7 +201,10 @@ class RichTextCodeBlock(RichTextObject):
 
     def _resolve(self) -> Dict[str, Any]:
         preformatted = super()._resolve()
-        preformatted["elements"] = [element._resolve() for element in self.elements]
+        if self.elements is not None:
+            preformatted["elements"] = [
+                element._resolve() for element in self.elements if element is not None
+            ]
         if self.border is not None:
             preformatted["border"] = self.border
         return preformatted
@@ -238,7 +246,10 @@ class RichTextQuote(RichTextObject):
 
     def _resolve(self) -> Dict[str, Any]:
         quote = super()._resolve()
-        quote["elements"] = [element._resolve() for element in self.elements]
+        if self.elements is not None:
+            quote["elements"] = [
+                element._resolve() for element in self.elements if element is not None
+            ]
         if self.border is not None:
             quote["border"] = self.border
         return quote

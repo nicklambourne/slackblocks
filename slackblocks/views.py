@@ -28,7 +28,7 @@ class View:
         private_metadata: Optional[str] = None,
         callback_id: Optional[str] = None,
         external_id: Optional[str] = None,
-    ):
+    ) -> None:
         self.type_ = type.value
         self.blocks = coerce_to_list(blocks, class_=Block, min_size=1, max_size=100)
         self.private_metadata = validate_string(
@@ -43,9 +43,10 @@ class View:
         self.external_id = external_id
 
     def _resolve(self) -> Dict[str, Any]:
-        view = {}
+        view: Dict[str, Any] = {}
         view["type"] = self.type_
-        view["blocks"] = [block._resolve() for block in self.blocks]
+        if self.blocks is not None:
+            view["blocks"] = [block._resolve() for block in self.blocks]
         if self.private_metadata:
             view["private_metadata"] = self.private_metadata
         if self.callback_id:
@@ -101,7 +102,7 @@ class ModalView(View):
         notify_on_close: Optional[bool] = False,
         external_id: Optional[str] = None,
         submit_disabled: Optional[bool] = False,
-    ):
+    ) -> None:
         super().__init__(
             type=ViewType.MODAL,
             blocks=blocks,
@@ -109,7 +110,7 @@ class ModalView(View):
             callback_id=callback_id,
             external_id=external_id,
         )
-        self.title = Text.to_text(title, force_plaintext=True, max_length=24)
+        self.title = Text.to_text_nonnull(title, force_plaintext=True, max_length=24)
         self.close = Text.to_text(
             close, force_plaintext=True, max_length=24, allow_none=True
         )
@@ -157,7 +158,7 @@ class HomeTabView(View):
         private_metadata: Optional[str] = None,
         callback_id: Optional[str] = None,
         external_id: Optional[str] = None,
-    ) -> "HomeTabView":
+    ) -> None:
         super().__init__(
             type=ViewType.HOME,
             blocks=blocks,

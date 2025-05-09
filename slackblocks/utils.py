@@ -4,20 +4,69 @@ the input to `Messages`, `Blocks`, `Elements` and `Objects`.
 """
 
 from string import hexdigits
-from typing import Any, List, Optional, Tuple, TypeVar, Union
+from typing import Any, List, Optional, TypeVar, Union
 
-from .errors import InvalidUsageError
+from slackblocks.errors import InvalidUsageError
 
 T = TypeVar("T")
 
 
-def coerce_to_list(
+def coerce_to_list_nonnull(
     object_or_objects: Union[T, List[T]],
+    class_: Union[Any, List[Any]],
+    min_size: Optional[int] = None,
+    max_size: Optional[int] = None,
+) -> List[T]:
+    """
+    Takes an object or list of objects and validates its contents, ensuring that the
+    resulting object is a list. This version does not handle None values.
+
+    Args:
+        object_or_objects: the Python object or objects to validate and convert to a list.
+        class_: the Python type (or class) of objects expected in the list.
+        min_size: if provided, the length of `object_or_objects` cannot be smaller than this.
+        max_size: if provided, the length of `object_or_objects` cannot be larger than this.
+
+    Returns:
+        `object_or_objects` if it was a valid list, `[object_or_objects]` if it was a valid object.
+
+    Throws:
+        InvalidUsageError: if any of the validation checks fail.
+    """
+    if isinstance(object_or_objects, List):
+        items = object_or_objects
+    else:
+        items = [object_or_objects]
+
+    for item in items:
+        if not isinstance(class_, tuple):
+            class_ = (class_,)
+        if not isinstance(item, class_):
+            raise InvalidUsageError(
+                f"Type of {item} ({type(item)})) inconsistent with expected type {class_}."
+            )
+
+    length = len(items)
+    if min_size is not None and length < min_size:
+        raise InvalidUsageError(
+            f"Size ({length}) of list of {type(class_)} is less than `min_size` ({min_size})"
+        )
+
+    if max_size is not None and length > max_size:
+        raise InvalidUsageError(
+            f"Size ({length}) of list of {type(class_)} exceeds `max_size` ({max_size})"
+        )
+
+    return items
+
+
+def coerce_to_list(
+    object_or_objects: Optional[Union[T, List[T]]],
     class_: Union[Any, List[Any]],
     allow_none: bool = False,
     min_size: Optional[int] = None,
     max_size: Optional[int] = None,
-) -> List[T]:
+) -> Optional[List[T]]:
     """
     Takes and object or list of objects and validates its contents, ensuring that the
     resulting object is a list.
@@ -36,42 +85,15 @@ def coerce_to_list(
     Throws:
         InvalidUsageError: if any of the validation checks fail.
     """
-    if object_or_objects is None and allow_none:
-        return None
-    if object_or_objects is None and not allow_none:
+    if object_or_objects is None:
+        if allow_none:
+            return None
         raise InvalidUsageError(
             f"Type of {object_or_objects} ({type(object_or_objects)})) is "
             f"None should be type `{class_}`."
         )
 
-    if isinstance(object_or_objects, List):
-        items = object_or_objects
-    else:
-        items = [
-            object_or_objects,
-        ]
-
-    for item in items:
-        if not isinstance(class_, Tuple):
-            class_ = (class_,)
-        if not isinstance(item, class_):
-            raise InvalidUsageError(
-                f"Type of {item} ({type(item)})) inconsistent with expected type {class_}."
-            )
-
-    if items is not None:
-        length = len(items)
-        if min_size is not None and length < min_size:
-            raise InvalidUsageError(
-                f"Size ({length}) of list of {type(class_)} is less than `min_size` ({min_size})"
-            )
-
-        if max_size is not None and length > max_size:
-            raise InvalidUsageError(
-                f"Size ({length}) of list of {type(class_)} exceeds `max_size` ({max_size})"
-            )
-
-    return items
+    return coerce_to_list_nonnull(object_or_objects, class_, min_size, max_size)
 
 
 def is_hex(string: str) -> bool:
@@ -87,7 +109,9 @@ def is_hex(string: str) -> bool:
     return all(char in hexdigits for char in string)
 
 
-def validate_action_id(action_id: str, allow_none: bool = False) -> Optional[str]:
+def validate_action_id(
+    action_id: Optional[str], allow_none: bool = False
+) -> Optional[str]:
     """
     Action IDs are used in the handing of user interactivity within Slack blocks.
     This function checks that a given `action_id` is valid as per the requirements
@@ -148,27 +172,36 @@ def validate_string(
             raise InvalidUsageError(
                 f"Expecting string for field `{field_name}`, cannot be None."
             )
-    else:
-        length = len(string)
-        if min_length and length < min_length:
-            raise InvalidUsageError(
-                f"Argument to field `{field_name}` ({length} characters) "
-                f"is less than minimum length of {min_length} characters"
-            )
-        if max_length and length > max_length:
-            raise InvalidUsageError(
-                f"Argument to field `{field_name}` ({length} characters) "
-                f"exceeds length limit of {max_length} characters"
-            )
+        return None
+    return validate_string_nonnull(string, max_length, min_length, field_name)
+
+
+def validate_string_nonnull(
+    string: str,
+    max_length: Optional[int] = None,
+    min_length: Optional[int] = None,
+    field_name: str = "string",
+) -> str:
+    length = len(string)
+    if min_length and length < min_length:
+        raise InvalidUsageError(
+            f"Argument to field `{field_name}` ({length} characters) "
+            f"is less than minimum length of {min_length} characters"
+        )
+    if max_length and length > max_length:
+        raise InvalidUsageError(
+            f"Argument to field `{field_name}` ({length} characters) "
+            f"exceeds length limit of {max_length} characters"
+        )
     return string
 
 
 def validate_int(
-    num: Union[int, None],
+    num: Optional[int],
     min_value: Optional[int] = None,
     max_value: Optional[int] = None,
     allow_none: bool = False,
-) -> int:
+) -> Optional[int]:
     """
     Performs basic validation checks against a given integer.
 
@@ -187,10 +220,9 @@ def validate_int(
     """
     if num is None and not allow_none:
         raise InvalidUsageError("`num` is None, which is disallowed.")
-    if min_value is not None:
-        if num < min_value:
+    if num is not None:
+        if min_value is not None and num < min_value:
             raise InvalidUsageError(f"{num} is less than the minimum {min_value}")
-    if max_value is not None:
-        if num > max_value:
+        if max_value is not None and num > max_value:
             raise InvalidUsageError(f"{num} is less than the minimum {max_value}")
     return num

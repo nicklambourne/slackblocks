@@ -10,7 +10,11 @@ from json import dumps
 from typing import Any, Dict, List, Optional, Union
 
 from slackblocks.errors import InvalidUsageError
-from slackblocks.utils import coerce_to_list, validate_string
+from slackblocks.utils import (
+    coerce_to_list,
+    coerce_to_list_nonnull,
+    validate_string_nonnull,
+)
 
 
 class CompositionObjectType(Enum):
@@ -39,7 +43,7 @@ class CompositionObject(ABC):
     instantiated directly.
     """
 
-    def __init__(self, type_: CompositionObjectType):
+    def __init__(self, type_: CompositionObjectType) -> None:
         super().__init__()
         self.type = type_
 
@@ -92,17 +96,17 @@ class Text(CompositionObject):
         type_: TextType = TextType.MARKDOWN,
         emoji: bool = False,
         verbatim: bool = False,
-    ) -> "Text":
+    ) -> None:
         super().__init__(type_=CompositionObjectType.TEXT)
         self.text_type = type_
-        self.text = validate_string(
+        self.text = validate_string_nonnull(
             text, field_name="text", min_length=1, max_length=3000
         )
         if self.text_type == TextType.MARKDOWN:
             self.verbatim = verbatim
-            self.emoji = None
+            self.emoji = False
         elif self.text_type == TextType.PLAINTEXT:
-            self.verbatim = None
+            self.verbatim = False
             self.emoji = emoji
 
     def _resolve(self) -> Dict[str, Any]:
@@ -133,31 +137,56 @@ class Text(CompositionObject):
                 to the standard `Text` limit of 3000 characters.
             allow_none: whether to accept `None` as a valid value for `text`.
         """
+        if text is None:
+            if allow_none:
+                return None
+            raise InvalidUsageError("This field cannot have the value None or ''")
+        return Text.to_text_nonnull(
+            text,
+            force_plaintext,
+            max_length,
+        )
+
+    @staticmethod
+    def to_text_nonnull(
+        text: Union[str, "Text"],
+        force_plaintext: bool = False,
+        max_length: Optional[int] = None,
+    ) -> "Text":
+        """
+        Coerces `str` or `Text` objects into `Text` objects, but does not allow `None` values.
+
+        Args:
+            text: the `str` or `Text` object to ensure is in `Text` format.
+            force_plaintext: if `True`, forces the `str` or `Text` object
+                into a `Text` object with the type `TextType.PLAINTEXT`.
+            max_length: `text` will be checked against this length in addition
+                to the standard `Text` limit of 3000 characters.
+
+        Returns:
+            A `Text` object created from the input.
+
+        Throws:
+            InvalidUsageError: if the text length exceeds the specified max_length.
+        """
         original_type = text.text_type if isinstance(text, Text) else None
         type_ = (
             TextType.PLAINTEXT
             if force_plaintext
             else original_type or TextType.MARKDOWN
         )
-        if text is None:
-            if allow_none:
-                return None
-            raise InvalidUsageError("This field cannot have the value None or ''")
         if text and max_length and len(text) > max_length:
             raise InvalidUsageError(
                 f"`text` length ({len(text)}) exceeds `max_length` ({max_length})"
             )
         if isinstance(text, str):
             return Text(text=text, type_=type_)
-        if isinstance(text, Text):
-
+        elif isinstance(text, Text):
             return Text(
                 text=text.text, type_=type_, emoji=text.emoji, verbatim=text.verbatim
             )
         else:
-            raise InvalidUsageError(
-                f"Can only coerce Text object from `str` or `Text`, not `{type(text)}`"
-            )
+            raise InvalidUsageError("This field must be a string or Text object")
 
     def __str__(self) -> str:
         return dumps(self._resolve())
@@ -201,14 +230,17 @@ class ConfirmationDialogue(CompositionObject):
         text: TextLike,
         confirm: TextLike,
         deny: TextLike,
-    ):
+    ) -> None:
         super().__init__(type_=CompositionObjectType.CONFIRM)
-        self.title = Text.to_text(title, max_length=100, force_plaintext=True)
-        self.text = Text.to_text(text, max_length=300)
-        self.confirm = Text.to_text(confirm, max_length=30, force_plaintext=True)
-        self.deny = Text.to_text(deny, max_length=30, force_plaintext=True)
+        self.title = Text.to_text_nonnull(title, max_length=100, force_plaintext=True)
+        self.text = Text.to_text_nonnull(text, max_length=300)
+        self.confirm = Text.to_text_nonnull(
+            confirm, max_length=30, force_plaintext=True
+        )
+        self.deny = Text.to_text_nonnull(deny, max_length=30, force_plaintext=True)
 
     def _resolve(self) -> Dict[str, Any]:
+
         return {
             "title": self.title._resolve(),
             "text": self.text._resolve(),
@@ -225,7 +257,7 @@ class Confirm(ConfirmationDialogue):
         [`ConfirmationDialogue`](/slackblocks/latest/reference/objects/#objects.ConfirmationDialogue).
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(*args, **kwargs)
 
 
@@ -253,10 +285,10 @@ class Option(CompositionObject):
         value: str,
         description: Optional[TextLike] = None,
         url: Optional[str] = None,
-    ) -> "Option":
+    ) -> None:
         super().__init__(type_=CompositionObjectType.OPTION)
-        self.text = Text.to_text(text, max_length=75)
-        self.value = validate_string(value, field_name="value", max_length=75)
+        self.text = Text.to_text_nonnull(text, max_length=75)
+        self.value = validate_string_nonnull(value, field_name="value", max_length=75)
         self.description = Text.to_text(
             description, max_length=75, force_plaintext=True, allow_none=True
         )
@@ -265,7 +297,7 @@ class Option(CompositionObject):
         self.url = url
 
     def _resolve(self) -> Dict[str, Any]:
-        option = {}  # Does not include type in JSON
+        option: Dict[str, Any] = {}  # Does not include type in JSON
         option["text"] = self.text._resolve()
         option["value"] = self.value
         if self.description is not None:
@@ -298,21 +330,22 @@ class OptionGroup(CompositionObject):
         InvalidUsageError: if no options are provided or the label is not valid.
     """
 
-    def __init__(self, label: TextLike, options: List[Option]):
+    def __init__(self, label: TextLike, options: List[Option]) -> None:
         super().__init__(type_=CompositionObjectType.OPTION_GROUP)
         self.label = Text.to_text(label, max_length=75, force_plaintext=True)
-        self.options = coerce_to_list(
+        self.options: List[Option] = coerce_to_list_nonnull(
             options,
             class_=Option,
             min_size=1,
             max_size=100,
-            allow_none=False,
         )
 
     def _resolve(self) -> Dict[str, Any]:
-        option_group = {}  # Does not include type in JSON
-        option_group["label"] = self.label._resolve()
-        option_group["options"] = [option._resolve() for option in self.options]
+        option_group: Dict[str, Any] = {}  # Does not include type in JSON
+        if self.label is not None:
+            option_group["label"] = self.label._resolve()
+        if self.options is not None:
+            option_group["options"] = [option._resolve() for option in self.options]
         return option_group
 
 
@@ -332,9 +365,12 @@ class DispatchActionConfiguration(CompositionObject):
             `trigger_actions_on`.
     """
 
-    def __init__(self, trigger_actions_on: Union[str, List[str]] = None):
+    def __init__(
+        self, trigger_actions_on: Optional[Union[str, List[str]]] = None
+    ) -> None:
+        trigger_actions_on = trigger_actions_on or []
         self.trigger_actions_on = list(
-            set(coerce_to_list(trigger_actions_on, str, min_size=1, max_size=2))
+            set(coerce_to_list_nonnull(trigger_actions_on, str, min_size=1, max_size=2))
         )
         for trigger in self.trigger_actions_on:
             if trigger not in ALLOWABLE_TRIGGERS:
@@ -374,7 +410,7 @@ class ConversationFilter(CompositionObject):
         include: Optional[Union[str, List[str]]] = None,
         exclude_external_shared_channels: Optional[bool] = None,
         exclude_bot_users: Optional[bool] = None,
-    ) -> "ConversationFilter":
+    ) -> None:
         super().__init__(type_=CompositionObjectType.FILTER)
         if not (
             include
@@ -390,7 +426,7 @@ class ConversationFilter(CompositionObject):
         self.exclude_bot_users = exclude_bot_users
 
     def _resolve(self) -> Dict[str, Any]:
-        filter = {}  # Does not include type in JSON
+        filter: Dict[str, Any] = {}  # Does not include type in JSON
         if self.include:
             filter["include"] = self.include
         if self.exclude_external_shared_channels is not None:
@@ -413,7 +449,7 @@ class InputParameter(CompositionObject):
         value: the value associated with the input parameter.
     """
 
-    def __init__(self, name: str, value: str):
+    def __init__(self, name: str, value: str) -> None:
         super().__init__(type_=CompositionObjectType.INPUT_PARAMETER)
         self.name = name
         self.value = value
@@ -448,7 +484,7 @@ class SlackFile(CompositionObject):
         self,
         url: Optional[str],
         id: Optional[str],
-    ) -> "SlackFile":
+    ) -> None:
         super().__init__(CompositionObjectType.SLACK_FILE)
         if url and id:
             raise InvalidUsageError("Cannot provide both `url` and `id`.")
@@ -488,7 +524,7 @@ class Trigger(CompositionObject):
         customizable_input_parameters: Optional[
             Union[InputParameter, List[InputParameter]]
         ],
-    ) -> "Trigger":
+    ) -> None:
         super().__init__(type_=CompositionObjectType.TRIGGER)
         self.url = url
         self.customizable_input_parameters = coerce_to_list(
@@ -496,7 +532,7 @@ class Trigger(CompositionObject):
         )
 
     def _resolve(self) -> Dict[str, Any]:
-        trigger = {}  # Does not include type in JSON
+        trigger: Dict[str, Any] = {}  # Does not include type in JSON
         trigger["url"] = self.url
         if self.customizable_input_parameters:
             trigger["customizable_input_parameters"] = [
@@ -515,7 +551,7 @@ class Workflow(CompositionObject):
         trigger: a `Trigger` object that will initiate the workflow.
     """
 
-    def __init__(self, trigger: Trigger) -> "Workflow":
+    def __init__(self, trigger: Trigger) -> None:
         super().__init__(type_=CompositionObjectType.WORKFLOW)
         self.trigger = trigger
 

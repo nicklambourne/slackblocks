@@ -167,6 +167,7 @@ class Attachment:
         self.blocks = coerce_to_list(blocks, Block, allow_none=True)
         self.fields = coerce_to_list(fields, Field, allow_none=True)
         self.fallback = fallback
+        self.color: Optional[str]
         if type(color) is Color:
             self.color = color.value
         elif type(color) is str:
@@ -182,7 +183,7 @@ class Attachment:
             self.color = None
 
     def _resolve(self) -> Dict[str, Any]:
-        attachment = dict()
+        attachment: Dict[str, Any] = {}
         if self.blocks:
             attachment["blocks"] = [block._resolve() for block in self.blocks]
         if self.color:
