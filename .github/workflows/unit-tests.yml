@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
 
     steps:
@@ -48,13 +48,10 @@ jobs:
 
       - name: Install Dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: 
-          poetry install --no-interaction --no-root
+        run: poetry install --no-interaction --no-root
 
       - name: Install SlackBlocks Library
-        run: 
-          poetry install --no-interaction
+        run: poetry install --no-interaction
 
       - name: Test With pytest
-        run: 
-          poetry run pytest test/unit
+        run: poetry run pytest test/unit
