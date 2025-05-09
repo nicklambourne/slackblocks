@@ -21,18 +21,18 @@ from slackblocks.elements import (
     DateTimePicker,
     Element,
     ElementType,
+    EmailInput,
     ExternalMultiSelectMenu,
     ExternalSelectMenu,
+    NumberInput,
     PlainTextInput,
     RadioButtonGroup,
     RichTextInput,
     StaticMultiSelectMenu,
     StaticSelectMenu,
+    URLInput,
     UserMultiSelectMenu,
     UserSelectMenu,
-    NumberInput,
-    EmailInput,
-    URLInput,
 )
 from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
@@ -49,7 +49,7 @@ from slackblocks.rich_text import (
     RichTextQuote,
     RichTextSection,
 )
-from slackblocks.utils import coerce_to_list, validate_string
+from slackblocks.utils import coerce_to_list, coerce_to_list_nonnull, validate_string
 
 ALLOWED_INPUT_ELEMENTS = (
     PlainTextInput,
@@ -97,7 +97,7 @@ class Block(ABC):
     N.B: Block is an abstract class and cannot be sent directly.
     """
 
-    def __init__(self, type_: BlockType, block_id: Optional[str] = None):
+    def __init__(self, type_: BlockType, block_id: Optional[str] = None) -> None:
         self.type = type_
         self.block_id = block_id if block_id else str(uuid4())
 
@@ -108,7 +108,7 @@ class Block(ABC):
         return {"type": self.type.value, "block_id": self.block_id}
 
     @abstractmethod
-    def _resolve(self) -> Dict[str, any]:
+    def _resolve(self) -> Dict[str, Any]:
         pass
 
     def __repr__(self) -> str:
@@ -132,9 +132,9 @@ class ActionsBlock(Block):
         self,
         elements: Optional[List[Element]] = None,
         block_id: Optional[str] = None,
-    ) -> "ActionsBlock":
+    ) -> None:
         super().__init__(type_=BlockType.ACTIONS, block_id=block_id)
-        self.elements = coerce_to_list(
+        self.elements: Optional[List[Element]] = coerce_to_list(
             elements, (Element), allow_none=True, max_size=25
         )
 
@@ -160,23 +160,24 @@ class ContextBlock(Block):
         self,
         elements: Optional[List[Union[Element, CompositionObject]]] = None,
         block_id: Optional[str] = None,
-    ) -> "ContextBlock":
+    ) -> None:
         super().__init__(type_=BlockType.CONTEXT, block_id=block_id)
         self.elements = []
-        for element in elements:
-            if (
-                element.type == CompositionObjectType.TEXT
-                or element.type == ElementType.IMAGE
-            ):
-                self.elements.append(element)
-            else:
-                raise InvalidUsageError(
-                    f"Context blocks can only hold image and text elements, not {element.type}"
-                )
+        if elements is not None:
+            for element in elements:
+                if (
+                    element.type == CompositionObjectType.TEXT
+                    or element.type == ElementType.IMAGE
+                ):
+                    self.elements.append(element)
+                else:
+                    raise InvalidUsageError(
+                        f"Context blocks can only hold image and text elements, not {element.type}"
+                    )
         if len(self.elements) > 10:
             raise InvalidUsageError("Context blocks can hold a maximum of ten elements")
 
-    def _resolve(self) -> Dict[str, any]:
+    def _resolve(self) -> Dict[str, Any]:
         context = self._attributes()
         context["elements"] = [element._resolve() for element in self.elements]
         return context
@@ -191,7 +192,7 @@ class DividerBlock(Block):
         block_id: you can use this field to provide a deterministic identifier for the block.
     """
 
-    def __init__(self, block_id: Optional[str] = None) -> "DividerBlock":
+    def __init__(self, block_id: Optional[str] = None) -> None:
         super().__init__(type_=BlockType.DIVIDER, block_id=block_id)
 
     def _resolve(self):
@@ -213,12 +214,12 @@ class FileBlock(Block):
 
     def __init__(
         self, external_id: str, block_id: Optional[str], source: str = "remote"
-    ) -> "FileBlock":
+    ) -> None:
         super().__init__(type_=BlockType.FILE, block_id=block_id)
         self.external_id = external_id
         self.source = source
 
-    def _resolve(self) -> Dict[str, any]:
+    def _resolve(self) -> Dict[str, Any]:
         file = self._attributes()
         file["external_id"] = self.external_id
         file["source"] = self.source
@@ -234,16 +235,14 @@ class HeaderBlock(Block):
         block_id: you can use this field to provide a deterministic identifier for the block.
     """
 
-    def __init__(
-        self, text: Union[str, Text], block_id: Optional[str] = None
-    ) -> "HeaderBlock":
+    def __init__(self, text: Union[str, Text], block_id: Optional[str] = None) -> None:
         super().__init__(type_=BlockType.HEADER, block_id=block_id)
         if type(text) is Text:
             self.text = text
         else:
-            self.text = Text(text, type_=TextType.PLAINTEXT, verbatim=False)
+            self.text = Text.to_text_nonnull(text=text, force_plaintext=True)
 
-    def _resolve(self) -> Dict[str, any]:
+    def _resolve(self) -> Dict[str, Any]:
         header = self._attributes()
         header["text"] = self.text._resolve()
         return header
@@ -269,7 +268,7 @@ class ImageBlock(Block):
         alt_text: Optional[str] = " ",
         title: Optional[Union[Text, str]] = None,
         block_id: Optional[str] = None,
-    ) -> "ImageBlock":
+    ) -> None:
         super().__init__(type_=BlockType.IMAGE, block_id=block_id)
         self.image_url = validate_string(
             string=image_url,
@@ -331,7 +330,7 @@ class InputBlock(Block):
         block_id: Optional[str] = None,
         hint: Optional[TextLike] = None,
         optional: bool = False,
-    ) -> "InputBlock":
+    ) -> None:
         super().__init__(type_=BlockType.INPUT, block_id=block_id)
         self.label = Text.to_text(
             label, force_plaintext=True, max_length=2000, allow_none=False
@@ -349,8 +348,10 @@ class InputBlock(Block):
 
     def _resolve(self) -> Dict[str, Any]:
         input_block = self._attributes()
-        input_block["label"] = self.label._resolve()
-        input_block["element"] = self.element._resolve()
+        if self.label is not None:
+            input_block["label"] = self.label._resolve()
+        if self.element is not None:
+            input_block["element"] = self.element._resolve()
         if self.hint:
             input_block["hint"] = self.hint._resolve()
         if self.dispatch_action:
@@ -384,7 +385,7 @@ class RichTextBlock(Block):
         self,
         elements: Union[RichTextObject, List[RichTextObject]],
         block_id: Optional[str] = None,
-    ) -> "RichTextBlock":
+    ) -> None:
         super().__init__(type_=BlockType.RICH_TEXT, block_id=block_id)
         self.elements = coerce_to_list(
             elements,
@@ -398,8 +399,11 @@ class RichTextBlock(Block):
         )
 
     def _resolve(self) -> Dict[str, Any]:
-        rich_text_block = self._attributes()
-        rich_text_block["elements"] = [element._resolve() for element in self.elements]
+        rich_text_block: Dict[str, Any] = self._attributes()
+        if self.elements is not None:
+            rich_text_block["elements"] = [
+                element._resolve() for element in self.elements
+            ]
         return rich_text_block
 
 
@@ -433,28 +437,29 @@ class SectionBlock(Block):
         block_id: Optional[str] = None,
         fields: Optional[Union[TextLike, List[TextLike]]] = None,
         accessory: Optional[Element] = None,
-    ) -> "SectionBlock":
+    ) -> None:
         super().__init__(type_=BlockType.SECTION, block_id=block_id)
         if not text and not fields:
             raise InvalidUsageError(
                 "Must supply either `text` or `fields` or `both` to SectionBlock."
             )
         self.text = Text.to_text(text, max_length=3000, allow_none=True)
-        self.fields = coerce_to_list(
-            (
-                [
-                    Text.to_text(field, max_length=2000, allow_none=False)
-                    for field in coerce_to_list(
-                        fields, class_=(str, Text), allow_none=True
-                    )
-                ]
-                if fields
-                else None
-            ),
-            class_=Text,
-            allow_none=True,
-            max_size=10,
-        )
+        self.fields: Optional[List[Text]]
+        if fields is not None:
+            field_list: List[Union[str, Text]] = coerce_to_list_nonnull(
+                fields, class_=(str, Text)
+            )
+            self.fields = [
+                Text.to_text_nonnull(field, max_length=2000)
+                for field in field_list
+                if field is not None
+            ]
+            if len(self.fields) > 10:
+                raise InvalidUsageError(
+                    "Section blocks can hold a maximum of ten fields"
+                )
+        else:
+            self.fields = None
 
         self.accessory = accessory
 
@@ -463,7 +468,9 @@ class SectionBlock(Block):
         if self.text:
             section["text"] = self.text._resolve()
         if self.fields:
-            section["fields"] = [field._resolve() for field in self.fields]
+            section["fields"] = [
+                field._resolve() for field in self.fields if isinstance(field, Text)
+            ]
         if self.accessory:
             section["accessory"] = self.accessory._resolve()
         return section

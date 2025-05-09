@@ -1,4 +1,4 @@
-name: Unit Tests
+name: Type Checking
 on: 
   push:
     branches: [ master ]
@@ -10,27 +10,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  unit-tests:
-    name: Unit Tests (${{ matrix.os }}, Python ${{ matrix.python-version }})
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
-
+  type-checking:
+    runs-on: ubuntu-latest
+    name: mypy Type Checking
     steps:
       - name: Check Out Source Repository
         uses: actions/checkout@v4
 
-      - name: Set Up Python ${{ matrix.python-version }}
-        id: setup-python
+      - name: Set Up Python Environment
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -48,10 +38,13 @@ jobs:
 
       - name: Install Dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
+        run: 
+          poetry install --no-interaction --no-root --only dev
 
-      - name: Install SlackBlocks Library
-        run: poetry install --no-interaction
+      - name: Verify mypy Installation
+        run: |
+          poetry run mypy --version || (echo "mypy is not installed" && exit 1)
 
-      - name: Test With pytest
-        run: poetry run pytest test/unit
+      - name: Type Checking
+        run: 
+          poetry run mypy slackblocks 
