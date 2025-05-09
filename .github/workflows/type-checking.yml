@@ -41,6 +41,10 @@ jobs:
         run: 
           poetry install --no-interaction --no-root --only dev
 
+      - name: Verify mypy Installation
+        run: |
+          poetry run mypy --version || (echo "mypy is not installed" && exit 1)
+
       - name: Type Checking
         run: 
           poetry run mypy slackblocks 
