@@ -45,20 +45,22 @@ class BaseMessage:
         self,
         channel: Optional[str] = None,
         text: Optional[str] = "",
-        blocks: Optional[Union[List[Block], Block]] = None,
-        attachments: Optional[List[Attachment]] = None,
+        blocks: Optional[Union[Block, List[Block]]] = None,
+        attachments: Optional[Union[Attachment, List[Attachment]]] = None,
         thread_ts: Optional[str] = None,
         mrkdwn: bool = True,
-    ):
+    ) -> None:
         self.blocks = coerce_to_list(blocks, class_=Block, allow_none=True)
         self.channel = channel
         self.text = text
-        self.attachments = attachments or []
+        self.attachments = coerce_to_list(
+            attachments, class_=Attachment, allow_none=True
+        )
         self.thread_ts = thread_ts
         self.mrkdwn = mrkdwn
 
     def _resolve(self) -> Dict[str, Any]:
-        message = dict()
+        message: Dict[str, Any] = {}
         if self.channel:
             message["channel"] = self.channel
         message["mrkdwn"] = self.mrkdwn
@@ -86,8 +88,8 @@ class BaseMessage:
     def __getitem__(self, item):
         return self._resolve()[item]
 
-    def keys(self) -> Dict[str, Any]:
-        return self._resolve().keys()
+    def keys(self) -> List[str]:
+        return list(self._resolve().keys())
 
 
 class Message(BaseMessage):
@@ -127,7 +129,7 @@ class Message(BaseMessage):
         mrkdwn: bool = True,
         unfurl_links: Optional[bool] = None,
         unfurl_media: Optional[bool] = None,
-    ) -> "Message":
+    ) -> None:
         super().__init__(channel, text, blocks, attachments, thread_ts, mrkdwn)
         self.unfurl_links = unfurl_links
         self.unfurl_media = unfurl_media
@@ -155,7 +157,7 @@ class MessageResponse(BaseMessage):
         mrkdwn: bool = True,
         replace_original: bool = False,
         ephemeral: bool = False,
-    ):
+    ) -> None:
         super().__init__(
             text=text,
             blocks=blocks,
@@ -167,7 +169,10 @@ class MessageResponse(BaseMessage):
         self.ephemeral = ephemeral
 
     def _resolve(self) -> Dict[str, Any]:
-        result = {**super()._resolve(), "replace_original": self.replace_original}
+        result: Dict[str, Any] = {
+            **super()._resolve(),
+            "replace_original": self.replace_original,
+        }
         if self.ephemeral:
             result["response_type"] = "ephemeral"
         return result
@@ -210,20 +215,26 @@ class WebhookMessage:
     def __init__(
         self,
         text: Optional[str] = None,
-        attachments: Optional[List[Attachment]] = None,
-        blocks: Optional[Union[List[Block], Block]] = None,
-        response_type: Union[ResponseType, str] = None,
+        attachments: Optional[Union[Attachment, List[Attachment]]] = None,
+        blocks: Optional[Union[Block, List[Block]]] = None,
+        response_type: Optional[Union[ResponseType, str]] = None,
         replace_original: Optional[bool] = None,
         delete_original: Optional[bool] = None,
         unfurl_links: Optional[bool] = None,
         unfurl_media: Optional[bool] = None,
         metadata: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
-    ) -> "WebhookMessage":
+    ) -> None:
         self.text = text
-        self.attachments = coerce_to_list(attachments, Attachment, allow_none=True)
-        self.blocks = coerce_to_list(blocks, Block, allow_none=True)
-        self.response_type = ResponseType.get_value(response_type)
+        self.attachments: Optional[List[Attachment]] = coerce_to_list(
+            attachments, Attachment, allow_none=True
+        )
+        self.blocks: Optional[List[Block]] = coerce_to_list(
+            blocks, Block, allow_none=True
+        )
+        self.response_type = (
+            ResponseType.get_value(response_type) if response_type is not None else None
+        )
         self.replace_original = replace_original
         self.delete_original = delete_original
         self.unfurl_links = unfurl_links
@@ -231,16 +242,20 @@ class WebhookMessage:
         self.metadata = metadata
         self.headers = headers
 
-    def _resolve(self) -> None:
-        webhook_message = {}
+    def _resolve(self) -> Dict[str, Any]:
+        webhook_message: Dict[str, Any] = {}
         if self.text is not None:
             webhook_message["text"] = self.text
         if self.attachments is not None:
             webhook_message["attachments"] = [
-                attachment._resolve() for attachment in self.attachments
+                attachment._resolve()
+                for attachment in self.attachments
+                if attachment is not None
             ]
         if self.blocks is not None:
-            webhook_message["blocks"] = [block._resolve() for block in self.blocks]
+            webhook_message["blocks"] = [
+                block._resolve() for block in self.blocks if block is not None
+            ]
         if self.response_type is not None:
             webhook_message["response_type"] = self.response_type
         if self.replace_original is not None:
@@ -269,5 +284,5 @@ class WebhookMessage:
     def __getitem__(self, item):
         return self._resolve()[item]
 
-    def keys(self) -> Dict[str, Any]:
-        return self._resolve().keys()
+    def keys(self) -> List[str]:
+        return list(self._resolve().keys())

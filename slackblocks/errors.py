@@ -13,5 +13,5 @@ class InvalidUsageError(Exception):
             violation.
     """
 
-    def __init__(self, message: str) -> "InvalidUsageError":
-        super(InvalidUsageError, self).__init__(message)
+    def __init__(self, message: str) -> None:
+        return super(InvalidUsageError, self).__init__(message)
