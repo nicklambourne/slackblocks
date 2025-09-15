@@ -37,7 +37,6 @@ exclude = ["test/**", "docs/**"]
 
 [tool.poetry.dependencies]
 python = ">=3.8.0"
-slack-sdk = "^3.36.0"
 
 [tool.poetry.group.dev.dependencies]
 aiohttp = "^3.10.4"
