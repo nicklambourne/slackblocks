@@ -25,4 +25,5 @@ from .objects import (
     RichTextObject,
     RichTextQuote,
     RichTextSection,
+    RichTextTableCell,
 )

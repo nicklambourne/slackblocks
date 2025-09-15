@@ -559,3 +559,64 @@ class Workflow(CompositionObject):
         workflow = {}  # Does not include type in JSON
         workflow["trigger"] = self.trigger._resolve()
         return workflow
+
+
+class RawText:
+    """
+    An object containing some text, formatted as `raw_text` for use in
+    `Table` blocks.
+
+    Args:
+        text: the text to be rendered in a message.
+        emoji: only usable with `TextType.PLAINTEXT`, if True: emoji will be
+            escaped into text format (e.g. `:smile:`).
+
+    Throws:
+        InvalidUsageException: if the provided `text` fails validation.
+    """
+
+    def __init__(
+        self,
+        text: str,
+        emoji: bool = False,
+    ) -> None:
+        self.type = "raw_text"
+        self.text = text
+        self.emoji = emoji
+
+    def _resolve(self) -> Dict[str, Any]:
+        raw_text = {
+            "type": self.type,
+            "text": self.text,
+        }
+        if self.emoji:
+            raw_text["emoji"] = self.emoji
+        return raw_text
+
+
+class ColumnSettings:
+    """
+    An object that defines the settings for a column in a `Table` block.
+
+    Args:
+        align: the alignment of the column, one of `left`, `center`, or `right`.
+        is_wrapped: whether the text in the column should be wrapped.
+    """
+
+    def __init__(
+        self,
+        align: Optional[str] = None,
+        is_wrapped: Optional[bool] = None,
+    ) -> None:
+        if align and align not in ["left", "center", "right"]:
+            raise InvalidUsageError("`align` must be one of `left`, `center`, or `right`")
+        self.align = align
+        self.is_wrapped = is_wrapped
+
+    def _resolve(self) -> Dict[str, Any]:
+        column_settings = {}
+        if self.align:
+            column_settings["align"] = self.align
+        if self.is_wrapped is not None:
+            column_settings["is_wrapped"] = self.is_wrapped
+        return column_settings
