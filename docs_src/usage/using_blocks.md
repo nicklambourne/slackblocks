@@ -408,3 +408,126 @@
 
 === "Slack UI"
     ![An example of the UI output of an Actions Block](../img/usage/actions.png)
+
+## Table Block
+:::blocks.TableBlock
+    options:
+        show_bases: false
+        show_source: false
+
+=== "`slackblocks`"
+    ```python
+    TableBlock(
+        column_settings=[
+            ColumnSettings(align="right", is_wrapped=True),
+            ColumnSettings(align="left"),
+        ],
+        rows=[
+            [
+                RichTextSection(
+                    elements=RichText(
+                        text="Header 1",
+                        bold=True,
+                    )
+                ),
+                RichTextSection(
+                    elements=RichTextLink(
+                        text="Header 2",
+                        bold=True,
+                    )
+                ),
+            ],
+            [
+                RawText(text="Datum 1"),
+                RichTextSection(
+                    elements=RichTextLink(
+                        url="https://slack.com",
+                        text="Datum 2",
+                    )
+                ),
+            ],
+        ],
+    )
+    ```
+
+=== "JSON"
+    ```json
+    {
+        "blocks": [
+            {
+                "type": "table",
+                "rows": [
+                    [
+                        {
+                            "type": "rich_text",
+                            "elements": [
+                                {
+                                    "type": "rich_text_section",
+                                    "elements": [
+                                        {
+                                            "type": "text",
+                                            "text": "Header 1",
+                                            "style": {
+                                                "bold": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "rich_text",
+                            "elements": [
+                                {
+                                    "type": "rich_text_section",
+                                    "elements": [
+                                        {
+                                            "type": "text",
+                                            "text": "Header 2",
+                                            "style": {
+                                                "bold": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    [
+                        {
+                            "type": "rich_text",
+                            "elements": [
+                                {
+                                    "type": "rich_text_section",
+                                    "elements": [
+                                        {
+                                            "type": "text",
+                                            "text": "Datum 1"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "rich_text",
+                            "elements": [
+                                {
+                                    "type": "rich_text_section",
+                                    "elements": [
+                                        {
+                                            "type": "text",
+                                            "text": "Datum 2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                ]
+            }
+        ]
+    }
+    ```
+
+=== "Slack UI"
+    ![An example of the UI output of a Table Block](../img/usage/table.png)

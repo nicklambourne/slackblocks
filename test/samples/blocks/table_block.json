@@ -1,13 +1,5 @@
 {
     "type": "table",
-    "column_settings": [
-        {
-            "is_wrapped": true
-        },
-        {
-            "align": "right"
-        }
-    ],
     "rows": [
         [
             {
@@ -61,5 +53,13 @@
                 ]
             }
         ]
+    ],
+    "column_settings": [
+        {
+            "is_wrapped": true
+        },
+        {
+            "align": "right"
+        }
     ]
 }

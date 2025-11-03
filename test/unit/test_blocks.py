@@ -24,7 +24,7 @@ from slackblocks import (
     Text,
     TextType,
 )
-from slackblocks.rich_text import RichTextLink, RichTextTableCell
+from slackblocks.rich_text import RichTextLink
 
 from .utils import fetch_sample
 
@@ -217,23 +217,19 @@ def test_basic_table_block() -> None:
             ],
             [
                 RawText(text="Data 1A"),
-                RichTextTableCell(
-                    elements=RichTextSection(
-                        elements=RichTextLink(
-                            url="https://slack.com",
-                            text="Data 1B",
-                        )
+                RichTextSection(
+                    elements=RichTextLink(
+                        url="https://slack.com",
+                        text="Data 1B",
                     )
                 ),
             ],
             [
                 RawText(text="Data 2A"),
-                RichTextTableCell(
-                    elements=RichTextSection(
-                        elements=RichTextLink(
-                            url="https://slack.com",
-                            text="Data 2B",
-                        )
+                RichTextSection(
+                    elements=RichTextLink(
+                        url="https://slack.com",
+                        text="Data 2B",
                     )
                 ),
             ],
