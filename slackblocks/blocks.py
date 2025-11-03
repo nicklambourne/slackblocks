@@ -521,7 +521,8 @@ class TableBlock(Block):
         if column_settings is not None:
             if num_columns != len(column_settings):
                 raise InvalidUsageError(
-                    f"Number of column_settings ({len(column_settings)}) must match number of columns in each row ({num_columns})."
+                    f"Number of column_settings ({len(column_settings)}) must"
+                    f"match number of columns in each row ({num_columns})."
                 )
         if len(rows) > 100:
             raise InvalidUsageError("`rows` can have a maximum of 100 items.")
@@ -541,9 +542,7 @@ class TableBlock(Block):
                 validated_row.append(cell)
             self.rows.append(validated_row)
         if column_settings and len(column_settings) > 20:
-            raise InvalidUsageError(
-                "`column_settings` can have a maximum of 20 items."
-            )
+            raise InvalidUsageError("`column_settings` can have a maximum of 20 items.")
         self.column_settings = column_settings
 
     def _resolve(self) -> Dict[str, Any]:
@@ -560,7 +559,7 @@ class TableBlock(Block):
     def _resolve_cell(self, cell: Union[RawText, RichTextObject]) -> Dict[str, Any]:
         """
         Resolve a table cell to its JSON representation.
-        
+
         RawText cells are resolved directly.
         RichTextObject cells are wrapped in a rich_text structure.
         """
@@ -568,7 +567,4 @@ class TableBlock(Block):
             return cell._resolve()
         else:
             # Wrap RichTextObject in rich_text structure
-            return {
-                "type": "rich_text",
-                "elements": [cell._resolve()]
-            }
+            return {"type": "rich_text", "elements": [cell._resolve()]}
