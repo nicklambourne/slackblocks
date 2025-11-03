@@ -28,6 +28,7 @@ class RichTextObjectType(Enum):
     LIST = "rich_text_list"
     PREFORMATTED = "rich_text_preformatted"
     QUOTE = "rich_text_quote"
+    TABLE_CELL = "rich_text_table_cell"
 
 
 class ListType(Enum):
@@ -253,42 +254,3 @@ class RichTextQuote(RichTextObject):
         if self.border is not None:
             quote["border"] = self.border
         return quote
-
-
-class RichTextTableCell:
-    """
-    An object containing some text, formatted as `rich_text` for use in
-    `Table` blocks.
-
-    Args:
-        elements: a single [rich text element](rich_text)
-            or a list of those elements.
-        block_id: you can use this field to provide a deterministic identifier
-            for the block.
-
-    Throws:
-        InvalidUsageError: if the elements in `elements` are not valid rich
-            text elements.
-    """
-
-    def __init__(
-        self,
-        elements: Union[RichTextObject, List[RichTextObject]],
-    ) -> None:
-        self.type = "rich_text"
-        self.elements = coerce_to_list(
-            elements,
-            (
-                RichTextList,
-                RichTextCodeBlock,
-                RichTextQuote,
-                RichTextSection,
-            ),
-            min_size=1,
-        )
-
-    def _resolve(self) -> Dict[str, Any]:
-        return {
-            "type": self.type,
-            "elements": [element._resolve() for element in self.elements],
-        }

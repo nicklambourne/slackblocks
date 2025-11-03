@@ -585,7 +585,7 @@ class RawText:
         self.emoji = emoji
 
     def _resolve(self) -> Dict[str, Any]:
-        raw_text = {
+        raw_text: Dict[str, Any] = {
             "type": self.type,
             "text": self.text,
         }
@@ -609,12 +609,14 @@ class ColumnSettings:
         is_wrapped: Optional[bool] = None,
     ) -> None:
         if align and align not in ["left", "center", "right"]:
-            raise InvalidUsageError("`align` must be one of `left`, `center`, or `right`")
+            raise InvalidUsageError(
+                "`align` must be one of `left`, `center`, or `right`"
+            )
         self.align = align
         self.is_wrapped = is_wrapped
 
     def _resolve(self) -> Dict[str, Any]:
-        column_settings = {}
+        column_settings: Dict[str, Any] = {}
         if self.align:
             column_settings["align"] = self.align
         if self.is_wrapped is not None:

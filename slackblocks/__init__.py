@@ -71,7 +71,6 @@ from .rich_text.objects import (
     RichTextObject,
     RichTextQuote,
     RichTextSection,
-    RichTextTableCell,
 )
 from .views import HomeTabView, ModalView, View
 
