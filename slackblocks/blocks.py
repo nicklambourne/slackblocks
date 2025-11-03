@@ -493,12 +493,16 @@ class TableBlock(Block):
     A `TableBlock` displays data in a table format.
 
     Args:
-        rows: a list of lists of `TableCell` objects.
+        rows: a list of lists of `RawText` or `RichTextObject` objects.
         column_settings: a list of `ColumnSettings` objects.
         block_id: you can use this field to provide a deterministic identifier for the block.
 
     Throws:
-        InvalidUsageError: when items in `rows` are not `TableCell` objects.
+        InvalidUsageError: when items in `rows` are not `RawText` or `RichTextObject` objects.
+        InvalidUsageError: when the number of column_settings does not match the number of columns in each row.
+        InvalidUsageError: when the number of rows is greater than 100.
+        InvalidUsageError: when the number of columns in a row is greater than 20.
+        InvalidUsageError: when the number of column_settings is greater than 20.
     """
 
     def __init__(
