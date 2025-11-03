@@ -9,6 +9,7 @@ from .blocks import (
     InputBlock,
     RichTextBlock,
     SectionBlock,
+    TableBlock,
 )
 from .elements import (
     Button,
@@ -41,6 +42,7 @@ from .errors import InvalidUsageError
 from .messages import Message, MessageResponse, ResponseType, WebhookMessage
 from .modals import Modal
 from .objects import (
+    ColumnSettings,
     Confirm,
     ConfirmationDialogue,
     ConversationFilter,
@@ -48,6 +50,7 @@ from .objects import (
     InputParameter,
     Option,
     OptionGroup,
+    RawText,
     Text,
     TextType,
     Trigger,
@@ -68,6 +71,7 @@ from .rich_text.objects import (
     RichTextObject,
     RichTextQuote,
     RichTextSection,
+    RichTextTableCell,
 )
 from .views import HomeTabView, ModalView, View
 

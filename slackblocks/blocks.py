@@ -36,8 +36,10 @@ from slackblocks.elements import (
 )
 from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
+    ColumnSettings,
     CompositionObject,
     CompositionObjectType,
+    RawText,
     Text,
     TextLike,
     TextType,
@@ -48,6 +50,7 @@ from slackblocks.rich_text import (
     RichTextObject,
     RichTextQuote,
     RichTextSection,
+    RichTextTableCell,
 )
 from slackblocks.utils import coerce_to_list, coerce_to_list_nonnull, validate_string
 
@@ -89,6 +92,10 @@ class BlockType(Enum):
     INPUT = "input"
     RICH_TEXT = "rich_text"
     SECTION = "section"
+    TABLE = "table"
+
+
+TableCell = Union[RawText, RichTextTableCell]
 
 
 class Block(ABC):
@@ -474,3 +481,47 @@ class SectionBlock(Block):
         if self.accessory:
             section["accessory"] = self.accessory._resolve()
         return section
+
+
+class TableBlock(Block):
+    """
+    A `TableBlock` displays data in a table format.
+
+    Args:
+        rows: a list of lists of `TableCell` objects.
+        column_settings: a list of `ColumnSettings` objects.
+        block_id: you can use this field to provide a deterministic identifier for the block.
+
+    Throws:
+        InvalidUsageError: when items in `rows` are not `TableCell` objects.
+    """
+
+    def __init__(
+        self,
+        rows: List[List[TableCell]],
+        column_settings: Optional[List[ColumnSettings]] = None,
+        block_id: Optional[str] = None,
+    ) -> None:
+        super().__init__(type_=BlockType.TABLE, block_id=block_id)
+        if len(rows) > 100:
+            raise InvalidUsageError("`rows` can have a maximum of 100 items.")
+        for row in rows:
+            if len(row) > 20:
+                raise InvalidUsageError("Each row can have a maximum of 20 cells.")
+        self.rows = rows
+        if column_settings and len(column_settings) > 20:
+            raise InvalidUsageError(
+                "`column_settings` can have a maximum of 20 items."
+            )
+        self.column_settings = column_settings
+
+    def _resolve(self) -> Dict[str, Any]:
+        table = self._attributes()
+        table["rows"] = [
+            [cell._resolve() for cell in row] for row in self.rows
+        ]
+        if self.column_settings:
+            table["column_settings"] = [
+                setting._resolve() for setting in self.column_settings
+            ]
+        return table

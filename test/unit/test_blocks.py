@@ -1,8 +1,11 @@
+import json
+
 import pytest
 
 from slackblocks import (
     ActionsBlock,
     CheckboxGroup,
+    ColumnSettings,
     ContextBlock,
     DividerBlock,
     FileBlock,
@@ -12,13 +15,16 @@ from slackblocks import (
     InvalidUsageError,
     Option,
     PlainTextInput,
+    RawText,
     RichText,
     RichTextBlock,
     RichTextSection,
     SectionBlock,
+    TableBlock,
     Text,
     TextType,
 )
+from slackblocks.rich_text import RichTextLink, RichTextTableCell
 
 from .utils import fetch_sample
 
@@ -196,6 +202,47 @@ def test_basic_rich_text_block() -> None:
             block_id="fake_block_id",
         )
     )
+
+
+def test_basic_table_block() -> None:
+    block = TableBlock(
+        column_settings=[
+            ColumnSettings(is_wrapped=True),
+            ColumnSettings(align="right"),
+        ],
+        rows=[
+            [
+                RawText(text="Header A"),
+                RawText(text="Header B"),
+            ],
+            [
+                RawText(text="Data 1A"),
+                RichTextTableCell(
+                    elements=RichTextSection(
+                        elements=RichTextLink(
+                            url="https://slack.com",
+                            text="Data 1B",
+                        )
+                    )
+                ),
+            ],
+            [
+                RawText(text="Data 2A"),
+                RichTextTableCell(
+                    elements=RichTextSection(
+                        elements=RichTextLink(
+                            url="https://slack.com",
+                            text="Data 2B",
+                        )
+                    )
+                ),
+            ],
+        ],
+    )
+    # Add block_id to the sample as it is auto-generated
+    sample = json.loads(fetch_sample(path="test/samples/blocks/table_block.json"))
+    sample["block_id"] = block.block_id
+    assert sample == json.loads(repr(block))
 
 
 def text_basic_file_block() -> None:
