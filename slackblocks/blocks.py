@@ -499,7 +499,7 @@ class TableBlock(Block):
 
     Throws:
         InvalidUsageError: when items in `rows` are not `RawText` or `RichTextObject` objects.
-        InvalidUsageError: when the number of column_settings does not match the number of 
+        InvalidUsageError: when the number of column_settings does not match the number of
             columns in each row.
         InvalidUsageError: when the number of rows is greater than 100.
         InvalidUsageError: when the number of columns in a row is greater than 20.
