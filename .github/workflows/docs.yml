@@ -33,4 +33,4 @@ jobs:
 
         - name: Build and Deploy Docs
           run: |
-            mike deploy --push --update-aliases ${{ github.ref_name }} latest
+            poetry run mike deploy --push --update-aliases ${{ github.ref_name }} latest
