@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "slackblocks"
-version = "1.1.1"
+version = "1.2.1"
 description = "Python wrapper for the Slack Blocks API"
 authors = [
     "Nicholas Lambourne <dev@ndl.im>",
@@ -39,22 +39,22 @@ exclude = ["test/**", "docs/**"]
 python = ">=3.8.0"
 
 [tool.poetry.group.dev.dependencies]
-aiohttp = "^3.10.4"
-black = "^24.1.1"
-flake8 = "^5.0.4"
+aiohttp = "^3.11.10"
+black = "^24.10.0"
+flake8 = "^7.1.1"
 flake8-pyproject = "^1.2.3"
-mypy = "^1.14.0"
-pytest = "^8.0.0"
-slack-sdk = "^3.31.0"
-twine = "^4.0.2"
-wheel = "^0.42.0"
+mypy = "^1.14.1"
+pytest = "^8.3.4"
+slack-sdk = "^3.33.4"
+twine = "^6.0.1"
+wheel = "^0.45.1"
 
 [tool.poetry.group.docs.dependencies]
-mike="^2.0.0"
-mkdocs = "^1.5.3"
-mkdocs-material = "^9.5.6"
-mkdocstrings = {extras = ["python"], version = "^0.24.0"}
-mkdocstrings-python = "^1.8.0"
+mike="^2.1.3"
+mkdocs = "^1.6.1"
+mkdocs-material = "^9.5.49"
+mkdocstrings = {extras = ["python"], version = "^0.27.0"}
+mkdocstrings-python = "^1.13.0"
 
 [build-system]
 requires = ["poetry-core"]
