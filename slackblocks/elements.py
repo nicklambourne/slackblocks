@@ -304,8 +304,7 @@ class DateTimePicker(Element):
     ) -> None:
         super().__init__(type_=ElementType.DATETIME_PICKER)
         self.action_id = validate_action_id(action_id)
-        if initial_datetime:
-            self.initial_datetime = initial_datetime
+        self.initial_datetime = initial_datetime
         self.confirm = confirm
         self.focus_on_load = focus_on_load
 
@@ -315,7 +314,7 @@ class DateTimePicker(Element):
         if self.initial_datetime:
             datetime_picker["initial_date_time"] = self.initial_datetime
         if self.confirm:
-            datetime_picker["confirm"] = self.confirm
+            datetime_picker["confirm"] = self.confirm._resolve()
         if self.focus_on_load:
             datetime_picker["focus_on_load"] = self.focus_on_load
         return datetime_picker
