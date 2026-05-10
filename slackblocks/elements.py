@@ -1724,7 +1724,12 @@ class RichTextInput(Element):
         self.initial_value = initial_value
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
-        self.placeholder = placeholder
+        self.placeholder = Text.to_text(
+            placeholder,
+            force_plaintext=True,
+            max_length=150,
+            allow_none=True,
+        )
 
     def _resolve(self) -> Dict[str, Any]:
         rich_text_input = super()._attributes()
@@ -1732,9 +1737,11 @@ class RichTextInput(Element):
         if self.initial_value is not None:
             rich_text_input["initial_value"] = self.initial_value._resolve()
         if self.dispatch_action_config is not None:
-            rich_text_input["dispatch_action_config"] = self.dispatch_action_config
+            rich_text_input["dispatch_action_config"] = (
+                self.dispatch_action_config._resolve()
+            )
         if self.focus_on_load is not None:
             rich_text_input["focus_on_load"] = self.focus_on_load
         if self.placeholder is not None:
-            rich_text_input["placeholder"] = self.placeholder
+            rich_text_input["placeholder"] = self.placeholder._resolve()
         return rich_text_input
