@@ -21,7 +21,4 @@ jobs:
         run: uv build
 
       - name: Publish Package
-        uses: celsiusnarhwal/uv-publish@v1
-        with:
-          python-version: "3.11"
-          token: ${{ secrets.PYPI_TOKEN }}
+        run: uv publish --token ${{ secrets.PYPI_TOKEN }}
