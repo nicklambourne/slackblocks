@@ -22,7 +22,7 @@ class RichTextElementType(Enum):
     LINK = "link"
     TEXT = "text"
     USER = "user"
-    USER_GROUP = "user_group"
+    USER_GROUP = "usergroup"
 
 
 class RichTextElement(ABC):
@@ -333,7 +333,7 @@ class RichTextUserGroup(RichTextElement):
 
     def _resolve(self) -> Dict[str, Any]:
         user_group = super()._resolve()
-        user_group["user_group_id"] = self.user_group_id
+        user_group["usergroup_id"] = self.user_group_id
         style = {}
         if self.bold is not None:
             style["bold"] = self.bold
