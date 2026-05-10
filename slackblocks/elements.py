@@ -1613,7 +1613,7 @@ class URLInput(Element):
         if self.focus_on_load:
             url_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
-            url_input["placeholder"] = self.placeholder
+            url_input["placeholder"] = self.placeholder._resolve()
         return url_input
 
 

@@ -299,6 +299,17 @@ def test_url_input_basic() -> None:
     )
 
 
+def test_url_input_with_placeholder_resolves() -> None:
+    """Regression test for #132: URLInput must call ``_resolve()`` on its
+    nested ``placeholder`` so the result is JSON-serializable."""
+    from json import dumps
+
+    url_input = URLInput(action_id="url_text_input", placeholder="Enter a URL")
+    resolved = url_input._resolve()
+    dumps(resolved)  # Must not raise.
+    assert resolved["placeholder"] == {"type": "plain_text", "text": "Enter a URL"}
+
+
 def test_workflow_button_basic() -> None:
     workflow_button = WorkflowButton(
         text=Text("Run Your Workflow", type_=TextType.PLAINTEXT),
