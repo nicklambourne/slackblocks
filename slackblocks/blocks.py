@@ -225,7 +225,10 @@ class FileBlock(Block):
     """
 
     def __init__(
-        self, external_id: str, block_id: Optional[str], source: str = "remote"
+        self,
+        external_id: str,
+        block_id: Optional[str] = None,
+        source: str = "remote",
     ) -> None:
         super().__init__(type_=BlockType.FILE, block_id=block_id)
         self.external_id = external_id
