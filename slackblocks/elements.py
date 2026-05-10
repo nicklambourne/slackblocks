@@ -550,6 +550,7 @@ class StaticMultiSelectMenu(Element):
             )
 
         # Check that Option Text is all TextType.PLAINTEXT
+        options_to_validate: List[Option] = []
         if self.options:
             options_to_validate = self.options
         if self.option_groups:
@@ -1207,6 +1208,7 @@ class StaticSelectMenu(Element):
             )
 
         # Check that Option Text is all TextType.PLAINTEXT
+        options_to_validate: List[Option] = []
         if self.options:
             options_to_validate = self.options
         if self.option_groups:
