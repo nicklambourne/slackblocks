@@ -121,20 +121,20 @@ SDKSectionBlock(text=MarkdownTextObject(text="Hello, *world*!"))
 
 ## Contributing
 
-Contributions are welcome. Quick start:
+Contributions are welcome. Quick start (the project uses [uv](https://docs.astral.sh/uv/) for dependency management):
 
 ```bash
 git clone https://github.com/nicklambourne/slackblocks.git
 cd slackblocks
-poetry install --with dev,docs
+uv sync --all-groups
 
-poetry run pytest test/unit
-poetry run black . --check
-poetry run flake8 slackblocks
-poetry run mypy slackblocks
+uv run pytest test/unit
+uv run black . --check
+uv run flake8 slackblocks
+uv run mypy slackblocks
 ```
 
-Preview the documentation locally with `poetry run mkdocs serve`.
+Preview the documentation locally with `uv run mkdocs serve`.
 
 For the full development guide — testing conventions, validation patterns, docstring style, release process, and a PR checklist — see the [Contributing page](https://nicklambourne.github.io/slackblocks/latest/contributing/).
 

@@ -12,15 +12,24 @@ This page covers everything you need to develop, test, and submit changes to `sl
 
 ## Local development setup
 
-`slackblocks` uses [Poetry](https://python-poetry.org/) to manage dependencies and the dev environment.
+`slackblocks` uses [uv](https://docs.astral.sh/uv/) to manage dependencies and the dev environment. Install uv first if you don't have it:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# or: brew install uv
+```
+
+Then clone and sync:
 
 ```bash
 git clone https://github.com/nicklambourne/slackblocks.git
 cd slackblocks
-poetry install --with dev,docs
+uv sync --all-groups
 ```
 
-This installs the library in editable mode along with the `dev` group (test, lint, type-check tooling) and the `docs` group (mkdocs and friends). All commands below should be prefixed with `poetry run ` (or invoked from inside `poetry shell`).
+`uv sync --all-groups` installs the library in editable mode along with the `dev` group (test, lint, type-check tooling) and the `docs` group (mkdocs and friends). If you only need one of those groups, use `uv sync --group dev` or `uv sync --group docs`.
+
+All commands below should be prefixed with `uv run ` so they execute inside the project's virtual environment.
 
 ### Python version
 
@@ -28,12 +37,12 @@ The library targets **Python 3.8.1+** and is tested against 3.8 through 3.14 in 
 
 ## Running checks
 
-The project enforces four CI gates on every PR. Run them locally before pushing:
+The project enforces five CI gates on every PR. Run them locally before pushing:
 
 ### Unit tests
 
 ```bash
-poetry run pytest test/unit
+uv run pytest test/unit
 ```
 
 Tests live in `test/unit/` and assert that `slackblocks` constructs valid Block Kit JSON by comparing against fixture files in `test/samples/`. When adding or modifying a block/element/object, add a corresponding test that:
@@ -49,8 +58,8 @@ The shared helpers in `test/unit/utils.py` (`fetch_sample`, `OPTION_A`/`B`/`C`) 
 ### Black formatting
 
 ```bash
-poetry run black .            # format
-poetry run black . --check    # CI mode: fail if formatting changes are needed
+uv run black .            # format
+uv run black . --check    # CI mode: fail if formatting changes are needed
 ```
 
 CI runs `black . --check` and will fail the PR if anything is unformatted.
@@ -58,7 +67,7 @@ CI runs `black . --check` and will fail the PR if anything is unformatted.
 ### flake8 linting
 
 ```bash
-poetry run flake8 slackblocks
+uv run flake8 slackblocks
 ```
 
 Configuration lives in `pyproject.toml` under `[tool.flake8]`. Per-file ignores already cover the unavoidable cases (re-exports in `__init__.py`, escape sequences in regex literals).
@@ -66,7 +75,7 @@ Configuration lives in `pyproject.toml` under `[tool.flake8]`. Per-file ignores 
 ### mypy type checking
 
 ```bash
-poetry run mypy slackblocks
+uv run mypy slackblocks
 ```
 
 `slackblocks` ships `py.typed`, so type hints are part of the public API. New public classes and functions should be fully annotated.
@@ -74,8 +83,8 @@ poetry run mypy slackblocks
 ### twine package check
 
 ```bash
-poetry build
-poetry run twine check --strict dist/*
+uv build
+uv run twine check --strict dist/*
 ```
 
 This validates that the package metadata and rendered README are accepted by PyPI. CI runs this on every PR — see [`.github/workflows/package-check.yml`](https://github.com/nicklambourne/slackblocks/blob/master/.github/workflows/package-check.yml).
@@ -83,12 +92,12 @@ This validates that the package metadata and rendered README are accepted by PyP
 ### Run everything in one go
 
 ```bash
-poetry run pytest test/unit \
-  && poetry run black . --check \
-  && poetry run flake8 slackblocks \
-  && poetry run mypy slackblocks \
-  && poetry build \
-  && poetry run twine check --strict dist/*
+uv run pytest test/unit \
+  && uv run black . --check \
+  && uv run flake8 slackblocks \
+  && uv run mypy slackblocks \
+  && uv build \
+  && uv run twine check --strict dist/*
 ```
 
 ## Working on the docs
@@ -96,7 +105,7 @@ poetry run pytest test/unit \
 The documentation site uses [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) with [mkdocstrings](https://mkdocstrings.github.io/) for auto-generated API reference pages from the source docstrings.
 
 ```bash
-poetry run mkdocs serve
+uv run mkdocs serve
 # visit http://127.0.0.1:8000/
 ```
 
@@ -152,11 +161,11 @@ Validation tests live in `test/unit/test_errors.py` and the per-module test file
 Before opening a PR:
 
 - [ ] The change is covered by a unit test (or has a clear reason not to be).
-- [ ] `poetry run pytest test/unit` passes.
-- [ ] `poetry run black . --check` passes.
-- [ ] `poetry run flake8 slackblocks` passes.
-- [ ] `poetry run mypy slackblocks` passes.
-- [ ] `poetry run twine check --strict dist/*` passes (after `poetry build`).
+- [ ] `uv run pytest test/unit` passes.
+- [ ] `uv run black . --check` passes.
+- [ ] `uv run flake8 slackblocks` passes.
+- [ ] `uv run mypy slackblocks` passes.
+- [ ] `uv run twine check --strict dist/*` passes (after `uv build`).
 - [ ] If you added or modified a public class/function, its docstring is updated in Google style.
 - [ ] If you added a new block, element, or object, it's exported from `slackblocks/__init__.py`.
 - [ ] If you added a new feature surface, the relevant `docs_src/usage/` page (and possibly the [Cookbook](usage/cookbook.md)) is updated.
@@ -186,16 +195,17 @@ test/
 
 docs_src/                       # mkdocs source
 .github/workflows/              # CI pipelines
-pyproject.toml                  # Poetry config, tool config (flake8, pytest)
+pyproject.toml                  # project metadata, dep groups, tool config
+uv.lock                         # locked dependency versions
 ```
 
 ## Releases
 
 Releases are cut by the maintainer:
 
-1. Bump `version` in `pyproject.toml`.
+1. Bump `version` in `pyproject.toml` (under `[project]`).
 2. Tag the commit (`v1.x.y`).
-3. Push the tag — `publish.yml` builds and publishes to PyPI.
+3. Push the tag — `publish.yml` runs `uv build` and publishes the resulting sdist and wheel to PyPI.
 4. The GitHub release triggers `docs.yml`, which deploys the versioned docs.
 
 Contributors don't need to do anything for a release; just open PRs and the maintainer will batch them.
