@@ -31,6 +31,7 @@ from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
     ConfirmationDialogue,
     ConversationFilter,
+    DispatchActionConfiguration,
     InputParameter,
     Option,
     SlackFile,
@@ -444,3 +445,24 @@ def test_rich_text_input_basic() -> None:
             placeholder="Hello",
         )
     )
+
+
+def test_rich_text_input_dispatch_action_config_resolves() -> None:
+    """Regression test for #142: RichTextInput must call ``_resolve()`` on
+    its nested ``dispatch_action_config`` and coerce a ``placeholder`` string
+    to a ``Text`` object so the result is JSON-serializable."""
+    from json import dumps
+
+    rich_text_input = RichTextInput(
+        action_id="rt",
+        placeholder="Type something",
+        dispatch_action_config=DispatchActionConfiguration(
+            trigger_actions_on=["on_enter_pressed"]
+        ),
+    )
+    resolved = rich_text_input._resolve()
+    dumps(resolved)
+    assert resolved["dispatch_action_config"] == {
+        "trigger_actions_on": ["on_enter_pressed"]
+    }
+    assert resolved["placeholder"] == {"type": "plain_text", "text": "Type something"}
