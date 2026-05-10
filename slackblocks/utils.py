@@ -183,12 +183,12 @@ def validate_string_nonnull(
     field_name: str = "string",
 ) -> str:
     length = len(string)
-    if min_length and length < min_length:
+    if min_length is not None and length < min_length:
         raise InvalidUsageError(
             f"Argument to field `{field_name}` ({length} characters) "
             f"is less than minimum length of {min_length} characters"
         )
-    if max_length and length > max_length:
+    if max_length is not None and length > max_length:
         raise InvalidUsageError(
             f"Argument to field `{field_name}` ({length} characters) "
             f"exceeds length limit of {max_length} characters"
