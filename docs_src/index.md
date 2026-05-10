@@ -81,3 +81,4 @@ See [Using Blocks](usage/using_blocks.md) for examples of all block types side-b
 - [Sending Messages](usage/sending_messages.md)
 - [Cookbook](usage/cookbook.md) — complete end-to-end recipes for common message patterns.
 - [Troubleshooting & FAQ](usage/troubleshooting.md)
+- [Contributing](contributing.md) — developing and contributing to `slackblocks` itself.

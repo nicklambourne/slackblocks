@@ -86,6 +86,7 @@ nav:
     - Rich Text: reference/rich_text.md
     - Views: reference/views.md
     - Utilities: reference/utils.md
+  - Contributing: contributing.md
 
 extra:
   version:

@@ -121,27 +121,21 @@ SDKSectionBlock(text=MarkdownTextObject(text="Hello, *world*!"))
 
 ## Contributing
 
-Contributions are welcome. To set up a local development environment:
+Contributions are welcome. Quick start:
 
 ```bash
 git clone https://github.com/nicklambourne/slackblocks.git
 cd slackblocks
 poetry install --with dev,docs
-```
 
-Run the test suite, lint, and type checks:
-
-```bash
-poetry run pytest
+poetry run pytest test/unit
+poetry run black . --check
 poetry run flake8 slackblocks
 poetry run mypy slackblocks
 ```
 
-Preview the documentation locally:
+Preview the documentation locally with `poetry run mkdocs serve`.
 
-```bash
-poetry run mkdocs serve
-# then visit http://127.0.0.1:8000/
-```
+For the full development guide — testing conventions, validation patterns, docstring style, release process, and a PR checklist — see the [Contributing page](https://nicklambourne.github.io/slackblocks/latest/contributing/).
 
 Bug reports and feature requests: <https://github.com/nicklambourne/slackblocks/issues>.
