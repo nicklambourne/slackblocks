@@ -7,6 +7,7 @@ from slackblocks.utils import (
     validate_action_id,
     validate_int,
     validate_string,
+    validate_string_nonnull,
 )
 
 
@@ -118,3 +119,20 @@ def test_validate_string_zero_min_length_passes() -> None:
     """Regression test for #122: min_length=0 must be honored explicitly."""
     assert validate_string("", field_name="field", min_length=0) == ""
     assert validate_string("abc", field_name="field", min_length=0) == "abc"
+
+
+def test_validate_string_nonnull_positional_arg_order() -> None:
+    """Regression test for #124: validate_string_nonnull must accept
+    (string, field_name, max_length, min_length) in that positional order,
+    matching validate_string."""
+    assert validate_string_nonnull("hi", "field", 10, 1) == "hi"
+    with pytest.raises(InvalidUsageError, match="field"):
+        validate_string_nonnull("toolong", "field", 3)
+
+
+def test_validate_string_nonnull_keyword_args() -> None:
+    """validate_string_nonnull continues to accept keyword arguments."""
+    assert (
+        validate_string_nonnull("ok", field_name="x", max_length=10, min_length=1)
+        == "ok"
+    )

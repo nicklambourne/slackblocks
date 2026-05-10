@@ -173,14 +173,16 @@ def validate_string(
                 f"Expecting string for field `{field_name}`, cannot be None."
             )
         return None
-    return validate_string_nonnull(string, max_length, min_length, field_name)
+    return validate_string_nonnull(
+        string, field_name=field_name, max_length=max_length, min_length=min_length
+    )
 
 
 def validate_string_nonnull(
     string: str,
+    field_name: str = "string",
     max_length: Optional[int] = None,
     min_length: Optional[int] = None,
-    field_name: str = "string",
 ) -> str:
     length = len(string)
     if min_length is not None and length < min_length:
