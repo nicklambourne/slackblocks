@@ -597,7 +597,7 @@ pyflakes = ">=3.1.0,<3.2.0"
 
 [[package]]
 name = "flake8-pyproject"
-version = "1.2.4"
+version = "1.2.3"
 description = "Flake8 plug-in loading the configuration from pyproject.toml"
 optional = false
 python-versions = ">= 3.6"
