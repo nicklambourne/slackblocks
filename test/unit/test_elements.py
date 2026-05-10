@@ -250,6 +250,22 @@ def test_multi_select_static_invalid_option() -> None:
         )
 
 
+def test_static_select_menu_without_options_or_groups_does_not_raise() -> None:
+    """Regression test for #150: StaticSelectMenu must not raise
+    UnboundLocalError when neither ``options`` nor ``option_groups`` is set."""
+    menu = StaticSelectMenu(action_id="action", placeholder="Select")
+    resolved = menu._resolve()
+    assert resolved["type"] == "static_select"
+
+
+def test_static_multi_select_menu_without_options_or_groups_does_not_raise() -> None:
+    """Regression test for #150: StaticMultiSelectMenu must not raise
+    UnboundLocalError when ``options`` is None and ``option_groups`` is unset."""
+    menu = StaticMultiSelectMenu(action_id="action", placeholder="Select", options=None)
+    resolved = menu._resolve()
+    assert resolved["type"] == "multi_static_select"
+
+
 def test_static_multi_select_with_option_groups_validates_text() -> None:
     """Regression test for #148: option_groups flattening must continue to
     visit every option for plaintext validation after the migration from
