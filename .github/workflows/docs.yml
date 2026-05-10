@@ -25,7 +25,7 @@ jobs:
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
         - name: Install Docs Dependencies
-          run: uv sync --only-dev
+          run: uv sync --extra docs
 
         - name: Build and Deploy Docs
           run: uv run mike deploy --push --update-aliases ${{ github.ref_name }} latest
