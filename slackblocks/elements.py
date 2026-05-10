@@ -1432,7 +1432,7 @@ class ConversationSelectMenu(Element):
         if self.response_url_enabled:
             conversation_select_menu["response_url_enabled"] = self.response_url_enabled
         if self.filter:
-            conversation_select_menu["filter"] = self.filter
+            conversation_select_menu["filter"] = self.filter._resolve()
         if self.focus_on_load:
             conversation_select_menu["focus_on_load"] = self.focus_on_load
         if self.placeholder:
