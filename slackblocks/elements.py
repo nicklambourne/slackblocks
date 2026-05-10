@@ -1551,7 +1551,7 @@ class TimePicker(Element):
         if self.initial_time:
             time_picker["initial_time"] = self.initial_time
         if self.confirm:
-            time_picker["confirm"] = self.confirm
+            time_picker["confirm"] = self.confirm._resolve()
         if self.focus_on_load:
             time_picker["focus_on_load"] = self.focus_on_load
         if self.placeholder:

@@ -29,6 +29,7 @@ from slackblocks.elements import (
 )
 from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
+    ConfirmationDialogue,
     InputParameter,
     Option,
     SlackFile,
@@ -290,6 +291,25 @@ def test_timepicker_basic() -> None:
     assert fetch_sample(path="test/samples/elements/timepicker_basic.json") == repr(
         timepicker
     )
+
+
+def test_timepicker_with_confirm_resolves() -> None:
+    """Regression test for #134: TimePicker must call ``_resolve()`` on its
+    nested ``confirm`` so the result is JSON-serializable."""
+    from json import dumps
+
+    timepicker = TimePicker(
+        action_id="timepicker",
+        confirm=ConfirmationDialogue(
+            title=Text("Sure?", type_=TextType.PLAINTEXT),
+            text=Text("Pick a time?", type_=TextType.PLAINTEXT),
+            confirm=Text("Yes", type_=TextType.PLAINTEXT),
+            deny=Text("No", type_=TextType.PLAINTEXT),
+        ),
+    )
+    resolved = timepicker._resolve()
+    dumps(resolved)  # Must not raise.
+    assert resolved["confirm"]["title"]["text"] == "Sure?"
 
 
 def test_url_input_basic() -> None:
