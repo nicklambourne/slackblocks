@@ -103,3 +103,18 @@ def test_validate_int_max_value_error_message() -> None:
     maximum violation, not the minimum."""
     with pytest.raises(InvalidUsageError, match="exceeds the maximum"):
         validate_int(10, max_value=5)
+
+
+def test_validate_string_zero_max_length_enforced() -> None:
+    """Regression test for #122: max_length=0 must be honored (only empty
+    string is valid), not silently ignored as a falsy value."""
+    with pytest.raises(InvalidUsageError):
+        validate_string("a", field_name="field", max_length=0)
+    # Empty string should pass (length 0 is not > 0).
+    assert validate_string("", field_name="field", max_length=0) == ""
+
+
+def test_validate_string_zero_min_length_passes() -> None:
+    """Regression test for #122: min_length=0 must be honored explicitly."""
+    assert validate_string("", field_name="field", min_length=0) == ""
+    assert validate_string("abc", field_name="field", min_length=0) == "abc"
