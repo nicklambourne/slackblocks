@@ -31,6 +31,7 @@ from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
     InputParameter,
     Option,
+    SlackFile,
     Text,
     TextType,
     Trigger,
@@ -102,6 +103,21 @@ def test_email_input_basic() -> None:
 def test_image_basic() -> None:
     image = Image(image_url="https://ndl.im/img/logo.png", alt_text="Logo for ndl.im")
     assert fetch_sample(path="test/samples/elements/image_basic.json") == repr(image)
+
+
+def test_image_with_slack_file_resolves() -> None:
+    """Regression test for #130: Image element must call ``_resolve()`` on
+    its nested ``slack_file`` so the result is JSON-serializable."""
+    from json import dumps
+
+    image = Image(
+        alt_text="alt",
+        slack_file=SlackFile(url="https://example.com/img.png", id=None),
+    )
+    resolved = image._resolve()
+    # Should not raise.
+    dumps(resolved)
+    assert resolved["slack_file"] == {"url": "https://example.com/img.png"}
 
 
 def test_multi_select_channel() -> None:
