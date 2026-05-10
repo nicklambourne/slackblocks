@@ -241,13 +241,17 @@ def test_basic_table_block() -> None:
     assert sample == json.loads(repr(block))
 
 
-def text_basic_file_block() -> None:
-    assert fetch_sample(path="test/samples/blocks/rich_text_block_basic.json") == repr(
-        FileBlock(
-            external_id="external_id",
-            block_id="fake_block_id",
-        )
+def test_basic_file_block() -> None:
+    """Renamed from ``text_basic_file_block`` (typo) so pytest collects it.
+
+    Compare via parsed JSON to be robust to key-ordering differences in the
+    rendered output. See #156."""
+    block = FileBlock(
+        external_id="external_id",
+        block_id="fake_block_id",
     )
+    sample = json.loads(fetch_sample(path="test/samples/blocks/file_block_only.json"))
+    assert sample == json.loads(repr(block))
 
 
 def test_file_block_block_id_is_optional() -> None:
