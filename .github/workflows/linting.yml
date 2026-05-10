@@ -1,9 +1,9 @@
 name: Flake8 Linting
-on: 
+on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,30 +15,15 @@ jobs:
     name: flake8 Linting
     steps:
       - name: Check Out Source Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Set Up Python Environment
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: "3.12"
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      - name: Load Cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          enable-cache: true
 
       - name: Install Dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: 
-          poetry install --no-interaction --no-root --only dev     
+        run: uv sync
 
       - name: Linting
         uses: py-actions/flake8@v2

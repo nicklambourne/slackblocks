@@ -10,17 +10,14 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Check Out Source Repository
-          uses: actions/checkout@v4
+          uses: actions/checkout@v5
           with:
             fetch-depth: 0
 
-        - name: Set Up Python Environment
-          uses: actions/setup-python@v5
+        - name: Install uv
+          uses: astral-sh/setup-uv@v4
           with:
-            python-version: "3.12"
-
-        - name: Install Poetry
-          uses: snok/install-poetry@v1
+            enable-cache: true
 
         - name: Configure Git
           run: |
@@ -28,9 +25,7 @@ jobs:
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
         - name: Install Docs Dependencies
-          run: |
-            poetry install --no-interaction --no-root --with docs
+          run: uv sync --group docs
 
         - name: Build and Deploy Docs
-          run: |
-            poetry run mike deploy --push --update-aliases ${{ github.ref_name }} latest
+          run: uv run mike deploy --push --update-aliases ${{ github.ref_name }} latest
