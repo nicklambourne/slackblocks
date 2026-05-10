@@ -203,6 +203,20 @@ def test_multi_select_conversation() -> None:
     ) == repr(multi_select_conversation)
 
 
+def test_multi_select_conversation_initial_conversations_key() -> None:
+    """Regression test for #144: ConversationMultiSelectMenu must emit the
+    correctly-spelled ``initial_conversations`` JSON key (Slack silently
+    ignores the previous typo'd ``intial_conversations``)."""
+    multi_select = ConversationMultiSelectMenu(
+        action_id="multi_conversations_select",
+        initial_conversations=["C123", "C456"],
+    )
+    resolved = multi_select._resolve()
+    assert "initial_conversations" in resolved
+    assert resolved["initial_conversations"] == ["C123", "C456"]
+    assert "intial_conversations" not in resolved
+
+
 def test_multi_select_external() -> None:
     multi_select_external = ExternalMultiSelectMenu(
         action_id="multi_external_select",

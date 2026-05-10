@@ -788,7 +788,7 @@ class ConversationMultiSelectMenu(Element):
         conversation_multi_select = self._attributes()
         conversation_multi_select["action_id"] = self.action_id
         if self.initial_conversations:
-            conversation_multi_select["intial_conversations"] = (
+            conversation_multi_select["initial_conversations"] = (
                 self.initial_conversations
             )
         if self.default_to_current_conversation:
