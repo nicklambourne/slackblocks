@@ -224,5 +224,5 @@ def validate_int(
         if min_value is not None and num < min_value:
             raise InvalidUsageError(f"{num} is less than the minimum {min_value}")
         if max_value is not None and num > max_value:
-            raise InvalidUsageError(f"{num} is less than the minimum {max_value}")
+            raise InvalidUsageError(f"{num} exceeds the maximum {max_value}")
     return num

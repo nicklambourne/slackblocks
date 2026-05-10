@@ -5,6 +5,7 @@ from slackblocks.utils import (
     coerce_to_list,
     is_hex,
     validate_action_id,
+    validate_int,
     validate_string,
 )
 
@@ -90,3 +91,15 @@ def test_validate_string_disallow_none() -> None:
 def test_validate_string_exceed_max_length() -> None:
     with pytest.raises(InvalidUsageError):
         assert validate_string("a" * 5, field_name="field", max_length=4)
+
+
+def test_validate_int_min_value_error_message() -> None:
+    with pytest.raises(InvalidUsageError, match="is less than the minimum"):
+        validate_int(1, min_value=5)
+
+
+def test_validate_int_max_value_error_message() -> None:
+    """Regression test for #120: max-value error message must reflect the
+    maximum violation, not the minimum."""
+    with pytest.raises(InvalidUsageError, match="exceeds the maximum"):
+        validate_int(10, max_value=5)
