@@ -461,7 +461,7 @@ class Image(Element):
             image["image_url"] = self.image_url
         image["alt_text"] = self.alt_text
         if self.slack_file is not None:
-            image["slack_file"] = self.slack_file
+            image["slack_file"] = self.slack_file._resolve()
         return image
 
 
