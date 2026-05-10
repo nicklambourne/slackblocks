@@ -124,6 +124,36 @@ def test_datetime_picker_basic() -> None:
     ) == repr(datetime_picker)
 
 
+def test_datetime_picker_without_initial_datetime() -> None:
+    """Regression test for #136: DateTimePicker without ``initial_datetime``
+    must not raise AttributeError on ``_resolve``."""
+    from json import dumps
+
+    datetime_picker = DateTimePicker(action_id="datetime_picker")
+    resolved = datetime_picker._resolve()
+    dumps(resolved)
+    assert "initial_date_time" not in resolved
+
+
+def test_datetime_picker_with_confirm_resolves() -> None:
+    """Regression test for #136: DateTimePicker must call ``_resolve()`` on
+    its nested ``confirm`` so the result is JSON-serializable."""
+    from json import dumps
+
+    datetime_picker = DateTimePicker(
+        action_id="datetime_picker",
+        confirm=ConfirmationDialogue(
+            title=Text("Sure?", type_=TextType.PLAINTEXT),
+            text=Text("Pick this datetime?", type_=TextType.PLAINTEXT),
+            confirm=Text("Yes", type_=TextType.PLAINTEXT),
+            deny=Text("No", type_=TextType.PLAINTEXT),
+        ),
+    )
+    resolved = datetime_picker._resolve()
+    dumps(resolved)
+    assert resolved["confirm"]["title"]["text"] == "Sure?"
+
+
 def test_email_input_basic() -> None:
     email_input = EmailInput(action_id="email_input", placeholder="Enter your email")
     assert fetch_sample(path="test/samples/elements/email_input_basic.json") == repr(
