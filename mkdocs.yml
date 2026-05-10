@@ -74,6 +74,8 @@ nav:
     - Installation: usage/installation.md
     - Using Blocks: usage/using_blocks.md
     - Sending Messages: usage/sending_messages.md
+    - Cookbook: usage/cookbook.md
+    - Troubleshooting & FAQ: usage/troubleshooting.md
   - Reference:
     - Attachments: reference/attachments.md
     - Blocks: reference/blocks.md
@@ -84,6 +86,7 @@ nav:
     - Rich Text: reference/rich_text.md
     - Views: reference/views.md
     - Utilities: reference/utils.md
+  - Contributing: contributing.md
 
 extra:
   version:

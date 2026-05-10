@@ -1,10 +1,14 @@
 # Attachments
 
-!!! warning "Warning: Deprecated Feature"
+!!! warning "Deprecated by Slack"
 
-    Attachments, while still accepted by the Slack API, have long (for years now) been considered a deprecated feature.
+    Attachments, while still accepted by the Slack API, have been considered a deprecated feature for years. Prefer plain blocks where possible.
 
-    That said, there is currently no other way to achieve the vertical, colored bars next to content.
+    The one remaining reason to use attachments is the colored vertical bar to the left of the content — this styling can't currently be achieved with blocks.
+
+See the [colored-bar attachment cookbook recipe](../usage/cookbook.md#deprecated-colored-bar-attachment) for usage.
+
+Slack reference: <https://api.slack.com/reference/messaging/attachments>
 
 ::: attachments
     options:
