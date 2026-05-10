@@ -368,6 +368,7 @@ class DispatchActionConfiguration(CompositionObject):
     def __init__(
         self, trigger_actions_on: Optional[Union[str, List[str]]] = None
     ) -> None:
+        super().__init__(type_=CompositionObjectType.DISPATCH)
         trigger_actions_on = trigger_actions_on or []
         self.trigger_actions_on = list(
             set(coerce_to_list_nonnull(trigger_actions_on, str, min_size=1, max_size=2))
