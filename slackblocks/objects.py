@@ -258,7 +258,7 @@ class Confirm(ConfirmationDialogue):
     """
 
     def __init__(self, *args, **kwargs) -> None:
-        super(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class Option(CompositionObject):

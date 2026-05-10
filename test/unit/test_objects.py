@@ -2,6 +2,7 @@ import pytest
 
 from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
+    Confirm,
     ConfirmationDialogue,
     ConversationFilter,
     DispatchActionConfiguration,
@@ -90,6 +91,21 @@ def test_confirmation_dialogue_basic() -> None:
     assert fetch_sample(
         path="test/samples/objects/confirmation_dialogue_basic.json"
     ) == repr(confirmation_dialogue)
+
+
+def test_confirm_alias_equivalent_to_confirmation_dialogue() -> None:
+    """Regression test for #126: the ``Confirm`` backwards-compat alias must
+    forward all arguments to ``ConfirmationDialogue.__init__`` and produce
+    the same JSON output."""
+    confirm = Confirm(
+        title=Text("Maybe?", type_=TextType.PLAINTEXT),
+        text=Text("Would you like to play checkers?", type_=TextType.PLAINTEXT),
+        confirm=Text("Yes", type_=TextType.PLAINTEXT),
+        deny=Text("Nope!", type_=TextType.PLAINTEXT),
+    )
+    assert fetch_sample(
+        path="test/samples/objects/confirmation_dialogue_basic.json"
+    ) == repr(confirm)
 
 
 def test_conversation_filter_basic() -> None:
