@@ -253,6 +253,8 @@ class DatePicker(Element):
             self.initial_date = datetime.strptime(initial_date, "%Y-%m-%d").strftime(
                 "%Y-%m-%d"
             )
+        else:
+            self.initial_date = None
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
@@ -265,7 +267,7 @@ class DatePicker(Element):
         if self.initial_date is not None:
             date_picker["initial_date"] = self.initial_date
         if self.confirm:
-            date_picker["confirm"] = self.confirm
+            date_picker["confirm"] = self.confirm._resolve()
         if self.focus_on_load:
             date_picker["focus_on_load"] = self.focus_on_load
         if self.placeholder:
