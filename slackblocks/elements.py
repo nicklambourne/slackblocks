@@ -925,11 +925,11 @@ class NumberInput(Element):
                         f"`max_value` ({max_value}) cannot be a float when "
                         "`is_decimal_allowed` is `False`"
                     )
-        if (min_value or min_value == 0) and (max_value or max_value == 0):
+        if min_value is not None and max_value is not None:
             if min_value > max_value:
                 raise InvalidUsageError(
                     f"`min_value` ({min_value}) cannot be greater than "
-                    "`max_value` ({min_value})"
+                    f"`max_value` ({max_value})"
                 )
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
@@ -944,9 +944,9 @@ class NumberInput(Element):
             number_input["action_id"] = self.action_id
         if self.initial_value:
             number_input["initial_value"] = self.initial_value
-        if self.min_value:
+        if self.min_value is not None:
             number_input["min_value"] = self.min_value
-        if self.max_value:
+        if self.max_value is not None:
             number_input["max_value"] = self.max_value
         if self.dispatch_action_config:
             number_input["dispatch_action_config"] = (

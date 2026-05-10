@@ -277,6 +277,34 @@ def test_number_input_basic() -> None:
     )
 
 
+def test_number_input_zero_min_value_emitted() -> None:
+    """Regression test for #146: NumberInput must emit ``min_value=0`` and
+    ``max_value=0`` (legitimate constraints), not silently drop them."""
+    number_input = NumberInput(
+        is_decimal_allowed=False,
+        action_id="number_input",
+        min_value=0,
+        max_value=0,
+    )
+    resolved = number_input._resolve()
+    assert resolved["min_value"] == 0
+    assert resolved["max_value"] == 0
+
+
+def test_number_input_min_greater_than_max_error_message() -> None:
+    """Regression test for #146: cross-validation error message must include
+    both min_value and max_value (previously interpolated min_value twice)."""
+    with pytest.raises(InvalidUsageError) as excinfo:
+        NumberInput(
+            is_decimal_allowed=False,
+            action_id="number_input",
+            min_value=10,
+            max_value=5,
+        )
+    msg = str(excinfo.value)
+    assert "10" in msg and "5" in msg
+
+
 def test_overflow_menu_basic() -> None:
     overflow_menu = OverflowMenu(options=THREE_OPTIONS, action_id="overflow")
     assert fetch_sample(path="test/samples/elements/overflow_menu_basic.json") == repr(
