@@ -196,17 +196,17 @@ class WebhookMessage:
         response_type: one of `ResponseType.EPHEMERAL` or `ResponseType.IN_CHANNEL`.
             Ephemeral messages are shown only to the requesting user whereas
             "in-channel" messages are shown to all channel participants.
-        replace_orginal: when `True`, the message triggering this response will be
-            replaced by this messaage. Mutually exclusive with `delete_original`.
+        replace_original: when `True`, the message triggering this response will be
+            replaced by this message. Mutually exclusive with `delete_original`.
         delete_original: when `True`, the original message triggering this response
             will be deleted, and any content of this message will be posted as a
-            new message. Mutually exclusive with `replace_orginal`.
+            new message. Mutually exclusive with `replace_original`.
         unfurl_links: if `True`, links in the message will be automatically
             unfurled.
         unfurl_media: if `True`, media from links (e.g. images) will
             automatically unfurl.
         metadata: additional metadata to attach to the message.
-        headres: HTTP request headers to include with the message.
+        headers: HTTP request headers to include with the message.
 
     Throws:
         InvalidUsageError: when any of the passed fields fail validation.

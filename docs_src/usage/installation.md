@@ -1,4 +1,5 @@
-## Installing `slackblocks`
+# Installation
+
 You can install `slackblocks` using any Python package manager with access to PyPI. Installation commands for some of the more popular ones are included below.
 
 === "pip"
@@ -12,16 +13,47 @@ You can install `slackblocks` using any Python package manager with access to Py
     ```
 
 === "Pipenv"
-    ```
+    ```bash
     pipenv install slackblocks
     ```
 
-`slackblocks` is a pure Python package and is published automatically to [PyPI](https://pypi.org/project/slackblocks/) as Python wheels whenever a new version is released.
+=== "uv"
+    ```bash
+    uv add slackblocks
+    ```
 
-As of version `v0.1.0`` it has no dependencies outside of the Python standard library.
+`slackblocks` is a pure Python package and is published to [PyPI](https://pypi.org/project/slackblocks/) as a wheel on every release. As of `v0.1.0` it has no dependencies outside of the Python standard library.
 
-## Uninstalling `slackblocks`
-If, for whatever reason, you need to remove `slackblocks` from your environment you can do so with the following commands:
+## Requirements
+
+- Python 3.8.1 or newer.
+- No runtime dependencies.
+
+## Verifying your installation
+
+```python
+from slackblocks import Message, SectionBlock
+
+print(Message(channel="#general", blocks=SectionBlock("Hello, world!")).json())
+```
+
+If this prints a formatted JSON object describing a message, you're ready to go.
+
+## Version pinning
+
+`slackblocks` follows semantic versioning. Pinning to a major version is recommended:
+
+=== "pip (`requirements.txt`)"
+    ```
+    slackblocks~=1.2
+    ```
+
+=== "poetry (`pyproject.toml`)"
+    ```toml
+    slackblocks = "^1.2"
+    ```
+
+## Uninstalling
 
 === "pip"
     ```bash
@@ -34,6 +66,11 @@ If, for whatever reason, you need to remove `slackblocks` from your environment 
     ```
 
 === "Pipenv"
-    ```
+    ```bash
     pipenv uninstall slackblocks
+    ```
+
+=== "uv"
+    ```bash
+    uv remove slackblocks
     ```
