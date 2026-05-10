@@ -7,6 +7,7 @@ See: <https://api.slack.com/reference/block-kit/block-elements>
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
+from itertools import chain
 from json import dumps
 from typing import Any, Dict, List, Optional, Union
 
@@ -552,8 +553,10 @@ class StaticMultiSelectMenu(Element):
         if self.options:
             options_to_validate = self.options
         if self.option_groups:
-            options_to_validate = sum(
-                [option_group.options for option_group in self.option_groups], []
+            options_to_validate = list(
+                chain.from_iterable(
+                    option_group.options for option_group in self.option_groups
+                )
             )
         for option in options_to_validate:
             if option.text.text_type == TextType.MARKDOWN:
@@ -1207,8 +1210,10 @@ class StaticSelectMenu(Element):
         if self.options:
             options_to_validate = self.options
         if self.option_groups:
-            options_to_validate = sum(
-                [option_group.options for option_group in self.option_groups], []
+            options_to_validate = list(
+                chain.from_iterable(
+                    option_group.options for option_group in self.option_groups
+                )
             )
         for option in options_to_validate:
             if option.text.text_type == TextType.MARKDOWN:

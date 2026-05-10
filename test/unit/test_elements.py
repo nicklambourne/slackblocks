@@ -34,6 +34,7 @@ from slackblocks.objects import (
     DispatchActionConfiguration,
     InputParameter,
     Option,
+    OptionGroup,
     SlackFile,
     Text,
     TextType,
@@ -246,6 +247,40 @@ def test_multi_select_static_invalid_option() -> None:
             placeholder=Text("Select one or more", type_=TextType.PLAINTEXT),
             options=TWO_OPTIONS
             + [Option(text=Text("C", type_=TextType.MARKDOWN), value="X")],
+        )
+
+
+def test_static_multi_select_with_option_groups_validates_text() -> None:
+    """Regression test for #148: option_groups flattening must continue to
+    visit every option for plaintext validation after the migration from
+    sum([list], []) to itertools.chain."""
+    valid = StaticMultiSelectMenu(
+        action_id="multi_static_select",
+        placeholder="Pick",
+        options=None,
+        option_groups=[
+            OptionGroup(label="Group 1", options=TWO_OPTIONS),
+            OptionGroup(label="Group 2", options=TWO_OPTIONS),
+        ],
+    )
+    assert "option_groups" in valid._resolve()
+    # Markdown-typed option in a later group still raises.
+    with pytest.raises(InvalidUsageError):
+        StaticMultiSelectMenu(
+            action_id="multi_static_select",
+            placeholder="Pick",
+            options=None,
+            option_groups=[
+                OptionGroup(label="Group 1", options=TWO_OPTIONS),
+                OptionGroup(
+                    label="Group 2",
+                    options=[
+                        Option(
+                            text=Text("Bad", type_=TextType.MARKDOWN), value="bad"
+                        )
+                    ],
+                ),
+            ],
         )
 
 
