@@ -85,6 +85,36 @@ def test_datepicker_basic() -> None:
     )
 
 
+def test_datepicker_without_initial_date() -> None:
+    """Regression test for #135: DatePicker without ``initial_date`` must not
+    raise AttributeError on ``_resolve``."""
+    from json import dumps
+
+    datepicker = DatePicker(action_id="datepicker")
+    resolved = datepicker._resolve()
+    dumps(resolved)  # Must not raise.
+    assert "initial_date" not in resolved
+
+
+def test_datepicker_with_confirm_resolves() -> None:
+    """Regression test for #135: DatePicker must call ``_resolve()`` on its
+    nested ``confirm`` so the result is JSON-serializable."""
+    from json import dumps
+
+    datepicker = DatePicker(
+        action_id="datepicker",
+        confirm=ConfirmationDialogue(
+            title=Text("Sure?", type_=TextType.PLAINTEXT),
+            text=Text("Pick this date?", type_=TextType.PLAINTEXT),
+            confirm=Text("Yes", type_=TextType.PLAINTEXT),
+            deny=Text("No", type_=TextType.PLAINTEXT),
+        ),
+    )
+    resolved = datepicker._resolve()
+    dumps(resolved)
+    assert resolved["confirm"]["title"]["text"] == "Sure?"
+
+
 def test_datetime_picker_basic() -> None:
     datetime_picker = DateTimePicker(
         action_id="datetime_picker", initial_datetime=1628633830
