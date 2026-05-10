@@ -1,3 +1,15 @@
+# Using Blocks
+
+Blocks are the fundamental visual units of a Slack message. Each block type renders as a different UI component (a section of text, a header, a divider, an image, a row of buttons, and so on). A `Message` is composed of one or more blocks, rendered top-to-bottom.
+
+This page lists every block type supported by `slackblocks`, with:
+
+- A short description of what the block is for.
+- The `slackblocks` Python code to construct it.
+- The JSON payload that's produced.
+- A screenshot of how it looks in Slack.
+
+For the reverse mapping — looking up a class by name — see the [Blocks reference](../reference/blocks.md). For interactive UI bits (buttons, menus, date pickers) that go *inside* blocks, see [Elements](../reference/elements.md).
 
 ## Section Block
 :::blocks.SectionBlock
@@ -9,11 +21,11 @@
 === "`slackblocks`"
     
     ```python
-    from slackblocks import Checkboxes, Option, SectionBlock
+    from slackblocks import CheckboxGroup, Option, SectionBlock
 
     SectionBlock(
-        text="This is a section block with a checkbox accessory.", 
-        block_id="fake_block_id"
+        text="This is a section block with a checkbox accessory.",
+        block_id="fake_block_id",
         accessory=CheckboxGroup(
             action_id="checkboxes-action",
             options=[
@@ -64,7 +76,7 @@
 
 === "`slackblocks`"
     ```python
-    from slackblock import RichTextBlock, RichTextSection, RichText
+    from slackblocks import RichTextBlock, RichTextSection, RichText
 
     RichTextBlock(
         RichTextSection(
@@ -334,7 +346,7 @@
     ```
 
 === "Slack UI"
-    ![An example of the UI output of an Context Block](../img/usage/divider.png)
+    ![An example of the UI output of a Context Block](../img/usage/context.png)
 
 ## Actions Block
 :::blocks.ActionsBlock
@@ -344,6 +356,8 @@
 
 === "`slackblocks`"
     ```python
+    from slackblocks import ActionsBlock, CheckboxGroup, Option
+
     ActionsBlock(
         block_id="fake_block_id",
         elements=CheckboxGroup(
@@ -417,6 +431,15 @@
 
 === "`slackblocks`"
     ```python
+    from slackblocks import (
+        ColumnSettings,
+        RawText,
+        RichText,
+        RichTextLink,
+        RichTextSection,
+        TableBlock,
+    )
+
     TableBlock(
         column_settings=[
             ColumnSettings(align="right", is_wrapped=True),
@@ -425,25 +448,21 @@
         rows=[
             [
                 RichTextSection(
-                    elements=RichText(
-                        text="Header 1",
-                        bold=True,
-                    )
+                    elements=[RichText(text="Header 1", bold=True)],
                 ),
                 RichTextSection(
-                    elements=RichTextLink(
-                        text="Header 2",
-                        bold=True,
-                    )
+                    elements=[RichText(text="Header 2", bold=True)],
                 ),
             ],
             [
                 RawText(text="Datum 1"),
                 RichTextSection(
-                    elements=RichTextLink(
-                        url="https://slack.com",
-                        text="Datum 2",
-                    )
+                    elements=[
+                        RichTextLink(
+                            url="https://slack.com",
+                            text="Datum 2",
+                        )
+                    ],
                 ),
             ],
         ],

@@ -8,84 +8,140 @@
 [![Build Status](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
 [![Docs](https://img.shields.io/badge/Docs-8A2BE2.svg)](https://nicklambourne.github.io/slackblocks)
 
-## What is it?
-`slackblocks` is a Python API for building messages in the fancy Slack [Block Kit API](https://api.slack.com/block-kit)
+> **Build Slack messages in Python — without writing JSON by hand.**
 
-## Documentation
-Full documentation is provided [here](https://nicklambourne.github.io/slackblocks/latest/).
+`slackblocks` is a typed, validating Python wrapper around the Slack [Block Kit API](https://api.slack.com/block-kit). It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control.
 
-## Requirements
-`slackblocks` requires Python >= 3.8.
+## Why `slackblocks`?
 
-As of version 0.1.0 it has no dependencies outside the Python standard library.
+- **Concise** — `SectionBlock("Hello, *world*!")` instead of a 10-line JSON object.
+- **Validated** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
+- **Drop-in compatible** with both the official [`slack-sdk`](https://pypi.org/project/slack-sdk/) and the legacy [`slackclient`](https://pypi.org/project/slackclient/) — unpack a `Message` directly into `client.chat_postMessage(**message)`.
+- **Typed** — full type hints; ships `py.typed`.
+- **Zero runtime dependencies.**
 
 ## Installation
+
 ```bash
 pip install slackblocks
 ```
 
-## Basic Usage
-```python
-from slackblocks import Message, SectionBlock
+Requires Python 3.8.1 or newer.
 
-
-block = SectionBlock("Hello, world!")
-message = Message(channel="#general", blocks=block)
-message.json()
-
-```
-
-Will produce the following JSON string:
-```json
-{
-    "channel": "#general",
-    "mrkdwn": true,
-    "blocks": [
-        {
-            "type": "section",
-            "block_id": "992ceb6b-9ad4-496b-b8e6-1bd8a632e8b3",
-            "text": {
-                "type": "mrkdwn",
-                "text": "Hello, world!"
-            }
-        }
-    ]
-}
-```
-Which can be sent as payload to the Slack message API HTTP endpoints.
-
-Of more practical use is the ability to unpack the objects directly into 
-the [(Legacy) Python Slack Client](https://pypi.org/project/slackclient/) in order to send messages:
+## Quickstart
 
 ```python
-from os import environ
-from slack import WebClient
-from slackblocks import Message, SectionBlock
+from slackblocks import (
+    ActionsBlock,
+    Button,
+    DividerBlock,
+    HeaderBlock,
+    Message,
+    SectionBlock,
+)
 
-
-client = WebClient(token=environ["SLACK_API_TOKEN"])
-block = SectionBlock("Hello, world!")
-message = Message(channel="#general", blocks=block)
-
-response = client.chat_postMessage(**message)
+message = Message(
+    channel="#general",
+    text="Build #482 passed",  # plain-text fallback for notifications
+    blocks=[
+        HeaderBlock("Build #482 passed :white_check_mark:"),
+        SectionBlock(
+            fields=[
+                "*Branch*\n`main`",
+                "*Author*\n@nick",
+                "*Duration*\n3m 12s",
+                "*Tests*\n1,247 passed",
+            ],
+        ),
+        DividerBlock(),
+        ActionsBlock(
+            elements=[
+                Button(text="View build", action_id="view", url="https://ci.example.com/482"),
+                Button(text="Re-run", action_id="rerun", value="482", style="primary"),
+            ],
+        ),
+    ],
+)
 ```
 
-Or the modern Python [Slack SDK](https://pypi.org/project/slack-sdk/):
+`message` can be sent in one line with the official Slack SDK:
+
 ```python
-from os import environ
+import os
 from slack_sdk import WebClient
-from slackblocks import Message, SectionBlock
 
-
-client = WebClient(token=environ["SLACK_API_TOKEN"])
-block = SectionBlock("Hello, world!")
-message = Message(channel="#general", blocks=block)
-
-response = client.chat_postMessage(**message)
+client = WebClient(token=os.environ["SLACK_API_TOKEN"])
+client.chat_postMessage(**message)
 ```
 
-Note the `**` operator in front of the `message` object.
+The `**` operator unpacks `slackblocks` `Message` objects directly into the SDK call — no `to_dict()` boilerplate required.
 
-## Can I use this in my project?
-Yes, please do! The code is all open source and dual BSD-3.0 and MIT licensed
-    (use what suits you best).
+<p align="center">
+  <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs_src/img/hello_world.png" alt="A simple Slack message rendered in Slack" width="600px" />
+</p>
+
+## What's supported
+
+| Surface             | Status |
+|---------------------|:------:|
+| Blocks              | ✅ All current block types (Section, Header, Divider, Image, Context, Actions, Input, RichText, File, Table) |
+| Elements            | ✅ Buttons, all select menus, date/time pickers, checkboxes, radio groups, all input types, overflow menus, workflow buttons |
+| Composition Objects | ✅ Text, Option, Confirm, Conversation/Dispatch filters, Workflow, Trigger |
+| Rich Text           | ✅ Sections, lists, quotes, code blocks, inline links/users/channels/emoji |
+| Modals & Home Tabs  | ✅ Full views API |
+| Messages            | ✅ `chat.postMessage`, webhook messages, slash-command/interaction responses, threaded replies, ephemeral messages |
+| Attachments         | ⚠️ Supported but [deprecated by Slack](https://api.slack.com/reference/messaging/attachments) |
+
+## Documentation
+
+- **Full docs:** <https://nicklambourne.github.io/slackblocks/>
+- [Installation](https://nicklambourne.github.io/slackblocks/latest/usage/installation/)
+- [Using Blocks](https://nicklambourne.github.io/slackblocks/latest/usage/using_blocks/) — every block type with code, JSON, and screenshots.
+- [Sending Messages](https://nicklambourne.github.io/slackblocks/latest/usage/sending_messages/)
+- [Cookbook](https://nicklambourne.github.io/slackblocks/latest/usage/cookbook/) — end-to-end recipes for build notifications, approval requests, modals, and more.
+- [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/latest/usage/troubleshooting/)
+
+## Comparison with `slack-sdk` block classes
+
+The official `slack-sdk` ships its own block classes. `slackblocks` predates them and offers a more concise API, stricter up-front validation, and independent versioning. They produce equivalent JSON; pick whichever you find more ergonomic.
+
+```python
+# slackblocks
+SectionBlock("Hello, *world*!")
+
+# slack-sdk equivalent
+from slack_sdk.models.blocks import SectionBlock as SDKSectionBlock
+from slack_sdk.models.blocks.basic_components import MarkdownTextObject
+SDKSectionBlock(text=MarkdownTextObject(text="Hello, *world*!"))
+```
+
+## Licensing
+
+`slackblocks` is dual-licensed under [MIT](./LICENSE) and [BSD-3-Clause](./LICENSE.BSD-3-Clause). Use whichever fits your project — this makes it safe to vendor into projects under either license.
+
+## Contributing
+
+Contributions are welcome. To set up a local development environment:
+
+```bash
+git clone https://github.com/nicklambourne/slackblocks.git
+cd slackblocks
+poetry install --with dev,docs
+```
+
+Run the test suite, lint, and type checks:
+
+```bash
+poetry run pytest
+poetry run flake8 slackblocks
+poetry run mypy slackblocks
+```
+
+Preview the documentation locally:
+
+```bash
+poetry run mkdocs serve
+# then visit http://127.0.0.1:8000/
+```
+
+Bug reports and feature requests: <https://github.com/nicklambourne/slackblocks/issues>.

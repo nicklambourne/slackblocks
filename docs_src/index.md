@@ -4,56 +4,80 @@
   <img width="30%" src="./img/sb.png" />
 </p>
 
-`slackblocks` is Python package for creating complex Slack messages 
-    using the Slack [BlockKit API](https://api.slack.com/block-kit).
+`slackblocks` is a Python library for building Slack messages with the [Block Kit API](https://api.slack.com/block-kit) — without writing JSON by hand.
 
-It exists so you don't have to define block-based Slack messages by
-    hand-writing JSON.
+It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control. `slackblocks` gives you:
+
+- **Typed Python classes** for every block, element, and object Slack supports.
+- **Validation as you build** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
+- **Drop-in compatibility** with both the official [`slack-sdk`](https://pypi.org/project/slack-sdk/) and the legacy [`slackclient`](https://pypi.org/project/slackclient/) — unpack a `Message` directly into `client.chat_postMessage(**message)`.
+- **Zero runtime dependencies.**
+
+## Quickstart
+
+```bash
+pip install slackblocks
+```
+
+```python
+from slackblocks import HeaderBlock, Message, SectionBlock, DividerBlock
+
+message = Message(
+    channel="#general",
+    blocks=[
+        HeaderBlock("Build #482 passed :white_check_mark:"),
+        SectionBlock("All 1,247 tests green in 3m 12s."),
+        DividerBlock(),
+        SectionBlock("*Author:* @nick  •  *Branch:* `main`"),
+    ],
+)
+
+print(message.json())
+```
+
+See the [installation guide](usage/installation.md) and [sending messages guide](usage/sending_messages.md) to take it from here.
 
 ## Components
 
-The [Slack BlockKit API](https://api.slack.com/block-kit) defines a number of 
-    different resource types (all defined in JSON) which work together to 
-    define Block-based messages.
-
-`slackblocks` makes using this API easier by providing a hierarchy of Python
-    classes that represent these resources.
+The [Slack Block Kit API](https://api.slack.com/block-kit) defines several resource types (all defined in JSON) that work together to build block-based messages. `slackblocks` mirrors that hierarchy with Python classes.
 
 ### Objects
-[`Objects`](/slackblocks/latest/reference/objects) (e.g. [`Text`](/slackblocks/latest/reference/objects/#objects.Text)) 
-    are the lowest level pimitives that are used to populate 
-    [`Elements`](/slackblocks/latest/reference/elements) and [`Blocks`](/slackblocks/latest/reference/blocks).
+
+[Objects](reference/objects.md) (e.g. [`Text`](reference/objects.md#objects.Text), [`Option`](reference/objects.md#objects.Option), [`Confirm`](reference/objects.md#objects.Confirm)) are the lowest-level primitives — small composable pieces that populate [Elements](reference/elements.md) and [Blocks](reference/blocks.md).
 
 ### Elements
-[`Elements`](/slackblocks/latest/reference/elements) are typically interactive UI elements that take
-    in [`Object`](/slackblocks/latest/reference/objects) to define their content. For example, the 
-    [`CheckboxGroup`](/elements/#elements.CheckboxGroup) element takes in one or
-    more [`Option`](/slackblocks/latest/reference/objects/#objects.Option) items and presents a
-    checkbox menu to the user with those options.
+
+[Elements](reference/elements.md) are typically interactive UI controls that go *inside* blocks. The [`CheckboxGroup`](reference/elements.md#elements.CheckboxGroup) element, for instance, takes one or more [`Option`](reference/objects.md#objects.Option) items and presents a checkbox menu.
 
 ### Blocks
-[`Blocks`](/slackblocks/latest/reference/blocks) are the core element of the API, with different 
-    [`Blocks`](/slackblocks/latest/reference/blocks) used to create different types of visual
-    elements. For example, the [`DividerBlock`](/slackblocks/latest/reference/blocks/#blocks.DividerBlock), 
-    when rendered, will show a visual element similar to a `<hr>` HTML element. The
-    [`RichTextBlock`](/slackblocks/latest/reference/blocks/#blocks.RichTextBlock) on the other hand
-    allows for the display of text elements with visual styling like italics,
-    block quotes, lists and code blocks. 
+
+[Blocks](reference/blocks.md) are the core visual unit of a message. Different block classes produce different UI:
+
+- [`SectionBlock`](reference/blocks.md#blocks.SectionBlock) — a chunk of markdown text, optionally with an accessory element.
+- [`HeaderBlock`](reference/blocks.md#blocks.HeaderBlock) — a large bold title.
+- [`DividerBlock`](reference/blocks.md#blocks.DividerBlock) — a visual separator (like an HTML `<hr>`).
+- [`RichTextBlock`](reference/blocks.md#blocks.RichTextBlock) — formatted text with inline styling, lists, code blocks, and quotes.
+- [`ActionsBlock`](reference/blocks.md#blocks.ActionsBlock) — a row of interactive elements like buttons or menus.
+- [`ImageBlock`](reference/blocks.md#blocks.ImageBlock), [`ContextBlock`](reference/blocks.md#blocks.ContextBlock), [`InputBlock`](reference/blocks.md#blocks.InputBlock), [`FileBlock`](reference/blocks.md#blocks.FileBlock), [`TableBlock`](reference/blocks.md#blocks.TableBlock).
+
+See [Using Blocks](usage/using_blocks.md) for examples of all block types side-by-side with their JSON output and Slack rendering.
 
 ### Messages
-[`Messages`](/slackblocks/latest/reference/messages/) are a convenience wrapper around `Blocks` that
-    can be unpacked as arguments straight into the official Slack Python SDK (or
-    its legacy `slackclient` counterpart).
+
+[Messages](reference/messages.md) are a convenience wrapper around blocks that can be unpacked directly into the Slack SDK's `chat_postMessage` (and friends).
+
+- [`Message`](reference/messages.md#messages.Message) — a normal channel message.
+- [`WebhookMessage`](reference/messages.md#messages.WebhookMessage) — for incoming webhooks.
+- [`MessageResponse`](reference/messages.md#messages.MessageResponse) — replies to slash commands and interactions.
 
 ### Views
-[`Views`](reference/views/) are an alternative usage for [`Blocks`](/slackblocks/latest/reference/blocks)
-    that allow for the creation of custom UI "surfaces" within Slack, e.g. for 
-    third-party apps.
+
+[Views](reference/views.md) are an alternative usage of blocks that build custom UI surfaces in Slack — modal dialogs and the App Home tab — typically used by interactive Slack apps.
 
 ## Guides
-In addition to a complete reference of all classes and functions provided by the 
-    `slackblocks` library, this documentation contains guides on:
 
-- [Installing `slackblocks`](usage/installation/)
-- [Using Blocks](usage/using_blocks/)
-- [Sending Block-based Messages](usage/sending_messages/)
+- [Installation](usage/installation.md)
+- [Using Blocks](usage/using_blocks.md)
+- [Sending Messages](usage/sending_messages.md)
+- [Cookbook](usage/cookbook.md) — complete end-to-end recipes for common message patterns.
+- [Troubleshooting & FAQ](usage/troubleshooting.md)
