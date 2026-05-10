@@ -6,5 +6,8 @@
         "text": "I'm rich"
     },
     "focus_on_load": false,
-    "placeholder": "Hello"
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Hello"
+    }
 }
