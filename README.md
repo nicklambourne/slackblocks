@@ -117,7 +117,7 @@ SDKSectionBlock(text=MarkdownTextObject(text="Hello, *world*!"))
 
 ## Licensing
 
-`slackblocks` is dual-licensed under [MIT](./LICENSE) and [BSD-3-Clause](./LICENSE.BSD-3-Clause). Use whichever fits your project — this makes it safe to vendor into projects under either license.
+`slackblocks` is dual-licensed under [MIT](https://github.com/nicklambourne/slackblocks/blob/master/LICENSE) and [BSD-3-Clause](https://github.com/nicklambourne/slackblocks/blob/master/LICENSE.BSD-3-Clause). Use whichever fits your project — this makes it safe to vendor into projects under either license.
 
 ## Contributing
 
