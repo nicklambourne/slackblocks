@@ -43,7 +43,7 @@ dev = [
     "black>=24.8.0,<25.0.0",
     "flake8>=6.1.0,<7.0.0",
     "flake8-pyproject>=1.2.3,<2.0.0",
-    "mypy>=1.14.1,<2.0.0",
+    "mypy>=1.14.1,<1.15.0",
     "pytest>=8.3.4,<9.0.0",
     "slack-sdk>=3.33.4,<4.0.0",
     "twine>=6.0.1,<7.0.0",
@@ -78,10 +78,3 @@ filterwarnings = [
     "error",
 ]
 
-[tool.black]
-target-version = ["py38", "py39", "py310", "py311", "py312", "py313"]
-
-[tool.mypy]
-python_version = "3.9"
-warn_return_any = true
-warn_unused_configs = true
