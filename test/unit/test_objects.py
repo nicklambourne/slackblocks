@@ -130,6 +130,16 @@ def test_dispatch_action_config_basic() -> None:
     ) == repr(dispatch_action_config)
 
 
+def test_dispatch_action_config_has_type_attribute() -> None:
+    """Regression test for #128: DispatchActionConfiguration must call
+    super().__init__ so that the inherited ``type`` attribute is set."""
+    dispatch_action_config = DispatchActionConfiguration(
+        trigger_actions_on=["on_character_entered"]
+    )
+    assert hasattr(dispatch_action_config, "type")
+    assert dispatch_action_config.type.value == "dispatch"
+
+
 def test_input_parameter_basic() -> None:
     input_parameter = InputParameter(
         name="name",
