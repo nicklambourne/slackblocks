@@ -30,6 +30,7 @@ from slackblocks.elements import (
 from slackblocks.errors import InvalidUsageError
 from slackblocks.objects import (
     ConfirmationDialogue,
+    ConversationFilter,
     InputParameter,
     Option,
     SlackFile,
@@ -302,6 +303,24 @@ def test_select_menu_conversation() -> None:
     assert fetch_sample(
         path="test/samples/elements/select_menu_conversation.json"
     ) == repr(select_menu_conversation)
+
+
+def test_conversation_select_menu_with_filter_resolves() -> None:
+    """Regression test for #140: ConversationSelectMenu must call
+    ``_resolve()`` on its nested ``filter`` so the result is JSON-serializable."""
+    from json import dumps
+
+    select_menu = ConversationSelectMenu(
+        action_id="conversations_select",
+        placeholder="Pick a conversation",
+        filter=ConversationFilter(include=["public"], exclude_bot_users=True),
+    )
+    resolved = select_menu._resolve()
+    dumps(resolved)
+    assert resolved["filter"] == {
+        "include": ["public"],
+        "exclude_bot_users": True,
+    }
 
 
 def test_select_menu_external() -> None:
