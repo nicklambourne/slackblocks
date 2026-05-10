@@ -37,7 +37,7 @@ classifiers = [
 requires-python = ">=3.8.1"
 exclude = ["test/**", "docs/**"]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "aiohttp>=3.10.11,<4.0.0",
     "black>=24.8.0,<25.0.0",
