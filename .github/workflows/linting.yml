@@ -23,7 +23,7 @@ jobs:
           enable-cache: true
 
       - name: Install Dependencies
-        run: uv sync --only dev
+        run: uv sync --only-dev
 
       - name: Linting
         uses: py-actions/flake8@v2
