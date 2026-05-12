@@ -10,6 +10,7 @@ from enum import Enum
 from json import dumps
 from typing import Any
 
+from slackblocks._core import resolve
 from slackblocks.blocks import Block
 from slackblocks.objects import Text, TextLike
 from slackblocks.utils import coerce_to_list, validate_string
@@ -45,17 +46,15 @@ class View:
         self.external_id = external_id
 
     def _resolve(self) -> dict[str, Any]:
-        view: dict[str, Any] = {}
-        view["type"] = self.type_
-        if self.blocks is not None:
-            view["blocks"] = [block._resolve() for block in self.blocks]
-        if self.private_metadata:
-            view["private_metadata"] = self.private_metadata
-        if self.callback_id:
-            view["callback_id"] = self.callback_id
-        if self.external_id:
-            view["external_id"] = self.external_id
-        return view
+        return resolve(
+            {
+                "type": self.type_,
+                "blocks": self.blocks,
+                "private_metadata": self.private_metadata if self.private_metadata else None,
+                "callback_id": self.callback_id if self.callback_id else None,
+                "external_id": self.external_id if self.external_id else None,
+            }
+        )
 
     def to_dict(self) -> dict[str, Any]:
         return self._resolve()
@@ -120,19 +119,17 @@ class ModalView(View):
         self.submit_disabled = submit_disabled
 
     def _resolve(self) -> dict[str, Any]:
-        modal_view = super()._resolve()
-        modal_view["title"] = self.title._resolve()
-        if self.close:
-            modal_view["close"] = self.close._resolve()
-        if self.submit:
-            modal_view["submit"] = self.submit._resolve()
-        if self.clear_on_close:
-            modal_view["clear_on_close"] = self.clear_on_close
-        if self.notify_on_close:
-            modal_view["notify_on_close"] = self.notify_on_close
-        if self.submit_disabled:
-            modal_view["submit_disabled"] = self.submit_disabled
-        return modal_view
+        return resolve(
+            {
+                **super()._resolve(),
+                "title": self.title,
+                "close": self.close if self.close else None,
+                "submit": self.submit if self.submit else None,
+                "clear_on_close": self.clear_on_close if self.clear_on_close else None,
+                "notify_on_close": self.notify_on_close if self.notify_on_close else None,
+                "submit_disabled": self.submit_disabled if self.submit_disabled else None,
+            }
+        )
 
 
 class HomeTabView(View):

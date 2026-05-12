@@ -11,6 +11,7 @@ from enum import Enum
 from json import dumps
 from typing import Any
 
+from slackblocks._core import resolve
 from slackblocks.utils import coerce_to_list
 
 from .attachments import Attachment
@@ -58,19 +59,20 @@ class BaseMessage:
         self.mrkdwn = mrkdwn
 
     def _resolve(self) -> dict[str, Any]:
-        message: dict[str, Any] = {}
-        if self.channel:
-            message["channel"] = self.channel
-        message["mrkdwn"] = self.mrkdwn
-        if self.blocks:
-            message["blocks"] = [block._resolve() for block in self.blocks]
-        if self.attachments:
-            message["attachments"] = [attachment._resolve() for attachment in self.attachments]
-        if self.thread_ts:
-            message["thread_ts"] = self.thread_ts
-        if self.text or self.text == "":
-            message["text"] = self.text
-        return message
+        # The 'text' field is intentionally emitted even when it is an empty
+        # string (Slack uses it as a notification fallback when blocks are
+        # present). resolve() strips None but preserves "" -- exactly the
+        # semantics we want here.
+        return resolve(
+            {
+                "channel": self.channel if self.channel else None,
+                "mrkdwn": self.mrkdwn,
+                "blocks": self.blocks if self.blocks else None,
+                "attachments": self.attachments if self.attachments else None,
+                "thread_ts": self.thread_ts if self.thread_ts else None,
+                "text": self.text if (self.text or self.text == "") else None,
+            }
+        )
 
     def to_dict(self) -> dict[str, Any]:
         return self._resolve()
@@ -131,12 +133,13 @@ class Message(BaseMessage):
         self.unfurl_media = unfurl_media
 
     def _resolve(self) -> dict[str, Any]:
-        result = {**super()._resolve()}
-        if self.unfurl_links is not None:
-            result["unfurl_links"] = self.unfurl_links
-        if self.unfurl_media is not None:
-            result["unfurl_media"] = self.unfurl_media
-        return result
+        return resolve(
+            {
+                **super()._resolve(),
+                "unfurl_links": self.unfurl_links,
+                "unfurl_media": self.unfurl_media,
+            }
+        )
 
 
 class MessageResponse(BaseMessage):
@@ -165,13 +168,13 @@ class MessageResponse(BaseMessage):
         self.ephemeral = ephemeral
 
     def _resolve(self) -> dict[str, Any]:
-        result: dict[str, Any] = {
-            **super()._resolve(),
-            "replace_original": self.replace_original,
-        }
-        if self.ephemeral:
-            result["response_type"] = "ephemeral"
-        return result
+        return resolve(
+            {
+                **super()._resolve(),
+                "replace_original": self.replace_original,
+                "response_type": "ephemeral" if self.ephemeral else None,
+            }
+        )
 
 
 class WebhookMessage:
@@ -237,32 +240,24 @@ class WebhookMessage:
         self.headers = headers
 
     def _resolve(self) -> dict[str, Any]:
-        webhook_message: dict[str, Any] = {}
-        if self.text is not None:
-            webhook_message["text"] = self.text
-        if self.attachments is not None:
-            webhook_message["attachments"] = [
-                attachment._resolve() for attachment in self.attachments if attachment is not None
-            ]
-        if self.blocks is not None:
-            webhook_message["blocks"] = [
-                block._resolve() for block in self.blocks if block is not None
-            ]
-        if self.response_type is not None:
-            webhook_message["response_type"] = self.response_type
-        if self.replace_original is not None:
-            webhook_message["replace_original"] = self.replace_original
-        if self.delete_original is not None:
-            webhook_message["delete_original"] = self.delete_original
-        if self.unfurl_links is not None:
-            webhook_message["unfurl_links"] = self.unfurl_links
-        if self.unfurl_media is not None:
-            webhook_message["unfurl_media"] = self.unfurl_media
-        if self.metadata is not None:
-            webhook_message["metadata"] = self.metadata
-        if self.headers is not None:
-            webhook_message["headers"] = self.headers
-        return webhook_message
+        return resolve(
+            {
+                "text": self.text,
+                "attachments": [att for att in self.attachments if att is not None]
+                if self.attachments is not None
+                else None,
+                "blocks": [block for block in self.blocks if block is not None]
+                if self.blocks is not None
+                else None,
+                "response_type": self.response_type,
+                "replace_original": self.replace_original,
+                "delete_original": self.delete_original,
+                "unfurl_links": self.unfurl_links,
+                "unfurl_media": self.unfurl_media,
+                "metadata": self.metadata,
+                "headers": self.headers,
+            }
+        )
 
     def to_dict(self) -> dict[str, Any]:
         return self._resolve()
