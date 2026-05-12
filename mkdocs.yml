@@ -72,6 +72,7 @@ nav:
   - Home: index.md
   - Usage:
     - Installation: usage/installation.md
+    - Compatibility: usage/compatibility.md
     - Using Blocks: usage/using_blocks.md
     - Sending Messages: usage/sending_messages.md
     - Cookbook: usage/cookbook.md
