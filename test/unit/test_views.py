@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from slackblocks import HomeTabView, Modal
 from slackblocks.blocks import DividerBlock, SectionBlock
 

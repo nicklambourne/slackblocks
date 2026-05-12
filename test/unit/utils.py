@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Union
 
 from slackblocks.objects import Option, Text, TextType
 
@@ -12,6 +13,6 @@ THREE_OPTIONS = TWO_OPTIONS + [
 ]
 
 
-def fetch_sample(path: Union[Path, str]) -> str:
-    with open(path, "r") as file_:
+def fetch_sample(path: Path | str) -> str:
+    with open(path) as file_:
         return file_.read()

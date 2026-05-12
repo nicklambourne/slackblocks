@@ -5,9 +5,11 @@ attachments API.
 See: <https://api.slack.com/slackblocks/latest/reference/messaging/attachments>.
 """
 
+from __future__ import annotations
+
 from enum import Enum
 from json import dumps
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from slackblocks.blocks import Block
 from slackblocks.errors import InvalidUsageError
@@ -115,9 +117,9 @@ class Field:
 
     def __init__(
         self,
-        title: Optional[str] = None,
-        value: Optional[str] = None,
-        short: Optional[bool] = False,
+        title: str | None = None,
+        value: str | None = None,
+        short: bool | None = False,
     ):
         self.title = title
         self.value = value
@@ -159,15 +161,15 @@ class Attachment:
 
     def __init__(
         self,
-        blocks: Optional[Union[Block, List[Block]]] = None,
-        color: Optional[Union[str, Color]] = None,
-        fields: Optional[Union[Field, List[Field]]] = None,
-        fallback: Optional[str] = None,
+        blocks: Block | list[Block] | None = None,
+        color: str | Color | None = None,
+        fields: Field | list[Field] | None = None,
+        fallback: str | None = None,
     ):
         self.blocks = coerce_to_list(blocks, Block, allow_none=True)
         self.fields = coerce_to_list(fields, Field, allow_none=True)
         self.fallback = fallback
-        self.color: Optional[str]
+        self.color: str | None
         if type(color) is Color:
             self.color = color.value
         elif type(color) is str:
@@ -180,8 +182,8 @@ class Attachment:
         else:
             self.color = None
 
-    def _resolve(self) -> Dict[str, Any]:
-        attachment: Dict[str, Any] = {}
+    def _resolve(self) -> dict[str, Any]:
+        attachment: dict[str, Any] = {}
         if self.blocks:
             attachment["blocks"] = [block._resolve() for block in self.blocks]
         if self.color:

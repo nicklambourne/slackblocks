@@ -5,10 +5,12 @@ These obejects form the contents of the
     [`RichTextBlock`](/slackblocks/latest/reference/blocks/#blocks.RichTextBlock).
 """
 
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from slackblocks.errors import InvalidUsageError
 from slackblocks.rich_text.elements import (
@@ -43,7 +45,7 @@ class ListType(Enum):
     ORDERED = "ordered"
 
     @classmethod
-    def all(cls) -> List[str]:
+    def all(cls) -> list[str]:
         return [list_type.value for list_type in ListType]
 
 
@@ -60,7 +62,7 @@ class RichTextObject(ABC):
         self.type_ = type_
 
     @abstractmethod
-    def _resolve(self) -> Dict[str, Any]:
+    def _resolve(self) -> dict[str, Any]:
         return {"type": self.type_.value}
 
     def __repr__(self) -> str:
@@ -84,7 +86,7 @@ class RichTextSection(RichTextObject):
             `RichTextObject`.
     """
 
-    def __init__(self, elements: Union[RichTextElement, List[RichTextElement]]) -> None:
+    def __init__(self, elements: RichTextElement | list[RichTextElement]) -> None:
         super().__init__(type_=RichTextObjectType.SECTION)
         self.elements = coerce_to_list(
             elements,
@@ -99,7 +101,7 @@ class RichTextSection(RichTextObject):
             min_size=1,
         )
 
-    def _resolve(self) -> Dict[str, Any]:
+    def _resolve(self) -> dict[str, Any]:
         section = super()._resolve()
         if self.elements is not None:
             section["elements"] = [element._resolve() for element in self.elements]
@@ -127,11 +129,11 @@ class RichTextList(RichTextObject):
 
     def __init__(
         self,
-        style: Union[str, ListType],
-        elements: Union[RichTextSection, List[RichTextSection]],
-        indent: Optional[int] = None,
-        offset: Optional[int] = 0,
-        border: Optional[int] = 0,
+        style: str | ListType,
+        elements: RichTextSection | list[RichTextSection],
+        indent: int | None = None,
+        offset: int | None = 0,
+        border: int | None = 0,
     ) -> None:
         super().__init__(type_=RichTextObjectType.LIST)
         if isinstance(style, str):
@@ -146,8 +148,8 @@ class RichTextList(RichTextObject):
         self.offset = validate_int(offset, allow_none=True)
         self.border = validate_int(border, allow_none=True)
 
-    def _resolve(self) -> Dict[str, Any]:
-        rich_text_list: Dict[str, Any] = super()._resolve()
+    def _resolve(self) -> dict[str, Any]:
+        rich_text_list: dict[str, Any] = super()._resolve()
         if self.elements is not None:
             rich_text_list["elements"] = [
                 element._resolve() for element in self.elements if element is not None
@@ -183,8 +185,8 @@ class RichTextCodeBlock(RichTextObject):
 
     def __init__(
         self,
-        elements: Union[RichTextElement, List[RichTextElement]],
-        border: Optional[int] = None,
+        elements: RichTextElement | list[RichTextElement],
+        border: int | None = None,
     ) -> None:
         super().__init__(type_=RichTextObjectType.PREFORMATTED)
         self.elements = coerce_to_list(
@@ -200,7 +202,7 @@ class RichTextCodeBlock(RichTextObject):
         )
         self.border = border
 
-    def _resolve(self) -> Dict[str, Any]:
+    def _resolve(self) -> dict[str, Any]:
         preformatted = super()._resolve()
         if self.elements is not None:
             preformatted["elements"] = [
@@ -228,8 +230,8 @@ class RichTextQuote(RichTextObject):
 
     def __init__(
         self,
-        elements: Union[RichTextElement, List[RichTextElement]],
-        border: Optional[int] = None,
+        elements: RichTextElement | list[RichTextElement],
+        border: int | None = None,
     ) -> None:
         super().__init__(RichTextObjectType.QUOTE)
         self.elements = coerce_to_list(
@@ -245,7 +247,7 @@ class RichTextQuote(RichTextObject):
         )
         self.border = border
 
-    def _resolve(self) -> Dict[str, Any]:
+    def _resolve(self) -> dict[str, Any]:
         quote = super()._resolve()
         if self.elements is not None:
             quote["elements"] = [

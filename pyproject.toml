@@ -59,13 +59,14 @@ build-backend = "hatchling.build"
 
 [tool.ruff]
 line-length = 100
+target-version = "py310"
 exclude = [".venv", "build", "dist", ".eggs", ".git"]
 
 [tool.ruff.lint]
-# Mirror the previous flake8 + flake8-black behavior. Start conservatively:
-# pycodestyle (E,W) + pyflakes (F). Additional rule families (UP, B, SIM, I, TCH)
-# can be enabled in a follow-up PR with their own targeted code changes.
-select = ["E", "F", "W"]
+# pycodestyle (E,W) + pyflakes (F) + pyupgrade (UP). Additional rule families
+# (B, SIM, I, TCH) can be enabled in a follow-up PR with their own targeted
+# code changes.
+select = ["E", "F", "UP", "W"]
 # E501 (line-too-long) is handled by the formatter; don't lint it. Long lines
 # in docstrings (e.g. Slack API URLs) can't be wrapped without breaking
 # Markdown link rendering.

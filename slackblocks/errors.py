@@ -2,6 +2,8 @@
 Custom error classes for clearer error reporting.
 """
 
+from __future__ import annotations
+
 
 class InvalidUsageError(Exception):
     """
@@ -14,4 +16,4 @@ class InvalidUsageError(Exception):
     """
 
     def __init__(self, message: str) -> None:
-        return super(InvalidUsageError, self).__init__(message)
+        return super().__init__(message)
