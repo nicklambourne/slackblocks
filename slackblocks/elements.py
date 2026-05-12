@@ -250,12 +250,11 @@ class DatePicker(Element):
     ) -> None:
         super().__init__(type_=ElementType.DATE_PICKER)
         self.action_id = validate_action_id(action_id)
+        self.initial_date: Optional[str] = None
         if initial_date:
             self.initial_date = datetime.strptime(initial_date, "%Y-%m-%d").strftime(
                 "%Y-%m-%d"
             )
-        else:
-            self.initial_date = None
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
