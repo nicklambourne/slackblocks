@@ -26,8 +26,12 @@ You can install `slackblocks` using any Python package manager with access to Py
 
 ## Requirements
 
-- Python 3.8.1 or newer.
+- Python 3.8.1 or newer for the `1.x` release line.
+- Python 3.10 or newer for the `2.x` release line (in development).
 - No runtime dependencies.
+
+For the full Python version support matrix and how to pin to a release line that
+matches your runtime, see [Compatibility](compatibility.md).
 
 ## Verifying your installation
 
