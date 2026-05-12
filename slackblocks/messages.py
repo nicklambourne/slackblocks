@@ -36,7 +36,35 @@ class ResponseType(Enum):
         return value
 
 
-class BaseMessage:
+class _MessagePayloadMixin:
+    """Shared serialization helpers used by both BaseMessage and
+    WebhookMessage.
+
+    Both expose the same interface (``to_dict()``, ``json()``, ``__repr__``,
+    ``__getitem__``, ``keys()``) so that ``**msg`` unpacking works with the
+    Slack Web/Webhook clients. Concrete subclasses must implement
+    ``_resolve``."""
+
+    def _resolve(self) -> dict[str, Any]:  # pragma: no cover - overridden
+        raise NotImplementedError
+
+    def to_dict(self) -> dict[str, Any]:
+        return self._resolve()
+
+    def json(self) -> str:
+        return dumps(self._resolve(), indent=4)
+
+    def __repr__(self) -> str:
+        return self.json()
+
+    def __getitem__(self, item):
+        return self._resolve()[item]
+
+    def keys(self) -> list[str]:
+        return list(self._resolve().keys())
+
+
+class BaseMessage(_MessagePayloadMixin):
     """
     Abstract class for shared functionality between Messages and
     MessageResponses.
@@ -73,21 +101,6 @@ class BaseMessage:
                 "text": self.text if (self.text or self.text == "") else None,
             }
         )
-
-    def to_dict(self) -> dict[str, Any]:
-        return self._resolve()
-
-    def json(self) -> str:
-        return dumps(self._resolve(), indent=4)
-
-    def __repr__(self) -> str:
-        return self.json()
-
-    def __getitem__(self, item):
-        return self._resolve()[item]
-
-    def keys(self) -> list[str]:
-        return list(self._resolve().keys())
 
 
 class Message(BaseMessage):
@@ -177,7 +190,7 @@ class MessageResponse(BaseMessage):
         )
 
 
-class WebhookMessage:
+class WebhookMessage(_MessagePayloadMixin):
     """
     Messages sent via the Slack `WebhookClient` takes different arguments than
         those sent via the regular `WebClient`.
@@ -258,18 +271,3 @@ class WebhookMessage:
                 "headers": self.headers,
             }
         )
-
-    def to_dict(self) -> dict[str, Any]:
-        return self._resolve()
-
-    def json(self) -> str:
-        return dumps(self._resolve(), indent=4)
-
-    def __repr__(self) -> str:
-        return self.json()
-
-    def __getitem__(self, item):
-        return self._resolve()[item]
-
-    def keys(self) -> list[str]:
-        return list(self._resolve().keys())
