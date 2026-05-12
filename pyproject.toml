@@ -63,14 +63,21 @@ target-version = "py310"
 exclude = [".venv", "build", "dist", ".eggs", ".git"]
 
 [tool.ruff.lint]
-# pycodestyle (E,W) + pyflakes (F) + pyupgrade (UP). Additional rule families
-# (B, SIM, I, TCH) can be enabled in a follow-up PR with their own targeted
-# code changes.
-select = ["E", "F", "UP", "W"]
+# Rule families enabled:
+#   E, W   - pycodestyle
+#   F      - pyflakes
+#   B      - flake8-bugbear (likely bugs)
+#   I      - isort (import sorting)
+#   SIM    - flake8-simplify (simpler equivalents)
+#   TC     - flake8-type-checking (move type-only imports into TYPE_CHECKING)
+#   UP     - pyupgrade (modern syntax for the target Python version)
+select = ["B", "E", "F", "I", "SIM", "TC", "UP", "W"]
 # E501 (line-too-long) is handled by the formatter; don't lint it. Long lines
 # in docstrings (e.g. Slack API URLs) can't be wrapped without breaking
 # Markdown link rendering.
-ignore = ["E501"]
+# SIM108 (force ternary) is opinionated and hurts readability for the
+# multi-branch validation patterns used in this codebase.
+ignore = ["E501", "SIM108"]
 
 [tool.ruff.lint.per-file-ignores]
 "slackblocks/__init__.py" = ["F401"]
