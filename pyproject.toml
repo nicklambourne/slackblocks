@@ -40,11 +40,9 @@ exclude = ["test/**", "docs/**"]
 [dependency-groups]
 dev = [
     "aiohttp>=3.10.11,<4.0.0",
-    "black>=24.8.0,<25.0.0",
-    "flake8>=6.1.0,<7.0.0",
-    "flake8-pyproject>=1.2.3,<2.0.0",
     "mypy>=1.14.1,<1.15.0",
     "pytest>=8.3.4,<9.0.0",
+    "ruff>=0.8.0,<1.0.0",
     "slack-sdk>=3.33.4,<4.0.0",
     "twine>=6.0.1,<7.0.0",
     "wheel>=0.45.1,<1.0.0",
@@ -61,17 +59,27 @@ docs = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.flake8]
-exclude = [".venv", "./build", "./dist", ".eggs", ".git"]
-max-line-length = 100
-extend-ignore = """
-    BLK100
-"""
-per-file-ignores = [
-    "slackblocks/__init__.py:F401",
-    "slackblocks/rich_text/__init__.py:F401",
-    "slackblocks/rich_text/objects.py:W605",
-]
+[tool.ruff]
+line-length = 100
+exclude = [".venv", "build", "dist", ".eggs", ".git"]
+
+[tool.ruff.lint]
+# Mirror the previous flake8 + flake8-black behavior. Start conservatively:
+# pycodestyle (E,W) + pyflakes (F). Additional rule families (UP, B, SIM, I, TCH)
+# can be enabled in a follow-up PR with their own targeted code changes.
+select = ["E", "F", "W"]
+# E501 (line-too-long) is handled by the formatter; don't lint it. Long lines
+# in docstrings (e.g. Slack API URLs) can't be wrapped without breaking
+# Markdown link rendering.
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"slackblocks/__init__.py" = ["F401"]
+"slackblocks/rich_text/__init__.py" = ["F401"]
+"slackblocks/rich_text/objects.py" = ["W605"]
+
+[tool.ruff.format]
+# Black-compatible defaults; no overrides needed.
 
 [tool.pytest.ini_options]
 filterwarnings = [

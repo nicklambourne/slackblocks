@@ -177,10 +177,7 @@ class ContextBlock(Block):
         self.elements = []
         if elements is not None:
             for element in elements:
-                if (
-                    element.type == CompositionObjectType.TEXT
-                    or element.type == ElementType.IMAGE
-                ):
+                if element.type == CompositionObjectType.TEXT or element.type == ElementType.IMAGE:
                     self.elements.append(element)
                 else:
                     raise InvalidUsageError(
@@ -290,9 +287,7 @@ class ImageBlock(Block):
             field_name="title",
             max_length=3000,
         )
-        self.alt_text = validate_string(
-            alt_text, field_name="alt_text", max_length=2000
-        )
+        self.alt_text = validate_string(alt_text, field_name="alt_text", max_length=2000)
         if title and isinstance(title, Text):
             if title.text_type == TextType.MARKDOWN:
                 # Coerce title into plaintext
@@ -347,18 +342,14 @@ class InputBlock(Block):
         optional: bool = False,
     ) -> None:
         super().__init__(type_=BlockType.INPUT, block_id=block_id)
-        self.label = Text.to_text(
-            label, force_plaintext=True, max_length=2000, allow_none=False
-        )
+        self.label = Text.to_text(label, force_plaintext=True, max_length=2000, allow_none=False)
         if not isinstance(element, ALLOWED_INPUT_ELEMENTS):
             raise InvalidUsageError(
                 f"InputBlocks can only hold elements of type: {ALLOWED_INPUT_ELEMENTS}"
             )
         self.element = element
         self.dispatch_action = dispatch_action
-        self.hint = Text.to_text(
-            hint, force_plaintext=True, max_length=2000, allow_none=True
-        )
+        self.hint = Text.to_text(hint, force_plaintext=True, max_length=2000, allow_none=True)
         self.optional = optional
 
     def _resolve(self) -> Dict[str, Any]:
@@ -416,9 +407,7 @@ class RichTextBlock(Block):
     def _resolve(self) -> Dict[str, Any]:
         rich_text_block: Dict[str, Any] = self._attributes()
         if self.elements is not None:
-            rich_text_block["elements"] = [
-                element._resolve() for element in self.elements
-            ]
+            rich_text_block["elements"] = [element._resolve() for element in self.elements]
         return rich_text_block
 
 
@@ -461,18 +450,14 @@ class SectionBlock(Block):
         self.text = Text.to_text(text, max_length=3000, allow_none=True)
         self.fields: Optional[List[Text]]
         if fields is not None:
-            field_list: List[Union[str, Text]] = coerce_to_list_nonnull(
-                fields, class_=(str, Text)
-            )
+            field_list: List[Union[str, Text]] = coerce_to_list_nonnull(fields, class_=(str, Text))
             self.fields = [
                 Text.to_text_nonnull(field, max_length=2000)
                 for field in field_list
                 if field is not None
             ]
             if len(self.fields) > 10:
-                raise InvalidUsageError(
-                    "Section blocks can hold a maximum of ten fields"
-                )
+                raise InvalidUsageError("Section blocks can hold a maximum of ten fields")
         else:
             self.fields = None
 
@@ -523,9 +508,7 @@ class TableBlock(Block):
         num_columns = len(rows[0])
         for row in rows:
             if len(row) != num_columns:
-                raise InvalidUsageError(
-                    "All rows must have the same number of columns."
-                )
+                raise InvalidUsageError("All rows must have the same number of columns.")
         if column_settings is not None:
             if num_columns != len(column_settings):
                 raise InvalidUsageError(
@@ -555,13 +538,9 @@ class TableBlock(Block):
 
     def _resolve(self) -> Dict[str, Any]:
         table = self._attributes()
-        table["rows"] = [
-            [self._resolve_cell(cell) for cell in row] for row in self.rows
-        ]
+        table["rows"] = [[self._resolve_cell(cell) for cell in row] for row in self.rows]
         if self.column_settings:
-            table["column_settings"] = [
-                setting._resolve() for setting in self.column_settings
-            ]
+            table["column_settings"] = [setting._resolve() for setting in self.column_settings]
         return table
 
     def _resolve_cell(self, cell: Union[RawText, RichTextObject]) -> Dict[str, Any]:

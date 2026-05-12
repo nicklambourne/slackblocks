@@ -29,9 +29,7 @@ class ResponseType(Enum):
         if isinstance(value, ResponseType):
             return value.value
         if value not in [response_type.value for response_type in ResponseType]:
-            raise InvalidUsageError(
-                "ResponseType must be either `ephemeral` or `in_channel`"
-            )
+            raise InvalidUsageError("ResponseType must be either `ephemeral` or `in_channel`")
         return value
 
 
@@ -53,9 +51,7 @@ class BaseMessage:
         self.blocks = coerce_to_list(blocks, class_=Block, allow_none=True)
         self.channel = channel
         self.text = text
-        self.attachments = coerce_to_list(
-            attachments, class_=Attachment, allow_none=True
-        )
+        self.attachments = coerce_to_list(attachments, class_=Attachment, allow_none=True)
         self.thread_ts = thread_ts
         self.mrkdwn = mrkdwn
 
@@ -67,9 +63,7 @@ class BaseMessage:
         if self.blocks:
             message["blocks"] = [block._resolve() for block in self.blocks]
         if self.attachments:
-            message["attachments"] = [
-                attachment._resolve() for attachment in self.attachments
-            ]
+            message["attachments"] = [attachment._resolve() for attachment in self.attachments]
         if self.thread_ts:
             message["thread_ts"] = self.thread_ts
         if self.text or self.text == "":
@@ -229,9 +223,7 @@ class WebhookMessage:
         self.attachments: Optional[List[Attachment]] = coerce_to_list(
             attachments, Attachment, allow_none=True
         )
-        self.blocks: Optional[List[Block]] = coerce_to_list(
-            blocks, Block, allow_none=True
-        )
+        self.blocks: Optional[List[Block]] = coerce_to_list(blocks, Block, allow_none=True)
         self.response_type = (
             ResponseType.get_value(response_type) if response_type is not None else None
         )
@@ -248,9 +240,7 @@ class WebhookMessage:
             webhook_message["text"] = self.text
         if self.attachments is not None:
             webhook_message["attachments"] = [
-                attachment._resolve()
-                for attachment in self.attachments
-                if attachment is not None
+                attachment._resolve() for attachment in self.attachments if attachment is not None
             ]
         if self.blocks is not None:
             webhook_message["blocks"] = [

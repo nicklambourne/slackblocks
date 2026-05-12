@@ -1,4 +1,4 @@
-name: Flake8 Linting
+name: Ruff Lint
 on:
   push:
     branches: [master]
@@ -12,7 +12,7 @@ concurrency:
 jobs:
   linting:
     runs-on: ubuntu-latest
-    name: flake8 Linting
+    name: Ruff Lint
     steps:
       - name: Check Out Source Repository
         uses: actions/checkout@v5
@@ -26,6 +26,4 @@ jobs:
         run: uv sync
 
       - name: Linting
-        uses: py-actions/flake8@v2
-        with:
-          plugins: "flake8-black Flake8-pyproject"
+        run: uv run ruff check .

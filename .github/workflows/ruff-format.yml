@@ -1,4 +1,4 @@
-name: Black Formatting
+name: Ruff Format
 on:
   push:
     branches: [master]
@@ -12,7 +12,7 @@ concurrency:
 jobs:
   formatting:
     runs-on: ubuntu-latest
-    name: black Formatting
+    name: Ruff Format
     steps:
       - name: Check Out Source Repository
         uses: actions/checkout@v5
@@ -26,4 +26,4 @@ jobs:
         run: uv sync
 
       - name: Formatting
-        run: uv run black . --check
+        run: uv run ruff format --check .
