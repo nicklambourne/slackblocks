@@ -121,9 +121,7 @@ class Button(Element):
         super().__init__(type_=ElementType.BUTTON)
         self.text = Text.to_text(text, max_length=75, force_plaintext=True)
         self.action_id = validate_action_id(action_id)
-        self.url = validate_string(
-            url, field_name="url", max_length=3000, allow_none=True
-        )
+        self.url = validate_string(url, field_name="url", max_length=3000, allow_none=True)
         self.value = validate_string(
             value,
             field_name="value",
@@ -252,9 +250,7 @@ class DatePicker(Element):
         self.action_id = validate_action_id(action_id)
         self.initial_date: Optional[str] = None
         if initial_date:
-            self.initial_date = datetime.strptime(initial_date, "%Y-%m-%d").strftime(
-                "%Y-%m-%d"
-            )
+            self.initial_date = datetime.strptime(initial_date, "%Y-%m-%d").strftime("%Y-%m-%d")
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
@@ -364,9 +360,7 @@ class EmailInput(Element):
         if self.initial_value:
             email_input["initial_value"] = self.initial_value
         if self.dispatch_action_config:
-            email_input["dispatch_action_config"] = (
-                self.dispatch_action_config._resolve()
-            )
+            email_input["dispatch_action_config"] = self.dispatch_action_config._resolve()
         if self.focus_on_load:
             email_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
@@ -404,9 +398,7 @@ class FileInput(Element):
             (str),
             allow_none=True,
         )
-        self.max_files = validate_int(
-            max_files, min_value=1, max_value=10, allow_none=True
-        )
+        self.max_files = validate_int(max_files, min_value=1, max_value=10, allow_none=True)
 
     def _resolve(self) -> Dict[str, Any]:
         file_input: Dict[str, Any] = {}
@@ -512,12 +504,8 @@ class StaticMultiSelectMenu(Element):
         super().__init__(type_=ElementType.MULTI_SELECT_STATIC)
         self.action_id = validate_action_id(action_id)
         if options and option_groups:
-            raise InvalidUsageError(
-                "Cannot set both `options` and `option_groups` parameters."
-            )
-        self.options = coerce_to_list(
-            options, class_=Option, allow_none=True, max_size=100
-        )
+            raise InvalidUsageError("Cannot set both `options` and `option_groups` parameters.")
+        self.options = coerce_to_list(options, class_=Option, allow_none=True, max_size=100)
         self.option_groups = coerce_to_list(
             option_groups, class_=OptionGroup, allow_none=True, max_size=100
         )
@@ -539,9 +527,7 @@ class StaticMultiSelectMenu(Element):
         if (
             option_groups
             and self.initial_options
-            and not all(
-                isinstance(option, OptionGroup) for option in self.initial_options
-            )
+            and not all(isinstance(option, OptionGroup) for option in self.initial_options)
         ):
             raise InvalidUsageError(
                 "If using `option_groups` then `initial_options` must also be of type "
@@ -554,9 +540,7 @@ class StaticMultiSelectMenu(Element):
             options_to_validate = self.options
         if self.option_groups:
             options_to_validate = list(
-                chain.from_iterable(
-                    option_group.options for option_group in self.option_groups
-                )
+                chain.from_iterable(option_group.options for option_group in self.option_groups)
             )
         for option in options_to_validate:
             if option.text.text_type == TextType.MARKDOWN:
@@ -575,9 +559,7 @@ class StaticMultiSelectMenu(Element):
         static_multi_select = self._attributes()
         static_multi_select["action_id"] = self.action_id
         if self.options:
-            static_multi_select["options"] = [
-                option._resolve() for option in self.options
-            ]
+            static_multi_select["options"] = [option._resolve() for option in self.options]
         if self.option_groups:
             static_multi_select["option_groups"] = [
                 option_group._resolve() for option_group in self.option_groups
@@ -791,9 +773,7 @@ class ConversationMultiSelectMenu(Element):
         conversation_multi_select = self._attributes()
         conversation_multi_select["action_id"] = self.action_id
         if self.initial_conversations:
-            conversation_multi_select["initial_conversations"] = (
-                self.initial_conversations
-            )
+            conversation_multi_select["initial_conversations"] = self.initial_conversations
         if self.default_to_current_conversation:
             conversation_multi_select["default_to_current_conversation"] = (
                 self.default_to_current_conversation
@@ -931,8 +911,7 @@ class NumberInput(Element):
         if min_value is not None and max_value is not None:
             if min_value > max_value:
                 raise InvalidUsageError(
-                    f"`min_value` ({min_value}) cannot be greater than "
-                    f"`max_value` ({max_value})"
+                    f"`min_value` ({min_value}) cannot be greater than `max_value` ({max_value})"
                 )
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
@@ -952,9 +931,7 @@ class NumberInput(Element):
         if self.max_value is not None:
             number_input["max_value"] = self.max_value
         if self.dispatch_action_config:
-            number_input["dispatch_action_config"] = (
-                self.dispatch_action_config._resolve()
-            )
+            number_input["dispatch_action_config"] = self.dispatch_action_config._resolve()
         if self.focus_on_load:
             number_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
@@ -1067,9 +1044,7 @@ class PlainTextInput(Element):
         if self.max_length:
             plain_text_input["max_length"] = self.max_length
         if self.dispatch_action_config:
-            plain_text_input["dispatch_action_config"] = (
-                self.dispatch_action_config._resolve()
-            )
+            plain_text_input["dispatch_action_config"] = self.dispatch_action_config._resolve()
         if self.focus_on_load:
             plain_text_input["focus_on_load"] = self.focus_on_load
         if self.placeholder:
@@ -1127,9 +1102,7 @@ class RadioButtonGroup(Element):
         radio_button_group = self._attributes()
         radio_button_group["action_id"] = self.action_id
         if self.options is not None:
-            radio_button_group["options"] = [
-                option._resolve() for option in self.options
-            ]
+            radio_button_group["options"] = [option._resolve() for option in self.options]
         if self.initial_option:
             radio_button_group["initial_option"] = self.initial_option._resolve()
         if self.confirm:
@@ -1182,9 +1155,7 @@ class StaticSelectMenu(Element):
         super().__init__(type_=ElementType.STATIC_SELECT_MENU)
         self.action_id = validate_action_id(action_id)
         if options and option_groups:
-            raise InvalidUsageError(
-                "Cannot set both `options` and `option_groups` parameters."
-            )
+            raise InvalidUsageError("Cannot set both `options` and `option_groups` parameters.")
         self.options: Optional[List[Option]] = coerce_to_list(
             options, class_=Option, allow_none=True, max_size=100
         )
@@ -1196,11 +1167,7 @@ class StaticSelectMenu(Element):
                 "If using `options` then `initial_option` must also be of type `Option`, "
                 f"not `{type(initial_option)}`."
             )
-        if (
-            option_groups
-            and initial_option
-            and not isinstance(initial_option, OptionGroup)
-        ):
+        if option_groups and initial_option and not isinstance(initial_option, OptionGroup):
             raise InvalidUsageError(
                 "If using `option_groups` then `initial_option` must also be of type "
                 f"`OptionGroup`, not `{type(initial_option)}`."
@@ -1212,9 +1179,7 @@ class StaticSelectMenu(Element):
             options_to_validate = self.options
         if self.option_groups:
             options_to_validate = list(
-                chain.from_iterable(
-                    option_group.options for option_group in self.option_groups
-                )
+                chain.from_iterable(option_group.options for option_group in self.option_groups)
             )
         for option in options_to_validate:
             if option.text.text_type == TextType.MARKDOWN:
@@ -1233,9 +1198,7 @@ class StaticSelectMenu(Element):
         static_select_menu = self._attributes()
         static_select_menu["action_id"] = self.action_id
         if self.options:
-            static_select_menu["options"] = [
-                option._resolve() for option in self.options
-            ]
+            static_select_menu["options"] = [option._resolve() for option in self.options]
         if self.option_groups:
             static_select_menu["option_groups"] = [
                 option_group._resolve() for option_group in self.option_groups
@@ -1256,7 +1219,7 @@ class ExternalSelectMenu(Element):
     A select menu interactive UI element, sourced with externally provided options.
 
     See:
-        <https://api.slack.com/slackblocks/latest/reference/block-kit/block-elements#external_select>. # noqa: E501
+        <https://api.slack.com/slackblocks/latest/reference/block-kit/block-elements#external_select>.
 
     Args:
         action_id: an identifier so the source of the action can be known.
@@ -1743,9 +1706,7 @@ class RichTextInput(Element):
         if self.initial_value is not None:
             rich_text_input["initial_value"] = self.initial_value._resolve()
         if self.dispatch_action_config is not None:
-            rich_text_input["dispatch_action_config"] = (
-                self.dispatch_action_config._resolve()
-            )
+            rich_text_input["dispatch_action_config"] = self.dispatch_action_config._resolve()
         if self.focus_on_load is not None:
             rich_text_input["focus_on_load"] = self.focus_on_load
         if self.placeholder is not None:

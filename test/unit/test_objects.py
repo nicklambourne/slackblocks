@@ -45,9 +45,9 @@ def test_text_plaintext_emoji() -> None:
 
 
 def test_text_markdown_verbatim() -> None:
-    assert fetch_sample(
-        path="test/samples/objects/text_markdown_verbatim.json"
-    ) == repr(Text(text="hi", type_=TextType.MARKDOWN, verbatim=True))
+    assert fetch_sample(path="test/samples/objects/text_markdown_verbatim.json") == repr(
+        Text(text="hi", type_=TextType.MARKDOWN, verbatim=True)
+    )
 
 
 def test_text_coerce_from_string() -> None:
@@ -88,9 +88,9 @@ def test_confirmation_dialogue_basic() -> None:
         confirm=Text("Yes", type_=TextType.PLAINTEXT),
         deny=Text("Nope!", type_=TextType.PLAINTEXT),
     )
-    assert fetch_sample(
-        path="test/samples/objects/confirmation_dialogue_basic.json"
-    ) == repr(confirmation_dialogue)
+    assert fetch_sample(path="test/samples/objects/confirmation_dialogue_basic.json") == repr(
+        confirmation_dialogue
+    )
 
 
 def test_confirm_alias_equivalent_to_confirmation_dialogue() -> None:
@@ -103,9 +103,9 @@ def test_confirm_alias_equivalent_to_confirmation_dialogue() -> None:
         confirm=Text("Yes", type_=TextType.PLAINTEXT),
         deny=Text("Nope!", type_=TextType.PLAINTEXT),
     )
-    assert fetch_sample(
-        path="test/samples/objects/confirmation_dialogue_basic.json"
-    ) == repr(confirm)
+    assert fetch_sample(path="test/samples/objects/confirmation_dialogue_basic.json") == repr(
+        confirm
+    )
 
 
 def test_conversation_filter_basic() -> None:
@@ -116,9 +116,9 @@ def test_conversation_filter_basic() -> None:
         ],
         exclude_bot_users=True,
     )
-    assert fetch_sample(
-        path="test/samples/objects/conversation_filter_basic.json"
-    ) == repr(conversation_filter)
+    assert fetch_sample(path="test/samples/objects/conversation_filter_basic.json") == repr(
+        conversation_filter
+    )
 
 
 def test_dispatch_action_config_basic() -> None:
@@ -163,9 +163,7 @@ def test_option_group_basic() -> None:
         label="Group A",
         options=THREE_OPTIONS,
     )
-    assert fetch_sample(path="test/samples/objects/option_group_basic.json") == repr(
-        option_group
-    )
+    assert fetch_sample(path="test/samples/objects/option_group_basic.json") == repr(option_group)
 
 
 def test_trigger_basic() -> None:
@@ -183,6 +181,4 @@ def test_workflow_basic() -> None:
             customizable_input_parameters=INPUT_PARAMETERS,
         )
     )
-    assert fetch_sample(path="test/samples/objects/workflow_basic.json") == repr(
-        workflow
-    )
+    assert fetch_sample(path="test/samples/objects/workflow_basic.json") == repr(workflow)

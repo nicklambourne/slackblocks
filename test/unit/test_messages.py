@@ -25,9 +25,7 @@ def test_message_with_optional_arguments() -> None:
         unfurl_links=False,
         unfurl_media=False,
     )
-    with open(
-        "test/samples/messages/message_with_optional_arguments.json", "r"
-    ) as expected:
+    with open("test/samples/messages/message_with_optional_arguments.json", "r") as expected:
         assert repr(message) == expected.read()
 
 
