@@ -11,7 +11,7 @@ from datetime import datetime
 from enum import Enum
 from itertools import chain
 from json import dumps
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .errors import InvalidUsageError
 from .objects import (
@@ -26,8 +26,10 @@ from .objects import (
     TextType,
     Workflow,
 )
-from .rich_text import RichText
 from .utils import coerce_to_list, validate_action_id, validate_int, validate_string
+
+if TYPE_CHECKING:
+    from .rich_text import RichText
 
 
 class ElementType(Enum):
@@ -890,25 +892,18 @@ class NumberInput(Element):
         self.initial_value = initial_value
         self.min_value = min_value
         self.max_value = max_value
-        if min_value:
-            if not is_decimal_allowed:
-                if isinstance(min_value, float):
-                    raise InvalidUsageError(
-                        f"`min_value` ({min_value}) cannot be a float when "
-                        "`is_decimal_allowed` is `False`"
-                    )
-        if max_value:
-            if not is_decimal_allowed:
-                if isinstance(max_value, float):
-                    raise InvalidUsageError(
-                        f"`max_value` ({max_value}) cannot be a float when "
-                        "`is_decimal_allowed` is `False`"
-                    )
-        if min_value is not None and max_value is not None:
-            if min_value > max_value:
-                raise InvalidUsageError(
-                    f"`min_value` ({min_value}) cannot be greater than `max_value` ({max_value})"
-                )
+        if min_value and not is_decimal_allowed and isinstance(min_value, float):
+            raise InvalidUsageError(
+                f"`min_value` ({min_value}) cannot be a float when `is_decimal_allowed` is `False`"
+            )
+        if max_value and not is_decimal_allowed and isinstance(max_value, float):
+            raise InvalidUsageError(
+                f"`max_value` ({max_value}) cannot be a float when `is_decimal_allowed` is `False`"
+            )
+        if min_value is not None and max_value is not None and min_value > max_value:
+            raise InvalidUsageError(
+                f"`min_value` ({min_value}) cannot be greater than `max_value` ({max_value})"
+            )
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
