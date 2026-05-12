@@ -8,10 +8,9 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from json import dumps
 from typing import Any
 
-from slackblocks._core import omit_none
+from slackblocks._core import RenderableMixin, omit_none
 from slackblocks.utils import validate_string
 
 
@@ -39,7 +38,7 @@ def _style_dict(**flags: bool | None) -> dict[str, bool] | None:
     return style if style else None
 
 
-class RichTextElement(ABC):
+class RichTextElement(RenderableMixin, ABC):
     """
     Abstract base class for all rich text element classes.
 
@@ -54,9 +53,6 @@ class RichTextElement(ABC):
     @abstractmethod
     def _resolve(self) -> dict[str, Any]:
         return {"type": self.type_.value}
-
-    def __repr__(self) -> str:
-        return dumps(self._resolve(), indent=4)
 
 
 class RichText(RichTextElement):

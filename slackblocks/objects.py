@@ -11,7 +11,7 @@ from enum import Enum
 from json import dumps
 from typing import Any
 
-from slackblocks._core import omit_none, resolve
+from slackblocks._core import RenderableMixin, omit_none, resolve
 from slackblocks.errors import InvalidUsageError
 from slackblocks.utils import (
     coerce_to_list,
@@ -38,7 +38,7 @@ class CompositionObjectType(Enum):
     WORKFLOW = "workflow"
 
 
-class CompositionObject(ABC):
+class CompositionObject(RenderableMixin, ABC):
     """
     Basis element containing attributes and behaviour common to all
     composition objects.
@@ -56,9 +56,6 @@ class CompositionObject(ABC):
     @abstractmethod
     def _resolve(self) -> dict[str, Any]:
         pass
-
-    def __repr__(self) -> str:
-        return dumps(self._resolve(), indent=4)
 
 
 class TextType(Enum):
