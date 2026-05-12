@@ -13,6 +13,7 @@ from json import dumps
 from typing import Any
 from uuid import uuid4
 
+from slackblocks._core import resolve
 from slackblocks.elements import (
     ChannelMultiSelectMenu,
     ChannelSelectMenu,
@@ -152,10 +153,8 @@ class ActionsBlock(Block):
             elements, (Element), allow_none=True, max_size=25
         )
 
-    def _resolve(self):
-        actions = self._attributes()
-        actions["elements"] = [element._resolve() for element in self.elements]
-        return actions
+    def _resolve(self) -> dict[str, Any]:
+        return resolve({**self._attributes(), "elements": self.elements})
 
 
 class ContextBlock(Block):
@@ -189,9 +188,7 @@ class ContextBlock(Block):
             raise InvalidUsageError("Context blocks can hold a maximum of ten elements")
 
     def _resolve(self) -> dict[str, Any]:
-        context = self._attributes()
-        context["elements"] = [element._resolve() for element in self.elements]
-        return context
+        return resolve({**self._attributes(), "elements": self.elements})
 
 
 class DividerBlock(Block):
@@ -206,7 +203,7 @@ class DividerBlock(Block):
     def __init__(self, block_id: str | None = None) -> None:
         super().__init__(type_=BlockType.DIVIDER, block_id=block_id)
 
-    def _resolve(self):
+    def _resolve(self) -> dict[str, Any]:
         return self._attributes()
 
 
@@ -234,10 +231,11 @@ class FileBlock(Block):
         self.source = source
 
     def _resolve(self) -> dict[str, Any]:
-        file = self._attributes()
-        file["external_id"] = self.external_id
-        file["source"] = self.source
-        return file
+        return {
+            **self._attributes(),
+            "external_id": self.external_id,
+            "source": self.source,
+        }
 
 
 class HeaderBlock(Block):
@@ -257,9 +255,7 @@ class HeaderBlock(Block):
             self.text = Text.to_text_nonnull(text=text, force_plaintext=True)
 
     def _resolve(self) -> dict[str, Any]:
-        header = self._attributes()
-        header["text"] = self.text._resolve()
-        return header
+        return resolve({**self._attributes(), "text": self.text})
 
 
 class ImageBlock(Block):
@@ -305,13 +301,14 @@ class ImageBlock(Block):
             self.title = Text(text=title, type_=TextType.PLAINTEXT)
 
     def _resolve(self) -> dict[str, Any]:
-        image = self._attributes()
-        image["image_url"] = self.image_url
-        if self.alt_text:
-            image["alt_text"] = self.alt_text
-        if self.title:
-            image["title"] = self.title._resolve()
-        return image
+        return resolve(
+            {
+                **self._attributes(),
+                "image_url": self.image_url,
+                "alt_text": self.alt_text if self.alt_text else None,
+                "title": getattr(self, "title", None),
+            }
+        )
 
 
 class InputBlock(Block):
@@ -355,18 +352,16 @@ class InputBlock(Block):
         self.optional = optional
 
     def _resolve(self) -> dict[str, Any]:
-        input_block = self._attributes()
-        if self.label is not None:
-            input_block["label"] = self.label._resolve()
-        if self.element is not None:
-            input_block["element"] = self.element._resolve()
-        if self.hint:
-            input_block["hint"] = self.hint._resolve()
-        if self.dispatch_action:
-            input_block["dispatch_action"] = self.dispatch_action
-        if self.optional:
-            input_block["optional"] = self.optional
-        return input_block
+        return resolve(
+            {
+                **self._attributes(),
+                "label": self.label,
+                "element": self.element,
+                "hint": self.hint if self.hint else None,
+                "dispatch_action": self.dispatch_action if self.dispatch_action else None,
+                "optional": self.optional if self.optional else None,
+            }
+        )
 
 
 class RichTextBlock(Block):
@@ -407,10 +402,7 @@ class RichTextBlock(Block):
         )
 
     def _resolve(self) -> dict[str, Any]:
-        rich_text_block: dict[str, Any] = self._attributes()
-        if self.elements is not None:
-            rich_text_block["elements"] = [element._resolve() for element in self.elements]
-        return rich_text_block
+        return resolve({**self._attributes(), "elements": self.elements})
 
 
 class SectionBlock(Block):
@@ -466,16 +458,16 @@ class SectionBlock(Block):
         self.accessory = accessory
 
     def _resolve(self) -> dict[str, Any]:
-        section = self._attributes()
-        if self.text:
-            section["text"] = self.text._resolve()
-        if self.fields:
-            section["fields"] = [
-                field._resolve() for field in self.fields if isinstance(field, Text)
-            ]
-        if self.accessory:
-            section["accessory"] = self.accessory._resolve()
-        return section
+        return resolve(
+            {
+                **self._attributes(),
+                "text": self.text if self.text else None,
+                "fields": [field for field in self.fields if isinstance(field, Text)]
+                if self.fields
+                else None,
+                "accessory": self.accessory if self.accessory else None,
+            }
+        )
 
 
 class TableBlock(Block):
@@ -538,11 +530,13 @@ class TableBlock(Block):
         self.column_settings = column_settings
 
     def _resolve(self) -> dict[str, Any]:
-        table = self._attributes()
-        table["rows"] = [[self._resolve_cell(cell) for cell in row] for row in self.rows]
-        if self.column_settings:
-            table["column_settings"] = [setting._resolve() for setting in self.column_settings]
-        return table
+        return resolve(
+            {
+                **self._attributes(),
+                "rows": [[self._resolve_cell(cell) for cell in row] for row in self.rows],
+                "column_settings": self.column_settings if self.column_settings else None,
+            }
+        )
 
     def _resolve_cell(self, cell: RawText | RichTextObject) -> dict[str, Any]:
         """
