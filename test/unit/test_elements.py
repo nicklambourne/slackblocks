@@ -291,9 +291,7 @@ def test_static_multi_select_with_option_groups_validates_text() -> None:
                 OptionGroup(
                     label="Group 2",
                     options=[
-                        Option(
-                            text=Text("Bad", type_=TextType.MARKDOWN), value="bad"
-                        )
+                        Option(text=Text("Bad", type_=TextType.MARKDOWN), value="bad")
                     ],
                 ),
             ],
