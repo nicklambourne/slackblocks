@@ -11,6 +11,7 @@ from enum import Enum
 from json import dumps
 from typing import Any
 
+from slackblocks._core import omit_none, resolve
 from slackblocks.errors import InvalidUsageError
 from slackblocks.utils import (
     coerce_to_list,
@@ -110,14 +111,18 @@ class Text(CompositionObject):
             self.emoji = emoji
 
     def _resolve(self) -> dict[str, Any]:
-        text = self._attributes()
-        text["type"] = self.text_type.value
-        text["text"] = self.text
-        if self.text_type == TextType.MARKDOWN and self.verbatim:
-            text["verbatim"] = self.verbatim
-        elif self.text_type == TextType.PLAINTEXT and self.emoji:
-            text["emoji"] = self.emoji
-        return text
+        return omit_none(
+            {
+                "type": self.text_type.value,
+                "text": self.text,
+                "verbatim": self.verbatim
+                if self.text_type == TextType.MARKDOWN and self.verbatim
+                else None,
+                "emoji": self.emoji
+                if self.text_type == TextType.PLAINTEXT and self.emoji
+                else None,
+            }
+        )
 
     @staticmethod
     def to_text(
@@ -232,13 +237,14 @@ class ConfirmationDialogue(CompositionObject):
         self.deny = Text.to_text_nonnull(deny, max_length=30, force_plaintext=True)
 
     def _resolve(self) -> dict[str, Any]:
-
-        return {
-            "title": self.title._resolve(),
-            "text": self.text._resolve(),
-            "confirm": self.confirm._resolve(),
-            "deny": self.deny._resolve(),
-        }
+        return resolve(
+            {
+                "title": self.title,
+                "text": self.text,
+                "confirm": self.confirm,
+                "deny": self.deny,
+            }
+        )
 
 
 class Confirm(ConfirmationDialogue):
@@ -289,14 +295,15 @@ class Option(CompositionObject):
         self.url = url
 
     def _resolve(self) -> dict[str, Any]:
-        option: dict[str, Any] = {}  # Does not include type in JSON
-        option["text"] = self.text._resolve()
-        option["value"] = self.value
-        if self.description is not None:
-            option["description"] = self.description._resolve()
-        if self.url is not None:
-            option["url"] = self.url
-        return option
+        # Option does not include "type" in its rendered JSON.
+        return resolve(
+            {
+                "text": self.text,
+                "value": self.value,
+                "description": self.description,
+                "url": self.url,
+            }
+        )
 
     def __eq__(self, other) -> bool:
         return (
@@ -333,12 +340,8 @@ class OptionGroup(CompositionObject):
         )
 
     def _resolve(self) -> dict[str, Any]:
-        option_group: dict[str, Any] = {}  # Does not include type in JSON
-        if self.label is not None:
-            option_group["label"] = self.label._resolve()
-        if self.options is not None:
-            option_group["options"] = [option._resolve() for option in self.options]
-        return option_group
+        # OptionGroup does not include "type" in its rendered JSON.
+        return resolve({"label": self.label, "options": self.options})
 
 
 ALLOWABLE_TRIGGERS = ["on_enter_pressed", "on_character_entered"]
@@ -370,9 +373,8 @@ class DispatchActionConfiguration(CompositionObject):
                 )
 
     def _resolve(self) -> dict[str, Any]:
-        dispatch_action_config = {}  # Does not include type in JSON
-        dispatch_action_config["trigger_actions_on"] = self.trigger_actions_on
-        return dispatch_action_config
+        # DispatchActionConfiguration does not include "type" in its rendered JSON.
+        return {"trigger_actions_on": self.trigger_actions_on}
 
 
 class ConversationFilter(CompositionObject):
@@ -415,14 +417,17 @@ class ConversationFilter(CompositionObject):
         self.exclude_bot_users = exclude_bot_users
 
     def _resolve(self) -> dict[str, Any]:
-        filter: dict[str, Any] = {}  # Does not include type in JSON
-        if self.include:
-            filter["include"] = self.include
-        if self.exclude_external_shared_channels is not None:
-            filter["exclude_external_shared_channels"] = self.exclude_external_shared_channels
-        if self.exclude_bot_users is not None:
-            filter["exclude_bot_users"] = self.exclude_bot_users
-        return filter
+        # ConversationFilter does not include "type" in its rendered JSON.
+        # Note that ``include`` is omitted when empty (falsy list) to match the
+        # historical behaviour; ``exclude_*`` fields are kept when explicitly
+        # set to False.
+        return omit_none(
+            {
+                "include": self.include if self.include else None,
+                "exclude_external_shared_channels": self.exclude_external_shared_channels,
+                "exclude_bot_users": self.exclude_bot_users,
+            }
+        )
 
 
 class InputParameter(CompositionObject):
@@ -442,10 +447,8 @@ class InputParameter(CompositionObject):
         self.value = value
 
     def _resolve(self) -> dict[str, Any]:
-        input_parameter = {}  # Does not include type in JSON
-        input_parameter["name"] = self.name
-        input_parameter["value"] = self.value
-        return input_parameter
+        # InputParameter does not include "type" in its rendered JSON.
+        return {"name": self.name, "value": self.value}
 
 
 class SlackFile(CompositionObject):
@@ -479,12 +482,8 @@ class SlackFile(CompositionObject):
         self.id = id
 
     def _resolve(self) -> dict[str, Any]:
-        file = {}  # Does not include type in JSON
-        if self.url:
-            file["url"] = self.url
-        if self.id:
-            file["id"] = self.id
-        return file
+        # SlackFile does not include "type" in its rendered JSON.
+        return omit_none({"url": self.url, "id": self.id})
 
 
 class Trigger(CompositionObject):
@@ -517,13 +516,15 @@ class Trigger(CompositionObject):
         )
 
     def _resolve(self) -> dict[str, Any]:
-        trigger: dict[str, Any] = {}  # Does not include type in JSON
-        trigger["url"] = self.url
-        if self.customizable_input_parameters:
-            trigger["customizable_input_parameters"] = [
-                parameter._resolve() for parameter in self.customizable_input_parameters
-            ]
-        return trigger
+        # Trigger does not include "type" in its rendered JSON.
+        return resolve(
+            {
+                "url": self.url,
+                "customizable_input_parameters": self.customizable_input_parameters
+                if self.customizable_input_parameters
+                else None,
+            }
+        )
 
 
 class Workflow(CompositionObject):
@@ -541,9 +542,8 @@ class Workflow(CompositionObject):
         self.trigger = trigger
 
     def _resolve(self) -> dict[str, Any]:
-        workflow = {}  # Does not include type in JSON
-        workflow["trigger"] = self.trigger._resolve()
-        return workflow
+        # Workflow does not include "type" in its rendered JSON.
+        return resolve({"trigger": self.trigger})
 
 
 class RawText:
@@ -570,13 +570,13 @@ class RawText:
         self.emoji = emoji
 
     def _resolve(self) -> dict[str, Any]:
-        raw_text: dict[str, Any] = {
-            "type": self.type,
-            "text": self.text,
-        }
-        if self.emoji:
-            raw_text["emoji"] = self.emoji
-        return raw_text
+        return omit_none(
+            {
+                "type": self.type,
+                "text": self.text,
+                "emoji": self.emoji if self.emoji else None,
+            }
+        )
 
 
 class ColumnSettings:
@@ -599,9 +599,4 @@ class ColumnSettings:
         self.is_wrapped = is_wrapped
 
     def _resolve(self) -> dict[str, Any]:
-        column_settings: dict[str, Any] = {}
-        if self.align:
-            column_settings["align"] = self.align
-        if self.is_wrapped is not None:
-            column_settings["is_wrapped"] = self.is_wrapped
-        return column_settings
+        return omit_none({"align": self.align, "is_wrapped": self.is_wrapped})
