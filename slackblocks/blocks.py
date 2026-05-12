@@ -5,10 +5,12 @@ interactive messages.
 See: <https://api.slack.com/reference/block-kit/blocks>.
 """
 
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 from uuid import uuid4
 
 from slackblocks.elements import (
@@ -109,18 +111,18 @@ class Block(ABC):
     N.B: Block is an abstract class and cannot be sent directly.
     """
 
-    def __init__(self, type_: BlockType, block_id: Optional[str] = None) -> None:
+    def __init__(self, type_: BlockType, block_id: str | None = None) -> None:
         self.type = type_
         self.block_id = block_id if block_id else str(uuid4())
 
-    def __add__(self, other: "Block"):
+    def __add__(self, other: Block):
         return [self, other]
 
     def _attributes(self):
         return {"type": self.type.value, "block_id": self.block_id}
 
     @abstractmethod
-    def _resolve(self) -> Dict[str, Any]:
+    def _resolve(self) -> dict[str, Any]:
         pass
 
     def __repr__(self) -> str:
@@ -142,11 +144,11 @@ class ActionsBlock(Block):
 
     def __init__(
         self,
-        elements: Optional[List[Element]] = None,
-        block_id: Optional[str] = None,
+        elements: list[Element] | None = None,
+        block_id: str | None = None,
     ) -> None:
         super().__init__(type_=BlockType.ACTIONS, block_id=block_id)
-        self.elements: Optional[List[Element]] = coerce_to_list(
+        self.elements: list[Element] | None = coerce_to_list(
             elements, (Element), allow_none=True, max_size=25
         )
 
@@ -170,8 +172,8 @@ class ContextBlock(Block):
 
     def __init__(
         self,
-        elements: Optional[List[Union[Element, CompositionObject]]] = None,
-        block_id: Optional[str] = None,
+        elements: list[Element | CompositionObject] | None = None,
+        block_id: str | None = None,
     ) -> None:
         super().__init__(type_=BlockType.CONTEXT, block_id=block_id)
         self.elements = []
@@ -186,7 +188,7 @@ class ContextBlock(Block):
         if len(self.elements) > 10:
             raise InvalidUsageError("Context blocks can hold a maximum of ten elements")
 
-    def _resolve(self) -> Dict[str, Any]:
+    def _resolve(self) -> dict[str, Any]:
         context = self._attributes()
         context["elements"] = [element._resolve() for element in self.elements]
         return context
@@ -201,7 +203,7 @@ class DividerBlock(Block):
         block_id: you can use this field to provide a deterministic identifier for the block.
     """
 
-    def __init__(self, block_id: Optional[str] = None) -> None:
+    def __init__(self, block_id: str | None = None) -> None:
         super().__init__(type_=BlockType.DIVIDER, block_id=block_id)
 
     def _resolve(self):
@@ -224,14 +226,14 @@ class FileBlock(Block):
     def __init__(
         self,
         external_id: str,
-        block_id: Optional[str] = None,
+        block_id: str | None = None,
         source: str = "remote",
     ) -> None:
         super().__init__(type_=BlockType.FILE, block_id=block_id)
         self.external_id = external_id
         self.source = source
 
-    def _resolve(self) -> Dict[str, Any]:
+    def _resolve(self) -> dict[str, Any]:
         file = self._attributes()
         file["external_id"] = self.external_id
         file["source"] = self.source
@@ -247,14 +249,14 @@ class HeaderBlock(Block):
         block_id: you can use this field to provide a deterministic identifier for the block.
     """
 
-    def __init__(self, text: Union[str, Text], block_id: Optional[str] = None) -> None:
+    def __init__(self, text: str | Text, block_id: str | None = None) -> None:
         super().__init__(type_=BlockType.HEADER, block_id=block_id)
         if type(text) is Text:
             self.text = text
         else:
             self.text = Text.to_text_nonnull(text=text, force_plaintext=True)
 
-    def _resolve(self) -> Dict[str, Any]:
+    def _resolve(self) -> dict[str, Any]:
         header = self._attributes()
         header["text"] = self.text._resolve()
         return header
@@ -277,9 +279,9 @@ class ImageBlock(Block):
     def __init__(
         self,
         image_url: str,
-        alt_text: Optional[str] = " ",
-        title: Optional[Union[Text, str]] = None,
-        block_id: Optional[str] = None,
+        alt_text: str | None = " ",
+        title: Text | str | None = None,
+        block_id: str | None = None,
     ) -> None:
         super().__init__(type_=BlockType.IMAGE, block_id=block_id)
         self.image_url = validate_string(
@@ -302,7 +304,7 @@ class ImageBlock(Block):
         elif isinstance(title, str):
             self.title = Text(text=title, type_=TextType.PLAINTEXT)
 
-    def _resolve(self) -> Dict[str, Any]:
+    def _resolve(self) -> dict[str, Any]:
         image = self._attributes()
         image["image_url"] = self.image_url
         if self.alt_text:
@@ -337,8 +339,8 @@ class InputBlock(Block):
         label: TextLike,
         element: Element,
         dispatch_action: bool = False,
-        block_id: Optional[str] = None,
-        hint: Optional[TextLike] = None,
+        block_id: str | None = None,
+        hint: TextLike | None = None,
         optional: bool = False,
     ) -> None:
         super().__init__(type_=BlockType.INPUT, block_id=block_id)
@@ -352,7 +354,7 @@ class InputBlock(Block):
         self.hint = Text.to_text(hint, force_plaintext=True, max_length=2000, allow_none=True)
         self.optional = optional
 
-    def _resolve(self) -> Dict[str, Any]:
+    def _resolve(self) -> dict[str, Any]:
         input_block = self._attributes()
         if self.label is not None:
             input_block["label"] = self.label._resolve()
@@ -389,8 +391,8 @@ class RichTextBlock(Block):
 
     def __init__(
         self,
-        elements: Union[RichTextObject, List[RichTextObject]],
-        block_id: Optional[str] = None,
+        elements: RichTextObject | list[RichTextObject],
+        block_id: str | None = None,
     ) -> None:
         super().__init__(type_=BlockType.RICH_TEXT, block_id=block_id)
         self.elements = coerce_to_list(
@@ -404,8 +406,8 @@ class RichTextBlock(Block):
             min_size=1,
         )
 
-    def _resolve(self) -> Dict[str, Any]:
-        rich_text_block: Dict[str, Any] = self._attributes()
+    def _resolve(self) -> dict[str, Any]:
+        rich_text_block: dict[str, Any] = self._attributes()
         if self.elements is not None:
             rich_text_block["elements"] = [element._resolve() for element in self.elements]
         return rich_text_block
@@ -437,10 +439,10 @@ class SectionBlock(Block):
 
     def __init__(
         self,
-        text: Optional[TextLike] = None,
-        block_id: Optional[str] = None,
-        fields: Optional[Union[TextLike, List[TextLike]]] = None,
-        accessory: Optional[Element] = None,
+        text: TextLike | None = None,
+        block_id: str | None = None,
+        fields: TextLike | list[TextLike] | None = None,
+        accessory: Element | None = None,
     ) -> None:
         super().__init__(type_=BlockType.SECTION, block_id=block_id)
         if not text and not fields:
@@ -448,9 +450,9 @@ class SectionBlock(Block):
                 "Must supply either `text` or `fields` or `both` to SectionBlock."
             )
         self.text = Text.to_text(text, max_length=3000, allow_none=True)
-        self.fields: Optional[List[Text]]
+        self.fields: list[Text] | None
         if fields is not None:
-            field_list: List[Union[str, Text]] = coerce_to_list_nonnull(fields, class_=(str, Text))
+            field_list: list[str | Text] = coerce_to_list_nonnull(fields, class_=(str, Text))
             self.fields = [
                 Text.to_text_nonnull(field, max_length=2000)
                 for field in field_list
@@ -463,7 +465,7 @@ class SectionBlock(Block):
 
         self.accessory = accessory
 
-    def _resolve(self) -> Dict[str, Any]:
+    def _resolve(self) -> dict[str, Any]:
         section = self._attributes()
         if self.text:
             section["text"] = self.text._resolve()
@@ -496,9 +498,9 @@ class TableBlock(Block):
 
     def __init__(
         self,
-        rows: List[List[Union[RawText, RichTextObject]]],
-        column_settings: Optional[List[ColumnSettings]] = None,
-        block_id: Optional[str] = None,
+        rows: list[list[RawText | RichTextObject]],
+        column_settings: list[ColumnSettings] | None = None,
+        block_id: str | None = None,
     ) -> None:
         super().__init__(type_=BlockType.TABLE, block_id=block_id)
         # Validate that there is at least one row
@@ -536,14 +538,14 @@ class TableBlock(Block):
             raise InvalidUsageError("`column_settings` can have a maximum of 20 items.")
         self.column_settings = column_settings
 
-    def _resolve(self) -> Dict[str, Any]:
+    def _resolve(self) -> dict[str, Any]:
         table = self._attributes()
         table["rows"] = [[self._resolve_cell(cell) for cell in row] for row in self.rows]
         if self.column_settings:
             table["column_settings"] = [setting._resolve() for setting in self.column_settings]
         return table
 
-    def _resolve_cell(self, cell: Union[RawText, RichTextObject]) -> Dict[str, Any]:
+    def _resolve_cell(self, cell: RawText | RichTextObject) -> dict[str, Any]:
         """
         Resolve a table cell to its JSON representation.
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from slackblocks.rich_text import (
     ListType,
     RichText,
