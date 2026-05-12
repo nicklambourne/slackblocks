@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 # TODO(nick): enable in GH actions
-
 from os import environ
 
 from slack_sdk import WebClient

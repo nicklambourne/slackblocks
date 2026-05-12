@@ -511,12 +511,11 @@ class TableBlock(Block):
         for row in rows:
             if len(row) != num_columns:
                 raise InvalidUsageError("All rows must have the same number of columns.")
-        if column_settings is not None:
-            if num_columns != len(column_settings):
-                raise InvalidUsageError(
-                    f"Number of column_settings ({len(column_settings)}) must"
-                    f"match number of columns in each row ({num_columns})."
-                )
+        if column_settings is not None and num_columns != len(column_settings):
+            raise InvalidUsageError(
+                f"Number of column_settings ({len(column_settings)}) must"
+                f"match number of columns in each row ({num_columns})."
+            )
         if len(rows) > 100:
             raise InvalidUsageError("`rows` can have a maximum of 100 items.")
         for row in rows:

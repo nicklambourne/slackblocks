@@ -1,8 +1,11 @@
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from slackblocks.objects import Option, Text, TextType
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 OPTION_A = Option(text=Text("A", type_=TextType.PLAINTEXT), value="A")
 OPTION_B = Option(text=Text("B", type_=TextType.PLAINTEXT), value="B")
