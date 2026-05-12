@@ -6,7 +6,7 @@ This is a private module. The public API is unchanged; the helpers here are
 used internally to deduplicate the ``_resolve`` boilerplate that every block,
 element, and composition object class previously implemented by hand.
 
-The two patterns this module captures:
+The patterns this module captures:
 
 1. ``Resolvable`` -- a structural protocol describing the contract that every
    slackblocks renderable class satisfies: a ``_resolve()`` method returning a
@@ -21,10 +21,17 @@ The two patterns this module captures:
 
 3. ``omit_none(d)`` -- strip ``None``-valued keys from a dict. Replaces the
    pervasive ``if self.x is not None: out['x'] = self.x`` pattern.
+
+4. ``RenderableMixin`` -- shared ``__repr__`` (and string conversion) for
+   classes that implement ``_resolve()``. Inherited by the various abstract
+   bases (``Block``, ``Element``, ``CompositionObject``,
+   ``RichTextElement``, ``RichTextObject``) so they no longer each define
+   their own copy.
 """
 
 from __future__ import annotations
 
+from json import dumps
 from typing import Any, Protocol, runtime_checkable
 
 
@@ -86,3 +93,22 @@ def omit_none(d: dict[str, Any]) -> dict[str, Any]:
     ``None`` as "field not set".
     """
     return {key: value for key, value in d.items() if value is not None}
+
+
+class RenderableMixin:
+    """Mixin providing a shared ``__repr__`` for classes that implement
+    ``_resolve()``.
+
+    The ``__repr__`` returns a pretty-printed JSON string of the resolved
+    payload (indent=4), matching what every concrete block / element /
+    composition object class in the library has historically returned.
+
+    Inherited by the abstract base classes ``Block``, ``Element``,
+    ``CompositionObject``, ``RichTextElement``, and ``RichTextObject``.
+    """
+
+    def _resolve(self) -> dict[str, Any]:  # pragma: no cover - overridden
+        raise NotImplementedError
+
+    def __repr__(self) -> str:
+        return dumps(self._resolve(), indent=4)

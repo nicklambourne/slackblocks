@@ -9,11 +9,10 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from json import dumps
 from typing import Any
 from uuid import uuid4
 
-from slackblocks._core import resolve
+from slackblocks._core import RenderableMixin, resolve
 from slackblocks.elements import (
     ChannelMultiSelectMenu,
     ChannelSelectMenu,
@@ -106,7 +105,7 @@ class BlockType(Enum):
     TABLE = "table"
 
 
-class Block(ABC):
+class Block(RenderableMixin, ABC):
     """
     Basis block containing attributes and behaviour common to all blocks.
     N.B: Block is an abstract class and cannot be sent directly.
@@ -125,9 +124,6 @@ class Block(ABC):
     @abstractmethod
     def _resolve(self) -> dict[str, Any]:
         pass
-
-    def __repr__(self) -> str:
-        return dumps(self._resolve(), indent=4)
 
 
 class ActionsBlock(Block):

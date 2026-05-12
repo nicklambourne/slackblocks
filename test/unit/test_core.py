@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import json
 
-from slackblocks._core import Resolvable, omit_none, resolve
+from slackblocks._core import RenderableMixin, Resolvable, omit_none, resolve
 
 
 class _ToyResolvable:
@@ -92,3 +92,28 @@ def test_resolvable_protocol_runtime_checkable() -> None:
         pass
 
     assert not isinstance(NotResolvable(), Resolvable)
+
+
+def test_renderable_mixin_repr_is_indented_json() -> None:
+    """RenderableMixin.__repr__ returns the resolved payload as a pretty
+    JSON string with indent=4, matching what every concrete renderable class
+    in slackblocks has historically returned."""
+
+    class Toy(RenderableMixin):
+        def _resolve(self) -> dict[str, object]:
+            return {"a": 1, "b": "two"}
+
+    result = repr(Toy())
+    # 4-space indent confirms it matches the json.dumps(..., indent=4)
+    # contract that the rest of the library relies on.
+    assert result == '{\n    "a": 1,\n    "b": "two"\n}'
+
+
+def test_renderable_mixin_stub_raises_when_unoverridden() -> None:
+    """The mixin's stub _resolve raises NotImplementedError if a subclass
+    forgets to override it. This catches programmer mistakes early."""
+    import pytest
+
+    instance = RenderableMixin()
+    with pytest.raises(NotImplementedError):
+        instance._resolve()
