@@ -12,6 +12,7 @@ from enum import Enum
 from json import dumps
 from typing import Any
 
+from slackblocks._core import resolve
 from slackblocks.errors import InvalidUsageError
 from slackblocks.rich_text.elements import (
     RichText,
@@ -102,10 +103,7 @@ class RichTextSection(RichTextObject):
         )
 
     def _resolve(self) -> dict[str, Any]:
-        section = super()._resolve()
-        if self.elements is not None:
-            section["elements"] = [element._resolve() for element in self.elements]
-        return section
+        return resolve({**super()._resolve(), "elements": self.elements})
 
 
 class RichTextList(RichTextObject):
@@ -149,19 +147,18 @@ class RichTextList(RichTextObject):
         self.border = validate_int(border, allow_none=True)
 
     def _resolve(self) -> dict[str, Any]:
-        rich_text_list: dict[str, Any] = super()._resolve()
-        if self.elements is not None:
-            rich_text_list["elements"] = [
-                element._resolve() for element in self.elements if element is not None
-            ]
-        rich_text_list["style"] = self.style
-        if self.indent is not None:
-            rich_text_list["indent"] = self.indent
-        if self.offset is not None:
-            rich_text_list["offset"] = self.offset
-        if self.border is not None:
-            rich_text_list["border"] = self.border
-        return rich_text_list
+        return resolve(
+            {
+                **super()._resolve(),
+                "elements": [element for element in self.elements if element is not None]
+                if self.elements is not None
+                else None,
+                "style": self.style,
+                "indent": self.indent,
+                "offset": self.offset,
+                "border": self.border,
+            }
+        )
 
 
 class RichTextCodeBlock(RichTextObject):
@@ -203,14 +200,15 @@ class RichTextCodeBlock(RichTextObject):
         self.border = border
 
     def _resolve(self) -> dict[str, Any]:
-        preformatted = super()._resolve()
-        if self.elements is not None:
-            preformatted["elements"] = [
-                element._resolve() for element in self.elements if element is not None
-            ]
-        if self.border is not None:
-            preformatted["border"] = self.border
-        return preformatted
+        return resolve(
+            {
+                **super()._resolve(),
+                "elements": [element for element in self.elements if element is not None]
+                if self.elements is not None
+                else None,
+                "border": self.border,
+            }
+        )
 
 
 class RichTextQuote(RichTextObject):
@@ -248,11 +246,12 @@ class RichTextQuote(RichTextObject):
         self.border = border
 
     def _resolve(self) -> dict[str, Any]:
-        quote = super()._resolve()
-        if self.elements is not None:
-            quote["elements"] = [
-                element._resolve() for element in self.elements if element is not None
-            ]
-        if self.border is not None:
-            quote["border"] = self.border
-        return quote
+        return resolve(
+            {
+                **super()._resolve(),
+                "elements": [element for element in self.elements if element is not None]
+                if self.elements is not None
+                else None,
+                "border": self.border,
+            }
+        )

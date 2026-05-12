@@ -11,6 +11,7 @@ from enum import Enum
 from json import dumps
 from typing import Any
 
+from slackblocks._core import omit_none
 from slackblocks.utils import validate_string
 
 
@@ -25,6 +26,17 @@ class RichTextElementType(Enum):
     TEXT = "text"
     USER = "user"
     USER_GROUP = "usergroup"
+
+
+def _style_dict(**flags: bool | None) -> dict[str, bool] | None:
+    """Build a rich text "style" sub-object from named boolean flags.
+
+    Any flag that is explicitly ``None`` is dropped. If every flag is dropped
+    (i.e. nothing was set), returns ``None`` so the caller can decide whether
+    to emit the ``style`` key at all.
+    """
+    style = omit_none(flags)
+    return style if style else None
 
 
 class RichTextElement(ABC):
@@ -80,20 +92,15 @@ class RichText(RichTextElement):
         self.code = code
 
     def _resolve(self) -> dict[str, Any]:
-        rich_text = super()._resolve()
-        rich_text["text"] = self.text
-        style = {}
-        if self.bold is not None:
-            style["bold"] = self.bold
-        if self.italic is not None:
-            style["italic"] = self.italic
-        if self.strike is not None:
-            style["strike"] = self.strike
-        if self.code is not None:
-            style["code"] = self.code
-        if style:
-            rich_text["style"] = style
-        return rich_text
+        return omit_none(
+            {
+                **super()._resolve(),
+                "text": self.text,
+                "style": _style_dict(
+                    bold=self.bold, italic=self.italic, strike=self.strike, code=self.code
+                ),
+            }
+        )
 
 
 class RichTextChannel(RichTextElement):
@@ -134,24 +141,20 @@ class RichTextChannel(RichTextElement):
         self.unlink = unlink
 
     def _resolve(self) -> dict[str, Any]:
-        channel = super()._resolve()
-        channel["channel_id"] = self.channel_id
-        style = {}
-        if self.bold is not None:
-            style["bold"] = self.bold
-        if self.italic is not None:
-            style["italic"] = self.italic
-        if self.strike is not None:
-            style["strike"] = self.strike
-        if self.highlight is not None:
-            style["highlight"] = self.highlight
-        if self.client_highlight is not None:
-            style["client_highlight"] = self.client_highlight
-        if self.unlink is not None:
-            style["unlink"] = self.unlink
-        if style:
-            channel["style"] = style
-        return channel
+        return omit_none(
+            {
+                **super()._resolve(),
+                "channel_id": self.channel_id,
+                "style": _style_dict(
+                    bold=self.bold,
+                    italic=self.italic,
+                    strike=self.strike,
+                    highlight=self.highlight,
+                    client_highlight=self.client_highlight,
+                    unlink=self.unlink,
+                ),
+            }
+        )
 
 
 class RichTextEmoji(RichTextElement):
@@ -174,9 +177,7 @@ class RichTextEmoji(RichTextElement):
         self.name = validate_string(name, field_name="name", min_length=1)
 
     def _resolve(self) -> dict[str, Any]:
-        emoji = super()._resolve()
-        emoji["name"] = self.name
-        return emoji
+        return {**super()._resolve(), "name": self.name}
 
 
 class RichTextLink(RichTextElement):
@@ -217,24 +218,17 @@ class RichTextLink(RichTextElement):
         self.code = code
 
     def _resolve(self) -> dict[str, Any]:
-        link = super()._resolve()
-        link["url"] = self.url
-        if self.text is not None:
-            link["text"] = self.text
-        if self.unsafe is not None:
-            link["unsafe"] = self.unsafe
-        style = {}
-        if self.bold is not None:
-            style["bold"] = self.bold
-        if self.italic is not None:
-            style["italic"] = self.italic
-        if self.strike is not None:
-            style["strike"] = self.strike
-        if self.code is not None:
-            style["code"] = self.code
-        if style:
-            link["style"] = style
-        return link
+        return omit_none(
+            {
+                **super()._resolve(),
+                "url": self.url,
+                "text": self.text,
+                "unsafe": self.unsafe,
+                "style": _style_dict(
+                    bold=self.bold, italic=self.italic, strike=self.strike, code=self.code
+                ),
+            }
+        )
 
 
 class RichTextUser(RichTextElement):
@@ -276,24 +270,20 @@ class RichTextUser(RichTextElement):
         self.unlink = unlink
 
     def _resolve(self) -> dict[str, Any]:
-        user = super()._resolve()
-        user["user_id"] = self.user_id
-        style = {}
-        if self.bold is not None:
-            style["bold"] = self.bold
-        if self.italic is not None:
-            style["italic"] = self.italic
-        if self.strike is not None:
-            style["strike"] = self.strike
-        if self.highlight is not None:
-            style["highlight"] = self.highlight
-        if self.client_highlight is not None:
-            style["client_highlight"] = self.client_highlight
-        if self.unlink is not None:
-            style["unlink"] = self.unlink
-        if style:
-            user["style"] = style
-        return user
+        return omit_none(
+            {
+                **super()._resolve(),
+                "user_id": self.user_id,
+                "style": _style_dict(
+                    bold=self.bold,
+                    italic=self.italic,
+                    strike=self.strike,
+                    highlight=self.highlight,
+                    client_highlight=self.client_highlight,
+                    unlink=self.unlink,
+                ),
+            }
+        )
 
 
 class RichTextUserGroup(RichTextElement):
@@ -334,21 +324,17 @@ class RichTextUserGroup(RichTextElement):
         self.unlink = unlink
 
     def _resolve(self) -> dict[str, Any]:
-        user_group = super()._resolve()
-        user_group["usergroup_id"] = self.user_group_id
-        style = {}
-        if self.bold is not None:
-            style["bold"] = self.bold
-        if self.italic is not None:
-            style["italic"] = self.italic
-        if self.strike is not None:
-            style["strike"] = self.strike
-        if self.highlight is not None:
-            style["highlight"] = self.highlight
-        if self.client_highlight is not None:
-            style["client_highlight"] = self.client_highlight
-        if self.unlink is not None:
-            style["unlink"] = self.unlink
-        if style:
-            user_group["style"] = style
-        return user_group
+        return omit_none(
+            {
+                **super()._resolve(),
+                "usergroup_id": self.user_group_id,
+                "style": _style_dict(
+                    bold=self.bold,
+                    italic=self.italic,
+                    strike=self.strike,
+                    highlight=self.highlight,
+                    client_highlight=self.client_highlight,
+                    unlink=self.unlink,
+                ),
+            }
+        )
