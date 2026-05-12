@@ -9,10 +9,9 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from json import dumps
 from typing import Any
 
-from slackblocks._core import resolve
+from slackblocks._core import RenderableMixin, resolve
 from slackblocks.errors import InvalidUsageError
 from slackblocks.rich_text.elements import (
     RichText,
@@ -50,7 +49,7 @@ class ListType(Enum):
         return [list_type.value for list_type in ListType]
 
 
-class RichTextObject(ABC):
+class RichTextObject(RenderableMixin, ABC):
     """
     Abstract class housing shared functionality of RichTextObjects.
 
@@ -65,9 +64,6 @@ class RichTextObject(ABC):
     @abstractmethod
     def _resolve(self) -> dict[str, Any]:
         return {"type": self.type_.value}
-
-    def __repr__(self) -> str:
-        return dumps(self._resolve(), indent=4)
 
 
 class RichTextSection(RichTextObject):

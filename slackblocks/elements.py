@@ -10,10 +10,9 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from itertools import chain
-from json import dumps
 from typing import TYPE_CHECKING, Any
 
-from ._core import resolve
+from ._core import RenderableMixin, resolve
 from .errors import InvalidUsageError
 from .objects import (
     ConfirmationDialogue,
@@ -66,7 +65,7 @@ class ElementType(Enum):
     RICH_TEXT_INPUT = "rich_text_input"
 
 
-class Element(ABC):
+class Element(RenderableMixin, ABC):
     """
     Basis element containing attributes and behaviour common to all elements.
     N.B: Element is an abstract class and cannot be used directly.
@@ -86,9 +85,6 @@ class Element(ABC):
     @property
     def type(self) -> ElementType:
         return self._type
-
-    def __repr__(self) -> str:
-        return dumps(self._resolve(), indent=4)
 
 
 class Button(Element):
