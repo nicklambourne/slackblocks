@@ -3,8 +3,10 @@ This module collects various utility functions used for validating
 the input to `Messages`, `Blocks`, `Elements` and `Objects`.
 """
 
+from __future__ import annotations
+
 from string import hexdigits
-from typing import Any, List, Optional, TypeVar, Union
+from typing import Any, TypeVar
 
 from slackblocks.errors import InvalidUsageError
 
@@ -12,11 +14,11 @@ T = TypeVar("T")
 
 
 def coerce_to_list_nonnull(
-    object_or_objects: Union[T, List[T]],
-    class_: Union[Any, List[Any]],
-    min_size: Optional[int] = None,
-    max_size: Optional[int] = None,
-) -> List[T]:
+    object_or_objects: T | list[T],
+    class_: Any | list[Any],
+    min_size: int | None = None,
+    max_size: int | None = None,
+) -> list[T]:
     """
     Takes an object or list of objects and validates its contents, ensuring that the
     resulting object is a list. This version does not handle None values.
@@ -33,7 +35,7 @@ def coerce_to_list_nonnull(
     Throws:
         InvalidUsageError: if any of the validation checks fail.
     """
-    if isinstance(object_or_objects, List):
+    if isinstance(object_or_objects, list):
         items = object_or_objects
     else:
         items = [object_or_objects]
@@ -61,12 +63,12 @@ def coerce_to_list_nonnull(
 
 
 def coerce_to_list(
-    object_or_objects: Optional[Union[T, List[T]]],
-    class_: Union[Any, List[Any]],
+    object_or_objects: T | list[T] | None,
+    class_: Any | list[Any],
     allow_none: bool = False,
-    min_size: Optional[int] = None,
-    max_size: Optional[int] = None,
-) -> Optional[List[T]]:
+    min_size: int | None = None,
+    max_size: int | None = None,
+) -> list[T] | None:
     """
     Takes and object or list of objects and validates its contents, ensuring that the
     resulting object is a list.
@@ -109,7 +111,7 @@ def is_hex(string: str) -> bool:
     return all(char in hexdigits for char in string)
 
 
-def validate_action_id(action_id: Optional[str], allow_none: bool = False) -> Optional[str]:
+def validate_action_id(action_id: str | None, allow_none: bool = False) -> str | None:
     """
     Action IDs are used in the handing of user interactivity within Slack blocks.
     This function checks that a given `action_id` is valid as per the requirements
@@ -142,12 +144,12 @@ def validate_action_id(action_id: Optional[str], allow_none: bool = False) -> Op
 
 
 def validate_string(
-    string: Optional[str],
+    string: str | None,
     field_name: str,
-    max_length: Optional[int] = None,
-    min_length: Optional[int] = None,
+    max_length: int | None = None,
+    min_length: int | None = None,
     allow_none: bool = False,
-) -> Optional[str]:
+) -> str | None:
     """
     Performs basic validation actions (e.g. length checking) on a given string
     based on the provided criteria.
@@ -177,8 +179,8 @@ def validate_string(
 def validate_string_nonnull(
     string: str,
     field_name: str = "string",
-    max_length: Optional[int] = None,
-    min_length: Optional[int] = None,
+    max_length: int | None = None,
+    min_length: int | None = None,
 ) -> str:
     length = len(string)
     if min_length is not None and length < min_length:
@@ -195,11 +197,11 @@ def validate_string_nonnull(
 
 
 def validate_int(
-    num: Optional[int],
-    min_value: Optional[int] = None,
-    max_value: Optional[int] = None,
+    num: int | None,
+    min_value: int | None = None,
+    max_value: int | None = None,
     allow_none: bool = False,
-) -> Optional[int]:
+) -> int | None:
     """
     Performs basic validation checks against a given integer.
 

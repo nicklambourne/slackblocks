@@ -9,6 +9,8 @@ These formatting elements can only be used within a
 See: <https://api.slack.com/reference/block-kit/blocks#rich_text>.
 """
 
+from __future__ import annotations
+
 from .elements import (
     RichText,
     RichTextChannel,

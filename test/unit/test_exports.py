@@ -4,6 +4,8 @@
 Regression tests for #154 (FileInput and SlackFile were defined in submodules
 but never re-exported)."""
 
+from __future__ import annotations
+
 
 def test_file_input_is_exported() -> None:
     from slackblocks import FileInput  # noqa: F401

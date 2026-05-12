@@ -8,8 +8,10 @@ been largely subsumed as a subtype of view.
 See: <https://api.slack.com/surfaces/modals>
 """
 
+from __future__ import annotations
+
 from json import dumps
-from typing import Any, Dict
+from typing import Any
 
 from slackblocks.views import ModalView
 
@@ -23,7 +25,7 @@ class Modal(ModalView):
     def __repr__(self) -> str:
         return dumps(self._resolve(), indent=4)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return self._resolve()
 
     def json(self) -> str:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from slackblocks import (
     Attachment,
     Color,
@@ -13,7 +15,7 @@ from slackblocks import (
 def test_basic_message() -> None:
     block = SectionBlock("Hello, world!", block_id="fake_block_id")
     message = Message(channel="#slackblocks", blocks=block)
-    with open("test/samples/messages/message_basic.json", "r") as expected:
+    with open("test/samples/messages/message_basic.json") as expected:
         assert repr(message) == expected.read()
 
 
@@ -25,7 +27,7 @@ def test_message_with_optional_arguments() -> None:
         unfurl_links=False,
         unfurl_media=False,
     )
-    with open("test/samples/messages/message_with_optional_arguments.json", "r") as expected:
+    with open("test/samples/messages/message_with_optional_arguments.json") as expected:
         assert repr(message) == expected.read()
 
 
@@ -38,14 +40,14 @@ def test_message_with_attachment() -> None:
             attachment,
         ],
     )
-    with open("test/samples/messages/message_with_attachments.json", "r") as expected:
+    with open("test/samples/messages/message_with_attachments.json") as expected:
         assert repr(message) == expected.read()
 
 
 def test_message_response() -> None:
     block = SectionBlock("Hello, world!", block_id="fake_block_id")
     message = MessageResponse(blocks=block, ephemeral=True)
-    with open("test/samples/messages/message_response.json", "r") as expected:
+    with open("test/samples/messages/message_response.json") as expected:
         assert repr(message) == expected.read()
 
 
@@ -68,7 +70,7 @@ def test_to_dict() -> None:
 
 
 def test_basic_webhook_message() -> None:
-    with open("test/samples/messages/webhook_message_basic.json", "r") as expected:
+    with open("test/samples/messages/webhook_message_basic.json") as expected:
         assert (
             repr(
                 WebhookMessage(
@@ -96,7 +98,7 @@ def test_basic_webhook_message() -> None:
 
 
 def test_webhook_message_delete() -> None:
-    with open("test/samples/messages/webhook_message_delete.json", "r") as expected:
+    with open("test/samples/messages/webhook_message_delete.json") as expected:
         assert (
             repr(
                 WebhookMessage(
