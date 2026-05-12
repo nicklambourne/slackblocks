@@ -11,6 +11,7 @@ from enum import Enum
 from json import dumps
 from typing import Any
 
+from slackblocks._core import resolve
 from slackblocks.blocks import Block
 from slackblocks.errors import InvalidUsageError
 from slackblocks.utils import coerce_to_list, is_hex
@@ -183,14 +184,16 @@ class Attachment:
             self.color = None
 
     def _resolve(self) -> dict[str, Any]:
-        attachment: dict[str, Any] = {}
-        if self.blocks:
-            attachment["blocks"] = [block._resolve() for block in self.blocks]
-        if self.color:
-            attachment["color"] = self.color
-        if self.fallback:
-            attachment["fallback"] = self.fallback
-        return attachment
+        # Note: 'fields' is intentionally not included here. The attribute
+        # exists for legacy reasons but Attachment._resolve has historically
+        # never emitted it; preserving that behaviour.
+        return resolve(
+            {
+                "blocks": self.blocks if self.blocks else None,
+                "color": self.color if self.color else None,
+                "fallback": self.fallback if self.fallback else None,
+            }
+        )
 
     def __repr__(self) -> str:
         return dumps(self._resolve(), indent=4)
