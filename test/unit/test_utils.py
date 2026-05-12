@@ -132,7 +132,4 @@ def test_validate_string_nonnull_positional_arg_order() -> None:
 
 def test_validate_string_nonnull_keyword_args() -> None:
     """validate_string_nonnull continues to accept keyword arguments."""
-    assert (
-        validate_string_nonnull("ok", field_name="x", max_length=10, min_length=1)
-        == "ok"
-    )
+    assert validate_string_nonnull("ok", field_name="x", max_length=10, min_length=1) == "ok"

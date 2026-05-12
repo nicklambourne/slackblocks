@@ -109,9 +109,7 @@ def is_hex(string: str) -> bool:
     return all(char in hexdigits for char in string)
 
 
-def validate_action_id(
-    action_id: Optional[str], allow_none: bool = False
-) -> Optional[str]:
+def validate_action_id(action_id: Optional[str], allow_none: bool = False) -> Optional[str]:
     """
     Action IDs are used in the handing of user interactivity within Slack blocks.
     This function checks that a given `action_id` is valid as per the requirements
@@ -169,9 +167,7 @@ def validate_string(
     """
     if string is None:
         if not allow_none:
-            raise InvalidUsageError(
-                f"Expecting string for field `{field_name}`, cannot be None."
-            )
+            raise InvalidUsageError(f"Expecting string for field `{field_name}`, cannot be None.")
         return None
     return validate_string_nonnull(
         string, field_name=field_name, max_length=max_length, min_length=min_length

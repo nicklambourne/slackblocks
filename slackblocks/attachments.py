@@ -176,9 +176,7 @@ class Attachment:
             elif len(color) == 6 and is_hex(color):
                 self.color = f"#{color}"
             else:
-                raise InvalidUsageError(
-                    "Color must be a valid hex code (e.g. `#ffffff`)"
-                )
+                raise InvalidUsageError("Color must be a valid hex code (e.g. `#ffffff`)")
         else:
             self.color = None
 

@@ -53,9 +53,7 @@ def test_button_basic() -> None:
 
 def test_button_link() -> None:
     link_button = Button(text="Link!", url="https://ndl.im/", action_id="button")
-    assert fetch_sample(path="test/samples/elements/button_link.json") == repr(
-        link_button
-    )
+    assert fetch_sample(path="test/samples/elements/button_link.json") == repr(link_button)
 
 
 def test_button_style() -> None:
@@ -65,27 +63,21 @@ def test_button_style() -> None:
         value="im_a_style_button",
         action_id="button",
     )
-    assert fetch_sample(path="test/samples/elements/button_style.json") == repr(
-        style_button
-    )
+    assert fetch_sample(path="test/samples/elements/button_style.json") == repr(style_button)
 
 
 def test_checkbox_basic() -> None:
     checkbox = CheckboxGroup(
         options=TWO_OPTIONS, action_id="and...action", initial_options=OPTION_A
     )
-    assert fetch_sample(path="test/samples/elements/checkbox_basic.json") == repr(
-        checkbox
-    )
+    assert fetch_sample(path="test/samples/elements/checkbox_basic.json") == repr(checkbox)
 
 
 def test_datepicker_basic() -> None:
     datepicker = DatePicker(
         action_id="datepicker", initial_date="1970-01-01", placeholder="Pick a date"
     )
-    assert fetch_sample(path="test/samples/elements/date_picker_basic.json") == repr(
-        datepicker
-    )
+    assert fetch_sample(path="test/samples/elements/date_picker_basic.json") == repr(datepicker)
 
 
 def test_datepicker_without_initial_date() -> None:
@@ -119,12 +111,10 @@ def test_datepicker_with_confirm_resolves() -> None:
 
 
 def test_datetime_picker_basic() -> None:
-    datetime_picker = DateTimePicker(
-        action_id="datetime_picker", initial_datetime=1628633830
+    datetime_picker = DateTimePicker(action_id="datetime_picker", initial_datetime=1628633830)
+    assert fetch_sample(path="test/samples/elements/datetime_picker_basic.json") == repr(
+        datetime_picker
     )
-    assert fetch_sample(
-        path="test/samples/elements/datetime_picker_basic.json"
-    ) == repr(datetime_picker)
 
 
 def test_datetime_picker_without_initial_datetime() -> None:
@@ -159,9 +149,7 @@ def test_datetime_picker_with_confirm_resolves() -> None:
 
 def test_email_input_basic() -> None:
     email_input = EmailInput(action_id="email_input", placeholder="Enter your email")
-    assert fetch_sample(path="test/samples/elements/email_input_basic.json") == repr(
-        email_input
-    )
+    assert fetch_sample(path="test/samples/elements/email_input_basic.json") == repr(email_input)
 
 
 def test_image_basic() -> None:
@@ -199,9 +187,9 @@ def test_multi_select_conversation() -> None:
         action_id="multi_conversations_select",
         placeholder=Text("Select conversations", type_=TextType.PLAINTEXT),
     )
-    assert fetch_sample(
-        path="test/samples/elements/multi_select_conversation.json"
-    ) == repr(multi_select_conversation)
+    assert fetch_sample(path="test/samples/elements/multi_select_conversation.json") == repr(
+        multi_select_conversation
+    )
 
 
 def test_multi_select_conversation_initial_conversations_key() -> None:
@@ -224,9 +212,9 @@ def test_multi_select_external() -> None:
         placeholder=Text("Select items", type_=TextType.PLAINTEXT),
         min_query_length=3,
     )
-    assert fetch_sample(
-        path="test/samples/elements/multi_select_external.json"
-    ) == repr(multi_select_external)
+    assert fetch_sample(path="test/samples/elements/multi_select_external.json") == repr(
+        multi_select_external
+    )
 
 
 def test_multi_select_static() -> None:
@@ -245,8 +233,7 @@ def test_multi_select_static_invalid_option() -> None:
         StaticMultiSelectMenu(
             action_id="multi_static_select",
             placeholder=Text("Select one or more", type_=TextType.PLAINTEXT),
-            options=TWO_OPTIONS
-            + [Option(text=Text("C", type_=TextType.MARKDOWN), value="X")],
+            options=TWO_OPTIONS + [Option(text=Text("C", type_=TextType.MARKDOWN), value="X")],
         )
 
 
@@ -290,9 +277,7 @@ def test_static_multi_select_with_option_groups_validates_text() -> None:
                 OptionGroup(label="Group 1", options=TWO_OPTIONS),
                 OptionGroup(
                     label="Group 2",
-                    options=[
-                        Option(text=Text("Bad", type_=TextType.MARKDOWN), value="bad")
-                    ],
+                    options=[Option(text=Text("Bad", type_=TextType.MARKDOWN), value="bad")],
                 ),
             ],
         )
@@ -321,9 +306,7 @@ def test_multi_select_user_with_initial_users() -> None:
 
 def test_number_input_basic() -> None:
     number_input = NumberInput(action_id="number_input", is_decimal_allowed=False)
-    assert fetch_sample(path="test/samples/elements/number_input_basic.json") == repr(
-        number_input
-    )
+    assert fetch_sample(path="test/samples/elements/number_input_basic.json") == repr(number_input)
 
 
 def test_number_input_zero_min_value_emitted() -> None:
@@ -365,18 +348,18 @@ def test_plaintext_input_menu_basic() -> None:
     plaintext_input = PlainTextInput(
         action_id="plaintext_input", placeholder="Enter your plain text"
     )
-    assert fetch_sample(
-        path="test/samples/elements/plaintext_input_basic.json"
-    ) == repr(plaintext_input)
+    assert fetch_sample(path="test/samples/elements/plaintext_input_basic.json") == repr(
+        plaintext_input
+    )
 
 
 def test_radio_button_group_basic() -> None:
     radio_button_group = RadioButtonGroup(
         action_id="radio_buttons", initial_option=OPTION_A, options=THREE_OPTIONS
     )
-    assert fetch_sample(
-        path="test/samples/elements/radio_button_group_basic.json"
-    ) == repr(radio_button_group)
+    assert fetch_sample(path="test/samples/elements/radio_button_group_basic.json") == repr(
+        radio_button_group
+    )
 
 
 def test_select_menu_channel() -> None:
@@ -392,9 +375,9 @@ def test_select_menu_conversation() -> None:
     select_menu_conversation = ConversationSelectMenu(
         action_id="conversations_select", placeholder="Select one conversation"
     )
-    assert fetch_sample(
-        path="test/samples/elements/select_menu_conversation.json"
-    ) == repr(select_menu_conversation)
+    assert fetch_sample(path="test/samples/elements/select_menu_conversation.json") == repr(
+        select_menu_conversation
+    )
 
 
 def test_conversation_select_menu_with_filter_resolves() -> None:
@@ -438,15 +421,12 @@ def test_select_menu_static_invalid_option() -> None:
         StaticSelectMenu(
             action_id="static_select",
             placeholder="Select one item",
-            options=THREE_OPTIONS
-            + [Option(text=Text("C", type_=TextType.MARKDOWN), value="X")],
+            options=THREE_OPTIONS + [Option(text=Text("C", type_=TextType.MARKDOWN), value="X")],
         )
 
 
 def test_select_menu_user() -> None:
-    select_menu_user = UserSelectMenu(
-        action_id="users_select", placeholder="Select one user"
-    )
+    select_menu_user = UserSelectMenu(action_id="users_select", placeholder="Select one user")
     assert fetch_sample(path="test/samples/elements/select_menu_user.json") == repr(
         select_menu_user
     )
@@ -459,9 +439,7 @@ def test_timepicker_basic() -> None:
         initial_time="12:00",
         placeholder="Select your time",
     )
-    assert fetch_sample(path="test/samples/elements/timepicker_basic.json") == repr(
-        timepicker
-    )
+    assert fetch_sample(path="test/samples/elements/timepicker_basic.json") == repr(timepicker)
 
 
 def test_timepicker_with_confirm_resolves() -> None:
@@ -485,9 +463,7 @@ def test_timepicker_with_confirm_resolves() -> None:
 
 def test_url_input_basic() -> None:
     url_input = URLInput(action_id="url_text_input")
-    assert fetch_sample(path="test/samples/elements/url_input_basic.json") == repr(
-        url_input
-    )
+    assert fetch_sample(path="test/samples/elements/url_input_basic.json") == repr(url_input)
 
 
 def test_url_input_with_placeholder_resolves() -> None:
@@ -520,15 +496,13 @@ def test_workflow_button_basic() -> None:
             )
         ),
     )
-    assert fetch_sample(
-        path="test/samples/elements/workflow_button_basic.json"
-    ) == repr(workflow_button)
+    assert fetch_sample(path="test/samples/elements/workflow_button_basic.json") == repr(
+        workflow_button
+    )
 
 
 def test_rich_text_input_basic() -> None:
-    assert fetch_sample(
-        path="test/samples/elements/rich_text_input_basic.json"
-    ) == repr(
+    assert fetch_sample(path="test/samples/elements/rich_text_input_basic.json") == repr(
         RichTextInput(
             action_id="action_id",
             initial_value=RichText("I'm rich"),
@@ -547,13 +521,9 @@ def test_rich_text_input_dispatch_action_config_resolves() -> None:
     rich_text_input = RichTextInput(
         action_id="rt",
         placeholder="Type something",
-        dispatch_action_config=DispatchActionConfiguration(
-            trigger_actions_on=["on_enter_pressed"]
-        ),
+        dispatch_action_config=DispatchActionConfiguration(trigger_actions_on=["on_enter_pressed"]),
     )
     resolved = rich_text_input._resolve()
     dumps(resolved)
-    assert resolved["dispatch_action_config"] == {
-        "trigger_actions_on": ["on_enter_pressed"]
-    }
+    assert resolved["dispatch_action_config"] == {"trigger_actions_on": ["on_enter_pressed"]}
     assert resolved["placeholder"] == {"type": "plain_text", "text": "Type something"}

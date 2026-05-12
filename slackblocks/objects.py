@@ -99,9 +99,7 @@ class Text(CompositionObject):
     ) -> None:
         super().__init__(type_=CompositionObjectType.TEXT)
         self.text_type = type_
-        self.text = validate_string_nonnull(
-            text, field_name="text", min_length=1, max_length=3000
-        )
+        self.text = validate_string_nonnull(text, field_name="text", min_length=1, max_length=3000)
         if self.text_type == TextType.MARKDOWN:
             self.verbatim = verbatim
             self.emoji = False
@@ -170,11 +168,7 @@ class Text(CompositionObject):
             InvalidUsageError: if the text length exceeds the specified max_length.
         """
         original_type = text.text_type if isinstance(text, Text) else None
-        type_ = (
-            TextType.PLAINTEXT
-            if force_plaintext
-            else original_type or TextType.MARKDOWN
-        )
+        type_ = TextType.PLAINTEXT if force_plaintext else original_type or TextType.MARKDOWN
         if text and max_length and len(text) > max_length:
             raise InvalidUsageError(
                 f"`text` length ({len(text)}) exceeds `max_length` ({max_length})"
@@ -182,9 +176,7 @@ class Text(CompositionObject):
         if isinstance(text, str):
             return Text(text=text, type_=type_)
         elif isinstance(text, Text):
-            return Text(
-                text=text.text, type_=type_, emoji=text.emoji, verbatim=text.verbatim
-            )
+            return Text(text=text.text, type_=type_, emoji=text.emoji, verbatim=text.verbatim)
         else:
             raise InvalidUsageError("This field must be a string or Text object")
 
@@ -234,9 +226,7 @@ class ConfirmationDialogue(CompositionObject):
         super().__init__(type_=CompositionObjectType.CONFIRM)
         self.title = Text.to_text_nonnull(title, max_length=100, force_plaintext=True)
         self.text = Text.to_text_nonnull(text, max_length=300)
-        self.confirm = Text.to_text_nonnull(
-            confirm, max_length=30, force_plaintext=True
-        )
+        self.confirm = Text.to_text_nonnull(confirm, max_length=30, force_plaintext=True)
         self.deny = Text.to_text_nonnull(deny, max_length=30, force_plaintext=True)
 
     def _resolve(self) -> Dict[str, Any]:
@@ -365,9 +355,7 @@ class DispatchActionConfiguration(CompositionObject):
             `trigger_actions_on`.
     """
 
-    def __init__(
-        self, trigger_actions_on: Optional[Union[str, List[str]]] = None
-    ) -> None:
+    def __init__(self, trigger_actions_on: Optional[Union[str, List[str]]] = None) -> None:
         super().__init__(type_=CompositionObjectType.DISPATCH)
         trigger_actions_on = trigger_actions_on or []
         self.trigger_actions_on = list(
@@ -414,9 +402,7 @@ class ConversationFilter(CompositionObject):
     ) -> None:
         super().__init__(type_=CompositionObjectType.FILTER)
         if not (
-            include
-            or exclude_external_shared_channels is not None
-            or exclude_bot_users is not None
+            include or exclude_external_shared_channels is not None or exclude_bot_users is not None
         ):
             raise InvalidUsageError(
                 "One of `include`, `exclude_external_shared_channels`, or "
@@ -431,9 +417,7 @@ class ConversationFilter(CompositionObject):
         if self.include:
             filter["include"] = self.include
         if self.exclude_external_shared_channels is not None:
-            filter["exclude_external_shared_channels"] = (
-                self.exclude_external_shared_channels
-            )
+            filter["exclude_external_shared_channels"] = self.exclude_external_shared_channels
         if self.exclude_bot_users is not None:
             filter["exclude_bot_users"] = self.exclude_bot_users
         return filter
@@ -522,9 +506,7 @@ class Trigger(CompositionObject):
     def __init__(
         self,
         url: str,
-        customizable_input_parameters: Optional[
-            Union[InputParameter, List[InputParameter]]
-        ],
+        customizable_input_parameters: Optional[Union[InputParameter, List[InputParameter]]],
     ) -> None:
         super().__init__(type_=CompositionObjectType.TRIGGER)
         self.url = url
@@ -610,9 +592,7 @@ class ColumnSettings:
         is_wrapped: Optional[bool] = None,
     ) -> None:
         if align and align not in ["left", "center", "right"]:
-            raise InvalidUsageError(
-                "`align` must be one of `left`, `center`, or `right`"
-            )
+            raise InvalidUsageError("`align` must be one of `left`, `center`, or `right`")
         self.align = align
         self.is_wrapped = is_wrapped
 
