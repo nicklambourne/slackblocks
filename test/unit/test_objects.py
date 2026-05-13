@@ -9,8 +9,10 @@ from slackblocks.objects import (
     ConversationFilter,
     DispatchActionConfiguration,
     InputParameter,
+    Markdown,
     Option,
     OptionGroup,
+    PlainText,
     Text,
     TextType,
     Trigger,
@@ -184,3 +186,83 @@ def test_workflow_basic() -> None:
         )
     )
     assert fetch_sample(path="test/samples/objects/workflow_basic.json") == repr(workflow)
+
+
+# -- PlainText / Markdown convenience aliases -----------------------------
+
+
+def test_plaintext_alias_basic() -> None:
+    """``PlainText('Hi')`` renders to the same JSON as the equivalent
+    ``Text`` call with ``TextType.PLAINTEXT``."""
+    assert repr(PlainText("hi")) == repr(Text("hi", type_=TextType.PLAINTEXT))
+
+
+def test_plaintext_alias_with_emoji() -> None:
+    assert repr(PlainText("hi", emoji=True)) == repr(
+        Text("hi", type_=TextType.PLAINTEXT, emoji=True)
+    )
+
+
+def test_plaintext_is_a_text() -> None:
+    """``PlainText`` is a ``Text`` subclass so it works anywhere a ``Text``
+    is expected."""
+    pt = PlainText("hi")
+    assert isinstance(pt, Text)
+    assert pt.text_type == TextType.PLAINTEXT
+
+
+def test_markdown_alias_basic() -> None:
+    """``Markdown('hi')`` renders to the same JSON as the equivalent
+    ``Text`` call with ``TextType.MARKDOWN``."""
+    assert repr(Markdown("hi")) == repr(Text("hi", type_=TextType.MARKDOWN))
+
+
+def test_markdown_alias_with_verbatim() -> None:
+    assert repr(Markdown("hi", verbatim=True)) == repr(
+        Text("hi", type_=TextType.MARKDOWN, verbatim=True)
+    )
+
+
+def test_markdown_is_a_text() -> None:
+    md = Markdown("hi")
+    assert isinstance(md, Text)
+    assert md.text_type == TextType.MARKDOWN
+
+
+def test_aliases_accept_text_like_callers() -> None:
+    """Anywhere a ``TextLike`` (or ``Text``) is expected, the aliases work."""
+    from slackblocks import SectionBlock
+
+    sb = SectionBlock(text=PlainText("Hi"))
+    assert sb.text == PlainText("Hi")
+    sb2 = SectionBlock(text=Markdown("_hi_"))
+    assert sb2.text == Markdown("_hi_")
+
+
+def test_plaintext_empty_raises() -> None:
+    """Length validation is inherited from ``Text`` and continues to raise
+    via the existing ``LengthError`` path."""
+    from slackblocks import LengthError
+
+    with pytest.raises(LengthError):
+        PlainText("")
+
+
+def test_markdown_empty_raises() -> None:
+    from slackblocks import LengthError
+
+    with pytest.raises(LengthError):
+        Markdown("")
+
+
+def test_plaintext_exported_at_top_level() -> None:
+    """The alias must be importable from the top-level ``slackblocks`` package."""
+    from slackblocks import PlainText as TopLevel
+
+    assert TopLevel is PlainText
+
+
+def test_markdown_exported_at_top_level() -> None:
+    from slackblocks import Markdown as TopLevel
+
+    assert TopLevel is Markdown
