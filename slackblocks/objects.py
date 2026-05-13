@@ -240,6 +240,49 @@ class Text(CompositionObject):
 TextLike: TypeAlias = str | Text
 
 
+class PlainText(Text):
+    """Convenience wrapper for `Text` with `type_=TextType.PLAINTEXT`.
+
+    `PlainText("Hi", emoji=True)` is equivalent to
+    `Text("Hi", type_=TextType.PLAINTEXT, emoji=True)`. Anywhere a `Text` or
+    `TextLike` is accepted, a `PlainText` works because `PlainText` is a
+    subclass of `Text`. The rendered JSON is identical to the equivalent
+    `Text` call.
+
+    Args:
+        text: the text to render (1-3000 characters).
+        emoji: if `True`, emoji (e.g. `:smile:`) are escaped into Unicode.
+
+    Throws:
+        LengthError: if the provided `text` is empty or too long.
+    """
+
+    def __init__(self, text: str, emoji: bool = False) -> None:
+        super().__init__(text=text, type_=TextType.PLAINTEXT, emoji=emoji)
+
+
+class Markdown(Text):
+    """Convenience wrapper for `Text` with `type_=TextType.MARKDOWN`.
+
+    `Markdown("_italic_", verbatim=True)` is equivalent to
+    `Text("_italic_", type_=TextType.MARKDOWN, verbatim=True)`. Anywhere a
+    `Text` or `TextLike` is accepted, a `Markdown` works because `Markdown`
+    is a subclass of `Text`. The rendered JSON is identical to the
+    equivalent `Text` call.
+
+    Args:
+        text: the markdown-formatted text to render (1-3000 characters).
+        verbatim: if `True`, links, channel names, and user names are
+            rendered verbatim rather than as Slack-style references.
+
+    Throws:
+        LengthError: if the provided `text` is empty or too long.
+    """
+
+    def __init__(self, text: str, verbatim: bool = False) -> None:
+        super().__init__(text=text, type_=TextType.MARKDOWN, verbatim=verbatim)
+
+
 class ConfirmationDialogue(CompositionObject):
     """
     An object that defines a dialog that provides a confirmation step
