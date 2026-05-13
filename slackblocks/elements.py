@@ -481,7 +481,7 @@ class StaticMultiSelectMenu(Element):
             (max 100). Only one of `options` or `option_groups` can be
             provided.
         initial_options: the [`Options`](/slackblocks/latest/reference/objects/#objects.Option)
-            to be intially selected when the element is first rendered.
+            to be initially selected when the element is first rendered.
         confirm: a `ConfirmationDialogue` object that will be presented when
             the menu is used.
         max_selected_items: the
@@ -589,7 +589,7 @@ class ExternalMultiSelectMenu(Element):
         min_query_length: minimum number of characters entered before the query
             is dispactched (defaults to 3 if not provided).
         initial_options: the [`Options`](/slackblocks/latest/reference/objects/#objects.Option)
-            to be intially selected when the element is first rendered.
+            to be initially selected when the element is first rendered.
         confirm: a `ConfirmationDialogue` object that will be presented when
             the menu is used.
         max_selected_items: the highest number of items from the list that
@@ -653,7 +653,7 @@ class UserMultiSelectMenu(Element):
 
     Args:
         action_id: an identifier so the source of the action can be known.
-        initial_users: a list of string user IDs to be intially selected
+        initial_users: a list of string user IDs to be initially selected
             when the element is first rendered.
         confirm: a `ConfirmationDialogue` object that will be presented when
             the menu is used.
@@ -1298,7 +1298,7 @@ class ConversationSelectMenu(Element):
 
     Args:
         action_id: an identifier so the source of the action can be known.
-        initial_conversation: the single (string) coversation ID that will be initially
+        initial_conversation: the single (string) conversation ID that will be initially
             selected when first presented to the user.
         default_to_current_conversation: Pre-populates the select menu with the
             conversation that the user was viewing when they opened the modal
