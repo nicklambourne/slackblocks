@@ -9,7 +9,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
-from typing import Any
+from typing import Any, Literal, cast
 
 from slackblocks._core import RenderableMixin, omit_none, resolve
 from slackblocks.errors import InvalidUsageError
@@ -374,6 +374,11 @@ class DispatchActionConfiguration(CompositionObject):
         return {"trigger_actions_on": self.trigger_actions_on}
 
 
+ConversationType = Literal["im", "mpim", "private", "public"]
+"""The four kinds of Slack conversation that ``ConversationFilter.include`` may
+contain. See <https://api.slack.com/reference/block-kit/composition-objects#filter_conversations>."""
+
+
 class ConversationFilter(CompositionObject):
     """
     Provides a way to filter the list of options in a conversations select menu or
@@ -397,7 +402,7 @@ class ConversationFilter(CompositionObject):
 
     def __init__(
         self,
-        include: str | list[str] | None = None,
+        include: ConversationType | list[ConversationType] | None = None,
         exclude_external_shared_channels: bool | None = None,
         exclude_bot_users: bool | None = None,
     ) -> None:
@@ -409,7 +414,7 @@ class ConversationFilter(CompositionObject):
                 "One of `include`, `exclude_external_shared_channels`, or "
                 "`exclude_bot_users` is required."
             )
-        self.include = coerce_to_list(include, str, allow_none=True)
+        self.include = coerce_to_list(cast("str | list[str] | None", include), str, allow_none=True)
         self.exclude_external_shared_channels = exclude_external_shared_channels
         self.exclude_bot_users = exclude_bot_users
 
@@ -576,6 +581,10 @@ class RawText:
         )
 
 
+ColumnAlignment = Literal["left", "center", "right"]
+"""Allowable values for ``ColumnSettings.align``."""
+
+
 class ColumnSettings:
     """
     An object that defines the settings for a column in a `Table` block.
@@ -587,7 +596,7 @@ class ColumnSettings:
 
     def __init__(
         self,
-        align: str | None = None,
+        align: ColumnAlignment | None = None,
         is_wrapped: bool | None = None,
     ) -> None:
         if align and align not in ["left", "center", "right"]:

@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from itertools import chain
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 from ._core import RenderableMixin, resolve
 from .errors import InvalidUsageError
@@ -30,6 +30,11 @@ from .utils import coerce_to_list, validate_action_id, validate_int, validate_st
 
 if TYPE_CHECKING:
     from .rich_text import RichText
+
+
+ButtonStyleName = Literal["primary", "danger"]
+"""The string-valued ``style`` accepted by ``Button`` and ``WorkflowButton``.
+Equivalent to using ``ButtonStyle.PRIMARY`` / ``ButtonStyle.DANGER``."""
 
 
 class ElementType(Enum):
@@ -115,7 +120,7 @@ class Button(Element):
         action_id: str,
         url: str | None = None,
         value: str | None = None,
-        style: str | None = None,
+        style: ButtonStyle | ButtonStyleName | None = None,
         confirm: ConfirmationDialogue | None = None,
         accessibility_label: str | None = None,
     ) -> None:
@@ -1539,6 +1544,11 @@ class ButtonStyle(Enum):
 
     @staticmethod
     def to_button_style(style: ButtonStyle | str | None) -> ButtonStyle:
+        # NOTE: this implementation uses ``ButtonStyle[style]`` which looks
+        # up the enum *name* (e.g. "PRIMARY"), not the value (e.g. "primary").
+        # Preserved here for backwards compatibility -- ``Button.style`` takes
+        # the value form via ``ButtonStyleName``. The two paths are not
+        # symmetric; see the planned Phase 7 ergonomics work for cleanup.
         if isinstance(style, ButtonStyle):
             return style
         if isinstance(style, str):
