@@ -137,6 +137,51 @@ class Block(RenderableMixin, ABC):
     def _resolve(self) -> dict[str, Any]:
         pass
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Block:
+        """Parse a Slack block payload back into the appropriate ``Block`` subclass.
+
+        Reads ``data["type"]`` and dispatches to the matching subclass's
+        ``from_dict``.
+
+        Throws:
+            MissingRequiredError: if ``data["type"]`` is absent.
+            TypeMismatchError: if ``data["type"]`` is not a recognised
+                block type.
+            NotImplementedError: when the block type is recognised but its
+                round-trip parser depends on a part of the API that is not
+                yet implemented (currently: ``RichTextBlock`` and any block
+                containing elements -- see Phase 7.4b and 7.4c).
+        """
+        if "type" not in data:
+            raise MissingRequiredError("Block payload is missing required `type` field.")
+        type_str = data["type"]
+        registry = _block_from_dict_registry()
+        if type_str not in registry:
+            raise TypeMismatchError(
+                f"Unknown block type {type_str!r}; expected one of {sorted(registry)}."
+            )
+        return registry[type_str](data)
+
+
+def _block_from_dict_registry() -> dict[str, Any]:
+    """Lazy registry mapping ``BlockType`` values to subclass ``from_dict``
+    callables. Built on first call to avoid forward-reference issues."""
+    return {
+        BlockType.ACTIONS.value: ActionsBlock.from_dict,
+        BlockType.CONTEXT.value: ContextBlock.from_dict,
+        BlockType.DIVIDER.value: DividerBlock.from_dict,
+        BlockType.FILE.value: FileBlock.from_dict,
+        BlockType.HEADER.value: HeaderBlock.from_dict,
+        BlockType.IMAGE.value: ImageBlock.from_dict,
+        BlockType.INPUT.value: InputBlock.from_dict,
+        BlockType.MARKDOWN.value: MarkdownBlock.from_dict,
+        BlockType.RICH_TEXT.value: RichTextBlock.from_dict,
+        BlockType.SECTION.value: SectionBlock.from_dict,
+        BlockType.TABLE.value: TableBlock.from_dict,
+        BlockType.VIDEO.value: VideoBlock.from_dict,
+    }
+
 
 class ActionsBlock(Block):
     """
@@ -163,6 +208,19 @@ class ActionsBlock(Block):
 
     def _resolve(self) -> dict[str, Any]:
         return resolve({**self._attributes(), "elements": self.elements})
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ActionsBlock:
+        """Parse a Slack ``actions`` block payload.
+
+        Currently raises ``NotImplementedError`` because round-tripping
+        depends on parsing nested elements; ``Element.from_dict`` will land
+        in Phase 7.4b.
+        """
+        raise NotImplementedError(
+            "ActionsBlock.from_dict requires Element.from_dict, which is not yet "
+            "implemented (see issue #208 and the planned Phase 7.4b)."
+        )
 
 
 class ContextBlock(Block):
@@ -198,6 +256,26 @@ class ContextBlock(Block):
     def _resolve(self) -> dict[str, Any]:
         return resolve({**self._attributes(), "elements": self.elements})
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ContextBlock:
+        """Parse a Slack ``context`` block payload.
+
+        Text elements within the block are parsed back to ``Text``; image
+        elements raise ``NotImplementedError`` because ``Element.from_dict``
+        has not yet shipped (Phase 7.4b).
+        """
+        elements: list[Element | CompositionObject] = []
+        for raw in data.get("elements", []):
+            etype = raw.get("type")
+            if etype in {TextType.MARKDOWN.value, TextType.PLAINTEXT.value}:
+                elements.append(Text.from_dict(raw))
+            else:
+                raise NotImplementedError(
+                    f"ContextBlock.from_dict cannot parse element of type {etype!r}; "
+                    "non-Text elements depend on Element.from_dict (Phase 7.4b)."
+                )
+        return cls(elements=elements or None, block_id=data.get("block_id"))
+
 
 class DividerBlock(Block):
     """
@@ -213,6 +291,11 @@ class DividerBlock(Block):
 
     def _resolve(self) -> dict[str, Any]:
         return self._attributes()
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> DividerBlock:
+        """Parse a Slack ``divider`` block payload."""
+        return cls(block_id=data.get("block_id"))
 
 
 class FileBlock(Block):
@@ -245,6 +328,17 @@ class FileBlock(Block):
             "source": self.source,
         }
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> FileBlock:
+        """Parse a Slack ``file`` block payload."""
+        if "external_id" not in data:
+            raise MissingRequiredError("FileBlock payload is missing required `external_id` field.")
+        return cls(
+            external_id=data["external_id"],
+            block_id=data.get("block_id"),
+            source=data.get("source", "remote"),
+        )
+
 
 class HeaderBlock(Block):
     """
@@ -264,6 +358,13 @@ class HeaderBlock(Block):
 
     def _resolve(self) -> dict[str, Any]:
         return resolve({**self._attributes(), "text": self.text})
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> HeaderBlock:
+        """Parse a Slack ``header`` block payload."""
+        if "text" not in data:
+            raise MissingRequiredError("HeaderBlock payload is missing required `text` field.")
+        return cls(text=Text.from_dict(data["text"]), block_id=data.get("block_id"))
 
 
 class ImageBlock(Block):
@@ -316,6 +417,19 @@ class ImageBlock(Block):
                 "alt_text": self.alt_text if self.alt_text else None,
                 "title": getattr(self, "title", None),
             }
+        )
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ImageBlock:
+        """Parse a Slack ``image`` block payload."""
+        if "image_url" not in data:
+            raise MissingRequiredError("ImageBlock payload is missing required `image_url` field.")
+        title_raw = data.get("title")
+        return cls(
+            image_url=data["image_url"],
+            alt_text=data.get("alt_text", " "),
+            title=Text.from_dict(title_raw) if title_raw is not None else None,
+            block_id=data.get("block_id"),
         )
 
 
@@ -371,6 +485,18 @@ class InputBlock(Block):
             }
         )
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> InputBlock:
+        """Parse a Slack ``input`` block payload.
+
+        Currently raises ``NotImplementedError`` because the nested
+        ``element`` requires ``Element.from_dict``, which lands in Phase 7.4b.
+        """
+        raise NotImplementedError(
+            "InputBlock.from_dict requires Element.from_dict, which is not yet "
+            "implemented (see issue #208 and the planned Phase 7.4b)."
+        )
+
 
 class MarkdownBlock(Block):
     """
@@ -406,6 +532,13 @@ class MarkdownBlock(Block):
 
     def _resolve(self) -> dict[str, Any]:
         return {**self._attributes(), "text": self.text}
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> MarkdownBlock:
+        """Parse a Slack ``markdown`` block payload."""
+        if "text" not in data:
+            raise MissingRequiredError("MarkdownBlock payload is missing required `text` field.")
+        return cls(text=data["text"], block_id=data.get("block_id"))
 
 
 class RichTextBlock(Block):
@@ -447,6 +580,19 @@ class RichTextBlock(Block):
 
     def _resolve(self) -> dict[str, Any]:
         return resolve({**self._attributes(), "elements": self.elements})
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> RichTextBlock:
+        """Parse a Slack ``rich_text`` block payload.
+
+        Currently raises ``NotImplementedError`` because the rich-text
+        object hierarchy has a deeply nested element graph; round-tripping
+        is deferred to Phase 7.4c.
+        """
+        raise NotImplementedError(
+            "RichTextBlock.from_dict is not yet implemented; rich-text "
+            "round-tripping is scheduled for Phase 7.4c (see issue #208)."
+        )
 
 
 class SectionBlock(Block):
@@ -511,6 +657,29 @@ class SectionBlock(Block):
                 else None,
                 "accessory": self.accessory if self.accessory else None,
             }
+        )
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> SectionBlock:
+        """Parse a Slack ``section`` block payload.
+
+        Round-trips ``text`` and ``fields``. Raises ``NotImplementedError``
+        if an ``accessory`` is present, because the accessory is an
+        ``Element`` and ``Element.from_dict`` is not yet implemented
+        (Phase 7.4b).
+        """
+        if data.get("accessory") is not None:
+            raise NotImplementedError(
+                "SectionBlock.from_dict cannot yet parse an `accessory`; "
+                "this requires Element.from_dict (Phase 7.4b)."
+            )
+        text_raw = data.get("text")
+        fields_raw = data.get("fields")
+        return cls(
+            text=Text.from_dict(text_raw) if text_raw is not None else None,
+            fields=[Text.from_dict(f) for f in fields_raw] if fields_raw else None,
+            accessory=None,
+            block_id=data.get("block_id"),
         )
 
 
@@ -594,6 +763,19 @@ class TableBlock(Block):
         else:
             # Wrap RichTextObject in rich_text structure
             return {"type": "rich_text", "elements": [cell._resolve()]}
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> TableBlock:
+        """Parse a Slack ``table`` block payload.
+
+        Currently raises ``NotImplementedError`` because table cells may
+        contain rich-text objects whose round-trip parser is deferred to
+        Phase 7.4c.
+        """
+        raise NotImplementedError(
+            "TableBlock.from_dict is not yet implemented; round-tripping requires "
+            "the rich-text parsers planned for Phase 7.4c (see issue #208)."
+        )
 
 
 class VideoBlock(Block):
@@ -681,4 +863,27 @@ class VideoBlock(Block):
                 "provider_name": self.provider_name,
                 "title_url": self.title_url,
             }
+        )
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> VideoBlock:
+        """Parse a Slack ``video`` block payload."""
+        required = ("alt_text", "thumbnail_url", "title", "video_url")
+        for field in required:
+            if field not in data:
+                raise MissingRequiredError(
+                    f"VideoBlock payload is missing required `{field}` field."
+                )
+        description_raw = data.get("description")
+        return cls(
+            alt_text=data["alt_text"],
+            thumbnail_url=data["thumbnail_url"],
+            title=Text.from_dict(data["title"]),
+            video_url=data["video_url"],
+            author_name=data.get("author_name"),
+            block_id=data.get("block_id"),
+            description=Text.from_dict(description_raw) if description_raw is not None else None,
+            provider_icon_url=data.get("provider_icon_url"),
+            provider_name=data.get("provider_name"),
+            title_url=data.get("title_url"),
         )
