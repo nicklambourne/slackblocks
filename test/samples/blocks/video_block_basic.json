@@ -1,0 +1,11 @@
+{
+    "type": "video",
+    "block_id": "b1",
+    "alt_text": "alt",
+    "thumbnail_url": "https://example.com/t.png",
+    "title": {
+        "type": "plain_text",
+        "text": "Title"
+    },
+    "video_url": "https://example.com/v.mp4"
+}

@@ -13,6 +13,7 @@ from .blocks import (
     RichTextBlock,
     SectionBlock,
     TableBlock,
+    VideoBlock,
 )
 from .elements import (
     Button,
