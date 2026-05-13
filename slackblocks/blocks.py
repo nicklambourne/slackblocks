@@ -58,7 +58,12 @@ from slackblocks.rich_text import (
     RichTextQuote,
     RichTextSection,
 )
-from slackblocks.utils import coerce_to_list, coerce_to_list_nonnull, validate_string
+from slackblocks.utils import (
+    coerce_to_list,
+    coerce_to_list_nonnull,
+    validate_string,
+    validate_string_nonnull,
+)
 
 ALLOWED_INPUT_ELEMENTS = (
     PlainTextInput,
@@ -105,6 +110,7 @@ class BlockType(Enum):
     HEADER = "header"
     IMAGE = "image"
     INPUT = "input"
+    MARKDOWN = "markdown"
     RICH_TEXT = "rich_text"
     SECTION = "section"
     TABLE = "table"
@@ -363,6 +369,42 @@ class InputBlock(Block):
                 "optional": self.optional if self.optional else None,
             }
         )
+
+
+class MarkdownBlock(Block):
+    """
+    Displays formatted Markdown text. Unlike the `mrkdwn` text style used in
+    [`SectionBlock`](/slackblocks/latest/reference/blocks/#blocks.SectionBlock),
+    `MarkdownBlock` uses **GitHub-flavored Markdown** for richer formatting,
+    including features like tables and code blocks. Added to Slack in 2024
+    for AI / agentic app outputs.
+
+    See: <https://api.slack.com/reference/block-kit/blocks#markdown>.
+
+    Args:
+        text: the Markdown-formatted text to display (1-12000 characters).
+        block_id: you can use this field to provide a deterministic identifier
+            for the block.
+
+    Throws:
+        LengthError: if `text` is empty or longer than 12000 characters.
+    """
+
+    def __init__(
+        self,
+        text: str,
+        block_id: str | None = None,
+    ) -> None:
+        super().__init__(type_=BlockType.MARKDOWN, block_id=block_id)
+        self.text = validate_string_nonnull(
+            text,
+            field_name="text",
+            min_length=1,
+            max_length=12000,
+        )
+
+    def _resolve(self) -> dict[str, Any]:
+        return {**self._attributes(), "text": self.text}
 
 
 class RichTextBlock(Block):

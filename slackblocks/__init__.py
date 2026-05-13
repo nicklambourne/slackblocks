@@ -9,6 +9,7 @@ from .blocks import (
     HeaderBlock,
     ImageBlock,
     InputBlock,
+    MarkdownBlock,
     RichTextBlock,
     SectionBlock,
     TableBlock,
