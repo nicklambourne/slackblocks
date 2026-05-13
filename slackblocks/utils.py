@@ -8,7 +8,12 @@ from __future__ import annotations
 from string import hexdigits
 from typing import Any, TypeVar
 
-from slackblocks.errors import InvalidUsageError
+from slackblocks.errors import (
+    LengthError,
+    MissingRequiredError,
+    RangeError,
+    TypeMismatchError,
+)
 
 T = TypeVar("T")
 
@@ -44,18 +49,18 @@ def coerce_to_list_nonnull(
         if not isinstance(class_, tuple):
             class_ = (class_,)
         if not isinstance(item, class_):
-            raise InvalidUsageError(
+            raise TypeMismatchError(
                 f"Type of {item} ({type(item)})) inconsistent with expected type {class_}."
             )
 
     length = len(items)
     if min_size is not None and length < min_size:
-        raise InvalidUsageError(
+        raise LengthError(
             f"Size ({length}) of list of {type(class_)} is less than `min_size` ({min_size})"
         )
 
     if max_size is not None and length > max_size:
-        raise InvalidUsageError(
+        raise LengthError(
             f"Size ({length}) of list of {type(class_)} exceeds `max_size` ({max_size})"
         )
 
@@ -90,7 +95,7 @@ def coerce_to_list(
     if object_or_objects is None:
         if allow_none:
             return None
-        raise InvalidUsageError(
+        raise TypeMismatchError(
             f"Type of {object_or_objects} ({type(object_or_objects)})) is "
             f"None should be type `{class_}`."
         )
@@ -131,13 +136,13 @@ def validate_action_id(action_id: str | None, allow_none: bool = False) -> str |
     """
     if action_id is None:
         if not allow_none:
-            raise InvalidUsageError("`action_id` cannot be None.")
+            raise MissingRequiredError("`action_id` cannot be None.")
     else:
         length = len(action_id)
         if length < 1:
-            raise InvalidUsageError("`action_id` cannot be empty.")
+            raise LengthError("`action_id` cannot be empty.")
         if length > 255:
-            raise InvalidUsageError(
+            raise LengthError(
                 f"`action_id` length ({length}) exceeds limit of 255 characters (id: {action_id})."
             )
     return action_id
@@ -169,7 +174,9 @@ def validate_string(
     """
     if string is None:
         if not allow_none:
-            raise InvalidUsageError(f"Expecting string for field `{field_name}`, cannot be None.")
+            raise MissingRequiredError(
+                f"Expecting string for field `{field_name}`, cannot be None."
+            )
         return None
     return validate_string_nonnull(
         string, field_name=field_name, max_length=max_length, min_length=min_length
@@ -184,12 +191,12 @@ def validate_string_nonnull(
 ) -> str:
     length = len(string)
     if min_length is not None and length < min_length:
-        raise InvalidUsageError(
+        raise LengthError(
             f"Argument to field `{field_name}` ({length} characters) "
             f"is less than minimum length of {min_length} characters"
         )
     if max_length is not None and length > max_length:
-        raise InvalidUsageError(
+        raise LengthError(
             f"Argument to field `{field_name}` ({length} characters) "
             f"exceeds length limit of {max_length} characters"
         )
@@ -219,10 +226,10 @@ def validate_int(
         InvalidUsageError: if any of the validation checks fail.
     """
     if num is None and not allow_none:
-        raise InvalidUsageError("`num` is None, which is disallowed.")
+        raise MissingRequiredError("`num` is None, which is disallowed.")
     if num is not None:
         if min_value is not None and num < min_value:
-            raise InvalidUsageError(f"{num} is less than the minimum {min_value}")
+            raise RangeError(f"{num} is less than the minimum {min_value}")
         if max_value is not None and num > max_value:
-            raise InvalidUsageError(f"{num} exceeds the maximum {max_value}")
+            raise RangeError(f"{num} exceeds the maximum {max_value}")
     return num

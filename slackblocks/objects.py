@@ -12,7 +12,12 @@ from json import dumps
 from typing import Any, Literal, TypeAlias, cast, overload
 
 from slackblocks._core import RenderableMixin, omit_none, resolve
-from slackblocks.errors import InvalidUsageError
+from slackblocks.errors import (
+    LengthError,
+    MissingRequiredError,
+    MutualExclusivityError,
+    TypeMismatchError,
+)
 from slackblocks.utils import (
     coerce_to_list,
     coerce_to_list_nonnull,
@@ -176,7 +181,7 @@ class Text(CompositionObject):
         if text is None:
             if allow_none:
                 return None
-            raise InvalidUsageError("This field cannot have the value None or ''")
+            raise MissingRequiredError("This field cannot have the value None or ''")
         return Text.to_text_nonnull(
             text,
             force_plaintext,
@@ -208,15 +213,13 @@ class Text(CompositionObject):
         original_type = text.text_type if isinstance(text, Text) else None
         type_ = TextType.PLAINTEXT if force_plaintext else original_type or TextType.MARKDOWN
         if text and max_length and len(text) > max_length:
-            raise InvalidUsageError(
-                f"`text` length ({len(text)}) exceeds `max_length` ({max_length})"
-            )
+            raise LengthError(f"`text` length ({len(text)}) exceeds `max_length` ({max_length})")
         if isinstance(text, str):
             return Text(text=text, type_=type_)
         elif isinstance(text, Text):
             return Text(text=text.text, type_=type_, emoji=text.emoji, verbatim=text.verbatim)
         else:
-            raise InvalidUsageError("This field must be a string or Text object")
+            raise TypeMismatchError("This field must be a string or Text object")
 
     def __str__(self) -> str:
         return dumps(self._resolve())
@@ -322,7 +325,7 @@ class Option(CompositionObject):
             description, max_length=75, force_plaintext=True, allow_none=True
         )
         if url and len(url) > 3000:
-            raise InvalidUsageError("Option URLs must be less than 3000 characters")
+            raise LengthError("Option URLs must be less than 3000 characters")
         self.url = url
 
     def _resolve(self) -> dict[str, Any]:
@@ -399,7 +402,7 @@ class DispatchActionConfiguration(CompositionObject):
         )
         for trigger in self.trigger_actions_on:
             if trigger not in ALLOWABLE_TRIGGERS:
-                raise InvalidUsageError(
+                raise TypeMismatchError(
                     f"Trigger {trigger} not in allowable values ({ALLOWABLE_TRIGGERS})"
                 )
 
@@ -444,7 +447,7 @@ class ConversationFilter(CompositionObject):
         if not (
             include or exclude_external_shared_channels is not None or exclude_bot_users is not None
         ):
-            raise InvalidUsageError(
+            raise MissingRequiredError(
                 "One of `include`, `exclude_external_shared_channels`, or "
                 "`exclude_bot_users` is required."
             )
@@ -513,7 +516,7 @@ class SlackFile(CompositionObject):
     ) -> None:
         super().__init__(CompositionObjectType.SLACK_FILE)
         if url and id:
-            raise InvalidUsageError("Cannot provide both `url` and `id`.")
+            raise MutualExclusivityError("Cannot provide both `url` and `id`.")
         self.url = url
         self.id = id
 
@@ -634,7 +637,7 @@ class ColumnSettings:
         is_wrapped: bool | None = None,
     ) -> None:
         if align and align not in ["left", "center", "right"]:
-            raise InvalidUsageError("`align` must be one of `left`, `center`, or `right`")
+            raise TypeMismatchError("`align` must be one of `left`, `center`, or `right`")
         self.align = align
         self.is_wrapped = is_wrapped
 
