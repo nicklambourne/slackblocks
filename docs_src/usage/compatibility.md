@@ -50,3 +50,6 @@ Bugfix releases on existing lines may continue past these dates on a best-effort
 - **You're on Python 3.8 or 3.9**: install the latest `1.x`.
 - **You're on Python 3.10 or newer**: install `2.x` once released; `1.x` will continue to work for the foreseeable future.
 - **You're starting a new project on a modern Python**: prefer `2.x` to take advantage of the improved typing surface.
+
+For an upgrade walkthrough from `1.x` to `2.x`, see the
+[Migration Guide](migration.md).
