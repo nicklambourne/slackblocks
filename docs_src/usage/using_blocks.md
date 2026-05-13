@@ -171,6 +171,37 @@ For the reverse mapping — looking up a class by name — see the [Blocks refer
     ![An example of the UI output of a Header Block](../img/usage/header.png)
 
 
+## Markdown Block
+:::blocks.MarkdownBlock
+    options:
+        show_bases: false
+        show_source: false
+
+
+Slack added the `markdown` block type in 2024, primarily for AI / agentic apps. Unlike the `mrkdwn` text inside a [Section Block](#section-block), `MarkdownBlock` renders **GitHub-flavored Markdown**, supporting tables, code blocks, and richer list semantics.
+
+`text` is required (1 - 12,000 characters).
+
+=== "`slackblocks`"
+    ```python
+    from slackblocks import MarkdownBlock
+
+    MarkdownBlock(
+        text="**Hello!** Markdown blocks support _GitHub-flavored_ syntax.",
+    )
+    ```
+
+=== "JSON"
+    ```json
+    {
+        "type": "markdown",
+        "text": "**Hello!** Markdown blocks support _GitHub-flavored_ syntax."
+    }
+    ```
+
+See the [Slack reference](https://api.slack.com/reference/block-kit/blocks#markdown) for the supported Markdown features.
+
+
 ## Image Block
 :::blocks.ImageBlock
     options:
@@ -550,3 +581,54 @@ For the reverse mapping — looking up a class by name — see the [Blocks refer
 
 === "Slack UI"
     ![An example of the UI output of a Table Block](../img/usage/table.png)
+
+
+## Video Block
+:::blocks.VideoBlock
+    options:
+        show_bases: false
+        show_source: false
+
+
+Embeds a video from a Slack-supported provider (e.g. YouTube, Vimeo). The `title` accepts either a `str` (coerced to plain-text) or a `Text` instance; `description` works the same way.
+
+Required: `alt_text`, `thumbnail_url`, `title`, `video_url`. Slack restricts which domains may be embedded — supplying an unsupported URL will produce a Slack API error rather than an `InvalidUsageError` at construction.
+
+=== "`slackblocks`"
+    ```python
+    from slackblocks import VideoBlock
+
+    VideoBlock(
+        alt_text="How to use slackblocks",
+        thumbnail_url="https://example.com/thumb.png",
+        title="Getting Started",
+        video_url="https://example.com/video.mp4",
+        author_name="The slackblocks docs",
+        description="A short walkthrough.",
+        provider_name="example.com",
+        title_url="https://example.com",
+    )
+    ```
+
+=== "JSON"
+    ```json
+    {
+        "type": "video",
+        "alt_text": "How to use slackblocks",
+        "thumbnail_url": "https://example.com/thumb.png",
+        "title": {
+            "type": "plain_text",
+            "text": "Getting Started"
+        },
+        "video_url": "https://example.com/video.mp4",
+        "author_name": "The slackblocks docs",
+        "description": {
+            "type": "plain_text",
+            "text": "A short walkthrough."
+        },
+        "provider_name": "example.com",
+        "title_url": "https://example.com"
+    }
+    ```
+
+See the [Slack reference](https://api.slack.com/reference/block-kit/blocks#video) for the full list of optional fields and provider requirements.

@@ -10,5 +10,5 @@ Slack reference: <https://api.slack.com/reference/block-kit/blocks>
 
 ::: blocks
     options:
-        filters: ["!^Block"]
+        filters: ["!^BlockType$", "!^_block_from_dict_registry$"]
         show_bases: false
