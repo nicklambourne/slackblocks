@@ -15,6 +15,7 @@ from .blocks import (
     TableBlock,
     VideoBlock,
 )
+from .builder import block_kit_builder_url
 from .elements import (
     Button,
     ChannelMultiSelectMenu,
