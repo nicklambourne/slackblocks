@@ -45,6 +45,8 @@ The [Slack Block Kit API](https://api.slack.com/block-kit) defines several resou
 
 [Objects](reference/objects.md) (e.g. [`Text`](reference/objects.md#objects.Text), [`Option`](reference/objects.md#objects.Option), [`Confirm`](reference/objects.md#objects.Confirm)) are the lowest-level primitives — small composable pieces that populate [Elements](reference/elements.md) and [Blocks](reference/blocks.md).
 
+For convenience, [`PlainText`](reference/objects.md#objects.PlainText) and [`Markdown`](reference/objects.md#objects.Markdown) are thin subclasses of `Text` that you can use anywhere a `Text` is expected — `PlainText("Hi", emoji=True)` reads more naturally than `Text("Hi", type_=TextType.PLAINTEXT, emoji=True)`.
+
 ### Elements
 
 [Elements](reference/elements.md) are typically interactive UI controls that go *inside* blocks. The [`CheckboxGroup`](reference/elements.md#elements.CheckboxGroup) element, for instance, takes one or more [`Option`](reference/objects.md#objects.Option) items and presents a checkbox menu.
@@ -56,8 +58,10 @@ The [Slack Block Kit API](https://api.slack.com/block-kit) defines several resou
 - [`SectionBlock`](reference/blocks.md#blocks.SectionBlock) — a chunk of markdown text, optionally with an accessory element.
 - [`HeaderBlock`](reference/blocks.md#blocks.HeaderBlock) — a large bold title.
 - [`DividerBlock`](reference/blocks.md#blocks.DividerBlock) — a visual separator (like an HTML `<hr>`).
+- [`MarkdownBlock`](reference/blocks.md#blocks.MarkdownBlock) — GitHub-flavored Markdown (Slack 2024+; richer formatting than `mrkdwn`).
 - [`RichTextBlock`](reference/blocks.md#blocks.RichTextBlock) — formatted text with inline styling, lists, code blocks, and quotes.
 - [`ActionsBlock`](reference/blocks.md#blocks.ActionsBlock) — a row of interactive elements like buttons or menus.
+- [`VideoBlock`](reference/blocks.md#blocks.VideoBlock) — embed a video from a Slack-supported provider.
 - [`ImageBlock`](reference/blocks.md#blocks.ImageBlock), [`ContextBlock`](reference/blocks.md#blocks.ContextBlock), [`InputBlock`](reference/blocks.md#blocks.InputBlock), [`FileBlock`](reference/blocks.md#blocks.FileBlock), [`TableBlock`](reference/blocks.md#blocks.TableBlock).
 
 See [Using Blocks](usage/using_blocks.md) for examples of all block types side-by-side with their JSON output and Slack rendering.
@@ -74,11 +78,18 @@ See [Using Blocks](usage/using_blocks.md) for examples of all block types side-b
 
 [Views](reference/views.md) are an alternative usage of blocks that build custom UI surfaces in Slack — modal dialogs and the App Home tab — typically used by interactive Slack apps.
 
+### Utilities
+
+- [`block_kit_builder_url(payload, team_id=None)`](reference/utils.md#builder.block_kit_builder_url) — turn any block, list of blocks, message, or view into a [Block Kit Builder](https://app.slack.com/block-kit-builder) URL for browser-based preview.
+- [`Block.from_dict(data)`](reference/blocks.md#blocks.Block.from_dict) — parse a Slack-shaped block payload back into a `slackblocks` object. Per-class `from_dict` parsers are also available on every composition object.
+
 ## Guides
 
 - [Installation](usage/installation.md)
+- [Compatibility](usage/compatibility.md) — which Python versions each release line supports.
 - [Using Blocks](usage/using_blocks.md)
 - [Sending Messages](usage/sending_messages.md)
 - [Cookbook](usage/cookbook.md) — complete end-to-end recipes for common message patterns.
+- [Migrating from 1.x](usage/migration.md) — upgrade guide for `1.x` users.
 - [Troubleshooting & FAQ](usage/troubleshooting.md)
 - [Contributing](contributing.md) — developing and contributing to `slackblocks` itself.
