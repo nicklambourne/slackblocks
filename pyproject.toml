@@ -40,6 +40,7 @@ dev = [
     "aiohttp>=3.10.11,<4.0.0",
     "mypy>=1.14.1,<1.15.0",
     "pytest>=8.3.4,<9.0.0",
+    "pytest-cov>=6.0.0,<7.0.0",
     "ruff>=0.8.0,<1.0.0",
     "slack-sdk>=3.33.4,<4.0.0",
     "twine>=6.0.1,<7.0.0",
@@ -91,4 +92,29 @@ ignore = ["E501", "SIM108"]
 filterwarnings = [
     "error",
 ]
+addopts = [
+    "--cov=slackblocks",
+    "--cov-report=term-missing",
+    "--cov-fail-under=90",
+]
+
+[tool.coverage.run]
+source = ["slackblocks"]
+branch = true
+
+[tool.coverage.report]
+# Lines that don't need coverage:
+# - 'pragma: no cover' opt-out marker.
+# - Defensive 'raise NotImplementedError' stubs, which are intentionally
+#   unreachable without a future PR (see Phase 7.4 from_dict deferrals).
+# - Lines that mypy needs but the runtime never hits.
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "@overload",
+    "\\.\\.\\.$",
+]
+show_missing = true
+skip_covered = false
 
