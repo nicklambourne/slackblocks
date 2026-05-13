@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from itertools import chain
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, TypeAlias
 
 from ._core import RenderableMixin, resolve
 from .errors import InvalidUsageError
@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     from .rich_text import RichText
 
 
-ButtonStyleName = Literal["primary", "danger"]
+ButtonStyleName: TypeAlias = Literal["primary", "danger"]
 """The string-valued ``style`` accepted by ``Button`` and ``WorkflowButton``.
 Equivalent to using ``ButtonStyle.PRIMARY`` / ``ButtonStyle.DANGER``."""
 
@@ -1558,7 +1558,7 @@ class ButtonStyle(Enum):
         )
 
 
-ButtonStyleLike = ButtonStyle | str
+ButtonStyleLike: TypeAlias = ButtonStyle | str
 
 
 class WorkflowButton(Element):
