@@ -12,7 +12,7 @@ from enum import Enum
 from typing import Any
 
 from slackblocks._core import RenderableMixin, resolve
-from slackblocks.errors import InvalidUsageError
+from slackblocks.errors import TypeMismatchError
 from slackblocks.rich_text.elements import (
     RichText,
     RichTextChannel,
@@ -134,7 +134,7 @@ class RichTextList(RichTextObject):
             if style in ListType.all():
                 self.style = style
             else:
-                raise InvalidUsageError(f"`style` must be one of [{ListType.all()}]")
+                raise TypeMismatchError(f"`style` must be one of [{ListType.all()}]")
         elif isinstance(style, ListType):
             self.style = style.value
         self.elements = coerce_to_list(elements, RichTextSection, min_size=1)

@@ -36,7 +36,12 @@ from slackblocks.elements import (
     UserMultiSelectMenu,
     UserSelectMenu,
 )
-from slackblocks.errors import InvalidUsageError
+from slackblocks.errors import (
+    InvalidUsageError,
+    LengthError,
+    MissingRequiredError,
+    TypeMismatchError,
+)
 from slackblocks.objects import (
     ColumnSettings,
     CompositionObject,
@@ -177,11 +182,11 @@ class ContextBlock(Block):
                 if element.type == CompositionObjectType.TEXT or element.type == ElementType.IMAGE:
                     self.elements.append(element)
                 else:
-                    raise InvalidUsageError(
+                    raise TypeMismatchError(
                         f"Context blocks can only hold image and text elements, not {element.type}"
                     )
         if len(self.elements) > 10:
-            raise InvalidUsageError("Context blocks can hold a maximum of ten elements")
+            raise LengthError("Context blocks can hold a maximum of ten elements")
 
     def _resolve(self) -> dict[str, Any]:
         return resolve({**self._attributes(), "elements": self.elements})
@@ -339,7 +344,7 @@ class InputBlock(Block):
         super().__init__(type_=BlockType.INPUT, block_id=block_id)
         self.label = Text.to_text(label, force_plaintext=True, max_length=2000, allow_none=False)
         if not isinstance(element, ALLOWED_INPUT_ELEMENTS):
-            raise InvalidUsageError(
+            raise TypeMismatchError(
                 f"InputBlocks can only hold elements of type: {ALLOWED_INPUT_ELEMENTS}"
             )
         self.element = element
@@ -434,7 +439,7 @@ class SectionBlock(Block):
     ) -> None:
         super().__init__(type_=BlockType.SECTION, block_id=block_id)
         if not text and not fields:
-            raise InvalidUsageError(
+            raise MissingRequiredError(
                 "Must supply either `text` or `fields` or `both` to SectionBlock."
             )
         self.text = Text.to_text(text, max_length=3000, allow_none=True)
@@ -447,7 +452,7 @@ class SectionBlock(Block):
                 if field is not None
             ]
             if len(self.fields) > 10:
-                raise InvalidUsageError("Section blocks can hold a maximum of ten fields")
+                raise LengthError("Section blocks can hold a maximum of ten fields")
         else:
             self.fields = None
 
@@ -493,7 +498,7 @@ class TableBlock(Block):
         super().__init__(type_=BlockType.TABLE, block_id=block_id)
         # Validate that there is at least one row
         if len(rows) < 1:
-            raise InvalidUsageError("`rows` must have at least one row.")
+            raise LengthError("`rows` must have at least one row.")
         # If column_settings are provided, make sure each row has the same number of elements
         num_columns = len(rows[0])
         for row in rows:
@@ -505,10 +510,10 @@ class TableBlock(Block):
                 f"match number of columns in each row ({num_columns})."
             )
         if len(rows) > 100:
-            raise InvalidUsageError("`rows` can have a maximum of 100 items.")
+            raise LengthError("`rows` can have a maximum of 100 items.")
         for row in rows:
             if len(row) > 20:
-                raise InvalidUsageError("Each row can have a maximum of 20 cells.")
+                raise LengthError("Each row can have a maximum of 20 cells.")
         # Validate each cell is an allowed type
         self.rows = []
         for row in rows:
@@ -516,13 +521,13 @@ class TableBlock(Block):
             for cell in row:
                 # Validate cell type
                 if not isinstance(cell, ALLOWED_TABLE_CELL_ELEMENTS):
-                    raise InvalidUsageError(
+                    raise TypeMismatchError(
                         f"Table cells must be one of {ALLOWED_TABLE_CELL_ELEMENTS}"
                     )
                 validated_row.append(cell)
             self.rows.append(validated_row)
         if column_settings and len(column_settings) > 20:
-            raise InvalidUsageError("`column_settings` can have a maximum of 20 items.")
+            raise LengthError("`column_settings` can have a maximum of 20 items.")
         self.column_settings = column_settings
 
     def _resolve(self) -> dict[str, Any]:

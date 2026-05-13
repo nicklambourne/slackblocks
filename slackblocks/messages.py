@@ -16,7 +16,7 @@ from slackblocks.utils import coerce_to_list
 
 from .attachments import Attachment
 from .blocks import Block
-from .errors import InvalidUsageError
+from .errors import TypeMismatchError
 
 
 class ResponseType(Enum):
@@ -32,7 +32,7 @@ class ResponseType(Enum):
         if isinstance(value, ResponseType):
             return value.value
         if value not in [response_type.value for response_type in ResponseType]:
-            raise InvalidUsageError("ResponseType must be either `ephemeral` or `in_channel`")
+            raise TypeMismatchError("ResponseType must be either `ephemeral` or `in_channel`")
         return value
 
 

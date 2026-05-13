@@ -13,7 +13,7 @@ from typing import Any
 
 from slackblocks._core import resolve
 from slackblocks.blocks import Block
-from slackblocks.errors import InvalidUsageError
+from slackblocks.errors import TypeMismatchError
 from slackblocks.utils import coerce_to_list, is_hex
 
 
@@ -179,7 +179,7 @@ class Attachment:
             elif len(color) == 6 and is_hex(color):
                 self.color = f"#{color}"
             else:
-                raise InvalidUsageError("Color must be a valid hex code (e.g. `#ffffff`)")
+                raise TypeMismatchError("Color must be a valid hex code (e.g. `#ffffff`)")
         else:
             self.color = None
 

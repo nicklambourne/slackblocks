@@ -13,7 +13,13 @@ from itertools import chain
 from typing import TYPE_CHECKING, Any, Literal, TypeAlias
 
 from ._core import RenderableMixin, resolve
-from .errors import InvalidUsageError
+from .errors import (
+    LengthError,
+    MissingRequiredError,
+    MutualExclusivityError,
+    RangeError,
+    TypeMismatchError,
+)
 from .objects import (
     ConfirmationDialogue,
     ConversationFilter,
@@ -440,9 +446,9 @@ class Image(Element):
     ) -> None:
         super().__init__(type_=ElementType.IMAGE)
         if image_url is None and slack_file is None:
-            raise InvalidUsageError("Must provide one of `image_url` or `slack_file`")
+            raise MissingRequiredError("Must provide one of `image_url` or `slack_file`")
         if image_url and slack_file:
-            raise InvalidUsageError("Cannot provide both `image_url` or `slack_file`")
+            raise MutualExclusivityError("Cannot provide both `image_url` or `slack_file`")
         self.image_url = image_url
         self.alt_text = alt_text
         self.slack_file = slack_file
@@ -502,7 +508,9 @@ class StaticMultiSelectMenu(Element):
         super().__init__(type_=ElementType.MULTI_SELECT_STATIC)
         self.action_id = validate_action_id(action_id)
         if options and option_groups:
-            raise InvalidUsageError("Cannot set both `options` and `option_groups` parameters.")
+            raise MutualExclusivityError(
+                "Cannot set both `options` and `option_groups` parameters."
+            )
         self.options = coerce_to_list(options, class_=Option, allow_none=True, max_size=100)
         self.option_groups = coerce_to_list(
             option_groups, class_=OptionGroup, allow_none=True, max_size=100
@@ -518,7 +526,7 @@ class StaticMultiSelectMenu(Element):
             and self.initial_options
             and not all(isinstance(option, Option) for option in self.initial_options)
         ):
-            raise InvalidUsageError(
+            raise TypeMismatchError(
                 "If using `options` then `initial_options` must also be of type `List[Option]`, "
                 f"not `{type(self.initial_options)}`."
             )
@@ -527,7 +535,7 @@ class StaticMultiSelectMenu(Element):
             and self.initial_options
             and not all(isinstance(option, OptionGroup) for option in self.initial_options)
         ):
-            raise InvalidUsageError(
+            raise TypeMismatchError(
                 "If using `option_groups` then `initial_options` must also be of type "
                 f"`List[OptionGroup]`, not `{type(self.initial_options)}`."
             )
@@ -542,7 +550,7 @@ class StaticMultiSelectMenu(Element):
             )
         for option in options_to_validate:
             if option.text.text_type == TextType.MARKDOWN:
-                raise InvalidUsageError(
+                raise TypeMismatchError(
                     "Text in Options for StaticSelectMenu can only be of TextType.PLAINTEXT"
                 )
 
@@ -870,15 +878,15 @@ class NumberInput(Element):
         self.min_value = min_value
         self.max_value = max_value
         if min_value and not is_decimal_allowed and isinstance(min_value, float):
-            raise InvalidUsageError(
+            raise TypeMismatchError(
                 f"`min_value` ({min_value}) cannot be a float when `is_decimal_allowed` is `False`"
             )
         if max_value and not is_decimal_allowed and isinstance(max_value, float):
-            raise InvalidUsageError(
+            raise TypeMismatchError(
                 f"`max_value` ({max_value}) cannot be a float when `is_decimal_allowed` is `False`"
             )
         if min_value is not None and max_value is not None and min_value > max_value:
-            raise InvalidUsageError(
+            raise RangeError(
                 f"`min_value` ({min_value}) cannot be greater than `max_value` ({max_value})"
             )
         self.dispatch_action_config = dispatch_action_config
@@ -988,7 +996,7 @@ class PlainTextInput(Element):
         self.initial_value = initial_value
         self.min_length = min_length
         if max_length and max_length > 3000:
-            raise InvalidUsageError("`max_length` value cannot exceed 3000 characters")
+            raise RangeError("`max_length` value cannot exceed 3000 characters")
         self.max_length = max_length
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
@@ -1046,12 +1054,12 @@ class RadioButtonGroup(Element):
         super().__init__(type_=ElementType.RADIO_BUTTON_GROUP)
         self.action_id = validate_action_id(action_id)
         if len(options) < 1 or len(options) > 10:
-            raise InvalidUsageError(
+            raise LengthError(
                 "Number of options to RadioButtonGroup must be between 1 and 10 (inclusive)."
             )
         self.options: list[Option] | None = coerce_to_list(options, class_=Option, allow_none=False)
         if initial_option is not None and initial_option not in options:
-            raise InvalidUsageError("`initial_option` must be a member of `options`")
+            raise TypeMismatchError("`initial_option` must be a member of `options`")
         self.initial_option = initial_option
         self.confirm = confirm
         self.focus_on_load = focus_on_load
@@ -1112,7 +1120,9 @@ class StaticSelectMenu(Element):
         super().__init__(type_=ElementType.STATIC_SELECT_MENU)
         self.action_id = validate_action_id(action_id)
         if options and option_groups:
-            raise InvalidUsageError("Cannot set both `options` and `option_groups` parameters.")
+            raise MutualExclusivityError(
+                "Cannot set both `options` and `option_groups` parameters."
+            )
         self.options: list[Option] | None = coerce_to_list(
             options, class_=Option, allow_none=True, max_size=100
         )
@@ -1120,12 +1130,12 @@ class StaticSelectMenu(Element):
             option_groups, class_=OptionGroup, allow_none=True, max_size=100
         )
         if options and initial_option and not isinstance(initial_option, Option):
-            raise InvalidUsageError(
+            raise TypeMismatchError(
                 "If using `options` then `initial_option` must also be of type `Option`, "
                 f"not `{type(initial_option)}`."
             )
         if option_groups and initial_option and not isinstance(initial_option, OptionGroup):
-            raise InvalidUsageError(
+            raise TypeMismatchError(
                 "If using `option_groups` then `initial_option` must also be of type "
                 f"`OptionGroup`, not `{type(initial_option)}`."
             )
@@ -1140,7 +1150,7 @@ class StaticSelectMenu(Element):
             )
         for option in options_to_validate:
             if option.text.text_type == TextType.MARKDOWN:
-                raise InvalidUsageError(
+                raise TypeMismatchError(
                     "Text in Options for StaticSelectMenu can only be of TextType.PLAINTEXT"
                 )
 
@@ -1553,7 +1563,7 @@ class ButtonStyle(Enum):
             return style
         if isinstance(style, str):
             return ButtonStyle[style]
-        raise InvalidUsageError(
+        raise TypeMismatchError(
             f"Can only coerce to ButtonStyle from ButtonStyle or string, not {type(style)}."
         )
 
