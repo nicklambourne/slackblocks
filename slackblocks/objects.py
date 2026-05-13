@@ -9,7 +9,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
-from typing import Any, Literal, cast
+from typing import Any, Literal, cast, overload
 
 from slackblocks._core import RenderableMixin, omit_none, resolve
 from slackblocks.errors import InvalidUsageError
@@ -121,6 +121,36 @@ class Text(CompositionObject):
             }
         )
 
+    @overload
+    @staticmethod
+    def to_text(
+        text: str | Text | None,
+        force_plaintext: bool = False,
+        max_length: int | None = None,
+        *,
+        allow_none: Literal[False] = False,
+    ) -> Text: ...
+
+    @overload
+    @staticmethod
+    def to_text(
+        text: str | Text | None,
+        force_plaintext: bool = False,
+        max_length: int | None = None,
+        *,
+        allow_none: Literal[True],
+    ) -> Text | None: ...
+
+    @overload
+    @staticmethod
+    def to_text(
+        text: str | Text | None,
+        force_plaintext: bool = False,
+        max_length: int | None = None,
+        *,
+        allow_none: bool,
+    ) -> Text | None: ...
+
     @staticmethod
     def to_text(
         text: str | Text | None,
@@ -138,6 +168,10 @@ class Text(CompositionObject):
             max_length: `text` will be checked against this length in addition
                 to the standard `Text` limit of 3000 characters.
             allow_none: whether to accept `None` as a valid value for `text`.
+                The return type narrows based on this value:
+
+                - ``allow_none=False`` (the default) -> always returns ``Text``.
+                - ``allow_none=True`` -> returns ``Text | None``.
         """
         if text is None:
             if allow_none:
