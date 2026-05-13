@@ -3,6 +3,7 @@ from __future__ import annotations
 from .attachments import Attachment, Color, Field
 from .blocks import (
     ActionsBlock,
+    Block,
     ContextBlock,
     DividerBlock,
     FileBlock,

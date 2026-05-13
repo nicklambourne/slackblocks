@@ -221,6 +221,41 @@ class Text(CompositionObject):
         else:
             raise TypeMismatchError("This field must be a string or Text object")
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Text:
+        """Parse a Slack-shaped ``text`` composition object back into a ``Text``.
+
+        Unknown fields are ignored so that future Slack additions do not
+        break round-tripping.
+
+        Args:
+            data: a dict matching the Slack ``text`` composition-object shape,
+                e.g. ``{"type": "mrkdwn", "text": "hi", "verbatim": True}``.
+
+        Returns:
+            A ``Text`` instance.
+
+        Throws:
+            MissingRequiredError: if ``data["text"]`` is absent.
+            TypeMismatchError: if ``data["type"]`` is not one of the
+                allowable ``TextType`` values.
+        """
+        if "text" not in data:
+            raise MissingRequiredError("Text payload is missing required `text` field.")
+        type_str = data.get("type", TextType.MARKDOWN.value)
+        try:
+            text_type = TextType(type_str)
+        except ValueError as exc:
+            raise TypeMismatchError(
+                f"Text `type` must be one of {[t.value for t in TextType]}, got {type_str!r}."
+            ) from exc
+        return cls(
+            text=data["text"],
+            type_=text_type,
+            emoji=bool(data.get("emoji", False)),
+            verbatim=bool(data.get("verbatim", False)),
+        )
+
     def __str__(self) -> str:
         return dumps(self._resolve())
 
@@ -323,6 +358,26 @@ class ConfirmationDialogue(CompositionObject):
             }
         )
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ConfirmationDialogue:
+        """Parse a Slack ``confirm`` composition object back into an instance.
+
+        Throws:
+            MissingRequiredError: if any of ``title``, ``text``, ``confirm``,
+                ``deny`` is absent.
+        """
+        for field in ("title", "text", "confirm", "deny"):
+            if field not in data:
+                raise MissingRequiredError(
+                    f"Confirmation dialogue payload is missing required `{field}` field."
+                )
+        return cls(
+            title=Text.from_dict(data["title"]),
+            text=Text.from_dict(data["text"]),
+            confirm=Text.from_dict(data["confirm"]),
+            deny=Text.from_dict(data["deny"]),
+        )
+
 
 class Confirm(ConfirmationDialogue):
     """
@@ -382,6 +437,24 @@ class Option(CompositionObject):
             }
         )
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Option:
+        """Parse a Slack ``option`` composition object back into an ``Option``.
+
+        Throws:
+            MissingRequiredError: if ``text`` or ``value`` is absent.
+        """
+        for field in ("text", "value"):
+            if field not in data:
+                raise MissingRequiredError(f"Option payload is missing required `{field}` field.")
+        description = data.get("description")
+        return cls(
+            text=Text.from_dict(data["text"]),
+            value=data["value"],
+            description=Text.from_dict(description) if description is not None else None,
+            url=data.get("url"),
+        )
+
     def __eq__(self, other) -> bool:
         return (
             self.type == other.type
@@ -420,6 +493,23 @@ class OptionGroup(CompositionObject):
         # OptionGroup does not include "type" in its rendered JSON.
         return resolve({"label": self.label, "options": self.options})
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> OptionGroup:
+        """Parse a Slack ``option_group`` composition object.
+
+        Throws:
+            MissingRequiredError: if ``label`` or ``options`` is absent.
+        """
+        for field in ("label", "options"):
+            if field not in data:
+                raise MissingRequiredError(
+                    f"OptionGroup payload is missing required `{field}` field."
+                )
+        return cls(
+            label=Text.from_dict(data["label"]),
+            options=[Option.from_dict(item) for item in data["options"]],
+        )
+
 
 ALLOWABLE_TRIGGERS = ["on_enter_pressed", "on_character_entered"]
 
@@ -452,6 +542,11 @@ class DispatchActionConfiguration(CompositionObject):
     def _resolve(self) -> dict[str, Any]:
         # DispatchActionConfiguration does not include "type" in its rendered JSON.
         return {"trigger_actions_on": self.trigger_actions_on}
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> DispatchActionConfiguration:
+        """Parse a Slack ``dispatch_action_config`` composition object."""
+        return cls(trigger_actions_on=data.get("trigger_actions_on"))
 
 
 ConversationType: TypeAlias = Literal["im", "mpim", "private", "public"]
@@ -511,6 +606,20 @@ class ConversationFilter(CompositionObject):
             }
         )
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ConversationFilter:
+        """Parse a Slack ``filter`` composition object.
+
+        At least one of ``include``, ``exclude_external_shared_channels``,
+        or ``exclude_bot_users`` must be present; otherwise the underlying
+        constructor raises ``MissingRequiredError``.
+        """
+        return cls(
+            include=data.get("include"),
+            exclude_external_shared_channels=data.get("exclude_external_shared_channels"),
+            exclude_bot_users=data.get("exclude_bot_users"),
+        )
+
 
 class InputParameter(CompositionObject):
     """
@@ -531,6 +640,16 @@ class InputParameter(CompositionObject):
     def _resolve(self) -> dict[str, Any]:
         # InputParameter does not include "type" in its rendered JSON.
         return {"name": self.name, "value": self.value}
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> InputParameter:
+        """Parse a Slack ``input_parameter`` composition object."""
+        for field in ("name", "value"):
+            if field not in data:
+                raise MissingRequiredError(
+                    f"InputParameter payload is missing required `{field}` field."
+                )
+        return cls(name=data["name"], value=data["value"])
 
 
 class SlackFile(CompositionObject):
@@ -566,6 +685,11 @@ class SlackFile(CompositionObject):
     def _resolve(self) -> dict[str, Any]:
         # SlackFile does not include "type" in its rendered JSON.
         return omit_none({"url": self.url, "id": self.id})
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> SlackFile:
+        """Parse a Slack ``slack_file`` composition object."""
+        return cls(url=data.get("url"), id=data.get("id"))
 
 
 class Trigger(CompositionObject):
@@ -607,6 +731,19 @@ class Trigger(CompositionObject):
                 else None,
             }
         )
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Trigger:
+        """Parse a Slack ``trigger`` composition object."""
+        if "url" not in data:
+            raise MissingRequiredError("Trigger payload is missing required `url` field.")
+        raw_params = data.get("customizable_input_parameters")
+        params: list[InputParameter] | None
+        if raw_params is None:
+            params = None
+        else:
+            params = [InputParameter.from_dict(p) for p in raw_params]
+        return cls(url=data["url"], customizable_input_parameters=params)
 
 
 class Workflow(CompositionObject):
@@ -662,6 +799,13 @@ class Workflow(CompositionObject):
         else:
             params = None
         return cls(trigger=Trigger(url=url, customizable_input_parameters=params))
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Workflow:
+        """Parse a Slack ``workflow`` composition object."""
+        if "trigger" not in data:
+            raise MissingRequiredError("Workflow payload is missing required `trigger` field.")
+        return cls(trigger=Trigger.from_dict(data["trigger"]))
 
 
 class RawText:
