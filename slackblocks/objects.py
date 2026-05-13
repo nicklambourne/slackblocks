@@ -9,7 +9,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
-from typing import Any, Literal, cast, overload
+from typing import Any, Literal, TypeAlias, cast, overload
 
 from slackblocks._core import RenderableMixin, omit_none, resolve
 from slackblocks.errors import InvalidUsageError
@@ -234,7 +234,7 @@ class Text(CompositionObject):
 
 
 # Used for accepting strings and `Text`` where coercion to `Text` is desirable.
-TextLike = str | Text
+TextLike: TypeAlias = str | Text
 
 
 class ConfirmationDialogue(CompositionObject):
@@ -408,7 +408,7 @@ class DispatchActionConfiguration(CompositionObject):
         return {"trigger_actions_on": self.trigger_actions_on}
 
 
-ConversationType = Literal["im", "mpim", "private", "public"]
+ConversationType: TypeAlias = Literal["im", "mpim", "private", "public"]
 """The four kinds of Slack conversation that ``ConversationFilter.include`` may
 contain. See <https://api.slack.com/reference/block-kit/composition-objects#filter_conversations>."""
 
@@ -615,7 +615,7 @@ class RawText:
         )
 
 
-ColumnAlignment = Literal["left", "center", "right"]
+ColumnAlignment: TypeAlias = Literal["left", "center", "right"]
 """Allowable values for ``ColumnSettings.align``."""
 
 
