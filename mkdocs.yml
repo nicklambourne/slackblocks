@@ -76,6 +76,7 @@ nav:
     - Using Blocks: usage/using_blocks.md
     - Sending Messages: usage/sending_messages.md
     - Cookbook: usage/cookbook.md
+    - Migrating from 1.x: usage/migration.md
     - Troubleshooting & FAQ: usage/troubleshooting.md
   - Reference:
     - Attachments: reference/attachments.md
