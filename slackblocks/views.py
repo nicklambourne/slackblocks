@@ -22,7 +22,33 @@ class ViewType(Enum):
 
 
 class View:
-    """ """
+    """
+    Base class for Slack app surfaces -- the visual areas an app can populate
+    with blocks. Concrete subclasses are
+    [`ModalView`](/slackblocks/latest/reference/views/#views.ModalView) (for
+    pop-up modals) and
+    [`HomeTabView`](/slackblocks/latest/reference/views/#views.HomeTabView)
+    (for the per-user App Home tab).
+
+    See: <https://api.slack.com/reference/surfaces/views>.
+
+    Args:
+        type: one of the `ViewType` enum members. Concrete subclasses set
+            this for you; in practice you should construct `ModalView` or
+            `HomeTabView` rather than `View` directly.
+        blocks: 1-100 blocks that make up the contents of the view.
+        private_metadata: a string (max 3000 characters) that will be sent
+            back to your app in any view-related interaction payloads.
+            Useful for stashing per-view server-side context.
+        callback_id: an identifier (max 255 characters) for distinguishing
+            this view's submissions from other views your app exposes.
+        external_id: a custom identifier that is unique within the views of
+            a given Slack team. Slack uses it to find views your app has
+            previously published.
+
+    Throws:
+        InvalidUsageError: if any of the validation checks fail.
+    """
 
     def __init__(
         self,

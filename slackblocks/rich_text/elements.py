@@ -112,7 +112,10 @@ class RichTextChannel(RichTextElement):
         italic: whether to render the given channel in italics.
         strike: whether to render the given channel with a "strikethrough".
         highlight: whether to give the channel a distinct highlight when rendered.
-        client_highlight: ???
+        client_highlight: a Slack-internal rendering hint accompanying
+            mention-style elements. Rarely needed by app developers; pass
+            ``None`` (the default) unless you have a specific reason to set
+            it.
         unlink: whether to remove the link to the channel from the channel when
             rendered.
     """
@@ -241,7 +244,10 @@ class RichTextUser(RichTextElement):
         italic: whether to render the given user in italics.
         strike: whether to render the given user with a "strikethrough".
         highlight: whether to give the user a distinct highlight when rendered.
-        client_highlight: ???
+        client_highlight: a Slack-internal rendering hint accompanying
+            mention-style elements. Rarely needed by app developers; pass
+            ``None`` (the default) unless you have a specific reason to set
+            it.
         unlink: whether to remove the link to the user from the channel when
             rendered.
     """
@@ -295,7 +301,10 @@ class RichTextUserGroup(RichTextElement):
         italic: whether to render the given user in italics.
         strike: whether to render the given user with a "strikethrough".
         highlight: whether to give the user a distinct highlight when rendered.
-        client_highlight: ???
+        client_highlight: a Slack-internal rendering hint accompanying
+            mention-style elements. Rarely needed by app developers; pass
+            ``None`` (the default) unless you have a specific reason to set
+            it.
         unlink: whether to remove the link to the user from the channel when
             rendered.
     """

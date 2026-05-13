@@ -1,7 +1,7 @@
 """
 Rich text objects are containers for rich text elements.
 
-These obejects form the contents of the
+These objects form the contents of the
     [`RichTextBlock`](/slackblocks/latest/reference/blocks/#blocks.RichTextBlock).
 """
 

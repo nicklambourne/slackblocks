@@ -67,7 +67,7 @@ class TextType(Enum):
     """
     Allowable types for Slack Text objects.
 
-    MARKDOWN: tradional markdown formatting, see
+    MARKDOWN: traditional markdown formatting, see
         <https://api.slack.com/reference/surfaces/formatting#basic-formatting>
     PLAINTEXT: simple Unicode text with no formatting (e.g. bold) features.
 

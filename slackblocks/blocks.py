@@ -446,7 +446,7 @@ class InputBlock(Block):
         dispatch_action: whether the [Element](/slackblocks/latest/reference/elements)
             should trigger the sending of a `block_actions` payload.
         block_id: you can use this field to provide a deterministic identifier for the block.
-        hint: an optional additional guide on what input the user should prodive.
+        hint: an optional additional guide on what input the user should provide.
         optional: whether this input field may be empty when the user submits e.g. the modal.
 
     Throws:
