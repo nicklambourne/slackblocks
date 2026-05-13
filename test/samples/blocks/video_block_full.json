@@ -1,0 +1,19 @@
+{
+    "type": "video",
+    "block_id": "video_1",
+    "alt_text": "How to use Slack",
+    "thumbnail_url": "https://example.com/thumb.png",
+    "title": {
+        "type": "plain_text",
+        "text": "Getting Started"
+    },
+    "video_url": "https://example.com/video.mp4",
+    "author_name": "Slack",
+    "description": {
+        "type": "plain_text",
+        "text": "A short intro"
+    },
+    "provider_icon_url": "https://example.com/icon.png",
+    "provider_name": "YouTube",
+    "title_url": "https://example.com"
+}
