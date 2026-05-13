@@ -282,3 +282,125 @@ msg = Message(
 ```
 
 Prefer plain blocks where possible — Slack may drop attachment support in the future.
+
+
+## Preview a message in the browser
+
+Use `block_kit_builder_url` to build a [Block Kit Builder](https://app.slack.com/block-kit-builder) URL and open it in your browser to verify a message before posting it. Useful while iterating on layout — no Slack credentials needed.
+
+```python
+from slackblocks import (
+    block_kit_builder_url,
+    DividerBlock,
+    HeaderBlock,
+    Markdown,
+    SectionBlock,
+)
+
+blocks = [
+    HeaderBlock("Build #482 passed :white_check_mark:"),
+    SectionBlock(text=Markdown("All 1,247 tests green in 3m 12s.")),
+    DividerBlock(),
+    SectionBlock(fields=["*Author*\n@nick", "*Branch*\n`main`"]),
+]
+
+print(block_kit_builder_url(blocks))
+# https://app.slack.com/block-kit-builder/#%7B%22blocks%22%3A%5B...%5D%7D
+```
+
+`block_kit_builder_url` accepts:
+
+- A single `Block`, `Element`, or anything else with a `_resolve()` method.
+- A list of `Block` objects (wrapped in `{"blocks": [...]}` automatically).
+- A `Message`, `WebhookMessage`, `MessageResponse`, or `View`.
+- A raw `dict` (escape hatch).
+
+Pass `team_id="T0123ABCD"` for a workspace-specific URL.
+
+
+## Parse incoming Slack JSON
+
+If your app handles Slack interactivity payloads or events, you can parse the JSON back into `slackblocks` objects with `Block.from_dict`:
+
+```python
+import json
+from slackblocks import Block, SectionBlock
+
+incoming = json.loads(slack_request_body)
+
+for raw_block in incoming.get("blocks", []):
+    block = Block.from_dict(raw_block)
+    if isinstance(block, SectionBlock):
+        print("Section text:", block.text.text if block.text else None)
+```
+
+`Block.from_dict` reads `data["type"]` and dispatches to the right subclass. The composition objects (`Text`, `Option`, `Confirm`, etc.) round-trip fully via their own `from_dict` classmethods.
+
+In the current release, blocks containing interactive elements (`ActionsBlock`, `InputBlock`, `SectionBlock` with an `accessory`, `ContextBlock` with image elements) raise `NotImplementedError` — this is on the roadmap for a follow-up release.
+
+
+## One-line workflow trigger
+
+`Workflow.from_url` collapses the most common workflow construction:
+
+```python
+from slackblocks import (
+    ActionsBlock,
+    Message,
+    SectionBlock,
+    Workflow,
+    WorkflowButton,
+)
+
+msg = Message(
+    channel="#release",
+    blocks=[
+        SectionBlock("Run the release workflow with the parameters below."),
+        ActionsBlock(
+            elements=[
+                WorkflowButton(
+                    text="Release",
+                    workflow=Workflow.from_url(
+                        "https://slack.com/shortcuts/Ft012KXZK1MZ/...",
+                        env="prod",
+                        retries="3",
+                    ),
+                ),
+            ],
+        ),
+    ],
+)
+```
+
+Each keyword pair becomes one `InputParameter` on the underlying `Trigger`. Calling `Workflow.from_url(url)` with no parameters omits the `customizable_input_parameters` field.
+
+
+## Typed exception handling
+
+`InvalidUsageError` is the base type for every validation failure raised by `slackblocks`. As of `2.x`, five subclasses let you `except` for specific failure categories instead of string-matching the message:
+
+```python
+from slackblocks import (
+    Button,
+    LengthError,
+    MutualExclusivityError,
+    SlackFile,
+    Image,
+)
+
+try:
+    Button(text="x" * 100, action_id="b")
+except LengthError as e:
+    # specifically a length violation, not a missing-required or type-mismatch
+    log.warning("button text too long: %s", e)
+
+try:
+    Image(
+        image_url="https://x.png",
+        slack_file=SlackFile(url="https://y.png", id=None),
+    )
+except MutualExclusivityError as e:
+    log.error("image source ambiguous: %s", e)
+```
+
+Existing `except InvalidUsageError` blocks continue to catch every subclass — the new types are purely additive.
