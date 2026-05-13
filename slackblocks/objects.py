@@ -627,6 +627,42 @@ class Workflow(CompositionObject):
         # Workflow does not include "type" in its rendered JSON.
         return resolve({"trigger": self.trigger})
 
+    @classmethod
+    def from_url(cls, url: str, **input_parameters: str) -> Workflow:
+        """Build a `Workflow` from a trigger URL and input parameters in one call.
+
+        ``Workflow.from_url(url, a='1', b='2')`` is equivalent to::
+
+            Workflow(
+                trigger=Trigger(
+                    url=url,
+                    customizable_input_parameters=[
+                        InputParameter(name='a', value='1'),
+                        InputParameter(name='b', value='2'),
+                    ],
+                ),
+            )
+
+        When no input parameters are supplied, the resulting trigger has
+        ``customizable_input_parameters=None`` (the key is omitted from JSON).
+
+        Args:
+            url: the link trigger URL.
+            **input_parameters: zero or more ``name=value`` pairs that become
+                ``InputParameter`` entries on the trigger.
+
+        Returns:
+            A new ``Workflow`` instance.
+        """
+        params: list[InputParameter] | None
+        if input_parameters:
+            params = [
+                InputParameter(name=name, value=value) for name, value in input_parameters.items()
+            ]
+        else:
+            params = None
+        return cls(trigger=Trigger(url=url, customizable_input_parameters=params))
+
 
 class RawText:
     """

@@ -266,3 +266,46 @@ def test_markdown_exported_at_top_level() -> None:
     from slackblocks import Markdown as TopLevel
 
     assert TopLevel is Markdown
+
+
+# -- Workflow.from_url convenience factory --------------------------------
+
+
+def test_workflow_from_url_matches_verbose_form() -> None:
+    """``Workflow.from_url(url, **params)`` must produce identical JSON to
+    the equivalent verbose construction."""
+    import json
+
+    verbose = Workflow(
+        trigger=Trigger(
+            url="https://slack.com/x",
+            customizable_input_parameters=[
+                InputParameter(name="a", value="1"),
+                InputParameter(name="b", value="2"),
+            ],
+        )
+    )
+    concise = Workflow.from_url("https://slack.com/x", a="1", b="2")
+    assert json.loads(repr(verbose)) == json.loads(repr(concise))
+
+
+def test_workflow_from_url_no_params_omits_input_parameters() -> None:
+    """No keyword arguments -> no ``customizable_input_parameters`` in JSON."""
+    workflow = Workflow.from_url("https://slack.com/x")
+    resolved = workflow._resolve()
+    assert resolved == {"trigger": {"url": "https://slack.com/x"}}
+
+
+def test_workflow_from_url_preserves_param_order_and_values() -> None:
+    workflow = Workflow.from_url("https://slack.com/x", first="one", second="two")
+    resolved = workflow._resolve()
+    params = resolved["trigger"]["customizable_input_parameters"]
+    assert params == [
+        {"name": "first", "value": "one"},
+        {"name": "second", "value": "two"},
+    ]
+
+
+def test_workflow_from_url_returns_workflow_instance() -> None:
+    workflow = Workflow.from_url("https://slack.com/x", a="1")
+    assert isinstance(workflow, Workflow)
