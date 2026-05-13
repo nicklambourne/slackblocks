@@ -27,6 +27,7 @@ from slackblocks import (
     TableBlock,
     Text,
     TextType,
+    VideoBlock,
 )
 from slackblocks.rich_text import RichTextLink
 
@@ -289,3 +290,115 @@ def test_markdown_block_accepts_exactly_12000_chars() -> None:
     """Boundary case: the documented max is 12000 characters inclusive."""
     block = MarkdownBlock(text="x" * 12000)
     assert len(block.text) == 12000
+
+
+def test_video_block_basic() -> None:
+    """Minimal ``VideoBlock`` (required fields only) matches the documented
+    Slack JSON shape."""
+    block = VideoBlock(
+        alt_text="alt",
+        thumbnail_url="https://example.com/t.png",
+        title="Title",
+        video_url="https://example.com/v.mp4",
+        block_id="b1",
+    )
+    sample = json.loads(fetch_sample(path="test/samples/blocks/video_block_basic.json"))
+    assert sample == json.loads(repr(block))
+
+
+def test_video_block_full() -> None:
+    """Full ``VideoBlock`` with every optional field populated."""
+    block = VideoBlock(
+        alt_text="How to use Slack",
+        thumbnail_url="https://example.com/thumb.png",
+        title="Getting Started",
+        video_url="https://example.com/video.mp4",
+        author_name="Slack",
+        description="A short intro",
+        provider_icon_url="https://example.com/icon.png",
+        provider_name="YouTube",
+        title_url="https://example.com",
+        block_id="video_1",
+    )
+    sample = json.loads(fetch_sample(path="test/samples/blocks/video_block_full.json"))
+    assert sample == json.loads(repr(block))
+
+
+def test_video_block_accepts_text_title_and_description() -> None:
+    """``title`` and ``description`` accept ``Text`` objects directly,
+    with markdown text coerced to plaintext via ``force_plaintext``."""
+    block = VideoBlock(
+        alt_text="alt",
+        thumbnail_url="https://example.com/t.png",
+        title=Text("Title", type_=TextType.MARKDOWN),
+        video_url="https://example.com/v.mp4",
+        description=Text("Desc", type_=TextType.MARKDOWN),
+        block_id="b1",
+    )
+    resolved = block._resolve()
+    assert resolved["title"] == {"type": "plain_text", "text": "Title"}
+    assert resolved["description"] == {"type": "plain_text", "text": "Desc"}
+
+
+def test_video_block_block_id_is_optional() -> None:
+    block = VideoBlock(
+        alt_text="alt",
+        thumbnail_url="https://example.com/t.png",
+        title="Title",
+        video_url="https://example.com/v.mp4",
+    )
+    resolved = block._resolve()
+    assert resolved["block_id"] is not None and len(resolved["block_id"]) > 0
+
+
+def test_video_block_alt_text_too_long_raises_length_error() -> None:
+    with pytest.raises(LengthError):
+        VideoBlock(
+            alt_text="x" * 201,
+            thumbnail_url="https://example.com/t.png",
+            title="Title",
+            video_url="https://example.com/v.mp4",
+        )
+
+
+def test_video_block_title_too_long_raises_length_error() -> None:
+    with pytest.raises(LengthError):
+        VideoBlock(
+            alt_text="alt",
+            thumbnail_url="https://example.com/t.png",
+            title="x" * 201,
+            video_url="https://example.com/v.mp4",
+        )
+
+
+def test_video_block_author_name_too_long_raises_length_error() -> None:
+    with pytest.raises(LengthError):
+        VideoBlock(
+            alt_text="alt",
+            thumbnail_url="https://example.com/t.png",
+            title="Title",
+            video_url="https://example.com/v.mp4",
+            author_name="x" * 51,
+        )
+
+
+def test_video_block_provider_name_too_long_raises_length_error() -> None:
+    with pytest.raises(LengthError):
+        VideoBlock(
+            alt_text="alt",
+            thumbnail_url="https://example.com/t.png",
+            title="Title",
+            video_url="https://example.com/v.mp4",
+            provider_name="x" * 51,
+        )
+
+
+def test_video_block_description_too_long_raises_length_error() -> None:
+    with pytest.raises(LengthError):
+        VideoBlock(
+            alt_text="alt",
+            thumbnail_url="https://example.com/t.png",
+            title="Title",
+            video_url="https://example.com/v.mp4",
+            description="x" * 201,
+        )

@@ -114,6 +114,7 @@ class BlockType(Enum):
     RICH_TEXT = "rich_text"
     SECTION = "section"
     TABLE = "table"
+    VIDEO = "video"
 
 
 class Block(RenderableMixin, ABC):
@@ -593,3 +594,91 @@ class TableBlock(Block):
         else:
             # Wrap RichTextObject in rich_text structure
             return {"type": "rich_text", "elements": [cell._resolve()]}
+
+
+class VideoBlock(Block):
+    """
+    Embeds a video. Used to display video content inside a Slack message,
+    modal, or App Home tab.
+
+    See: <https://api.slack.com/reference/block-kit/blocks#video>.
+
+    Note: Slack restricts which domains may be embedded. The server-side
+    whitelist (e.g. YouTube, Vimeo) is enforced by Slack on receipt of the
+    payload, not by this library; supplying an unsupported URL will result
+    in a Slack API error rather than an `InvalidUsageError` at construction.
+
+    Args:
+        alt_text: a plain-text summary of the video, used for accessibility
+            and notifications (max 200 chars).
+        thumbnail_url: a URL pointing to the preview image shown before
+            playback. Must be HTTPS in production usage.
+        title: the title shown above the video player (plain text, max 200
+            chars). A `str` is coerced to `TextType.PLAINTEXT` `Text`.
+        video_url: the URL of the video to embed. Must point to a
+            Slack-supported provider (see Slack's documentation).
+        author_name: optional author name shown beneath the video
+            (max 50 chars).
+        block_id: an optional deterministic identifier for the block.
+        description: optional plain-text description below the video
+            (max 200 chars). A `str` is coerced to `TextType.PLAINTEXT`.
+        provider_icon_url: an optional URL to the provider's icon.
+        provider_name: an optional provider name shown alongside the icon
+            (max 50 chars).
+        title_url: an optional URL to link the title to.
+
+    Throws:
+        LengthError: if any length-constrained string exceeds its limit.
+    """
+
+    def __init__(
+        self,
+        alt_text: str,
+        thumbnail_url: str,
+        title: TextLike,
+        video_url: str,
+        author_name: str | None = None,
+        block_id: str | None = None,
+        description: TextLike | None = None,
+        provider_icon_url: str | None = None,
+        provider_name: str | None = None,
+        title_url: str | None = None,
+    ) -> None:
+        super().__init__(type_=BlockType.VIDEO, block_id=block_id)
+        self.alt_text = validate_string_nonnull(
+            alt_text, field_name="alt_text", min_length=1, max_length=200
+        )
+        self.thumbnail_url = validate_string_nonnull(
+            thumbnail_url, field_name="thumbnail_url", min_length=1
+        )
+        self.title = Text.to_text(title, force_plaintext=True, max_length=200)
+        self.video_url = validate_string_nonnull(video_url, field_name="video_url", min_length=1)
+        self.author_name = validate_string(
+            author_name, field_name="author_name", max_length=50, allow_none=True
+        )
+        self.description = Text.to_text(
+            description, force_plaintext=True, max_length=200, allow_none=True
+        )
+        self.provider_icon_url = validate_string(
+            provider_icon_url, field_name="provider_icon_url", allow_none=True
+        )
+        self.provider_name = validate_string(
+            provider_name, field_name="provider_name", max_length=50, allow_none=True
+        )
+        self.title_url = validate_string(title_url, field_name="title_url", allow_none=True)
+
+    def _resolve(self) -> dict[str, Any]:
+        return resolve(
+            {
+                **self._attributes(),
+                "alt_text": self.alt_text,
+                "thumbnail_url": self.thumbnail_url,
+                "title": self.title,
+                "video_url": self.video_url,
+                "author_name": self.author_name,
+                "description": self.description,
+                "provider_icon_url": self.provider_icon_url,
+                "provider_name": self.provider_name,
+                "title_url": self.title_url,
+            }
+        )
