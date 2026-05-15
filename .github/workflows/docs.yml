@@ -29,3 +29,24 @@ jobs:
 
         - name: Build and Deploy Docs
           run: uv run mike deploy --push --update-aliases ${{ github.ref_name }} latest
+
+        - name: Sort versions.json on gh-pages by PEP 440 semver
+          # ``mike deploy`` appends each new deploy to the end of
+          # versions.json; without this step the version selector quickly
+          # falls back into deploy-time order instead of release-version
+          # order. The script is idempotent: if the file is already sorted
+          # it is a no-op and the commit/push below skips.
+          run: |
+            set -euo pipefail
+            git fetch origin gh-pages
+            tmpdir=$(mktemp -d)
+            git worktree add "$tmpdir" gh-pages
+            uv run --with packaging python scripts/sort_versions.py "$tmpdir/versions.json"
+            cd "$tmpdir"
+            if git diff --quiet versions.json; then
+              echo "versions.json already sorted; nothing to commit."
+            else
+              git add versions.json
+              git commit -m "docs: re-sort versions.json after deploy of ${GITHUB_REF_NAME}"
+              git push origin gh-pages
+            fi
