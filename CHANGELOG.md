@@ -5,9 +5,9 @@ All notable changes to `slackblocks` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] — Unreleased
+## [2.0.0] — 2026-05-15
 
-The 2.0 development series.
+The 2.0 release. First final release of the modernised line.
 
 `slackblocks 2.x` requires **Python 3.10 or newer**. Users on Python 3.8 or 3.9
 should pin to the `1.x` release line; see the

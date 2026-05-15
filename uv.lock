@@ -1819,7 +1819,7 @@ wheels = [
 
 [[package]]
 name = "slackblocks"
-version = "2.0.0rc1"
+version = "2.0.0"
 source = { editable = "." }
 
 [package.dev-dependencies]
