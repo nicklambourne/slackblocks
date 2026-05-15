@@ -90,6 +90,13 @@
     "aliases": []
   },
   {
+    "version": "v2.0.0rc1",
+    "title": "v2.0.0rc1 (release candidate)",
+    "aliases": [
+      "rc"
+    ]
+  },
+  {
     "version": "v1.2.5",
     "title": "v1.2.5",
     "aliases": [

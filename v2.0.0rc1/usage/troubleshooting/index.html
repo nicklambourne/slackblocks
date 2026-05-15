@@ -1,0 +1,1462 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://nicklambourne.github.io/slackblocks/v2.0.0rc1/usage/troubleshooting/">
+      
+      
+        <link rel="prev" href="../migration/">
+      
+      
+        <link rel="next" href="../../reference/attachments/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/sb.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Troubleshooting & FAQ - slackblocks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+  
+  
+    
+      
+      
+    
+  
+  
+  <style>:root{--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M13%2014h-2V9h2m0%209h-2v-2h2M1%2021h22L12%202z%22/%3E%3C/svg%3E');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#troubleshooting-faq" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="slackblocks" class="md-header__button md-logo" aria-label="slackblocks" data-md-component="logo">
+      
+  <img src="../../img/sb.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            slackblocks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Troubleshooting & FAQ
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="deep-purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/nicklambourne/slackblocks/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="slackblocks" class="md-nav__button md-logo" aria-label="slackblocks" data-md-component="logo">
+      
+  <img src="../../img/sb.png" alt="logo">
+
+    </a>
+    slackblocks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/nicklambourne/slackblocks/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Usage
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../using_blocks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using Blocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sending_messages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sending Messages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cookbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrating from 1.x
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting & FAQ
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting & FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-is-my-message-body-coming-through-with-literal-asterisks-instead-of-bold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why is my message body coming through with literal *asterisks* instead of bold?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-does-my-message-say-text-is-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why does my message say text is required?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-block_id-for-should-i-set-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is block_id for? Should I set it?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-does-invalidusageerror-exceeds-limit-of-n-characters-mean" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What does InvalidUsageError: ... exceeds limit of N characters mean?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-many-blocks-can-a-single-message-have" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How many blocks can a single message have?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#my-buttons-selects-dont-do-anything-when-clicked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        My buttons / selects don't do anything when clicked.
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-doesnt-markdown-work-inside-a-headerblock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why doesn't markdown work inside a HeaderBlock?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-do-i-preview-a-message-without-actually-sending-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How do I preview a message without actually sending it?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-do-i-send-a-slackblocksmessage-with-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How do I send a slackblocks.Message with requests?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#can-i-use-slackblocks-with-async-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Can I use slackblocks with async code?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-does-slackblocks-compare-to-the-block-classes-in-slack-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How does slackblocks compare to the block classes in slack-sdk?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#im-getting-a-pytest-error-from-a-python-deprecationwarning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I'm getting a pytest error from a Python DeprecationWarning.
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-do-i-report-bugs-request-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where do I report bugs / request features?
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/attachments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attachments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/blocks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/elements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Elements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/messages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/modals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/objects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Objects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/rich_text/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rich Text
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/views/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Views
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-is-my-message-body-coming-through-with-literal-asterisks-instead-of-bold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why is my message body coming through with literal *asterisks* instead of bold?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-does-my-message-say-text-is-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why does my message say text is required?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-block_id-for-should-i-set-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is block_id for? Should I set it?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-does-invalidusageerror-exceeds-limit-of-n-characters-mean" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What does InvalidUsageError: ... exceeds limit of N characters mean?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-many-blocks-can-a-single-message-have" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How many blocks can a single message have?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#my-buttons-selects-dont-do-anything-when-clicked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        My buttons / selects don't do anything when clicked.
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-doesnt-markdown-work-inside-a-headerblock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why doesn't markdown work inside a HeaderBlock?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-do-i-preview-a-message-without-actually-sending-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How do I preview a message without actually sending it?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-do-i-send-a-slackblocksmessage-with-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How do I send a slackblocks.Message with requests?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#can-i-use-slackblocks-with-async-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Can I use slackblocks with async code?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-does-slackblocks-compare-to-the-block-classes-in-slack-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How does slackblocks compare to the block classes in slack-sdk?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#im-getting-a-pytest-error-from-a-python-deprecationwarning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I'm getting a pytest error from a Python DeprecationWarning.
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-do-i-report-bugs-request-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where do I report bugs / request features?
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="troubleshooting-faq">Troubleshooting &amp; FAQ</h1>
+<p>Common questions, gotchas, and error messages.</p>
+<h2 id="why-is-my-message-body-coming-through-with-literal-asterisks-instead-of-bold">Why is my message body coming through with literal <code>*asterisks*</code> instead of bold?</h2>
+<p>Slack supports two text types: <code>mrkdwn</code> (a Slack-flavoured markdown) and <code>plain_text</code>. <code>slackblocks</code> uses <code>mrkdwn</code> by default for <code>SectionBlock</code> text, but <strong><code>HeaderBlock</code>, button labels, modal titles, input labels, and tab/option labels are forced to <code>plain_text</code> by Slack</strong> — markdown syntax in those fields is rendered literally.</p>
+<p>If you need bold/italic styling in those places, you can't get it. If you need it elsewhere and aren't getting it, double-check you're not accidentally constructing a <code>Text(type_=TextType.PLAINTEXT, ...)</code>.</p>
+<h2 id="why-does-my-message-say-text-is-required">Why does my message say <code>text</code> is required?</h2>
+<p>Slack will warn (or in some cases reject) messages that have <code>blocks</code> but no <code>text</code> fallback. The <code>text</code> field is used for:</p>
+<ul>
+<li>Desktop and mobile <strong>push notifications</strong>.</li>
+<li>Accessibility readers.</li>
+<li>Clients that don't render Block Kit (rare, but they exist).</li>
+</ul>
+<p>Always pass a short <code>text=</code> summary alongside <code>blocks=</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">Message</span><span class="p">(</span>
+    <span class="n">channel</span><span class="o">=</span><span class="s2">&quot;#general&quot;</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Build #482 passed&quot;</span><span class="p">,</span>        <span class="c1"># fallback</span>
+    <span class="n">blocks</span><span class="o">=</span><span class="p">[</span><span class="n">HeaderBlock</span><span class="p">(</span><span class="s2">&quot;Build #482 passed :white_check_mark:&quot;</span><span class="p">),</span> <span class="o">...</span><span class="p">],</span>
+<span class="p">)</span>
+</code></pre></div>
+<h2 id="what-is-block_id-for-should-i-set-it">What is <code>block_id</code> for? Should I set it?</h2>
+<p><code>block_id</code> is a stable identifier for a block. Slack echoes it back to you in interaction payloads (button clicks, modal submits) so you can correlate which block produced the event.</p>
+<ul>
+<li>For <strong>non-interactive</strong> messages, you can leave it unset — <code>slackblocks</code> generates a random UUID.</li>
+<li>For <strong>interactive</strong> messages and modals, set explicit <code>block_id</code>s so your handlers can look up state reliably:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">ActionsBlock</span><span class="p">(</span>
+    <span class="n">block_id</span><span class="o">=</span><span class="s2">&quot;approval:req-123&quot;</span><span class="p">,</span>
+    <span class="n">elements</span><span class="o">=</span><span class="p">[</span><span class="n">Button</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Approve&quot;</span><span class="p">,</span> <span class="n">action_id</span><span class="o">=</span><span class="s2">&quot;approve&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;req-123&quot;</span><span class="p">)],</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>The same applies to <code>action_id</code> for elements.</p>
+<h2 id="what-does-invalidusageerror-exceeds-limit-of-n-characters-mean">What does <code>InvalidUsageError: ... exceeds limit of N characters</code> mean?</h2>
+<p>Slack imposes hard character limits on most fields. <code>slackblocks</code> validates these at construction time so you find out before hitting Slack. Common limits:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Limit (chars)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SectionBlock.text</code></td>
+<td>3,000</td>
+</tr>
+<tr>
+<td><code>SectionBlock.fields[i]</code></td>
+<td>2,000</td>
+</tr>
+<tr>
+<td><code>HeaderBlock.text</code> (<code>plain_text</code>)</td>
+<td>150</td>
+</tr>
+<tr>
+<td><code>Button.text</code></td>
+<td>75</td>
+</tr>
+<tr>
+<td><code>Button.value</code></td>
+<td>2,000</td>
+</tr>
+<tr>
+<td><code>Button.url</code></td>
+<td>3,000</td>
+</tr>
+<tr>
+<td><code>Modal.title</code> / <code>submit</code> / <code>close</code></td>
+<td>24</td>
+</tr>
+<tr>
+<td><code>action_id</code></td>
+<td>255</td>
+</tr>
+<tr>
+<td><code>private_metadata</code></td>
+<td>3,000</td>
+</tr>
+<tr>
+<td><code>Option.url</code></td>
+<td>3,000</td>
+</tr>
+</tbody>
+</table>
+<p>If a field exceeds its limit, truncate or split the content.</p>
+<h2 id="how-many-blocks-can-a-single-message-have">How many blocks can a single message have?</h2>
+<ul>
+<li>Channel messages: <strong>50 blocks</strong> (Slack-side limit).</li>
+<li>Modals and home tabs: <strong>100 blocks</strong>.</li>
+<li><code>ContextBlock</code>: max <strong>10 elements</strong>.</li>
+<li><code>ActionsBlock</code>: max <strong>25 elements</strong>.</li>
+<li><code>SectionBlock.fields</code>: max <strong>10 items</strong>.</li>
+<li><code>TableBlock</code>: max <strong>100 rows × 20 columns</strong>.</li>
+</ul>
+<h2 id="my-buttons-selects-dont-do-anything-when-clicked">My buttons / selects don't do anything when clicked.</h2>
+<p><code>slackblocks</code> only constructs the <em>outgoing</em> payload. Handling button clicks, menu selections, and modal submissions requires:</p>
+<ol>
+<li>A public HTTPS endpoint registered as your app's <strong>Interactivity &amp; Shortcuts</strong> URL.</li>
+<li>An interaction handler that parses the payload Slack POSTs to that URL.</li>
+</ol>
+<p>The <a href="https://slack.dev/bolt-python/"><code>slack-bolt</code></a> framework is the easiest way to wire this up.</p>
+<h2 id="why-doesnt-markdown-work-inside-a-headerblock">Why doesn't markdown work inside a <code>HeaderBlock</code>?</h2>
+<p>By design — Slack only allows <code>plain_text</code> in headers. Use a <code>SectionBlock</code> (which supports <code>mrkdwn</code>) followed by a <code>DividerBlock</code> if you want bold or styled text as a heading.</p>
+<h2 id="how-do-i-preview-a-message-without-actually-sending-it">How do I preview a message without actually sending it?</h2>
+<p>Use Slack's <a href="https://app.slack.com/block-kit-builder">Block Kit Builder</a> and paste the JSON output from <code>message.json()</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</code></pre></div>
+<h2 id="how-do-i-send-a-slackblocksmessage-with-requests">How do I send a <code>slackblocks.Message</code> with <code>requests</code>?</h2>
+<p><code>Message</code> renders to a dict, so:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">slackblocks</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">SectionBlock</span>
+
+<span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;#general&quot;</span><span class="p">,</span> <span class="n">blocks</span><span class="o">=</span><span class="n">SectionBlock</span><span class="p">(</span><span class="s2">&quot;Hi!&quot;</span><span class="p">))</span>
+
+<span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;https://slack.com/api/chat.postMessage&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;SLACK_API_TOKEN&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">},</span>
+<span class="p">)</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="can-i-use-slackblocks-with-async-code">Can I use <code>slackblocks</code> with async code?</h2>
+<p>Yes — <code>slackblocks</code> itself is synchronous and side-effect-free, so <code>Message(...)</code> construction works identically inside <code>async def</code> functions. Use the async <code>WebClient</code> from <code>slack_sdk.web.async_client</code> to actually send:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">slack_sdk.web.async_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncWebClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">slackblocks</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">SectionBlock</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">():</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">AsyncWebClient</span><span class="p">(</span><span class="n">token</span><span class="o">=...</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;#general&quot;</span><span class="p">,</span> <span class="n">blocks</span><span class="o">=</span><span class="n">SectionBlock</span><span class="p">(</span><span class="s2">&quot;Hi!&quot;</span><span class="p">))</span>
+    <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span><span class="o">**</span><span class="n">message</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="how-does-slackblocks-compare-to-the-block-classes-in-slack-sdk">How does <code>slackblocks</code> compare to the block classes in <code>slack-sdk</code>?</h2>
+<p><code>slack-sdk</code> ships its own <code>Block</code> / <code>SectionBlock</code> / etc. classes. <code>slackblocks</code> predates them and offers:</p>
+<ul>
+<li>A more concise API (e.g. <code>SectionBlock("Hi!")</code> vs <code>SectionBlock(text=MarkdownTextObject(text="Hi!"))</code>).</li>
+<li>Stricter up-front validation with informative <code>InvalidUsageError</code> messages.</li>
+<li>Independent release cadence — usable with the legacy <code>slackclient</code> or no SDK at all.</li>
+</ul>
+<p>Use whichever you find more ergonomic; they produce equivalent JSON.</p>
+<h2 id="im-getting-a-pytest-error-from-a-python-deprecationwarning">I'm getting a <code>pytest</code> <code>error</code> from a Python <code>DeprecationWarning</code>.</h2>
+<p><code>slackblocks</code>' own test suite turns warnings into errors via <code>pyproject.toml</code>. That setting only affects this project's CI — it doesn't propagate to your application. If you're seeing it, it's because you're running the <code>slackblocks</code> test suite as part of contributing.</p>
+<h2 id="where-do-i-report-bugs-request-features">Where do I report bugs / request features?</h2>
+<p>GitHub Issues: <a href="https://github.com/nicklambourne/slackblocks/issues">https://github.com/nicklambourne/slackblocks/issues</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.expand", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
