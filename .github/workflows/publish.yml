@@ -1,10 +1,19 @@
 name: Publish SlackBlocks Python Package
 on:
   push:
+    # Trigger on every version tag: final releases (v2.0.0) and pre-releases
+    # (v2.0.0rc1, v2.0.0b1, v2.0.0a1, v2.0.0.dev0, etc.). PyPI itself classifies
+    # pre-releases per PEP 440 from the version string in pyproject.toml, so
+    # 'pip install slackblocks' continues to skip them by default.
     tags:
-      - "v*.*.*"
+      - "v*"
+
+permissions:
+  contents: read
+
 jobs:
-  build:
+  publish:
+    name: Build and publish to PyPI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -19,6 +28,20 @@ jobs:
 
       - name: Build Package
         run: uv build
+
+      - name: Verify tag matches package version
+        # Guards against publishing if a tag is pushed without the
+        # corresponding pyproject.toml bump. Fail loudly rather than upload
+        # the wrong version.
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME#v}"
+          pkg=$(uv run python -c "import importlib.metadata; print(importlib.metadata.version('slackblocks'))")
+          if [ "$tag" != "$pkg" ]; then
+            echo "::error::Tag '$tag' does not match package version '$pkg' in pyproject.toml."
+            exit 1
+          fi
+          echo "Tag $tag matches package version $pkg."
 
       - name: Publish Package
         run: uv publish --token ${{ secrets.PYPI_TOKEN }}
