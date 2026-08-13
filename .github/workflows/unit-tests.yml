@@ -1,9 +1,14 @@
 name: Unit Tests
 on:
   push:
-    branches: [master]
+    paths:
+      - "python/**"
+      - ".github/workflows/unit-tests.yml"
   pull_request:
     branches: [master]
+    paths:
+      - "python/**"
+      - ".github/workflows/unit-tests.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,6 +21,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: python
 
     strategy:
       matrix:
@@ -30,6 +36,7 @@ jobs:
         uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
+          cache-dependency-glob: python/uv.lock
 
       - name: Install Dependencies
         run: uv sync

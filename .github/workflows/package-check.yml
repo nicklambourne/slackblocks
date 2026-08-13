@@ -1,9 +1,14 @@
 name: Package Check
 on:
   push:
-    branches: [master]
+    paths:
+      - "python/**"
+      - ".github/workflows/package-check.yml"
   pull_request:
     branches: [master]
+    paths:
+      - "python/**"
+      - ".github/workflows/package-check.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -13,6 +18,9 @@ jobs:
   package-check:
     runs-on: ubuntu-latest
     name: Build sdist/wheel and validate README rendering
+    defaults:
+      run:
+        working-directory: python
     steps:
       - name: Check Out Source Repository
         uses: actions/checkout@v5
@@ -21,6 +29,7 @@ jobs:
         uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
+          cache-dependency-glob: python/uv.lock
 
       - name: Install Dependencies
         run: uv sync

@@ -1,9 +1,14 @@
 name: Ruff Lint
 on:
   push:
-    branches: [master]
+    paths:
+      - "python/**"
+      - ".github/workflows/ruff-lint.yml"
   pull_request:
     branches: [master]
+    paths:
+      - "python/**"
+      - ".github/workflows/ruff-lint.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -13,6 +18,9 @@ jobs:
   linting:
     runs-on: ubuntu-latest
     name: Ruff Lint
+    defaults:
+      run:
+        working-directory: python
     steps:
       - name: Check Out Source Repository
         uses: actions/checkout@v5
@@ -21,6 +29,7 @@ jobs:
         uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
+          cache-dependency-glob: python/uv.lock
 
       - name: Install Dependencies
         run: uv sync
