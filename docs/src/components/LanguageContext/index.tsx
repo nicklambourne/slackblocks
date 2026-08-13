@@ -8,6 +8,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import { useHistory, useLocation } from "@docusaurus/router";
+import legacyManifest from "@site/legacy/manifest.json";
 
 export type Language = "python" | "typescript";
 
@@ -18,6 +19,16 @@ type LanguageContextValue = {
 
 const STORAGE_KEY = "slackblocks.language";
 const LanguageContext = createContext<LanguageContextValue | null>(null);
+const LEGACY_PREFIXES = new Set(
+  legacyManifest.versions
+    .filter(({ generated_snapshot_tree_hash: hash }) => Boolean(hash))
+    .map(({ canonical_prefix: prefix }) => prefix),
+);
+
+export function legacyDocumentationVersion(pathname: string): string | null {
+  const prefix = pathname.match(/\/(v\d+\.\d+\.\d+)(?:\/|$)/)?.[1];
+  return prefix && LEGACY_PREFIXES.has(prefix) ? prefix.slice(1) : null;
+}
 
 function isLanguage(value: string | null): value is Language {
   return value === "python" || value === "typescript";
@@ -60,14 +71,16 @@ export function LanguageProvider({ children }: PropsWithChildren) {
   const [language, setLanguage] = useState<Language>("python");
 
   useEffect(() => {
+    const legacyVersion = legacyDocumentationVersion(location.pathname);
     const queryLanguage = new URLSearchParams(location.search).get("language");
     const routeLanguage = referenceLanguage(location.pathname);
     const storedLanguage = window.localStorage.getItem(STORAGE_KEY);
-    const nextLanguage =
-      routeLanguage ??
-      (isLanguage(queryLanguage) ? queryLanguage : null) ??
-      (isLanguage(storedLanguage) ? storedLanguage : null) ??
-      "python";
+    const nextLanguage = legacyVersion
+      ? "python"
+      : routeLanguage ??
+        (isLanguage(queryLanguage) ? queryLanguage : null) ??
+        (isLanguage(storedLanguage) ? storedLanguage : null) ??
+        "python";
 
     const pathname = languagePath(location.pathname, nextLanguage);
     if (pathname !== location.pathname) {
@@ -79,11 +92,14 @@ export function LanguageProvider({ children }: PropsWithChildren) {
     }
 
     setLanguage(nextLanguage);
-    window.localStorage.setItem(STORAGE_KEY, nextLanguage);
+    if (!legacyVersion) {
+      window.localStorage.setItem(STORAGE_KEY, nextLanguage);
+    }
   }, [history, location.hash, location.pathname, location.search]);
 
   const selectLanguage = useCallback(
     (nextLanguage: Language) => {
+      if (legacyDocumentationVersion(location.pathname)) return;
       setLanguage(nextLanguage);
       window.localStorage.setItem(STORAGE_KEY, nextLanguage);
 

@@ -17,6 +17,29 @@ const typescriptPackage = JSON.parse(
   readFileSync(new URL("../typescript/package.json", import.meta.url), "utf8"),
 ) as { version: string };
 
+const legacyManifest = JSON.parse(
+  readFileSync(new URL("./legacy/manifest.json", import.meta.url), "utf8"),
+) as {
+  versions: Array<{
+    version: string;
+    canonical_prefix: string;
+    generated_snapshot_tree_hash: string | null;
+  }>;
+};
+
+const legacyVersionConfiguration = Object.fromEntries(
+  legacyManifest.versions
+    .filter(({ generated_snapshot_tree_hash: hash }) => Boolean(hash))
+    .map(({ version, canonical_prefix: path }) => [
+      version,
+      {
+        badge: false,
+        label: `${version} · Python`,
+        path,
+      },
+    ]),
+);
+
 if (typescriptPackage.version !== pythonVersion) {
   throw new Error(
     `Package versions must match: Python is ${pythonVersion}, TypeScript is ${typescriptPackage.version}`,
@@ -127,7 +150,10 @@ const config: Config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
-          editUrl: "https://github.com/nicklambourne/slackblocks/tree/master/docs/",
+          editUrl: ({ version, docPath }) =>
+            version === "current"
+              ? `https://github.com/nicklambourne/slackblocks/tree/master/docs/${docPath}`
+              : undefined,
           showLastUpdateTime: true,
           lastVersion: "current",
           versions: {
@@ -136,11 +162,7 @@ const config: Config = {
               label: pythonVersion,
               path: "",
             },
-            "1.0": {
-              badge: false,
-              label: "1.0.0",
-              path: "1.0.0",
-            },
+            ...legacyVersionConfiguration,
           },
         },
         blog: false,
