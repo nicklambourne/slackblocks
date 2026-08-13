@@ -17,12 +17,12 @@ def test_modal_with_blocks() -> None:
             SectionBlock(text="second section block", block_id="3"),
         ],
     )
-    assert fetch_sample("test/samples/views/modal_with_blocks.json") == repr(modal)
+    assert fetch_sample("views/modal_with_blocks.json") == repr(modal)
 
 
 def test_hometab_view() -> None:
     view = HomeTabView(blocks=[SectionBlock(text="Example Block", block_id="fake_id")])
-    assert fetch_sample("test/samples/views/hometab_view.json") == repr(view)
+    assert fetch_sample("views/hometab_view.json") == repr(view)
 
 
 def test_to_dict() -> None:

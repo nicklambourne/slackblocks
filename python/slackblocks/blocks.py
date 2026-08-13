@@ -351,10 +351,7 @@ class HeaderBlock(Block):
 
     def __init__(self, text: str | Text, block_id: str | None = None) -> None:
         super().__init__(type_=BlockType.HEADER, block_id=block_id)
-        if type(text) is Text:
-            self.text = text
-        else:
-            self.text = Text.to_text_nonnull(text=text, force_plaintext=True)
+        self.text = Text.to_text_nonnull(text=text, force_plaintext=True, max_length=150)
 
     def _resolve(self) -> dict[str, Any]:
         return resolve({**self._attributes(), "text": self.text})

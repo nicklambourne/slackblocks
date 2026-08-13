@@ -6,6 +6,7 @@ from os import environ
 from slack_sdk import WebClient
 
 from slackblocks import Attachment, Color, ImageBlock, Message, SectionBlock
+from test.unit.utils import fetch_sample
 
 
 def test_basic_attachment_message() -> None:
@@ -20,8 +21,7 @@ def test_basic_attachment_message() -> None:
     client = WebClient(token=environ["SLACK_BOT_TOKEN"])
     response = client.chat_postMessage(**message)
     assert response.status_code == 200
-    with open("test/samples/message_basic_attachment.json") as expected:
-        assert repr(message) == expected.read()
+    assert repr(message) == fetch_sample("messages/message_basic_attachment.json")
 
 
 def test_compound_message() -> None:
@@ -43,5 +43,4 @@ def test_compound_message() -> None:
     client = WebClient(token=environ["SLACK_BOT_TOKEN"])
     response = client.chat_postMessage(**message)
     assert response.status_code == 200
-    with open("test/samples/message_compound.json") as expected:
-        assert repr(message) == expected.read()
+    assert repr(message) == fetch_sample("messages/message_compound.json")

@@ -1,11 +1,23 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
+from pathlib import Path
 
 from slackblocks.objects import Option, Text, TextType
 
-if TYPE_CHECKING:
-    from pathlib import Path
+SPEC_ROOT = Path(__file__).resolve().parents[3] / "spec"
+VALID_FIXTURES = SPEC_ROOT / "fixtures" / "valid"
+
+
+class CanonicalJSON(str):
+    """Fixture text whose equality follows the spec's semantic JSON contract."""
+
+    __hash__ = None  # type: ignore[assignment]
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, str):
+            return NotImplemented
+        from json import loads
+
+        return loads(self) == loads(other)
+
 
 OPTION_A = Option(text=Text("A", type_=TextType.PLAINTEXT), value="A")
 OPTION_B = Option(text=Text("B", type_=TextType.PLAINTEXT), value="B")
@@ -16,6 +28,5 @@ THREE_OPTIONS = TWO_OPTIONS + [
 ]
 
 
-def fetch_sample(path: Path | str) -> str:
-    with open(path) as file_:
-        return file_.read()
+def fetch_sample(path: Path | str) -> CanonicalJSON:
+    return CanonicalJSON((VALID_FIXTURES / path).read_text())

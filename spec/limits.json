@@ -1,0 +1,63 @@
+{
+  "text": { "min_length": 1, "max_length": 3000 },
+  "action_id": { "max_length": 255 },
+  "button": {
+    "text": { "max_length": 75 },
+    "url": { "max_length": 3000 },
+    "value": { "max_length": 2000 }
+  },
+  "confirmation": {
+    "title": { "max_length": 100 },
+    "text": { "max_length": 300 },
+    "confirm": { "max_length": 30 },
+    "deny": { "max_length": 30 }
+  },
+  "option": {
+    "text": { "max_length": 75 },
+    "value": { "max_length": 75 },
+    "description": { "max_length": 75 }
+  },
+  "option_group": {
+    "label": { "max_length": 75 },
+    "options": { "min_items": 1, "max_items": 100 }
+  },
+  "select": {
+    "placeholder": { "max_length": 150 },
+    "options": { "max_items": 100 },
+    "option_groups": { "max_items": 100 }
+  },
+  "overflow": { "options": { "min_items": 1, "max_items": 5 } },
+  "file_input": { "max_files": { "min": 1, "max": 10 } },
+  "plain_text_input": { "max_length": { "max": 3000 } },
+  "actions": { "elements": { "max_items": 25 } },
+  "context": { "elements": { "max_items": 10 } },
+  "header": { "text": { "max_length": 150 } },
+  "image": {
+    "image_url": { "max_length": 3000 },
+    "alt_text": { "max_length": 2000 }
+  },
+  "input": {
+    "label": { "max_length": 2000 },
+    "hint": { "max_length": 2000 }
+  },
+  "markdown": { "text": { "min_length": 1, "max_length": 12000 } },
+  "section": {
+    "text": { "max_length": 3000 },
+    "fields": { "max_items": 10, "item_max_length": 2000 }
+  },
+  "video": {
+    "alt_text": { "min_length": 1, "max_length": 200 },
+    "title": { "max_length": 200 },
+    "author_name": { "max_length": 50 },
+    "description": { "max_length": 200 },
+    "provider_name": { "max_length": 50 }
+  },
+  "view": {
+    "blocks": { "min_items": 1, "max_items": 100 },
+    "private_metadata": { "max_length": 3000 },
+    "callback_id": { "max_length": 255 },
+    "title": { "max_length": 24 },
+    "close": { "max_length": 24 },
+    "submit": { "max_length": 24 }
+  }
+}
