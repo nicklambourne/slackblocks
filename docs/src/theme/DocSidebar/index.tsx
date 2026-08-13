@@ -44,6 +44,15 @@ const TYPESCRIPT_REFERENCE_ORDER = [
   "errors",
 ];
 
+function typescriptReferencePosition(item: PropSidebarItem): number {
+  if (item.type === "html") return Number.MAX_SAFE_INTEGER;
+  const slug = item.href?.match(/\/reference\/typescript\/([^/?#]+)\/?$/)?.[1];
+  const position = TYPESCRIPT_REFERENCE_ORDER.indexOf(
+    slug ?? item.label.toLowerCase(),
+  );
+  return position < 0 ? Number.MAX_SAFE_INTEGER : position;
+}
+
 const TYPESCRIPT_API_TYPE_PREFIX =
   /^(?:Class|Function|Interface|Type Alias|Variable):\s*/;
 
@@ -159,18 +168,11 @@ function filterReference(
 
   const languageItems =
     language === "typescript"
-      ? mergeTypeScriptDomainIndexes([...languageReference.items]).sort((left, right) => {
-          const leftPosition = TYPESCRIPT_REFERENCE_ORDER.indexOf(
-            left.type === "html" ? "" : left.label.toLowerCase(),
-          );
-          const rightPosition = TYPESCRIPT_REFERENCE_ORDER.indexOf(
-            right.type === "html" ? "" : right.label.toLowerCase(),
-          );
-          return (
-            (leftPosition < 0 ? Number.MAX_SAFE_INTEGER : leftPosition) -
-            (rightPosition < 0 ? Number.MAX_SAFE_INTEGER : rightPosition)
-          );
-        })
+      ? mergeTypeScriptDomainIndexes([...languageReference.items]).sort(
+          (left, right) =>
+            typescriptReferencePosition(left) -
+            typescriptReferencePosition(right),
+        )
       : languageReference.items;
 
   const sharedItems = item.items.filter(

@@ -1,6 +1,10 @@
-# Type Alias: SlackObject\<Type\>
+---
+title: "Type Alias: SlackObject<Type>"
+---
 
-> **SlackObject**\<`Type`\> = [`JsonObject`](../interfaces/JsonObject.md) & `object`
+# Type Alias: SlackObject&lt;Type&gt;
+
+> **SlackObject**&lt;`Type`&gt; = [`JsonObject`](../interfaces/JsonObject.md) & `object`
 
 Defined in: typescript/src/types.ts:16
 

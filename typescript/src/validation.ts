@@ -822,6 +822,15 @@ function visit(value: JsonValue, path: string): void {
   }
 }
 
+/**
+ * Asserts that an object is a valid Block Kit payload.
+ *
+ * Validation walks nested blocks, elements, views, and composition objects and
+ * reports the first failing field through a typed validation error.
+ *
+ * @param payload - JSON value to validate.
+ * @throws InvalidUsageError when the payload violates a supported Block Kit constraint.
+ */
 export function assertValid(payload: JsonValue): asserts payload is BlockKitPayload {
   if (payload === null || Array.isArray(payload) || typeof payload !== "object") {
     throw new TypeMismatchError("payload", "expected a Block Kit object");
@@ -829,6 +838,12 @@ export function assertValid(payload: JsonValue): asserts payload is BlockKitPayl
   visit(payload, "");
 }
 
+/**
+ * Checks whether a value is a valid Block Kit payload without throwing for validation failures.
+ *
+ * @param payload - Unknown value to validate.
+ * @returns `true` for a valid payload; otherwise `false`.
+ */
 export function validate(payload: unknown): payload is BlockKitPayload {
   try {
     assertValid(payload as JsonValue);
