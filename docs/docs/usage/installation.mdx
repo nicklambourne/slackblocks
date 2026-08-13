@@ -87,7 +87,7 @@ The package requires Node 20.19 or newer, is ESM-only, and emits no runtime impo
 
 Verify the installation in `hello.mjs`:
 
-```js
+```ts
 import { message, section } from "slackblocks";
 
 console.log(message({
@@ -96,7 +96,7 @@ console.log(message({
 }));
 ```
 
-Run it with `node hello.mjs`. Pin the pre-1.0 line with `slackblocks~0.1.0`, and uninstall with `pnpm remove slackblocks` (or your package manager's equivalent).
+Run it with `node hello.mjs`. Pin the current major release with `slackblocks@^2.0.0`, and uninstall with `pnpm remove slackblocks` (or your package manager's equivalent).
 
 </TypeScript>
 </LanguageContent>

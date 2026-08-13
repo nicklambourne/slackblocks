@@ -19,6 +19,15 @@
   --ifm-color-primary-lightest: #fff;
 }
 
+.prism-code,
+.prism-code .token {
+  font-style: normal !important;
+}
+
+.breadcrumbs__item--active .breadcrumbs__link {
+  background: transparent;
+}
+
 .api-docstring {
   font-family: var(--ifm-font-family-base);
   white-space: pre-wrap;
@@ -140,6 +149,20 @@
   display: flex;
   gap: 0.75rem;
   margin-left: auto;
+}
+
+.docs-version-select {
+  background: var(--ifm-navbar-background-color);
+  border: 1px solid var(--ifm-color-emphasis-400);
+  border-radius: var(--ifm-global-radius);
+  color: var(--ifm-navbar-link-color);
+  font: inherit;
+  padding: 0.3rem;
+}
+
+.docs-version-select:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
 }
 
 .navbar-sidebar {
