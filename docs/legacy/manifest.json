@@ -1,0 +1,692 @@
+{
+  "schema_version": 1,
+  "migration": {
+    "tool_version": "1",
+    "generated_at": "2026-08-13T17:45:54+00:00",
+    "gh_pages_ref": "origin/gh-pages",
+    "gh_pages_commit": "747ca39861503fbece849e375c9843641f87684c",
+    "aliases_enabled": false
+  },
+  "versions": [
+    {
+      "version": "2.0.0",
+      "tag": "v2.0.0",
+      "tag_commit": "ab4d7f0208fff3167819ec2464ddd38f91ceb401",
+      "canonical_prefix": "v2.0.0",
+      "old_alias_prefixes": [],
+      "expected_routes": [
+        "/",
+        "/contributing",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/compatibility",
+        "/usage/cookbook",
+        "/usage/installation",
+        "/usage/migration",
+        "/usage/sending_messages",
+        "/usage/troubleshooting",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "081da8626e0988b4a2683f4ed6644eb01e32569c",
+      "python_source_tree_hash": "7f4672cccbd20726d0e20c7f821e2505c781eff1",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v2.0.0.json"
+    },
+    {
+      "version": "1.2.5",
+      "tag": "v1.2.5",
+      "tag_commit": "d226d745169891f79b1a767ebbc64dc51143d178",
+      "canonical_prefix": "v1.2.5",
+      "old_alias_prefixes": [],
+      "expected_routes": [
+        "/",
+        "/contributing",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/cookbook",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/troubleshooting",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "954e28666ca3228b9565e54afeb0b9a6c920fbfb",
+      "python_source_tree_hash": "3d9777b442a8c4fa639d8c43e3543c70dbf501f6",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.2.5.json"
+    },
+    {
+      "version": "1.2.4",
+      "tag": "v1.2.4",
+      "tag_commit": "58f4e8a3f6e9861b39da46dbd731f322ab36f687",
+      "canonical_prefix": "v1.2.4",
+      "old_alias_prefixes": [],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "f613d296b3dc96ed962849b58452013f010dfb2b",
+      "python_source_tree_hash": "338a87ad17ed1d5a2425edcee848030839d74d61",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.2.4.json"
+    },
+    {
+      "version": "1.2.3",
+      "tag": "v1.2.3",
+      "tag_commit": "76a0e4ad441263841f1d952881c3bd48dcadef14",
+      "canonical_prefix": "v1.2.3",
+      "old_alias_prefixes": [],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "f613d296b3dc96ed962849b58452013f010dfb2b",
+      "python_source_tree_hash": "2ef8734f106326f48b592f86778bde73de054d32",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.2.3.json"
+    },
+    {
+      "version": "1.2.2",
+      "tag": "v1.2.2",
+      "tag_commit": "9bbad5983b7404468b0061492bc72334988fe6a4",
+      "canonical_prefix": "v1.2.2",
+      "old_alias_prefixes": [],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "f613d296b3dc96ed962849b58452013f010dfb2b",
+      "python_source_tree_hash": "f8c05d08726172c1f41f1a0e5a20694cafcb8d1b",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.2.2.json"
+    },
+    {
+      "version": "1.1.1",
+      "tag": "v1.1.1",
+      "tag_commit": "f441be2d308a3086b085334c65cc7f6adc8fa4ee",
+      "canonical_prefix": "v1.1.1",
+      "old_alias_prefixes": [
+        "1.1.1"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "c8e3bfbb77115d06e15881dfc59b8075403ce592",
+      "python_source_tree_hash": "1ada03ea31ef22a66fa805cbe0bfc6f818540c02",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.1.1.json"
+    },
+    {
+      "version": "1.0.16",
+      "tag": "v1.0.16",
+      "tag_commit": "8777332763b7b126ab06cfecb2dfa1b55dc186dc",
+      "canonical_prefix": "v1.0.16",
+      "old_alias_prefixes": [
+        "1.0.16"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "c8e3bfbb77115d06e15881dfc59b8075403ce592",
+      "python_source_tree_hash": "0d1a034561defb0d7d2299b77bd732c71bb62483",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.16.json"
+    },
+    {
+      "version": "1.0.15",
+      "tag": "v1.0.15",
+      "tag_commit": "5ae341375d30f850dac6042852cd67673122af74",
+      "canonical_prefix": "v1.0.15",
+      "old_alias_prefixes": [
+        "1.0.15"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "c8e3bfbb77115d06e15881dfc59b8075403ce592",
+      "python_source_tree_hash": "7886d89da6ace48ca633f8fc3c1ae460faddf0fc",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.15.json"
+    },
+    {
+      "version": "1.0.14",
+      "tag": "v1.0.14",
+      "tag_commit": "9f68ec706b974804305f714315a2d97396b08199",
+      "canonical_prefix": "v1.0.14",
+      "old_alias_prefixes": [
+        "1.0.14"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "c8e3bfbb77115d06e15881dfc59b8075403ce592",
+      "python_source_tree_hash": "370f4a140a16e08631404a17e768a715bab728a4",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.14.json"
+    },
+    {
+      "version": "1.0.13",
+      "tag": "v1.0.13",
+      "tag_commit": "27778577e50498916046a65bd1def17d4e6db229",
+      "canonical_prefix": "v1.0.13",
+      "old_alias_prefixes": [
+        "1.0.13"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "c8e3bfbb77115d06e15881dfc59b8075403ce592",
+      "python_source_tree_hash": "ca894261c12660381db5ef47eb9c37ff67bfea5d",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.13.json"
+    },
+    {
+      "version": "1.0.12",
+      "tag": "v1.0.12",
+      "tag_commit": "1c37da3242a42069dda91b17d6f0a93128671333",
+      "canonical_prefix": "v1.0.12",
+      "old_alias_prefixes": [
+        "1.0.12"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "7751d0e10ca2072f4ca8191c4b507ae26fba7ed9",
+      "python_source_tree_hash": "ca894261c12660381db5ef47eb9c37ff67bfea5d",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.12.json"
+    },
+    {
+      "version": "1.0.11",
+      "tag": "v1.0.11",
+      "tag_commit": "6668ed78fc55f53cd5dd7ff57f0ae06dd3594393",
+      "canonical_prefix": "v1.0.11",
+      "old_alias_prefixes": [
+        "1.0.11"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "7751d0e10ca2072f4ca8191c4b507ae26fba7ed9",
+      "python_source_tree_hash": "0814754839b266123a488a45491aa64eb5d263de",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.11.json"
+    },
+    {
+      "version": "1.0.10",
+      "tag": "v1.0.10",
+      "tag_commit": "bd600f1f49290e485331e387bd9f007af780207a",
+      "canonical_prefix": "v1.0.10",
+      "old_alias_prefixes": [
+        "1.0.10"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "7751d0e10ca2072f4ca8191c4b507ae26fba7ed9",
+      "python_source_tree_hash": "5dba9958fb30a3525ed64cd1efd9737c3109233f",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.10.json"
+    },
+    {
+      "version": "1.0.9",
+      "tag": "v1.0.9",
+      "tag_commit": "8a18c368ce33865db073d2c37d274fee60de4a68",
+      "canonical_prefix": "v1.0.9",
+      "old_alias_prefixes": [
+        "1.0.9"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "7751d0e10ca2072f4ca8191c4b507ae26fba7ed9",
+      "python_source_tree_hash": "5a514e8537ac11cfeb2e64fb7714ee6a43d8c741",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.9.json"
+    },
+    {
+      "version": "1.0.8",
+      "tag": "v1.0.8",
+      "tag_commit": "c31d8842c6f3c17dd6a89dff9938c2afea9a0f3f",
+      "canonical_prefix": "v1.0.8",
+      "old_alias_prefixes": [
+        "1.0.8"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "182494b433653293f7a76171e54920d118c085c0",
+      "python_source_tree_hash": "8d258df992c057612bb577a6b85af8369ab8696e",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.8.json"
+    },
+    {
+      "version": "1.0.7",
+      "tag": "v1.0.7",
+      "tag_commit": "19b941911a961831550d9fabd2d27bc2fa773329",
+      "canonical_prefix": "v1.0.7",
+      "old_alias_prefixes": [
+        "1.0.7"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "182494b433653293f7a76171e54920d118c085c0",
+      "python_source_tree_hash": "b0a644717df97eaf8f01ae1cf4d94301656ea45e",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.7.json"
+    },
+    {
+      "version": "1.0.6",
+      "tag": "v1.0.6",
+      "tag_commit": "03a28f787496cbdc2f23113c6cd6ebde87f96c27",
+      "canonical_prefix": "v1.0.6",
+      "old_alias_prefixes": [
+        "1.0.6"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "182494b433653293f7a76171e54920d118c085c0",
+      "python_source_tree_hash": "f025bd96188afc4f509f45ae74d51a440669f7cd",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.6.json"
+    },
+    {
+      "version": "1.0.5",
+      "tag": "v1.0.5",
+      "tag_commit": "309d01367cd48c52edd41498daad568d41fda907",
+      "canonical_prefix": "v1.0.5",
+      "old_alias_prefixes": [
+        "1.0.5"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "182494b433653293f7a76171e54920d118c085c0",
+      "python_source_tree_hash": "0192bf8492d6a2590eb30f3d4581a8ac8e9c1dae",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.5.json"
+    },
+    {
+      "version": "1.0.3",
+      "tag": "v1.0.3",
+      "tag_commit": "045f0d6acb865497ea1a5b2ad5d7cbde0f1b13c2",
+      "canonical_prefix": "v1.0.3",
+      "old_alias_prefixes": [
+        "1.0.3"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "182494b433653293f7a76171e54920d118c085c0",
+      "python_source_tree_hash": "23baf8a7e0ae981892224fd102de7e9609d45512",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.3.json"
+    },
+    {
+      "version": "1.0.2",
+      "tag": "v1.0.2",
+      "tag_commit": "8e5f26d5b5a82da0d919e68542c2e5abd0c71a5e",
+      "canonical_prefix": "v1.0.2",
+      "old_alias_prefixes": [
+        "1.0.2"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "182494b433653293f7a76171e54920d118c085c0",
+      "python_source_tree_hash": "2013f3c0e1799e619cf23ad7ca60f13d39088dd2",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.2.json"
+    },
+    {
+      "version": "1.0.1",
+      "tag": "v1.0.1",
+      "tag_commit": "b57bf5af211dbe012560aa8fee8ea24b405b7ee4",
+      "canonical_prefix": "v1.0.1",
+      "old_alias_prefixes": [
+        "1.0.1"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "e571b02afbd2c2af10a05d1d4cf23ef23b939f92",
+      "python_source_tree_hash": "4edd79293f28f578f94f81663d5412b17b74ea7b",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.1.json"
+    },
+    {
+      "version": "1.0.0",
+      "tag": "v1.0.0",
+      "tag_commit": "3125e5c1e7bc33b5bfd5723806e01f14810511a6",
+      "canonical_prefix": "v1.0.0",
+      "old_alias_prefixes": [
+        "1.0.0"
+      ],
+      "expected_routes": [
+        "/",
+        "/reference/attachments",
+        "/reference/blocks",
+        "/reference/elements",
+        "/reference/messages",
+        "/reference/modals",
+        "/reference/objects",
+        "/reference/rich_text",
+        "/reference/utils",
+        "/reference/views",
+        "/usage/installation",
+        "/usage/sending_messages",
+        "/usage/using_blocks"
+      ],
+      "documentation_source_tree_hash": "e571b02afbd2c2af10a05d1d4cf23ef23b939f92",
+      "python_source_tree_hash": "76c77df266bcce849dba59c7014c6bacf01e1fb7",
+      "generated_snapshot_tree_hash": null,
+      "language_availability": [
+        "python"
+      ],
+      "inventory": "inventories/v1.0.0.json"
+    }
+  ]
+}
