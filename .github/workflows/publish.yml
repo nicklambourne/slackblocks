@@ -1,50 +1,77 @@
-name: Publish SlackBlocks Python Package
+name: Publish Python Package
+
 on:
   push:
-    # Trigger on every version tag: final releases (v2.0.0) and pre-releases
-    # (v2.0.0rc1, v2.0.0b1, v2.0.0a1, v2.0.0.dev0, etc.). PyPI itself classifies
-    # pre-releases per PEP 440 from the version string in pyproject.toml, so
-    # 'pip install slackblocks' continues to skip them by default.
     tags:
-      - "v*"
+      - "python/v*"
 
 permissions:
   contents: read
 
 jobs:
-  publish:
-    name: Build and publish to PyPI
+  build:
+    name: Build and verify Python release
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: python
     steps:
-      - uses: actions/checkout@v5
+      - name: Check out repository
+        uses: actions/checkout@v7
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@v10.0.0
         with:
-          enable-cache: true
+          python-version: "3.14"
 
-      - name: Install Dependencies
-        run: uv sync
-
-      - name: Build Package
-        run: uv build
+      - name: Install dependencies
+        run: uv sync --frozen --group dev
 
       - name: Verify tag matches package version
-        # Guards against publishing if a tag is pushed without the
-        # corresponding pyproject.toml bump. Fail loudly rather than upload
-        # the wrong version.
         run: |
           set -euo pipefail
-          tag="${GITHUB_REF_NAME#v}"
-          pkg=$(uv run python -c "import importlib.metadata; print(importlib.metadata.version('slackblocks'))")
-          if [ "$tag" != "$pkg" ]; then
-            echo "::error::Tag '$tag' does not match package version '$pkg' in pyproject.toml."
+          tag="${GITHUB_REF_NAME#python/v}"
+          package=$(uv run --frozen python -c "import importlib.metadata; print(importlib.metadata.version('slackblocks'))")
+          if [ "$tag" != "$package" ]; then
+            echo "::error::Tag '$tag' does not match package version '$package'."
             exit 1
           fi
-          echo "Tag $tag matches package version $pkg."
 
-      - name: Publish Package
-        run: uv publish --token ${{ secrets.PYPI_TOKEN }}
+      - name: Run tests
+        run: uv run --frozen pytest test/unit test/conformance
+
+      - name: Build sdist and wheel
+        run: uv build --clear
+
+      - name: Validate package metadata
+        run: uv run --frozen twine check --strict dist/*
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: python-distributions
+          path: python/dist/
+          if-no-files-found: error
+
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/slackblocks/
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: python-distributions
+          path: dist
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.0.0
+
+      - name: Publish with trusted publishing
+        run: uv publish dist/*

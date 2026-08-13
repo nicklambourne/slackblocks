@@ -1,4 +1,5 @@
 name: Package Check
+
 on:
   push:
     paths:
@@ -10,32 +11,42 @@ on:
       - "python/**"
       - ".github/workflows/package-check.yml"
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   package-check:
+    name: Build sdist/wheel and validate metadata
     runs-on: ubuntu-latest
-    name: Build sdist/wheel and validate README rendering
     defaults:
       run:
         working-directory: python
     steps:
-      - name: Check Out Source Repository
-        uses: actions/checkout@v5
+      - name: Check out repository
+        uses: actions/checkout@v7
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@v10.0.0
         with:
           enable-cache: true
           cache-dependency-glob: python/uv.lock
+          python-version: "3.14"
 
-      - name: Install Dependencies
-        run: uv sync
+      - name: Install dependencies
+        run: uv sync --frozen --group dev
 
       - name: Build sdist and wheel
-        run: uv build
+        run: uv build --clear
 
       - name: Validate package metadata and README
-        run: uv run twine check --strict dist/*
+        run: uv run --frozen twine check --strict dist/*
+
+      - name: Smoke test wheel
+        run: uv run --isolated --no-project --with dist/*.whl python -c "import slackblocks; print(slackblocks.__name__)"
+
+      - name: Smoke test source distribution
+        run: uv run --isolated --no-project --with dist/*.tar.gz python -c "import slackblocks; print(slackblocks.__name__)"
