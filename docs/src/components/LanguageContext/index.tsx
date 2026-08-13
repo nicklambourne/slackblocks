@@ -92,8 +92,8 @@ export function LanguageProvider({ children }: PropsWithChildren) {
     }
 
     setLanguage(nextLanguage);
-    if (!legacyVersion) {
-      window.localStorage.setItem(STORAGE_KEY, nextLanguage);
+    if (!legacyVersion && isLanguage(queryLanguage)) {
+      window.localStorage.setItem(STORAGE_KEY, queryLanguage);
     }
   }, [history, location.hash, location.pathname, location.search]);
 
