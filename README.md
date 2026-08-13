@@ -22,11 +22,11 @@ payload = Message(channel="#general", blocks=SectionBlock("Hello, world!"))
 TypeScript:
 
 ```ts
-import { message, section } from "slackblocks";
+import { message, sectionBlock } from "slackblocks";
 
 const payload = message({
   channel: "C0123456",
-  blocks: [section({ text: "Hello, world!" })],
+  blocks: [sectionBlock({ text: "Hello, world!" })],
 });
 ```
 

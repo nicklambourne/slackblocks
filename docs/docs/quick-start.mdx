@@ -50,12 +50,12 @@ pnpm add slackblocks
 ## Build a message
 
 ```ts
-import { message, section } from "slackblocks";
+import { message, sectionBlock } from "slackblocks";
 
 const payload = message({
   channel: "C0123456",
   text: "Hello from slackblocks!",
-  blocks: [section({ text: "Hello, world!" })],
+  blocks: [sectionBlock({ text: "Hello, world!" })],
 });
 
 console.log(JSON.stringify(payload, null, 2));

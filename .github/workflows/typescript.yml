@@ -101,11 +101,11 @@ jobs:
       - name: Import from ESM
         run: >-
           node --input-type=module -e
-          'import("slackblocks").then(({section}) =>
-          console.log(JSON.stringify(section({text:"smoke"}))))'
+          'import("slackblocks").then(({sectionBlock}) =>
+          console.log(JSON.stringify(sectionBlock({text:"smoke"}))))'
 
       - name: Require ESM from CommonJS
         run: >-
           node -e
-          'const { section } = require("slackblocks");
-          console.log(JSON.stringify(section({text:"smoke"})))'
+          'const { sectionBlock } = require("slackblocks");
+          console.log(JSON.stringify(sectionBlock({text:"smoke"})))'
