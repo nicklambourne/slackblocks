@@ -1,0 +1,98 @@
+{
+  "docs": [
+    {
+      "type": "doc",
+      "id": "index",
+      "label": "Welcome"
+    },
+    {
+      "type": "category",
+      "label": "Usage",
+      "collapsed": false,
+      "items": [
+        {
+          "type": "doc",
+          "id": "usage/installation",
+          "label": "Installation"
+        },
+        {
+          "type": "doc",
+          "id": "usage/using_blocks",
+          "label": "Using Blocks"
+        },
+        {
+          "type": "doc",
+          "id": "usage/sending_messages",
+          "label": "Sending Messages"
+        },
+        {
+          "type": "doc",
+          "id": "usage/cookbook",
+          "label": "Recipe Book"
+        },
+        {
+          "type": "doc",
+          "id": "usage/troubleshooting",
+          "label": "Troubleshooting & FAQ"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Reference",
+      "collapsed": false,
+      "items": [
+        {
+          "type": "doc",
+          "id": "reference/attachments",
+          "label": "Attachments"
+        },
+        {
+          "type": "doc",
+          "id": "reference/blocks",
+          "label": "Blocks"
+        },
+        {
+          "type": "doc",
+          "id": "reference/elements",
+          "label": "Elements"
+        },
+        {
+          "type": "doc",
+          "id": "reference/messages",
+          "label": "Messages"
+        },
+        {
+          "type": "doc",
+          "id": "reference/modals",
+          "label": "Modals"
+        },
+        {
+          "type": "doc",
+          "id": "reference/objects",
+          "label": "Objects"
+        },
+        {
+          "type": "doc",
+          "id": "reference/rich_text",
+          "label": "Rich Text"
+        },
+        {
+          "type": "doc",
+          "id": "reference/views",
+          "label": "Views"
+        },
+        {
+          "type": "doc",
+          "id": "reference/utils",
+          "label": "Utilities"
+        }
+      ]
+    },
+    {
+      "type": "doc",
+      "id": "contributing",
+      "label": "Contributing"
+    }
+  ]
+}

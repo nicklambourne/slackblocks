@@ -636,6 +636,8 @@ def convert_admonitions(source: str) -> str:
 
 
 def rewrite_markdown(source: str, version: str, docs_hash: str) -> str:
+    source = re.sub(r"<(https?://[^>]+)>", r"[\1](\1)", source)
+    source = re.sub(r"<(mailto:[^>]+)>", r"[\1](\1)", source)
     source = re.sub(r"\[([^\]]+)\]\(\)", r"\1", source)
     source = re.sub(
         r"(?P<path>[A-Za-z0-9_./-]+)\.md(?P<fragment>#[A-Za-z0-9_.-]+)?",
