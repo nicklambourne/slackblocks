@@ -1,16 +1,20 @@
 name: Ruff Format
+
 on:
   push:
     paths:
       - "python/**"
-      - "spec/tools/**"
+      - "docs/scripts/**"
       - ".github/workflows/ruff-format.yml"
   pull_request:
     branches: [master]
     paths:
       - "python/**"
-      - "spec/tools/**"
+      - "docs/scripts/**"
       - ".github/workflows/ruff-format.yml"
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -18,23 +22,24 @@ concurrency:
 
 jobs:
   formatting:
-    runs-on: ubuntu-latest
     name: Ruff Format
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: python
     steps:
-      - name: Check Out Source Repository
-        uses: actions/checkout@v5
+      - name: Check out repository
+        uses: actions/checkout@v7
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@v10.0.0
         with:
           enable-cache: true
           cache-dependency-glob: python/uv.lock
+          python-version: "3.14"
 
-      - name: Install Dependencies
-        run: uv sync
+      - name: Install dependencies
+        run: uv sync --frozen --group dev
 
-      - name: Formatting
-        run: uv run ruff format --check slackblocks test ../spec/tools
+      - name: Check formatting
+        run: uv run --frozen ruff format --check slackblocks test ../docs/scripts

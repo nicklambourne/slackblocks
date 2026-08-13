@@ -1,13 +1,13 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageTabs, { PythonTab, TypeScriptTab } from '@site/src/components/LanguageTabs';
+import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Sending Messages
 
 `slackblocks` produces the JSON payloads that Slack APIs accept; it does **not** make HTTP calls itself. Send those payloads with Slack's official SDK or any HTTP client.
 
-<LanguageTabs>
-<PythonTab>
+<LanguageContent>
+<Python>
 
 The trick is the `**` operator: a `slackblocks.Message` is a mapping, so you can unpack it directly into `client.chat_postMessage(...)`.
 
@@ -164,8 +164,8 @@ req = urllib.request.Request(
 urllib.request.urlopen(req)
 ```
 
-</PythonTab>
-<TypeScriptTab>
+</Python>
+<TypeScript>
 
 ## With `@slack/web-api`
 
@@ -239,5 +239,5 @@ await fetch("https://slack.com/api/chat.postMessage", {
 });
 ```
 
-</TypeScriptTab>
-</LanguageTabs>
+</TypeScript>
+</LanguageContent>

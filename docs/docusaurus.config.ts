@@ -1,5 +1,23 @@
 import type { Config } from "@docusaurus/types";
 import type { Options as ClassicPresetOptions } from "@docusaurus/preset-classic";
+import { readFileSync } from "node:fs";
+
+const pythonProject = readFileSync(
+  new URL("../python/pyproject.toml", import.meta.url),
+  "utf8",
+);
+const pythonVersion = pythonProject.match(/^version = "([^"]+)"$/m)?.[1];
+
+if (!pythonVersion) {
+  throw new Error("Could not read the Python package version");
+}
+
+const typescriptPackage = JSON.parse(
+  readFileSync(new URL("../typescript/package.json", import.meta.url), "utf8"),
+) as { version: string };
+const specManifest = JSON.parse(
+  readFileSync(new URL("../spec/manifest.json", import.meta.url), "utf8"),
+) as { spec_version: string };
 
 const config: Config = {
   title: "slackblocks",
@@ -9,6 +27,13 @@ const config: Config = {
   baseUrl: "/slackblocks/",
   organizationName: "nicklambourne",
   projectName: "slackblocks",
+  customFields: {
+    packageVersions: {
+      python: pythonVersion,
+      typescript: typescriptPackage.version,
+      spec: specManifest.spec_version,
+    },
+  },
   trailingSlash: false,
   onBrokenLinks: "throw",
   onBrokenAnchors: "throw",
@@ -39,6 +64,7 @@ const config: Config = {
     [
       "docusaurus-plugin-typedoc",
       {
+        name: "TypeScript API reference",
         entryPoints: ["../typescript/src/index.ts"],
         tsconfig: "../typescript/tsconfig.typedoc.json",
         out: "docs/reference/typescript",
@@ -100,18 +126,18 @@ const config: Config = {
       title: "slackblocks",
       logo: { alt: "slackblocks logo", src: "img/sb.png" },
       items: [
-        { to: "/usage/installation", label: "Guides", position: "left" },
-        { to: "/reference", label: "Reference", position: "left" },
+        { type: "html", value: "language-selector", position: "left" },
         {
           href: "https://github.com/nicklambourne/slackblocks",
-          label: "GitHub",
           position: "right",
+          className: "header-github-link",
+          "aria-label": "GitHub repository",
         },
       ],
     },
     colorMode: {
       defaultMode: "light",
-      respectPrefersColorScheme: true,
+      respectPrefersColorScheme: false,
     },
     footer: {
       style: "dark",

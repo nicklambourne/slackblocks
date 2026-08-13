@@ -1,13 +1,13 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageTabs, { PythonTab, TypeScriptTab } from '@site/src/components/LanguageTabs';
+import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Installation
 
-Choose your language once; every language group across the site follows the same selection and the URL carries it as `?language=...`.
+Choose Python or TypeScript from the site navigation. The selection applies across the documentation and is preserved as you move between pages.
 
-<LanguageTabs>
-<PythonTab>
+<LanguageContent>
+<Python>
 
 Install the Python package from [PyPI](https://pypi.org/project/slackblocks/):
 
@@ -54,8 +54,8 @@ print(Message(channel="#general", blocks=SectionBlock("Hello, world!")).json())
 
 Pin the current major release with `slackblocks~=2.0`, and uninstall with `pip uninstall slackblocks` (or the equivalent command for your package manager).
 
-</PythonTab>
-<TypeScriptTab>
+</Python>
+<TypeScript>
 
 Install the ESM package from npm:
 
@@ -98,5 +98,5 @@ console.log(message({
 
 Run it with `node hello.mjs`. Pin the pre-1.0 line with `slackblocks~0.1.0`, and uninstall with `pnpm remove slackblocks` (or your package manager's equivalent).
 
-</TypeScriptTab>
-</LanguageTabs>
+</TypeScript>
+</LanguageContent>
