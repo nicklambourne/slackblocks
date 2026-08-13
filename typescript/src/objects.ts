@@ -111,6 +111,17 @@ export function optionGroup(
   input: OptionGroupInput,
   settings: FactorySettings = {},
 ): JsonObject {
+  ensureLength(
+    textValue(asText(input.label, "plain_text", settings)) ?? "",
+    "optionGroup.label",
+    75,
+  );
+  if (input.options.length < 1 || input.options.length > 100) {
+    throw new LengthError(
+      "optionGroup.options",
+      `expected between 1 and 100 options, received ${input.options.length}`,
+    );
+  }
   return createObject(
     { ...input, label: asText(input.label, "plain_text", settings) },
     settings,
