@@ -1,0 +1,15 @@
+{
+  "channel": "C0123456",
+  "mrkdwn": true,
+  "blocks": [
+    {
+      "type": "section",
+      "block_id": "hello",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Hello from slackblocks!"
+      }
+    }
+  ],
+  "text": ""
+}
