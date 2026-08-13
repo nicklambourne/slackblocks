@@ -4,6 +4,7 @@ import { useNavbarMobileSidebar } from "@docusaurus/theme-common/internal";
 import IconClose from "@theme/Icon/Close";
 import NavbarColorModeToggle from "@theme/Navbar/ColorModeToggle";
 import NavbarLogo from "@theme/Navbar/Logo";
+import VersionSelector from "@site/src/components/VersionSelector";
 
 function CloseButton() {
   const mobileSidebar = useNavbarMobileSidebar();
@@ -28,6 +29,7 @@ export default function NavbarMobileSidebarHeader(): ReactNode {
   return (
     <div className="navbar-sidebar__brand">
       <NavbarLogo />
+      <VersionSelector />
       <div className="navbar-sidebar__actions">
         <a
           aria-label="GitHub repository"
