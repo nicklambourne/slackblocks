@@ -1,0 +1,106 @@
+name: TypeScript
+
+on:
+  push:
+    paths:
+      - "typescript/**"
+      - "spec/**"
+      - "docs/examples/typescript/**"
+      - "docs/examples/section_hello.json"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/typescript.yml"
+  pull_request:
+    branches: [master]
+    paths:
+      - "typescript/**"
+      - "spec/**"
+      - "docs/examples/typescript/**"
+      - "docs/examples/section_hello.json"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/typescript.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: TypeScript quality and package checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11.16.0
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm --filter slackblocks typecheck
+
+      - name: Run unit, conformance, and docs-example tests
+        run: pnpm --filter slackblocks test
+
+      - name: Validate package
+        run: pnpm --filter slackblocks check:package
+
+  runtime-smoke:
+    name: Runtime smoke (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["20.19.0", "22", "24"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11.16.0
+          run_install: false
+
+      - name: Install Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build package
+        run: pnpm --filter slackblocks build
+
+      - name: Import from ESM
+        run: >-
+          node --input-type=module -e
+          'import("./typescript/dist/index.mjs").then(({section}) =>
+          console.log(JSON.stringify(section({text:"smoke"}))))'
+
+      - name: Require ESM from CommonJS
+        run: >-
+          node -e
+          'const { section } = require("./typescript/dist/index.mjs");
+          console.log(JSON.stringify(section({text:"smoke"})))'
