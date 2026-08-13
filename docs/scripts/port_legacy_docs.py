@@ -184,7 +184,9 @@ def refresh_manifest(gh_pages_ref: str) -> dict[str, Any]:
             continue
         version = tag.removeprefix("v")
         tag_commit = str(run_git("rev-parse", f"{tag}^{{commit}}")).strip()
-        docs_tree = str(run_git("rev-parse", f"{tag}:docs_src")).strip()
+        previous_entry = previous_entries.get(version, {})
+        docs_source_ref = previous_entry.get("documentation_source_ref", tag)
+        docs_tree = str(run_git("rev-parse", f"{docs_source_ref}:docs_src")).strip()
         python_tree = str(run_git("rev-parse", f"{tag}:slackblocks")).strip()
         routes = published_routes(gh_pages_ref, tag)
         alias_prefixes = [version] if git_object_exists(f"{gh_pages_ref}:{version}") else []
@@ -203,6 +205,8 @@ def refresh_manifest(gh_pages_ref: str) -> dict[str, Any]:
             "language_availability": ["python"],
             "inventory": f"inventories/{tag}.json",
         }
+        if docs_source_ref != tag:
+            entry["documentation_source_ref"] = docs_source_ref
         versions.append(entry)
         inventories[tag] = {
             "version": version,
@@ -263,22 +267,41 @@ def extract_release(entry: dict[str, Any], destination: Path, archive: Path | No
             raise RuntimeError(
                 f"{entry['tag']} resolves to {actual_commit}, expected {entry['tag_commit']}"
             )
-        archive = destination / "release.tar"
-        subprocess.run(
-            [
-                "git",
-                "archive",
-                "--format=tar",
-                f"--output={archive}",
-                entry["tag"],
-                "docs_src",
-                "slackblocks",
-            ],
-            cwd=REPO_ROOT,
-            check=True,
-        )
-    with tarfile.open(archive) as tar:
-        tar.extractall(destination, filter="data")
+        docs_source_ref = entry.get("documentation_source_ref", entry["tag"])
+        docs_tree = str(run_git("rev-parse", f"{docs_source_ref}:docs_src")).strip()
+        if docs_tree != entry["documentation_source_tree_hash"]:
+            raise RuntimeError(
+                f"{entry['tag']} docs source is {docs_tree}, expected "
+                f"{entry['documentation_source_tree_hash']}"
+            )
+        python_tree = str(run_git("rev-parse", f"{entry['tag']}:slackblocks")).strip()
+        if python_tree != entry["python_source_tree_hash"]:
+            raise RuntimeError(
+                f"{entry['tag']} Python source is {python_tree}, expected "
+                f"{entry['python_source_tree_hash']}"
+            )
+        archives = [
+            (destination / "docs-source.tar", docs_source_ref, "docs_src"),
+            (destination / "python-source.tar", entry["tag"], "slackblocks"),
+        ]
+        for generated_archive, source_ref, source_path in archives:
+            subprocess.run(
+                [
+                    "git",
+                    "archive",
+                    "--format=tar",
+                    f"--output={generated_archive}",
+                    source_ref,
+                    source_path,
+                ],
+                cwd=REPO_ROOT,
+                check=True,
+            )
+            with tarfile.open(generated_archive) as tar:
+                tar.extractall(destination, filter="data")
+    else:
+        with tarfile.open(archive) as tar:
+            tar.extractall(destination, filter="data")
 
     docs_root = destination / "docs_src"
     python_root = destination / "slackblocks"
@@ -447,6 +470,7 @@ def render_member(
     anchor: str,
     nested_anchors: Sequence[str],
     version: str,
+    heading_by_anchor: dict[str, dict[str, Any]],
     *,
     include_heading: bool,
 ) -> str:
@@ -459,7 +483,13 @@ def render_member(
     name = anchor.rsplit(".", 1)[-1]
     content: list[str] = []
     if include_heading:
-        content.extend([f"### {name} {{#{anchor}}}", ""])
+        heading = heading_by_anchor[anchor]
+        content.extend(
+            [
+                f"{'#' * heading['level']} {heading['text']} {{#{anchor}}}",
+                "",
+            ]
+        )
     else:
         content.append(f'<a id="{anchor}"></a>')
     content.extend(
@@ -487,10 +517,11 @@ def render_member(
         if isinstance(nested, griffe.Alias):
             nested = nested.target
         nested_name = nested_anchor.rsplit(".", 1)[-1]
+        heading = heading_by_anchor[nested_anchor]
         content.extend(
             [
                 "",
-                f"#### {nested_name} {{#{nested_anchor}}}",
+                f"{'#' * heading['level']} {heading['text']} {{#{nested_anchor}}}",
                 "",
                 "```python",
                 member_signature(nested_name, nested),
@@ -506,6 +537,7 @@ def directive_content(
     package: griffe.Module,
     target: str,
     anchors: Sequence[str],
+    heading_by_anchor: dict[str, dict[str, Any]],
     version: str,
 ) -> str:
     try:
@@ -516,7 +548,14 @@ def directive_content(
         target_member = target_member.target
     if not isinstance(target_member, griffe.Module):
         nested = [anchor for anchor in anchors if anchor.startswith(f"{target}.")]
-        return render_member(package, target, nested, version, include_heading=False)
+        return render_member(
+            package,
+            target,
+            nested,
+            version,
+            heading_by_anchor,
+            include_heading=False,
+        )
 
     prefix = f"{target}."
     top_level: list[str] = []
@@ -529,16 +568,34 @@ def directive_content(
     rendered = []
     for anchor in top_level:
         nested = [candidate for candidate in anchors if candidate.startswith(f"{anchor}.")]
-        rendered.append(render_member(package, anchor, nested, version, include_heading=True))
+        rendered.append(
+            render_member(
+                package,
+                anchor,
+                nested,
+                version,
+                heading_by_anchor,
+                include_heading=True,
+            )
+        )
     return "\n\n".join(rendered)
 
 
 def replace_directives(
     source: str,
     package: griffe.Module,
-    anchors: Sequence[str],
+    page_inventory: dict[str, Any],
     version: str,
 ) -> str:
+    anchors = list(page_inventory.get("api_anchors", []))
+    anchors.extend(
+        heading["id"]
+        for heading in page_inventory.get("headings", [])
+        if "." in heading.get("id", "") and heading["id"] not in anchors
+    )
+    heading_by_anchor = {
+        heading["id"]: heading for heading in page_inventory.get("headings", []) if heading["id"]
+    }
     lines = source.splitlines()
     output: list[str] = []
     index = 0
@@ -549,7 +606,7 @@ def replace_directives(
             index += 1
             continue
         target = match.group("target")
-        output.append(directive_content(package, target, anchors, version))
+        output.append(directive_content(package, target, anchors, heading_by_anchor, version))
         index += 1
         while index < len(lines) and (not lines[index].strip() or lines[index].startswith("    ")):
             index += 1
@@ -680,6 +737,50 @@ def rewrite_markdown(source: str, version: str, docs_hash: str) -> str:
     return source
 
 
+def heading_text(value: str) -> str:
+    value = re.sub(r"\s+\{#[^}]+\}\s*$", "", value)
+    value = re.sub(r"!?(?:\[([^\]]+)\])\([^)]+\)", r"\1", value)
+    value = re.sub(r"[`*_~]", "", value)
+    return " ".join(html.unescape(TAG_RE.sub("", value)).split())
+
+
+def preserve_heading_ids(source: str, page_inventory: dict[str, Any]) -> str:
+    headings = [heading for heading in page_inventory.get("headings", []) if heading.get("id")]
+    used: set[int] = set()
+    output: list[str] = []
+    in_fence = False
+    for line in source.splitlines():
+        if re.match(r"^\s*```", line):
+            in_fence = not in_fence
+            output.append(line)
+            continue
+        match = None if in_fence else re.match(r"^(#{1,6})\s+(.+?)\s*$", line)
+        if not match:
+            output.append(line)
+            continue
+        level = len(match.group(1))
+        text = heading_text(match.group(2))
+        selected = next(
+            (
+                index
+                for index, heading in enumerate(headings)
+                if index not in used and heading["level"] == level and heading["text"] == text
+            ),
+            None,
+        )
+        if selected is None:
+            output.append(line)
+            continue
+        used.add(selected)
+        heading_id = headings[selected]["id"]
+        without_id = re.sub(r"\s+\{#[^}]+\}\s*$", "", match.group(2))
+        if level == 1:
+            output.extend([f'<a id="{heading_id}"></a>', f"# {without_id}"])
+        else:
+            output.append(f"{match.group(1)} {without_id} {{#{heading_id}}}")
+    return "\n".join(output)
+
+
 def generated_notice(entry: dict[str, Any]) -> str:
     return (
         f"<!-- Generated by port_legacy_docs.py v{TOOL_VERSION} from {entry['tag']} "
@@ -693,10 +794,11 @@ def convert_page(
     package: griffe.Module,
     page_inventory: dict[str, Any],
 ) -> str:
+    has_level_one_heading = bool(re.search(r"^#\s+", source, re.MULTILINE))
     source = replace_directives(
         source,
         package,
-        page_inventory.get("api_anchors", []),
+        page_inventory,
         entry["version"],
     )
     source, has_tabs = convert_tabs(source)
@@ -706,7 +808,19 @@ def convert_page(
         entry["version"],
         entry["documentation_source_tree_hash"],
     )
-    header = [generated_notice(entry)]
+    source = preserve_heading_ids(source, page_inventory)
+    header: list[str] = []
+    if not has_level_one_heading:
+        page_title = next(
+            (
+                heading["text"]
+                for heading in page_inventory.get("headings", [])
+                if heading["level"] == 1
+            ),
+            page_inventory["published_title"].split(" - ", 1)[0],
+        )
+        header.extend(["---", f"title: {json.dumps(page_title)}", "---"])
+    header.append(generated_notice(entry))
     if has_tabs:
         header.extend(
             [
@@ -714,9 +828,6 @@ def convert_page(
                 "import TabItem from '@theme/TabItem';",
             ]
         )
-    root_anchors = [anchor for anchor in page_inventory.get("api_anchors", []) if "." not in anchor]
-    if root_anchors:
-        header.append(f'<a id="{root_anchors[0]}"></a>')
     return "\n".join([*header, "", source.strip(), ""])
 
 
