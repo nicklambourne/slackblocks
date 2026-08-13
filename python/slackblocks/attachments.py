@@ -22,70 +22,20 @@ class Color(Enum):
     Color is a utility class for use with the Slack secondary attachments API.
 
     Pass these to the `color` argument of
-        [`Attachment`](/slackblocks/latest/reference/attachments/#attachments.Attachment).
+    [`Attachment`](#attachment).
 
-    <table style="width:50%">
-    <tr>
-    <td><code>Color.GOOD</code></td>
-    <td>
-    <img valign='middle' alt='good' src='https://readme-swatches.vercel.app/4CAF50?style=round'/>
-    </td>
-    </tr>
-    <tr>
-    <td><code>Color.WARNING</code></td>
-    <td>
-    <img valign='middle' alt='warning' src='https://readme-swatches.vercel.app/FFEB3B?style=round'/>
-    </td>
-    </tr>
-    <tr>
-    <td><code>Color.DANGER</code></td>
-    <td>
-    <img valign='middle' alt='danger' src='https://readme-swatches.vercel.app/F44336?style=round'/>
-    </td>
-    </tr>
-    <tr>
-    <td><code>Color.RED</code></td>
-    <td>
-    <img valign='middle' alt='red' src='https://readme-swatches.vercel.app/ff0000?style=round'/>
-    </td>
-    </tr>
-    <tr>
-    <td><code>Color.BLUE</code></td>
-    <td>
-    <img valign='middle' alt='blue' src='https://readme-swatches.vercel.app/0000ff?style=round'/>
-    </td>
-    </tr>
-    <tr>
-    <td><code>Color.YELLOW</code></td>
-    <td>
-    <img valign='middle' alt='yellow' src='https://readme-swatches.vercel.app/ffff00?style=round'/>
-    </td>
-    </tr>
-    <tr>
-    <td><code>Color.GREEN</code></td>
-    <td>
-    <img valign='middle' alt='green' src='https://readme-swatches.vercel.app/00ff00?style=round'/>
-    </td>
-    </tr>
-    <tr>
-    <td><code>Color.ORANGE</code></td>
-    <td>
-    <img valign='middle' alt='orange' src='https://readme-swatches.vercel.app/ff8800?style=round'/>
-    </td>
-    </tr>
-    <tr>
-    <td><code>Color.PURPLE</code></td>
-    <td>
-    <img valign='middle' alt='purple' src='https://readme-swatches.vercel.app/8800ff?style=round'/>
-    </td>
-    </tr>
-    <tr>
-    <td><code>Color.BLACK</code></td>
-    <td>
-    <img valign='middle' alt='black' src='https://readme-swatches.vercel.app/000000?style=round'/>
-    </td>
-    </tr>
-    </table>
+    | Value | Preview |
+    | --- | --- |
+    | `Color.GOOD` | ![good](https://readme-swatches.vercel.app/4CAF50?style=round) |
+    | `Color.WARNING` | ![warning](https://readme-swatches.vercel.app/FFEB3B?style=round) |
+    | `Color.DANGER` | ![danger](https://readme-swatches.vercel.app/F44336?style=round) |
+    | `Color.RED` | ![red](https://readme-swatches.vercel.app/ff0000?style=round) |
+    | `Color.BLUE` | ![blue](https://readme-swatches.vercel.app/0000ff?style=round) |
+    | `Color.YELLOW` | ![yellow](https://readme-swatches.vercel.app/ffff00?style=round) |
+    | `Color.GREEN` | ![green](https://readme-swatches.vercel.app/00ff00?style=round) |
+    | `Color.ORANGE` | ![orange](https://readme-swatches.vercel.app/ff8800?style=round) |
+    | `Color.PURPLE` | ![purple](https://readme-swatches.vercel.app/8800ff?style=round) |
+    | `Color.BLACK` | ![black](https://readme-swatches.vercel.app/000000?style=round) |
     """
 
     GOOD = "good"

@@ -19,6 +19,13 @@
   --ifm-color-primary-lightest: #fff;
 }
 
+.footer {
+  --ifm-footer-background-color: var(--ifm-navbar-background-color);
+  --ifm-footer-color: var(--ifm-navbar-link-color);
+  --ifm-footer-link-color: var(--ifm-navbar-link-color);
+  --ifm-footer-padding-vertical: 0.75rem;
+}
+
 .prism-code,
 .prism-code .token {
   font-style: normal !important;
@@ -28,9 +35,8 @@
   background: transparent;
 }
 
-.api-docstring {
-  font-family: var(--ifm-font-family-base);
-  white-space: pre-wrap;
+.api-docstring > :last-child {
+  margin-bottom: 0;
 }
 
 .typedoc-sidebar-item-deprecated {

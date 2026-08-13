@@ -955,7 +955,7 @@ class OverflowMenu(Element):
 
 class PlainTextInput(Element):
     """
-    A plain-text input, similar to the HTML <input> tag, creates a field where a user
+    A plain-text input, similar to the HTML `<input>` tag, creates a field where a user
     can enter freeform data. It can appear as a single-line field or a larger text
     area using the multiline flag.
 

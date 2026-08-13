@@ -33,7 +33,11 @@ function languagePath(pathname: string, language: Language): string {
   const referenceMatch = pathname.match(
     /^(.*\/reference\/)(python|typescript)(?:\/.*)?$/,
   );
-  if (referenceMatch) return `${referenceMatch[1]}${language}`;
+  if (referenceMatch) {
+    return referenceMatch[2] === language
+      ? pathname
+      : `${referenceMatch[1]}${language}`;
+  }
 
   const referenceIndexMatch = pathname.match(/^(.*\/reference)\/?$/);
   if (referenceIndexMatch) {
@@ -42,7 +46,7 @@ function languagePath(pathname: string, language: Language): string {
 
   if (language === "typescript") {
     const pythonGuideMatch = pathname.match(
-      /^(.*)\/usage\/(compatibility|migration|troubleshooting|using_blocks)\/?$/,
+      /^(.*)\/usage\/(compatibility|migration)\/?$/,
     );
     if (pythonGuideMatch) return `${pythonGuideMatch[1]}/usage/installation`;
   }

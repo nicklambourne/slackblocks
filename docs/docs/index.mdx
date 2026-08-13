@@ -82,24 +82,24 @@ The TypeScript package exposes data-first factories that return typed, Slack-sha
 
 ### Composition objects
 
-Factories such as [`plainText`](reference/typescript/functions/plainText), [`mrkdwn`](reference/typescript/functions/mrkdwn), and [`option`](reference/typescript/functions/option) create the small values used throughout Block Kit payloads.
+Factories such as [`plainText`](reference/typescript/objects/plainText), [`mrkdwn`](reference/typescript/objects/mrkdwn), and [`option`](reference/typescript/objects/option) create the small values used throughout Block Kit payloads.
 
 ### Elements
 
-Interactive controls are built with factories such as [`button`](reference/typescript/functions/button), [`checkboxes`](reference/typescript/functions/checkboxes), [`staticSelect`](reference/typescript/functions/staticSelect), and [`datePicker`](reference/typescript/functions/datePicker).
+Interactive controls are built with factories such as [`button`](reference/typescript/elements/button), [`checkboxes`](reference/typescript/elements/checkboxes), [`staticSelect`](reference/typescript/elements/staticSelect), and [`datePicker`](reference/typescript/elements/datePicker).
 
 ### Blocks
 
-Every block factory follows the same `<kind>Block` naming pattern: [`actionsBlock`](reference/typescript/functions/actionsBlock), [`contextBlock`](reference/typescript/functions/contextBlock), [`dividerBlock`](reference/typescript/functions/dividerBlock), [`fileBlock`](reference/typescript/functions/fileBlock), [`headerBlock`](reference/typescript/functions/headerBlock), [`imageBlock`](reference/typescript/functions/imageBlock), [`inputBlock`](reference/typescript/functions/inputBlock), [`markdownBlock`](reference/typescript/functions/markdownBlock), [`richTextBlock`](reference/typescript/functions/richTextBlock), [`sectionBlock`](reference/typescript/functions/sectionBlock), [`tableBlock`](reference/typescript/functions/tableBlock), and [`videoBlock`](reference/typescript/functions/videoBlock).
+Every block factory follows the same `<kind>Block` naming pattern: [`actionsBlock`](reference/typescript/blocks/actionsBlock), [`contextBlock`](reference/typescript/blocks/contextBlock), [`dividerBlock`](reference/typescript/blocks/dividerBlock), [`fileBlock`](reference/typescript/blocks/fileBlock), [`headerBlock`](reference/typescript/blocks/headerBlock), [`imageBlock`](reference/typescript/blocks/imageBlock), [`inputBlock`](reference/typescript/blocks/inputBlock), [`markdownBlock`](reference/typescript/blocks/markdownBlock), [`richTextBlock`](reference/typescript/blocks/richTextBlock), [`sectionBlock`](reference/typescript/blocks/sectionBlock), [`tableBlock`](reference/typescript/blocks/tableBlock), and [`videoBlock`](reference/typescript/blocks/videoBlock).
 
 ### Messages and views
 
-Use [`message`](reference/typescript/functions/message), [`webhookMessage`](reference/typescript/functions/webhookMessage), and [`messageResponse`](reference/typescript/functions/messageResponse) for message payloads. Use [`modal`](reference/typescript/functions/modal) and [`homeTab`](reference/typescript/functions/homeTab) for Slack views.
+Use [`message`](reference/typescript/messages/message), [`webhookMessage`](reference/typescript/messages/webhookMessage), and [`messageResponse`](reference/typescript/messages/messageResponse) for message payloads. Use [`modal`](reference/typescript/views/modal) and [`homeTab`](reference/typescript/views/homeTab) for Slack views.
 
 ### Utilities
 
-- [`blockKitBuilderUrl`](reference/typescript/functions/blockKitBuilderUrl) creates a browser preview URL.
-- [`validate`](reference/typescript/functions/validate) and [`assertValid`](reference/typescript/functions/assertValid) validate existing Slack-shaped data.
+- [`blockKitBuilderUrl`](reference/typescript/utilities/blockKitBuilderUrl) creates a browser preview URL.
+- [`validate`](reference/typescript/utilities/validate) and [`assertValid`](reference/typescript/utilities/assertValid) validate existing Slack-shaped data.
 
 </TypeScript>
 </LanguageContent>
