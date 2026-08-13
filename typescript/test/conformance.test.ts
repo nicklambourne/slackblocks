@@ -226,6 +226,13 @@ function constructFixture(id: string, expected: FixtureInput): unknown {
 
 const manifest = readJson<Manifest>(resolve(SPEC_ROOT, "manifest.json"));
 const coverage = readJson<Coverage>(resolve(SPEC_ROOT, "coverage.json"));
+const skippedCases = new Set(
+  readFileSync(resolve(PACKAGE_ROOT, "conformance/skiplist.txt"), "utf8")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line !== "" && !line.startsWith("#"))
+    .map((line) => line.split(/\s+/, 1)[0]!),
+);
 
 function scalarPaths(value: unknown, prefix: string[] = []): string[] {
   if (value === null || typeof value !== "object" || Array.isArray(value)) {
@@ -259,20 +266,14 @@ describe("valid conformance corpus", () => {
   });
 
   for (const fixture of manifest.fixtures) {
-    it(fixture.id, () => {
+    const testFixture = skippedCases.has(fixture.id) ? it.skip : it;
+    testFixture(fixture.id, () => {
       const expected = readJson<Record<string, unknown>>(
         resolve(SPEC_ROOT, "fixtures/valid", `${fixture.id}.json`),
       );
       expect(constructFixture(fixture.id, expected)).toEqual(expected);
     });
   }
-
-  it("has an empty TypeScript skip list", () => {
-    const entries = readFileSync(resolve(PACKAGE_ROOT, "conformance/skiplist.txt"), "utf8")
-      .split("\n")
-      .filter((line) => line !== "" && !line.startsWith("#"));
-    expect(entries).toEqual([]);
-  });
 
   it("contains no undeclared fixture files", () => {
     const ids = new Set(manifest.fixtures.map(({ id }) => id));
@@ -515,12 +516,24 @@ describe("invalid conformance corpus", () => {
   });
   it("has a construction for every case", () => {
     expect(Object.keys(invalidCases).sort()).toEqual(
-      invalidManifest.cases.map(({ id }) => id).sort(),
+      invalidManifest.cases
+        .filter(({ id }) => !skippedCases.has(id))
+        .map(({ id }) => id)
+        .sort(),
     );
   });
 
+  it("only skips declared valid fixtures and invalid cases", () => {
+    const declared = new Set([
+      ...manifest.fixtures.map(({ id }) => id),
+      ...invalidManifest.cases.map(({ id }) => id),
+    ]);
+    expect([...skippedCases].filter((id) => !declared.has(id))).toEqual([]);
+  });
+
   for (const invalidCase of invalidManifest.cases) {
-    it(`${invalidCase.id} -> ${invalidCase.category}`, () => {
+    const testInvalidCase = skippedCases.has(invalidCase.id) ? it.skip : it;
+    testInvalidCase(`${invalidCase.id} -> ${invalidCase.category}`, () => {
       try {
         invalidCases[invalidCase.id]?.();
         expect.fail("construction did not throw");

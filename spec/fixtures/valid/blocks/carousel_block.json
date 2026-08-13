@@ -1,0 +1,22 @@
+{
+  "type": "carousel",
+  "block_id": "fake_block_id",
+  "elements": [
+    {
+      "type": "card",
+      "block_id": "card_1",
+      "title": {
+        "type": "mrkdwn",
+        "text": "First result"
+      }
+    },
+    {
+      "type": "card",
+      "block_id": "card_2",
+      "title": {
+        "type": "mrkdwn",
+        "text": "Second result"
+      }
+    }
+  ]
+}

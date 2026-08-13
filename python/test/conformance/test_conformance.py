@@ -8,17 +8,32 @@ import pytest
 
 from slackblocks import (
     ActionsBlock,
+    AlertBlock,
+    AxisConfig,
     Button,
+    CardBlock,
+    CarouselBlock,
+    ChartSegment,
     ConfirmationDialogue,
+    ContainerBlock,
+    ContextActionsBlock,
     ContextBlock,
+    DataPoint,
+    DataSeries,
+    DataTableBlock,
+    DataVisualizationBlock,
     DividerBlock,
+    FeedbackButton,
+    FeedbackButtons,
     FileInput,
     HeaderBlock,
     HomeTabView,
+    IconButton,
     Image,
     ImageBlock,
     InputBlock,
     LengthError,
+    LineChart,
     MarkdownBlock,
     MissingRequiredError,
     ModalView,
@@ -27,9 +42,11 @@ from slackblocks import (
     Option,
     OptionGroup,
     OverflowMenu,
+    PieChart,
     PlainText,
     PlainTextInput,
     RangeError,
+    RawText,
     SectionBlock,
     SlackFile,
     StaticSelectMenu,
@@ -111,6 +128,26 @@ def video(**overrides: object) -> VideoBlock:
         **overrides,
     }
     return VideoBlock(**inputs)  # type: ignore[arg-type]
+
+
+def valid_card() -> CardBlock:
+    return CardBlock(title="Card")
+
+
+def valid_feedback_button() -> FeedbackButton:
+    return FeedbackButton("Good", "good")
+
+
+def valid_table_rows() -> list[list[RawText]]:
+    return [[RawText("Name")], [RawText("Alice")]]
+
+
+def valid_axis() -> AxisConfig:
+    return AxisConfig(["A"])
+
+
+def valid_series(name: str = "Series") -> DataSeries:
+    return DataSeries(name, [DataPoint("A", 1)])
 
 
 INVALID_CASES: dict[str, Callable[[], object]] = {
@@ -303,6 +340,169 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     ),
     "context-invalid-element": lambda: ContextBlock(elements=[DividerBlock()]),
     "input-invalid-element": lambda: InputBlock(label="Label", element=Button("A", "a")),
+    "block-id-too-long": lambda: DividerBlock(
+        block_id="x" * (LIMITS["block_id"]["max_length"] + 1)
+    ),
+    "button-accessibility-label-too-long": lambda: Button(
+        text="A",
+        action_id="a",
+        accessibility_label="x" * (LIMITS["button"]["accessibility_label"]["max_length"] + 1),
+    ),
+    "alert-text-too-long": lambda: AlertBlock("x" * (LIMITS["alert"]["text"]["max_length"] + 1)),
+    "card-title-too-long": lambda: CardBlock(
+        title="x" * (LIMITS["card"]["title"]["max_length"] + 1)
+    ),
+    "card-subtitle-too-long": lambda: CardBlock(
+        title="Card",
+        subtitle="x" * (LIMITS["card"]["subtitle"]["max_length"] + 1),
+    ),
+    "card-body-too-long": lambda: CardBlock(body="x" * (LIMITS["card"]["body"]["max_length"] + 1)),
+    "card-too-many-actions": lambda: CardBlock(
+        actions=[
+            Button("A", f"a-{index}") for index in range(LIMITS["card"]["actions"]["max_items"] + 1)
+        ]
+    ),
+    "card-subtext-too-long": lambda: CardBlock(
+        title="Card",
+        subtext="x" * (LIMITS["card"]["subtext"]["max_length"] + 1),
+    ),
+    "carousel-empty": lambda: CarouselBlock([]),
+    "carousel-too-many-cards": lambda: CarouselBlock(
+        [valid_card() for _ in range(LIMITS["carousel"]["elements"]["max_items"] + 1)]
+    ),
+    "container-title-too-long": lambda: ContainerBlock(
+        title="x" * (LIMITS["container"]["title"]["max_length"] + 1),
+        child_blocks=[DividerBlock()],
+    ),
+    "container-subtitle-too-long": lambda: ContainerBlock(
+        title="Container",
+        subtitle="x" * (LIMITS["container"]["subtitle"]["max_length"] + 1),
+        child_blocks=[DividerBlock()],
+    ),
+    "container-too-many-child-blocks": lambda: ContainerBlock(
+        title="Container",
+        child_blocks=[
+            DividerBlock() for _ in range(LIMITS["container"]["child_blocks"]["max_items"] + 1)
+        ],
+    ),
+    "context-actions-too-many-elements": lambda: ContextActionsBlock(
+        [
+            IconButton("Delete", action_id=f"delete-{index}")
+            for index in range(LIMITS["context_actions"]["elements"]["max_items"] + 1)
+        ]
+    ),
+    "feedback-button-text-too-long": lambda: FeedbackButtons(
+        positive_button=FeedbackButton(
+            "x" * (LIMITS["feedback_button"]["text"]["max_length"] + 1), "good"
+        ),
+        negative_button=valid_feedback_button(),
+    ),
+    "feedback-button-value-too-long": lambda: FeedbackButtons(
+        positive_button=FeedbackButton(
+            "Good", "x" * (LIMITS["feedback_button"]["value"]["max_length"] + 1)
+        ),
+        negative_button=valid_feedback_button(),
+    ),
+    "feedback-button-accessibility-label-too-long": lambda: FeedbackButtons(
+        positive_button=FeedbackButton(
+            "Good",
+            "good",
+            "x" * (LIMITS["feedback_button"]["accessibility_label"]["max_length"] + 1),
+        ),
+        negative_button=valid_feedback_button(),
+    ),
+    "icon-button-too-many-visible-users": lambda: IconButton(
+        "Delete",
+        visible_to_user_ids=[
+            f"U{index}"
+            for index in range(LIMITS["icon_button"]["visible_to_user_ids"]["max_items"] + 1)
+        ],
+    ),
+    "data-table-too-few-rows": lambda: DataTableBlock([[RawText("Name")]], caption="Names"),
+    "data-table-too-many-rows": lambda: DataTableBlock(
+        [[RawText("A")] for _ in range(LIMITS["data_table"]["rows"]["max_items"] + 1)],
+        caption="Names",
+    ),
+    "data-table-too-few-columns": lambda: DataTableBlock([[], []], caption="Empty"),
+    "data-table-too-many-columns": lambda: DataTableBlock(
+        [
+            [RawText("A") for _ in range(LIMITS["data_table"]["columns"]["max_items"] + 1)],
+            [RawText("A") for _ in range(LIMITS["data_table"]["columns"]["max_items"] + 1)],
+        ],
+        caption="Wide",
+    ),
+    "data-table-page-size-too-small": lambda: DataTableBlock(
+        valid_table_rows(),
+        caption="Names",
+        page_size=LIMITS["data_table"]["page_size"]["min"] - 1,
+    ),
+    "data-table-page-size-too-large": lambda: DataTableBlock(
+        valid_table_rows(),
+        caption="Names",
+        page_size=LIMITS["data_table"]["page_size"]["max"] + 1,
+    ),
+    "data-table-cell-text-empty": lambda: DataTableBlock(
+        [[RawText("Name")], [RawText("")]], caption="Names"
+    ),
+    "data-table-content-too-long": lambda: DataTableBlock(
+        [
+            [RawText("Name")],
+            [RawText("x" * LIMITS["data_table"]["content"]["max_length"])],
+        ],
+        caption="Names",
+    ),
+    "data-visualization-title-too-long": lambda: DataVisualizationBlock(
+        "x" * (LIMITS["data_visualization"]["title"]["max_length"] + 1),
+        PieChart([ChartSegment("A", 1)]),
+    ),
+    "pie-chart-empty": lambda: PieChart([]),
+    "pie-chart-too-many-segments": lambda: PieChart(
+        [
+            ChartSegment(f"S{index}", 1)
+            for index in range(LIMITS["data_visualization"]["segments"]["max_items"] + 1)
+        ]
+    ),
+    "chart-segment-label-too-long": lambda: ChartSegment(
+        "x" * (LIMITS["data_visualization"]["segment"]["label"]["max_length"] + 1),
+        1,
+    ),
+    "chart-segment-value-not-positive": lambda: ChartSegment("A", 0),
+    "chart-series-empty": lambda: LineChart([], valid_axis()),
+    "chart-too-many-series": lambda: LineChart(
+        [
+            valid_series(f"S{index}")
+            for index in range(LIMITS["data_visualization"]["series"]["max_items"] + 1)
+        ],
+        valid_axis(),
+    ),
+    "data-series-name-too-long": lambda: DataSeries(
+        "x" * (LIMITS["data_visualization"]["series_name"]["max_length"] + 1),
+        [DataPoint("A", 1)],
+    ),
+    "data-series-empty": lambda: DataSeries("Series", []),
+    "data-series-too-many-points": lambda: DataSeries(
+        "Series",
+        [
+            DataPoint(f"P{index}", index)
+            for index in range(LIMITS["data_visualization"]["data"]["max_items"] + 1)
+        ],
+    ),
+    "data-point-label-too-long": lambda: DataPoint(
+        "x" * (LIMITS["data_visualization"]["point_label"]["max_length"] + 1), 1
+    ),
+    "axis-categories-empty": lambda: AxisConfig([]),
+    "axis-too-many-categories": lambda: AxisConfig(
+        [
+            f"C{index}"
+            for index in range(LIMITS["data_visualization"]["categories"]["max_items"] + 1)
+        ]
+    ),
+    "axis-category-label-too-long": lambda: AxisConfig(
+        ["x" * (LIMITS["data_visualization"]["category_label"]["max_length"] + 1)]
+    ),
+    "axis-label-too-long": lambda: AxisConfig(
+        ["A"], x_label="x" * (LIMITS["data_visualization"]["axis_label"]["max_length"] + 1)
+    ),
 }
 
 

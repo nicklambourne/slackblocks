@@ -1,10 +1,12 @@
 {
   "text": { "min_length": 1, "max_length": 3000 },
   "action_id": { "max_length": 255 },
+  "block_id": { "max_length": 255 },
   "button": {
     "text": { "max_length": 75 },
     "url": { "max_length": 3000 },
-    "value": { "max_length": 2000 }
+    "value": { "max_length": 2000 },
+    "accessibility_label": { "max_length": 75 }
   },
   "confirmation": {
     "title": { "max_length": 100 },
@@ -30,7 +32,50 @@
   "file_input": { "max_files": { "min": 1, "max": 10 } },
   "plain_text_input": { "max_length": { "max": 3000 } },
   "actions": { "elements": { "max_items": 25 } },
+  "alert": { "text": { "max_length": 200 } },
+  "card": {
+    "title": { "max_length": 150 },
+    "subtitle": { "max_length": 150 },
+    "body": { "max_length": 200 },
+    "actions": { "max_items": 3 },
+    "subtext": { "max_length": 200 }
+  },
+  "carousel": { "elements": { "min_items": 1, "max_items": 10 } },
+  "container": {
+    "title": { "max_length": 150 },
+    "subtitle": { "max_length": 150 },
+    "child_blocks": { "max_items": 10 }
+  },
   "context": { "elements": { "max_items": 10 } },
+  "context_actions": { "elements": { "max_items": 5 } },
+  "feedback_button": {
+    "text": { "max_length": 75 },
+    "value": { "max_length": 2000 },
+    "accessibility_label": { "max_length": 75 }
+  },
+  "icon_button": { "visible_to_user_ids": { "max_items": 10 } },
+  "data_table": {
+    "rows": { "min_items": 2, "max_items": 201 },
+    "columns": { "min_items": 1, "max_items": 20 },
+    "page_size": { "min": 1, "max": 100 },
+    "cell_text": { "min_length": 1 },
+    "content": { "max_length": 20000 }
+  },
+  "data_visualization": {
+    "title": { "max_length": 50 },
+    "segments": { "min_items": 1, "max_items": 12 },
+    "segment": {
+      "label": { "max_length": 20 },
+      "value": { "exclusive_min": 0 }
+    },
+    "series": { "min_items": 1, "max_items": 12 },
+    "series_name": { "max_length": 20 },
+    "data": { "min_items": 1, "max_items": 20 },
+    "point_label": { "max_length": 20 },
+    "categories": { "min_items": 1, "max_items": 20 },
+    "category_label": { "max_length": 20 },
+    "axis_label": { "max_length": 50 }
+  },
   "header": { "text": { "max_length": 150 } },
   "image": {
     "image_url": { "max_length": 3000 },

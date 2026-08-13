@@ -12,7 +12,7 @@
 
 `slackblocks` is a typed, validating Python wrapper around the Slack [Block Kit API](https://api.slack.com/block-kit). It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control.
 
-This release conforms to the shared slackblocks specification 1.0.0.
+This release conforms to the shared cross-language slackblocks specification.
 
 ## Why `slackblocks`?
 
@@ -86,7 +86,7 @@ The `**` operator unpacks `slackblocks` `Message` objects directly into the SDK 
 
 | Surface             | Status |
 |---------------------|:------:|
-| Blocks              | ✅ All current block types (Section, Header, Divider, Image, Context, Actions, Input, RichText, File, Table, **Markdown**, **Video**) |
+| Blocks              | ✅ All current block types, including Alert, Card, Carousel, Container, Context Actions, Data Table, Data Visualization, Plan, and Task Card |
 | Elements            | ✅ Buttons, all select menus, date/time pickers, checkboxes, radio groups, all input types, overflow menus, workflow buttons |
 | Composition Objects | ✅ Text (+ `PlainText` / `Markdown` aliases), Option, Confirm, Conversation/Dispatch filters, Workflow, Trigger |
 | Rich Text           | ✅ Sections, lists, quotes, code blocks, inline links/users/channels/emoji |

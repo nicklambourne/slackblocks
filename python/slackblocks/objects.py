@@ -13,14 +13,17 @@ from typing import Any, Literal, TypeAlias, cast, overload
 
 from slackblocks._core import RenderableMixin, omit_none, resolve
 from slackblocks.errors import (
+    InvalidUsageError,
     LengthError,
     MissingRequiredError,
     MutualExclusivityError,
+    RangeError,
     TypeMismatchError,
 )
 from slackblocks.utils import (
     coerce_to_list,
     coerce_to_list_nonnull,
+    validate_string,
     validate_string_nonnull,
 )
 
@@ -839,6 +842,283 @@ class RawText:
                 "emoji": self.emoji if self.emoji else None,
             }
         )
+
+
+class RawNumber:
+    """A numeric cell for a :class:`~slackblocks.blocks.DataTableBlock`.
+
+    Args:
+        value: the numeric value Slack uses for sorting and display.
+        text: the non-empty text Slack displays in the cell.
+    """
+
+    def __init__(self, value: int | float, text: str) -> None:
+        if isinstance(value, bool) or not isinstance(value, int | float):
+            raise TypeMismatchError("`value` must be a number.")
+        self.type = "raw_number"
+        self.value = value
+        self.text = validate_string_nonnull(text, field_name="text", min_length=1)
+
+    def _resolve(self) -> dict[str, Any]:
+        return {"type": self.type, "value": self.value, "text": self.text}
+
+
+SlackIconName: TypeAlias = Literal[
+    "archive",
+    "book",
+    "bookmark",
+    "bot",
+    "bug",
+    "calendar",
+    "call",
+    "caret-left",
+    "caret-right",
+    "check",
+    "clipboard",
+    "code",
+    "comment",
+    "compass",
+    "copy",
+    "cube",
+    "download",
+    "edit",
+    "email",
+    "eye-closed",
+    "eye-open",
+    "file",
+    "flag",
+    "folder",
+    "gear",
+    "globe",
+    "heart",
+    "help",
+    "image",
+    "info",
+    "key",
+    "lightbulb",
+    "link",
+    "map",
+    "mobile",
+    "new-window",
+    "pin",
+    "plus",
+    "refine",
+    "refresh",
+    "rocket",
+    "save",
+    "screen",
+    "share",
+    "sparkle",
+    "star",
+    "star-filled",
+    "tag",
+    "thumbs-down",
+    "thumbs-up",
+    "trash",
+    "upload",
+    "user",
+    "warning",
+]
+
+_SLACK_ICON_NAMES = {
+    "archive",
+    "book",
+    "bookmark",
+    "bot",
+    "bug",
+    "calendar",
+    "call",
+    "caret-left",
+    "caret-right",
+    "check",
+    "clipboard",
+    "code",
+    "comment",
+    "compass",
+    "copy",
+    "cube",
+    "download",
+    "edit",
+    "email",
+    "eye-closed",
+    "eye-open",
+    "file",
+    "flag",
+    "folder",
+    "gear",
+    "globe",
+    "heart",
+    "help",
+    "image",
+    "info",
+    "key",
+    "lightbulb",
+    "link",
+    "map",
+    "mobile",
+    "new-window",
+    "pin",
+    "plus",
+    "refine",
+    "refresh",
+    "rocket",
+    "save",
+    "screen",
+    "share",
+    "sparkle",
+    "star",
+    "star-filled",
+    "tag",
+    "thumbs-down",
+    "thumbs-up",
+    "trash",
+    "upload",
+    "user",
+    "warning",
+}
+
+
+class SlackIcon:
+    """A named Slack-provided icon for a card block."""
+
+    def __init__(self, name: SlackIconName) -> None:
+        if name not in _SLACK_ICON_NAMES:
+            raise TypeMismatchError(f"Unknown Slack icon name: {name!r}.")
+        self.type = "icon"
+        self.name = name
+
+    def _resolve(self) -> dict[str, Any]:
+        return {"type": self.type, "name": self.name}
+
+
+class ChartSegment:
+    """A labelled, positive-valued slice in a pie chart."""
+
+    def __init__(self, label: str, value: int | float) -> None:
+        self.label = validate_string_nonnull(label, "label", min_length=1, max_length=20)
+        if isinstance(value, bool) or not isinstance(value, int | float):
+            raise TypeMismatchError("`value` must be a number.")
+        if value <= 0:
+            raise RangeError("`value` must be greater than 0.")
+        self.value = value
+
+    def _resolve(self) -> dict[str, Any]:
+        return {"label": self.label, "value": self.value}
+
+
+class DataPoint:
+    """One labelled numeric point in an axis-based chart."""
+
+    def __init__(self, label: str, value: int | float) -> None:
+        self.label = validate_string_nonnull(label, "label", min_length=1, max_length=20)
+        if isinstance(value, bool) or not isinstance(value, int | float):
+            raise TypeMismatchError("`value` must be a number.")
+        self.value = value
+
+    def _resolve(self) -> dict[str, Any]:
+        return {"label": self.label, "value": self.value}
+
+
+class DataSeries:
+    """A named series containing between 1 and 20 chart data points."""
+
+    def __init__(self, name: str, data: list[DataPoint]) -> None:
+        self.name = validate_string_nonnull(name, "name", min_length=1, max_length=20)
+        self.data: list[DataPoint] = coerce_to_list_nonnull(
+            data, DataPoint, min_size=1, max_size=20
+        )
+
+    def _resolve(self) -> dict[str, Any]:
+        return resolve({"name": self.name, "data": self.data})
+
+
+class AxisConfig:
+    """Category labels and optional axis titles for a bar, area, or line chart."""
+
+    def __init__(
+        self,
+        categories: list[str],
+        x_label: str | None = None,
+        y_label: str | None = None,
+    ) -> None:
+        self.categories: list[str] = coerce_to_list_nonnull(
+            categories, str, min_size=1, max_size=20
+        )
+        self.categories = [
+            validate_string_nonnull(category, "category", min_length=1, max_length=20)
+            for category in self.categories
+        ]
+        if len(set(self.categories)) != len(self.categories):
+            raise InvalidUsageError("`categories` must contain unique labels.")
+        self.x_label = validate_string(x_label, "x_label", max_length=50, allow_none=True)
+        self.y_label = validate_string(y_label, "y_label", max_length=50, allow_none=True)
+
+    def _resolve(self) -> dict[str, Any]:
+        return resolve(
+            {
+                "categories": self.categories,
+                "x_label": self.x_label,
+                "y_label": self.y_label,
+            }
+        )
+
+
+class PieChart:
+    """A pie chart containing between 1 and 12 segments."""
+
+    def __init__(self, segments: list[ChartSegment]) -> None:
+        self.type = "pie"
+        self.segments: list[ChartSegment] = coerce_to_list_nonnull(
+            segments, ChartSegment, min_size=1, max_size=12
+        )
+
+    def _resolve(self) -> dict[str, Any]:
+        return resolve({"type": self.type, "segments": self.segments})
+
+
+class _AxisChart:
+    def __init__(self, type_: str, series: list[DataSeries], axis_config: AxisConfig) -> None:
+        self.type = type_
+        self.series: list[DataSeries] = coerce_to_list_nonnull(
+            series, DataSeries, min_size=1, max_size=12
+        )
+        self.axis_config = axis_config
+        if len({item.name for item in self.series}) != len(self.series):
+            raise InvalidUsageError("Chart series names must be unique.")
+        categories = self.axis_config.categories
+        for item in self.series:
+            labels = [point.label for point in item.data]
+            if len(labels) != len(categories) or set(labels) != set(categories):
+                raise InvalidUsageError(
+                    "Every series must contain exactly one point for every axis category."
+                )
+
+    def _resolve(self) -> dict[str, Any]:
+        return resolve({"type": self.type, "series": self.series, "axis_config": self.axis_config})
+
+
+class BarChart(_AxisChart):
+    """A grouped bar chart."""
+
+    def __init__(self, series: list[DataSeries], axis_config: AxisConfig) -> None:
+        super().__init__("bar", series, axis_config)
+
+
+class AreaChart(_AxisChart):
+    """A layered area chart."""
+
+    def __init__(self, series: list[DataSeries], axis_config: AxisConfig) -> None:
+        super().__init__("area", series, axis_config)
+
+
+class LineChart(_AxisChart):
+    """A line chart."""
+
+    def __init__(self, series: list[DataSeries], axis_config: AxisConfig) -> None:
+        super().__init__("line", series, axis_config)
+
+
+Chart: TypeAlias = PieChart | BarChart | AreaChart | LineChart
 
 
 ColumnAlignment: TypeAlias = Literal["left", "center", "right"]

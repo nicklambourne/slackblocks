@@ -330,6 +330,252 @@
       "category": "type-mismatch",
       "constraint": "input.element",
       "description": "An input block must contain an input-compatible element"
+    },
+    {
+      "id": "block-id-too-long",
+      "category": "length-exceeded",
+      "constraint": "block_id.max_length",
+      "description": "A block ID longer than 255 characters must be rejected"
+    },
+    {
+      "id": "button-accessibility-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "button.accessibility_label.max_length",
+      "description": "A button accessibility label longer than 75 characters must be rejected"
+    },
+    {
+      "id": "alert-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "alert.text.max_length",
+      "description": "Alert text longer than 200 characters must be rejected"
+    },
+    {
+      "id": "card-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "card.title.max_length",
+      "description": "A card title longer than 150 characters must be rejected"
+    },
+    {
+      "id": "card-subtitle-too-long",
+      "category": "length-exceeded",
+      "constraint": "card.subtitle.max_length",
+      "description": "A card subtitle longer than 150 characters must be rejected"
+    },
+    {
+      "id": "card-body-too-long",
+      "category": "length-exceeded",
+      "constraint": "card.body.max_length",
+      "description": "A card body longer than 200 characters must be rejected"
+    },
+    {
+      "id": "card-too-many-actions",
+      "category": "length-exceeded",
+      "constraint": "card.actions.max_items",
+      "description": "A card with more than three actions must be rejected"
+    },
+    {
+      "id": "card-subtext-too-long",
+      "category": "length-exceeded",
+      "constraint": "card.subtext.max_length",
+      "description": "Card subtext longer than 200 characters must be rejected"
+    },
+    {
+      "id": "carousel-empty",
+      "category": "length-exceeded",
+      "constraint": "carousel.elements.min_items",
+      "description": "A carousel without cards must be rejected"
+    },
+    {
+      "id": "carousel-too-many-cards",
+      "category": "length-exceeded",
+      "constraint": "carousel.elements.max_items",
+      "description": "A carousel with more than ten cards must be rejected"
+    },
+    {
+      "id": "container-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "container.title.max_length",
+      "description": "A container title longer than 150 characters must be rejected"
+    },
+    {
+      "id": "container-subtitle-too-long",
+      "category": "length-exceeded",
+      "constraint": "container.subtitle.max_length",
+      "description": "A container subtitle longer than 150 characters must be rejected"
+    },
+    {
+      "id": "container-too-many-child-blocks",
+      "category": "length-exceeded",
+      "constraint": "container.child_blocks.max_items",
+      "description": "A container with more than ten child blocks must be rejected"
+    },
+    {
+      "id": "context-actions-too-many-elements",
+      "category": "length-exceeded",
+      "constraint": "context_actions.elements.max_items",
+      "description": "A context-actions block with more than five elements must be rejected"
+    },
+    {
+      "id": "feedback-button-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "feedback_button.text.max_length",
+      "description": "Feedback button text longer than 75 characters must be rejected"
+    },
+    {
+      "id": "feedback-button-value-too-long",
+      "category": "length-exceeded",
+      "constraint": "feedback_button.value.max_length",
+      "description": "A feedback button value longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "feedback-button-accessibility-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "feedback_button.accessibility_label.max_length",
+      "description": "A feedback button accessibility label longer than 75 characters must be rejected"
+    },
+    {
+      "id": "icon-button-too-many-visible-users",
+      "category": "length-exceeded",
+      "constraint": "icon_button.visible_to_user_ids.max_items",
+      "description": "An icon button visible to more than ten users must be rejected"
+    },
+    {
+      "id": "data-table-too-few-rows",
+      "category": "length-exceeded",
+      "constraint": "data_table.rows.min_items",
+      "description": "A data table with fewer than two rows must be rejected"
+    },
+    {
+      "id": "data-table-too-many-rows",
+      "category": "length-exceeded",
+      "constraint": "data_table.rows.max_items",
+      "description": "A data table with more than 201 rows must be rejected"
+    },
+    {
+      "id": "data-table-too-few-columns",
+      "category": "length-exceeded",
+      "constraint": "data_table.columns.min_items",
+      "description": "A data table with empty rows must be rejected"
+    },
+    {
+      "id": "data-table-too-many-columns",
+      "category": "length-exceeded",
+      "constraint": "data_table.columns.max_items",
+      "description": "A data table with more than 20 columns must be rejected"
+    },
+    {
+      "id": "data-table-page-size-too-small",
+      "category": "out-of-range",
+      "constraint": "data_table.page_size.min",
+      "description": "A data table page size below one must be rejected"
+    },
+    {
+      "id": "data-table-page-size-too-large",
+      "category": "out-of-range",
+      "constraint": "data_table.page_size.max",
+      "description": "A data table page size above 100 must be rejected"
+    },
+    {
+      "id": "data-table-cell-text-empty",
+      "category": "length-exceeded",
+      "constraint": "data_table.cell_text.min_length",
+      "description": "An empty raw data-table cell must be rejected"
+    },
+    {
+      "id": "data-table-content-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_table.content.max_length",
+      "description": "Data-table cell text exceeding 20000 total characters must be rejected"
+    },
+    {
+      "id": "data-visualization-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.title.max_length",
+      "description": "A data-visualization title longer than 50 characters must be rejected"
+    },
+    {
+      "id": "pie-chart-empty",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.segments.min_items",
+      "description": "A pie chart without segments must be rejected"
+    },
+    {
+      "id": "pie-chart-too-many-segments",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.segments.max_items",
+      "description": "A pie chart with more than 12 segments must be rejected"
+    },
+    {
+      "id": "chart-segment-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.segment.label.max_length",
+      "description": "A chart segment label longer than 20 characters must be rejected"
+    },
+    {
+      "id": "chart-segment-value-not-positive",
+      "category": "out-of-range",
+      "constraint": "data_visualization.segment.value.exclusive_min",
+      "description": "A non-positive pie segment value must be rejected"
+    },
+    {
+      "id": "chart-series-empty",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.series.min_items",
+      "description": "An axis-based chart without a series must be rejected"
+    },
+    {
+      "id": "chart-too-many-series",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.series.max_items",
+      "description": "An axis-based chart with more than 12 series must be rejected"
+    },
+    {
+      "id": "data-series-name-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.series_name.max_length",
+      "description": "A data-series name longer than 20 characters must be rejected"
+    },
+    {
+      "id": "data-series-empty",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.data.min_items",
+      "description": "A data series without points must be rejected"
+    },
+    {
+      "id": "data-series-too-many-points",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.data.max_items",
+      "description": "A data series with more than 20 points must be rejected"
+    },
+    {
+      "id": "data-point-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.point_label.max_length",
+      "description": "A data-point label longer than 20 characters must be rejected"
+    },
+    {
+      "id": "axis-categories-empty",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.categories.min_items",
+      "description": "An axis configuration without categories must be rejected"
+    },
+    {
+      "id": "axis-too-many-categories",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.categories.max_items",
+      "description": "An axis configuration with more than 20 categories must be rejected"
+    },
+    {
+      "id": "axis-category-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.category_label.max_length",
+      "description": "An axis category label longer than 20 characters must be rejected"
+    },
+    {
+      "id": "axis-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_visualization.axis_label.max_length",
+      "description": "An axis label longer than 50 characters must be rejected"
     }
   ]
 }
