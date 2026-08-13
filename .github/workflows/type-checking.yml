@@ -1,4 +1,5 @@
 name: Type Checking
+
 on:
   push:
     paths:
@@ -10,29 +11,33 @@ on:
       - "python/**"
       - ".github/workflows/type-checking.yml"
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   type-checking:
-    runs-on: ubuntu-latest
     name: mypy Type Checking
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: python
     steps:
-      - name: Check Out Source Repository
-        uses: actions/checkout@v5
+      - name: Check out repository
+        uses: actions/checkout@v7
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@v10.0.0
         with:
           enable-cache: true
           cache-dependency-glob: python/uv.lock
+          python-version: "3.14"
 
-      - name: Install Dependencies
-        run: uv sync
+      - name: Install dependencies
+        run: uv sync --frozen --group dev
 
-      - name: Type Checking
-        run: uv run mypy slackblocks
+      - name: Type check
+        run: uv run --frozen mypy slackblocks

@@ -38,7 +38,7 @@ jobs:
           fi
 
       - name: Run tests
-        run: uv run --frozen pytest test/unit test/conformance
+        run: uv run --frozen pytest test/unit test/conformance test/docs
 
       - name: Build sdist and wheel
         run: uv build --clear
