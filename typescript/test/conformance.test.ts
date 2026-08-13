@@ -8,29 +8,45 @@ import limits from "../../spec/limits.json" with { type: "json" };
 
 import {
   actionsBlock,
+  alertBlock,
+  areaChart,
+  axisConfig,
+  barChart,
+  cardBlock,
+  carouselBlock,
+  chartSegment,
   attachment,
   button,
   channelMultiSelect,
   channelSelect,
   checkboxes,
   confirmation,
+  containerBlock,
   contextBlock,
+  contextActionsBlock,
   conversationFilter,
   conversationMultiSelect,
   conversationSelect,
   datePicker,
   dateTimePicker,
+  dataPoint,
+  dataSeries,
+  dataTableBlock,
+  dataVisualizationBlock,
   dispatchActionConfiguration,
   dividerBlock,
   emailInput,
   externalMultiSelect,
   externalSelect,
+  feedbackButton,
+  feedbackButtons,
   fileBlock,
   fileInput,
   headerBlock,
   homeTab,
   imageElement,
   imageBlock,
+  iconButton,
   inputBlock,
   inputParameter,
   markdownBlock,
@@ -42,8 +58,12 @@ import {
   option,
   optionGroup,
   overflow,
+  pieChart,
+  planBlock,
   plainTextInput,
   radioButtons,
+  rawNumber,
+  rawText,
   richText,
   richTextBlock,
   richTextChannel,
@@ -57,21 +77,25 @@ import {
   richTextUser,
   richTextUserGroup,
   sectionBlock,
+  slackIcon,
   staticMultiSelect,
   staticSelect,
   tableBlock,
+  taskCardBlock,
   timePicker,
   trigger,
   type ErrorCategory,
   InvalidUsageError,
   plainText,
   urlInput,
+  urlSource,
   userMultiSelect,
   userSelect,
   videoBlock,
   webhookMessage,
   workflow,
   workflowButton,
+  lineChart,
 } from "../src/index.js";
 
 const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -122,20 +146,111 @@ function withoutType(input: FixtureInput): FixtureInput {
   return rest;
 }
 
+function constructCard(payload: FixtureInput): unknown {
+  const value = withoutType(payload);
+  return cardBlock({
+    ...value,
+    heroImage: value.heroImage === undefined ? undefined : imageElement(withoutType(value.heroImage)),
+    icon: value.icon === undefined ? undefined : imageElement(withoutType(value.icon)),
+    actions: value.actions?.map((action: FixtureInput) => button(withoutType(action))),
+    slackIcon:
+      value.slackIcon === undefined ? undefined : slackIcon(value.slackIcon.name),
+  });
+}
+
+function constructContextAction(payload: FixtureInput): unknown {
+  const value = withoutType(payload);
+  if (payload.type === "icon_button") return iconButton(value);
+  if (payload.type === "feedback_buttons") {
+    return feedbackButtons({
+      ...value,
+      positiveButton: feedbackButton(value.positiveButton),
+      negativeButton: feedbackButton(value.negativeButton),
+    });
+  }
+  throw new Error(`No context-action factory for ${String(payload.type)}`);
+}
+
+function constructChart(payload: FixtureInput): unknown {
+  if (payload.type === "pie") {
+    return pieChart(payload.segments.map((segment: FixtureInput) => chartSegment(segment)));
+  }
+  if (["area", "bar", "line"].includes(payload.type)) {
+    const series =
+      payload.series.map((series: FixtureInput) =>
+        dataSeries({
+          ...series,
+          data: series.data.map((point: FixtureInput) => dataPoint(point)),
+        }),
+      );
+    const axis = axisConfig(payload.axisConfig);
+    if (payload.type === "area") return areaChart(series, axis);
+    if (payload.type === "bar") return barChart(series, axis);
+    return lineChart(series, axis);
+  }
+  throw new Error(`No chart factory for ${String(payload.type)}`);
+}
+
+function constructTask(payload: FixtureInput): unknown {
+  const value = withoutType(payload);
+  return taskCardBlock({
+    ...value,
+    details: value.details === undefined ? undefined : constructBlock(value.details),
+    output: value.output === undefined ? undefined : constructBlock(value.output),
+    sources: value.sources?.map((source: FixtureInput) => urlSource(withoutType(source))),
+  });
+}
+
 function constructBlock(payload: FixtureInput): unknown {
   const value = withoutType(payload);
   switch (payload.type) {
     case "actions": return actionsBlock(value);
+    case "alert": return alertBlock(value);
+    case "card": return constructCard(payload);
+    case "carousel":
+      return carouselBlock({
+        ...value,
+        elements: value.elements.map((card: FixtureInput) => constructCard(card)),
+      });
+    case "container":
+      return containerBlock({
+        ...value,
+        childBlocks: value.childBlocks.map((block: FixtureInput) => constructBlock(block)),
+      });
     case "context": return contextBlock(value);
+    case "context_actions":
+      return contextActionsBlock({
+        ...value,
+        elements: value.elements.map((element: FixtureInput) => constructContextAction(element)),
+      });
+    case "data_table":
+      return dataTableBlock({
+        ...value,
+        rows: value.rows.map((row: FixtureInput[]) =>
+          row.map((cell) =>
+            cell.type === "raw_number"
+              ? rawNumber(cell.value, cell.text)
+              : rawText(cell.text),
+          ),
+        ),
+      });
+    case "data_visualization":
+      return dataVisualizationBlock({ ...value, chart: constructChart(value.chart) });
     case "divider": return dividerBlock(value);
     case "file": return fileBlock(value);
     case "header": return headerBlock(value);
     case "image": return imageBlock(value);
     case "input": return inputBlock(value);
     case "markdown": return markdownBlock(value);
+    case "plan":
+      return planBlock({
+        ...value,
+        tasks: value.tasks?.map((task: FixtureInput) => constructTask(task)),
+      });
     case "rich_text": return richTextBlock(value);
     case "section": return sectionBlock(value);
     case "table": return tableBlock(value);
+    case "task_card": return constructTask(payload);
     case "video": return videoBlock(value);
     default: throw new Error(`No block factory for ${String(payload.type)}`);
   }
@@ -151,8 +266,10 @@ function constructElement(input: FixtureInput): unknown {
     case "datepicker": return datePicker(value);
     case "datetimepicker": return dateTimePicker(value);
     case "email_text_input": return emailInput(value);
+    case "feedback_buttons": return feedbackButtons(value);
     case "external_select": return externalSelect(value);
     case "image": return imageElement(value);
+    case "icon_button": return iconButton(value);
     case "multi_channels_select": return channelMultiSelect(value);
     case "multi_conversations_select": return conversationMultiSelect(value);
     case "multi_external_select": return externalMultiSelect(value);
@@ -166,6 +283,7 @@ function constructElement(input: FixtureInput): unknown {
     case "static_select": return staticSelect(value);
     case "timepicker": return timePicker(value);
     case "url_text_input": return urlInput(value);
+    case "url": return urlSource(value);
     case "users_select": return userSelect(value);
     case "workflow_button": return workflowButton(value);
     default: throw new Error(`No element factory for ${String(input.type)}`);
@@ -226,13 +344,6 @@ function constructFixture(id: string, expected: FixtureInput): unknown {
 
 const manifest = readJson<Manifest>(resolve(SPEC_ROOT, "manifest.json"));
 const coverage = readJson<Coverage>(resolve(SPEC_ROOT, "coverage.json"));
-const skippedCases = new Set(
-  readFileSync(resolve(PACKAGE_ROOT, "conformance/skiplist.txt"), "utf8")
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line !== "" && !line.startsWith("#"))
-    .map((line) => line.split(/\s+/, 1)[0]!),
-);
 
 function scalarPaths(value: unknown, prefix: string[] = []): string[] {
   if (value === null || typeof value !== "object" || Array.isArray(value)) {
@@ -266,14 +377,20 @@ describe("valid conformance corpus", () => {
   });
 
   for (const fixture of manifest.fixtures) {
-    const testFixture = skippedCases.has(fixture.id) ? it.skip : it;
-    testFixture(fixture.id, () => {
+    it(fixture.id, () => {
       const expected = readJson<Record<string, unknown>>(
         resolve(SPEC_ROOT, "fixtures/valid", `${fixture.id}.json`),
       );
       expect(constructFixture(fixture.id, expected)).toEqual(expected);
     });
   }
+
+  it("has an empty TypeScript skip list", () => {
+    const entries = readFileSync(resolve(PACKAGE_ROOT, "conformance/skiplist.txt"), "utf8")
+      .split("\n")
+      .filter((line) => line !== "" && !line.startsWith("#"));
+    expect(entries).toEqual([]);
+  });
 
   it("contains no undeclared fixture files", () => {
     const ids = new Set(manifest.fixtures.map(({ id }) => id));
@@ -296,6 +413,15 @@ const video = (overrides: Record<string, unknown> = {}) =>
     videoUrl: "https://example.com/video.mp4",
     ...overrides,
   });
+const validCard = () => cardBlock({ title: "Card" });
+const validFeedbackButton = () => feedbackButton({ text: "Good", value: "good" });
+const validTableRows = () => [
+  [rawText("Name")],
+  [rawText("Alice")],
+];
+const validAxis = () => axisConfig({ categories: ["A"] });
+const validSeries = (name = "Series") =>
+  dataSeries({ name, data: [dataPoint({ label: "A", value: 1 })] });
 
 const invalidCases: Record<string, () => unknown> = {
   "text-empty": () => plainText(""),
@@ -494,6 +620,192 @@ const invalidCases: Record<string, () => unknown> = {
   "context-invalid-element": () => contextBlock({ elements: [dividerBlock()] }),
   "input-invalid-element": () =>
     inputBlock({ label: "Label", element: button({ text: "A", actionId: "a" }) }),
+  "block-id-too-long": () =>
+    dividerBlock({ blockId: "x".repeat(limits.block_id.max_length + 1) }),
+  "button-accessibility-label-too-long": () =>
+    button({
+      text: "A",
+      actionId: "a",
+      accessibilityLabel: "x".repeat(limits.button.accessibility_label.max_length + 1),
+    }),
+  "alert-text-too-long": () =>
+    alertBlock({ text: "x".repeat(limits.alert.text.max_length + 1) }),
+  "card-title-too-long": () =>
+    cardBlock({ title: "x".repeat(limits.card.title.max_length + 1) }),
+  "card-subtitle-too-long": () =>
+    cardBlock({ title: "Card", subtitle: "x".repeat(limits.card.subtitle.max_length + 1) }),
+  "card-body-too-long": () =>
+    cardBlock({ body: "x".repeat(limits.card.body.max_length + 1) }),
+  "card-too-many-actions": () =>
+    cardBlock({
+      actions: Array.from({ length: limits.card.actions.max_items + 1 }, (_, index) =>
+        button({ text: "A", actionId: `a-${index}` }),
+      ),
+    }),
+  "card-subtext-too-long": () =>
+    cardBlock({ title: "Card", subtext: "x".repeat(limits.card.subtext.max_length + 1) }),
+  "carousel-empty": () => carouselBlock({ elements: [] }),
+  "carousel-too-many-cards": () =>
+    carouselBlock({
+      elements: Array.from({ length: limits.carousel.elements.max_items + 1 }, validCard),
+    }),
+  "container-title-too-long": () =>
+    containerBlock({
+      title: "x".repeat(limits.container.title.max_length + 1),
+      childBlocks: [dividerBlock()],
+    }),
+  "container-subtitle-too-long": () =>
+    containerBlock({
+      title: "Container",
+      subtitle: "x".repeat(limits.container.subtitle.max_length + 1),
+      childBlocks: [dividerBlock()],
+    }),
+  "container-too-many-child-blocks": () =>
+    containerBlock({
+      title: "Container",
+      childBlocks: Array.from(
+        { length: limits.container.child_blocks.max_items + 1 },
+        () => dividerBlock(),
+      ),
+    }),
+  "context-actions-too-many-elements": () =>
+    contextActionsBlock({
+      elements: Array.from(
+        { length: limits.context_actions.elements.max_items + 1 },
+        (_, index) => iconButton({ text: "Delete", actionId: `delete-${index}` }),
+      ),
+    }),
+  "feedback-button-text-too-long": () =>
+    feedbackButtons({
+      positiveButton: feedbackButton({
+        text: "x".repeat(limits.feedback_button.text.max_length + 1),
+        value: "good",
+      }),
+      negativeButton: validFeedbackButton(),
+    }),
+  "feedback-button-value-too-long": () =>
+    feedbackButtons({
+      positiveButton: feedbackButton({
+        text: "Good",
+        value: "x".repeat(limits.feedback_button.value.max_length + 1),
+      }),
+      negativeButton: validFeedbackButton(),
+    }),
+  "feedback-button-accessibility-label-too-long": () =>
+    feedbackButtons({
+      positiveButton: feedbackButton({
+        text: "Good",
+        value: "good",
+        accessibilityLabel: "x".repeat(
+          limits.feedback_button.accessibility_label.max_length + 1,
+        ),
+      }),
+      negativeButton: validFeedbackButton(),
+    }),
+  "icon-button-too-many-visible-users": () =>
+    iconButton({
+      text: "Delete",
+      visibleToUserIds: Array.from(
+        { length: limits.icon_button.visible_to_user_ids.max_items + 1 },
+        (_, index) => `U${index}`,
+      ),
+    }),
+  "data-table-too-few-rows": () =>
+    dataTableBlock({ rows: [[rawText("Name")]], caption: "Names" }),
+  "data-table-too-many-rows": () =>
+    dataTableBlock({
+      rows: Array.from({ length: limits.data_table.rows.max_items + 1 }, () => [rawText("A")]),
+      caption: "Names",
+    }),
+  "data-table-too-few-columns": () =>
+    dataTableBlock({ rows: [[], []], caption: "Empty" }),
+  "data-table-too-many-columns": () =>
+    dataTableBlock({
+      rows: [0, 1].map(() =>
+        Array.from({ length: limits.data_table.columns.max_items + 1 }, () => rawText("A")),
+      ),
+      caption: "Wide",
+    }),
+  "data-table-page-size-too-small": () =>
+    dataTableBlock({
+      rows: validTableRows(),
+      caption: "Names",
+      pageSize: limits.data_table.page_size.min - 1,
+    }),
+  "data-table-page-size-too-large": () =>
+    dataTableBlock({
+      rows: validTableRows(),
+      caption: "Names",
+      pageSize: limits.data_table.page_size.max + 1,
+    }),
+  "data-table-cell-text-empty": () =>
+    dataTableBlock({ rows: [[rawText("Name")], [rawText("")]], caption: "Names" }),
+  "data-table-content-too-long": () =>
+    dataTableBlock({
+      rows: [[rawText("Name")], [rawText("x".repeat(limits.data_table.content.max_length))]],
+      caption: "Names",
+    }),
+  "data-visualization-title-too-long": () =>
+    dataVisualizationBlock({
+      title: "x".repeat(limits.data_visualization.title.max_length + 1),
+      chart: pieChart([chartSegment({ label: "A", value: 1 })]),
+    }),
+  "pie-chart-empty": () => pieChart([]),
+  "pie-chart-too-many-segments": () =>
+    pieChart(
+      Array.from({ length: limits.data_visualization.segments.max_items + 1 }, (_, index) =>
+        chartSegment({ label: `S${index}`, value: 1 }),
+      ),
+    ),
+  "chart-segment-label-too-long": () =>
+    chartSegment({
+      label: "x".repeat(limits.data_visualization.segment.label.max_length + 1),
+      value: 1,
+    }),
+  "chart-segment-value-not-positive": () => chartSegment({ label: "A", value: 0 }),
+  "chart-series-empty": () => lineChart([], validAxis()),
+  "chart-too-many-series": () =>
+    lineChart(
+      Array.from({ length: limits.data_visualization.series.max_items + 1 }, (_, index) =>
+        validSeries(`S${index}`),
+      ),
+      validAxis(),
+    ),
+  "data-series-name-too-long": () =>
+    dataSeries({
+      name: "x".repeat(limits.data_visualization.series_name.max_length + 1),
+      data: [dataPoint({ label: "A", value: 1 })],
+    }),
+  "data-series-empty": () => dataSeries({ name: "Series", data: [] }),
+  "data-series-too-many-points": () =>
+    dataSeries({
+      name: "Series",
+      data: Array.from({ length: limits.data_visualization.data.max_items + 1 }, (_, index) =>
+        dataPoint({ label: `P${index}`, value: index }),
+      ),
+    }),
+  "data-point-label-too-long": () =>
+    dataPoint({
+      label: "x".repeat(limits.data_visualization.point_label.max_length + 1),
+      value: 1,
+    }),
+  "axis-categories-empty": () => axisConfig({ categories: [] }),
+  "axis-too-many-categories": () =>
+    axisConfig({
+      categories: Array.from(
+        { length: limits.data_visualization.categories.max_items + 1 },
+        (_, index) => `C${index}`,
+      ),
+    }),
+  "axis-category-label-too-long": () =>
+    axisConfig({
+      categories: ["x".repeat(limits.data_visualization.category_label.max_length + 1)],
+    }),
+  "axis-label-too-long": () =>
+    axisConfig({
+      categories: ["A"],
+      xLabel: "x".repeat(limits.data_visualization.axis_label.max_length + 1),
+    }),
 };
 
 const invalidManifest = readJson<InvalidManifest>(
@@ -516,24 +828,12 @@ describe("invalid conformance corpus", () => {
   });
   it("has a construction for every case", () => {
     expect(Object.keys(invalidCases).sort()).toEqual(
-      invalidManifest.cases
-        .filter(({ id }) => !skippedCases.has(id))
-        .map(({ id }) => id)
-        .sort(),
+      invalidManifest.cases.map(({ id }) => id).sort(),
     );
   });
 
-  it("only skips declared valid fixtures and invalid cases", () => {
-    const declared = new Set([
-      ...manifest.fixtures.map(({ id }) => id),
-      ...invalidManifest.cases.map(({ id }) => id),
-    ]);
-    expect([...skippedCases].filter((id) => !declared.has(id))).toEqual([]);
-  });
-
   for (const invalidCase of invalidManifest.cases) {
-    const testInvalidCase = skippedCases.has(invalidCase.id) ? it.skip : it;
-    testInvalidCase(`${invalidCase.id} -> ${invalidCase.category}`, () => {
+    it(`${invalidCase.id} -> ${invalidCase.category}`, () => {
       try {
         invalidCases[invalidCase.id]?.();
         expect.fail("construction did not throw");

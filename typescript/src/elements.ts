@@ -1,5 +1,5 @@
-import { RangeError } from "./errors.js";
-import { create } from "./internal.js";
+import { LengthError, RangeError, TypeMismatchError } from "./errors.js";
+import { create, createObject } from "./internal.js";
 import { asText, type TextLike } from "./objects.js";
 import type { FactorySettings, JsonObject, SlackObject } from "./types.js";
 
@@ -49,6 +49,69 @@ export function button(
     { ...input, text: asText(input.text, "plain_text", settings) },
     settings,
   );
+}
+
+export interface FeedbackButtonInput {
+  text: TextLike;
+  value: string;
+  accessibilityLabel?: string;
+}
+
+export function feedbackButton(
+  input: FeedbackButtonInput,
+  settings: FactorySettings = {},
+): JsonObject {
+  return createObject(
+    { ...input, text: asText(input.text, "plain_text", settings) },
+    settings,
+  );
+}
+
+export function feedbackButtons(
+  input: {
+    positiveButton: JsonObject;
+    negativeButton: JsonObject;
+    actionId?: string;
+  },
+  settings: FactorySettings = {},
+): SlackObject<"feedback_buttons"> {
+  return element("feedback_buttons", input, settings);
+}
+
+export function iconButton(
+  input: {
+    text: TextLike;
+    icon?: "trash";
+    actionId?: string;
+    value?: string;
+    confirm?: JsonObject;
+    accessibilityLabel?: string;
+    visibleToUserIds?: string[];
+  },
+  settings: FactorySettings = {},
+): SlackObject<"icon_button"> {
+  if (input.icon !== undefined && input.icon !== "trash") {
+    throw new TypeMismatchError("iconButton.icon", "expected trash");
+  }
+  if (input.visibleToUserIds !== undefined && input.visibleToUserIds.length > 10) {
+    throw new LengthError("iconButton.visibleToUserIds", "exceeds maximum 10");
+  }
+  return element(
+    "icon_button",
+    {
+      ...input,
+      icon: input.icon ?? "trash",
+      text: asText(input.text, "plain_text", settings),
+    },
+    settings,
+  );
+}
+
+export function urlSource(
+  input: { url: string; text: string },
+  settings: FactorySettings = {},
+): SlackObject<"url"> {
+  return element("url", input, settings);
 }
 
 export function checkboxes(
