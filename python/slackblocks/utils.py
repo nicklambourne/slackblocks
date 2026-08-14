@@ -6,7 +6,7 @@ the input to `Messages`, `Blocks`, `Elements` and `Objects`.
 from __future__ import annotations
 
 from string import hexdigits
-from typing import Any, TypeVar
+from typing import Any, Literal, TypeVar, overload
 
 from slackblocks.errors import (
     LengthError,
@@ -101,6 +101,68 @@ def coerce_to_list(
         )
 
     return coerce_to_list_nonnull(object_or_objects, class_, min_size, max_size)
+
+
+@overload
+def validate_type(
+    value: T | None,
+    class_: Any,
+    field_name: str,
+    allow_none: Literal[False] = False,
+) -> T: ...
+
+
+@overload
+def validate_type(
+    value: T | None,
+    class_: Any,
+    field_name: str,
+    allow_none: Literal[True],
+) -> T | None: ...
+
+
+@overload
+def validate_type(
+    value: T | None,
+    class_: Any,
+    field_name: str,
+    allow_none: bool,
+) -> T | None: ...
+
+
+def validate_type(
+    value: T | None,
+    class_: Any,
+    field_name: str,
+    allow_none: bool = False,
+) -> T | None:
+    """
+    Validates that a single-valued field contains an object of the expected type
+    (or one of a tuple of expected types).
+
+    Args:
+        value: the Python object to validate.
+        class_: the Python type (or class), or tuple of types, expected for `value`.
+        field_name: the name of the field the object belongs to (for error reporting purposes).
+        allow_none: whether `None` is a valid value for the field being validated.
+
+    Returns:
+        The original value if it passes all validation checks.
+
+    Throws:
+        InvalidUsageError: if any of the validation checks fail.
+    """
+    if value is None:
+        if not allow_none:
+            raise MissingRequiredError(
+                f"Expecting {class_} for field `{field_name}`, cannot be None."
+            )
+        return None
+    if not isinstance(value, class_):
+        raise TypeMismatchError(
+            f"Type of `{field_name}` ({type(value)}) inconsistent with expected type {class_}."
+        )
+    return value
 
 
 def is_hex(string: str) -> bool:

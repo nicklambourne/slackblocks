@@ -51,6 +51,8 @@ from slackblocks import (
     TaskCardBlock,
     Text,
     TextType,
+    TimePicker,
+    TypeMismatchError,
     URLSource,
     VideoBlock,
 )
@@ -190,6 +192,16 @@ def test_input_block_invalid_label_type() -> None:
             element=Text("hello"),
             block_id="fake_block_id",
         )
+
+
+def test_input_block_accepts_time_picker() -> None:
+    time_picker = TimePicker(action_id="time_picker_action")
+    block = InputBlock(
+        label=Text("Label", type_=TextType.PLAINTEXT, emoji=True),
+        element=time_picker,
+        block_id="fake_block_id",
+    )
+    assert block.element is time_picker
 
 
 def test_basic_rich_text_block() -> None:
@@ -449,6 +461,26 @@ def test_card_block() -> None:
     assert fetch_sample(path="blocks/card_block.json") == repr(block)
 
 
+def test_card_block_hero_image_must_be_an_image_element() -> None:
+    with pytest.raises(TypeMismatchError):
+        CardBlock(hero_image="https://picsum.photos/400/300")
+
+
+def test_card_block_hero_image_rejects_image_block() -> None:
+    with pytest.raises(TypeMismatchError):
+        CardBlock(hero_image=ImageBlock(image_url="https://picsum.photos/400/300"))
+
+
+def test_card_block_icon_must_be_an_image_element() -> None:
+    with pytest.raises(TypeMismatchError):
+        CardBlock(title="Card", icon="https://picsum.photos/32/32")
+
+
+def test_card_block_slack_icon_must_be_a_slack_icon() -> None:
+    with pytest.raises(TypeMismatchError):
+        CardBlock(title="Card", slack_icon="bot")
+
+
 def test_carousel_block() -> None:
     block = CarouselBlock(
         block_id="fake_block_id",
@@ -469,6 +501,23 @@ def test_container_block() -> None:
         has_header_divider=True,
     )
     assert fetch_sample(path="blocks/container_block.json") == repr(block)
+
+
+def test_container_block_icon_must_be_an_image_element() -> None:
+    with pytest.raises(TypeMismatchError):
+        ContainerBlock(
+            title="Container",
+            child_blocks=[DividerBlock()],
+            icon="https://picsum.photos/32/32",
+        )
+
+
+def test_container_block_rich_text_title_must_be_a_rich_text_block() -> None:
+    with pytest.raises(TypeMismatchError):
+        ContainerBlock(
+            rich_text_title=Text("Container"),
+            child_blocks=[DividerBlock()],
+        )
 
 
 def test_context_actions_feedback_buttons() -> None:
@@ -623,6 +672,16 @@ def test_task_card_block() -> None:
         status="pending",
     )
     assert fetch_sample(path="blocks/task_card_block.json") == repr(block)
+
+
+def test_task_card_block_details_must_be_a_rich_text_block() -> None:
+    with pytest.raises(TypeMismatchError):
+        TaskCardBlock(task_id="task_1", title="Task", details="just text")
+
+
+def test_task_card_block_output_must_be_a_rich_text_block() -> None:
+    with pytest.raises(TypeMismatchError):
+        TaskCardBlock(task_id="task_1", title="Task", output="just text")
 
 
 def test_plan_block() -> None:

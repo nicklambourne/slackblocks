@@ -25,6 +25,7 @@ from slackblocks.utils import (
     coerce_to_list_nonnull,
     validate_string,
     validate_string_nonnull,
+    validate_type,
 )
 
 
@@ -844,12 +845,19 @@ class RawText:
         )
 
 
-class RawNumber:
-    """A numeric cell for a :class:`~slackblocks.blocks.DataTableBlock`.
+class RawNumber(RenderableMixin):
+    """
+    A numeric cell for a
+    [`DataTableBlock`](/slackblocks/latest/reference/blocks/#blocks.DataTableBlock).
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/data-table-block>.
 
     Args:
         value: the numeric value Slack uses for sorting and display.
         text: the non-empty text Slack displays in the cell.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
     """
 
     def __init__(self, value: int | float, text: str) -> None:
@@ -978,8 +986,20 @@ _SLACK_ICON_NAMES = {
 }
 
 
-class SlackIcon:
-    """A named Slack-provided icon for a card block."""
+class SlackIcon(RenderableMixin):
+    """
+    A named Slack-provided icon for a
+    [`CardBlock`](/slackblocks/latest/reference/blocks/#blocks.CardBlock).
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/card-block>.
+
+    Args:
+        name: the name of a Slack-provided icon, e.g. `bot` or `rocket`
+            (see `SlackIconName` for the full list of valid names).
+
+    Throws:
+        TypeMismatchError: if `name` is not a recognised Slack icon name.
+    """
 
     def __init__(self, name: SlackIconName) -> None:
         if name not in _SLACK_ICON_NAMES:
@@ -991,8 +1011,20 @@ class SlackIcon:
         return {"type": self.type, "name": self.name}
 
 
-class ChartSegment:
-    """A labelled, positive-valued slice in a pie chart."""
+class ChartSegment(RenderableMixin):
+    """
+    A labelled, positive-valued slice in a
+    [`PieChart`](/slackblocks/latest/reference/objects/#objects.PieChart).
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block>.
+
+    Args:
+        label: the label for the segment (max 20 chars).
+        value: the numeric value of the segment; must be greater than 0.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(self, label: str, value: int | float) -> None:
         self.label = validate_string_nonnull(label, "label", min_length=1, max_length=20)
@@ -1006,8 +1038,23 @@ class ChartSegment:
         return {"label": self.label, "value": self.value}
 
 
-class DataPoint:
-    """One labelled numeric point in an axis-based chart."""
+class DataPoint(RenderableMixin):
+    """
+    One labelled numeric point in an axis-based chart (a
+    [`BarChart`](/slackblocks/latest/reference/objects/#objects.BarChart),
+    [`AreaChart`](/slackblocks/latest/reference/objects/#objects.AreaChart), or
+    [`LineChart`](/slackblocks/latest/reference/objects/#objects.LineChart)).
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block>.
+
+    Args:
+        label: the label for the data point (max 20 chars); must match one
+            of the categories in the chart's `AxisConfig`.
+        value: the numeric value of the data point.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(self, label: str, value: int | float) -> None:
         self.label = validate_string_nonnull(label, "label", min_length=1, max_length=20)
@@ -1019,8 +1066,21 @@ class DataPoint:
         return {"label": self.label, "value": self.value}
 
 
-class DataSeries:
-    """A named series containing between 1 and 20 chart data points."""
+class DataSeries(RenderableMixin):
+    """
+    A named series containing between 1 and 20 chart data points.
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block>.
+
+    Args:
+        name: the name of the series (max 20 chars).
+        data: a list of between 1 and 20 `DataPoint` objects; there must
+            be exactly one point for every category in the chart's
+            `AxisConfig`.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(self, name: str, data: list[DataPoint]) -> None:
         self.name = validate_string_nonnull(name, "name", min_length=1, max_length=20)
@@ -1032,8 +1092,21 @@ class DataSeries:
         return resolve({"name": self.name, "data": self.data})
 
 
-class AxisConfig:
-    """Category labels and optional axis titles for a bar, area, or line chart."""
+class AxisConfig(RenderableMixin):
+    """
+    Category labels and optional axis titles for a bar, area, or line chart.
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block>.
+
+    Args:
+        categories: a list of between 1 and 20 unique category labels
+            (max 20 chars each).
+        x_label: an optional title for the x-axis (max 50 chars).
+        y_label: an optional title for the y-axis (max 50 chars).
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(
         self,
@@ -1063,8 +1136,19 @@ class AxisConfig:
         )
 
 
-class PieChart:
-    """A pie chart containing between 1 and 12 segments."""
+class PieChart(RenderableMixin):
+    """
+    A pie chart containing between 1 and 12 segments, for use in a
+    [`DataVisualizationBlock`](/slackblocks/latest/reference/blocks/#blocks.DataVisualizationBlock).
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block>.
+
+    Args:
+        segments: a list of between 1 and 12 `ChartSegment` objects.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(self, segments: list[ChartSegment]) -> None:
         self.type = "pie"
@@ -1076,13 +1160,13 @@ class PieChart:
         return resolve({"type": self.type, "segments": self.segments})
 
 
-class _AxisChart:
+class _AxisChart(RenderableMixin):
     def __init__(self, type_: str, series: list[DataSeries], axis_config: AxisConfig) -> None:
         self.type = type_
         self.series: list[DataSeries] = coerce_to_list_nonnull(
             series, DataSeries, min_size=1, max_size=12
         )
-        self.axis_config = axis_config
+        self.axis_config = validate_type(axis_config, AxisConfig, "axis_config")
         if len({item.name for item in self.series}) != len(self.series):
             raise InvalidUsageError("Chart series names must be unique.")
         categories = self.axis_config.categories
@@ -1098,21 +1182,63 @@ class _AxisChart:
 
 
 class BarChart(_AxisChart):
-    """A grouped bar chart."""
+    """
+    A grouped bar chart, for use in a
+    [`DataVisualizationBlock`](/slackblocks/latest/reference/blocks/#blocks.DataVisualizationBlock).
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block>.
+
+    Args:
+        series: a list of between 1 and 12 uniquely named `DataSeries`
+            objects.
+        axis_config: an `AxisConfig` defining the chart's category labels
+            and optional axis titles.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(self, series: list[DataSeries], axis_config: AxisConfig) -> None:
         super().__init__("bar", series, axis_config)
 
 
 class AreaChart(_AxisChart):
-    """A layered area chart."""
+    """
+    A layered area chart, for use in a
+    [`DataVisualizationBlock`](/slackblocks/latest/reference/blocks/#blocks.DataVisualizationBlock).
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block>.
+
+    Args:
+        series: a list of between 1 and 12 uniquely named `DataSeries`
+            objects.
+        axis_config: an `AxisConfig` defining the chart's category labels
+            and optional axis titles.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(self, series: list[DataSeries], axis_config: AxisConfig) -> None:
         super().__init__("area", series, axis_config)
 
 
 class LineChart(_AxisChart):
-    """A line chart."""
+    """
+    A line chart, for use in a
+    [`DataVisualizationBlock`](/slackblocks/latest/reference/blocks/#blocks.DataVisualizationBlock).
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block>.
+
+    Args:
+        series: a list of between 1 and 12 uniquely named `DataSeries`
+            objects.
+        axis_config: an `AxisConfig` defining the chart's category labels
+            and optional axis titles.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(self, series: list[DataSeries], axis_config: AxisConfig) -> None:
         super().__init__("line", series, axis_config)
