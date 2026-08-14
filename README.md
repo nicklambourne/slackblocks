@@ -4,8 +4,8 @@ Build validated Slack Block Kit payloads in Python or TypeScript from one cross-
 
 | Implementation | Package | Version |
 |---|---|---:|
-| Python | [`slackblocks` on PyPI](https://pypi.org/project/slackblocks/) | 2.0.0 |
-| TypeScript / JavaScript | `slackblocks` on npm | 2.0.0 (unpublished) |
+| Python | [`slackblocks` on PyPI](https://pypi.org/project/slackblocks/) | 2.1.0 |
+| TypeScript / JavaScript | `slackblocks` on npm | 2.1.0 (unpublished) |
 
 Both implementations are handwritten and idiomatic. The shared corpus under [`spec/`](spec/) guarantees semantically identical Slack JSON and validation categories.
 
