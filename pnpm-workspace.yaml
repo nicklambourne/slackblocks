@@ -1,0 +1,8 @@
+packages:
+  - typescript
+
+allowBuilds:
+  core-js: true
+
+# Installs are explicit and frozen in CI; package scripts must not rewrite the workspace.
+verifyDepsBeforeRun: false
