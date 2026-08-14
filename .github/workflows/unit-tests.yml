@@ -10,12 +10,6 @@ on:
       - "docs/examples/section_hello.json"
       - ".github/workflows/unit-tests.yml"
   pull_request:
-    paths:
-      - "python/**"
-      - "spec/**"
-      - "docs/examples/python/**"
-      - "docs/examples/section_hello.json"
-      - ".github/workflows/unit-tests.yml"
 
 permissions:
   contents: read
@@ -25,7 +19,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: Detect relevant changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Compare changed files against this workflow's scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ]; then
+            # Fail open: if the file list cannot be read, run the real checks.
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if grep -qE '^(python/|spec/|docs/examples/python/|docs/examples/section_hello\.json$|\.github/workflows/unit-tests\.yml$)' <<<"$files"; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
+
   unit-tests:
+    needs: changes
+    if: needs.changes.outputs.relevant == 'true'
     name: Unit Tests (${{ matrix.os }}, Python ${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
     defaults:
