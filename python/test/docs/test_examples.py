@@ -28,7 +28,7 @@ def block_sections() -> list[pytest.param]:
     text = USING_BLOCKS.read_text()
     headings = list(HEADING.finditer(text))
     sections = []
-    for heading, next_heading in zip(headings, [*headings[1:], None]):
+    for heading, next_heading in zip(headings, [*headings[1:], None], strict=True):
         title = heading.group(1)
         if title in EXCLUDED_SECTIONS:
             continue
@@ -36,9 +36,7 @@ def block_sections() -> list[pytest.param]:
         code = PYTHON_FENCE.search(body)
         expected = JSON_FENCE.search(body)
         if code and expected:
-            sections.append(
-                pytest.param(code.group(1), json.loads(expected.group(1)), id=title)
-            )
+            sections.append(pytest.param(code.group(1), json.loads(expected.group(1)), id=title))
     return sections
 
 

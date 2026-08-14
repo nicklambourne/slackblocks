@@ -26,7 +26,7 @@ function blockSections(): BlockSection[] {
   const headings = [...contents.matchAll(/^## (.+)$/gm)];
   const sections: BlockSection[] = [];
   headings.forEach((heading, index) => {
-    const title = heading[1];
+    const title = heading[1] ?? "";
     if (EXCLUDED_SECTIONS.has(title)) return;
     const body = contents.slice(
       heading.index + heading[0].length,
@@ -44,7 +44,7 @@ function blockSections(): BlockSection[] {
 function evaluateSnippet(code: string): unknown {
   const importStatement = /import\s*\{([\s\S]*?)\}\s*from\s*"@nicklambourne\/slackblocks";\s*/g;
   const names = [...code.matchAll(importStatement)].flatMap((statement) =>
-    statement[1]
+    (statement[1] ?? "")
       .split(",")
       .map((name) => name.trim())
       .filter(Boolean),
@@ -65,7 +65,7 @@ it("keeps the TypeScript docs example aligned with the JSON tab", () => {
 
 it("covers every block section in the using-blocks guide", () => {
   const titles = [...readFileSync(usingBlocksPath, "utf8").matchAll(/^## (.+)$/gm)]
-    .map((heading) => heading[1])
+    .map((heading) => heading[1] ?? "")
     .filter((title) => !EXCLUDED_SECTIONS.has(title));
   expect(blockSections().map(({ title }) => title)).toEqual(titles);
 });

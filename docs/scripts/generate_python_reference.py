@@ -247,7 +247,10 @@ def main() -> None:
         for name, value in vars(package).items()
         if not name.startswith("_")
         and not inspect.ismodule(value)
-        and getattr(value, "__module__", "").startswith("slackblocks")
+        # Typing aliases (Literal/Union) report __module__ "typing", so fall
+        # back to the declared set for names whose value carries no
+        # slackblocks module of its own.
+        and (getattr(value, "__module__", "").startswith("slackblocks") or name in declared)
     }
     if declared != runtime:
         raise RuntimeError(
