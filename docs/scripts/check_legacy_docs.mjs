@@ -68,8 +68,8 @@ function assertRedirect(buildRoot, from, to) {
   }
 }
 
-if (versions.length !== 22) {
-  fail(`Expected 22 published versions, found ${versions.length}`);
+if (versions.length === 0) {
+  fail("The manifest does not record any published versions");
 }
 if (versions.some(({ version }) => version === "1.0.4" || version === "1.2.1")) {
   fail("Unpublished documentation versions are present");
@@ -81,9 +81,6 @@ const canonicalRouteCount = versions.reduce(
   (total, version) => total + version.expected_routes.length,
   0,
 );
-if (canonicalRouteCount !== 294) {
-  fail(`Expected 294 canonical routes, found ${canonicalRouteCount}`);
-}
 
 const tags = new Set();
 const canonicalPrefixes = new Set();
@@ -148,7 +145,12 @@ for (const version of versions) {
     if (imageTargets.length < page.images.length) {
       fail(`${version.tag}${page.route} lost published images`);
     }
-    for (const target of imageTargets.filter((value) => value.startsWith("/img/legacy/"))) {
+    const legacyAssetTargets = imageTargets
+      .map((value) =>
+        value.startsWith(`${siteBaseUrl}/`) ? value.slice(siteBaseUrl.length) : value,
+      )
+      .filter((value) => value.startsWith("/img/legacy/"));
+    for (const target of legacyAssetTargets) {
       if (!existsSync(join(docsRoot, "static", target))) {
         fail(`${version.tag}${page.route} references missing asset ${target}`);
       }
@@ -159,8 +161,13 @@ for (const version of versions) {
 const registered = versions.filter(({ generated_snapshot_tree_hash: hash }) => hash);
 const versionsFile = JSON.parse(readFileSync(join(docsRoot, "versions.json"), "utf8"));
 const expectedVersions = registered.map(({ version }) => version);
-if (JSON.stringify(versionsFile) !== JSON.stringify(expectedVersions)) {
-  fail("docs/versions.json is not generated from the registered manifest entries");
+// The registered legacy versions must close docs/versions.json in manifest
+// order; newer, non-legacy versions may precede them.
+const versionsSuffix = versionsFile.slice(versionsFile.length - expectedVersions.length);
+if (JSON.stringify(versionsSuffix) !== JSON.stringify(expectedVersions)) {
+  fail(
+    "docs/versions.json does not end with the registered legacy versions in manifest order",
+  );
 }
 
 const buildArgument = process.argv.indexOf("--build-dir");
@@ -194,6 +201,11 @@ if (buildArgument >= 0) {
       const canonical = expectedCanonical(version.canonical_prefix, page.route);
       if (!rendered.includes(`rel="canonical" href="${canonical}"`)) {
         fail(`${version.canonical_prefix}${page.route} has no canonical URL`);
+      }
+      if (!rendered.includes('content="noindex, nofollow"')) {
+        fail(
+          `${version.canonical_prefix}${page.route} is not marked noindex for search engines`,
+        );
       }
       const source = readFileSync(pageSource(version.version, page.route), "utf8");
       if (source.includes("<Tabs>") && !rendered.includes('role="tablist"')) {

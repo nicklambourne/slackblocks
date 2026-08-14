@@ -38,6 +38,7 @@ const legacyVersionConfiguration = Object.fromEntries(
       {
         badge: false,
         label: version,
+        noIndex: true,
         path,
       },
     ]),
@@ -282,6 +283,9 @@ const config: Config = {
         hashed: true,
         indexDocs: true,
         docsRouteBasePath: "/",
+        // Legacy versions are noIndex for external search engines, but the
+        // in-site, version-scoped search must still cover them.
+        forceIgnoreNoIndex: true,
       },
     ],
   ],
