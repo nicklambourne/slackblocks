@@ -29,7 +29,7 @@ export default function NavbarMobileSidebarHeader(): ReactNode {
   return (
     <div className="navbar-sidebar__brand">
       <NavbarLogo />
-      <VersionSelector />
+      <VersionSelector mobile />
       <div className="navbar-sidebar__actions">
         <a
           aria-label="GitHub repository"
