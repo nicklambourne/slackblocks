@@ -15,6 +15,12 @@ updates:
     groups:
       javascript-development:
         dependency-type: development
+    ignore:
+      # TypeScript 7 (the native compiler) drops the JS compiler API that
+      # docs/scripts/check_typescript_api_docs.mjs and the typedoc toolchain
+      # depend on. Revisit when typedoc supports TypeScript 7.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
