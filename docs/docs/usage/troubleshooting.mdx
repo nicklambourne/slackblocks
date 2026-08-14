@@ -161,7 +161,7 @@ If styling is missing from a field that supports it, check that you have not wra
 Messages containing blocks should also provide a short plain-text fallback. Slack uses it for push notifications, assistive technology, and clients that cannot render Block Kit.
 
 ```ts
-import { headerBlock, message } from "slackblocks";
+import { headerBlock, message } from "@nicklambourne/slackblocks";
 
 const payload = message({
   channel: "C0123456",
@@ -177,7 +177,7 @@ const payload = message({
 You can omit it for non-interactive content. For interactive messages and views, use a stable value that your handlers understand:
 
 ```ts
-import { actionsBlock, button } from "slackblocks";
+import { actionsBlock, button } from "@nicklambourne/slackblocks";
 
 actionsBlock({
   blockId: "approval:req-123",
@@ -234,7 +234,7 @@ Slack only accepts `plain_text` in header blocks. Use `sectionBlock()` followed 
 Generate a Block Kit Builder URL and open it in your browser:
 
 ```ts
-import { blockKitBuilderUrl, message, sectionBlock } from "slackblocks";
+import { blockKitBuilderUrl, message, sectionBlock } from "@nicklambourne/slackblocks";
 
 const payload = message({
   channel: "C0123456",
@@ -252,7 +252,7 @@ You can also paste `JSON.stringify(payload, null, 2)` into Slack's [Block Kit Bu
 Factories return plain objects, so no conversion step is required:
 
 ```ts
-import { message, sectionBlock } from "slackblocks";
+import { message, sectionBlock } from "@nicklambourne/slackblocks";
 
 const payload = message({
   channel: "C0123456",

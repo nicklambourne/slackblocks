@@ -1,9 +1,19 @@
-# slackblocks for TypeScript
+# `@nicklambourne/slackblocks`
 
 Typed Block Kit construction with eager, path-aware validation and conformance with the shared cross-language slackblocks specification.
 
+```bash
+npm install @nicklambourne/slackblocks
+```
+
 ```ts
-import { button, dividerBlock, message, mrkdwn, sectionBlock } from "slackblocks";
+import {
+  button,
+  dividerBlock,
+  message,
+  mrkdwn,
+  sectionBlock,
+} from "@nicklambourne/slackblocks";
 
 const payload = message({
   channel: "C0123456",

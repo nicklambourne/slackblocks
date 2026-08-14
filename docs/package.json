@@ -27,7 +27,7 @@
     "docusaurus-plugin-typedoc": "^1.4.2",
     "prism-react-renderer": "^2.4.1",
     "raw-loader": "^4.0.2",
-    "slackblocks": "workspace:*",
+    "@nicklambourne/slackblocks": "workspace:*",
     "typedoc-plugin-markdown": "^4.12.0"
   },
   "devDependencies": {

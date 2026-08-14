@@ -1,5 +1,5 @@
 {
-  "name": "slackblocks",
+  "name": "@nicklambourne/slackblocks",
   "version": "2.1.0",
   "description": "Typed Block Kit construction with eager, path-aware validation",
   "type": "module",
@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nicklambourne/slackblocks.git",
+    "url": "git+https://github.com/nicklambourne/slackblocks.git",
     "directory": "typescript"
   },
   "publishConfig": {

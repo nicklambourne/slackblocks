@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.0] — 2026-08-14
 
-The first public TypeScript/JavaScript release of `slackblocks`, versioned in
-step with the Python package.
+The first public TypeScript/JavaScript release of
+`@nicklambourne/slackblocks`, versioned in step with the Python package.
 
 ### Added
 
