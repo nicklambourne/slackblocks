@@ -54,7 +54,9 @@ class ElementType(Enum):
     DATE_PICKER = "datepicker"
     DATETIME_PICKER = "datetimepicker"
     EMAIL_INPUT = "email_text_input"
+    FEEDBACK_BUTTONS = "feedback_buttons"
     FILE_INPUT = "file_input"
+    ICON_BUTTON = "icon_button"
     IMAGE = "image"
     MULTI_SELECT_STATIC = "multi_static_select"
     MULTI_SELECT_EXTERNAL = "multi_external_select"
@@ -72,6 +74,7 @@ class ElementType(Enum):
     CHANNELS_SELECT_MENU = "channels_select"
     TIME_PICKER = "timepicker"
     URL_INPUT = "url_text_input"
+    URL_SOURCE = "url"
     WORKFLOW_BUTTON = "workflow_button"
     RICH_TEXT_INPUT = "rich_text_input"
 
@@ -168,6 +171,120 @@ class Button(Element):
                 "accessibility_label": self.accessibility_label,
             }
         )
+
+
+class FeedbackButton(RenderableMixin):
+    """One of the positive or negative buttons in a feedback-buttons element."""
+
+    def __init__(
+        self,
+        text: TextLike,
+        value: str,
+        accessibility_label: str | None = None,
+    ) -> None:
+        self.text = Text.to_text(text, force_plaintext=True, max_length=75)
+        self.value = validate_string(value, "value", max_length=2000)
+        self.accessibility_label = validate_string(
+            accessibility_label,
+            "accessibility_label",
+            max_length=75,
+            allow_none=True,
+        )
+
+    def _resolve(self) -> dict[str, Any]:
+        return resolve(
+            {
+                "text": self.text,
+                "value": self.value,
+                "accessibility_label": self.accessibility_label,
+            }
+        )
+
+
+class FeedbackButtons(Element):
+    """A paired positive/negative feedback control for a context-actions block."""
+
+    def __init__(
+        self,
+        positive_button: FeedbackButton,
+        negative_button: FeedbackButton,
+        action_id: str | None = None,
+    ) -> None:
+        super().__init__(ElementType.FEEDBACK_BUTTONS)
+        self.positive_button = positive_button
+        self.negative_button = negative_button
+        self.action_id = validate_action_id(action_id, allow_none=True)
+
+    def _resolve(self) -> dict[str, Any]:
+        return resolve(
+            {
+                **self._attributes(),
+                "positive_button": self.positive_button,
+                "negative_button": self.negative_button,
+                "action_id": self.action_id,
+            }
+        )
+
+
+class IconButton(Element):
+    """A compact icon-only action for a context-actions block.
+
+    Slack currently supports only the ``trash`` icon.
+    """
+
+    def __init__(
+        self,
+        text: TextLike,
+        icon: Literal["trash"] = "trash",
+        action_id: str | None = None,
+        value: str | None = None,
+        confirm: ConfirmationDialogue | None = None,
+        accessibility_label: str | None = None,
+        visible_to_user_ids: list[str] | None = None,
+    ) -> None:
+        super().__init__(ElementType.ICON_BUTTON)
+        if icon != "trash":
+            raise TypeMismatchError("`icon` must be `trash`.")
+        self.icon = icon
+        self.text = Text.to_text(text, force_plaintext=True)
+        self.action_id = validate_action_id(action_id, allow_none=True)
+        self.value = validate_string(value, "value", max_length=2000, allow_none=True)
+        self.confirm = confirm
+        self.accessibility_label = validate_string(
+            accessibility_label,
+            "accessibility_label",
+            max_length=75,
+            allow_none=True,
+        )
+        self.visible_to_user_ids: list[str] | None = coerce_to_list(
+            visible_to_user_ids, str, allow_none=True, max_size=10
+        )
+
+    def _resolve(self) -> dict[str, Any]:
+        return resolve(
+            {
+                **self._attributes(),
+                "icon": self.icon,
+                "text": self.text,
+                "action_id": self.action_id,
+                "value": self.value,
+                "confirm": self.confirm,
+                "accessibility_label": self.accessibility_label,
+                "visible_to_user_ids": self.visible_to_user_ids,
+            }
+        )
+
+
+class URLSource(Element):
+    """A labelled URL source displayed by a task-card block."""
+
+    def __init__(self, url: str, text: str) -> None:
+        super().__init__(ElementType.URL_SOURCE)
+        self.url = validate_string(url, "url")
+        self.text = validate_string(text, "text")
+
+    def _resolve(self) -> dict[str, Any]:
+        return resolve({**self._attributes(), "url": self.url, "text": self.text})
 
 
 class CheckboxGroup(Element):

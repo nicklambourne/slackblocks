@@ -34,7 +34,7 @@ const payload = message({
 
 - `python/` — the established Python package.
 - `typescript/` — the ESM TypeScript package.
-- `spec/` — 82 valid fixtures, shared invalid cases, capability coverage, and limits.
+- `spec/` — 96 valid fixtures, shared invalid cases, capability coverage, and limits.
 - `docs/` — the Docusaurus documentation site.
 
 See the [documentation site](https://nicklambourne.github.io/slackblocks/) for installation and usage.

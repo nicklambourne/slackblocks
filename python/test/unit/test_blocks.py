@@ -6,27 +6,52 @@ import pytest
 
 from slackblocks import (
     ActionsBlock,
+    AlertBlock,
+    AreaChart,
+    AxisConfig,
+    BarChart,
+    Button,
+    CardBlock,
+    CarouselBlock,
+    ChartSegment,
     CheckboxGroup,
     ColumnSettings,
+    ContainerBlock,
+    ContextActionsBlock,
     ContextBlock,
+    DataPoint,
+    DataSeries,
+    DataTableBlock,
+    DataVisualizationBlock,
     DividerBlock,
+    FeedbackButton,
+    FeedbackButtons,
     FileBlock,
     HeaderBlock,
+    IconButton,
+    Image,
     ImageBlock,
     InputBlock,
     InvalidUsageError,
     LengthError,
+    LineChart,
     MarkdownBlock,
     Option,
+    PieChart,
     PlainTextInput,
+    PlanBlock,
+    RawNumber,
     RawText,
     RichText,
     RichTextBlock,
     RichTextSection,
     SectionBlock,
+    SlackIcon,
     TableBlock,
+    TaskCardBlock,
     Text,
     TextType,
+    URLSource,
     VideoBlock,
 )
 from slackblocks.rich_text import RichTextLink
@@ -396,3 +421,231 @@ def test_video_block_description_too_long_raises_length_error() -> None:
             video_url="https://example.com/v.mp4",
             description="x" * 201,
         )
+
+
+def test_alert_block() -> None:
+    block = AlertBlock(
+        "The work is mysterious and important.",
+        level="info",
+        block_id="fake_block_id",
+    )
+    assert fetch_sample(path="blocks/alert_block.json") == repr(block)
+
+
+def test_card_block() -> None:
+    block = CardBlock(
+        block_id="fake_block_id",
+        hero_image=Image(
+            image_url="https://picsum.photos/400/300",
+            alt_text="Sample hero image",
+        ),
+        title="Lumon Industries",
+        subtitle="Committed to work-life balance",
+        body="Please enjoy each card equally.",
+        actions=Button(text="Action Button", action_id="button_action"),
+        slack_icon=SlackIcon("bot"),
+        subtext="A card assembled by slackblocks.",
+    )
+    assert fetch_sample(path="blocks/card_block.json") == repr(block)
+
+
+def test_carousel_block() -> None:
+    block = CarouselBlock(
+        block_id="fake_block_id",
+        elements=[
+            CardBlock(title="First result", block_id="card_1"),
+            CardBlock(title="Second result", block_id="card_2"),
+        ],
+    )
+    assert fetch_sample(path="blocks/carousel_block.json") == repr(block)
+
+
+def test_container_block() -> None:
+    block = ContainerBlock(
+        block_id="fake_block_id",
+        title="Deployment summary",
+        subtitle="Production is healthy",
+        child_blocks=[SectionBlock("All systems operational.", block_id="child_1")],
+        has_header_divider=True,
+    )
+    assert fetch_sample(path="blocks/container_block.json") == repr(block)
+
+
+def test_context_actions_feedback_buttons() -> None:
+    block = ContextActionsBlock(
+        block_id="fake_block_id",
+        elements=[
+            FeedbackButtons(
+                action_id="feedback_buttons_1",
+                positive_button=FeedbackButton(
+                    "Good",
+                    "positive_feedback",
+                    "Mark this response as good",
+                ),
+                negative_button=FeedbackButton(
+                    "Bad",
+                    "negative_feedback",
+                    "Mark this response as bad",
+                ),
+            )
+        ],
+    )
+    assert fetch_sample(path="blocks/context_actions_feedback_buttons.json") == repr(block)
+
+
+def test_context_actions_icon_button() -> None:
+    block = ContextActionsBlock(
+        block_id="fake_block_id",
+        elements=[
+            IconButton(
+                text="Delete",
+                action_id="delete_button",
+                value="delete_item",
+            )
+        ],
+    )
+    assert fetch_sample(path="blocks/context_actions_icon_button.json") == repr(block)
+
+
+def test_data_table_block() -> None:
+    block = DataTableBlock(
+        block_id="fake_block_id",
+        rows=[
+            [RawText("Name"), RawText("Score")],
+            [RawText("Alice"), RawNumber(42, "42")],
+        ],
+        caption="Team scores",
+    )
+    assert fetch_sample(path="blocks/data_table_block.json") == repr(block)
+
+
+def test_data_visualization_pie() -> None:
+    block = DataVisualizationBlock(
+        block_id="fake_block_id",
+        title="My Favorite Candy Bars",
+        chart=PieChart(
+            [
+                ChartSegment("Kit Kat", 45),
+                ChartSegment("Twix", 28),
+                ChartSegment("Crunch", 18),
+                ChartSegment("Milky Way", 9),
+            ]
+        ),
+    )
+    assert fetch_sample(path="blocks/data_visualization_pie.json") == repr(block)
+
+
+def test_data_visualization_line() -> None:
+    axis = AxisConfig(
+        ["Week 1", "Week 2"],
+        x_label="Week",
+        y_label="Paper Sales (USD)",
+    )
+    block = DataVisualizationBlock(
+        block_id="fake_block_id",
+        title="Weekly Paper Sales",
+        chart=LineChart(
+            [
+                DataSeries(
+                    "Website",
+                    [DataPoint("Week 1", 32000), DataPoint("Week 2", 35000)],
+                ),
+                DataSeries(
+                    "In-store",
+                    [DataPoint("Week 1", 28000), DataPoint("Week 2", 31000)],
+                ),
+            ],
+            axis,
+        ),
+    )
+    assert fetch_sample(path="blocks/data_visualization_line.json") == repr(block)
+
+
+def test_data_visualization_bar() -> None:
+    block = DataVisualizationBlock(
+        block_id="fake_block_id",
+        title="Pies by Tastiness",
+        chart=BarChart(
+            [
+                DataSeries(
+                    "Pies",
+                    [DataPoint("Pumpkin", 70), DataPoint("Blueberry", 90)],
+                )
+            ],
+            AxisConfig(
+                ["Pumpkin", "Blueberry"],
+                x_label="Pies",
+                y_label="Tastiness",
+            ),
+        ),
+    )
+    assert fetch_sample(path="blocks/data_visualization_bar.json") == repr(block)
+
+
+def test_data_visualization_area() -> None:
+    block = DataVisualizationBlock(
+        block_id="fake_block_id",
+        title="Daily Active Users",
+        chart=AreaChart(
+            [
+                DataSeries(
+                    "Free Tier",
+                    [DataPoint("Mon", 12000), DataPoint("Tue", 13500)],
+                )
+            ],
+            AxisConfig(["Mon", "Tue"], x_label="Day", y_label="Users"),
+        ),
+    )
+    assert fetch_sample(path="blocks/data_visualization_area.json") == repr(block)
+
+
+def task_output(block_id: str) -> RichTextBlock:
+    return RichTextBlock(
+        RichTextSection(RichText("Profile data loaded")),
+        block_id=block_id,
+    )
+
+
+def test_task_card_block() -> None:
+    output = RichTextBlock(
+        RichTextSection(RichText("Found weather data for Chicago from 2 sources")),
+        block_id="task_output",
+    )
+    block = TaskCardBlock(
+        block_id="fake_block_id",
+        task_id="task_1",
+        title="Fetching weather data",
+        output=output,
+        sources=[
+            URLSource("https://weather.com/", "weather.com"),
+            URLSource("https://www.accuweather.com/", "accuweather.com"),
+        ],
+        status="pending",
+    )
+    assert fetch_sample(path="blocks/task_card_block.json") == repr(block)
+
+
+def test_plan_block() -> None:
+    block = PlanBlock(
+        block_id="fake_block_id",
+        title="Thinking completed",
+        tasks=[
+            TaskCardBlock(
+                task_id="call_001",
+                title="Fetched user profile information",
+                status="complete",
+                output=task_output("plan_output"),
+            ),
+            TaskCardBlock(
+                task_id="call_002",
+                title="Checked user permissions",
+                status="pending",
+            ),
+        ],
+    )
+    assert fetch_sample(path="blocks/plan_block.json") == repr(block)
+
+
+def test_url_source() -> None:
+    source = URLSource("https://docs.slack.dev/", "Slack API docs")
+    assert fetch_sample(path="elements/url_source_basic.json") == repr(source)
