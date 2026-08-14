@@ -346,6 +346,9 @@ function constructFixture(id: string, expected: FixtureInput): unknown {
 }
 
 const manifest = readJson<Manifest>(resolve(SPEC_ROOT, "manifest.json"));
+const packageJson = readJson<{ slackblocksSpecVersion: string }>(
+  resolve(dirname(fileURLToPath(import.meta.url)), "../package.json"),
+);
 const coverage = readJson<Coverage>(resolve(SPEC_ROOT, "coverage.json"));
 
 function scalarPaths(value: unknown, prefix: string[] = []): string[] {
@@ -360,6 +363,7 @@ function scalarPaths(value: unknown, prefix: string[] = []): string[] {
 describe("valid conformance corpus", () => {
   it("declares the current spec and a non-empty fixture corpus", () => {
     expect(manifest.spec_version).toBe(specVersion);
+    expect(packageJson.slackblocksSpecVersion).toBe(specVersion);
     expect(manifest.fixtures.length).toBeGreaterThan(0);
     expect(new Set(manifest.fixtures.map(({ id }) => id)).size).toBe(
       manifest.fixtures.length,

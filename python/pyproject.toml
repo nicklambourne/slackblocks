@@ -8,8 +8,6 @@ authors = [
 maintainers = [
     { name = "Nicholas Lambourne", email = "dev@ndl.im" },
 ]
-homepage = "https://github.com/nicklambourne/slackblocks"
-repository = "https://github.com/nicklambourne/slackblocks"
 license = { text = "MIT" }
 readme = "README.md"
 keywords = [
@@ -33,6 +31,14 @@ classifiers = [
     "Topic :: Communications :: Chat",
 ]
 requires-python = ">=3.10"
+
+[project.urls]
+Homepage = "https://github.com/nicklambourne/slackblocks"
+Repository = "https://github.com/nicklambourne/slackblocks"
+Documentation = "https://nicklambourne.github.io/slackblocks/"
+Changelog = "https://github.com/nicklambourne/slackblocks/blob/master/python/CHANGELOG.md"
+
+[tool.hatch.build.targets.sdist]
 exclude = ["test/**", "docs/**"]
 
 [dependency-groups]
