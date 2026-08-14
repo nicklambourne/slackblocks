@@ -65,6 +65,22 @@ function languagePath(pathname: string, language: Language): string {
   return pathname;
 }
 
+function latestLanguagePath(pathname: string, language: Language): string {
+  const legacyMatch = pathname.match(
+    /^(.*)\/v\d+\.\d+\.\d+(?=\/|$)(.*)$/,
+  );
+  const latestPathname = legacyMatch
+    ? `${legacyMatch[1]}${legacyMatch[2] || "/"}`
+    : pathname;
+  const historicalReference = latestPathname.match(
+    /^(.*\/reference)\/(?!python(?:\/|$)|typescript(?:\/|$))[^/]+(?:\/.*)?$/,
+  );
+
+  return historicalReference
+    ? `${historicalReference[1]}/${language}`
+    : languagePath(latestPathname, language);
+}
+
 export function LanguageProvider({ children }: PropsWithChildren) {
   const history = useHistory();
   const location = useLocation();
@@ -99,18 +115,17 @@ export function LanguageProvider({ children }: PropsWithChildren) {
 
   const selectLanguage = useCallback(
     (nextLanguage: Language) => {
-      if (legacyDocumentationVersion(location.pathname)) return;
       setLanguage(nextLanguage);
       window.localStorage.setItem(STORAGE_KEY, nextLanguage);
 
       const search = new URLSearchParams(location.search);
       search.set("language", nextLanguage);
-      const pathname = languagePath(location.pathname, nextLanguage);
+      const pathname = latestLanguagePath(location.pathname, nextLanguage);
 
       history.replace({
         pathname,
         search: `?${search.toString()}`,
-        hash: location.hash,
+        hash: pathname === location.pathname ? location.hash : "",
       });
     },
     [history, location.hash, location.pathname, location.search],

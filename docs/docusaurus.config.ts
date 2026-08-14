@@ -37,7 +37,7 @@ const legacyVersionConfiguration = Object.fromEntries(
       version,
       {
         badge: false,
-        label: `${version} · Python`,
+        label: version,
         path,
       },
     ]),

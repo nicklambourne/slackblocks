@@ -272,6 +272,13 @@ if (buildArgument >= 0) {
     fail("Current search results include historical documentation");
   }
 
+  const currentHome = routeFile(buildRoot, "", "/");
+  if (!currentHome) fail("Current documentation home is missing");
+  const currentHomeHtml = readFileSync(currentHome, "utf8");
+  if (currentHomeHtml.includes("· Python")) {
+    fail("Documentation version labels must not include a language suffix");
+  }
+
   const forbiddenV2Symbols = [
     "AlertBlock",
     "CardBlock",
