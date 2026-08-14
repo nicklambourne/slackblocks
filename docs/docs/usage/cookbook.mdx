@@ -1,3 +1,5 @@
+import LanguageTabs, { PythonTab, TypeScriptTab } from '@site/src/components/LanguageTabs';
+
 # Cookbook
 
 End-to-end recipes for common Slack messaging patterns. Each example produces a complete, valid `Message` (or `Modal`) you can pass directly to the Slack SDK.
@@ -7,6 +9,9 @@ The reference docs cover *what* each class does in isolation; this page is for *
 ## Build status notification
 
 A typical CI/CD success or failure notification: header, summary fields, divider, contextual footer.
+
+<LanguageTabs>
+<PythonTab>
 
 ```python
 from slackblocks import (
@@ -54,6 +59,47 @@ def build_status_message(
         ],
     )
 ```
+
+</PythonTab>
+<TypeScriptTab>
+
+```ts
+import { context, divider, header, message, mrkdwn, section } from "slackblocks";
+
+function buildStatusMessage(input: {
+  channel: string;
+  project: string;
+  branch: string;
+  commit: string;
+  author: string;
+  duration: string;
+  passed: boolean;
+}) {
+  const icon = input.passed ? ":white_check_mark:" : ":x:";
+  const status = input.passed ? "passed" : "failed";
+
+  return message({
+    channel: input.channel,
+    text: `Build ${status} for ${input.project}@${input.branch}`,
+    blocks: [
+      header({ text: `${icon} ${input.project} build ${status}` }),
+      section({
+        fields: [
+          `*Branch*\n\`${input.branch}\``,
+          `*Commit*\n\`${input.commit.slice(0, 7)}\``,
+          `*Author*\n${input.author}`,
+          `*Duration*\n${input.duration}`,
+        ],
+      }),
+      divider(),
+      context({ elements: [mrkdwn(`:calendar: Triggered by push to \`${input.branch}\``)] }),
+    ],
+  });
+}
+```
+
+</TypeScriptTab>
+</LanguageTabs>
 
 Tips:
 

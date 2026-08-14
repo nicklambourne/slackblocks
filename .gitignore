@@ -106,8 +106,10 @@ venv.bak/
 .idea
 .vscode
 
-docs/
-
-# JavaScript workspace build state
+# JavaScript / Docusaurus build state
 node_modules/
 .pnpm-store/
+/docs/.docusaurus/
+/docs/docs/reference/python/
+/docs/docs/reference/typescript/
+/docs/docs/reference/parity.mdx

@@ -1,3 +1,6 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Migrating from 1.x to 2.x
 
 `slackblocks 2.0` is a major version bump that focuses on cleaning up internal
@@ -32,23 +35,35 @@ If you are still on either:
 
 - **Stay on the `1.x` line** until you can upgrade Python. The 1.x line is
   maintained on a best-effort basis for bugfixes; see the
-  [Compatibility](compatibility.md) page.
+  [Compatibility](compatibility) page.
 - Pin via your package manager:
 
-=== "pip (`requirements.txt`)"
-    ```
-    slackblocks>=1,<2
-    ```
+<Tabs>
+<TabItem value={"pip-requirements-txt"} label={"pip (`requirements.txt`)"}>
 
-=== "poetry (`pyproject.toml`)"
-    ```toml
-    slackblocks = "^1"
-    ```
+```
+slackblocks>=1,<2
+```
 
-=== "uv (`pyproject.toml`)"
-    ```toml
-    "slackblocks>=1,<2"
-    ```
+
+</TabItem>
+<TabItem value={"poetry-pyproject-toml"} label={"poetry (`pyproject.toml`)"}>
+
+```toml
+slackblocks = "^1"
+```
+
+
+</TabItem>
+<TabItem value={"uv-pyproject-toml"} label={"uv (`pyproject.toml`)"}>
+
+```toml
+"slackblocks>=1,<2"
+```
+
+
+</TabItem>
+</Tabs>
 
 That's it for breaking changes. Nothing else in the public API was removed
 or renamed.
