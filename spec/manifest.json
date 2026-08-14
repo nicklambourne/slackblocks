@@ -158,9 +158,27 @@
       "since": "1.0.0"
     },
     {
+      "id": "elements/file_input_basic",
+      "description": "File Input Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/file-input-element/",
+      "since": "1.0.0"
+    },
+    {
       "id": "elements/image_basic",
       "description": "Image Basic",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/image_slack_file_id",
+      "description": "Image With Slack File ID",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/slack-file-object/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/image_slack_file_url",
+      "description": "Image With Slack File URL",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/slack-file-object/",
       "since": "1.0.0"
     },
     {

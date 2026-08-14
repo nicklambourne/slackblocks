@@ -26,6 +26,7 @@ from slackblocks.elements import (
     EmailInput,
     ExternalMultiSelectMenu,
     ExternalSelectMenu,
+    FileInput,
     NumberInput,
     PlainTextInput,
     RadioButtonGroup,
@@ -85,6 +86,7 @@ ALLOWED_INPUT_ELEMENTS = (
     RichTextInput,
     EmailInput,
     URLInput,
+    FileInput,
 )
 
 

@@ -15,6 +15,7 @@ from slackblocks.elements import (
     EmailInput,
     ExternalMultiSelectMenu,
     ExternalSelectMenu,
+    FileInput,
     Image,
     NumberInput,
     OverflowMenu,
@@ -152,9 +153,43 @@ def test_email_input_basic() -> None:
     assert fetch_sample(path="elements/email_input_basic.json") == repr(email_input)
 
 
+def test_file_input_basic() -> None:
+    file_input = FileInput(
+        action_id="file_input_action_id_1",
+        filetypes=["jpg", "png"],
+        max_files=5,
+    )
+    assert fetch_sample(path="elements/file_input_basic.json") == repr(file_input)
+
+
+def test_file_input_is_valid_inside_input_block() -> None:
+    from slackblocks import InputBlock
+
+    block = InputBlock(label="Upload files", element=FileInput(action_id="file_input"))
+    assert block._resolve()["element"]["type"] == "file_input"
+
+
 def test_image_basic() -> None:
     image = Image(image_url="https://ndl.im/img/logo.png", alt_text="Logo for ndl.im")
     assert fetch_sample(path="elements/image_basic.json") == repr(image)
+
+
+@pytest.mark.parametrize(
+    ("fixture_id", "slack_file"),
+    [
+        ("elements/image_slack_file_id.json", SlackFile(url=None, id="F0123456")),
+        (
+            "elements/image_slack_file_url.json",
+            SlackFile(
+                url="https://files.slack.com/files-pri/T0123456-F0123456/xyz.png",
+                id=None,
+            ),
+        ),
+    ],
+)
+def test_image_with_slack_file_fixture(fixture_id: str, slack_file: SlackFile) -> None:
+    image = Image(alt_text="An incredibly cute kitten.", slack_file=slack_file)
+    assert fetch_sample(path=fixture_id) == repr(image)
 
 
 def test_image_with_slack_file_resolves() -> None:

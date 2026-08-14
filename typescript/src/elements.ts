@@ -1,5 +1,5 @@
 import { RangeError } from "./errors.js";
-import { create, createObject } from "./internal.js";
+import { create } from "./internal.js";
 import { asText, type TextLike } from "./objects.js";
 import type { FactorySettings, JsonObject, SlackObject } from "./types.js";
 
@@ -82,12 +82,11 @@ export function emailInput(
 export function fileInput(
   input: { actionId: string; filetypes?: string[]; maxFiles?: number },
   settings: FactorySettings = {},
-): JsonObject {
+): SlackObject<"file_input"> {
   if (input.maxFiles !== undefined && (input.maxFiles < 1 || input.maxFiles > 10)) {
     throw new RangeError("fileInput.maxFiles", "expected a value between 1 and 10");
   }
-  // Python 2.0 fixtures preserve this historical no-type wire shape.
-  return createObject(input, settings);
+  return create("file_input", input, settings);
 }
 
 export function imageElement(
