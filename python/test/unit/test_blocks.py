@@ -36,7 +36,7 @@ from .utils import fetch_sample
 
 def test_basic_section_block() -> None:
     block = SectionBlock("Hello, world!", block_id="fake_block_id")
-    assert fetch_sample(path="test/samples/blocks/section_block_text_only.json") == repr(block)
+    assert fetch_sample(path="blocks/section_block_text_only.json") == repr(block)
 
 
 def test_basic_section_fields() -> None:
@@ -45,7 +45,7 @@ def test_basic_section_fields() -> None:
         fields=[Text(text="foo", type_=TextType.PLAINTEXT), Text(text="bar")],
         block_id="fake_block_id",
     )
-    assert fetch_sample(path="test/samples/blocks/section_block_fields.json") == repr(block)
+    assert fetch_sample(path="blocks/section_block_fields.json") == repr(block)
 
 
 def test_section_empty_text_field_value() -> None:
@@ -56,9 +56,7 @@ def test_section_empty_text_field_value() -> None:
             Text("Strung", type_=TextType.PLAINTEXT, emoji=True),
         ],
     )
-    assert fetch_sample(
-        path="test/samples/blocks/section_block_empty_text_field_value.json"
-    ) == repr(block)
+    assert fetch_sample(path="blocks/section_block_empty_text_field_value.json") == repr(block)
 
 
 def test_section_neither_fields_nor_text() -> None:
@@ -85,9 +83,7 @@ def test_section_single_field_value_coercion() -> None:
         block_id="fake_block_id",
         fields="Lowly",
     )
-    assert fetch_sample(
-        path="test/samples/blocks/section_block_single_field_value_coercion.json"
-    ) == repr(block)
+    assert fetch_sample(path="blocks/section_block_single_field_value_coercion.json") == repr(block)
 
 
 def test_section_both_text_and_fields() -> None:
@@ -99,19 +95,17 @@ def test_section_both_text_and_fields() -> None:
             Text("There?", type_=TextType.PLAINTEXT, emoji=True),
         ],
     )
-    assert fetch_sample(path="test/samples/blocks/section_block_both_text_and_fields.json") == repr(
-        block
-    )
+    assert fetch_sample(path="blocks/section_block_both_text_and_fields.json") == repr(block)
 
 
 def test_basic_context_block() -> None:
     block = ContextBlock(elements=[Text("Hello, world!")], block_id="fake_block_id")
-    assert fetch_sample(path="test/samples/blocks/context_block_text_only.json") == repr(block)
+    assert fetch_sample(path="blocks/context_block_text_only.json") == repr(block)
 
 
 def test_basic_divider_block() -> None:
     block = DividerBlock(block_id="fake_block_id")
-    assert fetch_sample(path="test/samples/blocks/divider_block_only.json") == repr(block)
+    assert fetch_sample(path="blocks/divider_block_only.json") == repr(block)
 
 
 def test_basic_image_block() -> None:
@@ -121,12 +115,12 @@ def test_basic_image_block() -> None:
         title="image1",
         block_id="fake_block_id",
     )
-    assert fetch_sample(path="test/samples/blocks/image_block_only.json") == repr(block)
+    assert fetch_sample(path="blocks/image_block_only.json") == repr(block)
 
 
 def test_basic_header_block() -> None:
     block = HeaderBlock(text="AloHa!", block_id="fake_block_id")
-    assert fetch_sample(path="test/samples/blocks/header_block_only.json") == repr(block)
+    assert fetch_sample(path="blocks/header_block_only.json") == repr(block)
 
 
 def test_checkbox_action_block() -> None:
@@ -139,7 +133,7 @@ def test_checkbox_action_block() -> None:
         block_id="fake_block_id",
         elements=CheckboxGroup(action_id="actionId-0", options=options),
     )
-    assert fetch_sample(path="test/samples/blocks/actions_block_checkboxes.json") == repr(block)
+    assert fetch_sample(path="blocks/actions_block_checkboxes.json") == repr(block)
 
 
 def test_basic_input_block() -> None:
@@ -150,7 +144,7 @@ def test_basic_input_block() -> None:
         block_id="fake_block_id",
         optional=True,
     )
-    assert fetch_sample(path="test/samples/blocks/input_block_only.json") == repr(block)
+    assert fetch_sample(path="blocks/input_block_only.json") == repr(block)
 
 
 def test_input_block_invalid_element() -> None:
@@ -174,7 +168,7 @@ def test_input_block_invalid_label_type() -> None:
 
 
 def test_basic_rich_text_block() -> None:
-    assert fetch_sample(path="test/samples/blocks/rich_text_block_basic.json") == repr(
+    assert fetch_sample(path="blocks/rich_text_block_basic.json") == repr(
         RichTextBlock(
             RichTextSection(
                 [
@@ -229,7 +223,7 @@ def test_basic_table_block() -> None:
         ],
     )
     # Add block_id to the sample as it is auto-generated
-    sample = json.loads(fetch_sample(path="test/samples/blocks/table_block.json"))
+    sample = json.loads(fetch_sample(path="blocks/table_block.json"))
     sample["block_id"] = block.block_id
     assert sample == json.loads(repr(block))
 
@@ -243,7 +237,7 @@ def test_basic_file_block() -> None:
         external_id="external_id",
         block_id="fake_block_id",
     )
-    sample = json.loads(fetch_sample(path="test/samples/blocks/file_block_only.json"))
+    sample = json.loads(fetch_sample(path="blocks/file_block_only.json"))
     assert sample == json.loads(repr(block))
 
 
@@ -262,7 +256,7 @@ def test_file_block_block_id_is_optional() -> None:
 def test_markdown_block_basic() -> None:
     """``MarkdownBlock`` renders Slack's documented ``markdown`` block JSON."""
     block = MarkdownBlock(text="**Hello**, _world_!", block_id="fake_block_id")
-    sample = json.loads(fetch_sample(path="test/samples/blocks/markdown_block_basic.json"))
+    sample = json.loads(fetch_sample(path="blocks/markdown_block_basic.json"))
     assert sample == json.loads(repr(block))
 
 
@@ -302,7 +296,7 @@ def test_video_block_basic() -> None:
         video_url="https://example.com/v.mp4",
         block_id="b1",
     )
-    sample = json.loads(fetch_sample(path="test/samples/blocks/video_block_basic.json"))
+    sample = json.loads(fetch_sample(path="blocks/video_block_basic.json"))
     assert sample == json.loads(repr(block))
 
 
@@ -320,7 +314,7 @@ def test_video_block_full() -> None:
         title_url="https://example.com",
         block_id="video_1",
     )
-    sample = json.loads(fetch_sample(path="test/samples/blocks/video_block_full.json"))
+    sample = json.loads(fetch_sample(path="blocks/video_block_full.json"))
     assert sample == json.loads(repr(block))
 
 

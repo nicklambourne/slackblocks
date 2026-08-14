@@ -1,0 +1,113 @@
+{
+  "spec_version": "1.0.0",
+  "cases": [
+    {
+      "id": "text-empty",
+      "category": "length-exceeded",
+      "constraint": "text.min_length",
+      "description": "A text object with an empty value must be rejected"
+    },
+    {
+      "id": "text-too-long",
+      "category": "length-exceeded",
+      "constraint": "text.max_length",
+      "description": "A text object longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "section-missing-content",
+      "category": "missing-required",
+      "constraint": "section.content",
+      "description": "A section with neither text nor fields must be rejected"
+    },
+    {
+      "id": "section-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "section.text.max_length",
+      "description": "Section text longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "section-too-many-fields",
+      "category": "length-exceeded",
+      "constraint": "section.fields.max_items",
+      "description": "A section with more than 10 fields must be rejected"
+    },
+    {
+      "id": "section-field-too-long",
+      "category": "length-exceeded",
+      "constraint": "section.fields.item_max_length",
+      "description": "A section field longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "header-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "header.text.max_length",
+      "description": "Header text longer than 150 characters must be rejected"
+    },
+    {
+      "id": "button-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "button.text.max_length",
+      "description": "Button text longer than 75 characters must be rejected"
+    },
+    {
+      "id": "button-action-id-too-long",
+      "category": "length-exceeded",
+      "constraint": "action_id.max_length",
+      "description": "An action ID longer than 255 characters must be rejected"
+    },
+    {
+      "id": "option-value-too-long",
+      "category": "length-exceeded",
+      "constraint": "option.value.max_length",
+      "description": "An option value longer than 75 characters must be rejected"
+    },
+    {
+      "id": "overflow-too-many-options",
+      "category": "length-exceeded",
+      "constraint": "overflow.options.max_items",
+      "description": "An overflow menu with more than five options must be rejected"
+    },
+    {
+      "id": "static-select-options-and-groups",
+      "category": "mutually-exclusive",
+      "constraint": "static_select.choice_source",
+      "description": "A static select cannot define options and option groups together"
+    },
+    {
+      "id": "image-url-and-slack-file",
+      "category": "mutually-exclusive",
+      "constraint": "image.source",
+      "description": "An image element cannot define an image URL and Slack file together"
+    },
+    {
+      "id": "number-input-inverted-range",
+      "category": "out-of-range",
+      "constraint": "number_input.range",
+      "description": "A number input minimum cannot exceed its maximum"
+    },
+    {
+      "id": "file-input-max-files-out-of-range",
+      "category": "out-of-range",
+      "constraint": "file_input.max_files",
+      "description": "File input max files must be between 1 and 10"
+    },
+    {
+      "id": "context-invalid-element",
+      "category": "type-mismatch",
+      "constraint": "context.elements",
+      "description": "A context block may contain only text and image elements"
+    },
+    {
+      "id": "input-invalid-element",
+      "category": "type-mismatch",
+      "constraint": "input.element",
+      "description": "An input block must contain an input-compatible element"
+    },
+    {
+      "id": "view-missing-blocks",
+      "category": "length-exceeded",
+      "constraint": "view.blocks.min_items",
+      "description": "A view must contain at least one block"
+    }
+  ]
+}
