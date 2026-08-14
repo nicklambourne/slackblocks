@@ -991,3 +991,681 @@ videoBlock({
 </Tabs>
 
 See the [Slack reference](https://api.slack.com/reference/block-kit/blocks#video) for the full list of optional fields and provider requirements.
+
+## Alert Block
+
+Alerts add a severity-labelled notice to a modal.
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+<LanguageContent>
+<Python>
+
+```python
+from slackblocks import AlertBlock
+
+AlertBlock(
+    "The deployment needs attention.",
+    level="warning",
+    block_id="fake_block_id",
+)
+```
+
+</Python>
+<TypeScript>
+
+```ts
+import { alertBlock } from "slackblocks";
+
+alertBlock({
+  text: "The deployment needs attention.",
+  level: "warning",
+  blockId: "fake_block_id",
+});
+```
+
+</TypeScript>
+</LanguageContent>
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+  "type": "alert",
+  "block_id": "fake_block_id",
+  "text": {
+    "type": "mrkdwn",
+    "text": "The deployment needs attention."
+  },
+  "level": "warning"
+}
+```
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of an Alert Block](/img/usage/alert.png)
+
+</TabItem>
+</Tabs>
+
+## Card Block
+
+Cards combine text, images, Slack-provided icons, and up to three buttons in a compact panel.
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+<LanguageContent>
+<Python>
+
+```python
+from slackblocks import Button, CardBlock, SlackIcon
+
+CardBlock(
+    title="Build complete",
+    body="Version 2.0.0 is ready to deploy.",
+    slack_icon=SlackIcon("rocket"),
+    actions=Button("Open build", "open_build"),
+    block_id="fake_block_id",
+)
+```
+
+</Python>
+<TypeScript>
+
+```ts
+import { button, cardBlock, slackIcon } from "slackblocks";
+
+cardBlock({
+  title: "Build complete",
+  body: "Version 2.0.0 is ready to deploy.",
+  slackIcon: slackIcon("rocket"),
+  actions: [button({ text: "Open build", actionId: "open_build" })],
+  blockId: "fake_block_id",
+});
+```
+
+</TypeScript>
+</LanguageContent>
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+  "type": "card",
+  "block_id": "fake_block_id",
+  "title": {
+    "type": "mrkdwn",
+    "text": "Build complete"
+  },
+  "body": {
+    "type": "mrkdwn",
+    "text": "Version 2.0.0 is ready to deploy."
+  },
+  "actions": [
+    {
+      "type": "button",
+      "text": {
+        "type": "plain_text",
+        "text": "Open build"
+      },
+      "action_id": "open_build"
+    }
+  ],
+  "slack_icon": {
+    "type": "icon",
+    "name": "rocket"
+  }
+}
+```
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Card Block](/img/usage/card.png)
+
+</TabItem>
+</Tabs>
+
+## Carousel Block
+
+A carousel presents between one and ten cards in a horizontally scrolling collection.
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+<LanguageContent>
+<Python>
+
+```python
+from slackblocks import CardBlock, CarouselBlock
+
+CarouselBlock([
+    CardBlock(title="First result", block_id="card_1"),
+    CardBlock(title="Second result", block_id="card_2"),
+], block_id="fake_block_id")
+```
+
+</Python>
+<TypeScript>
+
+```ts
+import { cardBlock, carouselBlock } from "slackblocks";
+
+carouselBlock({
+  elements: [
+    cardBlock({ title: "First result", blockId: "card_1" }),
+    cardBlock({ title: "Second result", blockId: "card_2" }),
+  ],
+  blockId: "fake_block_id",
+});
+```
+
+</TypeScript>
+</LanguageContent>
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+  "type": "carousel",
+  "block_id": "fake_block_id",
+  "elements": [
+    {
+      "type": "card",
+      "block_id": "card_1",
+      "title": {
+        "type": "mrkdwn",
+        "text": "First result"
+      }
+    },
+    {
+      "type": "card",
+      "block_id": "card_2",
+      "title": {
+        "type": "mrkdwn",
+        "text": "Second result"
+      }
+    }
+  ]
+}
+```
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Carousel Block](/img/usage/carousel.png)
+
+</TabItem>
+</Tabs>
+
+## Container Block
+
+Containers group up to ten related child blocks under a plain-text or rich-text title.
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+<LanguageContent>
+<Python>
+
+```python
+from slackblocks import ContainerBlock, SectionBlock
+
+ContainerBlock(
+    title="Deployment summary",
+    child_blocks=[
+        SectionBlock("All systems operational.", block_id="child_1"),
+    ],
+    has_header_divider=True,
+    block_id="fake_block_id",
+)
+```
+
+</Python>
+<TypeScript>
+
+```ts
+import { containerBlock, sectionBlock } from "slackblocks";
+
+containerBlock({
+  title: "Deployment summary",
+  childBlocks: [
+    sectionBlock({
+      text: "All systems operational.",
+      blockId: "child_1",
+    }),
+  ],
+  width: "standard",
+  isCollapsible: false,
+  defaultCollapsed: false,
+  hasHeaderDivider: true,
+  blockId: "fake_block_id",
+});
+```
+
+</TypeScript>
+</LanguageContent>
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+  "type": "container",
+  "block_id": "fake_block_id",
+  "title": {
+    "type": "plain_text",
+    "text": "Deployment summary"
+  },
+  "child_blocks": [
+    {
+      "type": "section",
+      "block_id": "child_1",
+      "text": {
+        "type": "mrkdwn",
+        "text": "All systems operational."
+      }
+    }
+  ],
+  "width": "standard",
+  "is_collapsible": false,
+  "default_collapsed": false,
+  "has_header_divider": true
+}
+```
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Container Block](/img/usage/container.png)
+
+</TabItem>
+</Tabs>
+
+## Context Actions Block
+
+Context actions hold feedback controls or compact icon buttons. Slack currently offers the `trash` icon for icon buttons.
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+<LanguageContent>
+<Python>
+
+```python
+from slackblocks import ContextActionsBlock, FeedbackButton, FeedbackButtons
+
+ContextActionsBlock([
+    FeedbackButtons(
+        positive_button=FeedbackButton("Good", "positive"),
+        negative_button=FeedbackButton("Bad", "negative"),
+        action_id="response_feedback",
+    )
+], block_id="fake_block_id")
+```
+
+</Python>
+<TypeScript>
+
+```ts
+import { contextActionsBlock, feedbackButton, feedbackButtons } from "slackblocks";
+
+contextActionsBlock({
+  elements: [
+    feedbackButtons({
+      actionId: "response_feedback",
+      positiveButton: feedbackButton({ text: "Good", value: "positive" }),
+      negativeButton: feedbackButton({ text: "Bad", value: "negative" }),
+    }),
+  ],
+  blockId: "fake_block_id",
+});
+```
+
+</TypeScript>
+</LanguageContent>
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+  "type": "context_actions",
+  "block_id": "fake_block_id",
+  "elements": [
+    {
+      "type": "feedback_buttons",
+      "positive_button": {
+        "text": {
+          "type": "plain_text",
+          "text": "Good"
+        },
+        "value": "positive"
+      },
+      "negative_button": {
+        "text": {
+          "type": "plain_text",
+          "text": "Bad"
+        },
+        "value": "negative"
+      },
+      "action_id": "response_feedback"
+    }
+  ]
+}
+```
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Context Actions Block](/img/usage/context_actions.png)
+
+</TabItem>
+</Tabs>
+
+## Data Table Block
+
+Data tables support raw text, sortable raw numbers, and rich-text body cells. They require a header plus at least one data row.
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+<LanguageContent>
+<Python>
+
+```python
+from slackblocks import DataTableBlock, RawNumber, RawText
+
+DataTableBlock(
+    caption="Team scores",
+    rows=[
+        [RawText("Name"), RawText("Score")],
+        [RawText("Alice"), RawNumber(42, "42")],
+    ],
+    block_id="fake_block_id",
+)
+```
+
+</Python>
+<TypeScript>
+
+```ts
+import { dataTableBlock, rawNumber, rawText } from "slackblocks";
+
+dataTableBlock({
+  caption: "Team scores",
+  rows: [
+    [rawText("Name"), rawText("Score")],
+    [rawText("Alice"), rawNumber(42, "42")],
+  ],
+  blockId: "fake_block_id",
+});
+```
+
+</TypeScript>
+</LanguageContent>
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+  "type": "data_table",
+  "block_id": "fake_block_id",
+  "rows": [
+    [
+      {
+        "type": "raw_text",
+        "text": "Name"
+      },
+      {
+        "type": "raw_text",
+        "text": "Score"
+      }
+    ],
+    [
+      {
+        "type": "raw_text",
+        "text": "Alice"
+      },
+      {
+        "type": "raw_number",
+        "value": 42,
+        "text": "42"
+      }
+    ]
+  ],
+  "page_size": 5,
+  "caption": "Team scores",
+  "row_header_column_index": 0
+}
+```
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Data Table Block](/img/usage/data_table.png)
+
+</TabItem>
+</Tabs>
+
+## Data Visualization Block
+
+Slack can render pie charts or axis-based bar, area, and line charts directly from Block Kit data.
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+<LanguageContent>
+<Python>
+
+```python
+from slackblocks import ChartSegment, DataVisualizationBlock, PieChart
+
+DataVisualizationBlock(
+    title="Incidents by severity",
+    chart=PieChart([
+        ChartSegment("High", 3),
+        ChartSegment("Low", 12),
+    ]),
+    block_id="fake_block_id",
+)
+```
+
+</Python>
+<TypeScript>
+
+```ts
+import { chartSegment, dataVisualizationBlock, pieChart } from "slackblocks";
+
+dataVisualizationBlock({
+  title: "Incidents by severity",
+  chart: pieChart([
+    chartSegment({ label: "High", value: 3 }),
+    chartSegment({ label: "Low", value: 12 }),
+  ]),
+  blockId: "fake_block_id",
+});
+```
+
+</TypeScript>
+</LanguageContent>
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+  "type": "data_visualization",
+  "block_id": "fake_block_id",
+  "title": "Incidents by severity",
+  "chart": {
+    "type": "pie",
+    "segments": [
+      {
+        "label": "High",
+        "value": 3
+      },
+      {
+        "label": "Low",
+        "value": 12
+      }
+    ]
+  }
+}
+```
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Data Visualization Block](/img/usage/data_visualization.png)
+
+</TabItem>
+</Tabs>
+
+## Task Card Block
+
+Task cards show a task's state, optional rich-text details or output, and the URL sources used to produce it.
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+<LanguageContent>
+<Python>
+
+```python
+from slackblocks import TaskCardBlock, URLSource
+
+TaskCardBlock(
+    task_id="weather_1",
+    title="Fetch weather data",
+    status="complete",
+    sources=[URLSource("https://weather.com/", "weather.com")],
+    block_id="fake_block_id",
+)
+```
+
+</Python>
+<TypeScript>
+
+```ts
+import { taskCardBlock, urlSource } from "slackblocks";
+
+taskCardBlock({
+  taskId: "weather_1",
+  title: "Fetch weather data",
+  status: "complete",
+  sources: [urlSource({ url: "https://weather.com/", text: "weather.com" })],
+  blockId: "fake_block_id",
+});
+```
+
+</TypeScript>
+</LanguageContent>
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+  "type": "task_card",
+  "block_id": "fake_block_id",
+  "task_id": "weather_1",
+  "title": "Fetch weather data",
+  "sources": [
+    {
+      "type": "url",
+      "url": "https://weather.com/",
+      "text": "weather.com"
+    }
+  ],
+  "status": "complete"
+}
+```
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Task Card Block](/img/usage/task_card.png)
+
+</TabItem>
+</Tabs>
+
+## Plan Block
+
+A plan groups task cards. `slackblocks` automatically renders nested tasks in Slack's plan-specific wire format.
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+<LanguageContent>
+<Python>
+
+```python
+from slackblocks import PlanBlock, TaskCardBlock
+
+PlanBlock(
+    title="Release plan",
+    tasks=[
+        TaskCardBlock("test", "Run the test suite", status="complete"),
+        TaskCardBlock("deploy", "Deploy the release", status="pending"),
+    ],
+    block_id="fake_block_id",
+)
+```
+
+</Python>
+<TypeScript>
+
+```ts
+import { planBlock, taskCardBlock } from "slackblocks";
+
+planBlock({
+  title: "Release plan",
+  tasks: [
+    taskCardBlock({ taskId: "test", title: "Run the test suite", status: "complete" }),
+    taskCardBlock({ taskId: "deploy", title: "Deploy the release", status: "pending" }),
+  ],
+  blockId: "fake_block_id",
+});
+```
+
+</TypeScript>
+</LanguageContent>
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+  "type": "plan",
+  "block_id": "fake_block_id",
+  "title": "Release plan",
+  "tasks": [
+    {
+      "task_id": "test",
+      "title": "Run the test suite",
+      "status": "complete"
+    },
+    {
+      "task_id": "deploy",
+      "title": "Deploy the release",
+      "status": "pending"
+    }
+  ]
+}
+```
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Plan Block](/img/usage/plan.png)
+
+</TabItem>
+</Tabs>
