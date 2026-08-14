@@ -1,0 +1,817 @@
+{
+  "version": "1.0.11",
+  "canonical_prefix": "v1.0.11",
+  "gh_pages_commit": "747ca39861503fbece849e375c9843641f87684c",
+  "pages": [
+    {
+      "route": "/",
+      "published_title": "slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "welcome-to-slackblocks",
+          "text": "Welcome to slackblocks!"
+        },
+        {
+          "level": 2,
+          "id": "components",
+          "text": "Components"
+        },
+        {
+          "level": 3,
+          "id": "objects",
+          "text": "Objects"
+        },
+        {
+          "level": 3,
+          "id": "elements",
+          "text": "Elements"
+        },
+        {
+          "level": 3,
+          "id": "blocks",
+          "text": "Blocks"
+        },
+        {
+          "level": 3,
+          "id": "messages",
+          "text": "Messages"
+        },
+        {
+          "level": 3,
+          "id": "views",
+          "text": "Views"
+        },
+        {
+          "level": 2,
+          "id": "guides",
+          "text": "Guides"
+        }
+      ],
+      "api_anchors": [],
+      "code_block_count": 0,
+      "images": [
+        "./img/sb.png"
+      ],
+      "internal_links": [
+        "/elements/#elements.CheckboxGroup",
+        "/latest/reference/blocks",
+        "/latest/reference/blocks/#blocks.DividerBlock",
+        "/latest/reference/blocks/#blocks.RichTextBlock",
+        "/latest/reference/elements",
+        "/latest/reference/messages/",
+        "/latest/reference/objects",
+        "/latest/reference/objects/#objects.Option",
+        "/latest/reference/objects/#objects.Text",
+        "reference/views/",
+        "usage/installation/",
+        "usage/sending_messages/",
+        "usage/using_blocks/"
+      ]
+    },
+    {
+      "route": "/reference/attachments",
+      "published_title": "Attachments - slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "attachments",
+          "text": "Attachments"
+        },
+        {
+          "level": 3,
+          "id": "attachments.Attachment",
+          "text": "Attachment"
+        },
+        {
+          "level": 3,
+          "id": "attachments.Color",
+          "text": "Color"
+        },
+        {
+          "level": 3,
+          "id": "attachments.Field",
+          "text": "Field"
+        }
+      ],
+      "api_anchors": [
+        "attachments",
+        "attachments.Attachment",
+        "attachments.Color",
+        "attachments.Field"
+      ],
+      "code_block_count": 3,
+      "images": [],
+      "internal_links": [
+        "/latest/reference/attachments/#attachments.Attachment"
+      ]
+    },
+    {
+      "route": "/reference/blocks",
+      "published_title": "Blocks - slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "blocks",
+          "text": "Blocks"
+        },
+        {
+          "level": 3,
+          "id": "blocks.ActionsBlock",
+          "text": "ActionsBlock"
+        },
+        {
+          "level": 3,
+          "id": "blocks.ContextBlock",
+          "text": "ContextBlock"
+        },
+        {
+          "level": 3,
+          "id": "blocks.DividerBlock",
+          "text": "DividerBlock"
+        },
+        {
+          "level": 3,
+          "id": "blocks.FileBlock",
+          "text": "FileBlock"
+        },
+        {
+          "level": 3,
+          "id": "blocks.HeaderBlock",
+          "text": "HeaderBlock"
+        },
+        {
+          "level": 3,
+          "id": "blocks.ImageBlock",
+          "text": "ImageBlock"
+        },
+        {
+          "level": 3,
+          "id": "blocks.InputBlock",
+          "text": "InputBlock"
+        },
+        {
+          "level": 3,
+          "id": "blocks.RichTextBlock",
+          "text": "RichTextBlock"
+        },
+        {
+          "level": 3,
+          "id": "blocks.SectionBlock",
+          "text": "SectionBlock"
+        }
+      ],
+      "api_anchors": [
+        "blocks",
+        "blocks.ActionsBlock",
+        "blocks.ContextBlock",
+        "blocks.DividerBlock",
+        "blocks.FileBlock",
+        "blocks.HeaderBlock",
+        "blocks.ImageBlock",
+        "blocks.InputBlock",
+        "blocks.RichTextBlock",
+        "blocks.SectionBlock"
+      ],
+      "code_block_count": 9,
+      "images": [],
+      "internal_links": [
+        "/latest/reference/blocks/#blocks.SectionBlock",
+        "/latest/reference/elements",
+        "/latest/reference/rich_text",
+        "rich_text"
+      ]
+    },
+    {
+      "route": "/reference/elements",
+      "published_title": "Elements - slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "elements",
+          "text": "Elements"
+        },
+        {
+          "level": 3,
+          "id": "elements.Button",
+          "text": "Button"
+        },
+        {
+          "level": 3,
+          "id": "elements.ButtonStyle",
+          "text": "ButtonStyle"
+        },
+        {
+          "level": 3,
+          "id": "elements.ChannelMultiSelectMenu",
+          "text": "ChannelMultiSelectMenu"
+        },
+        {
+          "level": 3,
+          "id": "elements.ChannelSelectMenu",
+          "text": "ChannelSelectMenu"
+        },
+        {
+          "level": 3,
+          "id": "elements.CheckboxGroup",
+          "text": "CheckboxGroup"
+        },
+        {
+          "level": 3,
+          "id": "elements.ConversationMultiSelectMenu",
+          "text": "ConversationMultiSelectMenu"
+        },
+        {
+          "level": 3,
+          "id": "elements.ConversationSelectMenu",
+          "text": "ConversationSelectMenu"
+        },
+        {
+          "level": 3,
+          "id": "elements.DatePicker",
+          "text": "DatePicker"
+        },
+        {
+          "level": 3,
+          "id": "elements.DateTimePicker",
+          "text": "DateTimePicker"
+        },
+        {
+          "level": 3,
+          "id": "elements.EmailInput",
+          "text": "EmailInput"
+        },
+        {
+          "level": 3,
+          "id": "elements.ExternalMultiSelectMenu",
+          "text": "ExternalMultiSelectMenu"
+        },
+        {
+          "level": 3,
+          "id": "elements.ExternalSelectMenu",
+          "text": "ExternalSelectMenu"
+        },
+        {
+          "level": 3,
+          "id": "elements.FileInput",
+          "text": "FileInput"
+        },
+        {
+          "level": 3,
+          "id": "elements.Image",
+          "text": "Image"
+        },
+        {
+          "level": 3,
+          "id": "elements.NumberInput",
+          "text": "NumberInput"
+        },
+        {
+          "level": 3,
+          "id": "elements.OverflowMenu",
+          "text": "OverflowMenu"
+        },
+        {
+          "level": 3,
+          "id": "elements.PlainTextInput",
+          "text": "PlainTextInput"
+        },
+        {
+          "level": 3,
+          "id": "elements.RadioButtonGroup",
+          "text": "RadioButtonGroup"
+        },
+        {
+          "level": 3,
+          "id": "elements.RichTextInput",
+          "text": "RichTextInput"
+        },
+        {
+          "level": 3,
+          "id": "elements.StaticMultiSelectMenu",
+          "text": "StaticMultiSelectMenu"
+        },
+        {
+          "level": 3,
+          "id": "elements.StaticSelectMenu",
+          "text": "StaticSelectMenu"
+        },
+        {
+          "level": 3,
+          "id": "elements.TimePicker",
+          "text": "TimePicker"
+        },
+        {
+          "level": 3,
+          "id": "elements.URLInput",
+          "text": "URLInput"
+        },
+        {
+          "level": 3,
+          "id": "elements.UserMultiSelectMenu",
+          "text": "UserMultiSelectMenu"
+        },
+        {
+          "level": 3,
+          "id": "elements.UserSelectMenu",
+          "text": "UserSelectMenu"
+        },
+        {
+          "level": 3,
+          "id": "elements.WorkflowButton",
+          "text": "WorkflowButton"
+        }
+      ],
+      "api_anchors": [
+        "elements",
+        "elements.Button",
+        "elements.ButtonStyle",
+        "elements.ChannelMultiSelectMenu",
+        "elements.ChannelSelectMenu",
+        "elements.CheckboxGroup",
+        "elements.ConversationMultiSelectMenu",
+        "elements.ConversationSelectMenu",
+        "elements.DatePicker",
+        "elements.DateTimePicker",
+        "elements.EmailInput",
+        "elements.ExternalMultiSelectMenu",
+        "elements.ExternalSelectMenu",
+        "elements.FileInput",
+        "elements.Image",
+        "elements.NumberInput",
+        "elements.OverflowMenu",
+        "elements.PlainTextInput",
+        "elements.RadioButtonGroup",
+        "elements.RichTextInput",
+        "elements.StaticMultiSelectMenu",
+        "elements.StaticSelectMenu",
+        "elements.TimePicker",
+        "elements.URLInput",
+        "elements.UserMultiSelectMenu",
+        "elements.UserSelectMenu",
+        "elements.WorkflowButton"
+      ],
+      "code_block_count": 26,
+      "images": [],
+      "internal_links": [
+        "/latest/reference/objects/#objects.ConversationFilter",
+        "/latest/reference/objects/#objects.Option",
+        "/latest/reference/objects/#objects.OptionGroup",
+        "/latest/reference/objects/#objects.SlackFile",
+        "/latest/reference/objects/#objects.Workflow"
+      ]
+    },
+    {
+      "route": "/reference/messages",
+      "published_title": "Messages - slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "messages",
+          "text": "Messages"
+        },
+        {
+          "level": 3,
+          "id": "messages.Message",
+          "text": "Message"
+        },
+        {
+          "level": 3,
+          "id": "messages.ResponseType",
+          "text": "ResponseType"
+        },
+        {
+          "level": 3,
+          "id": "messages.WebhookMessage",
+          "text": "WebhookMessage"
+        }
+      ],
+      "api_anchors": [
+        "messages",
+        "messages.Message",
+        "messages.ResponseType",
+        "messages.WebhookMessage"
+      ],
+      "code_block_count": 3,
+      "images": [],
+      "internal_links": [
+        "/latest/reference/attachments/#attachments.Attachment",
+        "/latest/reference/blocks"
+      ]
+    },
+    {
+      "route": "/reference/modals",
+      "published_title": "Modals - slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "modals",
+          "text": "Modals"
+        },
+        {
+          "level": 3,
+          "id": "modals.Modal",
+          "text": "Modal"
+        }
+      ],
+      "api_anchors": [
+        "modals",
+        "modals.Modal"
+      ],
+      "code_block_count": 1,
+      "images": [],
+      "internal_links": [
+        "/latest/reference/views/#views.ModalView"
+      ]
+    },
+    {
+      "route": "/reference/objects",
+      "published_title": "Objects - slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "objects",
+          "text": "Objects"
+        },
+        {
+          "level": 3,
+          "id": "objects.Confirm",
+          "text": "Confirm"
+        },
+        {
+          "level": 3,
+          "id": "objects.ConfirmationDialogue",
+          "text": "ConfirmationDialogue"
+        },
+        {
+          "level": 3,
+          "id": "objects.ConversationFilter",
+          "text": "ConversationFilter"
+        },
+        {
+          "level": 3,
+          "id": "objects.DispatchActionConfiguration",
+          "text": "DispatchActionConfiguration"
+        },
+        {
+          "level": 3,
+          "id": "objects.InputParameter",
+          "text": "InputParameter"
+        },
+        {
+          "level": 3,
+          "id": "objects.Option",
+          "text": "Option"
+        },
+        {
+          "level": 3,
+          "id": "objects.OptionGroup",
+          "text": "OptionGroup"
+        },
+        {
+          "level": 3,
+          "id": "objects.SlackFile",
+          "text": "SlackFile"
+        },
+        {
+          "level": 3,
+          "id": "objects.Text",
+          "text": "Text"
+        },
+        {
+          "level": 4,
+          "id": "objects.Text.to_text",
+          "text": "to_text staticmethod"
+        },
+        {
+          "level": 3,
+          "id": "objects.TextType",
+          "text": "TextType"
+        },
+        {
+          "level": 3,
+          "id": "objects.Trigger",
+          "text": "Trigger"
+        },
+        {
+          "level": 3,
+          "id": "objects.Workflow",
+          "text": "Workflow"
+        }
+      ],
+      "api_anchors": [
+        "objects",
+        "objects.Confirm",
+        "objects.ConfirmationDialogue",
+        "objects.ConversationFilter",
+        "objects.DispatchActionConfiguration",
+        "objects.InputParameter",
+        "objects.Option",
+        "objects.OptionGroup",
+        "objects.SlackFile",
+        "objects.Text",
+        "objects.Text.to_text",
+        "objects.TextType",
+        "objects.Trigger",
+        "objects.Workflow"
+      ],
+      "code_block_count": 13,
+      "images": [],
+      "internal_links": [
+        "/latest/reference/objects/#objects.ConfirmationDialogue"
+      ]
+    },
+    {
+      "route": "/reference/rich_text",
+      "published_title": "Rich Text - slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "rich-text",
+          "text": "Rich Text"
+        },
+        {
+          "level": 2,
+          "id": "rich-text-elements-primitives",
+          "text": "Rich Text Elements (Primitives)"
+        },
+        {
+          "level": 3,
+          "id": "rich_text.elements.RichText",
+          "text": "RichText"
+        },
+        {
+          "level": 3,
+          "id": "rich_text.elements.RichTextChannel",
+          "text": "RichTextChannel"
+        },
+        {
+          "level": 3,
+          "id": "rich_text.elements.RichTextEmoji",
+          "text": "RichTextEmoji"
+        },
+        {
+          "level": 3,
+          "id": "rich_text.elements.RichTextLink",
+          "text": "RichTextLink"
+        },
+        {
+          "level": 3,
+          "id": "rich_text.elements.RichTextUser",
+          "text": "RichTextUser"
+        },
+        {
+          "level": 3,
+          "id": "rich_text.elements.RichTextUserGroup",
+          "text": "RichTextUserGroup"
+        },
+        {
+          "level": 2,
+          "id": "rich-text-objects-containers",
+          "text": "Rich Text Objects (Containers)"
+        },
+        {
+          "level": 3,
+          "id": "rich_text.objects.ListType",
+          "text": "ListType"
+        },
+        {
+          "level": 3,
+          "id": "rich_text.objects.RichTextCodeBlock",
+          "text": "RichTextCodeBlock"
+        },
+        {
+          "level": 3,
+          "id": "rich_text.objects.RichTextList",
+          "text": "RichTextList"
+        },
+        {
+          "level": 3,
+          "id": "rich_text.objects.RichTextQuote",
+          "text": "RichTextQuote"
+        },
+        {
+          "level": 3,
+          "id": "rich_text.objects.RichTextSection",
+          "text": "RichTextSection"
+        }
+      ],
+      "api_anchors": [
+        "rich-text",
+        "rich-text-elements-primitives",
+        "rich_text.elements.RichText",
+        "rich_text.elements.RichTextChannel",
+        "rich_text.elements.RichTextEmoji",
+        "rich_text.elements.RichTextLink",
+        "rich_text.elements.RichTextUser",
+        "rich_text.elements.RichTextUserGroup",
+        "rich-text-objects-containers",
+        "rich_text.objects.ListType",
+        "rich_text.objects.RichTextCodeBlock",
+        "rich_text.objects.RichTextList",
+        "rich_text.objects.RichTextQuote",
+        "rich_text.objects.RichTextSection"
+      ],
+      "code_block_count": 11,
+      "images": [],
+      "internal_links": [
+        "/latest/reference/blocks/#blocks.RichTextBlock",
+        "/latest/reference/rich_text/#rich_text.RichText",
+        "/reference/blocks/#blocks.RichTextBlock"
+      ]
+    },
+    {
+      "route": "/reference/utils",
+      "published_title": "Utilities - slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "utilities",
+          "text": "Utilities"
+        },
+        {
+          "level": 3,
+          "id": "utils.coerce_to_list",
+          "text": "coerce_to_list"
+        },
+        {
+          "level": 3,
+          "id": "utils.is_hex",
+          "text": "is_hex"
+        },
+        {
+          "level": 3,
+          "id": "utils.validate_action_id",
+          "text": "validate_action_id"
+        },
+        {
+          "level": 3,
+          "id": "utils.validate_int",
+          "text": "validate_int"
+        },
+        {
+          "level": 3,
+          "id": "utils.validate_string",
+          "text": "validate_string"
+        }
+      ],
+      "api_anchors": [
+        "utilities",
+        "utils.coerce_to_list",
+        "utils.is_hex",
+        "utils.validate_action_id",
+        "utils.validate_int",
+        "utils.validate_string"
+      ],
+      "code_block_count": 5,
+      "images": [],
+      "internal_links": []
+    },
+    {
+      "route": "/reference/views",
+      "published_title": "Views - slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "views",
+          "text": "Views"
+        },
+        {
+          "level": 3,
+          "id": "views.HomeTabView",
+          "text": "HomeTabView"
+        },
+        {
+          "level": 3,
+          "id": "views.ModalView",
+          "text": "ModalView"
+        }
+      ],
+      "api_anchors": [
+        "views",
+        "views.HomeTabView",
+        "views.ModalView"
+      ],
+      "code_block_count": 2,
+      "images": [],
+      "internal_links": []
+    },
+    {
+      "route": "/usage/installation",
+      "published_title": "Installation - slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "",
+          "text": "Installation"
+        },
+        {
+          "level": 2,
+          "id": "installing-slackblocks",
+          "text": "Installing slackblocks"
+        },
+        {
+          "level": 2,
+          "id": "uninstalling-slackblocks",
+          "text": "Uninstalling slackblocks"
+        }
+      ],
+      "api_anchors": [],
+      "code_block_count": 6,
+      "images": [],
+      "internal_links": []
+    },
+    {
+      "route": "/usage/sending_messages",
+      "published_title": "Sending Messages - slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "",
+          "text": "Sending Messages"
+        }
+      ],
+      "api_anchors": [],
+      "code_block_count": 3,
+      "images": [
+        "../../img/hello_world.png"
+      ],
+      "internal_links": []
+    },
+    {
+      "route": "/usage/using_blocks",
+      "published_title": "Using Blocks - slackblocks",
+      "headings": [
+        {
+          "level": 1,
+          "id": "",
+          "text": "Using Blocks"
+        },
+        {
+          "level": 2,
+          "id": "section-block",
+          "text": "Section Block"
+        },
+        {
+          "level": 2,
+          "id": "rich-text-block",
+          "text": "Rich Text Block"
+        },
+        {
+          "level": 2,
+          "id": "header-block",
+          "text": "Header Block"
+        },
+        {
+          "level": 2,
+          "id": "image-block",
+          "text": "Image Block"
+        },
+        {
+          "level": 2,
+          "id": "input-block",
+          "text": "Input Block"
+        },
+        {
+          "level": 2,
+          "id": "divider-block",
+          "text": "Divider Block"
+        },
+        {
+          "level": 2,
+          "id": "file-block",
+          "text": "File Block"
+        },
+        {
+          "level": 2,
+          "id": "context-block",
+          "text": "Context Block"
+        },
+        {
+          "level": 2,
+          "id": "actions-block",
+          "text": "Actions Block"
+        }
+      ],
+      "api_anchors": [],
+      "code_block_count": 18,
+      "images": [
+        "../../img/usage/section.png",
+        "../../img/usage/rich_text.png",
+        "../../img/usage/header.png",
+        "../../img/usage/image.png",
+        "../../img/usage/input.png",
+        "../../img/usage/divider.png",
+        "https://a.slack-edge.com/f156a3/img/api/file_upload_remote_file.png",
+        "../../img/usage/divider.png",
+        "../../img/usage/actions.png"
+      ],
+      "internal_links": [
+        "/latest/reference/blocks/#blocks.SectionBlock",
+        "/latest/reference/elements",
+        "/latest/reference/rich_text",
+        "rich_text"
+      ]
+    }
+  ]
+}
