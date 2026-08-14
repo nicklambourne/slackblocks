@@ -2,11 +2,11 @@ name: Type Checking
 
 on:
   push:
+    branches: [master]
     paths:
       - "python/**"
       - ".github/workflows/type-checking.yml"
   pull_request:
-    branches: [master]
     paths:
       - "python/**"
       - ".github/workflows/type-checking.yml"
