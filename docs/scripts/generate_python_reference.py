@@ -43,9 +43,7 @@ GOOGLE_SECTION = re.compile(
 
 # MDX treats braces as expressions and angle brackets as JSX, so any of these
 # characters in plain docstring text would break the docs build.
-MDX_ESCAPES = str.maketrans(
-    {"{": "&#123;", "}": "&#125;", "<": "&lt;", ">": "&gt;"}
-)
+MDX_ESCAPES = str.maketrans({"{": "&#123;", "}": "&#125;", "<": "&lt;", ">": "&gt;"})
 CODE_SPAN = re.compile(r"(`+)(?:[^`]|(?!\1)`)+?\1", re.DOTALL)
 
 
@@ -92,11 +90,7 @@ def method_signature(value: Any) -> str:
         parsed = inspect.signature(value)
     except (TypeError, ValueError):
         return ""
-    parameters = [
-        parameter
-        for name, parameter in parsed.parameters.items()
-        if name != "self"
-    ]
+    parameters = [parameter for name, parameter in parsed.parameters.items() if name != "self"]
     return str(parsed.replace(parameters=parameters))
 
 

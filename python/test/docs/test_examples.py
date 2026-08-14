@@ -25,7 +25,7 @@ HEADING = re.compile(r"^## (.+)$", re.MULTILINE)
 
 def block_sections() -> list[pytest.param]:
     """Extract (python snippet, JSON tab) pairs from every block section."""
-    text = USING_BLOCKS.read_text()
+    text = USING_BLOCKS.read_text(encoding="utf-8")
     headings = list(HEADING.finditer(text))
     sections = []
     for heading, next_heading in zip(headings, [*headings[1:], None], strict=True):
@@ -52,13 +52,15 @@ def evaluate_snippet(code: str) -> Any:
 
 def test_section_hello_example_matches_the_documented_json() -> None:
     namespace = runpy.run_path(REPO_ROOT / "docs/examples/python/section_hello.py")
-    expected = json.loads((REPO_ROOT / "docs/examples/section_hello.json").read_text())
+    expected = json.loads(
+        (REPO_ROOT / "docs/examples/section_hello.json").read_text(encoding="utf-8")
+    )
     assert namespace["payload"] == expected
 
 
 def test_every_block_section_is_covered() -> None:
     """Every block section in the guide must be picked up by the harness."""
-    titles = HEADING.findall(USING_BLOCKS.read_text())
+    titles = HEADING.findall(USING_BLOCKS.read_text(encoding="utf-8"))
     covered = {parameters.id for parameters in block_sections()}
     assert covered == set(titles) - EXCLUDED_SECTIONS
 
