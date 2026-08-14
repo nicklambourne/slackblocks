@@ -273,12 +273,7 @@ const config: Config = {
       logo: { alt: "slackblocks logo", src: "img/sb.png" },
       items: [
         { type: "html", value: "language-selector", position: "left" },
-        {
-          type: "docsVersionDropdown",
-          position: "left",
-          className: "docs-version-dropdown",
-          dropdownActiveClassDisabled: true,
-        },
+        { type: "html", value: "version-selector", position: "left" },
         {
           href: "https://github.com/nicklambourne/slackblocks",
           position: "right",
