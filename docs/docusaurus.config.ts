@@ -175,6 +175,15 @@ const config: Config = {
   trailingSlash: false,
   onBrokenLinks: "throw",
   onBrokenAnchors: "throw",
+  headTags: [
+    // Language switching needs JavaScript; without it, show both languages'
+    // content instead of leaving the non-default language unreachable.
+    {
+      tagName: "noscript",
+      attributes: {},
+      innerHTML: "<style>[data-language-content][hidden]{display:block;}</style>",
+    },
+  ],
   markdown: {
     format: "detect",
     hooks: {
@@ -312,7 +321,7 @@ const config: Config = {
     },
     colorMode: {
       defaultMode: "light",
-      respectPrefersColorScheme: false,
+      respectPrefersColorScheme: true,
     },
     footer: {
       style: "light",

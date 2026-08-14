@@ -8,6 +8,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import { useHistory, useLocation } from "@docusaurus/router";
+import { useAllDocsData } from "@docusaurus/plugin-content-docs/client";
 import legacyManifest from "@site/legacy/manifest.json";
 
 export type Language = "python" | "typescript";
@@ -40,14 +41,18 @@ function referenceLanguage(pathname: string): Language | null {
   return isLanguage(language) ? language : null;
 }
 
-function languagePath(pathname: string, language: Language): string {
+function languagePath(
+  pathname: string,
+  language: Language,
+  docPaths: ReadonlySet<string>,
+): string {
   const referenceMatch = pathname.match(
-    /^(.*\/reference\/)(python|typescript)(?:\/.*)?$/,
+    /^(.*\/reference\/)(python|typescript)(\/.*)?$/,
   );
   if (referenceMatch) {
-    return referenceMatch[2] === language
-      ? pathname
-      : `${referenceMatch[1]}${language}`;
+    if (referenceMatch[2] === language) return pathname;
+    const sibling = `${referenceMatch[1]}${language}${referenceMatch[3] ?? ""}`;
+    return docPaths.has(sibling) ? sibling : `${referenceMatch[1]}${language}`;
   }
 
   const referenceIndexMatch = pathname.match(/^(.*\/reference)\/?$/);
@@ -55,17 +60,14 @@ function languagePath(pathname: string, language: Language): string {
     return `${referenceIndexMatch[1]}/${language}`;
   }
 
-  if (language === "typescript") {
-    const pythonGuideMatch = pathname.match(
-      /^(.*)\/usage\/(compatibility|migration)\/?$/,
-    );
-    if (pythonGuideMatch) return `${pythonGuideMatch[1]}/usage/installation`;
-  }
-
   return pathname;
 }
 
-function latestLanguagePath(pathname: string, language: Language): string {
+function latestLanguagePath(
+  pathname: string,
+  language: Language,
+  docPaths: ReadonlySet<string>,
+): string {
   const legacyMatch = pathname.match(
     /^(.*)\/v\d+\.\d+\.\d+(?=\/|$)(.*)$/,
   );
@@ -78,17 +80,30 @@ function latestLanguagePath(pathname: string, language: Language): string {
 
   return historicalReference
     ? `${historicalReference[1]}/${language}`
-    : languagePath(latestPathname, language);
+    : languagePath(latestPathname, language, docPaths);
 }
 
 export function LanguageProvider({ children }: PropsWithChildren) {
   const history = useHistory();
   const location = useLocation();
+  const allDocsData = useAllDocsData();
   const [language, setLanguage] = useState<Language>("python");
+  const docPaths = useMemo(
+    () =>
+      new Set(
+        Object.values(allDocsData).flatMap((pluginData) =>
+          pluginData.versions.flatMap((version) =>
+            version.docs.map((doc) => doc.path),
+          ),
+        ),
+      ),
+    [allDocsData],
+  );
 
   useEffect(() => {
     const legacyVersion = legacyDocumentationVersion(location.pathname);
-    const queryLanguage = new URLSearchParams(location.search).get("language");
+    const search = new URLSearchParams(location.search);
+    const queryLanguage = search.get("language");
     const routeLanguage = referenceLanguage(location.pathname);
     const storedLanguage = window.localStorage.getItem(STORAGE_KEY);
     const nextLanguage = legacyVersion
@@ -98,37 +113,45 @@ export function LanguageProvider({ children }: PropsWithChildren) {
         (isLanguage(storedLanguage) ? storedLanguage : null) ??
         "python";
 
-    const pathname = languagePath(location.pathname, nextLanguage);
-    if (pathname !== location.pathname) {
+    // Once ?language= has been applied, drop it so shared URLs don't keep it.
+    search.delete("language");
+    const nextSearch = search.toString();
+    const pathname = languagePath(location.pathname, nextLanguage, docPaths);
+    if (pathname !== location.pathname || queryLanguage !== null) {
       history.replace({
         pathname,
-        search: location.search,
+        search: nextSearch ? `?${nextSearch}` : "",
         hash: location.hash,
       });
     }
 
     setLanguage(nextLanguage);
+    // Persist only explicit choices: the selector (below) or ?language=.
+    // A route-derived language must never overwrite the stored preference.
     if (!legacyVersion && isLanguage(queryLanguage)) {
       window.localStorage.setItem(STORAGE_KEY, queryLanguage);
     }
-  }, [history, location.hash, location.pathname, location.search]);
+  }, [docPaths, history, location.hash, location.pathname, location.search]);
 
   const selectLanguage = useCallback(
     (nextLanguage: Language) => {
       setLanguage(nextLanguage);
       window.localStorage.setItem(STORAGE_KEY, nextLanguage);
 
-      const search = new URLSearchParams(location.search);
-      search.set("language", nextLanguage);
-      const pathname = latestLanguagePath(location.pathname, nextLanguage);
-
-      history.replace({
-        pathname,
-        search: `?${search.toString()}`,
-        hash: pathname === location.pathname ? location.hash : "",
-      });
+      const pathname = latestLanguagePath(
+        location.pathname,
+        nextLanguage,
+        docPaths,
+      );
+      if (pathname !== location.pathname) {
+        history.replace({
+          pathname,
+          search: location.search,
+          hash: "",
+        });
+      }
     },
-    [history, location.hash, location.pathname, location.search],
+    [docPaths, history, location.pathname, location.search],
   );
 
   const value = useMemo(
