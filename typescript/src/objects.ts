@@ -6,15 +6,17 @@
  *
  * @module objects
  */
+import limits from "../../spec/limits.json" with { type: "json" };
+
 import {
   InvalidUsageError,
   LengthError,
   MissingRequiredError,
   MutualExclusivityError,
-  RangeError,
+  OutOfRangeError,
   TypeMismatchError,
 } from "./errors.js";
-import { create, createObject, textValue } from "./internal.js";
+import { codePointLength, create, createObject, textValue } from "./internal.js";
 import type { FactorySettings, JsonObject, SlackObject } from "./types.js";
 
 /** A Slack plain-text or mrkdwn composition object. */
@@ -35,9 +37,12 @@ export interface MarkdownOptions {
   verbatim?: boolean;
 }
 
+const OPTION_URL_MAX_LENGTH = 3000;
+
 function ensureLength(value: string, path: string, maximum: number): void {
-  if (value.length > maximum) {
-    throw new LengthError(path, `${value.length} exceeds maximum ${maximum}`);
+  const size = codePointLength(value);
+  if (size > maximum) {
+    throw new LengthError(path, `${size} exceeds maximum ${maximum}`);
   }
 }
 
@@ -118,10 +123,10 @@ export function confirmation(
   settings: FactorySettings = {},
 ): JsonObject {
   for (const [field, maximum] of [
-    ["title", 100],
-    ["text", 300],
-    ["confirm", 30],
-    ["deny", 30],
+    ["title", limits.confirmation.title.max_length],
+    ["text", limits.confirmation.text.max_length],
+    ["confirm", limits.confirmation.confirm.max_length],
+    ["deny", limits.confirmation.deny.max_length],
   ] as const) {
     const value = textValue(input[field]);
     if (value !== undefined) ensureLength(value, field, maximum);
@@ -159,10 +164,17 @@ export interface OptionInput {
  */
 export function option(input: OptionInput, settings: FactorySettings = {}): JsonObject {
   const text = asText(input.text, "plain_text", settings);
-  ensureLength(textValue(text) ?? "", "option.text", 75);
-  ensureLength(input.value, "option.value", 75);
+  ensureLength(textValue(text) ?? "", "option.text", limits.option.text.max_length);
+  ensureLength(input.value, "option.value", limits.option.value.max_length);
   if (input.description !== undefined) {
-    ensureLength(textValue(input.description) ?? "", "option.description", 75);
+    ensureLength(
+      textValue(input.description) ?? "",
+      "option.description",
+      limits.option.description.max_length,
+    );
+  }
+  if (input.url !== undefined) {
+    ensureLength(input.url, "option.url", OPTION_URL_MAX_LENGTH);
   }
   return createObject(
     {
@@ -200,12 +212,16 @@ export function optionGroup(
   ensureLength(
     textValue(asText(input.label, "plain_text", settings)) ?? "",
     "optionGroup.label",
-    75,
+    limits.option_group.label.max_length,
   );
-  if (input.options.length < 1 || input.options.length > 100) {
+  if (
+    input.options.length < limits.option_group.options.min_items ||
+    input.options.length > limits.option_group.options.max_items
+  ) {
     throw new LengthError(
       "optionGroup.options",
-      `expected between 1 and 100 options, received ${input.options.length}`,
+      `expected between ${limits.option_group.options.min_items} and ` +
+        `${limits.option_group.options.max_items} options, received ${input.options.length}`,
     );
   }
   return createObject(
@@ -496,12 +512,16 @@ export function chartSegment(
   input: ChartSegmentInput,
   settings: FactorySettings = {},
 ): JsonObject {
-  ensureLength(input.label, "chartSegment.label", 20);
+  ensureLength(
+    input.label,
+    "chartSegment.label",
+    limits.data_visualization.segment.label.max_length,
+  );
   if (!Number.isFinite(input.value)) {
     throw new TypeMismatchError("chartSegment.value", "expected a finite number");
   }
-  if (input.value <= 0) {
-    throw new RangeError("chartSegment.value", "expected a value greater than 0");
+  if (input.value <= limits.data_visualization.segment.value.exclusive_min) {
+    throw new OutOfRangeError("chartSegment.value", "expected a value greater than 0");
   }
   return createObject({ ...input }, settings);
 }
@@ -526,7 +546,7 @@ export function dataPoint(
   input: DataPointInput,
   settings: FactorySettings = {},
 ): JsonObject {
-  ensureLength(input.label, "dataPoint.label", 20);
+  ensureLength(input.label, "dataPoint.label", limits.data_visualization.point_label.max_length);
   if (!Number.isFinite(input.value)) {
     throw new TypeMismatchError("dataPoint.value", "expected a finite number");
   }
@@ -553,9 +573,16 @@ export function dataSeries(
   input: DataSeriesInput,
   settings: FactorySettings = {},
 ): JsonObject {
-  ensureLength(input.name, "dataSeries.name", 20);
-  if (input.data.length < 1 || input.data.length > 20) {
-    throw new LengthError("dataSeries.data", "expected between 1 and 20 data points");
+  ensureLength(input.name, "dataSeries.name", limits.data_visualization.series_name.max_length);
+  if (
+    input.data.length < limits.data_visualization.data.min_items ||
+    input.data.length > limits.data_visualization.data.max_items
+  ) {
+    throw new LengthError(
+      "dataSeries.data",
+      `expected between ${limits.data_visualization.data.min_items} and ` +
+        `${limits.data_visualization.data.max_items} data points`,
+    );
   }
   return createObject({ ...input }, settings);
 }
@@ -582,15 +609,32 @@ export function axisConfig(
   input: AxisConfigInput,
   settings: FactorySettings = {},
 ): JsonObject {
-  if (input.categories.length < 1 || input.categories.length > 20) {
-    throw new LengthError("axisConfig.categories", "expected between 1 and 20 categories");
+  if (
+    input.categories.length < limits.data_visualization.categories.min_items ||
+    input.categories.length > limits.data_visualization.categories.max_items
+  ) {
+    throw new LengthError(
+      "axisConfig.categories",
+      `expected between ${limits.data_visualization.categories.min_items} and ` +
+        `${limits.data_visualization.categories.max_items} categories`,
+    );
   }
-  input.categories.forEach((category) => ensureLength(category, "axisConfig.category", 20));
+  input.categories.forEach((category) =>
+    ensureLength(
+      category,
+      "axisConfig.category",
+      limits.data_visualization.category_label.max_length,
+    ),
+  );
   if (new Set(input.categories).size !== input.categories.length) {
     throw new InvalidUsageError("axisConfig.categories", "expected unique labels");
   }
-  if (input.xLabel !== undefined) ensureLength(input.xLabel, "axisConfig.xLabel", 50);
-  if (input.yLabel !== undefined) ensureLength(input.yLabel, "axisConfig.yLabel", 50);
+  if (input.xLabel !== undefined) {
+    ensureLength(input.xLabel, "axisConfig.xLabel", limits.data_visualization.axis_label.max_length);
+  }
+  if (input.yLabel !== undefined) {
+    ensureLength(input.yLabel, "axisConfig.yLabel", limits.data_visualization.axis_label.max_length);
+  }
   return createObject({ ...input }, settings);
 }
 
@@ -615,35 +659,8 @@ function axisChart<Type extends "bar" | "area" | "line">(
   axis: JsonObject,
   settings: FactorySettings,
 ): SlackObject<Type> {
-  const names = series.map((item) => item.name);
-  if (new Set(names).size !== names.length) {
-    throw new InvalidUsageError(`${type}Chart.series`, "series names must be unique");
-  }
-  const categories = axis.categories;
-  if (!Array.isArray(categories)) {
-    throw new TypeMismatchError(`${type}Chart.axisConfig.categories`, "expected an array");
-  }
-  for (const item of series) {
-    const data = item.data;
-    if (!Array.isArray(data)) {
-      throw new TypeMismatchError(`${type}Chart.series.data`, "expected an array");
-    }
-    const labels = data.map((point) =>
-      point !== null && typeof point === "object" && !Array.isArray(point)
-        ? point.label
-        : undefined,
-    );
-    if (
-      labels.length !== categories.length ||
-      new Set(labels).size !== categories.length ||
-      labels.some((label) => !categories.includes(label as never))
-    ) {
-      throw new InvalidUsageError(
-        `${type}Chart.series.data`,
-        "each series must contain one point for every axis category",
-      );
-    }
-  }
+  // Series shape, axis categories, and name uniqueness are enforced by the
+  // shared series-chart validator invoked through `create`.
   return create(type, { series, axisConfig: axis }, settings);
 }
 

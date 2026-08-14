@@ -45,7 +45,7 @@ export class LengthError extends InvalidUsageError {
 }
 
 /** A numeric value fell outside its allowed range. */
-export class RangeError extends InvalidUsageError {
+export class OutOfRangeError extends InvalidUsageError {
   /** Machine-readable failure category. */
   override readonly category = "out-of-range" as const;
 }
