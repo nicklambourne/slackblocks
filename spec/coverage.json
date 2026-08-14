@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.0.0",
+  "spec_version": "1.0.1",
   "capabilities": {
     "blocks.actions": ["blocks/actions_block_checkboxes"],
     "blocks.alert": ["blocks/alert_block"],
@@ -20,7 +20,11 @@
     ],
     "blocks.divider": ["blocks/divider_block_only"],
     "blocks.file": ["blocks/file_block_only"],
-    "blocks.header": ["blocks/header_block_only"],
+    "blocks.header": [
+      "blocks/header_block_only",
+      "blocks/header_block_text_at_limit",
+      "blocks/header_block_emoji_at_limit"
+    ],
     "blocks.image": ["blocks/image_block_only"],
     "blocks.input": ["blocks/input_block_only"],
     "blocks.markdown": ["blocks/markdown_block_basic"],
@@ -30,7 +34,7 @@
     "blocks.table": ["blocks/table_block"],
     "blocks.task_card": ["blocks/task_card_block"],
     "blocks.video": ["blocks/video_block_basic"],
-    "elements.button": ["elements/button_basic"],
+    "elements.button": ["elements/button_basic", "elements/button_text_at_limit"],
     "elements.checkboxes": ["elements/checkbox_basic"],
     "elements.date_picker": ["elements/date_picker_basic"],
     "elements.datetime_picker": ["elements/datetime_picker_basic"],
@@ -79,7 +83,7 @@
     "objects.feedback_button": ["blocks/context_actions_feedback_buttons"],
     "objects.input_parameter": ["objects/input_parameter_basic"],
     "objects.markdown_text": ["objects/text_markdown_basic"],
-    "objects.option": ["objects/option_basic"],
+    "objects.option": ["objects/option_basic", "objects/option_value_at_limit"],
     "objects.option_group": ["objects/option_group_basic"],
     "objects.plain_text": ["objects/text_plaintext_basic"],
     "objects.raw_text": ["blocks/table_block"],

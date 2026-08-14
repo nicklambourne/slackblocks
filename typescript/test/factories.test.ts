@@ -8,6 +8,7 @@ import {
   message,
   mrkdwn,
   sectionBlock,
+  urlSource,
   validate,
 } from "../src/index.js";
 
@@ -71,6 +72,12 @@ describe("data-first factories", () => {
 
   it("allows validation to be disabled explicitly", () => {
     expect(sectionBlock({ text: "x".repeat(3001) }, { validate: false }).type).toBe("section");
+  });
+
+  it("bounds the URL-source URL to between 1 and 3000 code points", () => {
+    expect(urlSource({ url: "x".repeat(3000), text: "docs" }).type).toBe("url");
+    expect(() => urlSource({ url: "", text: "docs" })).toThrowError(LengthError);
+    expect(() => urlSource({ url: "x".repeat(3001), text: "docs" })).toThrowError(LengthError);
   });
 
   it("validates arbitrary existing JSON with a type guard", () => {

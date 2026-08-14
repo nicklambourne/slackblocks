@@ -9,9 +9,9 @@ slackblocks now supports Python and TypeScript. Their public APIs should follow 
 
 ## Decision
 
-Keep both implementations handwritten in one monorepo. Treat the versioned JSON corpus, invalid-case categories, and limits registry in `spec/` as the shared contract. Each language owns a conformance harness and checked-in skip list. Releases and semantic versions remain independent and declare the spec version they implement.
+Keep both implementations handwritten in one monorepo. Treat the versioned JSON corpus, invalid-case categories, and limits registry in `spec/` as the shared contract. `spec/limits.json` is normative: every scalar leaf forces an invalid case that both conformance harnesses must reject with the required category, so the limits are test-enforced in both languages rather than aspirational documentation. Each language owns a conformance harness and a checked-in skip list that must be empty in released states. Releases and semantic versions remain independent and declare the spec version they implement.
 
-Do not generate public APIs. Reconsider generated internal constants only if at least three maintained languages make scalar drift costly.
+Do not generate public APIs. Implementations may hardcode the shared scalar constants internally — the invalid-case corpus pins agreement. Reconsider generated internal constants only if at least three maintained languages make scalar drift costly.
 
 ## Consequences
 

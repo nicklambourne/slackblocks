@@ -1,5 +1,6 @@
 {
     "type": "table",
+    "block_id": "fake_block_id",
     "rows": [
         [
             {

@@ -29,4 +29,4 @@ THREE_OPTIONS = TWO_OPTIONS + [
 
 
 def fetch_sample(path: Path | str) -> CanonicalJSON:
-    return CanonicalJSON((VALID_FIXTURES / path).read_text())
+    return CanonicalJSON((VALID_FIXTURES / path).read_text(encoding="utf-8"))
