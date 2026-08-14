@@ -35,13 +35,10 @@ const payload = message({
 - `python/` — the established Python package.
 - `typescript/` — the ESM TypeScript package.
 - `spec/` — 79 valid fixtures, shared invalid cases, and limits.
-- `docs_src/` — the current documentation source. Its Docusaurus migration is
-  reviewed separately from the language implementation.
+- `docs/` — the Docusaurus documentation site.
 
 See the [documentation site](https://nicklambourne.github.io/slackblocks/) for installation and usage.
 
 ## Development
 
-Run Python checks from `python/` with uv and TypeScript checks from the
-repository root with pnpm. The full commands and fixture workflow are in the
-[contributing guide](https://nicklambourne.github.io/slackblocks/contributing).
+Run Python checks from `python/` with uv. Run TypeScript and docs checks from the repository root with pnpm. The full commands and fixture workflow are in the [contributing guide](https://nicklambourne.github.io/slackblocks/contributing).

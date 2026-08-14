@@ -1,4 +1,4 @@
-# slackblocks <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs_src/img/sb.png" align="right" width="250px"/>
+# slackblocks <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/sb.png" align="right" width="250px"/>
 
 ![Licence: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Licence: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-green.svg)
@@ -11,6 +11,8 @@
 > **Build Slack messages in Python — without writing JSON by hand.**
 
 `slackblocks` is a typed, validating Python wrapper around the Slack [Block Kit API](https://api.slack.com/block-kit). It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control.
+
+This release conforms to the shared slackblocks specification 1.0.0.
 
 ## Why `slackblocks`?
 
@@ -77,7 +79,7 @@ client.chat_postMessage(**message)
 The `**` operator unpacks `slackblocks` `Message` objects directly into the SDK call — no `to_dict()` boilerplate required.
 
 <p align="center">
-  <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs_src/img/hello_world.png" alt="A simple Slack message rendered in Slack" width="600px" />
+  <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/hello_world.png" alt="A simple Slack message rendered in Slack" width="600px" />
 </p>
 
 ## What's supported
@@ -118,7 +120,7 @@ Existing 1.x code continues to work unchanged; see the [Migration Guide](https:/
 - [Cookbook](https://nicklambourne.github.io/slackblocks/latest/usage/cookbook/) — end-to-end recipes for build notifications, approval requests, modals, and more.
 - [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/latest/usage/migration/) — upgrade guide for `1.x` users.
 - [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/latest/usage/troubleshooting/)
-- [Changelog](https://github.com/nicklambourne/slackblocks/blob/master/CHANGELOG.md)
+- [Changelog](https://github.com/nicklambourne/slackblocks/blob/master/python/CHANGELOG.md)
 
 ## Comparison with `slack-sdk` block classes
 
@@ -144,17 +146,17 @@ Contributions are welcome. Quick start (the project uses [uv](https://docs.astra
 
 ```bash
 git clone https://github.com/nicklambourne/slackblocks.git
-cd slackblocks
+cd slackblocks/python
 uv sync --all-groups
 
-uv run pytest test/unit
-uv run ruff format --check .
-uv run ruff check .
+uv run pytest test/unit test/conformance test/docs
+uv run ruff format --check slackblocks test
+uv run ruff check slackblocks test
 uv run mypy slackblocks
 ```
 
-Preview the documentation locally with `uv run mkdocs serve`.
+Preview the documentation from the repository root with `pnpm --filter @slackblocks/docs start`.
 
-For the full development guide — testing conventions, validation patterns, docstring style, release process, and a PR checklist — see the [Contributing page](https://nicklambourne.github.io/slackblocks/latest/contributing/).
+For the full development guide — testing conventions, validation patterns, docstring style, release process, and a PR checklist — see the [Contributing page](https://nicklambourne.github.io/slackblocks/contributing).
 
 Bug reports and feature requests: <https://github.com/nicklambourne/slackblocks/issues>.

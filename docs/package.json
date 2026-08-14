@@ -1,0 +1,33 @@
+{
+  "name": "@slackblocks/docs",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "generate:python": "UV_CACHE_DIR=../.uv-cache uv run --project ../python --group docs python scripts/generate_python_reference.py",
+    "generate:parity": "UV_CACHE_DIR=../.uv-cache uv run --project ../python python ../spec/tools/parity.py docs/reference/parity.mdx",
+    "generate": "pnpm generate:python && pnpm generate:parity",
+    "start": "pnpm generate && docusaurus start",
+    "build": "pnpm generate && docusaurus build",
+    "typecheck": "tsc --noEmit",
+    "test": "pnpm typecheck"
+  },
+  "dependencies": {
+    "@docusaurus/core": "^3.10.2",
+    "@docusaurus/plugin-client-redirects": "^3.10.2",
+    "@docusaurus/preset-classic": "^3.10.2",
+    "@docusaurus/types": "^3.10.2",
+    "@easyops-cn/docusaurus-search-local": "^0.55.3",
+    "docusaurus-plugin-typedoc": "^1.4.2",
+    "prism-react-renderer": "^2.4.1",
+    "raw-loader": "^4.0.2",
+    "slackblocks": "workspace:*",
+    "typedoc-plugin-markdown": "^4.12.0"
+  },
+  "devDependencies": {
+    "@docusaurus/tsconfig": "^3.10.2",
+    "@types/react": "^18.3.28",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.9.3"
+  }
+}
