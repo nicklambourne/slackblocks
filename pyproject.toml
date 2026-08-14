@@ -56,7 +56,9 @@ docs = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+# Hatchling 1.28 emits Core Metadata 2.5, which Twine 6.2 cannot yet
+# validate. Keep package checks reproducible until Twine adds 2.5 support.
+requires = ["hatchling<1.28"]
 build-backend = "hatchling.build"
 
 [tool.ruff]
