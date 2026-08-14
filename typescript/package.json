@@ -42,7 +42,7 @@
     "typescript",
     "validation"
   ],
-  "slackblocksSpecVersion": "1.0.0",
+  "slackblocksSpecVersion": "1.0.1",
   "dependencies": {
     "@slack/types": "^3.0.0"
   },
