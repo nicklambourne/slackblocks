@@ -5,7 +5,9 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
-      slackblocks: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
+      "@nicklambourne/slackblocks": fileURLToPath(
+        new URL("./src/index.ts", import.meta.url),
+      ),
     },
   },
   test: {

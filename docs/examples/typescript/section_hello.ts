@@ -1,4 +1,4 @@
-import { message, sectionBlock } from "slackblocks";
+import { message, sectionBlock } from "@nicklambourne/slackblocks";
 
 export const payload = message({
   channel: "C0123456",

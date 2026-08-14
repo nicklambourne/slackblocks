@@ -8,7 +8,7 @@
     "exactOptionalPropertyTypes": true,
     "baseUrl": ".",
     "paths": {
-      "slackblocks": ["./src/index.ts"]
+      "@nicklambourne/slackblocks": ["./src/index.ts"]
     },
     "declaration": true,
     "resolveJsonModule": true,

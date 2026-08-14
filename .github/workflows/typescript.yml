@@ -55,13 +55,13 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Type check
-        run: pnpm --filter slackblocks typecheck
+        run: pnpm --filter @nicklambourne/slackblocks typecheck
 
       - name: Run unit, conformance, and docs-example tests
-        run: pnpm --filter slackblocks test
+        run: pnpm --filter @nicklambourne/slackblocks test
 
       - name: Validate package
-        run: pnpm --filter slackblocks check:package
+        run: pnpm --filter @nicklambourne/slackblocks check:package
 
       - name: Pack package
         run: |
@@ -96,16 +96,16 @@ jobs:
           path: package
 
       - name: Install package
-        run: npm install --ignore-scripts ./package/slackblocks-*.tgz
+        run: npm install --ignore-scripts ./package/nicklambourne-slackblocks-*.tgz
 
       - name: Import from ESM
         run: >-
           node --input-type=module -e
-          'import("slackblocks").then(({sectionBlock}) =>
+          'import("@nicklambourne/slackblocks").then(({sectionBlock}) =>
           console.log(JSON.stringify(sectionBlock({text:"smoke"}))))'
 
       - name: Require ESM from CommonJS
         run: >-
           node -e
-          'const { sectionBlock } = require("slackblocks");
+          'const { sectionBlock } = require("@nicklambourne/slackblocks");
           console.log(JSON.stringify(sectionBlock({text:"smoke"})))'
