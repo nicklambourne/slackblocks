@@ -169,7 +169,7 @@ def test_no_symbol_is_both_mapped_and_excluded() -> None:
 
 
 def test_mapped_capabilities_and_coverage_registry_agree() -> None:
-    coverage = json.loads((SPEC_ROOT / "coverage.json").read_text())["capabilities"]
+    coverage = json.loads((SPEC_ROOT / "coverage.json").read_text(encoding="utf-8"))["capabilities"]
     for symbol, capability in CAPABILITY_BY_SYMBOL.items():
         assert capability in coverage, f"{symbol} -> {capability} missing from coverage.json"
     assert set(coverage) == set(CAPABILITY_BY_SYMBOL.values())

@@ -72,7 +72,7 @@ SPEC_ROOT = REPO_ROOT / "spec"
 
 
 def load_json(path: Path) -> dict:
-    return json.loads(path.read_text())
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def test_valid_manifest_covers_the_entire_fixture_corpus() -> None:
@@ -609,7 +609,9 @@ def test_declared_spec_version_matches_the_manifest() -> None:
 def test_python_skiplist_is_empty() -> None:
     entries = [
         line
-        for line in (REPO_ROOT / "python" / "conformance" / "skiplist.txt").read_text().splitlines()
+        for line in (REPO_ROOT / "python" / "conformance" / "skiplist.txt")
+        .read_text(encoding="utf-8")
+        .splitlines()
         if line and not line.startswith("#")
     ]
     assert entries == []
