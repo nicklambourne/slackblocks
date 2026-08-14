@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "migration": {
-    "tool_version": "1",
+    "tool_version": "2",
     "generated_at": "2026-08-13T17:45:54+00:00",
     "gh_pages_ref": "origin/gh-pages",
     "gh_pages_commit": "747ca39861503fbece849e375c9843641f87684c",
@@ -36,7 +36,7 @@
       ],
       "documentation_source_tree_hash": "081da8626e0988b4a2683f4ed6644eb01e32569c",
       "python_source_tree_hash": "7f4672cccbd20726d0e20c7f821e2505c781eff1",
-      "generated_snapshot_tree_hash": "40ed40af1c111c717468ac5e2dddcf8748bcf3424058d5136eab733d6adabee2",
+      "generated_snapshot_tree_hash": "ddb52a006010ec7fc829c6bb58720198d6899b3611c0c9e615906b28948aea80",
       "language_availability": [
         "python"
       ],
@@ -68,7 +68,7 @@
       ],
       "documentation_source_tree_hash": "954e28666ca3228b9565e54afeb0b9a6c920fbfb",
       "python_source_tree_hash": "3d9777b442a8c4fa639d8c43e3543c70dbf501f6",
-      "generated_snapshot_tree_hash": "20e448eb5c2beea98db013f081ec02132a6f7cfbca3c86e5fef9d9af86bc5d61",
+      "generated_snapshot_tree_hash": "62ad1babb41b3108b433938e4b81e02908006d243b43c4f2340fa3394caecf47",
       "language_availability": [
         "python"
       ],
@@ -97,7 +97,7 @@
       ],
       "documentation_source_tree_hash": "f613d296b3dc96ed962849b58452013f010dfb2b",
       "python_source_tree_hash": "338a87ad17ed1d5a2425edcee848030839d74d61",
-      "generated_snapshot_tree_hash": "a518619f545b19dab3e1f143dc9534a0ad20555df4b653b2844138017f71debe",
+      "generated_snapshot_tree_hash": "fe799bd79b3d6d28bc02911c90536502cc1e614296e6f99a8b6864e7ecc9f415",
       "language_availability": [
         "python"
       ],
@@ -126,7 +126,7 @@
       ],
       "documentation_source_tree_hash": "f613d296b3dc96ed962849b58452013f010dfb2b",
       "python_source_tree_hash": "2ef8734f106326f48b592f86778bde73de054d32",
-      "generated_snapshot_tree_hash": "e172443bbdd2f6fc73c4ba8082238c4fe2e1d77ff395b1bcc8ffd7d8f06ed4f9",
+      "generated_snapshot_tree_hash": "7e171e7f462c8b7df339068abc066fa649144c307d951f4c7e60e2c269d01daf",
       "language_availability": [
         "python"
       ],
@@ -155,7 +155,7 @@
       ],
       "documentation_source_tree_hash": "f613d296b3dc96ed962849b58452013f010dfb2b",
       "python_source_tree_hash": "f8c05d08726172c1f41f1a0e5a20694cafcb8d1b",
-      "generated_snapshot_tree_hash": "1950085058117b72fe2135bfe168527316162403d91013ca86fd418fe389a512",
+      "generated_snapshot_tree_hash": "aedce1fb159efc21cd798a66a64b1beb896d532d4cdbee39ba7afb729da989c1",
       "language_availability": [
         "python"
       ],
@@ -186,7 +186,7 @@
       ],
       "documentation_source_tree_hash": "c8e3bfbb77115d06e15881dfc59b8075403ce592",
       "python_source_tree_hash": "1ada03ea31ef22a66fa805cbe0bfc6f818540c02",
-      "generated_snapshot_tree_hash": "90383339f77d32a75e0149b4b9f97d8ef6af54d6ecd8605c7b249178aed6d6b4",
+      "generated_snapshot_tree_hash": "fb505d64c3d896e3c4180f86f936b6aba2cb63791a90cbf15707eb26c2de0741",
       "language_availability": [
         "python"
       ],
@@ -217,7 +217,7 @@
       ],
       "documentation_source_tree_hash": "c8e3bfbb77115d06e15881dfc59b8075403ce592",
       "python_source_tree_hash": "0d1a034561defb0d7d2299b77bd732c71bb62483",
-      "generated_snapshot_tree_hash": "64ef66a47f4d8f0a439467c7fb8dc3770f1f27df19902c7435ecf5e7e3ad4a21",
+      "generated_snapshot_tree_hash": "2b090d3a21188dbebe3c57a449e4663be9c6c4bf633b0cd53ec1fe3f69a2acff",
       "language_availability": [
         "python"
       ],
@@ -248,7 +248,7 @@
       ],
       "documentation_source_tree_hash": "c8e3bfbb77115d06e15881dfc59b8075403ce592",
       "python_source_tree_hash": "7886d89da6ace48ca633f8fc3c1ae460faddf0fc",
-      "generated_snapshot_tree_hash": "0e402671d6664a89f841ecb40029d0deded39fb0597ff1d7a7bb65499bd2af0b",
+      "generated_snapshot_tree_hash": "74eb912b80df87bb833b978687e349eeaa42f9285494db4ae183cd9a19f1352f",
       "language_availability": [
         "python"
       ],
@@ -279,7 +279,7 @@
       ],
       "documentation_source_tree_hash": "c8e3bfbb77115d06e15881dfc59b8075403ce592",
       "python_source_tree_hash": "370f4a140a16e08631404a17e768a715bab728a4",
-      "generated_snapshot_tree_hash": "d54322ced6812a936a4915996661ed2049e24583db608fae86b2242a4c6472ea",
+      "generated_snapshot_tree_hash": "046420f6b541f60934a32476b5550c734bf520811016b0d25d79db7e4539606e",
       "language_availability": [
         "python"
       ],
@@ -310,7 +310,7 @@
       ],
       "documentation_source_tree_hash": "c8e3bfbb77115d06e15881dfc59b8075403ce592",
       "python_source_tree_hash": "ca894261c12660381db5ef47eb9c37ff67bfea5d",
-      "generated_snapshot_tree_hash": "3581c5f977c7ab979002bad85cd0de76f9f01c6a621dcdbe89775508b7423308",
+      "generated_snapshot_tree_hash": "2ca16c5d8dd36380867b1aa7f8fd1ac3cc7ff271b57e4b454a28dc749c5c69d7",
       "language_availability": [
         "python"
       ],
@@ -342,7 +342,7 @@
       "documentation_source_tree_hash": "c8e3bfbb77115d06e15881dfc59b8075403ce592",
       "documentation_source_ref": "v1.0.13",
       "python_source_tree_hash": "ca894261c12660381db5ef47eb9c37ff67bfea5d",
-      "generated_snapshot_tree_hash": "e5502c3299a70f46a729e467982e56feafaae51cd7ed463a82e953f5276def51",
+      "generated_snapshot_tree_hash": "345dc35777a1a6fa02901613ed317ad0684848c38ba1bd1e228c8e2f5e8f46a0",
       "language_availability": [
         "python"
       ],
@@ -373,7 +373,7 @@
       ],
       "documentation_source_tree_hash": "7751d0e10ca2072f4ca8191c4b507ae26fba7ed9",
       "python_source_tree_hash": "0814754839b266123a488a45491aa64eb5d263de",
-      "generated_snapshot_tree_hash": "3f9980e86894afb6bbd2d5d7e105ea0b54b29d19419ab46547a0dabe0fa216e6",
+      "generated_snapshot_tree_hash": "6bf396995e72e5447b62c743781bf4e5612369d16d1ae977c5289dc0689621c0",
       "language_availability": [
         "python"
       ],
@@ -404,7 +404,7 @@
       ],
       "documentation_source_tree_hash": "7751d0e10ca2072f4ca8191c4b507ae26fba7ed9",
       "python_source_tree_hash": "5dba9958fb30a3525ed64cd1efd9737c3109233f",
-      "generated_snapshot_tree_hash": "0919c73c1396ebd3ec79ed819100a1571cbc74fc6e7e4692f86c992123e81f2d",
+      "generated_snapshot_tree_hash": "6910bb3acf4cf62908ed6ec9e111f14d755c65772b924db777bfcf804a290cd5",
       "language_availability": [
         "python"
       ],
@@ -435,7 +435,7 @@
       ],
       "documentation_source_tree_hash": "7751d0e10ca2072f4ca8191c4b507ae26fba7ed9",
       "python_source_tree_hash": "5a514e8537ac11cfeb2e64fb7714ee6a43d8c741",
-      "generated_snapshot_tree_hash": "97ba0a8d79ccb86f44f223f63eb82b40bf008966b8d5d64cb9678837b1d2dd77",
+      "generated_snapshot_tree_hash": "f61bf872302b7088773ca6edbd00b78e9b4051eedbf218d16fcd5114c1655090",
       "language_availability": [
         "python"
       ],
@@ -466,7 +466,7 @@
       ],
       "documentation_source_tree_hash": "182494b433653293f7a76171e54920d118c085c0",
       "python_source_tree_hash": "8d258df992c057612bb577a6b85af8369ab8696e",
-      "generated_snapshot_tree_hash": "67196e8c256a091d2dc55647e34c90c838680e69507d54aca28c5fb165ca2c91",
+      "generated_snapshot_tree_hash": "def306013a660777c191677908ccbb7f99e6b5cb1debeb944c38d1c8257cac50",
       "language_availability": [
         "python"
       ],
@@ -497,7 +497,7 @@
       ],
       "documentation_source_tree_hash": "182494b433653293f7a76171e54920d118c085c0",
       "python_source_tree_hash": "b0a644717df97eaf8f01ae1cf4d94301656ea45e",
-      "generated_snapshot_tree_hash": "d7d66ee2473af35609414716fb276fab3cea8c4c06ebd1f88db07c212f8f9d5b",
+      "generated_snapshot_tree_hash": "9db44e27be3fbe5ebc075742d1563b99ab8d2157c0ea075f3d7094379ab6a4df",
       "language_availability": [
         "python"
       ],
@@ -528,7 +528,7 @@
       ],
       "documentation_source_tree_hash": "182494b433653293f7a76171e54920d118c085c0",
       "python_source_tree_hash": "f025bd96188afc4f509f45ae74d51a440669f7cd",
-      "generated_snapshot_tree_hash": "7b90aa48e3b4508d1c85e45e88343adaf4e8c402a3369aa2537bd0ed22f4c21e",
+      "generated_snapshot_tree_hash": "2b505f6f8908fd310dac598997bb6a92aa6308af2056a310323140b45d711588",
       "language_availability": [
         "python"
       ],
@@ -559,7 +559,7 @@
       ],
       "documentation_source_tree_hash": "182494b433653293f7a76171e54920d118c085c0",
       "python_source_tree_hash": "0192bf8492d6a2590eb30f3d4581a8ac8e9c1dae",
-      "generated_snapshot_tree_hash": "39e7ecb7d7128245f043bb9cf39710ad7d2fb667b7841073c5598163c0beb0c7",
+      "generated_snapshot_tree_hash": "f387d2d86370dfbce777e075d8e5876f0f41a50f67eef36f884a7d8d9bc4a990",
       "language_availability": [
         "python"
       ],
@@ -590,7 +590,7 @@
       ],
       "documentation_source_tree_hash": "182494b433653293f7a76171e54920d118c085c0",
       "python_source_tree_hash": "23baf8a7e0ae981892224fd102de7e9609d45512",
-      "generated_snapshot_tree_hash": "41bf2ee5ebb51e3d7761c65f8baa0fb210756005d16249803d38d4ab756202aa",
+      "generated_snapshot_tree_hash": "2f9dd4789c3fa8f6a53ef5feaffbe874099adbdb4946ca12b28c9f47626b1204",
       "language_availability": [
         "python"
       ],
@@ -621,7 +621,7 @@
       ],
       "documentation_source_tree_hash": "182494b433653293f7a76171e54920d118c085c0",
       "python_source_tree_hash": "2013f3c0e1799e619cf23ad7ca60f13d39088dd2",
-      "generated_snapshot_tree_hash": "cce295d659e981ccf76197e8605206582e1e1be08f04798a11c43be6dda23934",
+      "generated_snapshot_tree_hash": "d964869d8422f802235b86d01d1b7949231cc635c806fef7672a0261825389c2",
       "language_availability": [
         "python"
       ],
@@ -652,7 +652,7 @@
       ],
       "documentation_source_tree_hash": "e571b02afbd2c2af10a05d1d4cf23ef23b939f92",
       "python_source_tree_hash": "4edd79293f28f578f94f81663d5412b17b74ea7b",
-      "generated_snapshot_tree_hash": "58816c3534fa71848e8e890c63cf636dd0a23ffe1ca45b39ff1fd0d8966c89cf",
+      "generated_snapshot_tree_hash": "4abf4fca31d2274e987bc2dd3ea989ac96c08ca6cba55f11a6fb617281233daf",
       "language_availability": [
         "python"
       ],
@@ -683,7 +683,7 @@
       ],
       "documentation_source_tree_hash": "e571b02afbd2c2af10a05d1d4cf23ef23b939f92",
       "python_source_tree_hash": "76c77df266bcce849dba59c7014c6bacf01e1fb7",
-      "generated_snapshot_tree_hash": "481cc1f71a90f15be37ee28000769ebdd21ba87dddce6447ee0df9a942b827dc",
+      "generated_snapshot_tree_hash": "d5e71496d2a2687e1ad280d16e1243064b76be6fbb4a1eebb4ec561c8b589821",
       "language_availability": [
         "python"
       ],

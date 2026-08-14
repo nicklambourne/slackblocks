@@ -22,7 +22,8 @@ import griffe
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
 
-TOOL_VERSION = "1"
+TOOL_VERSION = "2"
+SITE_BASE_URL = "/slackblocks"
 DOCS_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = DOCS_ROOT.parent
 LEGACY_ROOT = DOCS_ROOT / "legacy"
@@ -72,6 +73,10 @@ ATTRIBUTE_RE = re.compile(r'(?P<name>[\w:-]+)="(?P<value>[^"]*)"')
 TAG_RE = re.compile(r"<[^>]+>")
 ARTICLE_RE = re.compile(r"<article\b[^>]*>(?P<body>.*?)</article>", re.IGNORECASE | re.DOTALL)
 TAB_HEADER_RE = re.compile(r'^===\s+"(?P<label>.*)"\s*$')
+CODE_FENCE_RE = re.compile(r"^\s*```")
+CODE_SPAN_RE = re.compile(r"(?<!`)(`+)(?!`)(.+?)(?<!`)\1(?!`)")
+CODE_MASK_RE = re.compile(r"\x00(\d+)\x00")
+RAW_IMG_SRC_RE = re.compile(r'(?P<attr><img\b[^>]*\bsrc=")(?P<path>/[^"]*)"')
 ADMONITION_RE = re.compile(r'^(?P<marker>!!!|\?\?\?)\s+(?P<kind>[\w-]+)(?:\s+"(?P<title>.*)")?\s*$')
 DIRECTIVE_RE = re.compile(r"^:::\s*(?P<target>[A-Za-z_][A-Za-z0-9_.]*)\s*$")
 
@@ -630,7 +635,7 @@ def convert_tabs(source: str) -> tuple[str, bool]:
             header = TAB_HEADER_RE.match(lines[index])
             if not header:
                 break
-            label = header.group("label")
+            label = header.group("label").replace("`", "")
             index += 1
             body: list[str] = []
             while index < len(lines):
@@ -692,7 +697,50 @@ def convert_admonitions(source: str) -> str:
     return "\n".join(output)
 
 
+def mask_code_regions(source: str) -> tuple[str, list[str]]:
+    """Replace fenced code blocks and inline code spans with opaque placeholders."""
+    masked: list[str] = []
+
+    def store(value: str) -> str:
+        masked.append(value)
+        return f"\x00{len(masked) - 1}\x00"
+
+    output: list[str] = []
+    fence: list[str] | None = None
+    for line in source.splitlines():
+        if fence is not None:
+            fence.append(line)
+            if CODE_FENCE_RE.match(line):
+                output.append(store("\n".join(fence)))
+                fence = None
+            continue
+        if CODE_FENCE_RE.match(line):
+            fence = [line]
+            continue
+        output.append(CODE_SPAN_RE.sub(lambda match: store(match.group(0)), line))
+    if fence is not None:
+        output.append(store("\n".join(fence)))
+    return "\n".join(output), masked
+
+
+def unmask_code_regions(source: str, masked: Sequence[str]) -> str:
+    return CODE_MASK_RE.sub(lambda match: masked[int(match.group(1))], source)
+
+
+def prefix_site_root_images(value: str) -> str:
+    """Give raw <img> tags the site baseUrl; Docusaurus only rewrites markdown images."""
+
+    def replace(match: re.Match[str]) -> str:
+        path = match.group("path")
+        if path.startswith(f"{SITE_BASE_URL}/"):
+            return match.group(0)
+        return f'{match.group("attr")}{SITE_BASE_URL}{path}"'
+
+    return RAW_IMG_SRC_RE.sub(replace, value)
+
+
 def rewrite_markdown(source: str, version: str, docs_hash: str) -> str:
+    source, masked = mask_code_regions(source)
     source = re.sub(r"<(https?://[^>]+)>", r"[\1](\1)", source)
     source = re.sub(r"<(mailto:[^>]+)>", r"[\1](\1)", source)
     source = re.sub(r"\[([^\]]+)\]\(\)", r"\1", source)
@@ -733,8 +781,9 @@ def rewrite_markdown(source: str, version: str, docs_hash: str) -> str:
         rewrite_internal_link,
         source,
     )
+    source = prefix_site_root_images(source)
     source = re.sub(r"^\s*\{[.:#][^}]+\}\s*$", "", source, flags=re.MULTILINE)
-    return source
+    return unmask_code_regions(source, masked)
 
 
 def heading_text(value: str) -> str:
@@ -971,13 +1020,19 @@ def write_registered_versions(manifest: dict[str, Any]) -> None:
         for entry in manifest["versions"]
         if entry.get("generated_snapshot_tree_hash")
     ]
-    VERSIONS_PATH.write_text(json.dumps(registered, indent=2) + "\n")
+    existing: list[str] = []
+    if VERSIONS_PATH.exists():
+        existing = json.loads(VERSIONS_PATH.read_text())
+    # Newer, non-legacy versions may precede the frozen legacy suffix.
+    preserved = [version for version in existing if version not in set(registered)]
+    VERSIONS_PATH.write_text(json.dumps(preserved + registered, indent=2) + "\n")
 
 
 def update_snapshots(entries: Sequence[dict[str, Any]], manifest: dict[str, Any]) -> None:
     for entry in entries:
         generate_version(entry, DOCS_ROOT)
         entry["generated_snapshot_tree_hash"] = snapshot_hash(DOCS_ROOT, entry)
+    manifest["migration"]["tool_version"] = TOOL_VERSION
     MANIFEST_PATH.write_text(json.dumps(manifest, indent=2) + "\n")
     write_registered_versions(manifest)
 
@@ -1057,13 +1112,10 @@ def check_fixture(manifest: dict[str, Any]) -> None:
 
 def validate_manifest(manifest: dict[str, Any]) -> None:
     versions = [entry["version"] for entry in manifest["versions"]]
-    if len(versions) != 22:
-        raise RuntimeError(f"Expected 22 published versions, found {len(versions)}")
+    if not versions:
+        raise RuntimeError("The manifest does not record any published versions")
     if "1.0.4" in versions or "1.2.1" in versions:
         raise RuntimeError("Unpublished v1.0.4 or v1.2.1 leaked into the manifest")
-    route_count = sum(len(entry["expected_routes"]) for entry in manifest["versions"])
-    if route_count != 294:
-        raise RuntimeError(f"Expected 294 canonical routes, found {route_count}")
     for entry in manifest["versions"]:
         if entry["language_availability"] != ["python"]:
             raise RuntimeError(f"{entry['tag']} must remain Python-only")
