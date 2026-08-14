@@ -1,6 +1,10 @@
-# Type Alias: SlackWire\<Type\>
+---
+title: "Type Alias: SlackWire<Type>"
+---
 
-> **SlackWire**\<`Type`\> = `Type` & [`JsonObject`](../interfaces/JsonObject.md)
+# Type Alias: SlackWire&lt;Type&gt;
+
+> **SlackWire**&lt;`Type`&gt; = `Type` & [`JsonObject`](../interfaces/JsonObject.md)
 
 Defined in: typescript/src/types.ts:17
 

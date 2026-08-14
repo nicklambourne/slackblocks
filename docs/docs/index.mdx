@@ -53,6 +53,12 @@ For convenience, [`PlainText`](reference/python/objects#plaintext) and [`Markdow
 - [`MarkdownBlock`](reference/python/blocks#markdownblock) — GitHub-flavored Markdown (Slack 2024+; richer formatting than `mrkdwn`).
 - [`RichTextBlock`](reference/python/blocks#richtextblock) — formatted text with inline styling, lists, code blocks, and quotes.
 - [`ActionsBlock`](reference/python/blocks#actionsblock) — a row of interactive elements like buttons or menus.
+- [`AlertBlock`](reference/python/blocks#alertblock) — a severity-labelled notice for a modal.
+- [`CardBlock`](reference/python/blocks#cardblock) and [`CarouselBlock`](reference/python/blocks#carouselblock) — compact linked content, individually or in a scrolling collection.
+- [`ContainerBlock`](reference/python/blocks#containerblock) — a titled group of related child blocks.
+- [`ContextActionsBlock`](reference/python/blocks#contextactionsblock) — feedback and icon controls beside contextual content.
+- [`DataTableBlock`](reference/python/blocks#datatableblock) and [`DataVisualizationBlock`](reference/python/blocks#datavisualizationblock) — structured data as a table or chart.
+- [`PlanBlock`](reference/python/blocks#planblock) and [`TaskCardBlock`](reference/python/blocks#taskcardblock) — plans, task state, rich output, and sources.
 - [`VideoBlock`](reference/python/blocks#videoblock) — embed a video from a Slack-supported provider.
 - [`ImageBlock`](reference/python/blocks#imageblock), [`ContextBlock`](reference/python/blocks#contextblock), [`InputBlock`](reference/python/blocks#inputblock), [`FileBlock`](reference/python/blocks#fileblock), [`TableBlock`](reference/python/blocks#tableblock).
 
@@ -82,24 +88,24 @@ The TypeScript package exposes data-first factories that return typed, Slack-sha
 
 ### Composition objects
 
-Factories such as [`plainText`](reference/typescript/objects/plainText), [`mrkdwn`](reference/typescript/objects/mrkdwn), and [`option`](reference/typescript/objects/option) create the small values used throughout Block Kit payloads.
+Factories such as [`plainText`](reference/typescript/objects#plaintext), [`mrkdwn`](reference/typescript/objects#mrkdwn), and [`option`](reference/typescript/objects#option) create the small values used throughout Block Kit payloads.
 
 ### Elements
 
-Interactive controls are built with factories such as [`button`](reference/typescript/elements/button), [`checkboxes`](reference/typescript/elements/checkboxes), [`staticSelect`](reference/typescript/elements/staticSelect), and [`datePicker`](reference/typescript/elements/datePicker).
+Interactive controls are built with factories such as [`button`](reference/typescript/elements#button), [`checkboxes`](reference/typescript/elements#checkboxes), [`staticSelect`](reference/typescript/elements#staticselect), and [`datePicker`](reference/typescript/elements#datepicker).
 
 ### Blocks
 
-Every block factory follows the same `<kind>Block` naming pattern: [`actionsBlock`](reference/typescript/blocks/actionsBlock), [`contextBlock`](reference/typescript/blocks/contextBlock), [`dividerBlock`](reference/typescript/blocks/dividerBlock), [`fileBlock`](reference/typescript/blocks/fileBlock), [`headerBlock`](reference/typescript/blocks/headerBlock), [`imageBlock`](reference/typescript/blocks/imageBlock), [`inputBlock`](reference/typescript/blocks/inputBlock), [`markdownBlock`](reference/typescript/blocks/markdownBlock), [`richTextBlock`](reference/typescript/blocks/richTextBlock), [`sectionBlock`](reference/typescript/blocks/sectionBlock), [`tableBlock`](reference/typescript/blocks/tableBlock), and [`videoBlock`](reference/typescript/blocks/videoBlock).
+Every block factory follows the same `<kind>Block` naming pattern. Alongside the familiar [`sectionBlock`](reference/typescript/blocks#sectionblock), [`actionsBlock`](reference/typescript/blocks#actionsblock), and [`videoBlock`](reference/typescript/blocks#videoblock), the API includes [`alertBlock`](reference/typescript/blocks#alertblock), [`cardBlock`](reference/typescript/blocks#cardblock), [`carouselBlock`](reference/typescript/blocks#carouselblock), [`containerBlock`](reference/typescript/blocks#containerblock), [`contextActionsBlock`](reference/typescript/blocks#contextactionsblock), [`dataTableBlock`](reference/typescript/blocks#datatableblock), [`dataVisualizationBlock`](reference/typescript/blocks#datavisualizationblock), [`planBlock`](reference/typescript/blocks#planblock), and [`taskCardBlock`](reference/typescript/blocks#taskcardblock).
 
 ### Messages and views
 
-Use [`message`](reference/typescript/messages/message), [`webhookMessage`](reference/typescript/messages/webhookMessage), and [`messageResponse`](reference/typescript/messages/messageResponse) for message payloads. Use [`modal`](reference/typescript/views/modal) and [`homeTab`](reference/typescript/views/homeTab) for Slack views.
+Use [`message`](reference/typescript/messages#message), [`webhookMessage`](reference/typescript/messages#webhookmessage), and [`messageResponse`](reference/typescript/messages#messageresponse) for message payloads. Use [`modal`](reference/typescript/views#modal) and [`homeTab`](reference/typescript/views#hometab) for Slack views.
 
 ### Utilities
 
-- [`blockKitBuilderUrl`](reference/typescript/utilities/blockKitBuilderUrl) creates a browser preview URL.
-- [`validate`](reference/typescript/utilities/validate) and [`assertValid`](reference/typescript/utilities/assertValid) validate existing Slack-shaped data.
+- [`blockKitBuilderUrl`](reference/typescript/utilities#blockkitbuilderurl) creates a browser preview URL.
+- [`validate`](reference/typescript/utilities#validate) and [`assertValid`](reference/typescript/utilities#assertvalid) validate existing Slack-shaped data.
 
 </TypeScript>
 </LanguageContent>

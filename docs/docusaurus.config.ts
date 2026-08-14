@@ -34,9 +34,15 @@ const TYPESCRIPT_CLASS_NAMES = new Set([
 
 const TYPESCRIPT_INTERFACE_NAMES = new Set([
   "ActionInput",
+  "AxisConfigInput",
   "ButtonInput",
+  "CardBlockInput",
+  "ChartSegmentInput",
   "ConfirmationInput",
+  "DataPointInput",
+  "DataSeriesInput",
   "FactorySettings",
+  "FeedbackButtonInput",
   "JsonObject",
   "MarkdownOptions",
   "MessageInput",
@@ -49,16 +55,20 @@ const TYPESCRIPT_INTERFACE_NAMES = new Set([
 ]);
 
 const TYPESCRIPT_TYPE_ALIAS_NAMES = new Set([
+  "AlertLevel",
   "BlockKitPayload",
+  "ContainerWidth",
   "ElementInput",
   "ErrorCategory",
   "JsonPrimitive",
   "JsonValue",
   "SlackCompatibleBlock",
+  "SlackIconName",
   "SlackObject",
   "SlackWire",
   "TextLike",
   "TextObject",
+  "TaskStatus",
 ]);
 
 const TYPESCRIPT_DOMAIN_TITLES: Record<string, string> = {
@@ -157,7 +167,7 @@ const config: Config = {
         ],
         entryPointStrategy: "expand",
         sortEntryPoints: false,
-        router: "structure",
+        router: "module",
         plugin: ["./scripts/typedoc-domain-groups.mjs"],
         tsconfig: "../typescript/tsconfig.typedoc.json",
         out: "docs/reference/typescript",
@@ -167,6 +177,16 @@ const config: Config = {
           member: "{name}",
           module: typescriptDomainTitle,
         },
+        parametersFormat: "table",
+        interfacePropertiesFormat: "table",
+        classPropertiesFormat: "table",
+        typeDeclarationFormat: "table",
+        tableColumnSettings: {
+          hideInherited: true,
+          hideSources: true,
+        },
+        disableSources: true,
+        excludeExternals: true,
         excludePrivate: true,
         excludeInternal: true,
         sidebar: {

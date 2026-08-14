@@ -1,18 +1,41 @@
+/**
+ * View factories for Slack modals and App Home tabs.
+ *
+ * @module views
+ */
 import { create } from "./internal.js";
 import { asText, type TextLike } from "./objects.js";
 import type { FactorySettings, JsonObject } from "./types.js";
 
+/**
+ * Creates a modal view payload.
+ *
+ * @param input - Modal title, blocks, controls, metadata, and callback behavior.
+ * @param settings - Per-call validation settings.
+ * @returns A validated Slack `modal` view.
+ * @throws InvalidUsageError when blocks or text fields violate Slack's constraints.
+ */
 export function modal(
   input: {
+    /** Plain-text modal title, up to 24 characters. */
     title: TextLike;
+    /** Between one and 100 modal-compatible blocks. */
     blocks: JsonObject[];
+    /** Optional plain-text close-button label. */
     close?: TextLike;
+    /** Optional plain-text submit-button label. */
     submit?: TextLike;
+    /** Opaque application metadata returned with view interactions. */
     privateMetadata?: string;
+    /** Application-defined callback identifier. */
     callbackId?: string;
+    /** Close every view above this modal when it closes. */
     clearOnClose?: boolean;
+    /** Send a `view_closed` event when the modal closes. */
     notifyOnClose?: boolean;
+    /** Application-defined external identifier. */
     externalId?: string;
+    /** Keep the submit button disabled until an input changes. */
     submitDisabled?: boolean;
   },
   settings: FactorySettings = {},
@@ -30,11 +53,23 @@ export function modal(
   );
 }
 
+/**
+ * Creates an App Home tab view payload.
+ *
+ * @param input - Home-tab blocks and optional application metadata.
+ * @param settings - Per-call validation settings.
+ * @returns A validated Slack `home` view.
+ * @throws InvalidUsageError when blocks or metadata violate Slack's constraints.
+ */
 export function homeTab(
   input: {
+    /** Between one and 100 App Home-compatible blocks. */
     blocks: JsonObject[];
+    /** Opaque application metadata returned with view interactions. */
     privateMetadata?: string;
+    /** Application-defined callback identifier. */
     callbackId?: string;
+    /** Application-defined external identifier. */
     externalId?: string;
   },
   settings: FactorySettings = {},
