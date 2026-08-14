@@ -25,10 +25,10 @@ jobs:
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
         - name: Install Docs Dependencies
-          run: uv sync --group docs
+          run: uv sync --project python --group docs
 
         - name: Build and Deploy Docs
-          run: uv run mike deploy --push --update-aliases ${{ github.ref_name }} latest
+          run: uv run --project python mike deploy --push --update-aliases ${{ github.ref_name }} latest
 
         - name: Sort versions.json on gh-pages by PEP 440 semver
           # ``mike deploy`` appends each new deploy to the end of
@@ -41,7 +41,7 @@ jobs:
             git fetch origin gh-pages
             tmpdir=$(mktemp -d)
             git worktree add "$tmpdir" gh-pages
-            uv run --with packaging python scripts/sort_versions.py "$tmpdir/versions.json"
+            uv run --project python --with packaging python scripts/sort_versions.py "$tmpdir/versions.json"
             cd "$tmpdir"
             if git diff --quiet versions.json; then
               echo "versions.json already sorted; nothing to commit."
