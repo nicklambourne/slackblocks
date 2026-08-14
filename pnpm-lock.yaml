@@ -35,7 +35,7 @@ importers:
         specifier: workspace:*
         version: link:../typescript
       docusaurus-plugin-typedoc:
-        specifier: ^1.4.2
+        specifier: 1.4.2
         version: 1.4.2(typedoc-plugin-markdown@4.12.0(typedoc@0.28.20(typescript@5.9.3)))
       prism-react-renderer:
         specifier: ^2.4.1
@@ -43,8 +43,14 @@ importers:
       raw-loader:
         specifier: ^4.0.2
         version: 4.0.2(webpack@5.109.2(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.26))(csso@5.0.5)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.26))
+      typedoc:
+        specifier: 0.28.20
+        version: 0.28.20(typescript@5.9.3)
+      typedoc-docusaurus-theme:
+        specifier: 1.4.2
+        version: 1.4.2(typedoc-plugin-markdown@4.12.0(typedoc@0.28.20(typescript@5.9.3)))
       typedoc-plugin-markdown:
-        specifier: ^4.12.0
+        specifier: 4.12.0
         version: 4.12.0(typedoc@0.28.20(typescript@5.9.3))
     devDependencies:
       '@docusaurus/tsconfig':
