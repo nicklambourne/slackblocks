@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "generate:python": "UV_CACHE_DIR=../.uv-cache uv run --project ../python --group docs python scripts/generate_python_reference.py",
-    "generate:parity": "UV_CACHE_DIR=../.uv-cache uv run --project ../python python ../spec/tools/parity.py docs/reference/parity.mdx",
-    "generate": "pnpm generate:python && pnpm generate:parity",
+    "generate": "pnpm generate:python",
     "start": "pnpm generate && docusaurus start",
     "build": "pnpm generate && docusaurus build",
     "typecheck": "tsc --noEmit",
@@ -13,8 +12,10 @@
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.2",
+    "@docusaurus/plugin-content-docs": "^3.10.2",
     "@docusaurus/plugin-client-redirects": "^3.10.2",
     "@docusaurus/preset-classic": "^3.10.2",
+    "@docusaurus/theme-common": "^3.10.2",
     "@docusaurus/types": "^3.10.2",
     "@easyops-cn/docusaurus-search-local": "^0.55.3",
     "docusaurus-plugin-typedoc": "^1.4.2",

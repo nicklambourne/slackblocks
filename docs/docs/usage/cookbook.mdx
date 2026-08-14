@@ -1,6 +1,6 @@
-import LanguageTabs, { PythonTab, TypeScriptTab } from '@site/src/components/LanguageTabs';
+import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
 
-# Cookbook
+# Recipe Book
 
 End-to-end recipes for common Slack messaging patterns. Each example produces a complete, valid `Message` (or `Modal`) you can pass directly to the Slack SDK.
 
@@ -10,8 +10,8 @@ The reference docs cover *what* each class does in isolation; this page is for *
 
 A typical CI/CD success or failure notification: header, summary fields, divider, contextual footer.
 
-<LanguageTabs>
-<PythonTab>
+<LanguageContent>
+<Python>
 
 ```python
 from slackblocks import (
@@ -60,8 +60,8 @@ def build_status_message(
     )
 ```
 
-</PythonTab>
-<TypeScriptTab>
+</Python>
+<TypeScript>
 
 ```ts
 import { context, divider, header, message, mrkdwn, section } from "slackblocks";
@@ -98,8 +98,8 @@ function buildStatusMessage(input: {
 }
 ```
 
-</TypeScriptTab>
-</LanguageTabs>
+</TypeScript>
+</LanguageContent>
 
 Tips:
 

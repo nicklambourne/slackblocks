@@ -1,3 +1,7 @@
+---
+sidebar_position: 4
+---
+
 # Contributing
 
 `slackblocks` is a monorepo containing two handwritten implementations and one shared conformance contract. A feature is complete when its wire output and validation category agree in Python and TypeScript.
@@ -55,7 +59,7 @@ The Python and TypeScript conformance suites both exercise every ID in `spec/man
 4. Implement the feature idiomatically in both packages, or record a reason in the affected skip list.
 5. Add language-native tests and update the relevant guide or executable example.
 
-Read the [conformance principles](/reference/parity) before introducing a cross-language API. Serialized JSON and validation outcomes are shared; public naming and construction style are language-native.
+When introducing a cross-language API, serialized JSON and validation outcomes are shared; public naming and construction style are language-native.
 
 ## Documentation
 
@@ -65,9 +69,9 @@ Run the local site from the repository root:
 pnpm --filter @slackblocks/docs start
 ```
 
-Narrative pages live in `docs/docs/`. Python and TypeScript API pages, plus the parity matrix, are generated during every docs build. Reusable examples live one-per-file under `docs/examples/python/` and `docs/examples/typescript/`; tests execute them and compare their output with `docs/examples/section_hello.json`.
+Narrative pages live in `docs/docs/`. Python and TypeScript API pages are generated during every docs build. Reusable examples live one-per-file under `docs/examples/python/` and `docs/examples/typescript/`; tests execute them and compare their output with `docs/examples/section_hello.json`.
 
-Use `LanguageTabs` for language-specific prose or examples. Its shared `language` group persists the selected language and mirrors it into the `?language=` query parameter.
+Use `LanguageContent` with `Python` and `TypeScript` children for language-specific prose or examples. The site-level selector controls which child is shown.
 
 ## Pull requests
 
