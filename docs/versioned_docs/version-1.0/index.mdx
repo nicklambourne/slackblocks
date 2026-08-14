@@ -1,0 +1,161 @@
+---
+sidebar_label: Welcome
+sidebar_position: 1
+---
+
+import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
+
+# Welcome to `slackblocks`!
+
+<p align="center">
+  <img width="30%" src="/slackblocks/img/sb.png" alt="slackblocks logo" />
+</p>
+
+`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python and TypeScript — without writing JSON by hand.
+
+It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control. `slackblocks` gives you:
+
+- **Typed, idiomatic APIs** for Python and TypeScript.
+- **Validation as you build** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
+- **Drop-in compatibility** with the official Slack SDKs and their plain JSON payloads.
+- **Zero runtime dependencies.**
+
+## Quickstart
+
+<LanguageContent>
+<Python>
+
+```bash
+pip install slackblocks
+```
+
+```python
+from slackblocks import Message, SectionBlock
+
+message = Message(channel="#general", blocks=SectionBlock("Hello, world!"))
+```
+
+</Python>
+<TypeScript>
+
+```bash
+pnpm add slackblocks
+```
+
+```ts
+import { message, section } from "slackblocks";
+
+const payload = message({
+  channel: "C0123456",
+  blocks: [section({ text: "Hello, world!" })],
+});
+```
+
+</TypeScript>
+</LanguageContent>
+
+See the [installation guide](usage/installation) and [sending messages guide](usage/sending_messages) to take it from here.
+
+## Components
+
+The [Slack Block Kit API](https://api.slack.com/block-kit) defines several resource types (all defined in JSON) that work together to build block-based messages.
+
+<LanguageContent>
+<Python>
+
+The Python package mirrors that hierarchy with classes.
+
+### Objects
+
+[Objects](reference/python/objects) (e.g. [`Text`](reference/python/objects#text), [`Option`](reference/python/objects#option), [`Confirm`](reference/python/objects#confirm)) are the lowest-level primitives — small composable pieces that populate [Elements](reference/python/elements) and [Blocks](reference/python/blocks).
+
+For convenience, [`PlainText`](reference/python/objects#plaintext) and [`Markdown`](reference/python/objects#markdown) are thin subclasses of `Text` that you can use anywhere a `Text` is expected — `PlainText("Hi", emoji=True)` reads more naturally than `Text("Hi", type_=TextType.PLAINTEXT, emoji=True)`.
+
+### Elements
+
+[Elements](reference/python/elements) are typically interactive UI controls that go *inside* blocks. The [`CheckboxGroup`](reference/python/elements#checkboxgroup) element, for instance, takes one or more [`Option`](reference/python/objects#option) items and presents a checkbox menu.
+
+### Blocks
+
+[Blocks](reference/python/blocks) are the core visual unit of a message. Different block classes produce different UI:
+
+- [`SectionBlock`](reference/python/blocks#sectionblock) — a chunk of markdown text, optionally with an accessory element.
+- [`HeaderBlock`](reference/python/blocks#headerblock) — a large bold title.
+- [`DividerBlock`](reference/python/blocks#dividerblock) — a visual separator (like an HTML `<hr>`).
+- [`MarkdownBlock`](reference/python/blocks#markdownblock) — GitHub-flavored Markdown (Slack 2024+; richer formatting than `mrkdwn`).
+- [`RichTextBlock`](reference/python/blocks#richtextblock) — formatted text with inline styling, lists, code blocks, and quotes.
+- [`ActionsBlock`](reference/python/blocks#actionsblock) — a row of interactive elements like buttons or menus.
+- [`VideoBlock`](reference/python/blocks#videoblock) — embed a video from a Slack-supported provider.
+- [`ImageBlock`](reference/python/blocks#imageblock), [`ContextBlock`](reference/python/blocks#contextblock), [`InputBlock`](reference/python/blocks#inputblock), [`FileBlock`](reference/python/blocks#fileblock), [`TableBlock`](reference/python/blocks#tableblock).
+
+See [Using Blocks](usage/using_blocks) for examples of all block types side-by-side with their JSON output and Slack rendering.
+
+### Messages
+
+[Messages](reference/python/messages) are a convenience wrapper around blocks that can be unpacked directly into the Slack SDK's `chat_postMessage` (and friends).
+
+- [`Message`](reference/python/messages#message) — a normal channel message.
+- [`WebhookMessage`](reference/python/messages#webhookmessage) — for incoming webhooks.
+- [`MessageResponse`](reference/python/messages#messageresponse) — replies to slash commands and interactions.
+
+### Views
+
+[Views](reference/python/views) are an alternative usage of blocks that build custom UI surfaces in Slack — modal dialogs and the App Home tab — typically used by interactive Slack apps.
+
+### Utilities
+
+- [`block_kit_builder_url(payload, team_id=None)`](reference/python/builder#block_kit_builder_url) — turn any block, list of blocks, message, or view into a [Block Kit Builder](https://app.slack.com/block-kit-builder) URL for browser-based preview.
+- [`Block.from_dict(data)`](reference/python/blocks#block) — parse a Slack-shaped block payload back into a `slackblocks` object. Per-class `from_dict` parsers are also available on every composition object.
+
+</Python>
+<TypeScript>
+
+The TypeScript package exposes data-first factories that return typed, Slack-shaped objects.
+
+### Composition objects
+
+Factories such as [`plainText`](reference/typescript/functions/plainText), [`mrkdwn`](reference/typescript/functions/mrkdwn), and [`option`](reference/typescript/functions/option) create the small values used throughout Block Kit payloads.
+
+### Elements
+
+Interactive controls are built with factories such as [`button`](reference/typescript/functions/button), [`checkboxes`](reference/typescript/functions/checkboxes), [`staticSelect`](reference/typescript/functions/staticSelect), and [`datePicker`](reference/typescript/functions/datePicker).
+
+### Blocks
+
+Block factories include [`section`](reference/typescript/functions/section), [`header`](reference/typescript/functions/header), [`divider`](reference/typescript/functions/divider), [`actions`](reference/typescript/functions/actions), [`richTextBlock`](reference/typescript/functions/richTextBlock), [`markdownBlock`](reference/typescript/functions/markdownBlock), and [`table`](reference/typescript/functions/table).
+
+### Messages and views
+
+Use [`message`](reference/typescript/functions/message), [`webhookMessage`](reference/typescript/functions/webhookMessage), and [`messageResponse`](reference/typescript/functions/messageResponse) for message payloads. Use [`modal`](reference/typescript/functions/modal) and [`homeTab`](reference/typescript/functions/homeTab) for Slack views.
+
+### Utilities
+
+- [`blockKitBuilderUrl`](reference/typescript/functions/blockKitBuilderUrl) creates a browser preview URL.
+- [`validate`](reference/typescript/functions/validate) and [`assertValid`](reference/typescript/functions/assertValid) validate existing Slack-shaped data.
+
+</TypeScript>
+</LanguageContent>
+
+## Guides
+
+<LanguageContent>
+<Python>
+
+- [Installation](usage/installation)
+- [Using Blocks](usage/using_blocks)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook) — complete end-to-end recipes for common message patterns.
+- [Troubleshooting & FAQ](usage/troubleshooting.md)
+- [Migrating from 1.x to 2.x](usage/migration) — upgrade guide for `1.x` users.
+- [Contributing](contributing) — developing and contributing to `slackblocks` itself.
+
+</Python>
+<TypeScript>
+
+- [Installation](usage/installation)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook) — complete end-to-end recipes for common message patterns.
+- [Contributing](contributing) — developing and contributing to `slackblocks` itself.
+
+</TypeScript>
+</LanguageContent>

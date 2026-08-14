@@ -1,6 +1,6 @@
 {
   "name": "slackblocks",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Typed Block Kit construction with eager, path-aware validation",
   "type": "module",
   "sideEffects": false,
