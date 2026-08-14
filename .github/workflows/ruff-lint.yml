@@ -2,12 +2,12 @@ name: Ruff Lint
 
 on:
   push:
+    branches: [master]
     paths:
       - "python/**"
       - "docs/scripts/**"
       - ".github/workflows/ruff-lint.yml"
   pull_request:
-    branches: [master]
     paths:
       - "python/**"
       - "docs/scripts/**"
