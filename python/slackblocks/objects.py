@@ -422,7 +422,7 @@ class Option(CompositionObject):
     ) -> None:
         super().__init__(type_=CompositionObjectType.OPTION)
         self.text = Text.to_text_nonnull(text, max_length=75)
-        self.value = validate_string_nonnull(value, field_name="value", max_length=75)
+        self.value = validate_string_nonnull(value, field_name="value", max_length=150)
         self.description = Text.to_text(
             description, max_length=75, force_plaintext=True, allow_none=True
         )
