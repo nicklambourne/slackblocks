@@ -8,10 +8,6 @@ on:
       - "docs/scripts/**"
       - ".github/workflows/ruff-format.yml"
   pull_request:
-    paths:
-      - "python/**"
-      - "docs/scripts/**"
-      - ".github/workflows/ruff-format.yml"
 
 permissions:
   contents: read
@@ -21,7 +17,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: Detect relevant changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Compare changed files against this workflow's scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ]; then
+            # Fail open: if the file list cannot be read, run the real checks.
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if grep -qE '^(python/|docs/scripts/|\.github/workflows/ruff-format\.yml$)' <<<"$files"; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
+
   formatting:
+    needs: changes
+    if: needs.changes.outputs.relevant == 'true'
     name: Ruff Format
     runs-on: ubuntu-latest
     defaults:
