@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useLanguage, type Language } from "@site/src/components/LanguageContext";
+import { useLocation } from "@docusaurus/router";
+import {
+  legacyDocumentationVersion,
+  useLanguage,
+  type Language,
+} from "@site/src/components/LanguageContext";
 
 type Props = {
   mobile?: boolean;
@@ -54,11 +59,14 @@ function LanguageLogo({ language }: { language: Language }) {
 
 export default function LanguageSelector({ mobile = false }: Props) {
   const { language, selectLanguage } = useLanguage();
+  const location = useLocation();
+  const legacyVersion = legacyDocumentationVersion(location.pathname);
   const [open, setOpen] = useState(false);
   const selectorRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const selectedLanguage: Language = legacyVersion ? "python" : language;
   const otherLanguage: Language =
-    language === "python" ? "typescript" : "python";
+    selectedLanguage === "python" ? "typescript" : "python";
 
   useEffect(() => {
     if (!open) return undefined;
@@ -93,14 +101,14 @@ export default function LanguageSelector({ mobile = false }: Props) {
       <button
         aria-expanded={open}
         aria-haspopup="menu"
-        aria-label={`Documentation language: ${languageLabels[language]}`}
+        aria-label={`Documentation language: ${languageLabels[selectedLanguage]}`}
         className="language-selector__trigger"
         onClick={() => setOpen((visible) => !visible)}
         ref={triggerRef}
         type="button"
       >
-        <LanguageLogo language={language} />
-        <span>{languageLabels[language]}</span>
+        <LanguageLogo language={selectedLanguage} />
+        <span>{languageLabels[selectedLanguage]}</span>
         <span aria-hidden="true" className="language-selector__caret" />
       </button>
       {open && (
@@ -108,6 +116,7 @@ export default function LanguageSelector({ mobile = false }: Props) {
           <li>
             <button
               className="language-selector__option"
+              disabled={Boolean(legacyVersion)}
               onClick={() => {
                 selectLanguage(otherLanguage);
                 setOpen(false);
@@ -116,7 +125,11 @@ export default function LanguageSelector({ mobile = false }: Props) {
               type="button"
             >
               <LanguageLogo language={otherLanguage} />
-              <span>{languageLabels[otherLanguage]}</span>
+              <span>
+                {legacyVersion
+                  ? "TypeScript starts at 2.1.0"
+                  : languageLabels[otherLanguage]}
+              </span>
             </button>
           </li>
         </ul>

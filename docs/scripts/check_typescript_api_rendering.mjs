@@ -8,10 +8,6 @@ const referenceDirectory = path.resolve(
   scriptsDirectory,
   "../docs/reference/typescript",
 );
-const versionedReferenceDirectory = path.resolve(
-  scriptsDirectory,
-  "../versioned_docs/version-1.0/reference/typescript/type-aliases",
-);
 const referenceFiles = (await readdir(referenceDirectory)).filter((file) =>
   file.endsWith(".md"),
 );
@@ -114,21 +110,6 @@ for (const name of ["SlackObject", "SlackWire"]) {
     utilities,
     new RegExp("^> \\*\\*" + name + "\\*\\*&lt;`Type`&gt;", "m"),
     `${name}<Type> is not safely escaped in its declaration`,
-  );
-
-  const versionedPage = await readFile(
-    path.join(versionedReferenceDirectory, `${name}.md`),
-    "utf8",
-  );
-  assert.match(
-    versionedPage,
-    new RegExp(`^title: "Type Alias: ${name}<Type>"$`, "m"),
-    `${name}<Type> is missing from the versioned page metadata`,
-  );
-  assert.match(
-    versionedPage,
-    new RegExp(`^# Type Alias: ${name}&lt;Type&gt;$`, "m"),
-    `${name}<Type> is not safely escaped in the versioned page title`,
   );
 }
 
