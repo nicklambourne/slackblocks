@@ -23,6 +23,14 @@ function textValue(value: unknown): string | undefined {
   return undefined;
 }
 
+function codePointLength(value: string): number {
+  let length = 0;
+  for (const _ of value) {
+    length += 1;
+  }
+  return length;
+}
+
 function objectAt(value: JsonValue | undefined, path: string): JsonObject {
   if (value === null || Array.isArray(value) || typeof value !== "object") {
     throw new TypeMismatchError(path, "expected an object");
@@ -41,11 +49,12 @@ function length(
   maximum?: number,
 ): void {
   if (value === undefined) return;
-  if (minimum !== undefined && value.length < minimum) {
-    throw new LengthError(path, `${value.length} is less than minimum ${minimum}`);
+  const size = typeof value === "string" ? codePointLength(value) : value.length;
+  if (minimum !== undefined && size < minimum) {
+    throw new LengthError(path, `${size} is less than minimum ${minimum}`);
   }
-  if (maximum !== undefined && value.length > maximum) {
-    throw new LengthError(path, `${value.length} exceeds maximum ${maximum}`);
+  if (maximum !== undefined && size > maximum) {
+    throw new LengthError(path, `${size} exceeds maximum ${maximum}`);
   }
 }
 
@@ -71,7 +80,10 @@ function textCharacterCount(value: JsonValue): number {
   if (value !== null && typeof value === "object") {
     return Object.entries(value).reduce<number>(
       (total, [key, nested]) =>
-        total + (key === "text" && typeof nested === "string" ? nested.length : textCharacterCount(nested)),
+        total +
+        (key === "text" && typeof nested === "string"
+          ? codePointLength(nested)
+          : textCharacterCount(nested)),
       0,
     );
   }
@@ -195,6 +207,7 @@ const INPUT_ELEMENT_TYPES = new Set([
   "radio_buttons",
   "datepicker",
   "datetimepicker",
+  "timepicker",
   "channels_select",
   "multi_channels_select",
   "conversations_select",
@@ -208,7 +221,179 @@ const INPUT_ELEMENT_TYPES = new Set([
   "rich_text_input",
   "email_text_input",
   "url_text_input",
+  "file_input",
 ]);
+
+const REQUIRED_FIELDS: Record<string, readonly string[]> = {
+  actions: ["elements"],
+  alert: ["text"],
+  area: ["series", "axis_config"],
+  bar: ["series", "axis_config"],
+  button: ["text", "action_id"],
+  carousel: ["elements"],
+  channel: ["channel_id"],
+  channels_select: ["action_id"],
+  checkboxes: ["action_id", "options"],
+  container: ["child_blocks"],
+  context: ["elements"],
+  context_actions: ["elements"],
+  conversations_select: ["action_id"],
+  data_table: ["rows", "caption"],
+  data_visualization: ["title", "chart"],
+  datepicker: ["action_id"],
+  datetimepicker: ["action_id"],
+  email_text_input: ["action_id"],
+  emoji: ["name"],
+  external_select: ["action_id"],
+  feedback_buttons: ["positive_button", "negative_button"],
+  file: ["external_id"],
+  file_input: ["action_id"],
+  header: ["text"],
+  home: ["blocks"],
+  icon_button: ["text"],
+  image: ["alt_text"],
+  input: ["label", "element"],
+  line: ["series", "axis_config"],
+  link: ["url"],
+  markdown: ["text"],
+  modal: ["title", "blocks"],
+  multi_channels_select: ["action_id"],
+  multi_conversations_select: ["action_id"],
+  multi_external_select: ["action_id"],
+  multi_static_select: ["action_id"],
+  multi_users_select: ["action_id"],
+  number_input: ["action_id"],
+  overflow: ["action_id", "options"],
+  pie: ["segments"],
+  plain_text_input: ["action_id"],
+  plan: ["title"],
+  radio_buttons: ["action_id", "options"],
+  rich_text: ["elements"],
+  rich_text_input: ["action_id"],
+  rich_text_list: ["style", "elements"],
+  rich_text_preformatted: ["elements"],
+  rich_text_quote: ["elements"],
+  rich_text_section: ["elements"],
+  static_select: ["action_id"],
+  table: ["rows"],
+  task_card: ["task_id", "title"],
+  text: ["text"],
+  timepicker: ["action_id"],
+  url: ["url", "text"],
+  url_text_input: ["action_id"],
+  user: ["user_id"],
+  usergroup: ["usergroup_id"],
+  users_select: ["action_id"],
+  video: ["alt_text", "thumbnail_url", "title", "video_url"],
+  workflow_button: ["text", "workflow"],
+};
+
+const CONFIRM_SUPPORTING_TYPES = new Set([
+  "button",
+  "channels_select",
+  "checkboxes",
+  "conversations_select",
+  "datepicker",
+  "datetimepicker",
+  "external_select",
+  "icon_button",
+  "multi_channels_select",
+  "multi_conversations_select",
+  "multi_external_select",
+  "multi_static_select",
+  "multi_users_select",
+  "overflow",
+  "radio_buttons",
+  "static_select",
+  "timepicker",
+  "users_select",
+  "workflow_button",
+]);
+
+const OPTION_URL_MAX_LENGTH = 3000;
+
+const TABLE_MAX_ROWS = 100;
+const TABLE_MAX_COLUMNS = 20;
+
+function validateOptionEntry(value: JsonValue, path: string): void {
+  const option = objectAt(value, path);
+  for (const field of ["text", "value"] as const) {
+    if (option[field] === undefined) {
+      throw new MissingRequiredError(path, `expected ${field}`);
+    }
+  }
+  length(
+    textValue(option.text),
+    child(path, "text.text"),
+    undefined,
+    limits.option.text.max_length,
+  );
+  if (typeof option.value === "string") {
+    length(option.value, child(path, "value"), undefined, limits.option.value.max_length);
+  }
+  if (option.description !== undefined) {
+    length(
+      textValue(option.description),
+      child(path, "description.text"),
+      undefined,
+      limits.option.description.max_length,
+    );
+  }
+  if (typeof option.url === "string") {
+    length(option.url, child(path, "url"), undefined, OPTION_URL_MAX_LENGTH);
+  }
+}
+
+function validateOptionEntries(object: JsonObject, path: string): void {
+  if (Array.isArray(object.options)) {
+    object.options.forEach((option, index) =>
+      validateOptionEntry(option, `${child(path, "options")}[${index}]`),
+    );
+  }
+  if (Array.isArray(object.option_groups)) {
+    object.option_groups.forEach((rawGroup, index) => {
+      const groupPath = `${child(path, "option_groups")}[${index}]`;
+      const group = objectAt(rawGroup, groupPath);
+      for (const field of ["label", "options"] as const) {
+        if (group[field] === undefined) {
+          throw new MissingRequiredError(groupPath, `expected ${field}`);
+        }
+      }
+      length(
+        textValue(group.label),
+        child(groupPath, "label.text"),
+        undefined,
+        limits.option_group.label.max_length,
+      );
+      if (Array.isArray(group.options)) {
+        length(
+          group.options,
+          child(groupPath, "options"),
+          limits.option_group.options.min_items,
+          limits.option_group.options.max_items,
+        );
+        group.options.forEach((option, optionIndex) =>
+          validateOptionEntry(option, `${child(groupPath, "options")}[${optionIndex}]`),
+        );
+      }
+    });
+  }
+}
+
+function validateConfirmObject(value: JsonValue, path: string): void {
+  const confirm = objectAt(value, path);
+  for (const [field, maximum] of [
+    ["title", limits.confirmation.title.max_length],
+    ["text", limits.confirmation.text.max_length],
+    ["confirm", limits.confirmation.confirm.max_length],
+    ["deny", limits.confirmation.deny.max_length],
+  ] as const) {
+    if (confirm[field] === undefined) {
+      throw new MissingRequiredError(path, `expected ${field}`);
+    }
+    length(textValue(confirm[field]), child(path, `${field}.text`), undefined, maximum);
+  }
+}
 
 function validateKnownObject(object: JsonObject, path: string): void {
   const type = object.type;
@@ -219,6 +404,16 @@ function validateKnownObject(object: JsonObject, path: string): void {
   const actionId = object.action_id;
   if (typeof actionId === "string") {
     length(actionId, child(path, "action_id"), undefined, limits.action_id.max_length);
+  }
+  if (typeof type === "string") {
+    for (const field of REQUIRED_FIELDS[type] ?? []) {
+      if (object[field] === undefined) {
+        throw new MissingRequiredError(path, `expected ${field}`);
+      }
+    }
+    if (CONFIRM_SUPPORTING_TYPES.has(type) && object.confirm !== undefined) {
+      validateConfirmObject(object.confirm, child(path, "confirm"));
+    }
   }
 
   switch (type) {
@@ -368,6 +563,14 @@ function validateKnownObject(object: JsonObject, path: string): void {
           limits.overflow.options.max_items,
         );
       }
+      validateOptionEntries(object, path);
+      break;
+    case "checkboxes":
+    case "radio_buttons":
+      if (Array.isArray(object.options)) {
+        length(object.options, child(path, "options"), 1, 10);
+      }
+      validateOptionEntries(object, path);
       break;
     case "static_select":
     case "multi_static_select":
@@ -393,6 +596,7 @@ function validateKnownObject(object: JsonObject, path: string): void {
           limits.select.option_groups.max_items,
         );
       }
+      validateOptionEntries(object, path);
       if (object.placeholder !== undefined) {
         length(
           textValue(object.placeholder),
@@ -412,6 +616,9 @@ function validateKnownObject(object: JsonObject, path: string): void {
       }
       break;
     case "image":
+      if (object.image_url === undefined && object.slack_file === undefined) {
+        throw new MissingRequiredError(path, "expected image_url or slack_file");
+      }
       if (object.image_url !== undefined && object.slack_file !== undefined) {
         throw new MutualExclusivityError(
           path,
@@ -625,9 +832,53 @@ function validateKnownObject(object: JsonObject, path: string): void {
       if (typeof object.caption !== "string") {
         throw new TypeMismatchError(child(path, "caption"), "expected a string");
       }
+      length(object.caption, child(path, "caption"), 1);
       const contentLength = textCharacterCount(object.rows);
       if (contentLength > limits.data_table.content.max_length) {
         throw new LengthError(child(path, "rows"), `${contentLength} exceeds maximum ${limits.data_table.content.max_length}`);
+      }
+      break;
+    }
+    case "table": {
+      if (!Array.isArray(object.rows)) {
+        throw new TypeMismatchError(child(path, "rows"), "expected an array");
+      }
+      length(object.rows, child(path, "rows"), 1, TABLE_MAX_ROWS);
+      let columns: number | undefined;
+      object.rows.forEach((rawRow, rowIndex) => {
+        const rowPath = `${child(path, "rows")}[${rowIndex}]`;
+        if (!Array.isArray(rawRow)) {
+          throw new TypeMismatchError(rowPath, "expected an array");
+        }
+        length(rawRow, rowPath, undefined, TABLE_MAX_COLUMNS);
+        columns ??= rawRow.length;
+        if (rawRow.length !== columns) {
+          throw new InvalidUsageError(rowPath, "column count differs");
+        }
+        rawRow.forEach((rawCell, cellIndex) => {
+          const cellPath = `${rowPath}[${cellIndex}]`;
+          const cell = objectAt(rawCell, cellPath);
+          if (!["raw_text", "rich_text"].includes(String(cell.type))) {
+            throw new TypeMismatchError(cellPath, "unsupported table cell");
+          }
+        });
+      });
+      if (object.column_settings !== undefined) {
+        if (!Array.isArray(object.column_settings)) {
+          throw new TypeMismatchError(child(path, "column_settings"), "expected an array");
+        }
+        length(
+          object.column_settings,
+          child(path, "column_settings"),
+          undefined,
+          TABLE_MAX_COLUMNS,
+        );
+        if (object.column_settings.length !== columns) {
+          throw new InvalidUsageError(
+            child(path, "column_settings"),
+            "expected one entry for every column",
+          );
+        }
       }
       break;
     }
@@ -810,6 +1061,9 @@ function validateKnownObject(object: JsonObject, path: string): void {
 }
 
 function visit(value: JsonValue, path: string): void {
+  if (typeof value === "number" && !Number.isFinite(value)) {
+    throw new TypeMismatchError(path, "expected a finite number");
+  }
   if (Array.isArray(value)) {
     value.forEach((nested, index) => visit(nested, `${path}[${index}]`));
     return;
@@ -817,6 +1071,7 @@ function visit(value: JsonValue, path: string): void {
   if (value !== null && typeof value === "object") {
     validateKnownObject(value, path);
     for (const [key, nested] of Object.entries(value)) {
+      if (key === "event_payload") continue;
       visit(nested, path ? `${path}.${key}` : key);
     }
   }
@@ -840,6 +1095,18 @@ export function assertValid(payload: JsonValue): asserts payload is BlockKitPayl
 
 /**
  * Checks whether a value is a valid Block Kit payload without throwing for validation failures.
+ *
+ * Validation identifies objects by their `type` field, so it enforces required
+ * fields and limits for every typed block, element, view, and rich-text object,
+ * and it validates type-less `options`, `option_groups`, and `confirm`
+ * composition objects contextually through their typed parents. Known
+ * asymmetries with factory validation remain for type-less objects that
+ * appear without a typed parent: standalone confirmation dialogs, options,
+ * option groups, attachments, message payloads, workflow objects, and chart
+ * axis configurations pass unchecked, and one-of rules enforced only by
+ * factory signatures (for example `slackFile` requiring exactly one source)
+ * are not rediscovered from raw JSON. The contents of message metadata
+ * `event_payload` objects are always treated as opaque user data and skipped.
  *
  * @param payload - Unknown value to validate.
  * @returns `true` for a valid payload; otherwise `false`.
