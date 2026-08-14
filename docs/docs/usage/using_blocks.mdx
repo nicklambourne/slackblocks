@@ -129,15 +129,15 @@ RichTextBlock(
     RichTextSection(
         [
             RichText(
-                "You 'bout to witness hip-hop in its most purest",
+                "You 'bout to witness hip-hop in its most purest\n",
                 bold=True,
             ),
             RichText(
-                "Most rawest form, flow almost flawless",
+                "Most rawest form, flow almost flawless\n",
                 strike=True,
             ),
             RichText(
-                "Most hardest, most honest known artist",
+                "Most hardest, most honest known artist\n",
                 italic=True,
             ),
         ]
@@ -229,6 +229,7 @@ from slackblocks import HeaderBlock
 
 HeaderBlock(
     "This is a header block",
+    block_id="fake_block_id",
 )
 ```
 
@@ -236,10 +237,11 @@ HeaderBlock(
 <TypeScript>
 
 ```ts
-import { headerBlock, plainText } from "@nicklambourne/slackblocks";
+import { headerBlock } from "@nicklambourne/slackblocks";
 
 headerBlock({
-  text: plainText("This is a header block", { emoji: true }),
+  text: "This is a header block",
+  blockId: "fake_block_id",
 });
 ```
 
@@ -252,10 +254,10 @@ headerBlock({
 ```json
 {
     "type": "header",
+    "block_id": "fake_block_id",
     "text": {
         "type": "plain_text",
-        "text": "This is a header block",
-        "emoji": true
+        "text": "This is a header block"
     }
 }
 ```
@@ -288,6 +290,7 @@ from slackblocks import MarkdownBlock
 
 MarkdownBlock(
     text="**Hello!** Markdown blocks support _GitHub-flavored_ syntax.",
+    block_id="fake_block_id",
 )
 ```
 
@@ -299,6 +302,7 @@ import { markdownBlock } from "@nicklambourne/slackblocks";
 
 markdownBlock({
   text: "**Hello!** Markdown blocks support _GitHub-flavored_ syntax.",
+  blockId: "fake_block_id",
 });
 ```
 
@@ -311,6 +315,7 @@ markdownBlock({
 ```json
 {
     "type": "markdown",
+    "block_id": "fake_block_id",
     "text": "**Hello!** Markdown blocks support _GitHub-flavored_ syntax."
 }
 ```
@@ -471,7 +476,7 @@ inputBlock({
 ```python
 from slackblocks import DividerBlock
 
-DividerBlock()
+DividerBlock(block_id="fake_block_id")
 ```
 
 </Python>
@@ -480,7 +485,7 @@ DividerBlock()
 ```ts
 import { dividerBlock } from "@nicklambourne/slackblocks";
 
-dividerBlock();
+dividerBlock({ blockId: "fake_block_id" });
 ```
 
 </TypeScript>
@@ -491,7 +496,8 @@ dividerBlock();
 
 ```json
 {
-    "type": "divider"
+    "type": "divider",
+    "block_id": "fake_block_id"
 }
 ```
 
@@ -752,6 +758,7 @@ from slackblocks import (
 )
 
 TableBlock(
+    block_id="fake_block_id",
     column_settings=[
         ColumnSettings(align="right", is_wrapped=True),
         ColumnSettings(align="left"),
@@ -795,6 +802,7 @@ import {
 } from "@nicklambourne/slackblocks";
 
 tableBlock({
+  blockId: "fake_block_id",
   columnSettings: [
     columnSettings({ align: "right", isWrapped: true }),
     columnSettings({ align: "left" }),
@@ -828,77 +836,74 @@ tableBlock({
 
 ```json
 {
-    "blocks": [
-        {
-            "type": "table",
-            "rows": [
-                [
+    "type": "table",
+    "block_id": "fake_block_id",
+    "rows": [
+        [
+            {
+                "type": "rich_text",
+                "elements": [
                     {
-                        "type": "rich_text",
+                        "type": "rich_text_section",
                         "elements": [
                             {
-                                "type": "rich_text_section",
-                                "elements": [
-                                    {
-                                        "type": "text",
-                                        "text": "Header 1",
-                                        "style": {
-                                            "bold": true
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "type": "rich_text",
-                        "elements": [
-                            {
-                                "type": "rich_text_section",
-                                "elements": [
-                                    {
-                                        "type": "text",
-                                        "text": "Header 2",
-                                        "style": {
-                                            "bold": true
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ],
-                [
-                    {
-                        "type": "rich_text",
-                        "elements": [
-                            {
-                                "type": "rich_text_section",
-                                "elements": [
-                                    {
-                                        "type": "text",
-                                        "text": "Datum 1"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "type": "rich_text",
-                        "elements": [
-                            {
-                                "type": "rich_text_section",
-                                "elements": [
-                                    {
-                                        "type": "text",
-                                        "text": "Datum 2"
-                                    }
-                                ]
+                                "type": "text",
+                                "text": "Header 1",
+                                "style": {
+                                    "bold": true
+                                }
                             }
                         ]
                     }
                 ]
-            ]
+            },
+            {
+                "type": "rich_text",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Header 2",
+                                "style": {
+                                    "bold": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        [
+            {
+                "type": "raw_text",
+                "text": "Datum 1"
+            },
+            {
+                "type": "rich_text",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https://slack.com",
+                                "text": "Datum 2"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    ],
+    "column_settings": [
+        {
+            "align": "right",
+            "is_wrapped": true
+        },
+        {
+            "align": "left"
         }
     ]
 }
@@ -932,6 +937,7 @@ from slackblocks import VideoBlock
 
 VideoBlock(
     alt_text="How to use slackblocks",
+    block_id="fake_block_id",
     thumbnail_url="https://example.com/thumb.png",
     title="Getting Started",
     video_url="https://example.com/video.mp4",
@@ -950,6 +956,7 @@ import { videoBlock } from "@nicklambourne/slackblocks";
 
 videoBlock({
   altText: "How to use slackblocks",
+  blockId: "fake_block_id",
   thumbnailUrl: "https://example.com/thumb.png",
   title: "Getting Started",
   videoUrl: "https://example.com/video.mp4",
@@ -969,6 +976,7 @@ videoBlock({
 ```json
 {
     "type": "video",
+    "block_id": "fake_block_id",
     "alt_text": "How to use slackblocks",
     "thumbnail_url": "https://example.com/thumb.png",
     "title": {
