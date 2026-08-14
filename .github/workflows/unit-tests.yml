@@ -1,16 +1,22 @@
 name: Unit Tests
+
 on:
   push:
     branches: [master]
     paths:
       - "python/**"
       - "spec/**"
+      - "docs/examples/python/**"
       - ".github/workflows/unit-tests.yml"
   pull_request:
     paths:
       - "python/**"
       - "spec/**"
+      - "docs/examples/python/**"
       - ".github/workflows/unit-tests.yml"
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,24 +30,24 @@ jobs:
       run:
         shell: bash
         working-directory: python
-
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
-
     steps:
-      - name: Check Out Source Repository
-        uses: actions/checkout@v5
+      - name: Check out repository
+        uses: actions/checkout@v7
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
+      - name: Install uv and Python ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v10.0.0
         with:
           enable-cache: true
           cache-dependency-glob: python/uv.lock
+          python-version: ${{ matrix.python-version }}
 
-      - name: Install Dependencies
-        run: uv sync
+      - name: Install dependencies
+        run: uv sync --frozen --group dev
 
-      - name: Test With pytest
-        run: uv run pytest test/unit test/conformance
+      - name: Run unit, conformance, and docs-example tests
+        run: uv run --frozen pytest test/unit test/conformance test/docs
