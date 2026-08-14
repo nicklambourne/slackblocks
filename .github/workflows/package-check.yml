@@ -1,11 +1,11 @@
 name: Package Check
 on:
   push:
+    branches: [master]
     paths:
       - "python/**"
       - ".github/workflows/package-check.yml"
   pull_request:
-    branches: [master]
     paths:
       - "python/**"
       - ".github/workflows/package-check.yml"
