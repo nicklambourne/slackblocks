@@ -22,6 +22,16 @@ the Python and TypeScript packages on one coordinated release number.
 
 ### Changed
 
+- **`FileInput` now emits `"type": "file_input"` in its JSON** (the field
+  was previously deliberately omitted from the rendered payload).
+- **`HeaderBlock` now enforces the 150-character limit on pre-built `Text`
+  objects** (previously only plain strings were length-checked) **and
+  converts `mrkdwn` `Text` to `plain_text`**, matching the Slack API's
+  requirement that header text be plain text.
+- **`InputBlock` now accepts `FileInput` elements.**
+- **`block_id` values longer than 255 characters now raise `LengthError`**
+  (previously they were accepted and passed through to the Slack API
+  unchecked).
 - Documentation now covers the new blocks with Python, JSON, and rendered
   Slack previews.
 - The project is now a multi-package workspace with coordinated Python and

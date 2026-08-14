@@ -1,18 +1,30 @@
 from __future__ import annotations
 
+import json
+
 import pytest
 
-from slackblocks.errors import InvalidUsageError
+from slackblocks.errors import InvalidUsageError, TypeMismatchError
 from slackblocks.objects import (
+    AreaChart,
+    AxisConfig,
+    BarChart,
+    ChartSegment,
     Confirm,
     ConfirmationDialogue,
     ConversationFilter,
+    DataPoint,
+    DataSeries,
     DispatchActionConfiguration,
     InputParameter,
+    LineChart,
     Markdown,
     Option,
     OptionGroup,
+    PieChart,
     PlainText,
+    RawNumber,
+    SlackIcon,
     Text,
     TextType,
     Trigger,
@@ -299,3 +311,62 @@ def test_workflow_from_url_preserves_param_order_and_values() -> None:
 def test_workflow_from_url_returns_workflow_instance() -> None:
     workflow = Workflow.from_url("https://slack.com/x", a="1")
     assert isinstance(workflow, Workflow)
+
+
+def test_raw_number_repr_renders_as_json() -> None:
+    assert json.loads(repr(RawNumber(42, "42"))) == {
+        "type": "raw_number",
+        "value": 42,
+        "text": "42",
+    }
+
+
+def test_slack_icon_repr_renders_as_json() -> None:
+    assert json.loads(repr(SlackIcon("bot"))) == {"type": "icon", "name": "bot"}
+
+
+def test_chart_segment_repr_renders_as_json() -> None:
+    assert json.loads(repr(ChartSegment("A", 1))) == {"label": "A", "value": 1}
+
+
+def test_data_point_repr_renders_as_json() -> None:
+    assert json.loads(repr(DataPoint("A", 1))) == {"label": "A", "value": 1}
+
+
+def test_data_series_repr_renders_as_json() -> None:
+    assert json.loads(repr(DataSeries("Series", [DataPoint("A", 1)]))) == {
+        "name": "Series",
+        "data": [{"label": "A", "value": 1}],
+    }
+
+
+def test_axis_config_repr_renders_as_json() -> None:
+    assert json.loads(repr(AxisConfig(["A"], x_label="X"))) == {
+        "categories": ["A"],
+        "x_label": "X",
+    }
+
+
+def test_pie_chart_repr_renders_as_json() -> None:
+    assert json.loads(repr(PieChart([ChartSegment("A", 1)]))) == {
+        "type": "pie",
+        "segments": [{"label": "A", "value": 1}],
+    }
+
+
+@pytest.mark.parametrize(
+    ("chart_class", "type_name"),
+    [(BarChart, "bar"), (AreaChart, "area"), (LineChart, "line")],
+)
+def test_axis_chart_repr_renders_as_json(chart_class: type, type_name: str) -> None:
+    chart = chart_class([DataSeries("Series", [DataPoint("A", 1)])], AxisConfig(["A"]))
+    assert json.loads(repr(chart)) == {
+        "type": type_name,
+        "series": [{"name": "Series", "data": [{"label": "A", "value": 1}]}],
+        "axis_config": {"categories": ["A"]},
+    }
+
+
+def test_axis_chart_axis_config_must_be_an_axis_config() -> None:
+    with pytest.raises(TypeMismatchError):
+        LineChart([DataSeries("Series", [DataPoint("A", 1)])], axis_config="nope")

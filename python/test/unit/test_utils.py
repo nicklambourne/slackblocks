@@ -10,6 +10,7 @@ from slackblocks.utils import (
     validate_int,
     validate_string,
     validate_string_nonnull,
+    validate_type,
 )
 
 
@@ -45,6 +46,24 @@ def test_coerce_to_list_lower_bound() -> None:
 def test_coerce_to_list_upper_bound() -> None:
     with pytest.raises(InvalidUsageError):
         assert coerce_to_list(["a", 1], class_=str, max_size=1)
+
+
+def test_validate_type_valid() -> None:
+    assert validate_type("a", str, "field") == "a"
+
+
+def test_validate_type_wrong_type() -> None:
+    with pytest.raises(InvalidUsageError):
+        validate_type("a", int, "field")
+
+
+def test_validate_type_allow_none() -> None:
+    assert validate_type(None, str, "field", allow_none=True) is None
+
+
+def test_validate_type_disallow_none() -> None:
+    with pytest.raises(InvalidUsageError):
+        validate_type(None, str, "field")
 
 
 def test_is_hex_valid() -> None:

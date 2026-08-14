@@ -37,6 +37,7 @@ from slackblocks.elements import (
     RichTextInput,
     StaticMultiSelectMenu,
     StaticSelectMenu,
+    TimePicker,
     URLInput,
     URLSource,
     UserMultiSelectMenu,
@@ -74,6 +75,7 @@ from slackblocks.utils import (
     validate_int,
     validate_string,
     validate_string_nonnull,
+    validate_type,
 )
 
 ALLOWED_INPUT_ELEMENTS = (
@@ -95,6 +97,7 @@ ALLOWED_INPUT_ELEMENTS = (
     UserMultiSelectMenu,
     RichTextInput,
     EmailInput,
+    TimePicker,
     URLInput,
     FileInput,
 )
@@ -167,6 +170,11 @@ class Block(RenderableMixin, ABC):
         Reads ``data["type"]`` and dispatches to the matching subclass's
         ``from_dict``.
 
+        Block types that currently round-trip: ``AlertBlock``,
+        ``ContextBlock`` (text elements only), ``DividerBlock``,
+        ``FileBlock``, ``HeaderBlock``, ``ImageBlock``, ``MarkdownBlock``,
+        ``SectionBlock`` (without an accessory), and ``VideoBlock``.
+
         Throws:
             MissingRequiredError: if ``data["type"]`` is absent.
             TypeMismatchError: if ``data["type"]`` is not a recognised
@@ -174,7 +182,13 @@ class Block(RenderableMixin, ABC):
             NotImplementedError: when the block type is recognised but its
                 round-trip parser depends on a part of the API that is not
                 yet implemented (currently: ``RichTextBlock`` and any block
-                containing elements -- see Phase 7.4b and 7.4c).
+                containing nested elements, cards, tasks, charts, or
+                rich text -- ``ActionsBlock``, ``InputBlock``,
+                ``TableBlock``, ``CardBlock``, ``CarouselBlock``,
+                ``ContainerBlock``, ``ContextActionsBlock``,
+                ``DataTableBlock``, ``DataVisualizationBlock``,
+                ``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b
+                and 7.4c).
         """
         if "type" not in data:
             raise MissingRequiredError("Block payload is missing required `type` field.")
@@ -922,7 +936,21 @@ AlertLevel: TypeAlias = Literal["default", "info", "warning", "error", "success"
 
 
 class AlertBlock(Block):
-    """A severity-labelled alert displayed in a modal."""
+    """
+    A severity-labelled alert displayed in a modal.
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/alert-block>.
+
+    Args:
+        text: the text to display in the alert (max 200 chars). Can be a
+            string or `Text` object.
+        level: the severity of the alert, one of `default`, `info`,
+            `warning`, `error`, or `success`.
+        block_id: you can use this field to provide a deterministic identifier for the block.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(
         self,
@@ -951,7 +979,35 @@ class AlertBlock(Block):
 
 
 class CardBlock(Block):
-    """A compact card with text, images, and up to three actions."""
+    """
+    A compact card with text, images, and up to three actions. Cards can
+    stand alone or be grouped in a
+    [`CarouselBlock`](/slackblocks/latest/reference/blocks/#blocks.CarouselBlock).
+
+    At least one of `hero_image`, `title`, `actions`, or `body` must be
+    provided.
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/card-block>.
+
+    Args:
+        hero_image: an `Image` element displayed prominently at the top
+            of the card.
+        icon: an `Image` element displayed as the card's icon. Cannot be
+            combined with `slack_icon`.
+        title: the card's title (max 150 chars). Can be a string or `Text` object.
+        subtitle: the card's subtitle (max 150 chars). Can be a string or `Text` object.
+        body: the card's body text (max 200 chars). Can be a string or `Text` object.
+        actions: up to three `Button` elements presented as card actions.
+        slack_icon: a `SlackIcon` naming a Slack-provided icon. Cannot be
+            combined with `icon`.
+        subtext: additional text displayed at the bottom of the card
+            (max 200 chars). Can be a string or `Text` object.
+        block_id: you can use this field to provide a deterministic identifier for the block.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation,
+            or both `icon` and `slack_icon` are provided.
+    """
 
     def __init__(
         self,
@@ -973,12 +1029,12 @@ class CardBlock(Block):
             raise MissingRequiredError(
                 "CardBlock requires at least one of `hero_image`, `title`, `actions`, or `body`."
             )
-        self.hero_image = hero_image
-        self.icon = icon
+        self.hero_image = validate_type(hero_image, Image, "hero_image", allow_none=True)
+        self.icon = validate_type(icon, Image, "icon", allow_none=True)
         self.title = Text.to_text(title, max_length=150, allow_none=True)
         self.subtitle = Text.to_text(subtitle, max_length=150, allow_none=True)
         self.body = Text.to_text(body, max_length=200, allow_none=True)
-        self.slack_icon = slack_icon
+        self.slack_icon = validate_type(slack_icon, SlackIcon, "slack_icon", allow_none=True)
         self.subtext = Text.to_text(subtext, max_length=200, allow_none=True)
 
     def _resolve(self) -> dict[str, Any]:
@@ -1004,7 +1060,20 @@ class CardBlock(Block):
 
 
 class CarouselBlock(Block):
-    """A horizontally scrolling group of between 1 and 10 cards."""
+    """
+    A horizontally scrolling group of between 1 and 10
+    [`CardBlocks`](/slackblocks/latest/reference/blocks/#blocks.CardBlock).
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/carousel-block>.
+
+    Args:
+        elements: a list of between 1 and 10 `CardBlock` objects.
+        block_id: you can use this field to provide a deterministic identifier for the block.
+
+    Throws:
+        InvalidUsageError: if any of the items in `elements` are not
+            `CardBlock` objects, or the number of cards is invalid.
+    """
 
     def __init__(self, elements: list[CardBlock], block_id: str | None = None) -> None:
         super().__init__(BlockType.CAROUSEL, block_id)
@@ -1026,7 +1095,37 @@ ContainerWidth: TypeAlias = Literal["narrow", "standard", "wide", "full"]
 
 
 class ContainerBlock(Block):
-    """A titled container grouping up to ten supported child blocks."""
+    """
+    A titled container grouping up to ten supported child blocks.
+
+    One of `title` or `rich_text_title` must be provided.
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/container-block>.
+
+    Args:
+        child_blocks: a list of between 1 and 10 blocks to display inside
+            the container. Supported child block types are actions, context,
+            divider, file, header, image, input, rich text, section, table,
+            and video blocks.
+        title: the container's title (plaintext only; max 150 chars).
+        rich_text_title: a `RichTextBlock` used as the container's title in
+            place of `title`.
+        subtitle: the container's subtitle (max 150 chars). Can be a string
+            or `Text` object.
+        width: the width of the container, one of `narrow`, `standard`,
+            `wide`, or `full`.
+        icon: an `Image` element displayed alongside the title.
+        is_collapsible: whether the container can be collapsed by the user.
+        default_collapsed: whether the container is initially collapsed
+            (requires `is_collapsible=True`).
+        has_header_divider: whether a divider is shown under the header
+            (only valid on non-collapsible containers).
+        block_id: you can use this field to provide a deterministic identifier for the block.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation,
+            or an unsupported child block type is provided.
+    """
 
     _CHILD_TYPES = {
         BlockType.ACTIONS,
@@ -1072,10 +1171,12 @@ class ContainerBlock(Block):
         if any(block.type not in self._CHILD_TYPES for block in self.child_blocks):
             raise TypeMismatchError("ContainerBlock contains an unsupported child block type.")
         self.title = Text.to_text(title, force_plaintext=True, max_length=150, allow_none=True)
-        self.rich_text_title = rich_text_title
+        self.rich_text_title = validate_type(
+            rich_text_title, RichTextBlock, "rich_text_title", allow_none=True
+        )
         self.subtitle = Text.to_text(subtitle, max_length=150, allow_none=True)
         self.width = width
-        self.icon = icon
+        self.icon = validate_type(icon, Image, "icon", allow_none=True)
         self.is_collapsible = is_collapsible
         self.default_collapsed = default_collapsed
         self.has_header_divider = has_header_divider
@@ -1104,7 +1205,19 @@ class ContainerBlock(Block):
 
 
 class ContextActionsBlock(Block):
-    """Up to five feedback or icon actions displayed as contextual controls."""
+    """
+    Up to five feedback or icon actions displayed as contextual controls.
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/context-actions-block>.
+
+    Args:
+        elements: a list of between 1 and 5 `FeedbackButtons` or
+            `IconButton` elements.
+        block_id: you can use this field to provide a deterministic identifier for the block.
+
+    Throws:
+        InvalidUsageError: if any of the items in `elements` are invalid.
+    """
 
     def __init__(
         self,
@@ -1127,7 +1240,28 @@ class ContextActionsBlock(Block):
 
 
 class DataTableBlock(Block):
-    """A sortable data table containing raw text, raw numbers, or rich text."""
+    """
+    A sortable data table containing raw text, raw numbers, or rich text.
+
+    The first row is the header row; header cells cannot contain rich text.
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/data-table-block>.
+
+    Args:
+        rows: a list of between 2 and 201 rows (one header row plus up to
+            200 data rows), each a list of between 1 and 20 `RawText`,
+            `RawNumber`, or `RichTextBlock` cells. All rows must have the
+            same number of columns, and the combined cell text cannot
+            exceed 20,000 characters.
+        caption: a description of the table for accessibility purposes.
+        page_size: the number of rows displayed per page (between 1 and 100).
+        row_header_column_index: the (zero-based) index of the column to
+            treat as the row header.
+        block_id: you can use this field to provide a deterministic identifier for the block.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(
         self,
@@ -1194,7 +1328,20 @@ def _text_character_count(value: Any) -> int:
 
 
 class DataVisualizationBlock(Block):
-    """A pie, bar, area, or line chart rendered by Slack."""
+    """
+    A pie, bar, area, or line chart rendered by Slack.
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block>.
+
+    Args:
+        title: the title displayed above the chart (max 50 chars).
+        chart: the chart to render, one of `PieChart`, `BarChart`,
+            `AreaChart`, or `LineChart`.
+        block_id: you can use this field to provide a deterministic identifier for the block.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(self, title: str, chart: Chart, block_id: str | None = None) -> None:
         super().__init__(BlockType.DATA_VISUALIZATION, block_id)
@@ -1217,7 +1364,27 @@ TaskStatus: TypeAlias = Literal["pending", "in_progress", "complete", "error"]
 
 
 class TaskCardBlock(Block):
-    """One task, its state, rich-text details or output, and source links."""
+    """
+    One task, its state, rich-text details or output, and source links.
+    Task cards can stand alone or be grouped in a
+    [`PlanBlock`](/slackblocks/latest/reference/blocks/#blocks.PlanBlock).
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/task-card-block>.
+
+    Args:
+        task_id: a unique identifier for the task.
+        title: the title of the task.
+        details: a `RichTextBlock` describing the task in detail.
+        output: a `RichTextBlock` containing the output of the task.
+        sources: a list of `URLSource` elements linking to the sources
+            used by the task.
+        status: the state of the task, one of `pending`, `in_progress`,
+            `complete`, or `error`.
+        block_id: you can use this field to provide a deterministic identifier for the block.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(
         self,
@@ -1234,8 +1401,8 @@ class TaskCardBlock(Block):
             raise TypeMismatchError("Unknown task-card `status`.")
         self.task_id = validate_string_nonnull(task_id, "task_id", min_length=1)
         self.title = validate_string_nonnull(title, "title", min_length=1)
-        self.details = details
-        self.output = output
+        self.details = validate_type(details, RichTextBlock, "details", allow_none=True)
+        self.output = validate_type(output, RichTextBlock, "output", allow_none=True)
         self.sources: list[URLSource] | None = coerce_to_list(sources, URLSource, allow_none=True)
         self.status = status
 
@@ -1266,7 +1433,20 @@ class TaskCardBlock(Block):
 
 
 class PlanBlock(Block):
-    """A titled sequence of task cards."""
+    """
+    A titled sequence of
+    [`TaskCardBlocks`](/slackblocks/latest/reference/blocks/#blocks.TaskCardBlock).
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/plan-block>.
+
+    Args:
+        title: the title of the plan.
+        tasks: a list of `TaskCardBlock` objects making up the plan.
+        block_id: you can use this field to provide a deterministic identifier for the block.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(
         self,
