@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import tarfile
 import tempfile
+import warnings
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -307,13 +308,22 @@ def version_doc_link(version: str, match: re.Match[str]) -> str:
 def rewrite_absolute_links(value: str, version: str) -> str:
     value = value.replace("/slackblocks/latest/", f"/v{version}/")
     value = value.replace("/slackblocks/master/", f"/v{version}/")
+    value = re.sub(
+        r"https://nicklambourne\.github\.io/slackblocks/reference/"
+        r"(?P<category>attachments|blocks|elements|messages|modals|objects|rich_text|views|utils)"
+        r"/?(?P<anchor>#[A-Za-z0-9_.-]+)?",
+        lambda match: (
+            f"/v{version}/reference/{match.group('category')}{match.group('anchor') or ''}"
+        ),
+        value,
+    )
     return re.sub(
-        r"(?P<prefix>https://nicklambourne\.github\.io/slackblocks)?"
-        r"/reference/(?P<category>attachments|blocks|elements|messages|modals|objects|rich_text|views|utils)"
-        r"(?P<fragment>/)?(?P<anchor>#[A-Za-z0-9_.-]+)?",
+        r"(?<![A-Za-z0-9._/-])/reference/"
+        r"(?P<category>attachments|blocks|elements|messages|modals|objects|rich_text|views|utils)"
+        r"/?(?P<anchor>#[A-Za-z0-9_.-]+)?",
         lambda match: version_doc_link(
             version,
-            _LinkMatch(match.group("prefix"), match.group("category"), match.group("anchor")),
+            _LinkMatch(None, match.group("category"), match.group("anchor")),
         ),
         value,
     )
@@ -332,6 +342,42 @@ def render_docstring(docstring: griffe.Docstring | None, version: str) -> str:
         return "No public documentation was provided in this release."
     raw = rewrite_absolute_links(docstring.value.strip(), version)
     raw = re.sub(r"<(https?://[^>]+)>", r"[\1](\1)", raw)
+    raw = re.sub(
+        r'<table style="width:(?P<width>\d+)%">',
+        lambda match: f'<table style={{{{ width: "{match.group("width")}%" }}}}>',
+        raw,
+    )
+
+    html_tags = {
+        "a",
+        "br",
+        "code",
+        "div",
+        "em",
+        "img",
+        "li",
+        "ol",
+        "p",
+        "strong",
+        "table",
+        "tbody",
+        "td",
+        "th",
+        "thead",
+        "tr",
+        "ul",
+    }
+
+    def escape_angle_token(match: re.Match[str]) -> str:
+        value = match.group("value")
+        tag_name = value.removeprefix("/").lower()
+        return match.group(0) if tag_name in html_tags else f"&lt;{value}&gt;"
+
+    raw = re.sub(
+        r"<(?P<value>/?[A-Za-z][A-Za-z0-9_.\[\], |:-]*)>",
+        escape_angle_token,
+        raw,
+    )
     raw = re.sub(r"^Throws:$", "Raises:", raw, flags=re.MULTILINE)
     if not re.search(
         r"^(?:Args|Arguments|Parameters|Raises|Returns|Yields|Examples):$",
@@ -411,9 +457,11 @@ def render_member(
     if isinstance(member, griffe.Alias):
         member = member.target
     name = anchor.rsplit(".", 1)[-1]
-    content = [f'<a id="{anchor}"></a>']
+    content: list[str] = []
     if include_heading:
-        content.extend([f"### {name}", ""])
+        content.extend([f"### {name} {{#{anchor}}}", ""])
+    else:
+        content.append(f'<a id="{anchor}"></a>')
     content.extend(
         [
             f"**{member_kind(member)}**",
@@ -432,17 +480,17 @@ def render_member(
     for nested_anchor in nested_anchors:
         try:
             nested = package.get_member(nested_anchor)
-        except (KeyError, griffe.AliasResolutionError):
-            content.extend(["", f'<a id="{nested_anchor}"></a>'])
-            continue
+        except (KeyError, griffe.AliasResolutionError) as error:
+            raise RuntimeError(
+                f"Could not resolve historical API member {nested_anchor}"
+            ) from error
         if isinstance(nested, griffe.Alias):
             nested = nested.target
         nested_name = nested_anchor.rsplit(".", 1)[-1]
         content.extend(
             [
                 "",
-                f'<a id="{nested_anchor}"></a>',
-                f"#### {nested_name}",
+                f"#### {nested_name} {{#{nested_anchor}}}",
                 "",
                 "```python",
                 member_signature(nested_name, nested),
@@ -588,15 +636,39 @@ def convert_admonitions(source: str) -> str:
 
 
 def rewrite_markdown(source: str, version: str, docs_hash: str) -> str:
+    source = re.sub(r"\[([^\]]+)\]\(\)", r"\1", source)
     source = re.sub(
         r"(?P<path>[A-Za-z0-9_./-]+)\.md(?P<fragment>#[A-Za-z0-9_.-]+)?",
         r"\g<path>\g<fragment>",
         source,
     )
     source = source.replace("./docs_src/img/", f"/img/legacy/{docs_hash}/")
-    source = source.replace("./img/", f"/img/legacy/{docs_hash}/")
     source = source.replace("../img/", f"/img/legacy/{docs_hash}/")
+    source = source.replace("./img/", f"/img/legacy/{docs_hash}/")
     source = rewrite_absolute_links(source, version)
+    source = source.replace("#rich_text.RichText", "#rich_text.elements.RichText")
+
+    def rewrite_internal_link(match: re.Match[str]) -> str:
+        label = match.group("label")
+        destination = match.group("destination")
+        if destination.startswith(("http://", "https://", "mailto:", "#", "/v", "/img/")):
+            return match.group(0)
+        normalized = destination.removeprefix("/slackblocks/").lstrip("/")
+        while normalized.startswith(("./", "../")):
+            normalized = normalized.partition("/")[2]
+        if normalized.startswith("elements/"):
+            normalized = f"reference/{normalized}"
+        if normalized.startswith("usage/basic_usage"):
+            normalized = normalized.replace("usage/basic_usage", "usage/using_blocks", 1)
+        if normalized.startswith(("reference/", "usage/", "contributing")):
+            destination = f"/v{version}/{normalized}"
+        return f"[{label}]({destination})"
+
+    source = re.sub(
+        r"(?<!!)\[(?P<label>[^\]]+)\]\((?P<destination>[^)]+)\)",
+        rewrite_internal_link,
+        source,
+    )
     source = re.sub(r"^\s*\{[.:#][^}]+\}\s*$", "", source, flags=re.MULTILINE)
     return source
 
@@ -635,6 +707,9 @@ def convert_page(
                 "import TabItem from '@theme/TabItem';",
             ]
         )
+    root_anchors = [anchor for anchor in page_inventory.get("api_anchors", []) if "." not in anchor]
+    if root_anchors:
+        header.append(f'<a id="{root_anchors[0]}"></a>')
     return "\n".join([*header, "", source.strip(), ""])
 
 
@@ -713,7 +788,9 @@ def generate_version(
     with tempfile.TemporaryDirectory(prefix=f"slackblocks-{entry['tag']}-") as temporary:
         extracted = Path(temporary)
         extract_release(entry, extracted, source_archive)
-        package = griffe.load(extracted / "slackblocks", submodules=True)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", SyntaxWarning)
+            package = griffe.load(extracted / "slackblocks", submodules=True)
         docs_source = extracted / "docs_src"
         for route in entry["expected_routes"]:
             source_path = docs_source / source_file_for_route(route)
@@ -759,11 +836,12 @@ def hash_files(paths: Iterable[Path], relative_to: Path) -> str:
     return digest.hexdigest()
 
 
-def snapshot_hash(output_root: Path, version: str) -> str:
+def snapshot_hash(output_root: Path, entry: dict[str, Any]) -> str:
     return hash_files(
         [
-            output_root / "versioned_docs" / f"version-{version}",
-            output_root / "versioned_sidebars" / f"version-{version}-sidebars.json",
+            output_root / "versioned_docs" / f"version-{entry['version']}",
+            output_root / "versioned_sidebars" / f"version-{entry['version']}-sidebars.json",
+            output_root / "static" / "img" / "legacy" / entry["documentation_source_tree_hash"],
         ],
         output_root,
     )
@@ -781,7 +859,7 @@ def write_registered_versions(manifest: dict[str, Any]) -> None:
 def update_snapshots(entries: Sequence[dict[str, Any]], manifest: dict[str, Any]) -> None:
     for entry in entries:
         generate_version(entry, DOCS_ROOT)
-        entry["generated_snapshot_tree_hash"] = snapshot_hash(DOCS_ROOT, entry["version"])
+        entry["generated_snapshot_tree_hash"] = snapshot_hash(DOCS_ROOT, entry)
     MANIFEST_PATH.write_text(json.dumps(manifest, indent=2) + "\n")
     write_registered_versions(manifest)
 
@@ -813,7 +891,7 @@ def check_snapshots(entries: Sequence[dict[str, Any]]) -> None:
         expected_hash = entry.get("generated_snapshot_tree_hash")
         if not expected_hash:
             raise RuntimeError(f"{entry['tag']} has not been generated and registered")
-        actual_hash = snapshot_hash(DOCS_ROOT, entry["version"])
+        actual_hash = snapshot_hash(DOCS_ROOT, entry)
         if actual_hash != expected_hash:
             raise RuntimeError(
                 f"{entry['tag']} snapshot hash is {actual_hash}, expected {expected_hash}"
@@ -833,6 +911,14 @@ def check_snapshots(entries: Sequence[dict[str, Any]]) -> None:
             )
             if generated_sidebar.read_bytes() != actual_sidebar.read_bytes():
                 raise RuntimeError(f"{entry['tag']} sidebar is not reproducible")
+            generated_assets = (
+                generated / "static" / "img" / "legacy" / entry["documentation_source_tree_hash"]
+            )
+            actual_assets = (
+                DOCS_ROOT / "static" / "img" / "legacy" / entry["documentation_source_tree_hash"]
+            )
+            if generated_assets.exists():
+                compare_trees(generated_assets, actual_assets)
 
 
 def check_fixture(manifest: dict[str, Any]) -> None:
@@ -848,7 +934,7 @@ def check_fixture(manifest: dict[str, Any]) -> None:
         generate_version(entry, first, source_archive=FIXTURE_ARCHIVE)
         generate_version(entry, second, source_archive=FIXTURE_ARCHIVE)
         compare_trees(first, second)
-        print(f"v1.0.0 deterministic fixture hash: {snapshot_hash(first, '1.0.0')}")
+        print(f"v1.0.0 deterministic fixture hash: {snapshot_hash(first, entry)}")
 
 
 def validate_manifest(manifest: dict[str, Any]) -> None:
