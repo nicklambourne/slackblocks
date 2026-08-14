@@ -1,0 +1,26 @@
+{
+  "type": "container",
+  "block_id": "fake_block_id",
+  "title": {
+    "type": "plain_text",
+    "text": "Deployment summary"
+  },
+  "subtitle": {
+    "type": "mrkdwn",
+    "text": "Production is healthy"
+  },
+  "child_blocks": [
+    {
+      "type": "section",
+      "block_id": "child_1",
+      "text": {
+        "type": "mrkdwn",
+        "text": "All systems operational."
+      }
+    }
+  ],
+  "width": "standard",
+  "is_collapsible": false,
+  "default_collapsed": false,
+  "has_header_divider": true
+}

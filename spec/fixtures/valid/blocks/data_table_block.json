@@ -1,0 +1,17 @@
+{
+  "type": "data_table",
+  "block_id": "fake_block_id",
+  "rows": [
+    [
+      { "type": "raw_text", "text": "Name" },
+      { "type": "raw_text", "text": "Score" }
+    ],
+    [
+      { "type": "raw_text", "text": "Alice" },
+      { "type": "raw_number", "value": 42, "text": "42" }
+    ]
+  ],
+  "page_size": 5,
+  "caption": "Team scores",
+  "row_header_column_index": 0
+}

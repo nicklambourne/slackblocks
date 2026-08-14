@@ -20,9 +20,75 @@
       "since": "1.0.0"
     },
     {
+      "id": "blocks/alert_block",
+      "description": "Alert Block",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/alert-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/card_block",
+      "description": "Card Block",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/card-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/carousel_block",
+      "description": "Carousel Block",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/carousel-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/container_block",
+      "description": "Container Block",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/container-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/context_actions_feedback_buttons",
+      "description": "Context Actions Block With Feedback Buttons",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/context-actions-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/context_actions_icon_button",
+      "description": "Context Actions Block With An Icon Button",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/context-actions-block/",
+      "since": "1.0.0"
+    },
+    {
       "id": "blocks/context_block_text_only",
       "description": "Context Block Text Only",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/data_table_block",
+      "description": "Data Table Block",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/data-table-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/data_visualization_area",
+      "description": "Data Visualization Block With An Area Chart",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/data_visualization_bar",
+      "description": "Data Visualization Block With A Bar Chart",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/data_visualization_line",
+      "description": "Data Visualization Block With A Line Chart",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/data_visualization_pie",
+      "description": "Data Visualization Block With A Pie Chart",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block/",
       "since": "1.0.0"
     },
     {
@@ -59,6 +125,12 @@
       "id": "blocks/markdown_block_basic",
       "description": "Markdown Block Basic",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/plan_block",
+      "description": "Plan Block",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/plan-block/",
       "since": "1.0.0"
     },
     {
@@ -101,6 +173,12 @@
       "id": "blocks/table_block",
       "description": "Table Block",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/task_card_block",
+      "description": "Task Card Block",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/task-card-block/",
       "since": "1.0.0"
     },
     {
@@ -287,6 +365,12 @@
       "id": "elements/url_input_basic",
       "description": "Url Input Basic",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/url_source_basic",
+      "description": "URL Source",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/url-source-element/",
       "since": "1.0.0"
     },
     {

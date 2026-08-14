@@ -1,0 +1,9 @@
+{
+  "type": "alert",
+  "block_id": "fake_block_id",
+  "text": {
+    "type": "mrkdwn",
+    "text": "The work is mysterious and important."
+  },
+  "level": "info"
+}
