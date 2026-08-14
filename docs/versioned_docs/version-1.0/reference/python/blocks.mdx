@@ -1,0 +1,131 @@
+# Blocks
+
+## `ActionsBlock`
+
+**Class**
+
+```python
+ActionsBlock(elements: 'list[Element] | None' = None, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">{"A `Block` that is used to hold interactive elements (normally for users to interface with).\n\nArgs:\n    elements: a list of [Elements](/slackblocks/latest/reference/elements)\n        (up to a maximum of 25).\n    block_id: you can use this field to provide a deterministic identifier for the block.\n\nThrows:\n    InvalidUsageError: if any of the items in `elements` are invalid."}</div>
+
+## `Block`
+
+**Class**
+
+```python
+Block(type_: 'BlockType', block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">{"Basis block containing attributes and behaviour common to all blocks.\nN.B: Block is an abstract class and cannot be sent directly."}</div>
+
+## `ContextBlock`
+
+**Class**
+
+```python
+ContextBlock(elements: 'list[Element | CompositionObject] | None' = None, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">{"A `ContextBlock` displays contextul message info, including both images and text.\n\nArgs:\n    elements: a list of `Text` objects and `Image` elements.\n    block_id: you can use this field to provide a deterministic identifier for the block.\n\nThrows:\n    InvalidUsageError: when items in `elements` are not `Text` or `Image` or exceed 10 items."}</div>
+
+## `DividerBlock`
+
+**Class**
+
+```python
+DividerBlock(block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">{"A content divider, like an `<hr>` in HTML, to split up different blocks inside of\na message.\n\nArgs:\n    block_id: you can use this field to provide a deterministic identifier for the block."}</div>
+
+## `FileBlock`
+
+**Class**
+
+```python
+FileBlock(external_id: 'str', block_id: 'str | None' = None, source: 'str' = 'remote') -> 'None'
+```
+
+<div className="api-docstring">{"Displays a remote file (e.g. a PDF).\n\nFor details on how remote files are exposed to Slack, see\n<https://api.slack.com/messaging/files#adding>.\n\nArgs:\n    external_id: the ID assigned to the remote file when it was added to Slack.\n    block_id: you can use this field to provide a deterministic identifier for the block.\n    source: always \"remote\" as per the Slack API (may change in the future)."}</div>
+
+## `HeaderBlock`
+
+**Class**
+
+```python
+HeaderBlock(text: 'str | Text', block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">{"A Header Block is a plain-text block that displays in a larger, bold font.\n\nArgs:\n    text: the text that will be rendered as a heading.\n    block_id: you can use this field to provide a deterministic identifier for the block."}</div>
+
+## `ImageBlock`
+
+**Class**
+
+```python
+ImageBlock(image_url: 'str', alt_text: 'str | None' = ' ', title: 'Text | str | None' = None, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">{"An Image Block contains a single graphic, accessed by URL.\n\nArgs:\n    image_url: the URL pointing to the image file you want to display.\n    alt_text: alternative text for accessibility purposes and when the image fails to load.\n    title: an optional text title to be presented with the image.\n    block_id: you can use this field to provide a deterministic identifier for the block.\n\nThrows:\n    InvalidUsageError: when one or more of the provided args fails validation."}</div>
+
+## `InputBlock`
+
+**Class**
+
+```python
+InputBlock(label: 'TextLike', element: 'Element', dispatch_action: 'bool' = False, block_id: 'str | None' = None, hint: 'TextLike | None' = None, optional: 'bool' = False) -> 'None'
+```
+
+<div className="api-docstring">{"A block that collects information from users - it can hold a plain-text\ninput element, a checkbox element, a radio button element, a select\nmenu element, a multi-select menu element, or a datepicker.\n\nArgs:\n    label: the name which identifies the input field.\n    element: an interactive [Element](/slackblocks/latest/reference/elements)\n        (e.g. a text field).\n    dispatch_action: whether the [Element](/slackblocks/latest/reference/elements)\n        should trigger the sending of a `block_actions` payload.\n    block_id: you can use this field to provide a deterministic identifier for the block.\n    hint: an optional additional guide on what input the user should provide.\n    optional: whether this input field may be empty when the user submits e.g. the modal.\n\nThrows:\n    InvalidUsageError: when any of the provided arguments fail validation."}</div>
+
+## `MarkdownBlock`
+
+**Class**
+
+```python
+MarkdownBlock(text: 'str', block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">{"Displays formatted Markdown text. Unlike the `mrkdwn` text style used in\n[`SectionBlock`](/slackblocks/latest/reference/blocks/#blocks.SectionBlock),\n`MarkdownBlock` uses **GitHub-flavored Markdown** for richer formatting,\nincluding features like tables and code blocks. Added to Slack in 2024\nfor AI / agentic app outputs.\n\nSee: <https://api.slack.com/reference/block-kit/blocks#markdown>.\n\nArgs:\n    text: the Markdown-formatted text to display (1-12000 characters).\n    block_id: you can use this field to provide a deterministic identifier\n        for the block.\n\nThrows:\n    LengthError: if `text` is empty or longer than 12000 characters."}</div>
+
+## `RichTextBlock`
+
+**Class**
+
+```python
+RichTextBlock(elements: 'RichTextObject | list[RichTextObject]', block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">{"A RichTextBlock is used to provide easier rich text formatting\n    than standard markdown text (e.g. in a\n    [`SectionBlock`](/slackblocks/latest/reference/blocks/#blocks.SectionBlock))\n    and access to text formatting features not available in traditional\n    markdown (e.g. strikethrough). See the various rich text elements\n    you can include [here](/slackblocks/latest/reference/rich_text).\n\nArgs:\n    elements: a single [rich text element](rich_text)\n        or a list of those elements.\n    block_id: you can use this field to provide a deterministic identifier\n        for the block.\n\nThrows:\n    InvalidUsageError: if the elements in `elements` are not valid rich\n        text elements."}</div>
+
+## `SectionBlock`
+
+**Class**
+
+```python
+SectionBlock(text: 'TextLike | None' = None, block_id: 'str | None' = None, fields: 'TextLike | list[TextLike] | None' = None, accessory: 'Element | None' = None) -> 'None'
+```
+
+<div className="api-docstring">{"A section is one of the most flexible blocks available -\nit can be used as a simple text block, or with any of the\navailable block elements.\n\nSection blocks can also optionally be given an \"accessory,\"\nwhich is typically one of the interactive\n[Elements](/slackblocks/latest/reference/elements).\n\nArgs:\n    text: text to include in the block. Can be a string or `Text` object (of either\n        `mrkdwn` or `plaintext` variety). Defaults to markdown if unspecified. One of either\n        `text` or `fields` must be provided.\n    block_id: you can use this field to provide a deterministic identifier for the block.\n    fields: a list of text objects. One of either `text` or `fields` must be provided.\n    accessory: an optional [Element](/slackblocks/latest/reference/elements) object\n        that will take a secondary place in the block (after or to the side of  `text`\n        or `fields`).\n\nThrows:\n    InvalidUsageError: if any of the provided arguments fail validation checks."}</div>
+
+## `TableBlock`
+
+**Class**
+
+```python
+TableBlock(rows: 'list[list[RawText | RichTextObject]]', column_settings: 'list[ColumnSettings] | None' = None, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">{"A `TableBlock` displays data in a table format.\n\nArgs:\n    rows: a list of lists of `RawText` or `RichTextObject` objects.\n    column_settings: a list of `ColumnSettings` objects.\n    block_id: you can use this field to provide a deterministic identifier for the block.\n\nThrows:\n    InvalidUsageError: when items in `rows` are not `RawText` or `RichTextObject` objects.\n    InvalidUsageError: when the number of column_settings does not match the number of\n        columns in each row.\n    InvalidUsageError: when the number of rows is greater than 100.\n    InvalidUsageError: when the number of columns in a row is greater than 20.\n    InvalidUsageError: when the number of column_settings is greater than 20."}</div>
+
+## `VideoBlock`
+
+**Class**
+
+```python
+VideoBlock(alt_text: 'str', thumbnail_url: 'str', title: 'TextLike', video_url: 'str', author_name: 'str | None' = None, block_id: 'str | None' = None, description: 'TextLike | None' = None, provider_icon_url: 'str | None' = None, provider_name: 'str | None' = None, title_url: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">{"Embeds a video. Used to display video content inside a Slack message,\nmodal, or App Home tab.\n\nSee: <https://api.slack.com/reference/block-kit/blocks#video>.\n\nNote: Slack restricts which domains may be embedded. The server-side\nwhitelist (e.g. YouTube, Vimeo) is enforced by Slack on receipt of the\npayload, not by this library; supplying an unsupported URL will result\nin a Slack API error rather than an `InvalidUsageError` at construction.\n\nArgs:\n    alt_text: a plain-text summary of the video, used for accessibility\n        and notifications (max 200 chars).\n    thumbnail_url: a URL pointing to the preview image shown before\n        playback. Must be HTTPS in production usage.\n    title: the title shown above the video player (plain text, max 200\n        chars). A `str` is coerced to `TextType.PLAINTEXT` `Text`.\n    video_url: the URL of the video to embed. Must point to a\n        Slack-supported provider (see Slack's documentation).\n    author_name: optional author name shown beneath the video\n        (max 50 chars).\n    block_id: an optional deterministic identifier for the block.\n    description: optional plain-text description below the video\n        (max 200 chars). A `str` is coerced to `TextType.PLAINTEXT`.\n    provider_icon_url: an optional URL to the provider's icon.\n    provider_name: an optional provider name shown alongside the icon\n        (max 50 chars).\n    title_url: an optional URL to link the title to.\n\nThrows:\n    LengthError: if any length-constrained string exceeds its limit."}</div>

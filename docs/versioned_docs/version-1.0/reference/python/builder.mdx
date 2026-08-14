@@ -1,0 +1,11 @@
+# Utilities
+
+## `block_kit_builder_url`
+
+**Function**
+
+```python
+block_kit_builder_url(payload: 'Block | list[Block] | Resolvable | dict[str, Any]', team_id: 'str | None' = None) -> 'str'
+```
+
+<div className="api-docstring">{"Build a URL that opens ``payload`` in Slack's Block Kit Builder.\n\nUse this to preview a message, view, or list of blocks in the browser\nwithout manually copying JSON into the Builder.\n\nArgs:\n    payload: any of:\n\n        - A single ``Block`` -- wrapped in ``{\"blocks\": [block]}``.\n        - A list of ``Block`` -- wrapped in ``{\"blocks\": [...]}``.\n        - Anything with a ``_resolve`` method (``Message``,\n          ``WebhookMessage``, ``MessageResponse``, ``View``,\n          ``ModalView``, ``HomeTabView``, etc.) -- used as-is.\n        - A raw ``dict`` -- used as-is. This is the escape hatch for\n          callers building payloads outside the type hierarchy.\n\n    team_id: optional Slack team ID. When supplied, produces a\n        workspace-specific Builder URL of the form\n        ``https://app.slack.com/block-kit-builder/T0123#<JSON>``.\n        When ``None`` (the default), produces the generic URL.\n\nReturns:\n    A fully-formed Block Kit Builder URL.\n\nExamples:\n    Single block::\n\n        from slackblocks import SectionBlock, block_kit_builder_url\n\n        url = block_kit_builder_url(SectionBlock(\"Hi\"))\n\n    Multiple blocks::\n\n        url = block_kit_builder_url([\n            SectionBlock(\"Heading\"),\n            DividerBlock(),\n        ])\n\n    Existing message::\n\n        url = block_kit_builder_url(my_message)\n\n    Targeting a specific workspace::\n\n        url = block_kit_builder_url(my_message, team_id=\"T0123ABCD\")"}</div>

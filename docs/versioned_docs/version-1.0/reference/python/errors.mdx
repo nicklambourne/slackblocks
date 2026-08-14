@@ -1,0 +1,61 @@
+# Errors
+
+## `InvalidUsageError`
+
+**Class**
+
+```python
+InvalidUsageError(message: 'str') -> 'None'
+```
+
+<div className="api-docstring">{"You have violated the `slackblocks` API or Slack Web API in a way\n    that has been caught by validation checks.\n\nAll more-specific validation exceptions raised by ``slackblocks``\nsubclass this exception, so ``except InvalidUsageError`` catches every\nlibrary-raised validation failure.\n\nArgs:\n    message: a custom error message providing details of the API\n        violation."}</div>
+
+## `LengthError`
+
+**Class**
+
+```python
+LengthError(message: 'str') -> 'None'
+```
+
+<div className="api-docstring">{"A string or list length is outside the allowed bounds for a field.\n\nTypical sources: a ``Text`` body longer than the Slack-enforced limit,\nan option list with too many entries, an ``action_id`` over 255\ncharacters, etc."}</div>
+
+## `MissingRequiredError`
+
+**Class**
+
+```python
+MissingRequiredError(message: 'str') -> 'None'
+```
+
+<div className="api-docstring">{"At least one of a set of arguments was required, but none was provided.\n\nTypical sources: ``ConversationFilter`` invoked with none of its three\nfilter fields set; ``SectionBlock`` invoked with neither ``text`` nor\n``fields``."}</div>
+
+## `MutualExclusivityError`
+
+**Class**
+
+```python
+MutualExclusivityError(message: 'str') -> 'None'
+```
+
+<div className="api-docstring">{"Two arguments that must not both be set were both set.\n\nTypical sources: passing both ``image_url`` and ``slack_file`` to\n``Image``; passing both ``options`` and ``option_groups`` to a\n``StaticSelectMenu``; passing both ``url`` and ``id`` to ``SlackFile``."}</div>
+
+## `RangeError`
+
+**Class**
+
+```python
+RangeError(message: 'str') -> 'None'
+```
+
+<div className="api-docstring">{"A numeric value is outside the allowed bounds for a field.\n\nTypical sources: ``NumberInput.min_value > max_value``, integer\narguments outside an enforced ``min_value`` / ``max_value`` range."}</div>
+
+## `TypeMismatchError`
+
+**Class**
+
+```python
+TypeMismatchError(message: 'str') -> 'None'
+```
+
+<div className="api-docstring">{"An argument is of the wrong type or an unexpected discrete value.\n\nTypical sources: passing a non-``Option`` element into a list expected\nto hold ``Option`` instances; supplying a colour string that is neither\na hex code nor a ``Color`` enum; supplying a string outside an\nenumerated set (e.g. ``ColumnSettings.align='banana'``)."}</div>

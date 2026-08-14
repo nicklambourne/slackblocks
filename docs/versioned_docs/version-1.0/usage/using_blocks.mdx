@@ -1,0 +1,718 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Using Blocks
+
+Blocks are the fundamental visual units of a Slack message. Each block type renders as a different UI component (a section of text, a header, a divider, an image, a row of buttons, and so on). A `Message` is composed of one or more blocks, rendered top-to-bottom.
+
+This page lists every block type supported by `slackblocks`, with:
+
+- A short description of what the block is for.
+- The `slackblocks` Python code to construct it.
+- The JSON payload that's produced.
+- A screenshot of how it looks in Slack.
+
+For the reverse mapping — looking up a class by name — see the [Blocks reference](../reference/python/blocks). For interactive UI bits (buttons, menus, date pickers) that go *inside* blocks, see [Elements](../reference/python/elements).
+
+## Section Block
+
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+
+```python
+from slackblocks import CheckboxGroup, Option, SectionBlock
+
+SectionBlock(
+    text="This is a section block with a checkbox accessory.",
+    block_id="fake_block_id",
+    accessory=CheckboxGroup(
+        action_id="checkboxes-action",
+        options=[
+            Option(
+                text="*Your Only Option*",
+                value="option_one"
+            )
+        ]
+    )
+)
+```
+
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+    "type": "section",
+    "block_id": "fake_block_id",
+    "text": {
+        "type": "mrkdwn",
+        "text": "This is a section block with a checkbox accessory."
+    },
+    "accessory": {
+        "type": "checkboxes",
+        "options": [
+            {
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Your Only Option*"
+                },
+                "value": "option_one"
+            }
+        ],
+        "action_id": "checkboxes-action"
+    }
+}
+```
+
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Section Block](/img/usage/section.png)
+
+
+</TabItem>
+</Tabs>
+
+## Rich Text Block
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+```python
+from slackblocks import RichTextBlock, RichTextSection, RichText
+
+RichTextBlock(
+    RichTextSection(
+        [
+            RichText(
+                "You 'bout to witness hip-hop in its most purest",
+                bold=True,
+            ),
+            RichText(
+                "Most rawest form, flow almost flawless",
+                strike=True,
+            ),
+            RichText(
+                "Most hardest, most honest known artist",
+                italic=True,
+            ),
+        ]
+    ),
+    block_id="fake_block_id",
+)
+```
+
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+    "type": "rich_text",
+    "block_id": "fake_block_id",
+    "elements": [
+        {
+            "type": "rich_text_section",
+            "elements": [
+                {
+                    "type": "text",
+                    "text": "You 'bout to witness hip-hop in its most purest\n",
+                    "style": {
+                        "bold": true
+                    }
+                },
+                {
+                    "type": "text",
+                    "text": "Most rawest form, flow almost flawless\n",
+                    "style": {
+                        "strike": true
+                    }
+                },
+                {
+                    "type": "text",
+                    "text": "Most hardest, most honest known artist\n",
+                    "style": {
+                        "italic": true
+                    }
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Rich Text Block](/img/usage/rich_text.png)
+
+
+</TabItem>
+</Tabs>
+
+## Header Block
+
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+```python
+from slackblocks import HeaderBlock
+
+HeaderBlock(
+    "This is a header block",
+)
+```
+
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+    "type": "header",
+    "text": {
+        "type": "plain_text",
+        "text": "This is a header block",
+        "emoji": true
+    }
+}
+```
+
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Header Block](/img/usage/header.png)
+
+
+</TabItem>
+</Tabs>
+
+## Markdown Block
+
+
+Slack added the `markdown` block type in 2024, primarily for AI / agentic apps. Unlike the `mrkdwn` text inside a [Section Block](#section-block), `MarkdownBlock` renders **GitHub-flavored Markdown**, supporting tables, code blocks, and richer list semantics.
+
+`text` is required (1 - 12,000 characters).
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+```python
+from slackblocks import MarkdownBlock
+
+MarkdownBlock(
+    text="**Hello!** Markdown blocks support _GitHub-flavored_ syntax.",
+)
+```
+
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+    "type": "markdown",
+    "text": "**Hello!** Markdown blocks support _GitHub-flavored_ syntax."
+}
+```
+
+
+</TabItem>
+</Tabs>
+
+See the [Slack reference](https://api.slack.com/reference/block-kit/blocks#markdown) for the supported Markdown features.
+
+
+## Image Block
+
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+```python
+from slackblocks import ImageBlock
+
+ImageBlock(
+    image_url="https://api.slack.com/img/blocks/bkb_template_images/beagle.png",
+    alt_text="a beagle",
+    title="dog",
+    block_id="fake_block_id",
+)
+```
+
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+    "type": "image",
+    "block_id": "fake_block_id",
+    "image_url": "https://api.slack.com/img/blocks/bkb_template_images/beagle.png",
+    "alt_text": "a beagle",
+    "title": {
+        "type": "plain_text",
+        "text": "dog"
+    }
+}
+```
+
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of an Image Block](/img/usage/image.png)
+
+
+</TabItem>
+</Tabs>
+
+## Input Block
+
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+```python
+from slackblocks import InputBlock, Text, TextType, PlainTextInput
+
+InputBlock(
+    label=Text("Label", type_=TextType.PLAINTEXT, emoji=True),
+    hint=Text("Hint", type_=TextType.PLAINTEXT, emoji=True),
+    element=PlainTextInput(action_id="action"),
+    block_id="fake_block_id",
+    optional=True,
+)
+```
+
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+    "type": "input",
+    "block_id": "fake_block_id",
+    "label": {
+        "type": "plain_text",
+        "text": "Label",
+        "emoji": true
+    },
+    "element": {
+        "type": "plain_text_input",
+        "action_id": "action"
+    },
+    "hint": {
+        "type": "plain_text",
+        "text": "Hint",
+        "emoji": true
+    },
+    "optional": true
+}
+```
+
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of an Input Block](/img/usage/input.png)
+
+
+</TabItem>
+</Tabs>
+
+## Divider Block
+
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+```python
+from slackblocks import DividerBlock
+
+DividerBlock()
+```
+
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+    "type": "divider"
+}
+```
+
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of an Divider Block](/img/usage/divider.png)
+
+
+</TabItem>
+</Tabs>
+
+## File Block
+
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+```python
+from slackblocks import FileBlock
+
+FileBlock(
+    external_id="external_id",
+    block_id="fake_block_id",
+)
+```
+
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+    "type": "file",
+    "external_id": "external_id",
+    "source": "remote",
+    "block_id": "fake_block_id"
+}
+```
+
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of an File Block](https://a.slack-edge.com/f156a3/img/api/file_upload_remote_file.png)
+* Note that this example comes from the Slack Web API docs.
+
+
+</TabItem>
+</Tabs>
+
+## Context Block
+
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+```python
+from slackblocks import ContextBlock, Text
+
+ContextBlock(
+    elements=[
+        Text("Hello, world!"),
+    ],
+    block_id="fake_block_id"
+)
+```
+
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+    "type": "context",
+    "block_id": "fake_block_id",
+    "elements": [
+        {
+            "type": "mrkdwn",
+            "text": "Hello, world!"
+        }
+    ]
+}
+```
+
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Context Block](/img/usage/context.png)
+
+
+</TabItem>
+</Tabs>
+
+## Actions Block
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+```python
+from slackblocks import ActionsBlock, CheckboxGroup, Option
+
+ActionsBlock(
+    block_id="fake_block_id",
+    elements=CheckboxGroup(
+        action_id="actionId-0",
+        options=[
+            Option(text="*a*", value="a", description="*a*"),
+            Option(text="*b*", value="b", description="*b*"),
+            Option(text="*c*", value="c", description="*c*"),
+        ],
+    ),
+)
+```
+
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+    "type": "actions",
+    "block_id": "fake_block_id",
+    "elements": [
+        {
+            "type": "checkboxes",
+            "action_id": "actionId-0",
+            "options": [
+                {
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*a*"
+                    },
+                    "value": "a",
+                    "description": {
+                        "type": "plain_text",
+                        "text": "*a*"
+                    }
+                },
+                {
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*b*"
+                    },
+                    "value": "b",
+                    "description": {
+                        "type": "plain_text",
+                        "text": "*b*"
+                    }
+                },
+                {
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*c*"
+                    },
+                    "value": "c",
+                    "description": {
+                        "type": "plain_text",
+                        "text": "*c*"
+                    }
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of an Actions Block](/img/usage/actions.png)
+
+
+</TabItem>
+</Tabs>
+
+## Table Block
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+```python
+from slackblocks import (
+    ColumnSettings,
+    RawText,
+    RichText,
+    RichTextLink,
+    RichTextSection,
+    TableBlock,
+)
+
+TableBlock(
+    column_settings=[
+        ColumnSettings(align="right", is_wrapped=True),
+        ColumnSettings(align="left"),
+    ],
+    rows=[
+        [
+            RichTextSection(
+                elements=[RichText(text="Header 1", bold=True)],
+            ),
+            RichTextSection(
+                elements=[RichText(text="Header 2", bold=True)],
+            ),
+        ],
+        [
+            RawText(text="Datum 1"),
+            RichTextSection(
+                elements=[
+                    RichTextLink(
+                        url="https://slack.com",
+                        text="Datum 2",
+                    )
+                ],
+            ),
+        ],
+    ],
+)
+```
+
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+    "blocks": [
+        {
+            "type": "table",
+            "rows": [
+                [
+                    {
+                        "type": "rich_text",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Header 1",
+                                        "style": {
+                                            "bold": true
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Header 2",
+                                        "style": {
+                                            "bold": true
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                [
+                    {
+                        "type": "rich_text",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Datum 1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Datum 2"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            ]
+        }
+    ]
+}
+```
+
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Table Block](/img/usage/table.png)
+
+
+</TabItem>
+</Tabs>
+
+## Video Block
+
+
+Embeds a video from a Slack-supported provider (e.g. YouTube, Vimeo). The `title` accepts either a `str` (coerced to plain-text) or a `Text` instance; `description` works the same way.
+
+Required: `alt_text`, `thumbnail_url`, `title`, `video_url`. Slack restricts which domains may be embedded — supplying an unsupported URL will produce a Slack API error rather than an `InvalidUsageError` at construction.
+
+<Tabs>
+<TabItem value={"slackblocks"} label={"slackblocks"}>
+
+```python
+from slackblocks import VideoBlock
+
+VideoBlock(
+    alt_text="How to use slackblocks",
+    thumbnail_url="https://example.com/thumb.png",
+    title="Getting Started",
+    video_url="https://example.com/video.mp4",
+    author_name="The slackblocks docs",
+    description="A short walkthrough.",
+    provider_name="example.com",
+    title_url="https://example.com",
+)
+```
+
+
+</TabItem>
+<TabItem value={"json"} label={"JSON"}>
+
+```json
+{
+    "type": "video",
+    "alt_text": "How to use slackblocks",
+    "thumbnail_url": "https://example.com/thumb.png",
+    "title": {
+        "type": "plain_text",
+        "text": "Getting Started"
+    },
+    "video_url": "https://example.com/video.mp4",
+    "author_name": "The slackblocks docs",
+    "description": {
+        "type": "plain_text",
+        "text": "A short walkthrough."
+    },
+    "provider_name": "example.com",
+    "title_url": "https://example.com"
+}
+```
+
+
+</TabItem>
+</Tabs>
+
+See the [Slack reference](https://api.slack.com/reference/block-kit/blocks#video) for the full list of optional fields and provider requirements.

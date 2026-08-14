@@ -1,5 +1,6 @@
 import type { Config } from "@docusaurus/types";
 import type { Options as ClassicPresetOptions } from "@docusaurus/preset-classic";
+import { themes as prismThemes } from "prism-react-renderer";
 import { readFileSync } from "node:fs";
 
 const pythonProject = readFileSync(
@@ -15,9 +16,12 @@ if (!pythonVersion) {
 const typescriptPackage = JSON.parse(
   readFileSync(new URL("../typescript/package.json", import.meta.url), "utf8"),
 ) as { version: string };
-const specManifest = JSON.parse(
-  readFileSync(new URL("../spec/manifest.json", import.meta.url), "utf8"),
-) as { spec_version: string };
+
+if (typescriptPackage.version !== pythonVersion) {
+  throw new Error(
+    `Package versions must match: Python is ${pythonVersion}, TypeScript is ${typescriptPackage.version}`,
+  );
+}
 
 const config: Config = {
   title: "slackblocks",
@@ -27,13 +31,6 @@ const config: Config = {
   baseUrl: "/slackblocks/",
   organizationName: "nicklambourne",
   projectName: "slackblocks",
-  customFields: {
-    packageVersions: {
-      python: pythonVersion,
-      typescript: typescriptPackage.version,
-      spec: specManifest.spec_version,
-    },
-  },
   trailingSlash: false,
   onBrokenLinks: "throw",
   onBrokenAnchors: "throw",
@@ -52,6 +49,19 @@ const config: Config = {
           sidebarPath: "./sidebars.ts",
           editUrl: "https://github.com/nicklambourne/slackblocks/tree/master/docs/",
           showLastUpdateTime: true,
+          lastVersion: "current",
+          versions: {
+            current: {
+              badge: false,
+              label: pythonVersion,
+              path: "",
+            },
+            "1.0": {
+              badge: false,
+              label: "1.0.0",
+              path: "1.0.0",
+            },
+          },
         },
         blog: false,
         theme: {
@@ -68,7 +78,8 @@ const config: Config = {
         entryPoints: ["../typescript/src/index.ts"],
         tsconfig: "../typescript/tsconfig.typedoc.json",
         out: "docs/reference/typescript",
-        readme: "none",
+        readme: "./typescript-api-intro.md",
+        mergeReadme: true,
         excludePrivate: true,
         excludeInternal: true,
         sidebar: {
@@ -122,11 +133,22 @@ const config: Config = {
   ],
   themeConfig: {
     image: "img/sb.png",
+    prism: {
+      theme: prismThemes.github,
+      darkTheme: prismThemes.vsDark,
+      additionalLanguages: ["python", "typescript", "json", "toml"],
+    },
     navbar: {
       title: "slackblocks",
       logo: { alt: "slackblocks logo", src: "img/sb.png" },
       items: [
         { type: "html", value: "language-selector", position: "left" },
+        {
+          type: "docsVersionDropdown",
+          position: "left",
+          className: "docs-version-dropdown",
+          dropdownActiveClassDisabled: true,
+        },
         {
           href: "https://github.com/nicklambourne/slackblocks",
           position: "right",
