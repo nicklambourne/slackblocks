@@ -2,13 +2,13 @@ name: Unit Tests
 
 on:
   push:
+    branches: [master]
     paths:
       - "python/**"
       - "spec/**"
       - "docs/examples/python/**"
       - ".github/workflows/unit-tests.yml"
   pull_request:
-    branches: [master]
     paths:
       - "python/**"
       - "spec/**"
