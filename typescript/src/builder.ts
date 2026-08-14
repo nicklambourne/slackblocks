@@ -2,6 +2,13 @@ import type { JsonObject } from "./types.js";
 
 const BUILDER_URL = "https://app.slack.com/block-kit-builder/";
 
+/**
+ * Builds a Block Kit Builder URL containing a serialized payload.
+ *
+ * @param payload - A complete payload or a list of blocks.
+ * @param teamId - Optional workspace ID used in the Builder URL.
+ * @returns A URL that opens the payload in Slack's Block Kit Builder.
+ */
 export function blockKitBuilderUrl(
   payload: JsonObject | JsonObject[],
   teamId?: string,
