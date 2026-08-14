@@ -1,4 +1,9 @@
-import LanguageTabs, { PythonTab, TypeScriptTab } from '@site/src/components/LanguageTabs';
+---
+sidebar_label: Welcome
+sidebar_position: 1
+---
+
+import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Welcome to `slackblocks`!
 
@@ -17,8 +22,8 @@ It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unple
 
 ## Quickstart
 
-<LanguageTabs>
-<PythonTab>
+<LanguageContent>
+<Python>
 
 ```bash
 pip install slackblocks
@@ -30,8 +35,8 @@ from slackblocks import Message, SectionBlock
 message = Message(channel="#general", blocks=SectionBlock("Hello, world!"))
 ```
 
-</PythonTab>
-<TypeScriptTab>
+</Python>
+<TypeScript>
 
 ```bash
 pnpm add slackblocks
@@ -46,14 +51,19 @@ const payload = message({
 });
 ```
 
-</TypeScriptTab>
-</LanguageTabs>
+</TypeScript>
+</LanguageContent>
 
 See the [installation guide](usage/installation) and [sending messages guide](usage/sending_messages) to take it from here.
 
 ## Components
 
-The [Slack Block Kit API](https://api.slack.com/block-kit) defines several resource types (all defined in JSON) that work together to build block-based messages. `slackblocks` mirrors that hierarchy with Python classes.
+The [Slack Block Kit API](https://api.slack.com/block-kit) defines several resource types (all defined in JSON) that work together to build block-based messages.
+
+<LanguageContent>
+<Python>
+
+The Python package mirrors that hierarchy with classes.
 
 ### Objects
 
@@ -97,13 +107,55 @@ See [Using Blocks](usage/using_blocks) for examples of all block types side-by-s
 - [`block_kit_builder_url(payload, team_id=None)`](reference/python/builder#block_kit_builder_url) — turn any block, list of blocks, message, or view into a [Block Kit Builder](https://app.slack.com/block-kit-builder) URL for browser-based preview.
 - [`Block.from_dict(data)`](reference/python/blocks#block) — parse a Slack-shaped block payload back into a `slackblocks` object. Per-class `from_dict` parsers are also available on every composition object.
 
+</Python>
+<TypeScript>
+
+The TypeScript package exposes data-first factories that return typed, Slack-shaped objects.
+
+### Composition objects
+
+Factories such as [`plainText`](reference/typescript/functions/plainText), [`mrkdwn`](reference/typescript/functions/mrkdwn), and [`option`](reference/typescript/functions/option) create the small values used throughout Block Kit payloads.
+
+### Elements
+
+Interactive controls are built with factories such as [`button`](reference/typescript/functions/button), [`checkboxes`](reference/typescript/functions/checkboxes), [`staticSelect`](reference/typescript/functions/staticSelect), and [`datePicker`](reference/typescript/functions/datePicker).
+
+### Blocks
+
+Block factories include [`section`](reference/typescript/functions/section), [`header`](reference/typescript/functions/header), [`divider`](reference/typescript/functions/divider), [`actions`](reference/typescript/functions/actions), [`richTextBlock`](reference/typescript/functions/richTextBlock), [`markdownBlock`](reference/typescript/functions/markdownBlock), and [`table`](reference/typescript/functions/table).
+
+### Messages and views
+
+Use [`message`](reference/typescript/functions/message), [`webhookMessage`](reference/typescript/functions/webhookMessage), and [`messageResponse`](reference/typescript/functions/messageResponse) for message payloads. Use [`modal`](reference/typescript/functions/modal) and [`homeTab`](reference/typescript/functions/homeTab) for Slack views.
+
+### Utilities
+
+- [`blockKitBuilderUrl`](reference/typescript/functions/blockKitBuilderUrl) creates a browser preview URL.
+- [`validate`](reference/typescript/functions/validate) and [`assertValid`](reference/typescript/functions/assertValid) validate existing Slack-shaped data.
+
+</TypeScript>
+</LanguageContent>
+
 ## Guides
 
+<LanguageContent>
+<Python>
+
 - [Installation](usage/installation)
-- [Compatibility](usage/compatibility) — which Python versions each release line supports.
 - [Using Blocks](usage/using_blocks)
 - [Sending Messages](usage/sending_messages)
-- [Cookbook](usage/cookbook) — complete end-to-end recipes for common message patterns.
-- [Migrating from 1.x](usage/migration) — upgrade guide for `1.x` users.
+- [Recipe Book](usage/cookbook) — complete end-to-end recipes for common message patterns.
 - [Troubleshooting & FAQ](usage/troubleshooting.md)
+- [Migrating from 1.x to 2.x](usage/migration) — upgrade guide for `1.x` users.
 - [Contributing](contributing) — developing and contributing to `slackblocks` itself.
+
+</Python>
+<TypeScript>
+
+- [Installation](usage/installation)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook) — complete end-to-end recipes for common message patterns.
+- [Contributing](contributing) — developing and contributing to `slackblocks` itself.
+
+</TypeScript>
+</LanguageContent>
