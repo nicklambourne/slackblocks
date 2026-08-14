@@ -64,6 +64,122 @@ function range(
   }
 }
 
+function textCharacterCount(value: JsonValue): number {
+  if (Array.isArray(value)) {
+    return value.reduce<number>((total, item) => total + textCharacterCount(item), 0);
+  }
+  if (value !== null && typeof value === "object") {
+    return Object.entries(value).reduce<number>(
+      (total, [key, nested]) =>
+        total + (key === "text" && typeof nested === "string" ? nested.length : textCharacterCount(nested)),
+      0,
+    );
+  }
+  return 0;
+}
+
+function validateSeriesChart(object: JsonObject, path: string): void {
+  if (!Array.isArray(object.series)) {
+    throw new TypeMismatchError(child(path, "series"), "expected an array");
+  }
+  length(
+    object.series,
+    child(path, "series"),
+    limits.data_visualization.series.min_items,
+    limits.data_visualization.series.max_items,
+  );
+  const axis = objectAt(object.axis_config, child(path, "axis_config"));
+  if (!Array.isArray(axis.categories)) {
+    throw new TypeMismatchError(child(path, "axis_config.categories"), "expected an array");
+  }
+  const categories = axis.categories;
+  length(
+    categories,
+    child(path, "axis_config.categories"),
+    limits.data_visualization.categories.min_items,
+    limits.data_visualization.categories.max_items,
+  );
+  categories.forEach((category, index) => {
+    if (typeof category !== "string") {
+      throw new TypeMismatchError(`${child(path, "axis_config.categories")}[${index}]`, "expected a string");
+    }
+    length(
+      category,
+      `${child(path, "axis_config.categories")}[${index}]`,
+      undefined,
+      limits.data_visualization.category_label.max_length,
+    );
+  });
+  if (new Set(categories).size !== categories.length) {
+    throw new InvalidUsageError(child(path, "axis_config.categories"), "expected unique labels");
+  }
+  for (const field of ["x_label", "y_label"] as const) {
+    if (axis[field] !== undefined && typeof axis[field] !== "string") {
+      throw new TypeMismatchError(child(path, `axis_config.${field}`), "expected a string");
+    }
+    length(
+      axis[field] as string | undefined,
+      child(path, `axis_config.${field}`),
+      undefined,
+      limits.data_visualization.axis_label.max_length,
+    );
+  }
+  const names: string[] = [];
+  object.series.forEach((rawSeries, seriesIndex) => {
+    const seriesPath = `${child(path, "series")}[${seriesIndex}]`;
+    const series = objectAt(rawSeries, seriesPath);
+    if (typeof series.name !== "string") {
+      throw new TypeMismatchError(child(seriesPath, "name"), "expected a string");
+    }
+    length(
+      series.name,
+      child(seriesPath, "name"),
+      undefined,
+      limits.data_visualization.series_name.max_length,
+    );
+    names.push(series.name);
+    if (!Array.isArray(series.data)) {
+      throw new TypeMismatchError(child(seriesPath, "data"), "expected an array");
+    }
+    length(
+      series.data,
+      child(seriesPath, "data"),
+      limits.data_visualization.data.min_items,
+      limits.data_visualization.data.max_items,
+    );
+    const labels = series.data.map((rawPoint, pointIndex) => {
+      const pointPath = `${child(seriesPath, "data")}[${pointIndex}]`;
+      const point = objectAt(rawPoint, pointPath);
+      if (typeof point.label !== "string") {
+        throw new TypeMismatchError(child(pointPath, "label"), "expected a string");
+      }
+      length(
+        point.label,
+        child(pointPath, "label"),
+        undefined,
+        limits.data_visualization.point_label.max_length,
+      );
+      if (typeof point.value !== "number" || !Number.isFinite(point.value)) {
+        throw new TypeMismatchError(child(pointPath, "value"), "expected a finite number");
+      }
+      return point.label;
+    });
+    if (
+      labels.length !== categories.length ||
+      new Set(labels).size !== categories.length ||
+      labels.some((label) => !categories.includes(label))
+    ) {
+      throw new InvalidUsageError(
+        child(seriesPath, "data"),
+        "expected exactly one point for every axis category",
+      );
+    }
+  });
+  if (new Set(names).size !== names.length) {
+    throw new InvalidUsageError(child(path, "series"), "series names must be unique");
+  }
+}
+
 function validateTextObject(object: JsonObject, path: string): void {
   const value = textValue(object);
   if (value === undefined) {
@@ -96,6 +212,10 @@ const INPUT_ELEMENT_TYPES = new Set([
 
 function validateKnownObject(object: JsonObject, path: string): void {
   const type = object.type;
+  const blockId = object.block_id;
+  if (typeof blockId === "string") {
+    length(blockId, child(path, "block_id"), undefined, limits.block_id.max_length);
+  }
   const actionId = object.action_id;
   if (typeof actionId === "string") {
     length(actionId, child(path, "action_id"), undefined, limits.action_id.max_length);
@@ -155,7 +275,66 @@ function validateKnownObject(object: JsonObject, path: string): void {
       if (typeof object.value === "string") {
         length(object.value, child(path, "value"), undefined, limits.button.value.max_length);
       }
+      if (typeof object.accessibility_label === "string") {
+        length(
+          object.accessibility_label,
+          child(path, "accessibility_label"),
+          undefined,
+          limits.button.accessibility_label.max_length,
+        );
+      }
       break;
+    case "icon_button":
+      if (object.icon !== "trash") {
+        throw new TypeMismatchError(child(path, "icon"), "expected trash");
+      }
+      if (typeof object.value === "string") {
+        length(object.value, child(path, "value"), undefined, limits.button.value.max_length);
+      }
+      if (typeof object.accessibility_label === "string") {
+        length(
+          object.accessibility_label,
+          child(path, "accessibility_label"),
+          undefined,
+          limits.button.accessibility_label.max_length,
+        );
+      }
+      if (Array.isArray(object.visible_to_user_ids)) {
+        length(
+          object.visible_to_user_ids,
+          child(path, "visible_to_user_ids"),
+          undefined,
+          limits.icon_button.visible_to_user_ids.max_items,
+        );
+      }
+      break;
+    case "feedback_buttons": {
+      for (const field of ["positive_button", "negative_button"] as const) {
+        const buttonPath = child(path, field);
+        const feedback = objectAt(object[field], buttonPath);
+        length(
+          textValue(feedback.text),
+          child(buttonPath, "text.text"),
+          undefined,
+          limits.feedback_button.text.max_length,
+        );
+        length(
+          typeof feedback.value === "string" ? feedback.value : undefined,
+          child(buttonPath, "value"),
+          undefined,
+          limits.feedback_button.value.max_length,
+        );
+        if (typeof feedback.accessibility_label === "string") {
+          length(
+            feedback.accessibility_label,
+            child(buttonPath, "accessibility_label"),
+            undefined,
+            limits.feedback_button.accessibility_label.max_length,
+          );
+        }
+      }
+      break;
+    }
     case "file_input":
       range(
         typeof object.max_files === "number" ? object.max_files : undefined,
@@ -274,6 +453,243 @@ function validateKnownObject(object: JsonObject, path: string): void {
     case "actions":
       if (Array.isArray(object.elements)) {
         length(object.elements, child(path, "elements"), undefined, limits.actions.elements.max_items);
+      }
+      break;
+    case "alert":
+      length(
+        textValue(object.text),
+        child(path, "text.text"),
+        undefined,
+        limits.alert.text.max_length,
+      );
+      if (![undefined, "default", "info", "warning", "error", "success"].includes(object.level as never)) {
+        throw new TypeMismatchError(child(path, "level"), "unknown alert level");
+      }
+      break;
+    case "card":
+      if (
+        object.hero_image === undefined &&
+        object.title === undefined &&
+        object.actions === undefined &&
+        object.body === undefined
+      ) {
+        throw new MissingRequiredError(path, "expected hero_image, title, actions, or body");
+      }
+      if (object.icon !== undefined && object.slack_icon !== undefined) {
+        throw new MutualExclusivityError(path, "icon and slack_icon cannot be provided together");
+      }
+      for (const [field, maximum] of [
+        ["title", limits.card.title.max_length],
+        ["subtitle", limits.card.subtitle.max_length],
+        ["body", limits.card.body.max_length],
+        ["subtext", limits.card.subtext.max_length],
+      ] as const) {
+        if (object[field] !== undefined) {
+          length(textValue(object[field]), child(path, `${field}.text`), undefined, maximum);
+        }
+      }
+      if (Array.isArray(object.actions)) {
+        length(object.actions, child(path, "actions"), undefined, limits.card.actions.max_items);
+        object.actions.forEach((action, index) => {
+          if (objectAt(action, `${child(path, "actions")}[${index}]`).type !== "button") {
+            throw new TypeMismatchError(`${child(path, "actions")}[${index}]`, "expected a button");
+          }
+        });
+      }
+      break;
+    case "carousel":
+      if (!Array.isArray(object.elements)) {
+        throw new TypeMismatchError(child(path, "elements"), "expected an array");
+      }
+      length(
+        object.elements,
+        child(path, "elements"),
+        limits.carousel.elements.min_items,
+        limits.carousel.elements.max_items,
+      );
+      object.elements.forEach((element, index) => {
+        if (objectAt(element, `${child(path, "elements")}[${index}]`).type !== "card") {
+          throw new TypeMismatchError(`${child(path, "elements")}[${index}]`, "expected a card");
+        }
+      });
+      break;
+    case "container": {
+      if (object.title === undefined && object.rich_text_title === undefined) {
+        throw new MissingRequiredError(path, "expected title or rich_text_title");
+      }
+      if (object.title !== undefined) {
+        length(
+          textValue(object.title),
+          child(path, "title.text"),
+          undefined,
+          limits.container.title.max_length,
+        );
+      }
+      if (object.subtitle !== undefined) {
+        length(
+          textValue(object.subtitle),
+          child(path, "subtitle.text"),
+          undefined,
+          limits.container.subtitle.max_length,
+        );
+      }
+      if (!Array.isArray(object.child_blocks)) {
+        throw new TypeMismatchError(child(path, "child_blocks"), "expected an array");
+      }
+      length(
+        object.child_blocks,
+        child(path, "child_blocks"),
+        1,
+        limits.container.child_blocks.max_items,
+      );
+      const allowed = new Set([
+        "actions", "context", "divider", "file", "header", "image", "input",
+        "rich_text", "section", "table", "video",
+      ]);
+      object.child_blocks.forEach((block, index) => {
+        if (!allowed.has(String(objectAt(block, `${child(path, "child_blocks")}[${index}]`).type))) {
+          throw new TypeMismatchError(`${child(path, "child_blocks")}[${index}]`, "unsupported child block");
+        }
+      });
+      if (![undefined, "narrow", "standard", "wide", "full"].includes(object.width as never)) {
+        throw new TypeMismatchError(child(path, "width"), "unknown container width");
+      }
+      if (object.default_collapsed === true && object.is_collapsible !== true) {
+        throw new InvalidUsageError(child(path, "default_collapsed"), "requires is_collapsible");
+      }
+      if (object.has_header_divider === true && object.is_collapsible === true) {
+        throw new InvalidUsageError(child(path, "has_header_divider"), "requires a non-collapsible container");
+      }
+      break;
+    }
+    case "context_actions":
+      if (!Array.isArray(object.elements)) {
+        throw new TypeMismatchError(child(path, "elements"), "expected an array");
+      }
+      length(object.elements, child(path, "elements"), 1, limits.context_actions.elements.max_items);
+      object.elements.forEach((element, index) => {
+        const elementType = objectAt(element, `${child(path, "elements")}[${index}]`).type;
+        if (elementType !== "feedback_buttons" && elementType !== "icon_button") {
+          throw new TypeMismatchError(`${child(path, "elements")}[${index}]`, "unsupported context action");
+        }
+      });
+      break;
+    case "data_table": {
+      if (!Array.isArray(object.rows)) {
+        throw new TypeMismatchError(child(path, "rows"), "expected an array");
+      }
+      length(
+        object.rows,
+        child(path, "rows"),
+        limits.data_table.rows.min_items,
+        limits.data_table.rows.max_items,
+      );
+      let columns: number | undefined;
+      object.rows.forEach((rawRow, rowIndex) => {
+        if (!Array.isArray(rawRow)) {
+          throw new TypeMismatchError(`${child(path, "rows")}[${rowIndex}]`, "expected an array");
+        }
+        length(
+          rawRow,
+          `${child(path, "rows")}[${rowIndex}]`,
+          limits.data_table.columns.min_items,
+          limits.data_table.columns.max_items,
+        );
+        columns ??= rawRow.length;
+        if (rawRow.length !== columns) {
+          throw new InvalidUsageError(`${child(path, "rows")}[${rowIndex}]`, "column count differs");
+        }
+        rawRow.forEach((rawCell, cellIndex) => {
+          const cellPath = `${child(path, "rows")}[${rowIndex}][${cellIndex}]`;
+          const cell = objectAt(rawCell, cellPath);
+          if (!["raw_text", "raw_number", "rich_text"].includes(String(cell.type))) {
+            throw new TypeMismatchError(cellPath, "unsupported data-table cell");
+          }
+          if (rowIndex === 0 && cell.type === "rich_text") {
+            throw new TypeMismatchError(cellPath, "header cells cannot contain rich text");
+          }
+          if ((cell.type === "raw_text" || cell.type === "raw_number") && typeof cell.text === "string") {
+            length(cell.text, child(cellPath, "text"), limits.data_table.cell_text.min_length);
+          }
+        });
+      });
+      range(
+        typeof object.page_size === "number" ? object.page_size : undefined,
+        child(path, "page_size"),
+        limits.data_table.page_size.min,
+        limits.data_table.page_size.max,
+      );
+      if (typeof object.row_header_column_index === "number") {
+        range(object.row_header_column_index, child(path, "row_header_column_index"), 0, (columns ?? 1) - 1);
+      }
+      if (typeof object.caption !== "string") {
+        throw new TypeMismatchError(child(path, "caption"), "expected a string");
+      }
+      const contentLength = textCharacterCount(object.rows);
+      if (contentLength > limits.data_table.content.max_length) {
+        throw new LengthError(child(path, "rows"), `${contentLength} exceeds maximum ${limits.data_table.content.max_length}`);
+      }
+      break;
+    }
+    case "data_visualization":
+      length(
+        typeof object.title === "string" ? object.title : undefined,
+        child(path, "title"),
+        undefined,
+        limits.data_visualization.title.max_length,
+      );
+      objectAt(object.chart, child(path, "chart"));
+      break;
+    case "pie":
+      if (!Array.isArray(object.segments)) {
+        throw new TypeMismatchError(child(path, "segments"), "expected an array");
+      }
+      length(
+        object.segments,
+        child(path, "segments"),
+        limits.data_visualization.segments.min_items,
+        limits.data_visualization.segments.max_items,
+      );
+      object.segments.forEach((rawSegment, index) => {
+        const segmentPath = `${child(path, "segments")}[${index}]`;
+        const segment = objectAt(rawSegment, segmentPath);
+        length(
+          typeof segment.label === "string" ? segment.label : undefined,
+          child(segmentPath, "label"),
+          undefined,
+          limits.data_visualization.segment.label.max_length,
+        );
+        if (typeof segment.value !== "number" || !Number.isFinite(segment.value)) {
+          throw new TypeMismatchError(child(segmentPath, "value"), "expected a finite number");
+        }
+        if (segment.value <= limits.data_visualization.segment.value.exclusive_min) {
+          throw new RangeError(child(segmentPath, "value"), "expected a value greater than 0");
+        }
+      });
+      break;
+    case "bar":
+    case "area":
+    case "line":
+      validateSeriesChart(object, path);
+      break;
+    case "task_card":
+      if (typeof object.task_id !== "string" || typeof object.title !== "string") {
+        throw new MissingRequiredError(path, "expected task_id and title");
+      }
+      if (![undefined, "pending", "in_progress", "complete", "error"].includes(object.status as never)) {
+        throw new TypeMismatchError(child(path, "status"), "unknown task status");
+      }
+      if (Array.isArray(object.sources)) {
+        object.sources.forEach((source, index) => {
+          if (objectAt(source, `${child(path, "sources")}[${index}]`).type !== "url") {
+            throw new TypeMismatchError(`${child(path, "sources")}[${index}]`, "expected a URL source");
+          }
+        });
+      }
+      break;
+    case "plan":
+      if (typeof object.title !== "string") {
+        throw new MissingRequiredError(child(path, "title"), "expected a title");
       }
       break;
     case "input": {
