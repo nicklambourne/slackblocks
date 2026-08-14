@@ -2,6 +2,7 @@ name: TypeScript
 
 on:
   push:
+    branches: [master]
     paths:
       - "typescript/**"
       - "spec/**"
@@ -12,7 +13,6 @@ on:
       - "pnpm-workspace.yaml"
       - ".github/workflows/typescript.yml"
   pull_request:
-    branches: [master]
     paths:
       - "typescript/**"
       - "spec/**"
