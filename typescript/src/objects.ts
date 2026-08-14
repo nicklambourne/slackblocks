@@ -11,7 +11,7 @@ import {
   LengthError,
   MissingRequiredError,
   MutualExclusivityError,
-  RangeError,
+  OutOfRangeError,
   TypeMismatchError,
 } from "./errors.js";
 import { create, createObject, textValue } from "./internal.js";
@@ -501,7 +501,7 @@ export function chartSegment(
     throw new TypeMismatchError("chartSegment.value", "expected a finite number");
   }
   if (input.value <= 0) {
-    throw new RangeError("chartSegment.value", "expected a value greater than 0");
+    throw new OutOfRangeError("chartSegment.value", "expected a value greater than 0");
   }
   return createObject({ ...input }, settings);
 }

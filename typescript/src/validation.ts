@@ -5,7 +5,7 @@ import {
   LengthError,
   MissingRequiredError,
   MutualExclusivityError,
-  RangeError,
+  OutOfRangeError,
   TypeMismatchError,
 } from "./errors.js";
 import type { BlockKitPayload, JsonObject, JsonValue } from "./types.js";
@@ -57,10 +57,10 @@ function range(
 ): void {
   if (value === undefined) return;
   if (minimum !== undefined && value < minimum) {
-    throw new RangeError(path, `${value} is less than minimum ${minimum}`);
+    throw new OutOfRangeError(path, `${value} is less than minimum ${minimum}`);
   }
   if (maximum !== undefined && value > maximum) {
-    throw new RangeError(path, `${value} exceeds maximum ${maximum}`);
+    throw new OutOfRangeError(path, `${value} exceeds maximum ${maximum}`);
   }
 }
 
@@ -408,7 +408,7 @@ function validateKnownObject(object: JsonObject, path: string): void {
         typeof object.max_value === "number" &&
         object.min_value > object.max_value
       ) {
-        throw new RangeError(path, "min_value cannot exceed max_value");
+        throw new OutOfRangeError(path, "min_value cannot exceed max_value");
       }
       break;
     case "image":
@@ -663,7 +663,7 @@ function validateKnownObject(object: JsonObject, path: string): void {
           throw new TypeMismatchError(child(segmentPath, "value"), "expected a finite number");
         }
         if (segment.value <= limits.data_visualization.segment.value.exclusive_min) {
-          throw new RangeError(child(segmentPath, "value"), "expected a value greater than 0");
+          throw new OutOfRangeError(child(segmentPath, "value"), "expected a value greater than 0");
         }
       });
       break;

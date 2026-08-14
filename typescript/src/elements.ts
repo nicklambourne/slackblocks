@@ -5,7 +5,7 @@
  *
  * @module elements
  */
-import { LengthError, RangeError, TypeMismatchError } from "./errors.js";
+import { LengthError, OutOfRangeError, TypeMismatchError } from "./errors.js";
 import { create, createObject } from "./internal.js";
 import { asText, type TextLike } from "./objects.js";
 import type { FactorySettings, JsonObject, SlackObject } from "./types.js";
@@ -638,7 +638,7 @@ export function fileInput(
   settings: FactorySettings = {},
 ): SlackObject<"file_input"> {
   if (input.maxFiles !== undefined && (input.maxFiles < 1 || input.maxFiles > 10)) {
-    throw new RangeError("fileInput.maxFiles", "expected a value between 1 and 10");
+    throw new OutOfRangeError("fileInput.maxFiles", "expected a value between 1 and 10");
   }
   return create("file_input", input, settings);
 }
