@@ -4,10 +4,12 @@ on:
     branches: [master]
     paths:
       - "python/**"
+      - "spec/tools/**"
       - ".github/workflows/ruff-lint.yml"
   pull_request:
     paths:
       - "python/**"
+      - "spec/tools/**"
       - ".github/workflows/ruff-lint.yml"
 
 concurrency:
@@ -35,4 +37,4 @@ jobs:
         run: uv sync
 
       - name: Linting
-        run: uv run ruff check .
+        run: uv run ruff check slackblocks test ../spec/tools

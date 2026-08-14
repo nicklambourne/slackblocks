@@ -1,0 +1,479 @@
+{
+  "spec_version": "1.0.0",
+  "fixtures": [
+    {
+      "id": "attachments/attachment_multi_block",
+      "description": "Attachment Multi Block",
+      "slack_docs": "https://docs.slack.dev/messaging/formatting-message-text/#attachments",
+      "since": "1.0.0"
+    },
+    {
+      "id": "attachments/attachment_simple",
+      "description": "Attachment Simple",
+      "slack_docs": "https://docs.slack.dev/messaging/formatting-message-text/#attachments",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/actions_block_checkboxes",
+      "description": "Actions Block Checkboxes",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/context_block_text_only",
+      "description": "Context Block Text Only",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/divider_block_only",
+      "description": "Divider Block Only",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/file_block_only",
+      "description": "File Block Only",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/header_block_only",
+      "description": "Header Block Only",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/image_block_only",
+      "description": "Image Block Only",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/input_block_only",
+      "description": "Input Block Only",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/markdown_block_basic",
+      "description": "Markdown Block Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/rich_text_block_basic",
+      "description": "Rich Text Block Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/section_block_both_text_and_fields",
+      "description": "Section Block Both Text And Fields",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/section_block_empty_text_field_value",
+      "description": "Section Block Empty Text Field Value",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/section_block_fields",
+      "description": "Section Block Fields",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/section_block_single_field_value_coercion",
+      "description": "Section Block Single Field Value Coercion",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/section_block_text_only",
+      "description": "Section Block Text Only",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/table_block",
+      "description": "Table Block",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/video_block_basic",
+      "description": "Video Block Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "blocks/video_block_full",
+      "description": "Video Block Full",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/button_basic",
+      "description": "Button Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/button_link",
+      "description": "Button Link",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/button_style",
+      "description": "Button Style",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/checkbox_basic",
+      "description": "Checkbox Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/date_picker_basic",
+      "description": "Date Picker Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/datetime_picker_basic",
+      "description": "Datetime Picker Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/email_input_basic",
+      "description": "Email Input Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/image_basic",
+      "description": "Image Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/multi_select_channel",
+      "description": "Multi Select Channel",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/multi_select_conversation",
+      "description": "Multi Select Conversation",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/multi_select_external",
+      "description": "Multi Select External",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/multi_select_static",
+      "description": "Multi Select Static",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/multi_select_user",
+      "description": "Multi Select User",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/multi_select_user_with_initial_users",
+      "description": "Multi Select User With Initial Users",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/number_input_basic",
+      "description": "Number Input Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/overflow_menu_basic",
+      "description": "Overflow Menu Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/plaintext_input_basic",
+      "description": "Plaintext Input Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/radio_button_group_basic",
+      "description": "Radio Button Group Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/rich_text_input_basic",
+      "description": "Rich Text Input Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/select_menu_channel",
+      "description": "Select Menu Channel",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/select_menu_conversation",
+      "description": "Select Menu Conversation",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/select_menu_external",
+      "description": "Select Menu External",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/select_menu_static",
+      "description": "Select Menu Static",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/select_menu_user",
+      "description": "Select Menu User",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/timepicker_basic",
+      "description": "Timepicker Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/url_input_basic",
+      "description": "Url Input Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "elements/workflow_button_basic",
+      "description": "Workflow Button Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "messages/message_basic",
+      "description": "Message Basic",
+      "slack_docs": "https://docs.slack.dev/reference/methods/chat.postMessage/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "messages/message_basic_attachment",
+      "description": "Message Basic Attachment",
+      "slack_docs": "https://docs.slack.dev/reference/methods/chat.postMessage/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "messages/message_compound",
+      "description": "Message Compound",
+      "slack_docs": "https://docs.slack.dev/reference/methods/chat.postMessage/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "messages/message_response",
+      "description": "Message Response",
+      "slack_docs": "https://docs.slack.dev/reference/methods/chat.postMessage/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "messages/message_with_attachments",
+      "description": "Message With Attachments",
+      "slack_docs": "https://docs.slack.dev/reference/methods/chat.postMessage/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "messages/message_with_optional_arguments",
+      "description": "Message With Optional Arguments",
+      "slack_docs": "https://docs.slack.dev/reference/methods/chat.postMessage/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "messages/webhook_message_basic",
+      "description": "Webhook Message Basic",
+      "slack_docs": "https://docs.slack.dev/reference/methods/chat.postMessage/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "messages/webhook_message_delete",
+      "description": "Webhook Message Delete",
+      "slack_docs": "https://docs.slack.dev/reference/methods/chat.postMessage/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "objects/confirmation_dialogue_basic",
+      "description": "Confirmation Dialogue Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "objects/conversation_filter_basic",
+      "description": "Conversation Filter Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "objects/dispatch_action_configuration_basic",
+      "description": "Dispatch Action Configuration Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "objects/input_parameter_basic",
+      "description": "Input Parameter Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "objects/option_basic",
+      "description": "Option Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "objects/option_group_basic",
+      "description": "Option Group Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "objects/text_markdown_basic",
+      "description": "Text Markdown Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "objects/text_markdown_verbatim",
+      "description": "Text Markdown Verbatim",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "objects/text_plaintext_basic",
+      "description": "Text Plaintext Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "objects/text_plaintext_emoji",
+      "description": "Text Plaintext Emoji",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "objects/trigger_basic",
+      "description": "Trigger Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "objects/workflow_basic",
+      "description": "Workflow Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "rich_text/rich_text_basic",
+      "description": "Rich Text Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "rich_text/rich_text_channel_basic",
+      "description": "Rich Text Channel Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "rich_text/rich_text_code_block_basic",
+      "description": "Rich Text Code Block Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "rich_text/rich_text_emoji_basic",
+      "description": "Rich Text Emoji Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "rich_text/rich_text_link_basic",
+      "description": "Rich Text Link Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "rich_text/rich_text_list_basic",
+      "description": "Rich Text List Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "rich_text/rich_text_list_ordered",
+      "description": "Rich Text List Ordered",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "rich_text/rich_text_quote_basic",
+      "description": "Rich Text Quote Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "rich_text/rich_text_section_basic",
+      "description": "Rich Text Section Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "rich_text/rich_text_user_basic",
+      "description": "Rich Text User Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "rich_text/rich_text_user_group_basic",
+      "description": "Rich Text User Group Basic",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "views/hometab_view",
+      "description": "Hometab View",
+      "slack_docs": "https://docs.slack.dev/surfaces/modals/",
+      "since": "1.0.0"
+    },
+    {
+      "id": "views/modal_with_blocks",
+      "description": "Modal With Blocks",
+      "slack_docs": "https://docs.slack.dev/surfaces/modals/",
+      "since": "1.0.0"
+    }
+  ]
+}

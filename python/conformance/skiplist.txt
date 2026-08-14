@@ -1,0 +1,2 @@
+# One fixture or invalid-case ID per line, followed by a reason.
+# Python conforms to every case in spec 1.0.0, so this list is intentionally empty.
