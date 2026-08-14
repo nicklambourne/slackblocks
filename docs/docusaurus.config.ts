@@ -23,6 +23,76 @@ if (typescriptPackage.version !== pythonVersion) {
   );
 }
 
+const TYPESCRIPT_CLASS_NAMES = new Set([
+  "InvalidUsageError",
+  "LengthError",
+  "MissingRequiredError",
+  "MutualExclusivityError",
+  "RangeError",
+  "TypeMismatchError",
+]);
+
+const TYPESCRIPT_INTERFACE_NAMES = new Set([
+  "ActionInput",
+  "ButtonInput",
+  "ConfirmationInput",
+  "FactorySettings",
+  "JsonObject",
+  "MarkdownOptions",
+  "MessageInput",
+  "OptionGroupInput",
+  "OptionInput",
+  "PlainTextOptions",
+  "RichTextStyle",
+  "SectionBlockInput",
+  "WorkflowButtonInput",
+]);
+
+const TYPESCRIPT_TYPE_ALIAS_NAMES = new Set([
+  "BlockKitPayload",
+  "ElementInput",
+  "ErrorCategory",
+  "JsonPrimitive",
+  "JsonValue",
+  "SlackCompatibleBlock",
+  "SlackObject",
+  "SlackWire",
+  "TextLike",
+  "TextObject",
+]);
+
+const TYPESCRIPT_DOMAIN_TITLES: Record<string, string> = {
+  blocks: "Blocks",
+  elements: "Elements",
+  errors: "Errors",
+  messages: "Messages",
+  objects: "Composition Objects",
+  "rich-text": "Rich Text",
+  utilities: "Utilities",
+  views: "Views",
+};
+
+function typescriptDomainTitle({ rawName }: { rawName: string }): string {
+  return TYPESCRIPT_DOMAIN_TITLES[rawName] ?? rawName;
+}
+
+function legacyTypeScriptRedirect(path: string): string | undefined {
+  const match = path.match(
+    /^\/reference\/typescript\/(?:blocks|elements|errors|messages|objects|rich-text|utilities|views)\/([^/]+)$/,
+  );
+  if (!match) return undefined;
+
+  const name = match[1];
+  const kind = TYPESCRIPT_CLASS_NAMES.has(name)
+    ? "classes"
+    : TYPESCRIPT_INTERFACE_NAMES.has(name)
+      ? "interfaces"
+      : TYPESCRIPT_TYPE_ALIAS_NAMES.has(name)
+        ? "type-aliases"
+        : "functions";
+  return `/reference/typescript/${kind}/${name}`;
+}
+
 const config: Config = {
   title: "slackblocks",
   tagline: "Validated Slack Block Kit construction for Python and TypeScript",
@@ -75,11 +145,28 @@ const config: Config = {
       "docusaurus-plugin-typedoc",
       {
         name: "TypeScript API reference",
-        entryPoints: ["../typescript/src/index.ts"],
+        entryPoints: [
+          "../typescript/src/blocks.ts",
+          "../typescript/src/elements.ts",
+          "../typescript/src/objects.ts",
+          "../typescript/src/rich-text.ts",
+          "../typescript/src/messages.ts",
+          "../typescript/src/views.ts",
+          "../typescript/src/utilities-reference.ts",
+          "../typescript/src/errors.ts",
+        ],
+        entryPointStrategy: "expand",
+        sortEntryPoints: false,
+        router: "structure",
+        plugin: ["./scripts/typedoc-domain-groups.mjs"],
         tsconfig: "../typescript/tsconfig.typedoc.json",
         out: "docs/reference/typescript",
         readme: "./typescript-api-intro.md",
         mergeReadme: true,
+        pageTitleTemplates: {
+          member: "{name}",
+          module: typescriptDomainTitle,
+        },
         excludePrivate: true,
         excludeInternal: true,
         sidebar: {
@@ -119,6 +206,7 @@ const config: Config = {
           { from: "/reference/utils", to: "/reference/python/builder" },
           { from: "/reference/views", to: "/reference/python/views" },
         ],
+        createRedirects: legacyTypeScriptRedirect,
       },
     ],
   ],
@@ -162,7 +250,7 @@ const config: Config = {
       respectPrefersColorScheme: false,
     },
     footer: {
-      style: "dark",
+      style: "light",
       copyright: `Copyright © ${new Date().getFullYear()} Nicholas Lambourne`,
     },
   },
