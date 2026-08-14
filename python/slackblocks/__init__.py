@@ -4,10 +4,12 @@ from .attachments import Attachment, Color, Field
 from .blocks import (
     ActionsBlock,
     AlertBlock,
+    AlertLevel,
     Block,
     CardBlock,
     CarouselBlock,
     ContainerBlock,
+    ContainerWidth,
     ContextActionsBlock,
     ContextBlock,
     DataTableBlock,
@@ -23,6 +25,7 @@ from .blocks import (
     SectionBlock,
     TableBlock,
     TaskCardBlock,
+    TaskStatus,
     VideoBlock,
 )
 from .builder import block_kit_builder_url
@@ -72,6 +75,7 @@ from .objects import (
     AreaChart,
     AxisConfig,
     BarChart,
+    Chart,
     ChartSegment,
     ColumnSettings,
     Confirm,
@@ -91,6 +95,7 @@ from .objects import (
     RawText,
     SlackFile,
     SlackIcon,
+    SlackIconName,
     Text,
     TextType,
     Trigger,
@@ -115,3 +120,7 @@ from .rich_text.objects import (
 from .views import HomeTabView, ModalView, View
 
 name = "slackblocks"
+
+# The version of the shared conformance spec (spec/SPEC.md) this
+# implementation conforms to.
+SPEC_VERSION: str = "1.0.0"
