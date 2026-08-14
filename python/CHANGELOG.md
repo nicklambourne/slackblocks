@@ -5,6 +5,28 @@ All notable changes to `slackblocks` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] — 2026-08-14
+
+The 2.1 release adds the current generation of Block Kit blocks while keeping
+the Python and TypeScript packages on one coordinated release number.
+
+### Added
+
+- Support for `AlertBlock`, `CardBlock`, `CarouselBlock`, `ContainerBlock`,
+  `ContextActionsBlock`, `DataTableBlock`, `DataVisualizationBlock`,
+  `TaskCardBlock`, and `PlanBlock`, together with their supporting elements
+  and composition objects.
+- Shared valid and invalid conformance cases for the new block families, with
+  coverage checks that require both language implementations to handle every
+  registered capability.
+
+### Changed
+
+- Documentation now covers the new blocks with Python, JSON, and rendered
+  Slack previews.
+- The project is now a multi-package workspace with coordinated Python and
+  TypeScript releases.
+
 ## [2.0.0] — 2026-05-15
 
 The 2.0 release. First final release of the modernised line.
