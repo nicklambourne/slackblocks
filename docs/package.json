@@ -12,7 +12,7 @@
     "test:legacy-fixture": "UV_CACHE_DIR=../.uv-cache uv run --project ../python --group docs python scripts/port_legacy_docs.py fixture",
     "generate": "pnpm generate:python && pnpm check:typescript-api",
     "start": "pnpm generate && docusaurus start",
-    "build": "pnpm generate && docusaurus build && pnpm check:typescript-api-rendering && node scripts/check_legacy_docs.mjs --build-dir build",
+    "build": "pnpm generate && docusaurus build && pnpm check:typescript-api-rendering && pnpm test:legacy-fixture && node scripts/check_legacy_docs.mjs --build-dir build",
     "typecheck": "tsc --noEmit",
     "test": "pnpm typecheck && pnpm check:legacy-contract"
   },
