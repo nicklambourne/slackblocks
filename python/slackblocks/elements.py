@@ -32,7 +32,13 @@ from .objects import (
     TextType,
     Workflow,
 )
-from .utils import coerce_to_list, validate_action_id, validate_int, validate_string
+from .utils import (
+    coerce_to_list,
+    validate_action_id,
+    validate_int,
+    validate_string,
+    validate_type,
+)
 
 if TYPE_CHECKING:
     from .rich_text import RichText
@@ -174,7 +180,22 @@ class Button(Element):
 
 
 class FeedbackButton(RenderableMixin):
-    """One of the positive or negative buttons in a feedback-buttons element."""
+    """
+    One of the positive or negative buttons in a
+    [`FeedbackButtons`](/slackblocks/latest/reference/elements/#elements.FeedbackButtons)
+    element.
+
+    See: <https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element>.
+
+    Args:
+        text: the text on the button (plaintext only; max 75 chars).
+        value: the value sent with the interaction payload (max 2000 chars).
+        accessibility_label: a string label for longer descriptive text about
+            the button. Used by screen readers (max 75 chars).
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(
         self,
@@ -202,7 +223,20 @@ class FeedbackButton(RenderableMixin):
 
 
 class FeedbackButtons(Element):
-    """A paired positive/negative feedback control for a context-actions block."""
+    """
+    A paired positive/negative feedback control for a
+    [`ContextActionsBlock`](/slackblocks/latest/reference/blocks/#blocks.ContextActionsBlock).
+
+    See: <https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element>.
+
+    Args:
+        positive_button: a `FeedbackButton` used to indicate positive feedback.
+        negative_button: a `FeedbackButton` used to indicate negative feedback.
+        action_id: an identifier so the source of the action can be known.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(
         self,
@@ -211,8 +245,8 @@ class FeedbackButtons(Element):
         action_id: str | None = None,
     ) -> None:
         super().__init__(ElementType.FEEDBACK_BUTTONS)
-        self.positive_button = positive_button
-        self.negative_button = negative_button
+        self.positive_button = validate_type(positive_button, FeedbackButton, "positive_button")
+        self.negative_button = validate_type(negative_button, FeedbackButton, "negative_button")
         self.action_id = validate_action_id(action_id, allow_none=True)
 
     def _resolve(self) -> dict[str, Any]:
@@ -227,9 +261,30 @@ class FeedbackButtons(Element):
 
 
 class IconButton(Element):
-    """A compact icon-only action for a context-actions block.
+    """
+    A compact icon-only action for a
+    [`ContextActionsBlock`](/slackblocks/latest/reference/blocks/#blocks.ContextActionsBlock).
 
-    Slack currently supports only the ``trash`` icon.
+    Slack currently supports only the `trash` icon.
+
+    See: <https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element>.
+
+    Args:
+        text: the text describing the button (plaintext only).
+        icon: the icon to show; `trash` is the only icon currently
+            supported by Slack.
+        action_id: an identifier so the source of the action can be known.
+        value: the value sent with the interaction payload (max 2000 chars).
+        confirm: a `ConfirmationDialogue` object that will be presented when
+            the button is clicked.
+        accessibility_label: a string label for longer descriptive text about
+            the button. Used by screen readers (max 75 chars).
+        visible_to_user_ids: a list of (string) user IDs for which the button
+            is visible (max 10). If not provided, the button is visible to
+            all users.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
     """
 
     def __init__(
@@ -249,7 +304,7 @@ class IconButton(Element):
         self.text = Text.to_text(text, force_plaintext=True)
         self.action_id = validate_action_id(action_id, allow_none=True)
         self.value = validate_string(value, "value", max_length=2000, allow_none=True)
-        self.confirm = confirm
+        self.confirm = validate_type(confirm, ConfirmationDialogue, "confirm", allow_none=True)
         self.accessibility_label = validate_string(
             accessibility_label,
             "accessibility_label",
@@ -276,11 +331,23 @@ class IconButton(Element):
 
 
 class URLSource(Element):
-    """A labelled URL source displayed by a task-card block."""
+    """
+    A labelled URL source displayed by a
+    [`TaskCardBlock`](/slackblocks/latest/reference/blocks/#blocks.TaskCardBlock).
+
+    See: <https://docs.slack.dev/reference/block-kit/blocks/task-card-block>.
+
+    Args:
+        url: the URL of the source (max 3000 chars).
+        text: the label displayed for the source.
+
+    Throws:
+        InvalidUsageError: if any of the provided arguments fail validation.
+    """
 
     def __init__(self, url: str, text: str) -> None:
         super().__init__(ElementType.URL_SOURCE)
-        self.url = validate_string(url, "url")
+        self.url = validate_string(url, "url", min_length=1, max_length=3000)
         self.text = validate_string(text, "text")
 
     def _resolve(self) -> dict[str, Any]:
@@ -321,7 +388,7 @@ class CheckboxGroup(Element):
     ) -> None:
         super().__init__(type_=ElementType.CHECKBOXES)
         self.action_id = validate_action_id(action_id)
-        self.options = coerce_to_list(options, Option)
+        self.options = coerce_to_list(options, Option, min_size=1, max_size=10)
         self.initial_options = coerce_to_list(initial_options, Option, allow_none=True)
         self.confirm = confirm
         self.focus_on_load = focus_on_load

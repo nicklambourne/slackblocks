@@ -15,7 +15,10 @@ from slackblocks.elements import (
     EmailInput,
     ExternalMultiSelectMenu,
     ExternalSelectMenu,
+    FeedbackButton,
+    FeedbackButtons,
     FileInput,
+    IconButton,
     Image,
     NumberInput,
     OverflowMenu,
@@ -26,11 +29,12 @@ from slackblocks.elements import (
     StaticSelectMenu,
     TimePicker,
     URLInput,
+    URLSource,
     UserMultiSelectMenu,
     UserSelectMenu,
     WorkflowButton,
 )
-from slackblocks.errors import InvalidUsageError
+from slackblocks.errors import InvalidUsageError, LengthError, TypeMismatchError
 from slackblocks.objects import (
     ConfirmationDialogue,
     ConversationFilter,
@@ -74,6 +78,22 @@ def test_checkbox_basic() -> None:
         options=TWO_OPTIONS, action_id="and...action", initial_options=OPTION_A
     )
     assert fetch_sample(path="elements/checkbox_basic.json") == repr(checkbox)
+
+
+def test_checkbox_group_with_no_options_throws() -> None:
+    with pytest.raises(LengthError):
+        CheckboxGroup(action_id="action", options=[])
+
+
+def test_checkbox_group_with_more_than_ten_options_throws() -> None:
+    with pytest.raises(LengthError):
+        CheckboxGroup(
+            action_id="action",
+            options=[
+                Option(text=Text(str(index), type_=TextType.PLAINTEXT), value=str(index))
+                for index in range(11)
+            ],
+        )
 
 
 def test_datepicker_basic() -> None:
@@ -538,3 +558,34 @@ def test_rich_text_input_dispatch_action_config_resolves() -> None:
     dumps(resolved)
     assert resolved["dispatch_action_config"] == {"trigger_actions_on": ["on_enter_pressed"]}
     assert resolved["placeholder"] == {"type": "plain_text", "text": "Type something"}
+
+
+def test_feedback_buttons_positive_button_must_be_a_feedback_button() -> None:
+    with pytest.raises(TypeMismatchError):
+        FeedbackButtons(
+            positive_button="yay",
+            negative_button=FeedbackButton("Bad", "negative_feedback"),
+        )
+
+
+def test_feedback_buttons_negative_button_must_be_a_feedback_button() -> None:
+    with pytest.raises(TypeMismatchError):
+        FeedbackButtons(
+            positive_button=FeedbackButton("Good", "positive_feedback"),
+            negative_button="nay",
+        )
+
+
+def test_icon_button_confirm_must_be_a_confirmation_dialogue() -> None:
+    with pytest.raises(TypeMismatchError):
+        IconButton("Delete", confirm="are you sure?")
+
+
+def test_url_source_empty_url_throws() -> None:
+    with pytest.raises(LengthError):
+        URLSource("", "empty")
+
+
+def test_url_source_url_too_long_throws() -> None:
+    with pytest.raises(LengthError):
+        URLSource("https://ndl.im/" + "x" * 3000, "too long")
