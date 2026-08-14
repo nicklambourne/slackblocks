@@ -57,9 +57,9 @@ SectionBlock(
 <TypeScript>
 
 ```ts
-import { checkboxes, mrkdwn, option, section } from "slackblocks";
+import { checkboxes, mrkdwn, option, sectionBlock } from "slackblocks";
 
-section({
+sectionBlock({
   text: "This is a section block with a checkbox accessory.",
   blockId: "fake_block_id",
   accessory: checkboxes({
@@ -236,9 +236,9 @@ HeaderBlock(
 <TypeScript>
 
 ```ts
-import { header, plainText } from "slackblocks";
+import { headerBlock, plainText } from "slackblocks";
 
-header({
+headerBlock({
   text: plainText("This is a header block", { emoji: true }),
 });
 ```
@@ -410,9 +410,9 @@ InputBlock(
 <TypeScript>
 
 ```ts
-import { input, plainText, plainTextInput } from "slackblocks";
+import { inputBlock, plainText, plainTextInput } from "slackblocks";
 
-input({
+inputBlock({
   label: plainText("Label", { emoji: true }),
   hint: plainText("Hint", { emoji: true }),
   element: plainTextInput({ actionId: "action" }),
@@ -478,9 +478,9 @@ DividerBlock()
 <TypeScript>
 
 ```ts
-import { divider } from "slackblocks";
+import { dividerBlock } from "slackblocks";
 
-divider();
+dividerBlock();
 ```
 
 </TypeScript>
@@ -585,9 +585,9 @@ ContextBlock(
 <TypeScript>
 
 ```ts
-import { context, mrkdwn } from "slackblocks";
+import { contextBlock, mrkdwn } from "slackblocks";
 
-context({
+contextBlock({
   elements: [mrkdwn("Hello, world!")],
   blockId: "fake_block_id",
 });
@@ -650,9 +650,9 @@ ActionsBlock(
 <TypeScript>
 
 ```ts
-import { actions, checkboxes, mrkdwn, option, plainText } from "slackblocks";
+import { actionsBlock, checkboxes, mrkdwn, option, plainText } from "slackblocks";
 
-actions({
+actionsBlock({
   blockId: "fake_block_id",
   elements: [
     checkboxes({
@@ -791,10 +791,10 @@ import {
   richTextBlock,
   richTextLink,
   richTextSection,
-  table,
+  tableBlock,
 } from "slackblocks";
 
-table({
+tableBlock({
   columnSettings: [
     columnSettings({ align: "right", isWrapped: true }),
     columnSettings({ align: "left" }),
@@ -946,9 +946,9 @@ VideoBlock(
 <TypeScript>
 
 ```ts
-import { video } from "slackblocks";
+import { videoBlock } from "slackblocks";
 
-video({
+videoBlock({
   altText: "How to use slackblocks",
   thumbnailUrl: "https://example.com/thumb.png",
   title: "Getting Started",

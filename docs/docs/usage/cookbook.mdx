@@ -64,7 +64,14 @@ def build_status_message(
 <TypeScript>
 
 ```ts
-import { context, divider, header, message, mrkdwn, section } from "slackblocks";
+import {
+  contextBlock,
+  dividerBlock,
+  headerBlock,
+  message,
+  mrkdwn,
+  sectionBlock,
+} from "slackblocks";
 
 function buildStatusMessage(input: {
   channel: string;
@@ -82,8 +89,8 @@ function buildStatusMessage(input: {
     channel: input.channel,
     text: `Build ${status} for ${input.project}@${input.branch}`,
     blocks: [
-      header({ text: `${icon} ${input.project} build ${status}` }),
-      section({
+      headerBlock({ text: `${icon} ${input.project} build ${status}` }),
+      sectionBlock({
         fields: [
           `*Branch*\n\`${input.branch}\``,
           `*Commit*\n\`${input.commit.slice(0, 7)}\``,
@@ -91,8 +98,10 @@ function buildStatusMessage(input: {
           `*Duration*\n${input.duration}`,
         ],
       }),
-      divider(),
-      context({ elements: [mrkdwn(`:calendar: Triggered by push to \`${input.branch}\``)] }),
+      dividerBlock(),
+      contextBlock({
+        elements: [mrkdwn(`:calendar: Triggered by push to \`${input.branch}\``)],
+      }),
     ],
   });
 }

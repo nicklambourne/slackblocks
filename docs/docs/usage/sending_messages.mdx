@@ -173,12 +173,12 @@ Factories return plain Slack-shaped objects, so pass the payload directly to the
 
 ```ts
 import { WebClient } from "@slack/web-api";
-import { message, section } from "slackblocks";
+import { message, sectionBlock } from "slackblocks";
 
 const client = new WebClient(process.env.SLACK_API_TOKEN);
 const payload = message({
   channel: "C0123456",
-  blocks: [section({ text: "Hello, world!" })],
+  blocks: [sectionBlock({ text: "Hello, world!" })],
 });
 
 await client.chat.postMessage(payload);
@@ -190,11 +190,11 @@ Use a channel ID rather than a display name when possible. Provide a `text` fall
 
 ```ts
 import { IncomingWebhook } from "@slack/webhook";
-import { section, webhookMessage } from "slackblocks";
+import { sectionBlock, webhookMessage } from "slackblocks";
 
 const webhook = new IncomingWebhook(process.env.SLACK_WEBHOOK_URL!);
 await webhook.send(webhookMessage({
-  blocks: [section({ text: "Build complete :white_check_mark:" })],
+  blocks: [sectionBlock({ text: "Build complete :white_check_mark:" })],
 }));
 ```
 
@@ -203,10 +203,10 @@ await webhook.send(webhookMessage({
 Construct the response body, then return it through your web framework:
 
 ```ts
-import { messageResponse, section } from "slackblocks";
+import { messageResponse, sectionBlock } from "slackblocks";
 
 const responseBody = messageResponse({
-  blocks: [section({ text: "Got it! Working on that now..." })],
+  blocks: [sectionBlock({ text: "Got it! Working on that now..." })],
   responseType: "ephemeral",
 });
 ```
@@ -214,11 +214,11 @@ const responseBody = messageResponse({
 ## Modals and home tabs
 
 ```ts
-import { modal, section } from "slackblocks";
+import { modal, sectionBlock } from "slackblocks";
 
 const view = modal({
   title: "Confirm action",
-  blocks: [section({ text: "Are you sure?" })],
+  blocks: [sectionBlock({ text: "Are you sure?" })],
   submit: "Yes",
   close: "Cancel",
 });

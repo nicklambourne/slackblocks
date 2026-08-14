@@ -152,7 +152,7 @@ Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
 
 ## Why is my message showing literal `*asterisks*` instead of bold text?
 
-Slack supports `mrkdwn` and `plain_text`. The `section()` factory turns a string into `mrkdwn` by default, but Slack requires headers, button labels, modal titles, input labels, and option labels to use `plain_text`. Markdown syntax in those fields is displayed literally.
+Slack supports `mrkdwn` and `plain_text`. The `sectionBlock()` factory turns a string into `mrkdwn` by default, but Slack requires headers, button labels, modal titles, input labels, and option labels to use `plain_text`. Markdown syntax in those fields is displayed literally.
 
 If styling is missing from a field that supports it, check that you have not wrapped the value with `plainText()`. Use `mrkdwn()` when you need to choose the text type explicitly.
 
@@ -161,12 +161,12 @@ If styling is missing from a field that supports it, check that you have not wra
 Messages containing blocks should also provide a short plain-text fallback. Slack uses it for push notifications, assistive technology, and clients that cannot render Block Kit.
 
 ```ts
-import { header, message } from "slackblocks";
+import { headerBlock, message } from "slackblocks";
 
 const payload = message({
   channel: "C0123456",
   text: "Build #482 passed",
-  blocks: [header({ text: "Build #482 passed :white_check_mark:" })],
+  blocks: [headerBlock({ text: "Build #482 passed :white_check_mark:" })],
 });
 ```
 
@@ -177,9 +177,9 @@ const payload = message({
 You can omit it for non-interactive content. For interactive messages and views, use a stable value that your handlers understand:
 
 ```ts
-import { actions, button } from "slackblocks";
+import { actionsBlock, button } from "slackblocks";
 
-actions({
+actionsBlock({
   blockId: "approval:req-123",
   elements: [
     button({ text: "Approve", actionId: "approve", value: "req-123" }),
@@ -197,9 +197,9 @@ Common limits include:
 
 | Factory field                       | Limit |
 |-------------------------------------|-------|
-| `section().text`                    | 3,000 characters |
-| `section().fields[i]`               | 2,000 characters |
-| `header().text`                     | 150 characters |
+| `sectionBlock().text`               | 3,000 characters |
+| `sectionBlock().fields[i]`          | 2,000 characters |
+| `headerBlock().text`                | 150 characters |
 | `button().text`                     | 75 characters |
 | `button().value`                    | 2,000 characters |
 | `button().url`                      | 3,000 characters |
@@ -214,10 +214,10 @@ If Slack adds a field or raises a limit before the package catches up, pass `{ v
 
 - Channel messages: **50 blocks**.
 - Modals and home tabs: **100 blocks**.
-- `context()`: up to **10 elements**.
-- `actions()`: up to **25 elements**.
-- `section().fields`: up to **10 items**.
-- `table()`: up to **100 rows × 20 columns**.
+- `contextBlock()`: up to **10 elements**.
+- `actionsBlock()`: up to **25 elements**.
+- `sectionBlock().fields`: up to **10 items**.
+- `tableBlock()`: up to **100 rows × 20 columns**.
 
 ## Why don't my buttons or selects do anything when clicked?
 
@@ -225,21 +225,21 @@ If Slack adds a field or raises a limit before the package catches up, pass `{ v
 
 [`@slack/bolt`](https://slack.dev/bolt-js/) is the usual starting point for a TypeScript or JavaScript app.
 
-## Why doesn't markdown work inside `header()`?
+## Why doesn't markdown work inside `headerBlock()`?
 
-Slack only accepts `plain_text` in header blocks. Use `section()` followed by `divider()` when you need styled heading text.
+Slack only accepts `plain_text` in header blocks. Use `sectionBlock()` followed by `dividerBlock()` when you need styled heading text.
 
 ## How can I preview a message without sending it?
 
 Generate a Block Kit Builder URL and open it in your browser:
 
 ```ts
-import { blockKitBuilderUrl, message, section } from "slackblocks";
+import { blockKitBuilderUrl, message, sectionBlock } from "slackblocks";
 
 const payload = message({
   channel: "C0123456",
   text: "Preview message",
-  blocks: [section({ text: "Hello!" })],
+  blocks: [sectionBlock({ text: "Hello!" })],
 });
 
 console.log(blockKitBuilderUrl(payload));
@@ -252,12 +252,12 @@ You can also paste `JSON.stringify(payload, null, 2)` into Slack's [Block Kit Bu
 Factories return plain objects, so no conversion step is required:
 
 ```ts
-import { message, section } from "slackblocks";
+import { message, sectionBlock } from "slackblocks";
 
 const payload = message({
   channel: "C0123456",
   text: "Hello!",
-  blocks: [section({ text: "Hello!" })],
+  blocks: [sectionBlock({ text: "Hello!" })],
 });
 
 const response = await fetch("https://slack.com/api/chat.postMessage", {

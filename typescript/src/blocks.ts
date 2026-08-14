@@ -17,15 +17,15 @@ import { create } from "./internal.js";
 import { asText, type TextLike } from "./objects.js";
 import type { FactorySettings, JsonObject, SlackWire } from "./types.js";
 
-export interface SectionInput {
+export interface SectionBlockInput {
   text?: TextLike;
   blockId?: string;
   fields?: TextLike[];
   accessory?: JsonObject;
 }
 
-export function section(
-  input: SectionInput,
+export function sectionBlock(
+  input: SectionBlockInput,
   settings: FactorySettings = {},
 ): SlackWire<SectionBlock> {
   return create(
@@ -39,21 +39,21 @@ export function section(
   ) as SlackWire<SectionBlock>;
 }
 
-export function actions(
+export function actionsBlock(
   input: { elements: JsonObject[]; blockId?: string },
   settings: FactorySettings = {},
 ): SlackWire<ActionsBlock> {
   return create("actions", input, settings) as SlackWire<ActionsBlock>;
 }
 
-export function context(
+export function contextBlock(
   input: { elements: JsonObject[]; blockId?: string },
   settings: FactorySettings = {},
 ): SlackWire<ContextBlock> {
   return create("context", input, settings) as SlackWire<ContextBlock>;
 }
 
-export function divider(
+export function dividerBlock(
   input: { blockId?: string } = {},
   settings: FactorySettings = {},
 ): SlackWire<DividerBlock> {
@@ -67,7 +67,7 @@ export function fileBlock(
   return create("file", { source: "remote", ...input }, settings) as SlackWire<FileBlock>;
 }
 
-export function header(
+export function headerBlock(
   input: { text: TextLike; blockId?: string },
   settings: FactorySettings = {},
 ): SlackWire<HeaderBlock> {
@@ -92,7 +92,7 @@ export function imageBlock(
   ) as SlackWire<ImageBlock>;
 }
 
-export function input(
+export function inputBlock(
   value: {
     label: TextLike;
     element: JsonObject;
@@ -128,14 +128,14 @@ export function richTextBlock(
   return create("rich_text", input, settings) as SlackWire<RichTextBlock>;
 }
 
-export function table(
+export function tableBlock(
   input: { rows: JsonObject[][]; columnSettings?: JsonObject[]; blockId?: string },
   settings: FactorySettings = {},
 ): SlackWire<TableBlock> {
   return create("table", input, settings) as SlackWire<TableBlock>;
 }
 
-export function video(
+export function videoBlock(
   input: {
     altText: string;
     thumbnailUrl: string;

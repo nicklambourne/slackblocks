@@ -1,14 +1,14 @@
 # slackblocks for TypeScript
 
-Typed Block Kit construction with eager, path-aware validation and conformance with slackblocks spec 1.0.0.
+Typed Block Kit construction with eager, path-aware validation and conformance with the shared cross-language slackblocks specification.
 
 ```ts
-import { button, divider, message, mrkdwn, section } from "slackblocks";
+import { button, dividerBlock, message, mrkdwn, sectionBlock } from "slackblocks";
 
 const payload = message({
   channel: "C0123456",
   blocks: [
-    section({
+    sectionBlock({
       text: mrkdwn("*Deploy complete* :rocket:"),
       accessory: button({
         text: "View logs",
@@ -16,7 +16,7 @@ const payload = message({
         url: "https://example.com/logs",
       }),
     }),
-    divider(),
+    dividerBlock(),
   ],
 });
 ```
