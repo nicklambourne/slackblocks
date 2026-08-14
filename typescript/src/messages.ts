@@ -3,8 +3,46 @@
  *
  * @module messages
  */
-import { createObject } from "./internal.js";
+import { TypeMismatchError } from "./errors.js";
+import { createObject, dropEmpty } from "./internal.js";
 import type { FactorySettings, JsonObject } from "./types.js";
+
+/**
+ * Preset side-border colors for legacy attachments.
+ *
+ * The values mirror the Python `Color` enum: three Slack-recognized aliases
+ * (`good`, `warning`, `danger`) plus common hex colors.
+ */
+export const Color = {
+  GOOD: "good",
+  WARNING: "warning",
+  DANGER: "danger",
+  RED: "#ff0000",
+  BLUE: "#0000ff",
+  YELLOW: "#ffff00",
+  GREEN: "#00ff00",
+  ORANGE: "#ff8800",
+  PURPLE: "#8800ff",
+  BLACK: "#000000",
+} as const;
+
+const COLOR_ALIASES = new Set<string>([Color.GOOD, Color.WARNING, Color.DANGER]);
+
+function normalizeColor(color: string): string {
+  if (COLOR_ALIASES.has(color)) {
+    return color;
+  }
+  if (/^#[0-9a-fA-F]{6}$/.test(color)) {
+    return color;
+  }
+  if (/^[0-9a-fA-F]{6}$/.test(color)) {
+    return `#${color}`;
+  }
+  throw new TypeMismatchError(
+    "attachment.color",
+    "expected a hex color such as #ffffff",
+  );
+}
 
 /**
  * Creates lower-priority supporting content using Slack's legacy secondary-attachment format.
@@ -15,21 +53,29 @@ import type { FactorySettings, JsonObject } from "./types.js";
  * @param input - Attachment blocks plus optional color and fallback text.
  * @param settings - Per-call validation settings.
  * @returns A Slack attachment object.
- * @throws InvalidUsageError when a nested block violates a supported Block Kit constraint.
+ * @throws InvalidUsageError when the color is not a valid hex code or a nested
+ *   block violates a supported Block Kit constraint.
  * @see https://docs.slack.dev/legacy/legacy-messaging/legacy-secondary-message-attachments
  */
 export function attachment(
   input: {
     /** Blocks displayed inside the attachment. */
     blocks: JsonObject[];
-    /** Optional side-border color. */
+    /** Optional side-border color: a `Color` value or a six-digit hex code. */
     color?: string;
     /** Plain-text fallback for notifications and clients without Block Kit support. */
     fallback?: string;
   },
   settings: FactorySettings = {},
 ): JsonObject {
-  return createObject(input, settings);
+  return createObject(
+    {
+      ...input,
+      blocks: dropEmpty(input.blocks),
+      color: input.color === undefined ? undefined : normalizeColor(input.color),
+    },
+    settings,
+  );
 }
 
 /** Fields accepted by {@link message}. */
@@ -64,7 +110,16 @@ export function message(
   input: MessageInput,
   settings: FactorySettings = {},
 ): JsonObject {
-  return createObject({ mrkdwn: true, text: "", ...input }, settings);
+  return createObject(
+    {
+      mrkdwn: true,
+      text: "",
+      ...input,
+      blocks: dropEmpty(input.blocks),
+      attachments: dropEmpty(input.attachments),
+    },
+    settings,
+  );
 }
 
 /**
@@ -99,6 +154,8 @@ export function messageResponse(
       replaceOriginal: false,
       responseType: "in_channel",
       ...input,
+      blocks: dropEmpty(input.blocks),
+      attachments: dropEmpty(input.attachments),
     },
     settings,
   );

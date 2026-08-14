@@ -139,16 +139,17 @@ export function richTextSection(
 /**
  * Creates an ordered or bulleted rich-text list.
  *
- * @param input - List items and optional list layout.
+ * @param input - List items, marker style, and optional list layout.
  * @param settings - Per-call validation settings.
  * @returns A validated Slack `rich_text_list` object.
+ * @throws MissingRequiredError when `style` is not provided.
  */
 export function richTextList(
   input: {
     /** Rich-text section objects used as list items. */
     elements: JsonObject[];
-    /** List marker style. Defaults to `bullet`. */
-    style?: "bullet" | "ordered";
+    /** List marker style. */
+    style: "bullet" | "ordered";
     /** Nesting depth. */
     indent?: number;
     /** Starting number for an ordered list. */

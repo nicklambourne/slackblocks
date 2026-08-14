@@ -5,22 +5,15 @@
  *
  * @module elements
  */
-import { LengthError, RangeError, TypeMismatchError } from "./errors.js";
-import { create, createObject } from "./internal.js";
+import limits from "../../spec/limits.json" with { type: "json" };
+
+import { LengthError, OutOfRangeError, TypeMismatchError } from "./errors.js";
+import { create, createObject, dropEmpty } from "./internal.js";
 import { asText, type TextLike } from "./objects.js";
 import type { FactorySettings, JsonObject, SlackObject } from "./types.js";
 
-/** Additional Slack element fields accepted by generic element factories. */
-export type ElementInput = Record<string, unknown>;
-
-/** Common input for interactive elements that dispatch an action. */
-export interface ActionInput extends ElementInput {
-  /** Identifier returned to the app when the user interacts with the element. */
-  actionId: string;
-}
-
 /** Fields accepted by {@link checkboxes}. */
-export interface CheckboxesInput extends ElementInput {
+export interface CheckboxesInput {
   /** Identifier returned when the checkbox selection changes, up to 255 characters. */
   actionId: string;
   /** Up to ten option objects displayed as checkboxes. */
@@ -34,7 +27,7 @@ export interface CheckboxesInput extends ElementInput {
 }
 
 /** Fields accepted by {@link datePicker}. */
-export interface DatePickerInput extends ElementInput {
+export interface DatePickerInput {
   /** Identifier returned when a date is selected, up to 255 characters. */
   actionId: string;
   /** Initially selected date in `YYYY-MM-DD` format. */
@@ -48,7 +41,7 @@ export interface DatePickerInput extends ElementInput {
 }
 
 /** Fields accepted by {@link dateTimePicker}. */
-export interface DateTimePickerInput extends ElementInput {
+export interface DateTimePickerInput {
   /** Identifier returned when a date and time are selected, up to 255 characters. */
   actionId: string;
   /** Initially selected date and time as a Unix timestamp in seconds. */
@@ -60,7 +53,7 @@ export interface DateTimePickerInput extends ElementInput {
 }
 
 /** Fields accepted by {@link emailInput}. */
-export interface EmailElementInput extends ElementInput {
+export interface EmailElementInput {
   /** Identifier used to find the submitted email value, up to 255 characters. */
   actionId: string;
   /** Email address present when the input first loads. */
@@ -74,7 +67,7 @@ export interface EmailElementInput extends ElementInput {
 }
 
 /** Fields accepted by {@link channelMultiSelect}. */
-export interface ChannelMultiSelectInput extends ElementInput {
+export interface ChannelMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
   actionId: string;
   /** Public channel IDs selected when the menu first loads. */
@@ -90,7 +83,7 @@ export interface ChannelMultiSelectInput extends ElementInput {
 }
 
 /** Fields accepted by {@link conversationMultiSelect}. */
-export interface ConversationMultiSelectInput extends ElementInput {
+export interface ConversationMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
   actionId: string;
   /** Conversation IDs selected when the menu first loads. */
@@ -110,7 +103,7 @@ export interface ConversationMultiSelectInput extends ElementInput {
 }
 
 /** Fields accepted by {@link externalMultiSelect}. */
-export interface ExternalMultiSelectInput extends ElementInput {
+export interface ExternalMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
   actionId: string;
   /** Minimum typed characters before Slack requests options; defaults to three. */
@@ -128,7 +121,7 @@ export interface ExternalMultiSelectInput extends ElementInput {
 }
 
 /** Fields accepted by {@link staticMultiSelect}. */
-export interface StaticMultiSelectInput extends ElementInput {
+export interface StaticMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
   actionId: string;
   /** Up to 100 directly supplied options; mutually exclusive with `optionGroups`. */
@@ -148,7 +141,7 @@ export interface StaticMultiSelectInput extends ElementInput {
 }
 
 /** Fields accepted by {@link userMultiSelect}. */
-export interface UserMultiSelectInput extends ElementInput {
+export interface UserMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
   actionId: string;
   /** User IDs selected when the menu first loads. */
@@ -164,7 +157,7 @@ export interface UserMultiSelectInput extends ElementInput {
 }
 
 /** Fields accepted by {@link numberInput}. */
-export interface NumberElementInput extends ElementInput {
+export interface NumberElementInput {
   /** Identifier used to find the submitted numeric value, up to 255 characters. */
   actionId: string;
   /** Whether the input accepts decimal values as well as whole numbers. */
@@ -184,7 +177,7 @@ export interface NumberElementInput extends ElementInput {
 }
 
 /** Fields accepted by {@link overflow}. */
-export interface OverflowInput extends ElementInput {
+export interface OverflowInput {
   /** Identifier returned when an option is selected, up to 255 characters. */
   actionId: string;
   /** Between two and five option objects displayed in the compact menu. */
@@ -194,7 +187,7 @@ export interface OverflowInput extends ElementInput {
 }
 
 /** Fields accepted by {@link plainTextInput}. */
-export interface PlainTextElementInput extends ElementInput {
+export interface PlainTextElementInput {
   /** Identifier used to find the submitted text value, up to 255 characters. */
   actionId: string;
   /** Text present when the input first loads. */
@@ -214,7 +207,7 @@ export interface PlainTextElementInput extends ElementInput {
 }
 
 /** Fields accepted by {@link radioButtons}. */
-export interface RadioButtonsInput extends ElementInput {
+export interface RadioButtonsInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
   actionId: string;
   /** Up to ten options displayed as radio buttons. */
@@ -228,7 +221,7 @@ export interface RadioButtonsInput extends ElementInput {
 }
 
 /** Fields accepted by {@link channelSelect}. */
-export interface ChannelSelectInput extends ElementInput {
+export interface ChannelSelectInput {
   /** Identifier returned when a channel is selected, up to 255 characters. */
   actionId: string;
   /** Public channel ID selected when the menu first loads. */
@@ -244,7 +237,7 @@ export interface ChannelSelectInput extends ElementInput {
 }
 
 /** Fields accepted by {@link conversationSelect}. */
-export interface ConversationSelectInput extends ElementInput {
+export interface ConversationSelectInput {
   /** Identifier returned when a conversation is selected, up to 255 characters. */
   actionId: string;
   /** Conversation ID selected when the menu first loads. */
@@ -264,7 +257,7 @@ export interface ConversationSelectInput extends ElementInput {
 }
 
 /** Fields accepted by {@link externalSelect}. */
-export interface ExternalSelectInput extends ElementInput {
+export interface ExternalSelectInput {
   /** Identifier returned when an option is selected, up to 255 characters. */
   actionId: string;
   /** Minimum typed characters before Slack requests options; defaults to three. */
@@ -280,7 +273,7 @@ export interface ExternalSelectInput extends ElementInput {
 }
 
 /** Fields accepted by {@link staticSelect}. */
-export interface StaticSelectInput extends ElementInput {
+export interface StaticSelectInput {
   /** Identifier returned when an option is selected, up to 255 characters. */
   actionId: string;
   /** Up to 100 directly supplied options; mutually exclusive with `optionGroups`. */
@@ -298,7 +291,7 @@ export interface StaticSelectInput extends ElementInput {
 }
 
 /** Fields accepted by {@link userSelect}. */
-export interface UserSelectInput extends ElementInput {
+export interface UserSelectInput {
   /** Identifier returned when a user is selected, up to 255 characters. */
   actionId: string;
   /** User ID selected when the menu first loads. */
@@ -312,7 +305,7 @@ export interface UserSelectInput extends ElementInput {
 }
 
 /** Fields accepted by {@link timePicker}. */
-export interface TimePickerInput extends ElementInput {
+export interface TimePickerInput {
   /** Identifier returned when a time is selected, up to 255 characters. */
   actionId: string;
   /** Initially selected time in 24-hour `HH:mm` format. */
@@ -328,7 +321,7 @@ export interface TimePickerInput extends ElementInput {
 }
 
 /** Fields accepted by {@link urlInput}. */
-export interface UrlElementInput extends ElementInput {
+export interface UrlElementInput {
   /** Identifier used to find the submitted URL, up to 255 characters. */
   actionId: string;
   /** URL present when the input first loads. */
@@ -342,7 +335,7 @@ export interface UrlElementInput extends ElementInput {
 }
 
 /** Fields accepted by {@link richTextInput}. */
-export interface RichTextElementInput extends ElementInput {
+export interface RichTextElementInput {
   /** Identifier used to find the submitted rich-text value, up to 255 characters. */
   actionId: string;
   /** Rich-text content present when the editor first loads. */
@@ -359,21 +352,24 @@ export interface RichTextElementInput extends ElementInput {
   maxLines?: number;
 }
 
-function withPlaceholder(input: ElementInput, settings: FactorySettings): ElementInput {
+function withPlaceholder(
+  input: Record<string, unknown>,
+  settings: FactorySettings,
+): Record<string, unknown> {
   if (typeof input.placeholder !== "string") return input;
   return { ...input, placeholder: asText(input.placeholder, "plain_text", settings) };
 }
 
 function element<Type extends string>(
   type: Type,
-  input: ElementInput,
+  input: Record<string, unknown>,
   settings: FactorySettings,
 ): SlackObject<Type> {
   return create(type, withPlaceholder(input, settings), settings);
 }
 
 /** Fields accepted by {@link button}. */
-export interface ButtonInput extends ElementInput {
+export interface ButtonInput {
   /** Plain-text label displayed on the button. */
   text: TextLike;
   /** Identifier returned when the button is selected. */
@@ -391,7 +387,7 @@ export interface ButtonInput extends ElementInput {
 }
 
 /** Fields accepted by {@link workflowButton}. */
-export interface WorkflowButtonInput extends ElementInput {
+export interface WorkflowButtonInput {
   /** Plain-text label displayed on the button. */
   text: TextLike;
   /** Workflow object created with `workflow`. */
@@ -524,8 +520,14 @@ export function iconButton(
   if (input.icon !== undefined && input.icon !== "trash") {
     throw new TypeMismatchError("iconButton.icon", "expected trash");
   }
-  if (input.visibleToUserIds !== undefined && input.visibleToUserIds.length > 10) {
-    throw new LengthError("iconButton.visibleToUserIds", "exceeds maximum 10");
+  if (
+    input.visibleToUserIds !== undefined &&
+    input.visibleToUserIds.length > limits.icon_button.visible_to_user_ids.max_items
+  ) {
+    throw new LengthError(
+      "iconButton.visibleToUserIds",
+      `exceeds maximum ${limits.icon_button.visible_to_user_ids.max_items}`,
+    );
   }
   return element(
     "icon_button",
@@ -570,7 +572,11 @@ export function checkboxes(
   input: CheckboxesInput,
   settings: FactorySettings = {},
 ): SlackObject<"checkboxes"> {
-  return element("checkboxes", input, settings);
+  return element(
+    "checkboxes",
+    { ...input, initialOptions: dropEmpty(input.initialOptions) },
+    settings,
+  );
 }
 
 /**
@@ -585,7 +591,7 @@ export function datePicker(
   input: DatePickerInput,
   settings: FactorySettings = {},
 ): SlackObject<"datepicker"> {
-  return element("datepicker", input, settings);
+  return element("datepicker", { ...input }, settings);
 }
 
 /**
@@ -600,7 +606,7 @@ export function dateTimePicker(
   input: DateTimePickerInput,
   settings: FactorySettings = {},
 ): SlackObject<"datetimepicker"> {
-  return element("datetimepicker", input, settings);
+  return element("datetimepicker", { ...input }, settings);
 }
 
 /**
@@ -615,7 +621,7 @@ export function emailInput(
   input: EmailElementInput,
   settings: FactorySettings = {},
 ): SlackObject<"email_text_input"> {
-  return element("email_text_input", input, settings);
+  return element("email_text_input", { ...input }, settings);
 }
 
 /**
@@ -637,8 +643,15 @@ export function fileInput(
   },
   settings: FactorySettings = {},
 ): SlackObject<"file_input"> {
-  if (input.maxFiles !== undefined && (input.maxFiles < 1 || input.maxFiles > 10)) {
-    throw new RangeError("fileInput.maxFiles", "expected a value between 1 and 10");
+  if (
+    input.maxFiles !== undefined &&
+    (input.maxFiles < limits.file_input.max_files.min ||
+      input.maxFiles > limits.file_input.max_files.max)
+  ) {
+    throw new OutOfRangeError(
+      "fileInput.maxFiles",
+      `expected a value between ${limits.file_input.max_files.min} and ${limits.file_input.max_files.max}`,
+    );
   }
   return create("file_input", input, settings);
 }
@@ -670,7 +683,11 @@ export function channelMultiSelect(
   input: ChannelMultiSelectInput,
   settings: FactorySettings = {},
 ) {
-  return element("multi_channels_select", input, settings);
+  return element(
+    "multi_channels_select",
+    { ...input, initialChannels: dropEmpty(input.initialChannels) },
+    settings,
+  );
 }
 
 /**
@@ -685,7 +702,11 @@ export function conversationMultiSelect(
   input: ConversationMultiSelectInput,
   settings: FactorySettings = {},
 ) {
-  return element("multi_conversations_select", input, settings);
+  return element(
+    "multi_conversations_select",
+    { ...input, initialConversations: dropEmpty(input.initialConversations) },
+    settings,
+  );
 }
 
 /**
@@ -700,7 +721,11 @@ export function externalMultiSelect(
   input: ExternalMultiSelectInput,
   settings: FactorySettings = {},
 ) {
-  return element("multi_external_select", input, settings);
+  return element(
+    "multi_external_select",
+    { ...input, initialOptions: dropEmpty(input.initialOptions) },
+    settings,
+  );
 }
 
 /**
@@ -715,7 +740,16 @@ export function staticMultiSelect(
   input: StaticMultiSelectInput,
   settings: FactorySettings = {},
 ) {
-  return element("multi_static_select", input, settings);
+  return element(
+    "multi_static_select",
+    {
+      ...input,
+      options: dropEmpty(input.options),
+      optionGroups: dropEmpty(input.optionGroups),
+      initialOptions: dropEmpty(input.initialOptions),
+    },
+    settings,
+  );
 }
 
 /**
@@ -730,7 +764,11 @@ export function userMultiSelect(
   input: UserMultiSelectInput,
   settings: FactorySettings = {},
 ) {
-  return element("multi_users_select", input, settings);
+  return element(
+    "multi_users_select",
+    { ...input, initialUsers: dropEmpty(input.initialUsers) },
+    settings,
+  );
 }
 
 /**
@@ -742,7 +780,7 @@ export function userMultiSelect(
  * @throws InvalidUsageError when an identifier, placeholder, or numeric range is invalid.
  */
 export function numberInput(input: NumberElementInput, settings: FactorySettings = {}) {
-  return element("number_input", input, settings);
+  return element("number_input", { ...input }, settings);
 }
 
 /**
@@ -757,7 +795,7 @@ export function overflow(
   input: OverflowInput,
   settings: FactorySettings = {},
 ) {
-  return element("overflow", input, settings);
+  return element("overflow", { ...input }, settings);
 }
 
 /**
@@ -772,7 +810,7 @@ export function plainTextInput(
   input: PlainTextElementInput,
   settings: FactorySettings = {},
 ) {
-  return element("plain_text_input", input, settings);
+  return element("plain_text_input", { ...input }, settings);
 }
 
 /**
@@ -787,7 +825,7 @@ export function radioButtons(
   input: RadioButtonsInput,
   settings: FactorySettings = {},
 ) {
-  return element("radio_buttons", input, settings);
+  return element("radio_buttons", { ...input }, settings);
 }
 
 /**
@@ -799,7 +837,7 @@ export function radioButtons(
  * @throws InvalidUsageError when an identifier, placeholder, or initial selection is invalid.
  */
 export function channelSelect(input: ChannelSelectInput, settings: FactorySettings = {}) {
-  return element("channels_select", input, settings);
+  return element("channels_select", { ...input }, settings);
 }
 
 /**
@@ -814,7 +852,7 @@ export function conversationSelect(
   input: ConversationSelectInput,
   settings: FactorySettings = {},
 ) {
-  return element("conversations_select", input, settings);
+  return element("conversations_select", { ...input }, settings);
 }
 
 /**
@@ -826,7 +864,7 @@ export function conversationSelect(
  * @throws InvalidUsageError when an identifier, placeholder, query, or option is invalid.
  */
 export function externalSelect(input: ExternalSelectInput, settings: FactorySettings = {}) {
-  return element("external_select", input, settings);
+  return element("external_select", { ...input }, settings);
 }
 
 /**
@@ -838,7 +876,15 @@ export function externalSelect(input: ExternalSelectInput, settings: FactorySett
  * @throws InvalidUsageError when options, identifiers, or selection constraints are invalid.
  */
 export function staticSelect(input: StaticSelectInput, settings: FactorySettings = {}) {
-  return element("static_select", input, settings);
+  return element(
+    "static_select",
+    {
+      ...input,
+      options: dropEmpty(input.options),
+      optionGroups: dropEmpty(input.optionGroups),
+    },
+    settings,
+  );
 }
 
 /**
@@ -850,7 +896,7 @@ export function staticSelect(input: StaticSelectInput, settings: FactorySettings
  * @throws InvalidUsageError when an identifier, placeholder, or initial user is invalid.
  */
 export function userSelect(input: UserSelectInput, settings: FactorySettings = {}) {
-  return element("users_select", input, settings);
+  return element("users_select", { ...input }, settings);
 }
 
 /**
@@ -862,7 +908,7 @@ export function userSelect(input: UserSelectInput, settings: FactorySettings = {
  * @throws InvalidUsageError when an identifier, placeholder, time, or timezone is invalid.
  */
 export function timePicker(input: TimePickerInput, settings: FactorySettings = {}) {
-  return element("timepicker", input, settings);
+  return element("timepicker", { ...input }, settings);
 }
 
 /**
@@ -874,7 +920,7 @@ export function timePicker(input: TimePickerInput, settings: FactorySettings = {
  * @throws InvalidUsageError when an identifier, placeholder, or initial URL is invalid.
  */
 export function urlInput(input: UrlElementInput, settings: FactorySettings = {}) {
-  return element("url_text_input", input, settings);
+  return element("url_text_input", { ...input }, settings);
 }
 
 /**
@@ -908,5 +954,5 @@ export function richTextInput(
   input: RichTextElementInput,
   settings: FactorySettings = {},
 ) {
-  return element("rich_text_input", input, settings);
+  return element("rich_text_input", { ...input }, settings);
 }

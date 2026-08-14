@@ -21,7 +21,7 @@ import type {
   VideoBlock,
 } from "@slack/types";
 
-import { create } from "./internal.js";
+import { create, dropEmpty } from "./internal.js";
 import { asText, type TextLike } from "./objects.js";
 import type { FactorySettings, JsonObject, SlackWire } from "./types.js";
 import type { SlackObject } from "./types.js";
@@ -331,7 +331,7 @@ export function sectionBlock(
     {
       ...input,
       text: input.text === undefined ? undefined : asText(input.text, "mrkdwn", settings),
-      fields: input.fields?.map((field) => asText(field, "mrkdwn", settings)),
+      fields: dropEmpty(input.fields)?.map((field) => asText(field, "mrkdwn", settings)),
     },
     settings,
   ) as SlackWire<SectionBlock>;
@@ -454,7 +454,7 @@ export function imageBlock(
     /** Public URL of the image. */
     imageUrl: string;
     /** Accessible description of the image. */
-    altText?: string;
+    altText: string;
     /** Optional plain-text title. */
     title?: TextLike;
     /** Deterministic identifier, up to 255 characters. */
@@ -475,13 +475,13 @@ export function imageBlock(
 /**
  * Creates a labelled form control for a modal or App Home tab.
  *
- * @param value - Label, input-compatible element, and optional form behavior.
+ * @param input - Label, input-compatible element, and optional form behavior.
  * @param settings - Per-call validation settings.
  * @returns A validated Slack `input` block.
  * @throws InvalidUsageError when the element is unsupported or text exceeds Slack's limits.
  */
 export function inputBlock(
-  value: {
+  input: {
     /** Plain-text label displayed above the control. */
     label: TextLike;
     /** Input-compatible element such as a text input, picker, or select menu. */
@@ -500,9 +500,9 @@ export function inputBlock(
   return create(
     "input",
     {
-      ...value,
-      label: asText(value.label, "plain_text", settings),
-      hint: value.hint === undefined ? undefined : asText(value.hint, "plain_text", settings),
+      ...input,
+      label: asText(input.label, "plain_text", settings),
+      hint: input.hint === undefined ? undefined : asText(input.hint, "plain_text", settings),
     },
     settings,
   ) as SlackWire<InputBlock>;
