@@ -294,8 +294,7 @@ _ELEMENT_CASES: list[tuple[str, Callable[[], Any], str, bool]] = [
         "external_select",
         True,
     ),
-    # FileInput historically does not include "type" in its rendered JSON.
-    ("FileInput", lambda: FileInput(action_id="fi"), "", False),
+    ("FileInput", lambda: FileInput(action_id="fi"), "file_input", True),
     (
         "Image_with_url",
         lambda: Image(image_url="https://x.png", alt_text="alt"),

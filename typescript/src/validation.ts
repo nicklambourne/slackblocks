@@ -49,6 +49,21 @@ function length(
   }
 }
 
+function range(
+  value: number | undefined,
+  path: string,
+  minimum?: number,
+  maximum?: number,
+): void {
+  if (value === undefined) return;
+  if (minimum !== undefined && value < minimum) {
+    throw new RangeError(path, `${value} is less than minimum ${minimum}`);
+  }
+  if (maximum !== undefined && value > maximum) {
+    throw new RangeError(path, `${value} exceeds maximum ${maximum}`);
+  }
+}
+
 function validateTextObject(object: JsonObject, path: string): void {
   const value = textValue(object);
   if (value === undefined) {
@@ -141,6 +156,30 @@ function validateKnownObject(object: JsonObject, path: string): void {
         length(object.value, child(path, "value"), undefined, limits.button.value.max_length);
       }
       break;
+    case "file_input":
+      range(
+        typeof object.max_files === "number" ? object.max_files : undefined,
+        child(path, "max_files"),
+        limits.file_input.max_files.min,
+        limits.file_input.max_files.max,
+      );
+      break;
+    case "plain_text_input":
+      range(
+        typeof object.max_length === "number" ? object.max_length : undefined,
+        child(path, "max_length"),
+        undefined,
+        limits.plain_text_input.max_length.max,
+      );
+      if (object.placeholder !== undefined) {
+        length(
+          textValue(object.placeholder),
+          child(path, "placeholder.text"),
+          undefined,
+          limits.select.placeholder.max_length,
+        );
+      }
+      break;
     case "overflow":
       if (Array.isArray(object.options)) {
         length(
@@ -159,6 +198,30 @@ function validateKnownObject(object: JsonObject, path: string): void {
           "options and option_groups cannot be provided together",
         );
       }
+      if (Array.isArray(object.options)) {
+        length(
+          object.options,
+          child(path, "options"),
+          undefined,
+          limits.select.options.max_items,
+        );
+      }
+      if (Array.isArray(object.option_groups)) {
+        length(
+          object.option_groups,
+          child(path, "option_groups"),
+          undefined,
+          limits.select.option_groups.max_items,
+        );
+      }
+      if (object.placeholder !== undefined) {
+        length(
+          textValue(object.placeholder),
+          child(path, "placeholder.text"),
+          undefined,
+          limits.select.placeholder.max_length,
+        );
+      }
       break;
     case "number_input":
       if (
@@ -174,6 +237,22 @@ function validateKnownObject(object: JsonObject, path: string): void {
         throw new MutualExclusivityError(
           path,
           "image_url and slack_file cannot be provided together",
+        );
+      }
+      if (typeof object.image_url === "string") {
+        length(
+          object.image_url,
+          child(path, "image_url"),
+          undefined,
+          limits.image.image_url.max_length,
+        );
+      }
+      if (typeof object.alt_text === "string") {
+        length(
+          object.alt_text,
+          child(path, "alt_text"),
+          undefined,
+          limits.image.alt_text.max_length,
         );
       }
       break;
@@ -198,6 +277,20 @@ function validateKnownObject(object: JsonObject, path: string): void {
       }
       break;
     case "input": {
+      length(
+        textValue(object.label),
+        child(path, "label.text"),
+        undefined,
+        limits.input.label.max_length,
+      );
+      if (object.hint !== undefined) {
+        length(
+          textValue(object.hint),
+          child(path, "hint.text"),
+          undefined,
+          limits.input.hint.max_length,
+        );
+      }
       const elementPath = child(path, "element");
       const element = objectAt(object.element, elementPath);
       if (!INPUT_ELEMENT_TYPES.has(String(element.type))) {
@@ -205,6 +298,48 @@ function validateKnownObject(object: JsonObject, path: string): void {
       }
       break;
     }
+    case "markdown":
+      length(
+        typeof object.text === "string" ? object.text : undefined,
+        child(path, "text"),
+        limits.markdown.text.min_length,
+        limits.markdown.text.max_length,
+      );
+      break;
+    case "video":
+      length(
+        typeof object.alt_text === "string" ? object.alt_text : undefined,
+        child(path, "alt_text"),
+        limits.video.alt_text.min_length,
+        limits.video.alt_text.max_length,
+      );
+      length(
+        textValue(object.title),
+        child(path, "title.text"),
+        undefined,
+        limits.video.title.max_length,
+      );
+      length(
+        typeof object.author_name === "string" ? object.author_name : undefined,
+        child(path, "author_name"),
+        undefined,
+        limits.video.author_name.max_length,
+      );
+      if (object.description !== undefined) {
+        length(
+          textValue(object.description),
+          child(path, "description.text"),
+          undefined,
+          limits.video.description.max_length,
+        );
+      }
+      length(
+        typeof object.provider_name === "string" ? object.provider_name : undefined,
+        child(path, "provider_name"),
+        undefined,
+        limits.video.provider_name.max_length,
+      );
+      break;
     case "modal":
     case "home":
       if (!Array.isArray(object.blocks)) {
@@ -216,6 +351,42 @@ function validateKnownObject(object: JsonObject, path: string): void {
         limits.view.blocks.min_items,
         limits.view.blocks.max_items,
       );
+      length(
+        typeof object.private_metadata === "string" ? object.private_metadata : undefined,
+        child(path, "private_metadata"),
+        undefined,
+        limits.view.private_metadata.max_length,
+      );
+      length(
+        typeof object.callback_id === "string" ? object.callback_id : undefined,
+        child(path, "callback_id"),
+        undefined,
+        limits.view.callback_id.max_length,
+      );
+      if (type === "modal") {
+        length(
+          textValue(object.title),
+          child(path, "title.text"),
+          undefined,
+          limits.view.title.max_length,
+        );
+        if (object.close !== undefined) {
+          length(
+            textValue(object.close),
+            child(path, "close.text"),
+            undefined,
+            limits.view.close.max_length,
+          );
+        }
+        if (object.submit !== undefined) {
+          length(
+            textValue(object.submit),
+            child(path, "submit.text"),
+            undefined,
+            limits.view.submit.max_length,
+          );
+        }
+      }
       break;
     default:
       break;

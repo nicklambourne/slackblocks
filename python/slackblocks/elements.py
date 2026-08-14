@@ -404,11 +404,9 @@ class FileInput(Element):
         self.max_files = validate_int(max_files, min_value=1, max_value=10, allow_none=True)
 
     def _resolve(self) -> dict[str, Any]:
-        # FileInput currently does not emit the "type" attribute; this is
-        # preserved from prior behaviour. The pre-existing #154 export work
-        # surfaced this class but did not change its rendering contract.
         return resolve(
             {
+                **self._attributes(),
                 "action_id": self.action_id,
                 "filetypes": self.filetypes,
                 "max_files": self.max_files,

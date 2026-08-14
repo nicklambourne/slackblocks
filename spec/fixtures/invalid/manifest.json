@@ -14,10 +14,190 @@
       "description": "A text object longer than 3000 characters must be rejected"
     },
     {
-      "id": "section-missing-content",
-      "category": "missing-required",
-      "constraint": "section.content",
-      "description": "A section with neither text nor fields must be rejected"
+      "id": "button-action-id-too-long",
+      "category": "length-exceeded",
+      "constraint": "action_id.max_length",
+      "description": "An action ID longer than 255 characters must be rejected"
+    },
+    {
+      "id": "button-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "button.text.max_length",
+      "description": "Button text longer than 75 characters must be rejected"
+    },
+    {
+      "id": "button-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "button.url.max_length",
+      "description": "A button URL longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "button-value-too-long",
+      "category": "length-exceeded",
+      "constraint": "button.value.max_length",
+      "description": "A button value longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "confirmation-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "confirmation.title.max_length",
+      "description": "A confirmation title longer than 100 characters must be rejected"
+    },
+    {
+      "id": "confirmation-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "confirmation.text.max_length",
+      "description": "Confirmation text longer than 300 characters must be rejected"
+    },
+    {
+      "id": "confirmation-confirm-too-long",
+      "category": "length-exceeded",
+      "constraint": "confirmation.confirm.max_length",
+      "description": "Confirmation button text longer than 30 characters must be rejected"
+    },
+    {
+      "id": "confirmation-deny-too-long",
+      "category": "length-exceeded",
+      "constraint": "confirmation.deny.max_length",
+      "description": "Denial button text longer than 30 characters must be rejected"
+    },
+    {
+      "id": "option-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "option.text.max_length",
+      "description": "Option text longer than 75 characters must be rejected"
+    },
+    {
+      "id": "option-value-too-long",
+      "category": "length-exceeded",
+      "constraint": "option.value.max_length",
+      "description": "An option value longer than 75 characters must be rejected"
+    },
+    {
+      "id": "option-description-too-long",
+      "category": "length-exceeded",
+      "constraint": "option.description.max_length",
+      "description": "An option description longer than 75 characters must be rejected"
+    },
+    {
+      "id": "option-group-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "option_group.label.max_length",
+      "description": "An option-group label longer than 75 characters must be rejected"
+    },
+    {
+      "id": "option-group-empty",
+      "category": "length-exceeded",
+      "constraint": "option_group.options.min_items",
+      "description": "An option group with no options must be rejected"
+    },
+    {
+      "id": "option-group-too-many-options",
+      "category": "length-exceeded",
+      "constraint": "option_group.options.max_items",
+      "description": "An option group with more than 100 options must be rejected"
+    },
+    {
+      "id": "select-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "select.placeholder.max_length",
+      "description": "A select placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "select-too-many-options",
+      "category": "length-exceeded",
+      "constraint": "select.options.max_items",
+      "description": "A static select with more than 100 options must be rejected"
+    },
+    {
+      "id": "select-too-many-option-groups",
+      "category": "length-exceeded",
+      "constraint": "select.option_groups.max_items",
+      "description": "A static select with more than 100 option groups must be rejected"
+    },
+    {
+      "id": "overflow-empty",
+      "category": "length-exceeded",
+      "constraint": "overflow.options.min_items",
+      "description": "An overflow menu with no options must be rejected"
+    },
+    {
+      "id": "overflow-too-many-options",
+      "category": "length-exceeded",
+      "constraint": "overflow.options.max_items",
+      "description": "An overflow menu with more than five options must be rejected"
+    },
+    {
+      "id": "file-input-max-files-too-small",
+      "category": "out-of-range",
+      "constraint": "file_input.max_files.min",
+      "description": "File input max files below one must be rejected"
+    },
+    {
+      "id": "file-input-max-files-too-large",
+      "category": "out-of-range",
+      "constraint": "file_input.max_files.max",
+      "description": "File input max files above 10 must be rejected"
+    },
+    {
+      "id": "plain-text-input-max-length-too-large",
+      "category": "out-of-range",
+      "constraint": "plain_text_input.max_length.max",
+      "description": "Plain-text input max length above 3000 must be rejected"
+    },
+    {
+      "id": "actions-too-many-elements",
+      "category": "length-exceeded",
+      "constraint": "actions.elements.max_items",
+      "description": "An actions block with more than 25 elements must be rejected"
+    },
+    {
+      "id": "context-too-many-elements",
+      "category": "length-exceeded",
+      "constraint": "context.elements.max_items",
+      "description": "A context block with more than 10 elements must be rejected"
+    },
+    {
+      "id": "header-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "header.text.max_length",
+      "description": "Header text longer than 150 characters must be rejected"
+    },
+    {
+      "id": "image-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "image.image_url.max_length",
+      "description": "An image URL longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "image-alt-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "image.alt_text.max_length",
+      "description": "Image alternative text longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "input-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "input.label.max_length",
+      "description": "An input-block label longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "input-hint-too-long",
+      "category": "length-exceeded",
+      "constraint": "input.hint.max_length",
+      "description": "Input-block hint text longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "markdown-empty",
+      "category": "length-exceeded",
+      "constraint": "markdown.text.min_length",
+      "description": "An empty markdown block must be rejected"
+    },
+    {
+      "id": "markdown-too-long",
+      "category": "length-exceeded",
+      "constraint": "markdown.text.max_length",
+      "description": "Markdown block text longer than 12000 characters must be rejected"
     },
     {
       "id": "section-text-too-long",
@@ -38,34 +218,88 @@
       "description": "A section field longer than 2000 characters must be rejected"
     },
     {
-      "id": "header-text-too-long",
+      "id": "video-alt-text-empty",
       "category": "length-exceeded",
-      "constraint": "header.text.max_length",
-      "description": "Header text longer than 150 characters must be rejected"
+      "constraint": "video.alt_text.min_length",
+      "description": "A video block with empty alternative text must be rejected"
     },
     {
-      "id": "button-text-too-long",
+      "id": "video-alt-text-too-long",
       "category": "length-exceeded",
-      "constraint": "button.text.max_length",
-      "description": "Button text longer than 75 characters must be rejected"
+      "constraint": "video.alt_text.max_length",
+      "description": "Video alternative text longer than 200 characters must be rejected"
     },
     {
-      "id": "button-action-id-too-long",
+      "id": "video-title-too-long",
       "category": "length-exceeded",
-      "constraint": "action_id.max_length",
-      "description": "An action ID longer than 255 characters must be rejected"
+      "constraint": "video.title.max_length",
+      "description": "A video title longer than 200 characters must be rejected"
     },
     {
-      "id": "option-value-too-long",
+      "id": "video-author-name-too-long",
       "category": "length-exceeded",
-      "constraint": "option.value.max_length",
-      "description": "An option value longer than 75 characters must be rejected"
+      "constraint": "video.author_name.max_length",
+      "description": "A video author name longer than 50 characters must be rejected"
     },
     {
-      "id": "overflow-too-many-options",
+      "id": "video-description-too-long",
       "category": "length-exceeded",
-      "constraint": "overflow.options.max_items",
-      "description": "An overflow menu with more than five options must be rejected"
+      "constraint": "video.description.max_length",
+      "description": "A video description longer than 200 characters must be rejected"
+    },
+    {
+      "id": "video-provider-name-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.provider_name.max_length",
+      "description": "A video provider name longer than 50 characters must be rejected"
+    },
+    {
+      "id": "view-missing-blocks",
+      "category": "length-exceeded",
+      "constraint": "view.blocks.min_items",
+      "description": "A view must contain at least one block"
+    },
+    {
+      "id": "view-too-many-blocks",
+      "category": "length-exceeded",
+      "constraint": "view.blocks.max_items",
+      "description": "A view with more than 100 blocks must be rejected"
+    },
+    {
+      "id": "view-private-metadata-too-long",
+      "category": "length-exceeded",
+      "constraint": "view.private_metadata.max_length",
+      "description": "View private metadata longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "view-callback-id-too-long",
+      "category": "length-exceeded",
+      "constraint": "view.callback_id.max_length",
+      "description": "A view callback ID longer than 255 characters must be rejected"
+    },
+    {
+      "id": "view-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "view.title.max_length",
+      "description": "A modal title longer than 24 characters must be rejected"
+    },
+    {
+      "id": "view-close-too-long",
+      "category": "length-exceeded",
+      "constraint": "view.close.max_length",
+      "description": "Modal close text longer than 24 characters must be rejected"
+    },
+    {
+      "id": "view-submit-too-long",
+      "category": "length-exceeded",
+      "constraint": "view.submit.max_length",
+      "description": "Modal submit text longer than 24 characters must be rejected"
+    },
+    {
+      "id": "section-missing-content",
+      "category": "missing-required",
+      "constraint": "section.content",
+      "description": "A section with neither text nor fields must be rejected"
     },
     {
       "id": "static-select-options-and-groups",
@@ -86,12 +320,6 @@
       "description": "A number input minimum cannot exceed its maximum"
     },
     {
-      "id": "file-input-max-files-out-of-range",
-      "category": "out-of-range",
-      "constraint": "file_input.max_files",
-      "description": "File input max files must be between 1 and 10"
-    },
-    {
       "id": "context-invalid-element",
       "category": "type-mismatch",
       "constraint": "context.elements",
@@ -102,12 +330,6 @@
       "category": "type-mismatch",
       "constraint": "input.element",
       "description": "An input block must contain an input-compatible element"
-    },
-    {
-      "id": "view-missing-blocks",
-      "category": "length-exceeded",
-      "constraint": "view.blocks.min_items",
-      "description": "A view must contain at least one block"
     }
   ]
 }

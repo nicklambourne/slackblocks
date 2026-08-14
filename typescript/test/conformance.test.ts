@@ -4,6 +4,8 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
+import limits from "../../spec/limits.json" with { type: "json" };
+
 import {
   actionsBlock,
   attachment,
@@ -75,14 +77,24 @@ import {
 const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SPEC_ROOT = resolve(PACKAGE_ROOT, "../spec");
 
+interface ManifestFixture {
+  id: string;
+  slack_docs: string;
+}
+
 interface Manifest {
   spec_version: string;
-  fixtures: Array<{ id: string }>;
+  fixtures: ManifestFixture[];
+}
+
+interface Coverage {
+  spec_version: string;
+  capabilities: Record<string, string[]>;
 }
 
 interface InvalidManifest {
   spec_version: string;
-  cases: Array<{ id: string; category: ErrorCategory }>;
+  cases: Array<{ id: string; category: ErrorCategory; constraint: string }>;
 }
 
 function readJson<T>(path: string): T {
@@ -213,11 +225,37 @@ function constructFixture(id: string, expected: FixtureInput): unknown {
 }
 
 const manifest = readJson<Manifest>(resolve(SPEC_ROOT, "manifest.json"));
+const coverage = readJson<Coverage>(resolve(SPEC_ROOT, "coverage.json"));
+
+function scalarPaths(value: unknown, prefix: string[] = []): string[] {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+    return [prefix.join(".")];
+  }
+  return Object.entries(value).flatMap(([key, nested]) =>
+    scalarPaths(nested, [...prefix, key]),
+  );
+}
 
 describe("valid conformance corpus", () => {
-  it("declares spec 1.0.0 and all 79 fixtures", () => {
+  it("declares the current spec and a non-empty fixture corpus", () => {
     expect(manifest.spec_version).toBe("1.0.0");
-    expect(manifest.fixtures).toHaveLength(79);
+    expect(manifest.fixtures.length).toBeGreaterThan(0);
+    expect(new Set(manifest.fixtures.map(({ id }) => id)).size).toBe(
+      manifest.fixtures.length,
+    );
+  });
+
+  it("covers every declared shared JSON capability with an official fixture", () => {
+    expect(coverage.spec_version).toBe(manifest.spec_version);
+    const fixtures = new Map(manifest.fixtures.map((fixture) => [fixture.id, fixture]));
+    for (const [capability, fixtureIds] of Object.entries(coverage.capabilities)) {
+      expect(fixtureIds.length, capability).toBeGreaterThan(0);
+      for (const fixtureId of fixtureIds) {
+        const fixture = fixtures.get(fixtureId);
+        expect(fixture, `${capability} -> ${fixtureId}`).toBeDefined();
+        expect(fixture?.slack_docs).toMatch(/^https:\/\/docs\.slack\.dev\//);
+      }
+    }
   });
 
   for (const fixture of manifest.fixtures) {
@@ -249,20 +287,199 @@ describe("valid conformance corpus", () => {
 });
 
 const choice = () => option({ text: "A", value: "a" });
+const video = (overrides: Record<string, unknown> = {}) =>
+  videoBlock({
+    altText: "Video",
+    thumbnailUrl: "https://example.com/thumbnail.png",
+    title: "Title",
+    videoUrl: "https://example.com/video.mp4",
+    ...overrides,
+  });
 
 const invalidCases: Record<string, () => unknown> = {
   "text-empty": () => plainText(""),
   "text-too-long": () => plainText("x".repeat(3001)),
-  "section-missing-content": () => sectionBlock({}),
-  "section-text-too-long": () => sectionBlock({ text: "x".repeat(3001) }),
-  "section-too-many-fields": () => sectionBlock({ fields: Array(11).fill("x") }),
-  "section-field-too-long": () => sectionBlock({ fields: ["x".repeat(2001)] }),
-  "header-text-too-long": () => headerBlock({ text: "x".repeat(151) }),
-  "button-text-too-long": () => button({ text: "x".repeat(76), actionId: "a" }),
-  "button-action-id-too-long": () => button({ text: "A", actionId: "x".repeat(256) }),
-  "option-value-too-long": () => option({ text: "A", value: "x".repeat(76) }),
+  "button-action-id-too-long": () =>
+    button({ text: "A", actionId: "x".repeat(limits.action_id.max_length + 1) }),
+  "button-text-too-long": () =>
+    button({ text: "x".repeat(limits.button.text.max_length + 1), actionId: "a" }),
+  "button-url-too-long": () =>
+    button({ text: "A", actionId: "a", url: "x".repeat(limits.button.url.max_length + 1) }),
+  "button-value-too-long": () =>
+    button({
+      text: "A",
+      actionId: "a",
+      value: "x".repeat(limits.button.value.max_length + 1),
+    }),
+  "confirmation-title-too-long": () =>
+    confirmation({
+      title: "x".repeat(limits.confirmation.title.max_length + 1),
+      text: "Text",
+      confirm: "Yes",
+      deny: "No",
+    }),
+  "confirmation-text-too-long": () =>
+    confirmation({
+      title: "Title",
+      text: "x".repeat(limits.confirmation.text.max_length + 1),
+      confirm: "Yes",
+      deny: "No",
+    }),
+  "confirmation-confirm-too-long": () =>
+    confirmation({
+      title: "Title",
+      text: "Text",
+      confirm: "x".repeat(limits.confirmation.confirm.max_length + 1),
+      deny: "No",
+    }),
+  "confirmation-deny-too-long": () =>
+    confirmation({
+      title: "Title",
+      text: "Text",
+      confirm: "Yes",
+      deny: "x".repeat(limits.confirmation.deny.max_length + 1),
+    }),
+  "option-text-too-long": () =>
+    option({ text: "x".repeat(limits.option.text.max_length + 1), value: "a" }),
+  "option-value-too-long": () =>
+    option({ text: "A", value: "x".repeat(limits.option.value.max_length + 1) }),
+  "option-description-too-long": () =>
+    option({
+      text: "A",
+      value: "a",
+      description: "x".repeat(limits.option.description.max_length + 1),
+    }),
+  "option-group-label-too-long": () =>
+    optionGroup({
+      label: "x".repeat(limits.option_group.label.max_length + 1),
+      options: [choice()],
+    }),
+  "option-group-empty": () => optionGroup({ label: "Group", options: [] }),
+  "option-group-too-many-options": () =>
+    optionGroup({
+      label: "Group",
+      options: Array.from({ length: limits.option_group.options.max_items + 1 }, choice),
+    }),
+  "select-placeholder-too-long": () =>
+    staticSelect({
+      actionId: "a",
+      options: [choice()],
+      placeholder: "x".repeat(limits.select.placeholder.max_length + 1),
+    }),
+  "select-too-many-options": () =>
+    staticSelect({
+      actionId: "a",
+      options: Array.from({ length: limits.select.options.max_items + 1 }, choice),
+    }),
+  "select-too-many-option-groups": () =>
+    staticSelect({
+      actionId: "a",
+      optionGroups: Array.from(
+        { length: limits.select.option_groups.max_items + 1 },
+        () => optionGroup({ label: "Group", options: [choice()] }),
+      ),
+    }),
+  "overflow-empty": () => overflow({ actionId: "a", options: [] }),
   "overflow-too-many-options": () =>
-    overflow({ actionId: "a", options: Array.from({ length: 6 }, choice) }),
+    overflow({
+      actionId: "a",
+      options: Array.from({ length: limits.overflow.options.max_items + 1 }, choice),
+    }),
+  "file-input-max-files-too-small": () =>
+    fileInput({ actionId: "a", maxFiles: limits.file_input.max_files.min - 1 }),
+  "file-input-max-files-too-large": () =>
+    fileInput({ actionId: "a", maxFiles: limits.file_input.max_files.max + 1 }),
+  "plain-text-input-max-length-too-large": () =>
+    plainTextInput({
+      actionId: "a",
+      maxLength: limits.plain_text_input.max_length.max + 1,
+    }),
+  "actions-too-many-elements": () =>
+    actionsBlock({
+      elements: Array.from({ length: limits.actions.elements.max_items + 1 }, () =>
+        button({ text: "A", actionId: "a" }),
+      ),
+    }),
+  "context-too-many-elements": () =>
+    contextBlock({
+      elements: Array.from(
+        { length: limits.context.elements.max_items + 1 },
+        () => mrkdwn("A"),
+      ),
+    }),
+  "header-text-too-long": () =>
+    headerBlock({ text: "x".repeat(limits.header.text.max_length + 1) }),
+  "image-url-too-long": () =>
+    imageBlock({ imageUrl: "x".repeat(limits.image.image_url.max_length + 1), altText: "Alt" }),
+  "image-alt-text-too-long": () =>
+    imageBlock({
+      imageUrl: "https://example.com/image.png",
+      altText: "x".repeat(limits.image.alt_text.max_length + 1),
+    }),
+  "input-label-too-long": () =>
+    inputBlock({
+      label: "x".repeat(limits.input.label.max_length + 1),
+      element: plainTextInput({ actionId: "a" }),
+    }),
+  "input-hint-too-long": () =>
+    inputBlock({
+      label: "Label",
+      hint: "x".repeat(limits.input.hint.max_length + 1),
+      element: plainTextInput({ actionId: "a" }),
+    }),
+  "markdown-empty": () => markdownBlock({ text: "" }),
+  "markdown-too-long": () =>
+    markdownBlock({ text: "x".repeat(limits.markdown.text.max_length + 1) }),
+  "section-text-too-long": () =>
+    sectionBlock({ text: "x".repeat(limits.section.text.max_length + 1) }),
+  "section-too-many-fields": () =>
+    sectionBlock({ fields: Array(limits.section.fields.max_items + 1).fill("x") }),
+  "section-field-too-long": () =>
+    sectionBlock({ fields: ["x".repeat(limits.section.fields.item_max_length + 1)] }),
+  "video-alt-text-empty": () => video({ altText: "" }),
+  "video-alt-text-too-long": () =>
+    video({ altText: "x".repeat(limits.video.alt_text.max_length + 1) }),
+  "video-title-too-long": () =>
+    video({ title: "x".repeat(limits.video.title.max_length + 1) }),
+  "video-author-name-too-long": () =>
+    video({ authorName: "x".repeat(limits.video.author_name.max_length + 1) }),
+  "video-description-too-long": () =>
+    video({ description: "x".repeat(limits.video.description.max_length + 1) }),
+  "video-provider-name-too-long": () =>
+    video({ providerName: "x".repeat(limits.video.provider_name.max_length + 1) }),
+  "view-missing-blocks": () => homeTab({ blocks: [] }),
+  "view-too-many-blocks": () =>
+    homeTab({
+      blocks: Array.from({ length: limits.view.blocks.max_items + 1 }, () => dividerBlock()),
+    }),
+  "view-private-metadata-too-long": () =>
+    homeTab({
+      blocks: [dividerBlock()],
+      privateMetadata: "x".repeat(limits.view.private_metadata.max_length + 1),
+    }),
+  "view-callback-id-too-long": () =>
+    homeTab({
+      blocks: [dividerBlock()],
+      callbackId: "x".repeat(limits.view.callback_id.max_length + 1),
+    }),
+  "view-title-too-long": () =>
+    modal({
+      title: "x".repeat(limits.view.title.max_length + 1),
+      blocks: [dividerBlock()],
+    }),
+  "view-close-too-long": () =>
+    modal({
+      title: "Title",
+      close: "x".repeat(limits.view.close.max_length + 1),
+      blocks: [dividerBlock()],
+    }),
+  "view-submit-too-long": () =>
+    modal({
+      title: "Title",
+      submit: "x".repeat(limits.view.submit.max_length + 1),
+      blocks: [dividerBlock()],
+    }),
+  "section-missing-content": () => sectionBlock({}),
   "static-select-options-and-groups": () =>
     staticSelect({ actionId: "a", options: [choice()], optionGroups: [{ label: plainText("A") }] }),
   "image-url-and-slack-file": () =>
@@ -273,11 +490,9 @@ const invalidCases: Record<string, () => unknown> = {
     } as any),
   "number-input-inverted-range": () =>
     numberInput({ actionId: "a", isDecimalAllowed: true, minValue: 2, maxValue: 1 }),
-  "file-input-max-files-out-of-range": () => fileInput({ actionId: "a", maxFiles: 11 }),
   "context-invalid-element": () => contextBlock({ elements: [dividerBlock()] }),
   "input-invalid-element": () =>
     inputBlock({ label: "Label", element: button({ text: "A", actionId: "a" }) }),
-  "view-missing-blocks": () => homeTab({ blocks: [] }),
 };
 
 const invalidManifest = readJson<InvalidManifest>(
@@ -285,6 +500,19 @@ const invalidManifest = readJson<InvalidManifest>(
 );
 
 describe("invalid conformance corpus", () => {
+  it("exercises every scalar limit in the shared registry", () => {
+    const covered = new Set(invalidManifest.cases.map(({ constraint }) => constraint));
+    expect(scalarPaths(limits).filter((path) => !covered.has(path))).toEqual([]);
+  });
+
+  it("contains unique case IDs and constraints", () => {
+    expect(new Set(invalidManifest.cases.map(({ id }) => id)).size).toBe(
+      invalidManifest.cases.length,
+    );
+    expect(new Set(invalidManifest.cases.map(({ constraint }) => constraint)).size).toBe(
+      invalidManifest.cases.length,
+    );
+  });
   it("has a construction for every case", () => {
     expect(Object.keys(invalidCases).sort()).toEqual(
       invalidManifest.cases.map(({ id }) => id).sort(),

@@ -53,11 +53,12 @@ The Python and TypeScript conformance suites both exercise every ID in `spec/man
 
 ## Add or change a Block Kit feature
 
-1. Add or update canonical JSON in `spec/fixtures/valid/` and register it in `spec/manifest.json`.
-2. Add invalid behavior to `spec/fixtures/invalid/manifest.json` when the feature introduces a validation rule.
-3. Update `spec/limits.json` for shared scalar constraints.
-4. Implement the feature idiomatically in both packages, or record a reason in the affected skip list.
-5. Add language-native tests and update the relevant guide or executable example.
+1. Add or update canonical JSON in `spec/fixtures/valid/`, register it in `spec/manifest.json`, and link the exact official Slack reference used to validate it.
+2. Map every new JSON-producing capability to at least one valid fixture in `spec/coverage.json`.
+3. Add invalid behavior to `spec/fixtures/invalid/manifest.json` when the feature introduces a validation rule. Every scalar leaf in `spec/limits.json` must have a matching invalid case.
+4. Update `spec/limits.json` for shared scalar constraints.
+5. Implement the feature idiomatically in both packages, or record a reason in the affected skip list.
+6. Add language-native tests and update the relevant guide or executable example.
 
 When introducing a cross-language API, serialized JSON and validation outcomes are shared; public naming and construction style are language-native.
 
