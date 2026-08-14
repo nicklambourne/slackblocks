@@ -8,12 +8,20 @@ import {
   type GlobalDoc,
   type GlobalVersion,
 } from "@docusaurus/plugin-content-docs/client";
+import legacyManifest from "@site/legacy/manifest.json";
+import { useLanguage } from "@site/src/components/LanguageContext";
 
 type Props = {
   mobile?: boolean;
 };
 
 const CURRENT_VERSION = "current";
+const LEGACY_VERSION_LANGUAGES = new Map(
+  legacyManifest.versions.map(({ language_availability, version }) => [
+    version,
+    new Set(language_availability),
+  ]),
+);
 const HISTORICAL_REFERENCE_PAGES = new Set([
   "attachments",
   "blocks",
@@ -111,16 +119,27 @@ function targetHash(
 export default function VersionSelector({ mobile = false }: Props) {
   const history = useHistory();
   const location = useLocation();
+  const { language } = useLanguage();
   const versions = useVersions(undefined);
   const activeDocContext = useActiveDocContext(undefined);
   const versionCandidates = useDocsVersionCandidates(undefined);
   const { savePreferredVersionName } = useDocsPreferredVersion();
-  const displayedVersion = versionCandidates[0] ?? versions[0];
+  const availableVersions = versions.filter(
+    (version) =>
+      version.name === CURRENT_VERSION ||
+      LEGACY_VERSION_LANGUAGES.get(version.name)?.has(language),
+  );
+  const activeVersion = versionCandidates[0] ?? versions[0];
+  const displayedVersion =
+    availableVersions.find(({ name }) => name === activeVersion?.name) ??
+    availableVersions[0];
 
-  if (!displayedVersion || versions.length <= 1) return null;
+  if (!displayedVersion) return null;
 
   const selectVersion = (event: ChangeEvent<HTMLSelectElement>) => {
-    const version = versions.find(({ name }) => name === event.target.value);
+    const version = availableVersions.find(
+      ({ name }) => name === event.target.value,
+    );
     if (!version) return;
 
     const nextDoc = targetDoc(
@@ -147,7 +166,7 @@ export default function VersionSelector({ mobile = false }: Props) {
       onChange={selectVersion}
       value={displayedVersion.name}
     >
-      {versions.map((version) => (
+      {availableVersions.map((version) => (
         <option key={version.name} value={version.name}>
           {version.label}
         </option>

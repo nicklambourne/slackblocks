@@ -42,6 +42,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
@@ -68,6 +70,17 @@ jobs:
 
       - name: Build documentation
         run: pnpm --filter @slackblocks/docs build
+
+      - name: Verify immutable historical snapshots
+        run: pnpm --filter @slackblocks/docs check:legacy-snapshots
+
+      - name: Verify documentation generation is clean
+        run: >-
+          git diff --exit-code --
+          docs/legacy/manifest.json
+          docs/versioned_docs
+          docs/versioned_sidebars
+          docs/static/img/legacy
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
