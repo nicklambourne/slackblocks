@@ -1,0 +1,60 @@
+name: Publish TypeScript Package
+
+on:
+  push:
+    tags:
+      - "ts/v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Build, verify, and publish to npm
+    runs-on: ubuntu-latest
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/slackblocks
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11.16.0
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - name: Update npm for trusted publishing
+        run: npm install --global npm@latest
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify tag matches package version
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME#ts/v}"
+          package=$(node -p "require('./typescript/package.json').version")
+          if [ "$tag" != "$package" ]; then
+            echo "::error::Tag '$tag' does not match package version '$package'."
+            exit 1
+          fi
+
+      - name: Run checks
+        run: |
+          pnpm --filter slackblocks typecheck
+          pnpm --filter slackblocks test
+          pnpm --filter slackblocks check:package
+
+      - name: Publish with trusted publishing
+        working-directory: typescript
+        run: npm publish --access public
