@@ -6,8 +6,5 @@
     "build": "pnpm --recursive build",
     "test": "pnpm --recursive test",
     "typecheck": "pnpm --recursive typecheck"
-  },
-  "devDependencies": {
-    "@changesets/cli": "^3.0.0"
   }
 }

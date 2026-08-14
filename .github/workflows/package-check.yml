@@ -46,7 +46,7 @@ jobs:
         run: uv run --frozen twine check --strict dist/*
 
       - name: Smoke test wheel
-        run: uv run --isolated --no-project --with dist/*.whl python -c "import slackblocks; print(slackblocks.__name__)"
+        run: uv run --isolated --no-project --with dist/*.whl python -P -c "import slackblocks; print(slackblocks.__name__)"
 
       - name: Smoke test source distribution
-        run: uv run --isolated --no-project --with dist/*.tar.gz python -c "import slackblocks; print(slackblocks.__name__)"
+        run: uv run --isolated --no-project --with dist/*.tar.gz python -P -c "import slackblocks; print(slackblocks.__name__)"

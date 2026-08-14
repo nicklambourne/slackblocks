@@ -9,6 +9,10 @@ permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   publish:
     name: Build, verify, and publish to npm
@@ -16,25 +20,27 @@ jobs:
     environment:
       name: npm
       url: https://www.npmjs.com/package/@nicklambourne/slackblocks
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           version: 11.16.0
           run_install: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: "24"
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
 
       - name: Update npm for trusted publishing
-        run: npm install --global npm@latest
+        run: npm install --global npm@11.19.0
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -49,12 +55,62 @@ jobs:
             exit 1
           fi
 
+      - name: Verify Python and TypeScript versions match
+        run: |
+          set -euo pipefail
+          typescript_version=$(node -p "require('./typescript/package.json').version")
+          python_version=$(python3 -c "import tomllib; print(tomllib.load(open('python/pyproject.toml', 'rb'))['project']['version'])")
+          if [ "$python_version" != "$typescript_version" ]; then
+            echo "::error::TypeScript version '$typescript_version' does not match Python version '$python_version'. Releases are coordinated; bump both together."
+            exit 1
+          fi
+
       - name: Run checks
         run: |
           pnpm --filter @nicklambourne/slackblocks typecheck
           pnpm --filter @nicklambourne/slackblocks test
           pnpm --filter @nicklambourne/slackblocks check:package
 
+      - name: Publish with npm token (first-publish bootstrap)
+        if: env.NPM_TOKEN != ''
+        working-directory: typescript
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Publish with trusted publishing
+        if: env.NPM_TOKEN == ''
         working-directory: typescript
         run: npm publish --access public
+
+  github-release:
+    name: Create GitHub Release
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Create release from changelog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release for $GITHUB_REF_NAME already exists; skipping."
+            exit 0
+          fi
+          version="${GITHUB_REF_NAME#ts/v}"
+          awk -v version="$version" '
+            $0 ~ "^## \\[" version "\\]" { capture = 1; next }
+            capture && /^## \[/ { exit }
+            capture { print }
+          ' typescript/CHANGELOG.md > release-notes.md
+          if [ -s release-notes.md ]; then
+            gh release create "$GITHUB_REF_NAME" --title "TypeScript v$version" --notes-file release-notes.md
+          else
+            echo "::warning::Could not extract changelog section for $version; using generated notes."
+            gh release create "$GITHUB_REF_NAME" --title "TypeScript v$version" --generate-notes
+          fi

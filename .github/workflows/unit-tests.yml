@@ -7,12 +7,14 @@ on:
       - "python/**"
       - "spec/**"
       - "docs/examples/python/**"
+      - "docs/examples/section_hello.json"
       - ".github/workflows/unit-tests.yml"
   pull_request:
     paths:
       - "python/**"
       - "spec/**"
       - "docs/examples/python/**"
+      - "docs/examples/section_hello.json"
       - ".github/workflows/unit-tests.yml"
 
 permissions:
