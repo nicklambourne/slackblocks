@@ -24,12 +24,28 @@ const USAGE_ORDER = [
 const SIDEBAR_LABELS: Record<string, string> = {
   "Composition objects": "Composition Objects",
   "Rich text": "Rich Text",
+  objects: "Composition Objects",
+  "rich-text": "Rich Text",
   classes: "Classes",
   functions: "Functions",
   interfaces: "Interfaces",
   "type-aliases": "Type Aliases",
   variables: "Variables",
 };
+
+const TYPESCRIPT_REFERENCE_ORDER = [
+  "blocks",
+  "elements",
+  "objects",
+  "rich-text",
+  "messages",
+  "views",
+  "utilities",
+  "errors",
+];
+
+const TYPESCRIPT_API_TYPE_PREFIX =
+  /^(?:Class|Function|Interface|Type Alias|Variable):\s*/;
 
 function isCategory(item: PropSidebarItem): item is PropSidebarItemCategory {
   return item.type === "category";
@@ -38,9 +54,15 @@ function isCategory(item: PropSidebarItem): item is PropSidebarItemCategory {
 function capitaliseSidebarItem(item: PropSidebarItem): PropSidebarItem {
   if (item.type === "html") return item;
 
+  const withoutTypePrefix = item.label.replace(
+    TYPESCRIPT_API_TYPE_PREFIX,
+    "",
+  );
   const label =
     SIDEBAR_LABELS[item.label] ??
-    item.label.replace(/^[a-z]/, (letter) => letter.toUpperCase());
+    (withoutTypePrefix !== item.label
+      ? withoutTypePrefix
+      : item.label.replace(/^[a-z]/, (letter) => letter.toUpperCase()));
   if (!isCategory(item)) return { ...item, label };
 
   return {
@@ -93,6 +115,39 @@ function filterUsage(
   };
 }
 
+function mergeTypeScriptDomainIndexes(
+  items: PropSidebarItem[],
+): PropSidebarItem[] {
+  const categoryLabels = new Set(
+    items
+      .filter(isCategory)
+      .map((item) => item.label.toLowerCase()),
+  );
+  const indexLinks = new Map(
+    items
+      .filter((item) => item.type === "link")
+      .map((item) => [item.label.toLowerCase(), item.href]),
+  );
+
+  return items.flatMap((item) => {
+    if (item.type === "html") return item;
+    const label = item.label.toLowerCase();
+    if (item.type === "link" && categoryLabels.has(label)) return [];
+    if (!isCategory(item)) return item;
+    return {
+      ...item,
+      href: indexLinks.get(label) ?? item.href,
+      items: [...item.items].sort((left, right) => {
+        const leftLabel = left.type === "html" ? "" : left.label;
+        const rightLabel = right.type === "html" ? "" : right.label;
+        return leftLabel.localeCompare(rightLabel, "en", {
+          sensitivity: "base",
+        });
+      }),
+    };
+  });
+}
+
 function filterReference(
   item: PropSidebarItemCategory,
   language: Language,
@@ -101,6 +156,22 @@ function filterReference(
     isLanguageReference(child, language),
   );
   if (!languageReference) return item;
+
+  const languageItems =
+    language === "typescript"
+      ? mergeTypeScriptDomainIndexes([...languageReference.items]).sort((left, right) => {
+          const leftPosition = TYPESCRIPT_REFERENCE_ORDER.indexOf(
+            left.type === "html" ? "" : left.label.toLowerCase(),
+          );
+          const rightPosition = TYPESCRIPT_REFERENCE_ORDER.indexOf(
+            right.type === "html" ? "" : right.label.toLowerCase(),
+          );
+          return (
+            (leftPosition < 0 ? Number.MAX_SAFE_INTEGER : leftPosition) -
+            (rightPosition < 0 ? Number.MAX_SAFE_INTEGER : rightPosition)
+          );
+        })
+      : languageReference.items;
 
   const sharedItems = item.items.filter(
     (child) =>
@@ -111,7 +182,7 @@ function filterReference(
   return {
     ...item,
     href: languageReference.href,
-    items: [...sharedItems, ...languageReference.items],
+    items: [...sharedItems, ...languageItems],
   };
 }
 

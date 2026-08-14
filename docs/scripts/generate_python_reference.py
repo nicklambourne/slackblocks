@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import importlib
 import inspect
-import json
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -31,6 +31,21 @@ CATEGORIES = {
     "views": "Views",
 }
 
+LEGACY_REFERENCE_LINK = re.compile(
+    r"(?<=\()/slackblocks/(?:latest/)?reference/"
+    r"(?P<category>[a-z_]+)/?(?:#(?:[a-z_]+\.)?(?P<symbol>[A-Za-z0-9_]+))?"
+)
+GOOGLE_SECTION = re.compile(
+    r"^(?:Args|Arguments|Parameters|Raises|Throws|Returns|Yields|Examples):$",
+    re.MULTILINE,
+)
+
+
+def current_reference_link(match: re.Match[str]) -> str:
+    path = f"/reference/python/{match.group('category')}"
+    symbol = match.group("symbol")
+    return f"{path}#{symbol.lower()}" if symbol else path
+
 
 def category_for(value: Any) -> str:
     module = getattr(value, "__module__", "slackblocks")
@@ -45,13 +60,63 @@ def signature(value: Any) -> str:
         return ""
 
 
-def render_symbol(name: str, value: Any) -> str:
+def markdown_cell(value: Any) -> str:
+    lines = (str(value) if value is not None else "").strip().splitlines()
+    return "<br />".join(line.strip() for line in lines).replace("|", r"\|") or "—"
+
+
+def markdown_table(headers: tuple[str, ...], rows: list[tuple[Any, ...]]) -> str:
+    header = "| " + " | ".join(headers) + " |"
+    separator = "| " + " | ".join("---" for _ in headers) + " |"
+    body = ["| " + " | ".join(markdown_cell(cell) for cell in row) + " |" for row in rows]
+    return "\n".join([header, separator, *body])
+
+
+def render_docstring(doc: str, parent: Any = None) -> str:
+    doc = re.sub(r"<(https?://[^>]+)>", r"[\1](\1)", doc)
+    doc = LEGACY_REFERENCE_LINK.sub(current_reference_link, doc)
+    if not GOOGLE_SECTION.search(doc):
+        return doc
+
+    # Griffe follows the Google convention of calling exception sections "Raises".
+    # Keep supporting the project's historical "Throws" heading as an alias.
+    doc = re.sub(r"^Throws:$", "Raises:", doc, flags=re.MULTILINE)
+    sections = griffe.Docstring(doc, parent=parent).parse(griffe.Parser.google, warnings=False)
+    rendered: list[str] = []
+
+    for section in sections:
+        if isinstance(section, griffe.DocstringSectionText):
+            rendered.append(section.value)
+        elif isinstance(section, griffe.DocstringSectionParameters):
+            rows = [
+                (f"`{parameter.name}`", f"`{parameter.annotation}`", parameter.description)
+                for parameter in section.value
+            ]
+            rendered.extend(
+                ["<h3>Arguments</h3>", markdown_table(("Argument", "Type", "Description"), rows)]
+            )
+        elif isinstance(section, griffe.DocstringSectionRaises):
+            rows = [(f"`{error.annotation}`", error.description) for error in section.value]
+            rendered.extend(["<h3>Errors</h3>", markdown_table(("Error", "When"), rows)])
+        elif isinstance(section, griffe.DocstringSectionReturns):
+            rows = [(f"`{item.annotation}`", item.description) for item in section.value]
+            rendered.extend(["### Returns", markdown_table(("Type", "Description"), rows)])
+        elif isinstance(section, griffe.DocstringSectionExamples):
+            rendered.extend(["### Examples", *(value for _, value in section.value)])
+        elif isinstance(section, griffe.DocstringSectionAdmonition):
+            rendered.append(f"**{section.value.annotation.title()}:** {section.value.description}")
+
+    return "\n\n".join(rendered)
+
+
+def render_symbol(name: str, value: Any, parent: Any = None) -> str:
     kind = "Class" if inspect.isclass(value) else "Function" if callable(value) else "Value"
     definition = f"{name}{signature(value)}" if callable(value) else name
     doc = inspect.getdoc(value) or "No public documentation is available."
+    doc = render_docstring(doc, parent)
     return "\n".join(
         [
-            f"## `{name}`",
+            f"## {name}",
             "",
             f"**{kind}**",
             "",
@@ -59,7 +124,11 @@ def render_symbol(name: str, value: Any) -> str:
             definition,
             "```",
             "",
-            f'<div className="api-docstring">{{{json.dumps(doc)}}}</div>',
+            '<div className="api-docstring">',
+            "",
+            doc,
+            "",
+            "</div>",
             "",
         ]
     )
@@ -77,17 +146,37 @@ def main() -> None:
     }
     exports = sorted(discovered | runtime_exports)
 
-    grouped: dict[str, list[tuple[str, Any]]] = defaultdict(list)
+    grouped: dict[str, list[tuple[str, Any, Any]]] = defaultdict(list)
     for name in exports:
-        grouped[category_for(getattr(package, name))].append((name, getattr(package, name)))
+        value = getattr(package, name)
+        member = analysis.members.get(name)
+        try:
+            parent = member.target if isinstance(member, griffe.Alias) else member
+        except griffe.AliasResolutionError:
+            parent = None
+        grouped[category_for(value)].append((name, value, parent))
 
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
-    index = ["# Python API reference", "", f"{len(exports)} public symbols are documented.", ""]
+    index = [
+        "# Python API reference",
+        "",
+        (
+            "This is the complete guide to slackblocks' public Python API. "
+            "Use it to check constructor signatures, accepted values, and class behavior "
+            "while you build a message, modal, or home tab."
+        ),
+        "",
+        (
+            f"The {len(exports)} documented symbols are grouped by the part of Block Kit "
+            "they help you create."
+        ),
+        "",
+    ]
     for category in sorted(grouped):
         title = CATEGORIES[category]
         index.append(f"- [{title}](/reference/python/{category})")
         page = [f"# {title}", ""]
-        page.extend(render_symbol(name, value) for name, value in grouped[category])
+        page.extend(render_symbol(name, value, parent) for name, value, parent in grouped[category])
         (OUTPUT_ROOT / f"{category}.mdx").write_text("\n".join(page))
     (OUTPUT_ROOT / "index.mdx").write_text("\n".join(index) + "\n")
 
