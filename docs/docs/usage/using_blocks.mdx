@@ -57,7 +57,7 @@ SectionBlock(
 <TypeScript>
 
 ```ts
-import { checkboxes, mrkdwn, option, sectionBlock } from "slackblocks";
+import { checkboxes, mrkdwn, option, sectionBlock } from "@nicklambourne/slackblocks";
 
 sectionBlock({
   text: "This is a section block with a checkbox accessory.",
@@ -150,7 +150,7 @@ RichTextBlock(
 <TypeScript>
 
 ```ts
-import { richText, richTextBlock, richTextSection } from "slackblocks";
+import { richText, richTextBlock, richTextSection } from "@nicklambourne/slackblocks";
 
 richTextBlock({
   blockId: "fake_block_id",
@@ -236,7 +236,7 @@ HeaderBlock(
 <TypeScript>
 
 ```ts
-import { headerBlock, plainText } from "slackblocks";
+import { headerBlock, plainText } from "@nicklambourne/slackblocks";
 
 headerBlock({
   text: plainText("This is a header block", { emoji: true }),
@@ -295,7 +295,7 @@ MarkdownBlock(
 <TypeScript>
 
 ```ts
-import { markdownBlock } from "slackblocks";
+import { markdownBlock } from "@nicklambourne/slackblocks";
 
 markdownBlock({
   text: "**Hello!** Markdown blocks support _GitHub-flavored_ syntax.",
@@ -346,7 +346,7 @@ ImageBlock(
 <TypeScript>
 
 ```ts
-import { imageBlock } from "slackblocks";
+import { imageBlock } from "@nicklambourne/slackblocks";
 
 imageBlock({
   imageUrl: "https://api.slack.com/img/blocks/bkb_template_images/beagle.png",
@@ -410,7 +410,7 @@ InputBlock(
 <TypeScript>
 
 ```ts
-import { inputBlock, plainText, plainTextInput } from "slackblocks";
+import { inputBlock, plainText, plainTextInput } from "@nicklambourne/slackblocks";
 
 inputBlock({
   label: plainText("Label", { emoji: true }),
@@ -478,7 +478,7 @@ DividerBlock()
 <TypeScript>
 
 ```ts
-import { dividerBlock } from "slackblocks";
+import { dividerBlock } from "@nicklambourne/slackblocks";
 
 dividerBlock();
 ```
@@ -527,7 +527,7 @@ FileBlock(
 <TypeScript>
 
 ```ts
-import { fileBlock } from "slackblocks";
+import { fileBlock } from "@nicklambourne/slackblocks";
 
 fileBlock({
   externalId: "external_id",
@@ -585,7 +585,7 @@ ContextBlock(
 <TypeScript>
 
 ```ts
-import { contextBlock, mrkdwn } from "slackblocks";
+import { contextBlock, mrkdwn } from "@nicklambourne/slackblocks";
 
 contextBlock({
   elements: [mrkdwn("Hello, world!")],
@@ -650,7 +650,7 @@ ActionsBlock(
 <TypeScript>
 
 ```ts
-import { actionsBlock, checkboxes, mrkdwn, option, plainText } from "slackblocks";
+import { actionsBlock, checkboxes, mrkdwn, option, plainText } from "@nicklambourne/slackblocks";
 
 actionsBlock({
   blockId: "fake_block_id",
@@ -792,7 +792,7 @@ import {
   richTextLink,
   richTextSection,
   tableBlock,
-} from "slackblocks";
+} from "@nicklambourne/slackblocks";
 
 tableBlock({
   columnSettings: [
@@ -946,7 +946,7 @@ VideoBlock(
 <TypeScript>
 
 ```ts
-import { videoBlock } from "slackblocks";
+import { videoBlock } from "@nicklambourne/slackblocks";
 
 videoBlock({
   altText: "How to use slackblocks",
@@ -1016,7 +1016,7 @@ AlertBlock(
 <TypeScript>
 
 ```ts
-import { alertBlock } from "slackblocks";
+import { alertBlock } from "@nicklambourne/slackblocks";
 
 alertBlock({
   text: "The deployment needs attention.",
@@ -1077,7 +1077,7 @@ CardBlock(
 <TypeScript>
 
 ```ts
-import { button, cardBlock, slackIcon } from "slackblocks";
+import { button, cardBlock, slackIcon } from "@nicklambourne/slackblocks";
 
 cardBlock({
   title: "Build complete",
@@ -1154,7 +1154,7 @@ CarouselBlock([
 <TypeScript>
 
 ```ts
-import { cardBlock, carouselBlock } from "slackblocks";
+import { cardBlock, carouselBlock } from "@nicklambourne/slackblocks";
 
 carouselBlock({
   elements: [
@@ -1231,7 +1231,7 @@ ContainerBlock(
 <TypeScript>
 
 ```ts
-import { containerBlock, sectionBlock } from "slackblocks";
+import { containerBlock, sectionBlock } from "@nicklambourne/slackblocks";
 
 containerBlock({
   title: "Deployment summary",
@@ -1314,7 +1314,7 @@ ContextActionsBlock([
 <TypeScript>
 
 ```ts
-import { contextActionsBlock, feedbackButton, feedbackButtons } from "slackblocks";
+import { contextActionsBlock, feedbackButton, feedbackButtons } from "@nicklambourne/slackblocks";
 
 contextActionsBlock({
   elements: [
@@ -1396,7 +1396,7 @@ DataTableBlock(
 <TypeScript>
 
 ```ts
-import { dataTableBlock, rawNumber, rawText } from "slackblocks";
+import { dataTableBlock, rawNumber, rawText } from "@nicklambourne/slackblocks";
 
 dataTableBlock({
   caption: "Team scores",
@@ -1482,7 +1482,7 @@ DataVisualizationBlock(
 <TypeScript>
 
 ```ts
-import { chartSegment, dataVisualizationBlock, pieChart } from "slackblocks";
+import { chartSegment, dataVisualizationBlock, pieChart } from "@nicklambourne/slackblocks";
 
 dataVisualizationBlock({
   title: "Incidents by severity",
@@ -1555,7 +1555,7 @@ TaskCardBlock(
 <TypeScript>
 
 ```ts
-import { taskCardBlock, urlSource } from "slackblocks";
+import { taskCardBlock, urlSource } from "@nicklambourne/slackblocks";
 
 taskCardBlock({
   taskId: "weather_1",
@@ -1624,7 +1624,7 @@ PlanBlock(
 <TypeScript>
 
 ```ts
-import { planBlock, taskCardBlock } from "slackblocks";
+import { planBlock, taskCardBlock } from "@nicklambourne/slackblocks";
 
 planBlock({
   title: "Release plan",

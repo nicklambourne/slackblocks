@@ -63,21 +63,21 @@ Install the ESM package from npm:
 <TabItem value="pnpm" label="pnpm">
 
 ```bash
-pnpm add slackblocks
+pnpm add @nicklambourne/slackblocks
 ```
 
 </TabItem>
 <TabItem value="npm" label="npm">
 
 ```bash
-npm install slackblocks
+npm install @nicklambourne/slackblocks
 ```
 
 </TabItem>
 <TabItem value="yarn" label="Yarn">
 
 ```bash
-yarn add slackblocks
+yarn add @nicklambourne/slackblocks
 ```
 
 </TabItem>
@@ -88,7 +88,7 @@ The package requires Node 20.19 or newer, is ESM-only, and emits no runtime impo
 Verify the installation in `hello.mjs`:
 
 ```ts
-import { message, sectionBlock } from "slackblocks";
+import { message, sectionBlock } from "@nicklambourne/slackblocks";
 
 console.log(message({
   channel: "C0123456",
@@ -96,7 +96,7 @@ console.log(message({
 }));
 ```
 
-Run it with `node hello.mjs`. Pin the current major release with `slackblocks@^2.1.0`, and uninstall with `pnpm remove slackblocks` (or your package manager's equivalent).
+Run it with `node hello.mjs`. Pin the current major release with `@nicklambourne/slackblocks@^2.1.0`, and uninstall with `pnpm remove @nicklambourne/slackblocks` (or your package manager's equivalent).
 
 </TypeScript>
 </LanguageContent>

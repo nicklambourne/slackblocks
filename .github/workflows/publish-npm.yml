@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: npm
-      url: https://www.npmjs.com/package/slackblocks
+      url: https://www.npmjs.com/package/@nicklambourne/slackblocks
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
@@ -51,9 +51,9 @@ jobs:
 
       - name: Run checks
         run: |
-          pnpm --filter slackblocks typecheck
-          pnpm --filter slackblocks test
-          pnpm --filter slackblocks check:package
+          pnpm --filter @nicklambourne/slackblocks typecheck
+          pnpm --filter @nicklambourne/slackblocks test
+          pnpm --filter @nicklambourne/slackblocks check:package
 
       - name: Publish with trusted publishing
         working-directory: typescript

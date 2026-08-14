@@ -173,7 +173,7 @@ Factories return plain Slack-shaped objects, so pass the payload directly to the
 
 ```ts
 import { WebClient } from "@slack/web-api";
-import { message, sectionBlock } from "slackblocks";
+import { message, sectionBlock } from "@nicklambourne/slackblocks";
 
 const client = new WebClient(process.env.SLACK_API_TOKEN);
 const payload = message({
@@ -190,7 +190,7 @@ Use a channel ID rather than a display name when possible. Provide a `text` fall
 
 ```ts
 import { IncomingWebhook } from "@slack/webhook";
-import { sectionBlock, webhookMessage } from "slackblocks";
+import { sectionBlock, webhookMessage } from "@nicklambourne/slackblocks";
 
 const webhook = new IncomingWebhook(process.env.SLACK_WEBHOOK_URL!);
 await webhook.send(webhookMessage({
@@ -203,7 +203,7 @@ await webhook.send(webhookMessage({
 Construct the response body, then return it through your web framework:
 
 ```ts
-import { messageResponse, sectionBlock } from "slackblocks";
+import { messageResponse, sectionBlock } from "@nicklambourne/slackblocks";
 
 const responseBody = messageResponse({
   blocks: [sectionBlock({ text: "Got it! Working on that now..." })],
@@ -214,7 +214,7 @@ const responseBody = messageResponse({
 ## Modals and home tabs
 
 ```ts
-import { modal, sectionBlock } from "slackblocks";
+import { modal, sectionBlock } from "@nicklambourne/slackblocks";
 
 const view = modal({
   title: "Confirm action",

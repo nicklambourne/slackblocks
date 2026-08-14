@@ -5,7 +5,7 @@ Build validated Slack Block Kit payloads in Python or TypeScript from one cross-
 | Implementation | Package | Version |
 |---|---|---:|
 | Python | [`slackblocks` on PyPI](https://pypi.org/project/slackblocks/) | 2.1.0 |
-| TypeScript / JavaScript | `slackblocks` on npm | 2.1.0 (unpublished) |
+| TypeScript / JavaScript | [`@nicklambourne/slackblocks` on npm](https://www.npmjs.com/package/@nicklambourne/slackblocks) | 2.1.0 (unpublished) |
 
 Both implementations are handwritten and idiomatic. The shared corpus under [`spec/`](spec/) guarantees semantically identical Slack JSON and validation categories.
 
@@ -22,7 +22,7 @@ payload = Message(channel="#general", blocks=SectionBlock("Hello, world!"))
 TypeScript:
 
 ```ts
-import { message, sectionBlock } from "slackblocks";
+import { message, sectionBlock } from "@nicklambourne/slackblocks";
 
 const payload = message({
   channel: "C0123456",
