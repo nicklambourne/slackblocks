@@ -1,0 +1,73 @@
+---
+sidebar_label: Quick Start
+sidebar_position: 2
+---
+
+import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
+
+# Quick Start
+
+Install `slackblocks` and build your first valid Block Kit message. The language selector in the top navigation controls the instructions and examples on this page.
+
+<LanguageContent>
+<Python>
+
+## Install the package
+
+Python 3.10 or newer is required.
+
+```bash
+pip install slackblocks
+```
+
+## Build a message
+
+```python
+from slackblocks import Message, SectionBlock
+
+message = Message(
+    channel="#general",
+    text="Hello from slackblocks!",
+    blocks=[SectionBlock("Hello, world!")],
+)
+
+print(message.json())
+```
+
+`Message` validates the payload as it is constructed and renders it as Slack-compatible JSON. The `text` value is the plain-text fallback Slack uses for notifications and accessibility.
+
+</Python>
+<TypeScript>
+
+## Install the package
+
+Node.js 20.19 or newer is required. The package is ESM-only.
+
+```bash
+pnpm add slackblocks
+```
+
+## Build a message
+
+```ts
+import { message, section } from "slackblocks";
+
+const payload = message({
+  channel: "C0123456",
+  text: "Hello from slackblocks!",
+  blocks: [section({ text: "Hello, world!" })],
+});
+
+console.log(JSON.stringify(payload, null, 2));
+```
+
+Each factory validates its input and returns a plain Slack-compatible object. Factory inputs use camelCase; the resulting payload uses the snake_case keys expected by Slack.
+
+</TypeScript>
+</LanguageContent>
+
+## Where to go next
+
+`slackblocks` constructs payloads but does not send HTTP requests. Continue with [Sending Messages](usage/sending_messages) to connect the payload to Slack, or explore [Using Blocks](usage/using_blocks) to build richer layouts.
+
+For package-manager alternatives and environment details, see [Installation](usage/installation).

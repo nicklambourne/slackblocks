@@ -20,41 +20,9 @@ It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unple
 - **Drop-in compatibility** with the official Slack SDKs and their plain JSON payloads.
 - **Zero runtime dependencies.**
 
-## Quickstart
+## Quick Start
 
-<LanguageContent>
-<Python>
-
-```bash
-pip install slackblocks
-```
-
-```python
-from slackblocks import Message, SectionBlock
-
-message = Message(channel="#general", blocks=SectionBlock("Hello, world!"))
-```
-
-</Python>
-<TypeScript>
-
-```bash
-pnpm add slackblocks
-```
-
-```ts
-import { message, section } from "slackblocks";
-
-const payload = message({
-  channel: "C0123456",
-  blocks: [section({ text: "Hello, world!" })],
-});
-```
-
-</TypeScript>
-</LanguageContent>
-
-See the [installation guide](usage/installation) and [sending messages guide](usage/sending_messages) to take it from here.
+Ready to build your first message? The [Quick Start guide](quick-start) takes you from installation to a validated Slack payload using the language selected in the top navigation.
 
 ## Components
 
@@ -145,7 +113,7 @@ Use [`message`](reference/typescript/functions/message), [`webhookMessage`](refe
 - [Using Blocks](usage/using_blocks)
 - [Sending Messages](usage/sending_messages)
 - [Recipe Book](usage/cookbook) — complete end-to-end recipes for common message patterns.
-- [Troubleshooting & FAQ](usage/troubleshooting.md)
+- [Troubleshooting & FAQ](usage/troubleshooting)
 - [Migrating from 1.x to 2.x](usage/migration) — upgrade guide for `1.x` users.
 - [Contributing](contributing) — developing and contributing to `slackblocks` itself.
 
