@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.0.0",
+  "spec_version": "1.0.1",
   "cases": [
     {
       "id": "text-empty",
@@ -71,7 +71,13 @@
       "id": "option-value-too-long",
       "category": "length-exceeded",
       "constraint": "option.value.max_length",
-      "description": "An option value longer than 75 characters must be rejected"
+      "description": "An option value longer than 150 characters must be rejected"
+    },
+    {
+      "id": "option-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "option.url.max_length",
+      "description": "An option URL longer than 3000 Unicode code points must be rejected (exercised with astral-plane emoji)"
     },
     {
       "id": "option-description-too-long",
@@ -126,6 +132,60 @@
       "category": "length-exceeded",
       "constraint": "overflow.options.max_items",
       "description": "An overflow menu with more than five options must be rejected"
+    },
+    {
+      "id": "checkboxes-empty",
+      "category": "length-exceeded",
+      "constraint": "checkboxes.options.min_items",
+      "description": "A checkbox group with no options must be rejected"
+    },
+    {
+      "id": "checkboxes-too-many-options",
+      "category": "length-exceeded",
+      "constraint": "checkboxes.options.max_items",
+      "description": "A checkbox group with more than ten options must be rejected"
+    },
+    {
+      "id": "radio-buttons-empty",
+      "category": "length-exceeded",
+      "constraint": "radio_buttons.options.min_items",
+      "description": "A radio button group with no options must be rejected"
+    },
+    {
+      "id": "radio-buttons-too-many-options",
+      "category": "length-exceeded",
+      "constraint": "radio_buttons.options.max_items",
+      "description": "A radio button group with more than ten options must be rejected"
+    },
+    {
+      "id": "url-source-url-empty",
+      "category": "length-exceeded",
+      "constraint": "url_source.url.min_length",
+      "description": "A URL source with an empty URL must be rejected"
+    },
+    {
+      "id": "url-source-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "url_source.url.max_length",
+      "description": "A URL source URL longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "table-too-many-rows",
+      "category": "length-exceeded",
+      "constraint": "table.rows.max_items",
+      "description": "A table with more than 100 rows must be rejected"
+    },
+    {
+      "id": "table-ragged-rows",
+      "category": "invalid-usage",
+      "constraint": "table.row_shape",
+      "description": "A table whose rows have differing column counts must be rejected"
+    },
+    {
+      "id": "table-column-settings-mismatch",
+      "category": "invalid-usage",
+      "constraint": "table.column_settings",
+      "description": "A table whose column settings do not match its column count must be rejected"
     },
     {
       "id": "file-input-max-files-too-small",

@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.0.0",
+  "spec_version": "1.0.1",
   "fixtures": [
     {
       "id": "attachments/attachment_multi_block",
@@ -104,10 +104,22 @@
       "since": "1.0.0"
     },
     {
+      "id": "blocks/header_block_emoji_at_limit",
+      "description": "Header Block With Text Of Exactly 150 Astral-Plane Emoji Code Points",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/header-block/",
+      "since": "1.0.1"
+    },
+    {
       "id": "blocks/header_block_only",
       "description": "Header Block Only",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
       "since": "1.0.0"
+    },
+    {
+      "id": "blocks/header_block_text_at_limit",
+      "description": "Header Block With Text At The 150-Character Limit",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/header-block/",
+      "since": "1.0.1"
     },
     {
       "id": "blocks/image_block_only",
@@ -210,6 +222,12 @@
       "description": "Button Style",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
       "since": "1.0.0"
+    },
+    {
+      "id": "elements/button_text_at_limit",
+      "description": "Button With Text At The 75-Character Limit",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/button-element/",
+      "since": "1.0.1"
     },
     {
       "id": "elements/checkbox_basic",
@@ -462,6 +480,12 @@
       "description": "Option Group Basic",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/",
       "since": "1.0.0"
+    },
+    {
+      "id": "objects/option_value_at_limit",
+      "description": "Option With Value At The 150-Character Limit",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/composition-objects/option-object/",
+      "since": "1.0.1"
     },
     {
       "id": "objects/text_markdown_basic",

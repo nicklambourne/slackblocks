@@ -164,6 +164,17 @@ def test_option_basic() -> None:
     assert fetch_sample(path="objects/option_basic.json") == repr(option)
 
 
+def test_option_value_at_documented_limit() -> None:
+    """Slack documents a 150-character limit for option values."""
+    option = Option(text=PlainText("A"), value="x" * 150)
+    assert option.value == "x" * 150
+
+
+def test_option_value_over_documented_limit() -> None:
+    with pytest.raises(InvalidUsageError):
+        Option(text=PlainText("A"), value="x" * 151)
+
+
 def test_option_group_basic() -> None:
     option_group = OptionGroup(
         label="Group A",

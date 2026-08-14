@@ -572,6 +572,16 @@ function validateKnownObject(object: JsonObject, path: string): void {
       }
       validateOptionEntries(object, path);
       break;
+    case "url":
+      if (typeof object.url === "string") {
+        length(
+          object.url,
+          child(path, "url"),
+          limits.url_source.url.min_length,
+          limits.url_source.url.max_length,
+        );
+      }
+      break;
     case "static_select":
     case "multi_static_select":
       if (object.options !== undefined && object.option_groups !== undefined) {

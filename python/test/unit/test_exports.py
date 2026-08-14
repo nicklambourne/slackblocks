@@ -53,4 +53,4 @@ def test_spec_version_is_declared() -> None:
     declare the spec version it conforms to."""
     import slackblocks
 
-    assert slackblocks.SPEC_VERSION == "1.0.0"
+    assert slackblocks.SPEC_VERSION == "1.0.1"

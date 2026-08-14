@@ -6,7 +6,9 @@ import { describe, expect, it } from "vitest";
 
 import limits from "../../spec/limits.json" with { type: "json" };
 
+import * as api from "../src/index.js";
 import {
+  specVersion,
   actionsBlock,
   alertBlock,
   areaChart,
@@ -296,7 +298,8 @@ function constructObject(id: string, input: FixtureInput): unknown {
     case "conversation_filter_basic": return conversationFilter(input);
     case "dispatch_action_configuration_basic": return dispatchActionConfiguration(input);
     case "input_parameter_basic": return inputParameter(input);
-    case "option_basic": return option(input);
+    case "option_basic":
+    case "option_value_at_limit": return option(input);
     case "option_group_basic": return optionGroup(input);
     case "text_markdown_basic":
     case "text_markdown_verbatim": return mrkdwn(input.text, withoutType(input));
@@ -356,7 +359,7 @@ function scalarPaths(value: unknown, prefix: string[] = []): string[] {
 
 describe("valid conformance corpus", () => {
   it("declares the current spec and a non-empty fixture corpus", () => {
-    expect(manifest.spec_version).toBe("1.0.0");
+    expect(manifest.spec_version).toBe(specVersion);
     expect(manifest.fixtures.length).toBeGreaterThan(0);
     expect(new Set(manifest.fixtures.map(({ id }) => id)).size).toBe(
       manifest.fixtures.length,
@@ -511,6 +514,38 @@ const invalidCases: Record<string, () => unknown> = {
     overflow({
       actionId: "a",
       options: Array.from({ length: limits.overflow.options.max_items + 1 }, choice),
+    }),
+  "checkboxes-empty": () => checkboxes({ actionId: "a", options: [] }),
+  "checkboxes-too-many-options": () =>
+    checkboxes({
+      actionId: "a",
+      options: Array.from({ length: limits.checkboxes.options.max_items + 1 }, choice),
+    }),
+  "radio-buttons-empty": () => radioButtons({ actionId: "a", options: [] }),
+  "radio-buttons-too-many-options": () =>
+    radioButtons({
+      actionId: "a",
+      options: Array.from({ length: limits.radio_buttons.options.max_items + 1 }, choice),
+    }),
+  // Astral-plane emoji pin that the limit counts Unicode code points.
+  "option-url-too-long": () =>
+    option({
+      text: "A",
+      value: "a",
+      url: "\u{1F642}".repeat(limits.option.url.max_length + 1),
+    }),
+  "url-source-url-empty": () => urlSource({ url: "", text: "text" }),
+  "url-source-url-too-long": () =>
+    urlSource({ url: "x".repeat(limits.url_source.url.max_length + 1), text: "text" }),
+  // Both implementations pin the table block to at most 100 rows.
+  "table-too-many-rows": () =>
+    tableBlock({ rows: Array.from({ length: 101 }, () => [rawText("A")]) }),
+  "table-ragged-rows": () =>
+    tableBlock({ rows: [[rawText("A"), rawText("B")], [rawText("C")]] }),
+  "table-column-settings-mismatch": () =>
+    tableBlock({
+      rows: [[rawText("A"), rawText("B")]],
+      columnSettings: [{ isWrapped: true }],
     }),
   "file-input-max-files-too-small": () =>
     fileInput({ actionId: "a", maxFiles: limits.file_input.max_files.min - 1 }),
@@ -811,6 +846,142 @@ const invalidCases: Record<string, () => unknown> = {
 const invalidManifest = readJson<InvalidManifest>(
   resolve(SPEC_ROOT, "fixtures/invalid/manifest.json"),
 );
+
+// Exported functions that intentionally have no entry in coverage.json
+// because they do not, by themselves, produce Slack JSON.
+const FACTORY_EXCLUSIONS = new Set([
+  // Error classes (validation outcomes, not JSON producers).
+  "InvalidUsageError",
+  "LengthError",
+  "OutOfRangeError",
+  "MutualExclusivityError",
+  "TypeMismatchError",
+  "MissingRequiredError",
+  // Utilities: text coercion, builder URL, and explicit validation.
+  "asText",
+  "blockKitBuilderUrl",
+  "assertValid",
+  "validate",
+]);
+
+// Mapping from exported factory function to its capability in coverage.json.
+const CAPABILITY_BY_FACTORY: Record<string, string> = {
+  actionsBlock: "blocks.actions",
+  alertBlock: "blocks.alert",
+  cardBlock: "blocks.card",
+  carouselBlock: "blocks.carousel",
+  containerBlock: "blocks.container",
+  contextActionsBlock: "blocks.context_actions",
+  contextBlock: "blocks.context",
+  dataTableBlock: "blocks.data_table",
+  dataVisualizationBlock: "blocks.data_visualization",
+  dividerBlock: "blocks.divider",
+  fileBlock: "blocks.file",
+  headerBlock: "blocks.header",
+  imageBlock: "blocks.image",
+  inputBlock: "blocks.input",
+  markdownBlock: "blocks.markdown",
+  planBlock: "blocks.plan",
+  richTextBlock: "blocks.rich_text",
+  sectionBlock: "blocks.section",
+  tableBlock: "blocks.table",
+  taskCardBlock: "blocks.task_card",
+  videoBlock: "blocks.video",
+  // Chart constructors serialize inside the data-visualization block.
+  areaChart: "blocks.data_visualization",
+  barChart: "blocks.data_visualization",
+  lineChart: "blocks.data_visualization",
+  pieChart: "blocks.data_visualization",
+  button: "elements.button",
+  channelMultiSelect: "elements.multi_select_channels",
+  channelSelect: "elements.select_channels",
+  checkboxes: "elements.checkboxes",
+  conversationMultiSelect: "elements.multi_select_conversations",
+  conversationSelect: "elements.select_conversations",
+  datePicker: "elements.date_picker",
+  dateTimePicker: "elements.datetime_picker",
+  emailInput: "elements.email_input",
+  externalMultiSelect: "elements.multi_select_external",
+  externalSelect: "elements.select_external",
+  feedbackButton: "objects.feedback_button",
+  feedbackButtons: "elements.feedback_buttons",
+  fileInput: "elements.file_input",
+  iconButton: "elements.icon_button",
+  imageElement: "elements.image",
+  numberInput: "elements.number_input",
+  overflow: "elements.overflow",
+  plainTextInput: "elements.plain_text_input",
+  radioButtons: "elements.radio_buttons",
+  richTextInput: "elements.rich_text_input",
+  staticMultiSelect: "elements.multi_select_static",
+  staticSelect: "elements.select_static",
+  timePicker: "elements.time_picker",
+  urlInput: "elements.url_input",
+  urlSource: "elements.url_source",
+  userMultiSelect: "elements.multi_select_users",
+  userSelect: "elements.select_users",
+  workflowButton: "elements.workflow_button",
+  attachment: "messages.attachment",
+  message: "messages.message",
+  messageResponse: "messages.message_response",
+  webhookMessage: "messages.webhook_message",
+  axisConfig: "objects.axis_config",
+  chartSegment: "objects.chart_segment",
+  columnSettings: "objects.column_settings",
+  confirmation: "objects.confirmation",
+  conversationFilter: "objects.conversation_filter",
+  dataPoint: "objects.data_point",
+  dataSeries: "objects.data_series",
+  dispatchActionConfiguration: "objects.dispatch_action_configuration",
+  inputParameter: "objects.input_parameter",
+  mrkdwn: "objects.markdown_text",
+  option: "objects.option",
+  optionGroup: "objects.option_group",
+  plainText: "objects.plain_text",
+  rawNumber: "objects.raw_number",
+  rawText: "objects.raw_text",
+  slackFile: "objects.slack_file",
+  slackIcon: "objects.slack_icon",
+  trigger: "objects.trigger",
+  workflow: "objects.workflow",
+  richText: "rich_text.text",
+  richTextChannel: "rich_text.channel",
+  richTextCodeBlock: "rich_text.code_block",
+  richTextEmoji: "rich_text.emoji",
+  richTextLink: "rich_text.link",
+  richTextList: "rich_text.list",
+  richTextQuote: "rich_text.quote",
+  richTextSection: "rich_text.section",
+  richTextUser: "rich_text.user",
+  richTextUserGroup: "rich_text.user_group",
+  homeTab: "views.home_tab",
+  modal: "views.modal",
+};
+
+describe("capability registry", () => {
+  it("maps every exported factory to a registered capability", () => {
+    const exported = Object.entries(api)
+      .filter(([, value]) => typeof value === "function")
+      .map(([exportName]) => exportName)
+      .filter((exportName) => !FACTORY_EXCLUSIONS.has(exportName));
+    expect(new Set(exported)).toEqual(new Set(Object.keys(CAPABILITY_BY_FACTORY)));
+  });
+
+  it("registers every mapped capability in coverage.json, and only those", () => {
+    for (const [factory, capability] of Object.entries(CAPABILITY_BY_FACTORY)) {
+      expect(coverage.capabilities[capability], `${factory} -> ${capability}`).toBeDefined();
+    }
+    expect(new Set(Object.values(CAPABILITY_BY_FACTORY))).toEqual(
+      new Set(Object.keys(coverage.capabilities)),
+    );
+  });
+
+  it("keeps the exclusions list disjoint from the mapping", () => {
+    for (const excluded of FACTORY_EXCLUSIONS) {
+      expect(CAPABILITY_BY_FACTORY[excluded]).toBeUndefined();
+    }
+  });
+});
 
 describe("invalid conformance corpus", () => {
   it("exercises every scalar limit in the shared registry", () => {

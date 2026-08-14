@@ -146,7 +146,7 @@ export function confirmation(
 export interface OptionInput {
   /** Plain-text option label, up to 75 characters. */
   text: TextLike;
-  /** Application-defined value, up to 75 characters. */
+  /** Application-defined value, up to 150 characters. */
   value: string;
   /** Optional plain-text supporting copy, up to 75 characters. */
   description?: TextLike;

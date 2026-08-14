@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
+import slackblocks
 from slackblocks import (
     ActionsBlock,
     AlertBlock,
@@ -14,6 +15,8 @@ from slackblocks import (
     CardBlock,
     CarouselBlock,
     ChartSegment,
+    CheckboxGroup,
+    ColumnSettings,
     ConfirmationDialogue,
     ContainerBlock,
     ContextActionsBlock,
@@ -45,16 +48,21 @@ from slackblocks import (
     PieChart,
     PlainText,
     PlainTextInput,
+    RadioButtonGroup,
     RangeError,
     RawText,
     SectionBlock,
     SlackFile,
     StaticSelectMenu,
+    TableBlock,
     Text,
     TypeMismatchError,
+    URLSource,
     VideoBlock,
 )
 from slackblocks.errors import InvalidUsageError
+
+from .valid_constructions import CONSTRUCTIONS
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -64,7 +72,7 @@ SPEC_ROOT = REPO_ROOT / "spec"
 
 
 def load_json(path: Path) -> dict:
-    return json.loads(path.read_text())
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def test_valid_manifest_covers_the_entire_fixture_corpus() -> None:
@@ -74,7 +82,7 @@ def test_valid_manifest_covers_the_entire_fixture_corpus() -> None:
         path.relative_to(SPEC_ROOT / "fixtures" / "valid").with_suffix("").as_posix()
         for path in (SPEC_ROOT / "fixtures" / "valid").rglob("*.json")
     }
-    assert manifest["spec_version"] == "1.0.0"
+    assert manifest["spec_version"] == slackblocks.SPEC_VERSION
     assert fixture_ids
     assert len(fixture_ids) == len(manifest["fixtures"])
     assert fixture_ids == files
@@ -92,17 +100,22 @@ def test_every_shared_json_capability_has_an_official_fixture() -> None:
             assert fixtures[fixture_id]["slack_docs"].startswith("https://docs.slack.dev/")
 
 
-def test_every_valid_fixture_is_exercised_by_a_python_construction_test() -> None:
+def test_construction_registry_matches_the_manifest_exactly() -> None:
     manifest = load_json(SPEC_ROOT / "manifest.json")
-    test_source = "\n".join(
-        path.read_text() for path in (REPO_ROOT / "python" / "test").rglob("test_*.py")
-    )
-    missing = [
-        fixture["id"]
-        for fixture in manifest["fixtures"]
-        if f"{fixture['id']}.json" not in test_source
-    ]
-    assert missing == []
+    assert set(CONSTRUCTIONS) == {fixture["id"] for fixture in manifest["fixtures"]}
+
+
+@pytest.mark.parametrize(
+    "fixture_id",
+    [fixture["id"] for fixture in load_json(SPEC_ROOT / "manifest.json")["fixtures"]],
+)
+def test_valid_fixture_constructs_identically_through_the_public_api(
+    fixture_id: str,
+) -> None:
+    construction = CONSTRUCTIONS.get(fixture_id)
+    assert construction is not None, f"No registered Python construction for {fixture_id}"
+    expected = load_json(SPEC_ROOT / "fixtures" / "valid" / f"{fixture_id}.json")
+    assert json.loads(repr(construction())) == expected
 
 
 def test_every_valid_fixture_contains_json() -> None:
@@ -236,6 +249,38 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "overflow-too-many-options": lambda: OverflowMenu(
         "a",
         [option(str(index)) for index in range(LIMITS["overflow"]["options"]["max_items"] + 1)],
+    ),
+    "checkboxes-empty": lambda: CheckboxGroup(action_id="a", options=[]),
+    "checkboxes-too-many-options": lambda: CheckboxGroup(
+        action_id="a",
+        options=[
+            option(str(index)) for index in range(LIMITS["checkboxes"]["options"]["max_items"] + 1)
+        ],
+    ),
+    "radio-buttons-empty": lambda: RadioButtonGroup(action_id="a", options=[]),
+    "radio-buttons-too-many-options": lambda: RadioButtonGroup(
+        action_id="a",
+        options=[
+            option(str(index))
+            for index in range(LIMITS["radio_buttons"]["options"]["max_items"] + 1)
+        ],
+    ),
+    # Astral-plane emoji pin that the limit counts Unicode code points.
+    "option-url-too-long": lambda: Option(
+        text=PlainText("A"),
+        value="a",
+        url="\U0001f642" * (LIMITS["option"]["url"]["max_length"] + 1),
+    ),
+    "url-source-url-empty": lambda: URLSource("", "text"),
+    "url-source-url-too-long": lambda: URLSource(
+        "x" * (LIMITS["url_source"]["url"]["max_length"] + 1), "text"
+    ),
+    # Both implementations pin the table block to at most 100 rows.
+    "table-too-many-rows": lambda: TableBlock([[RawText("A")] for _ in range(101)]),
+    "table-ragged-rows": lambda: TableBlock([[RawText("A"), RawText("B")], [RawText("C")]]),
+    "table-column-settings-mismatch": lambda: TableBlock(
+        rows=[[RawText("A"), RawText("B")]],
+        column_settings=[ColumnSettings(is_wrapped=True)],
     ),
     "file-input-max-files-too-small": lambda: FileInput(
         action_id="a", max_files=LIMITS["file_input"]["max_files"]["min"] - 1
@@ -556,10 +601,17 @@ def test_every_invalid_case_has_a_python_construction() -> None:
     assert set(INVALID_CASES) == {case["id"] for case in cases}
 
 
+def test_declared_spec_version_matches_the_manifest() -> None:
+    manifest = load_json(SPEC_ROOT / "manifest.json")
+    assert manifest["spec_version"] == slackblocks.SPEC_VERSION
+
+
 def test_python_skiplist_is_empty() -> None:
     entries = [
         line
-        for line in (REPO_ROOT / "python" / "conformance" / "skiplist.txt").read_text().splitlines()
+        for line in (REPO_ROOT / "python" / "conformance" / "skiplist.txt")
+        .read_text(encoding="utf-8")
+        .splitlines()
         if line and not line.startswith("#")
     ]
     assert entries == []
