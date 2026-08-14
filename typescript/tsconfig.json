@@ -6,6 +6,10 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
+    "baseUrl": ".",
+    "paths": {
+      "slackblocks": ["./src/index.ts"]
+    },
     "declaration": true,
     "resolveJsonModule": true,
     "verbatimModuleSyntax": true,
