@@ -116,7 +116,6 @@ export default function LanguageSelector({ mobile = false }: Props) {
           <li>
             <button
               className="language-selector__option"
-              disabled={Boolean(legacyVersion)}
               onClick={() => {
                 selectLanguage(otherLanguage);
                 setOpen(false);
@@ -125,11 +124,7 @@ export default function LanguageSelector({ mobile = false }: Props) {
               type="button"
             >
               <LanguageLogo language={otherLanguage} />
-              <span>
-                {legacyVersion
-                  ? "TypeScript starts at 2.1.0"
-                  : languageLabels[otherLanguage]}
-              </span>
+              <span>{languageLabels[otherLanguage]}</span>
             </button>
           </li>
         </ul>

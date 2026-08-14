@@ -24,7 +24,10 @@ const legacyManifest = JSON.parse(
     version: string;
     canonical_prefix: string;
     generated_snapshot_tree_hash: string | null;
+    expected_routes: string[];
+    old_alias_prefixes: string[];
   }>;
+  migration: { aliases_enabled: boolean };
 };
 
 const legacyVersionConfiguration = Object.fromEntries(
@@ -34,10 +37,45 @@ const legacyVersionConfiguration = Object.fromEntries(
       version,
       {
         badge: false,
-        label: `${version} · Python`,
+        label: version,
+        noIndex: true,
         path,
       },
     ]),
+);
+
+type Redirect = { from: string; to: string };
+
+function routePath(prefix: string, route: string): string {
+  return route === "/" ? `/${prefix}` : `/${prefix}${route}`;
+}
+
+function currentRoute(route: string): string {
+  if (!route.startsWith("/reference/")) return route;
+  const page = route.slice("/reference/".length);
+  return `/reference/python/${page === "utils" ? "builder" : page}`;
+}
+
+function historicalAliasRedirects(): Redirect[] {
+  return legacyManifest.versions.flatMap(
+    ({ canonical_prefix, expected_routes, old_alias_prefixes }) =>
+      old_alias_prefixes.flatMap((alias) =>
+        expected_routes.map((route) => ({
+          from: routePath(alias, route),
+          to: routePath(canonical_prefix, route),
+        })),
+      ),
+  );
+}
+
+const currentAliasRoutes = Array.from(
+  new Set(legacyManifest.versions.flatMap(({ expected_routes }) => expected_routes)),
+);
+const currentAliasRedirects = ["latest", "master"].flatMap((alias) =>
+  currentAliasRoutes.map((route) => ({
+    from: routePath(alias, route),
+    to: currentRoute(route),
+  })),
 );
 
 if (typescriptPackage.version !== pythonVersion) {
@@ -220,24 +258,10 @@ const config: Config = {
       "@docusaurus/plugin-client-redirects",
       {
         redirects: [
-          { from: "/latest", to: "/" },
-          { from: "/latest/contributing", to: "/contributing" },
-          { from: "/latest/usage/compatibility", to: "/usage/compatibility" },
-          { from: "/latest/usage/cookbook", to: "/usage/cookbook" },
-          { from: "/latest/usage/installation", to: "/usage/installation" },
-          { from: "/latest/usage/migration", to: "/usage/migration" },
-          { from: "/latest/usage/sending_messages", to: "/usage/sending_messages" },
-          { from: "/latest/usage/troubleshooting", to: "/usage/troubleshooting" },
-          { from: "/latest/usage/using_blocks", to: "/usage/using_blocks" },
-          { from: "/latest/reference/attachments", to: "/reference/python/attachments" },
-          { from: "/latest/reference/blocks", to: "/reference/python/blocks" },
-          { from: "/latest/reference/elements", to: "/reference/python/elements" },
-          { from: "/latest/reference/messages", to: "/reference/python/messages" },
-          { from: "/latest/reference/modals", to: "/reference/python/modals" },
-          { from: "/latest/reference/objects", to: "/reference/python/objects" },
-          { from: "/latest/reference/rich_text", to: "/reference/python/rich_text" },
-          { from: "/latest/reference/utils", to: "/reference/python/builder" },
-          { from: "/latest/reference/views", to: "/reference/python/views" },
+          ...currentAliasRedirects,
+          ...(legacyManifest.migration.aliases_enabled
+            ? historicalAliasRedirects()
+            : []),
           { from: "/reference/attachments", to: "/reference/python/attachments" },
           { from: "/reference/blocks", to: "/reference/python/blocks" },
           { from: "/reference/elements", to: "/reference/python/elements" },
@@ -258,6 +282,10 @@ const config: Config = {
       {
         hashed: true,
         indexDocs: true,
+        docsRouteBasePath: "/",
+        // Legacy versions are noIndex for external search engines, but the
+        // in-site, version-scoped search must still cover them.
+        forceIgnoreNoIndex: true,
       },
     ],
   ],

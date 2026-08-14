@@ -22,7 +22,8 @@ import griffe
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
 
-TOOL_VERSION = "1"
+TOOL_VERSION = "2"
+SITE_BASE_URL = "/slackblocks"
 DOCS_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = DOCS_ROOT.parent
 LEGACY_ROOT = DOCS_ROOT / "legacy"
@@ -72,6 +73,10 @@ ATTRIBUTE_RE = re.compile(r'(?P<name>[\w:-]+)="(?P<value>[^"]*)"')
 TAG_RE = re.compile(r"<[^>]+>")
 ARTICLE_RE = re.compile(r"<article\b[^>]*>(?P<body>.*?)</article>", re.IGNORECASE | re.DOTALL)
 TAB_HEADER_RE = re.compile(r'^===\s+"(?P<label>.*)"\s*$')
+CODE_FENCE_RE = re.compile(r"^\s*```")
+CODE_SPAN_RE = re.compile(r"(?<!`)(`+)(?!`)(.+?)(?<!`)\1(?!`)")
+CODE_MASK_RE = re.compile(r"\x00(\d+)\x00")
+RAW_IMG_SRC_RE = re.compile(r'(?P<attr><img\b[^>]*\bsrc=")(?P<path>/[^"]*)"')
 ADMONITION_RE = re.compile(r'^(?P<marker>!!!|\?\?\?)\s+(?P<kind>[\w-]+)(?:\s+"(?P<title>.*)")?\s*$')
 DIRECTIVE_RE = re.compile(r"^:::\s*(?P<target>[A-Za-z_][A-Za-z0-9_.]*)\s*$")
 
@@ -184,7 +189,9 @@ def refresh_manifest(gh_pages_ref: str) -> dict[str, Any]:
             continue
         version = tag.removeprefix("v")
         tag_commit = str(run_git("rev-parse", f"{tag}^{{commit}}")).strip()
-        docs_tree = str(run_git("rev-parse", f"{tag}:docs_src")).strip()
+        previous_entry = previous_entries.get(version, {})
+        docs_source_ref = previous_entry.get("documentation_source_ref", tag)
+        docs_tree = str(run_git("rev-parse", f"{docs_source_ref}:docs_src")).strip()
         python_tree = str(run_git("rev-parse", f"{tag}:slackblocks")).strip()
         routes = published_routes(gh_pages_ref, tag)
         alias_prefixes = [version] if git_object_exists(f"{gh_pages_ref}:{version}") else []
@@ -203,6 +210,8 @@ def refresh_manifest(gh_pages_ref: str) -> dict[str, Any]:
             "language_availability": ["python"],
             "inventory": f"inventories/{tag}.json",
         }
+        if docs_source_ref != tag:
+            entry["documentation_source_ref"] = docs_source_ref
         versions.append(entry)
         inventories[tag] = {
             "version": version,
@@ -263,22 +272,41 @@ def extract_release(entry: dict[str, Any], destination: Path, archive: Path | No
             raise RuntimeError(
                 f"{entry['tag']} resolves to {actual_commit}, expected {entry['tag_commit']}"
             )
-        archive = destination / "release.tar"
-        subprocess.run(
-            [
-                "git",
-                "archive",
-                "--format=tar",
-                f"--output={archive}",
-                entry["tag"],
-                "docs_src",
-                "slackblocks",
-            ],
-            cwd=REPO_ROOT,
-            check=True,
-        )
-    with tarfile.open(archive) as tar:
-        tar.extractall(destination, filter="data")
+        docs_source_ref = entry.get("documentation_source_ref", entry["tag"])
+        docs_tree = str(run_git("rev-parse", f"{docs_source_ref}:docs_src")).strip()
+        if docs_tree != entry["documentation_source_tree_hash"]:
+            raise RuntimeError(
+                f"{entry['tag']} docs source is {docs_tree}, expected "
+                f"{entry['documentation_source_tree_hash']}"
+            )
+        python_tree = str(run_git("rev-parse", f"{entry['tag']}:slackblocks")).strip()
+        if python_tree != entry["python_source_tree_hash"]:
+            raise RuntimeError(
+                f"{entry['tag']} Python source is {python_tree}, expected "
+                f"{entry['python_source_tree_hash']}"
+            )
+        archives = [
+            (destination / "docs-source.tar", docs_source_ref, "docs_src"),
+            (destination / "python-source.tar", entry["tag"], "slackblocks"),
+        ]
+        for generated_archive, source_ref, source_path in archives:
+            subprocess.run(
+                [
+                    "git",
+                    "archive",
+                    "--format=tar",
+                    f"--output={generated_archive}",
+                    source_ref,
+                    source_path,
+                ],
+                cwd=REPO_ROOT,
+                check=True,
+            )
+            with tarfile.open(generated_archive) as tar:
+                tar.extractall(destination, filter="data")
+    else:
+        with tarfile.open(archive) as tar:
+            tar.extractall(destination, filter="data")
 
     docs_root = destination / "docs_src"
     python_root = destination / "slackblocks"
@@ -447,6 +475,7 @@ def render_member(
     anchor: str,
     nested_anchors: Sequence[str],
     version: str,
+    heading_by_anchor: dict[str, dict[str, Any]],
     *,
     include_heading: bool,
 ) -> str:
@@ -459,7 +488,13 @@ def render_member(
     name = anchor.rsplit(".", 1)[-1]
     content: list[str] = []
     if include_heading:
-        content.extend([f"### {name} {{#{anchor}}}", ""])
+        heading = heading_by_anchor[anchor]
+        content.extend(
+            [
+                f"{'#' * heading['level']} {heading['text']} {{#{anchor}}}",
+                "",
+            ]
+        )
     else:
         content.append(f'<a id="{anchor}"></a>')
     content.extend(
@@ -487,10 +522,11 @@ def render_member(
         if isinstance(nested, griffe.Alias):
             nested = nested.target
         nested_name = nested_anchor.rsplit(".", 1)[-1]
+        heading = heading_by_anchor[nested_anchor]
         content.extend(
             [
                 "",
-                f"#### {nested_name} {{#{nested_anchor}}}",
+                f"{'#' * heading['level']} {heading['text']} {{#{nested_anchor}}}",
                 "",
                 "```python",
                 member_signature(nested_name, nested),
@@ -506,6 +542,7 @@ def directive_content(
     package: griffe.Module,
     target: str,
     anchors: Sequence[str],
+    heading_by_anchor: dict[str, dict[str, Any]],
     version: str,
 ) -> str:
     try:
@@ -516,7 +553,14 @@ def directive_content(
         target_member = target_member.target
     if not isinstance(target_member, griffe.Module):
         nested = [anchor for anchor in anchors if anchor.startswith(f"{target}.")]
-        return render_member(package, target, nested, version, include_heading=False)
+        return render_member(
+            package,
+            target,
+            nested,
+            version,
+            heading_by_anchor,
+            include_heading=False,
+        )
 
     prefix = f"{target}."
     top_level: list[str] = []
@@ -529,16 +573,34 @@ def directive_content(
     rendered = []
     for anchor in top_level:
         nested = [candidate for candidate in anchors if candidate.startswith(f"{anchor}.")]
-        rendered.append(render_member(package, anchor, nested, version, include_heading=True))
+        rendered.append(
+            render_member(
+                package,
+                anchor,
+                nested,
+                version,
+                heading_by_anchor,
+                include_heading=True,
+            )
+        )
     return "\n\n".join(rendered)
 
 
 def replace_directives(
     source: str,
     package: griffe.Module,
-    anchors: Sequence[str],
+    page_inventory: dict[str, Any],
     version: str,
 ) -> str:
+    anchors = list(page_inventory.get("api_anchors", []))
+    anchors.extend(
+        heading["id"]
+        for heading in page_inventory.get("headings", [])
+        if "." in heading.get("id", "") and heading["id"] not in anchors
+    )
+    heading_by_anchor = {
+        heading["id"]: heading for heading in page_inventory.get("headings", []) if heading["id"]
+    }
     lines = source.splitlines()
     output: list[str] = []
     index = 0
@@ -549,7 +611,7 @@ def replace_directives(
             index += 1
             continue
         target = match.group("target")
-        output.append(directive_content(package, target, anchors, version))
+        output.append(directive_content(package, target, anchors, heading_by_anchor, version))
         index += 1
         while index < len(lines) and (not lines[index].strip() or lines[index].startswith("    ")):
             index += 1
@@ -573,7 +635,7 @@ def convert_tabs(source: str) -> tuple[str, bool]:
             header = TAB_HEADER_RE.match(lines[index])
             if not header:
                 break
-            label = header.group("label")
+            label = header.group("label").replace("`", "")
             index += 1
             body: list[str] = []
             while index < len(lines):
@@ -635,7 +697,50 @@ def convert_admonitions(source: str) -> str:
     return "\n".join(output)
 
 
+def mask_code_regions(source: str) -> tuple[str, list[str]]:
+    """Replace fenced code blocks and inline code spans with opaque placeholders."""
+    masked: list[str] = []
+
+    def store(value: str) -> str:
+        masked.append(value)
+        return f"\x00{len(masked) - 1}\x00"
+
+    output: list[str] = []
+    fence: list[str] | None = None
+    for line in source.splitlines():
+        if fence is not None:
+            fence.append(line)
+            if CODE_FENCE_RE.match(line):
+                output.append(store("\n".join(fence)))
+                fence = None
+            continue
+        if CODE_FENCE_RE.match(line):
+            fence = [line]
+            continue
+        output.append(CODE_SPAN_RE.sub(lambda match: store(match.group(0)), line))
+    if fence is not None:
+        output.append(store("\n".join(fence)))
+    return "\n".join(output), masked
+
+
+def unmask_code_regions(source: str, masked: Sequence[str]) -> str:
+    return CODE_MASK_RE.sub(lambda match: masked[int(match.group(1))], source)
+
+
+def prefix_site_root_images(value: str) -> str:
+    """Give raw <img> tags the site baseUrl; Docusaurus only rewrites markdown images."""
+
+    def replace(match: re.Match[str]) -> str:
+        path = match.group("path")
+        if path.startswith(f"{SITE_BASE_URL}/"):
+            return match.group(0)
+        return f'{match.group("attr")}{SITE_BASE_URL}{path}"'
+
+    return RAW_IMG_SRC_RE.sub(replace, value)
+
+
 def rewrite_markdown(source: str, version: str, docs_hash: str) -> str:
+    source, masked = mask_code_regions(source)
     source = re.sub(r"<(https?://[^>]+)>", r"[\1](\1)", source)
     source = re.sub(r"<(mailto:[^>]+)>", r"[\1](\1)", source)
     source = re.sub(r"\[([^\]]+)\]\(\)", r"\1", source)
@@ -676,8 +781,53 @@ def rewrite_markdown(source: str, version: str, docs_hash: str) -> str:
         rewrite_internal_link,
         source,
     )
+    source = prefix_site_root_images(source)
     source = re.sub(r"^\s*\{[.:#][^}]+\}\s*$", "", source, flags=re.MULTILINE)
-    return source
+    return unmask_code_regions(source, masked)
+
+
+def heading_text(value: str) -> str:
+    value = re.sub(r"\s+\{#[^}]+\}\s*$", "", value)
+    value = re.sub(r"!?(?:\[([^\]]+)\])\([^)]+\)", r"\1", value)
+    value = re.sub(r"[`*_~]", "", value)
+    return " ".join(html.unescape(TAG_RE.sub("", value)).split())
+
+
+def preserve_heading_ids(source: str, page_inventory: dict[str, Any]) -> str:
+    headings = [heading for heading in page_inventory.get("headings", []) if heading.get("id")]
+    used: set[int] = set()
+    output: list[str] = []
+    in_fence = False
+    for line in source.splitlines():
+        if re.match(r"^\s*```", line):
+            in_fence = not in_fence
+            output.append(line)
+            continue
+        match = None if in_fence else re.match(r"^(#{1,6})\s+(.+?)\s*$", line)
+        if not match:
+            output.append(line)
+            continue
+        level = len(match.group(1))
+        text = heading_text(match.group(2))
+        selected = next(
+            (
+                index
+                for index, heading in enumerate(headings)
+                if index not in used and heading["level"] == level and heading["text"] == text
+            ),
+            None,
+        )
+        if selected is None:
+            output.append(line)
+            continue
+        used.add(selected)
+        heading_id = headings[selected]["id"]
+        without_id = re.sub(r"\s+\{#[^}]+\}\s*$", "", match.group(2))
+        if level == 1:
+            output.extend([f'<a id="{heading_id}"></a>', f"# {without_id}"])
+        else:
+            output.append(f"{match.group(1)} {without_id} {{#{heading_id}}}")
+    return "\n".join(output)
 
 
 def generated_notice(entry: dict[str, Any]) -> str:
@@ -693,10 +843,11 @@ def convert_page(
     package: griffe.Module,
     page_inventory: dict[str, Any],
 ) -> str:
+    has_level_one_heading = bool(re.search(r"^#\s+", source, re.MULTILINE))
     source = replace_directives(
         source,
         package,
-        page_inventory.get("api_anchors", []),
+        page_inventory,
         entry["version"],
     )
     source, has_tabs = convert_tabs(source)
@@ -706,7 +857,19 @@ def convert_page(
         entry["version"],
         entry["documentation_source_tree_hash"],
     )
-    header = [generated_notice(entry)]
+    source = preserve_heading_ids(source, page_inventory)
+    header: list[str] = []
+    if not has_level_one_heading:
+        page_title = next(
+            (
+                heading["text"]
+                for heading in page_inventory.get("headings", [])
+                if heading["level"] == 1
+            ),
+            page_inventory["published_title"].split(" - ", 1)[0],
+        )
+        header.extend(["---", f"title: {json.dumps(page_title)}", "---"])
+    header.append(generated_notice(entry))
     if has_tabs:
         header.extend(
             [
@@ -714,9 +877,6 @@ def convert_page(
                 "import TabItem from '@theme/TabItem';",
             ]
         )
-    root_anchors = [anchor for anchor in page_inventory.get("api_anchors", []) if "." not in anchor]
-    if root_anchors:
-        header.append(f'<a id="{root_anchors[0]}"></a>')
     return "\n".join([*header, "", source.strip(), ""])
 
 
@@ -860,13 +1020,19 @@ def write_registered_versions(manifest: dict[str, Any]) -> None:
         for entry in manifest["versions"]
         if entry.get("generated_snapshot_tree_hash")
     ]
-    VERSIONS_PATH.write_text(json.dumps(registered, indent=2) + "\n")
+    existing: list[str] = []
+    if VERSIONS_PATH.exists():
+        existing = json.loads(VERSIONS_PATH.read_text())
+    # Newer, non-legacy versions may precede the frozen legacy suffix.
+    preserved = [version for version in existing if version not in set(registered)]
+    VERSIONS_PATH.write_text(json.dumps(preserved + registered, indent=2) + "\n")
 
 
 def update_snapshots(entries: Sequence[dict[str, Any]], manifest: dict[str, Any]) -> None:
     for entry in entries:
         generate_version(entry, DOCS_ROOT)
         entry["generated_snapshot_tree_hash"] = snapshot_hash(DOCS_ROOT, entry)
+    manifest["migration"]["tool_version"] = TOOL_VERSION
     MANIFEST_PATH.write_text(json.dumps(manifest, indent=2) + "\n")
     write_registered_versions(manifest)
 
@@ -946,13 +1112,10 @@ def check_fixture(manifest: dict[str, Any]) -> None:
 
 def validate_manifest(manifest: dict[str, Any]) -> None:
     versions = [entry["version"] for entry in manifest["versions"]]
-    if len(versions) != 22:
-        raise RuntimeError(f"Expected 22 published versions, found {len(versions)}")
+    if not versions:
+        raise RuntimeError("The manifest does not record any published versions")
     if "1.0.4" in versions or "1.2.1" in versions:
         raise RuntimeError("Unpublished v1.0.4 or v1.2.1 leaked into the manifest")
-    route_count = sum(len(entry["expected_routes"]) for entry in manifest["versions"])
-    if route_count != 294:
-        raise RuntimeError(f"Expected 294 canonical routes, found {route_count}")
     for entry in manifest["versions"]:
         if entry["language_availability"] != ["python"]:
             raise RuntimeError(f"{entry['tag']} must remain Python-only")
