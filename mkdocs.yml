@@ -38,7 +38,7 @@ plugins:
       default_handler: python
       handlers:
         python:
-          paths: [slackblocks]
+          paths: [python/slackblocks]
           options:
             show_root_heading: false
             show_root_toc_entry: false
