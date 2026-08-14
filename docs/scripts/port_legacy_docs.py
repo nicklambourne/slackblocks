@@ -658,6 +658,11 @@ def rewrite_markdown(source: str, version: str, docs_hash: str) -> str:
             normalized = normalized.partition("/")[2]
         if normalized.startswith("elements/"):
             normalized = f"reference/{normalized}"
+        path, separator, fragment = normalized.partition("#")
+        if path.rstrip("/") in REFERENCE_PAGES:
+            normalized = f"reference/{path.rstrip('/')}"
+            if separator:
+                normalized += f"#{fragment}"
         if normalized.startswith("usage/basic_usage"):
             normalized = normalized.replace("usage/basic_usage", "usage/using_blocks", 1)
         if normalized.startswith(("reference/", "usage/", "contributing")):
