@@ -10,8 +10,6 @@ import type { Props } from "@theme/DocSidebar";
 const TYPESCRIPT_HIDDEN_DOCS = new Set([
   "usage/compatibility",
   "usage/migration",
-  "usage/troubleshooting",
-  "usage/using_blocks",
 ]);
 
 const USAGE_ORDER = [
@@ -23,8 +21,33 @@ const USAGE_ORDER = [
   "usage/migration",
 ];
 
+const SIDEBAR_LABELS: Record<string, string> = {
+  "Composition objects": "Composition Objects",
+  "Rich text": "Rich Text",
+  classes: "Classes",
+  functions: "Functions",
+  interfaces: "Interfaces",
+  "type-aliases": "Type Aliases",
+  variables: "Variables",
+};
+
 function isCategory(item: PropSidebarItem): item is PropSidebarItemCategory {
   return item.type === "category";
+}
+
+function capitaliseSidebarItem(item: PropSidebarItem): PropSidebarItem {
+  if (item.type === "html") return item;
+
+  const label =
+    SIDEBAR_LABELS[item.label] ??
+    item.label.replace(/^[a-z]/, (letter) => letter.toUpperCase());
+  if (!isCategory(item)) return { ...item, label };
+
+  return {
+    ...item,
+    label,
+    items: item.items.map(capitaliseSidebarItem),
+  };
 }
 
 function isLanguageReference(
@@ -96,12 +119,35 @@ export function filterSidebar(
   sidebar: readonly PropSidebarItem[],
   language: Language,
 ): PropSidebarItem[] {
-  return sidebar.map((item) => {
-    if (!isCategory(item)) return item;
-    if (item.label === "Usage") return filterUsage(item, language);
-    if (item.label === "API Reference") return filterReference(item, language);
-    return item;
-  });
+  const usage = sidebar.find(
+    (item): item is PropSidebarItemCategory =>
+      isCategory(item) && item.label === "Usage",
+  );
+  const compatibility = usage?.items.find(
+      (item) =>
+        item.type === "link" && item.docId === "usage/compatibility",
+    );
+
+  return sidebar
+    .map((item) => {
+      if (!isCategory(item)) return item;
+      if (item.label === "Usage") return filterUsage(item, language);
+      if (item.label === "API Reference") return filterReference(item, language);
+      return item;
+    })
+    .flatMap((item) => {
+      if (
+        language === "python" &&
+        item.type === "link" &&
+        item.docId === "contributing" &&
+        compatibility
+      ) {
+        return [compatibility, item];
+      }
+
+      return [item];
+    })
+    .map(capitaliseSidebarItem);
 }
 
 export default function LanguageDocSidebar(props: Props) {
