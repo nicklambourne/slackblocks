@@ -7,13 +7,13 @@ import {
   LengthError,
   message,
   mrkdwn,
-  section,
+  sectionBlock,
   validate,
 } from "../src/index.js";
 
 describe("data-first factories", () => {
   it("returns objects assignable to Slack's official block types", () => {
-    const block: KnownBlock = section({ text: "Typed" });
+    const block: KnownBlock = sectionBlock({ text: "Typed" });
     expect(block.type).toBe("section");
   });
 
@@ -21,7 +21,7 @@ describe("data-first factories", () => {
     const payload = message({
       channel: "C0123456",
       blocks: [
-        section({
+        sectionBlock({
           blockId: "deploy",
           text: mrkdwn("*Deploy complete* :rocket:"),
           accessory: button({
@@ -55,7 +55,7 @@ describe("data-first factories", () => {
 
   it("reports a field path for validation errors", () => {
     expect(() =>
-      section({
+      sectionBlock({
         blockId: "bad",
         accessory: button({ text: "A", actionId: "a" }),
         text: "x".repeat(3001),
@@ -63,14 +63,14 @@ describe("data-first factories", () => {
     ).toThrowError(LengthError);
 
     try {
-      section({ text: "x".repeat(3001) });
+      sectionBlock({ text: "x".repeat(3001) });
     } catch (error) {
       expect((error as LengthError).path).toBe("text");
     }
   });
 
   it("allows validation to be disabled explicitly", () => {
-    expect(section({ text: "x".repeat(3001) }, { validate: false }).type).toBe("section");
+    expect(sectionBlock({ text: "x".repeat(3001) }, { validate: false }).type).toBe("section");
   });
 
   it("validates arbitrary existing JSON with a type guard", () => {
@@ -81,10 +81,10 @@ describe("data-first factories", () => {
 
 describe("Block Kit Builder URL", () => {
   it("wraps a block list and accepts a team ID", () => {
-    const url = blockKitBuilderUrl([section({ text: "Hi" })], "T123");
+    const url = blockKitBuilderUrl([sectionBlock({ text: "Hi" })], "T123");
     expect(url).toMatch(/^https:\/\/app\.slack\.com\/block-kit-builder\/T123#/);
     expect(decodeURIComponent(url.split("#")[1] ?? "")).toBe(
-      JSON.stringify({ blocks: [section({ text: "Hi" })] }),
+      JSON.stringify({ blocks: [sectionBlock({ text: "Hi" })] }),
     );
   });
 });

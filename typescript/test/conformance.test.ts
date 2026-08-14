@@ -5,31 +5,31 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import {
-  actions,
+  actionsBlock,
   attachment,
   button,
   channelMultiSelect,
   channelSelect,
   checkboxes,
   confirmation,
-  context,
+  contextBlock,
   conversationFilter,
   conversationMultiSelect,
   conversationSelect,
   datePicker,
   dateTimePicker,
   dispatchActionConfiguration,
-  divider,
+  dividerBlock,
   emailInput,
   externalMultiSelect,
   externalSelect,
   fileBlock,
   fileInput,
-  header,
+  headerBlock,
   homeTab,
   imageElement,
   imageBlock,
-  input,
+  inputBlock,
   inputParameter,
   markdownBlock,
   message,
@@ -54,10 +54,10 @@ import {
   richTextSection,
   richTextUser,
   richTextUserGroup,
-  section,
+  sectionBlock,
   staticMultiSelect,
   staticSelect,
-  table,
+  tableBlock,
   timePicker,
   trigger,
   type ErrorCategory,
@@ -66,7 +66,7 @@ import {
   urlInput,
   userMultiSelect,
   userSelect,
-  video,
+  videoBlock,
   webhookMessage,
   workflow,
   workflowButton,
@@ -113,18 +113,18 @@ function withoutType(input: FixtureInput): FixtureInput {
 function constructBlock(payload: FixtureInput): unknown {
   const value = withoutType(payload);
   switch (payload.type) {
-    case "actions": return actions(value);
-    case "context": return context(value);
-    case "divider": return divider(value);
+    case "actions": return actionsBlock(value);
+    case "context": return contextBlock(value);
+    case "divider": return dividerBlock(value);
     case "file": return fileBlock(value);
-    case "header": return header(value);
+    case "header": return headerBlock(value);
     case "image": return imageBlock(value);
-    case "input": return input(value);
+    case "input": return inputBlock(value);
     case "markdown": return markdownBlock(value);
     case "rich_text": return richTextBlock(value);
-    case "section": return section(value);
-    case "table": return table(value);
-    case "video": return video(value);
+    case "section": return sectionBlock(value);
+    case "table": return tableBlock(value);
+    case "video": return videoBlock(value);
     default: throw new Error(`No block factory for ${String(payload.type)}`);
   }
 }
@@ -253,11 +253,11 @@ const choice = () => option({ text: "A", value: "a" });
 const invalidCases: Record<string, () => unknown> = {
   "text-empty": () => plainText(""),
   "text-too-long": () => plainText("x".repeat(3001)),
-  "section-missing-content": () => section({}),
-  "section-text-too-long": () => section({ text: "x".repeat(3001) }),
-  "section-too-many-fields": () => section({ fields: Array(11).fill("x") }),
-  "section-field-too-long": () => section({ fields: ["x".repeat(2001)] }),
-  "header-text-too-long": () => header({ text: "x".repeat(151) }),
+  "section-missing-content": () => sectionBlock({}),
+  "section-text-too-long": () => sectionBlock({ text: "x".repeat(3001) }),
+  "section-too-many-fields": () => sectionBlock({ fields: Array(11).fill("x") }),
+  "section-field-too-long": () => sectionBlock({ fields: ["x".repeat(2001)] }),
+  "header-text-too-long": () => headerBlock({ text: "x".repeat(151) }),
   "button-text-too-long": () => button({ text: "x".repeat(76), actionId: "a" }),
   "button-action-id-too-long": () => button({ text: "A", actionId: "x".repeat(256) }),
   "option-value-too-long": () => option({ text: "A", value: "x".repeat(76) }),
@@ -274,9 +274,9 @@ const invalidCases: Record<string, () => unknown> = {
   "number-input-inverted-range": () =>
     numberInput({ actionId: "a", isDecimalAllowed: true, minValue: 2, maxValue: 1 }),
   "file-input-max-files-out-of-range": () => fileInput({ actionId: "a", maxFiles: 11 }),
-  "context-invalid-element": () => context({ elements: [divider()] }),
+  "context-invalid-element": () => contextBlock({ elements: [dividerBlock()] }),
   "input-invalid-element": () =>
-    input({ label: "Label", element: button({ text: "A", actionId: "a" }) }),
+    inputBlock({ label: "Label", element: button({ text: "A", actionId: "a" }) }),
   "view-missing-blocks": () => homeTab({ blocks: [] }),
 };
 

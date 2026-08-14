@@ -88,11 +88,11 @@ The package requires Node 20.19 or newer, is ESM-only, and emits no runtime impo
 Verify the installation in `hello.mjs`:
 
 ```ts
-import { message, section } from "slackblocks";
+import { message, sectionBlock } from "slackblocks";
 
 console.log(message({
   channel: "C0123456",
-  blocks: [section({ text: "Hello, world!" })],
+  blocks: [sectionBlock({ text: "Hello, world!" })],
 }));
 ```
 
