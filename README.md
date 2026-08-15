@@ -144,7 +144,7 @@ await client.chat.postMessage(payload);
 ```
 
 <p align="center">
-  <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/hello_world.png" alt="A simple Slack message rendered in Slack" width="600px" />
+  <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/usage/build_notification.png" alt="The build notification rendered in Slack" width="600px" />
 </p>
 
 ## Documentation
