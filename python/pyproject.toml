@@ -1,6 +1,6 @@
 [project]
 name = "slackblocks"
-version = "2.1.0"
+version = "2.1.1"
 description = "Python wrapper for the Slack Blocks API"
 authors = [
     { name = "Nicholas Lambourne", email = "dev@ndl.im" },
