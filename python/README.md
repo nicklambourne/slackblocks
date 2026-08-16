@@ -28,7 +28,7 @@ This release conforms to the shared cross-language slackblocks specification.
 pip install slackblocks
 ```
 
-`slackblocks 2.x` requires Python 3.10 or newer. Users on Python 3.8 / 3.9 should pin to the `1.x` line — see the [Compatibility](https://nicklambourne.github.io/slackblocks/latest/usage/compatibility/) page.
+`slackblocks 2.x` requires Python 3.10 or newer. Users on Python 3.8 / 3.9 should pin to the `1.x` line — see the [Compatibility](https://nicklambourne.github.io/slackblocks/usage/compatibility) page.
 
 ## Quickstart
 
@@ -108,18 +108,18 @@ The `**` operator unpacks `slackblocks` `Message` objects directly into the SDK 
 - **Tighter type signatures**: `Literal` narrowing on `Button.style`, `ColumnSettings.align`, `ConversationFilter.include`; `@overload` on `Text.to_text` so the return type narrows on `allow_none`.
 - **Modern annotation syntax** (`list[X]`, `X | Y`) throughout.
 
-Existing 1.x code continues to work unchanged; see the [Migration Guide](https://nicklambourne.github.io/slackblocks/latest/usage/migration/) for the full diff.
+Existing 1.x code continues to work unchanged; see the [Migration Guide](https://nicklambourne.github.io/slackblocks/usage/migration) for the full diff.
 
 ## Documentation
 
 - **Full docs:** <https://nicklambourne.github.io/slackblocks/>
-- [Installation](https://nicklambourne.github.io/slackblocks/latest/usage/installation/)
-- [Compatibility](https://nicklambourne.github.io/slackblocks/latest/usage/compatibility/) — which Python versions each release line supports.
-- [Using Blocks](https://nicklambourne.github.io/slackblocks/latest/usage/using_blocks/) — every block type with code, JSON, and screenshots.
-- [Sending Messages](https://nicklambourne.github.io/slackblocks/latest/usage/sending_messages/)
-- [Cookbook](https://nicklambourne.github.io/slackblocks/latest/usage/cookbook/) — end-to-end recipes for build notifications, approval requests, modals, and more.
-- [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/latest/usage/migration/) — upgrade guide for `1.x` users.
-- [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/latest/usage/troubleshooting/)
+- [Installation](https://nicklambourne.github.io/slackblocks/usage/installation)
+- [Compatibility](https://nicklambourne.github.io/slackblocks/usage/compatibility) — which Python versions each release line supports.
+- [Using Blocks](https://nicklambourne.github.io/slackblocks/usage/using_blocks) — every block type with code, JSON, and screenshots.
+- [Sending Messages](https://nicklambourne.github.io/slackblocks/usage/sending_messages)
+- [Cookbook](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end recipes for build notifications, approval requests, modals, and more.
+- [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/usage/migration) — upgrade guide for `1.x` users.
+- [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/usage/troubleshooting)
 - [Changelog](https://github.com/nicklambourne/slackblocks/blob/master/python/CHANGELOG.md)
 
 ## Comparison with `slack-sdk` block classes
