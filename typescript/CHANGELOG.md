@@ -5,6 +5,16 @@ All notable changes to the TypeScript package are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] — 2026-08-16
+
+A documentation-only patch; no library behaviour changes.
+
+### Changed
+
+- The npm page README now matches the PyPI treatment: project logo, badges,
+  a why-section, the CI-notification quickstart with one-line sending via
+  `@slack/web-api`, its rendered message, and full documentation links.
+
 ## [2.1.0] — 2026-08-14
 
 The first public TypeScript/JavaScript release of

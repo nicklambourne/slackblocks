@@ -5,6 +5,21 @@ All notable changes to `slackblocks` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1] — 2026-08-16
+
+A documentation and packaging-metadata patch; no library behaviour changes.
+
+### Changed
+
+- The PyPI page now carries Homepage, Repository, Documentation, and Changelog
+  links (`[project.urls]` was previously misplaced and silently dropped from
+  the wheel metadata).
+- The README leads with the new language-neutral project logo, links to the
+  current documentation site paths, and shows the quickstart's rendered
+  message.
+- Wheels are built with current Hatchling again (Core Metadata 2.5), now that
+  Twine 7 validates it; the temporary `hatchling<1.28` pin is retired.
+
 ## [2.1.0] — 2026-08-14
 
 The 2.1 release adds the current generation of Block Kit blocks while keeping
