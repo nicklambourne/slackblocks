@@ -1,0 +1,54 @@
+# Builder
+
+## block_kit_builder_url
+
+**Function**
+
+```python
+block_kit_builder_url(payload: 'Block | list[Block] | Resolvable | dict[str, Any]', team_id: 'str | None' = None) -> 'str'
+```
+
+<div className="api-docstring">
+
+Build a URL that opens ``payload`` in Slack's Block Kit Builder.
+
+Use this to preview a message, view, or list of blocks in the browser
+without manually copying JSON into the Builder.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `payload` | `Block \| list[Block] \| Resolvable \| dict[str, Any]` | any of:<br /><br />- A single ``Block`` -- wrapped in ``{"blocks": [block]}``.<br />- A list of ``Block`` -- wrapped in ``{"blocks": [...]}``.<br />- Anything with a ``_resolve`` method (``Message``,<br />``WebhookMessage``, ``MessageResponse``, ``View``,<br />``ModalView``, ``HomeTabView``, etc.) -- used as-is.<br />- A raw ``dict`` -- used as-is. This is the escape hatch for<br />callers building payloads outside the type hierarchy. |
+| `team_id` | `str \| None` | optional Slack team ID. When supplied, produces a<br />workspace-specific Builder URL of the form<br />``https://app.slack.com/block-kit-builder/T0123#<JSON>``.<br />When ``None`` (the default), produces the generic URL. |
+
+### Returns
+
+| Type | Description |
+| --- | --- |
+| `str` | A fully-formed Block Kit Builder URL. |
+
+### Examples
+
+Single block::
+
+    from slackblocks import SectionBlock, block_kit_builder_url
+
+    url = block_kit_builder_url(SectionBlock("Hi"))
+
+Multiple blocks::
+
+    url = block_kit_builder_url([
+        SectionBlock("Heading"),
+        DividerBlock(),
+    ])
+
+Existing message::
+
+    url = block_kit_builder_url(my_message)
+
+Targeting a specific workspace::
+
+    url = block_kit_builder_url(my_message, team_id="T0123ABCD")
+
+</div>
