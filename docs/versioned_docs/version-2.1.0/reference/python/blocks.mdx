@@ -1,0 +1,1122 @@
+# Blocks
+
+## ActionsBlock
+
+**Class**
+
+```python
+ActionsBlock(elements: 'list[Element] | None' = None, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A `Block` that is used to hold interactive elements (normally for users to interface with).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `elements` | `list[Element] \| None` | a list of [Elements](/reference/python/elements)<br />(up to a maximum of 25). |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the items in `elements` are invalid. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'ActionsBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``actions`` block payload.
+
+Currently raises ``NotImplementedError`` because round-tripping
+depends on parsing nested elements; ``Element.from_dict`` will land
+in Phase 7.4b.
+
+</div>
+
+## AlertBlock
+
+**Class**
+
+```python
+AlertBlock(text: 'TextLike', level: 'AlertLevel' = 'default', block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A severity-labelled alert displayed in a modal.
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/alert-block](https://docs.slack.dev/reference/block-kit/blocks/alert-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `TextLike` | the text to display in the alert (max 200 chars). Can be a<br />string or `Text` object. |
+| `level` | `AlertLevel` | the severity of the alert, one of `default`, `info`,<br />`warning`, `error`, or `success`. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'AlertBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack block payload back into the appropriate ``Block`` subclass.
+
+Reads ``data["type"]`` and dispatches to the matching subclass's
+``from_dict``.
+
+Block types that currently round-trip: ``AlertBlock``,
+``ContextBlock`` (text elements only), ``DividerBlock``,
+``FileBlock``, ``HeaderBlock``, ``ImageBlock``, ``MarkdownBlock``,
+``SectionBlock`` (without an accessory), and ``VideoBlock``.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["type"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not a recognised<br />block type. |
+| `NotImplementedError` | when the block type is recognised but its<br />round-trip parser depends on a part of the API that is not<br />yet implemented (currently: ``RichTextBlock`` and any block<br />containing nested elements, cards, tasks, charts, or<br />rich text -- ``ActionsBlock``, ``InputBlock``,<br />``TableBlock``, ``CardBlock``, ``CarouselBlock``,<br />``ContainerBlock``, ``ContextActionsBlock``,<br />``DataTableBlock``, ``DataVisualizationBlock``,<br />``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b<br />and 7.4c). |
+
+</div>
+
+## Block
+
+**Class**
+
+```python
+Block(type_: 'BlockType', block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Basis block containing attributes and behaviour common to all blocks.
+N.B: Block is an abstract class and cannot be sent directly.
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'Block'
+```
+
+<div className="api-docstring">
+
+Parse a Slack block payload back into the appropriate ``Block`` subclass.
+
+Reads ``data["type"]`` and dispatches to the matching subclass's
+``from_dict``.
+
+Block types that currently round-trip: ``AlertBlock``,
+``ContextBlock`` (text elements only), ``DividerBlock``,
+``FileBlock``, ``HeaderBlock``, ``ImageBlock``, ``MarkdownBlock``,
+``SectionBlock`` (without an accessory), and ``VideoBlock``.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["type"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not a recognised<br />block type. |
+| `NotImplementedError` | when the block type is recognised but its<br />round-trip parser depends on a part of the API that is not<br />yet implemented (currently: ``RichTextBlock`` and any block<br />containing nested elements, cards, tasks, charts, or<br />rich text -- ``ActionsBlock``, ``InputBlock``,<br />``TableBlock``, ``CardBlock``, ``CarouselBlock``,<br />``ContainerBlock``, ``ContextActionsBlock``,<br />``DataTableBlock``, ``DataVisualizationBlock``,<br />``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b<br />and 7.4c). |
+
+</div>
+
+## CardBlock
+
+**Class**
+
+```python
+CardBlock(hero_image: 'Image | None' = None, icon: 'Image | None' = None, title: 'TextLike | None' = None, subtitle: 'TextLike | None' = None, body: 'TextLike | None' = None, actions: 'Button | list[Button] | None' = None, slack_icon: 'SlackIcon | None' = None, subtext: 'TextLike | None' = None, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A compact card with text, images, and up to three actions. Cards can
+stand alone or be grouped in a
+[`CarouselBlock`](/reference/python/blocks#carouselblock).
+
+At least one of `hero_image`, `title`, `actions`, or `body` must be
+provided.
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/card-block](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `hero_image` | `Image \| None` | an `Image` element displayed prominently at the top<br />of the card. |
+| `icon` | `Image \| None` | an `Image` element displayed as the card's icon. Cannot be<br />combined with `slack_icon`. |
+| `title` | `TextLike \| None` | the card's title (max 150 chars). Can be a string or `Text` object. |
+| `subtitle` | `TextLike \| None` | the card's subtitle (max 150 chars). Can be a string or `Text` object. |
+| `body` | `TextLike \| None` | the card's body text (max 200 chars). Can be a string or `Text` object. |
+| `actions` | `Button \| list[Button] \| None` | up to three `Button` elements presented as card actions. |
+| `slack_icon` | `SlackIcon \| None` | a `SlackIcon` naming a Slack-provided icon. Cannot be<br />combined with `icon`. |
+| `subtext` | `TextLike \| None` | additional text displayed at the bottom of the card<br />(max 200 chars). Can be a string or `Text` object. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation,<br />or both `icon` and `slack_icon` are provided. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'CardBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack block payload back into the appropriate ``Block`` subclass.
+
+Reads ``data["type"]`` and dispatches to the matching subclass's
+``from_dict``.
+
+Block types that currently round-trip: ``AlertBlock``,
+``ContextBlock`` (text elements only), ``DividerBlock``,
+``FileBlock``, ``HeaderBlock``, ``ImageBlock``, ``MarkdownBlock``,
+``SectionBlock`` (without an accessory), and ``VideoBlock``.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["type"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not a recognised<br />block type. |
+| `NotImplementedError` | when the block type is recognised but its<br />round-trip parser depends on a part of the API that is not<br />yet implemented (currently: ``RichTextBlock`` and any block<br />containing nested elements, cards, tasks, charts, or<br />rich text -- ``ActionsBlock``, ``InputBlock``,<br />``TableBlock``, ``CardBlock``, ``CarouselBlock``,<br />``ContainerBlock``, ``ContextActionsBlock``,<br />``DataTableBlock``, ``DataVisualizationBlock``,<br />``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b<br />and 7.4c). |
+
+</div>
+
+## CarouselBlock
+
+**Class**
+
+```python
+CarouselBlock(elements: 'list[CardBlock]', block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A horizontally scrolling group of between 1 and 10
+[`CardBlocks`](/reference/python/blocks#cardblock).
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/carousel-block](https://docs.slack.dev/reference/block-kit/blocks/carousel-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `elements` | `list[CardBlock]` | a list of between 1 and 10 `CardBlock` objects. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the items in `elements` are not<br />`CardBlock` objects, or the number of cards is invalid. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'CarouselBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack block payload back into the appropriate ``Block`` subclass.
+
+Reads ``data["type"]`` and dispatches to the matching subclass's
+``from_dict``.
+
+Block types that currently round-trip: ``AlertBlock``,
+``ContextBlock`` (text elements only), ``DividerBlock``,
+``FileBlock``, ``HeaderBlock``, ``ImageBlock``, ``MarkdownBlock``,
+``SectionBlock`` (without an accessory), and ``VideoBlock``.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["type"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not a recognised<br />block type. |
+| `NotImplementedError` | when the block type is recognised but its<br />round-trip parser depends on a part of the API that is not<br />yet implemented (currently: ``RichTextBlock`` and any block<br />containing nested elements, cards, tasks, charts, or<br />rich text -- ``ActionsBlock``, ``InputBlock``,<br />``TableBlock``, ``CardBlock``, ``CarouselBlock``,<br />``ContainerBlock``, ``ContextActionsBlock``,<br />``DataTableBlock``, ``DataVisualizationBlock``,<br />``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b<br />and 7.4c). |
+
+</div>
+
+## ContainerBlock
+
+**Class**
+
+```python
+ContainerBlock(child_blocks: 'list[Block]', title: 'TextLike | None' = None, rich_text_title: 'RichTextBlock | None' = None, subtitle: 'TextLike | None' = None, width: 'ContainerWidth' = 'standard', icon: 'Image | None' = None, is_collapsible: 'bool' = False, default_collapsed: 'bool' = False, has_header_divider: 'bool' = False, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A titled container grouping up to ten supported child blocks.
+
+One of `title` or `rich_text_title` must be provided.
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/container-block](https://docs.slack.dev/reference/block-kit/blocks/container-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `child_blocks` | `list[Block]` | a list of between 1 and 10 blocks to display inside<br />the container. Supported child block types are actions, context,<br />divider, file, header, image, input, rich text, section, table,<br />and video blocks. |
+| `title` | `TextLike \| None` | the container's title (plaintext only; max 150 chars). |
+| `rich_text_title` | `RichTextBlock \| None` | a `RichTextBlock` used as the container's title in<br />place of `title`. |
+| `subtitle` | `TextLike \| None` | the container's subtitle (max 150 chars). Can be a string<br />or `Text` object. |
+| `width` | `ContainerWidth` | the width of the container, one of `narrow`, `standard`,<br />`wide`, or `full`. |
+| `icon` | `Image \| None` | an `Image` element displayed alongside the title. |
+| `is_collapsible` | `bool` | whether the container can be collapsed by the user. |
+| `default_collapsed` | `bool` | whether the container is initially collapsed<br />(requires `is_collapsible=True`). |
+| `has_header_divider` | `bool` | whether a divider is shown under the header<br />(only valid on non-collapsible containers). |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation,<br />or an unsupported child block type is provided. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'ContainerBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack block payload back into the appropriate ``Block`` subclass.
+
+Reads ``data["type"]`` and dispatches to the matching subclass's
+``from_dict``.
+
+Block types that currently round-trip: ``AlertBlock``,
+``ContextBlock`` (text elements only), ``DividerBlock``,
+``FileBlock``, ``HeaderBlock``, ``ImageBlock``, ``MarkdownBlock``,
+``SectionBlock`` (without an accessory), and ``VideoBlock``.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["type"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not a recognised<br />block type. |
+| `NotImplementedError` | when the block type is recognised but its<br />round-trip parser depends on a part of the API that is not<br />yet implemented (currently: ``RichTextBlock`` and any block<br />containing nested elements, cards, tasks, charts, or<br />rich text -- ``ActionsBlock``, ``InputBlock``,<br />``TableBlock``, ``CardBlock``, ``CarouselBlock``,<br />``ContainerBlock``, ``ContextActionsBlock``,<br />``DataTableBlock``, ``DataVisualizationBlock``,<br />``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b<br />and 7.4c). |
+
+</div>
+
+## ContextActionsBlock
+
+**Class**
+
+```python
+ContextActionsBlock(elements: 'list[FeedbackButtons | IconButton]', block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Up to five feedback or icon actions displayed as contextual controls.
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/context-actions-block](https://docs.slack.dev/reference/block-kit/blocks/context-actions-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `elements` | `list[FeedbackButtons \| IconButton]` | a list of between 1 and 5 `FeedbackButtons` or<br />`IconButton` elements. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the items in `elements` are invalid. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'ContextActionsBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack block payload back into the appropriate ``Block`` subclass.
+
+Reads ``data["type"]`` and dispatches to the matching subclass's
+``from_dict``.
+
+Block types that currently round-trip: ``AlertBlock``,
+``ContextBlock`` (text elements only), ``DividerBlock``,
+``FileBlock``, ``HeaderBlock``, ``ImageBlock``, ``MarkdownBlock``,
+``SectionBlock`` (without an accessory), and ``VideoBlock``.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["type"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not a recognised<br />block type. |
+| `NotImplementedError` | when the block type is recognised but its<br />round-trip parser depends on a part of the API that is not<br />yet implemented (currently: ``RichTextBlock`` and any block<br />containing nested elements, cards, tasks, charts, or<br />rich text -- ``ActionsBlock``, ``InputBlock``,<br />``TableBlock``, ``CardBlock``, ``CarouselBlock``,<br />``ContainerBlock``, ``ContextActionsBlock``,<br />``DataTableBlock``, ``DataVisualizationBlock``,<br />``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b<br />and 7.4c). |
+
+</div>
+
+## ContextBlock
+
+**Class**
+
+```python
+ContextBlock(elements: 'list[Element | CompositionObject] | None' = None, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A `ContextBlock` displays contextul message info, including both images and text.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `elements` | `list[Element \| CompositionObject] \| None` | a list of `Text` objects and `Image` elements. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | when items in `elements` are not `Text` or `Image` or exceed 10 items. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'ContextBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``context`` block payload.
+
+Text elements within the block are parsed back to ``Text``; image
+elements raise ``NotImplementedError`` because ``Element.from_dict``
+has not yet shipped (Phase 7.4b).
+
+</div>
+
+## DataTableBlock
+
+**Class**
+
+```python
+DataTableBlock(rows: 'list[list[RawText | RawNumber | RichTextBlock]]', caption: 'str', page_size: 'int' = 5, row_header_column_index: 'int' = 0, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A sortable data table containing raw text, raw numbers, or rich text.
+
+The first row is the header row; header cells cannot contain rich text.
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/data-table-block](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `rows` | `list[list[RawText \| RawNumber \| RichTextBlock]]` | a list of between 2 and 201 rows (one header row plus up to<br />200 data rows), each a list of between 1 and 20 `RawText`,<br />`RawNumber`, or `RichTextBlock` cells. All rows must have the<br />same number of columns, and the combined cell text cannot<br />exceed 20,000 characters. |
+| `caption` | `str` | a description of the table for accessibility purposes. |
+| `page_size` | `int` | the number of rows displayed per page (between 1 and 100). |
+| `row_header_column_index` | `int` | the (zero-based) index of the column to<br />treat as the row header. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'DataTableBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack block payload back into the appropriate ``Block`` subclass.
+
+Reads ``data["type"]`` and dispatches to the matching subclass's
+``from_dict``.
+
+Block types that currently round-trip: ``AlertBlock``,
+``ContextBlock`` (text elements only), ``DividerBlock``,
+``FileBlock``, ``HeaderBlock``, ``ImageBlock``, ``MarkdownBlock``,
+``SectionBlock`` (without an accessory), and ``VideoBlock``.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["type"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not a recognised<br />block type. |
+| `NotImplementedError` | when the block type is recognised but its<br />round-trip parser depends on a part of the API that is not<br />yet implemented (currently: ``RichTextBlock`` and any block<br />containing nested elements, cards, tasks, charts, or<br />rich text -- ``ActionsBlock``, ``InputBlock``,<br />``TableBlock``, ``CardBlock``, ``CarouselBlock``,<br />``ContainerBlock``, ``ContextActionsBlock``,<br />``DataTableBlock``, ``DataVisualizationBlock``,<br />``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b<br />and 7.4c). |
+
+</div>
+
+## DataVisualizationBlock
+
+**Class**
+
+```python
+DataVisualizationBlock(title: 'str', chart: 'Chart', block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A pie, bar, area, or line chart rendered by Slack.
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `title` | `str` | the title displayed above the chart (max 50 chars). |
+| `chart` | `Chart` | the chart to render, one of `PieChart`, `BarChart`,<br />`AreaChart`, or `LineChart`. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'DataVisualizationBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack block payload back into the appropriate ``Block`` subclass.
+
+Reads ``data["type"]`` and dispatches to the matching subclass's
+``from_dict``.
+
+Block types that currently round-trip: ``AlertBlock``,
+``ContextBlock`` (text elements only), ``DividerBlock``,
+``FileBlock``, ``HeaderBlock``, ``ImageBlock``, ``MarkdownBlock``,
+``SectionBlock`` (without an accessory), and ``VideoBlock``.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["type"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not a recognised<br />block type. |
+| `NotImplementedError` | when the block type is recognised but its<br />round-trip parser depends on a part of the API that is not<br />yet implemented (currently: ``RichTextBlock`` and any block<br />containing nested elements, cards, tasks, charts, or<br />rich text -- ``ActionsBlock``, ``InputBlock``,<br />``TableBlock``, ``CardBlock``, ``CarouselBlock``,<br />``ContainerBlock``, ``ContextActionsBlock``,<br />``DataTableBlock``, ``DataVisualizationBlock``,<br />``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b<br />and 7.4c). |
+
+</div>
+
+## DividerBlock
+
+**Class**
+
+```python
+DividerBlock(block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A content divider, like an `<hr>` in HTML, to split up different blocks inside of
+a message.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'DividerBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``divider`` block payload.
+
+</div>
+
+## FileBlock
+
+**Class**
+
+```python
+FileBlock(external_id: 'str', block_id: 'str | None' = None, source: 'str' = 'remote') -> 'None'
+```
+
+<div className="api-docstring">
+
+Displays a remote file (e.g. a PDF).
+
+For details on how remote files are exposed to Slack, see
+[https://api.slack.com/messaging/files#adding](https://api.slack.com/messaging/files#adding).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `external_id` | `str` | the ID assigned to the remote file when it was added to Slack. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+| `source` | `str` | always "remote" as per the Slack API (may change in the future). |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'FileBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``file`` block payload.
+
+</div>
+
+## HeaderBlock
+
+**Class**
+
+```python
+HeaderBlock(text: 'str | Text', block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A Header Block is a plain-text block that displays in a larger, bold font.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `str \| Text` | the text that will be rendered as a heading. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'HeaderBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``header`` block payload.
+
+</div>
+
+## ImageBlock
+
+**Class**
+
+```python
+ImageBlock(image_url: 'str', alt_text: 'str | None' = ' ', title: 'Text | str | None' = None, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+An Image Block contains a single graphic, accessed by URL.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `image_url` | `str` | the URL pointing to the image file you want to display. |
+| `alt_text` | `str \| None` | alternative text for accessibility purposes and when the image fails to load. |
+| `title` | `Text \| str \| None` | an optional text title to be presented with the image. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | when one or more of the provided args fails validation. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'ImageBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``image`` block payload.
+
+</div>
+
+## InputBlock
+
+**Class**
+
+```python
+InputBlock(label: 'TextLike', element: 'Element', dispatch_action: 'bool' = False, block_id: 'str | None' = None, hint: 'TextLike | None' = None, optional: 'bool' = False) -> 'None'
+```
+
+<div className="api-docstring">
+
+A block that collects information from users - it can hold a plain-text
+input element, a checkbox element, a radio button element, a select
+menu element, a multi-select menu element, or a datepicker.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `label` | `TextLike` | the name which identifies the input field. |
+| `element` | `Element` | an interactive [Element](/reference/python/elements)<br />(e.g. a text field). |
+| `dispatch_action` | `bool` | whether the [Element](/reference/python/elements)<br />should trigger the sending of a `block_actions` payload. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+| `hint` | `TextLike \| None` | an optional additional guide on what input the user should provide. |
+| `optional` | `bool` | whether this input field may be empty when the user submits e.g. the modal. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | when any of the provided arguments fail validation. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'InputBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``input`` block payload.
+
+Currently raises ``NotImplementedError`` because the nested
+``element`` requires ``Element.from_dict``, which lands in Phase 7.4b.
+
+</div>
+
+## MarkdownBlock
+
+**Class**
+
+```python
+MarkdownBlock(text: 'str', block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Displays formatted Markdown text. Unlike the `mrkdwn` text style used in
+[`SectionBlock`](/reference/python/blocks#sectionblock),
+`MarkdownBlock` uses **GitHub-flavored Markdown** for richer formatting,
+including features like tables and code blocks. Added to Slack in 2024
+for AI / agentic app outputs.
+
+See: [https://api.slack.com/reference/block-kit/blocks#markdown](https://api.slack.com/reference/block-kit/blocks#markdown).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `str` | the Markdown-formatted text to display (1-12000 characters). |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier<br />for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `LengthError` | if `text` is empty or longer than 12000 characters. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'MarkdownBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``markdown`` block payload.
+
+</div>
+
+## PlanBlock
+
+**Class**
+
+```python
+PlanBlock(title: 'str', tasks: 'list[TaskCardBlock] | None' = None, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A titled sequence of
+[`TaskCardBlocks`](/reference/python/blocks#taskcardblock).
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/plan-block](https://docs.slack.dev/reference/block-kit/blocks/plan-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `title` | `str` | the title of the plan. |
+| `tasks` | `list[TaskCardBlock] \| None` | a list of `TaskCardBlock` objects making up the plan. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'PlanBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack block payload back into the appropriate ``Block`` subclass.
+
+Reads ``data["type"]`` and dispatches to the matching subclass's
+``from_dict``.
+
+Block types that currently round-trip: ``AlertBlock``,
+``ContextBlock`` (text elements only), ``DividerBlock``,
+``FileBlock``, ``HeaderBlock``, ``ImageBlock``, ``MarkdownBlock``,
+``SectionBlock`` (without an accessory), and ``VideoBlock``.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["type"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not a recognised<br />block type. |
+| `NotImplementedError` | when the block type is recognised but its<br />round-trip parser depends on a part of the API that is not<br />yet implemented (currently: ``RichTextBlock`` and any block<br />containing nested elements, cards, tasks, charts, or<br />rich text -- ``ActionsBlock``, ``InputBlock``,<br />``TableBlock``, ``CardBlock``, ``CarouselBlock``,<br />``ContainerBlock``, ``ContextActionsBlock``,<br />``DataTableBlock``, ``DataVisualizationBlock``,<br />``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b<br />and 7.4c). |
+
+</div>
+
+## RichTextBlock
+
+**Class**
+
+```python
+RichTextBlock(elements: 'RichTextObject | list[RichTextObject]', block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A RichTextBlock is used to provide easier rich text formatting
+    than standard markdown text (e.g. in a
+    [`SectionBlock`](/reference/python/blocks#sectionblock))
+    and access to text formatting features not available in traditional
+    markdown (e.g. strikethrough). See the various rich text elements
+    you can include [here](/reference/python/rich_text).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `elements` | `RichTextObject \| list[RichTextObject]` | a single [rich text element](rich_text)<br />or a list of those elements. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier<br />for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if the elements in `elements` are not valid rich<br />text elements. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'RichTextBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``rich_text`` block payload.
+
+Currently raises ``NotImplementedError`` because the rich-text
+object hierarchy has a deeply nested element graph; round-tripping
+is deferred to Phase 7.4c.
+
+</div>
+
+## SectionBlock
+
+**Class**
+
+```python
+SectionBlock(text: 'TextLike | None' = None, block_id: 'str | None' = None, fields: 'TextLike | list[TextLike] | None' = None, accessory: 'Element | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A section is one of the most flexible blocks available -
+it can be used as a simple text block, or with any of the
+available block elements.
+
+Section blocks can also optionally be given an "accessory,"
+which is typically one of the interactive
+[Elements](/reference/python/elements).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `TextLike \| None` | text to include in the block. Can be a string or `Text` object (of either<br />`mrkdwn` or `plaintext` variety). Defaults to markdown if unspecified. One of either<br />`text` or `fields` must be provided. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+| `fields` | `TextLike \| list[TextLike] \| None` | a list of text objects. One of either `text` or `fields` must be provided. |
+| `accessory` | `Element \| None` | an optional [Element](/reference/python/elements) object<br />that will take a secondary place in the block (after or to the side of  `text`<br />or `fields`). |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation checks. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'SectionBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``section`` block payload.
+
+Round-trips ``text`` and ``fields``. Raises ``NotImplementedError``
+if an ``accessory`` is present, because the accessory is an
+``Element`` and ``Element.from_dict`` is not yet implemented
+(Phase 7.4b).
+
+</div>
+
+## TableBlock
+
+**Class**
+
+```python
+TableBlock(rows: 'list[list[RawText | RichTextObject]]', column_settings: 'list[ColumnSettings] | None' = None, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A `TableBlock` displays data in a table format.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `rows` | `list[list[RawText \| RichTextObject]]` | a list of lists of `RawText` or `RichTextObject` objects. |
+| `column_settings` | `list[ColumnSettings] \| None` | a list of `ColumnSettings` objects. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | when items in `rows` are not `RawText` or `RichTextObject` objects. |
+| `InvalidUsageError` | when the number of column_settings does not match the number of<br />columns in each row. |
+| `InvalidUsageError` | when the number of rows is greater than 100. |
+| `InvalidUsageError` | when the number of columns in a row is greater than 20. |
+| `InvalidUsageError` | when the number of column_settings is greater than 20. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'TableBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``table`` block payload.
+
+Currently raises ``NotImplementedError`` because table cells may
+contain rich-text objects whose round-trip parser is deferred to
+Phase 7.4c.
+
+</div>
+
+## TaskCardBlock
+
+**Class**
+
+```python
+TaskCardBlock(task_id: 'str', title: 'str', details: 'RichTextBlock | None' = None, output: 'RichTextBlock | None' = None, sources: 'list[URLSource] | None' = None, status: 'TaskStatus | None' = None, block_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+One task, its state, rich-text details or output, and source links.
+Task cards can stand alone or be grouped in a
+[`PlanBlock`](/reference/python/blocks#planblock).
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/task-card-block](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `task_id` | `str` | a unique identifier for the task. |
+| `title` | `str` | the title of the task. |
+| `details` | `RichTextBlock \| None` | a `RichTextBlock` describing the task in detail. |
+| `output` | `RichTextBlock \| None` | a `RichTextBlock` containing the output of the task. |
+| `sources` | `list[URLSource] \| None` | a list of `URLSource` elements linking to the sources<br />used by the task. |
+| `status` | `TaskStatus \| None` | the state of the task, one of `pending`, `in_progress`,<br />`complete`, or `error`. |
+| `block_id` | `str \| None` | you can use this field to provide a deterministic identifier for the block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'TaskCardBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack block payload back into the appropriate ``Block`` subclass.
+
+Reads ``data["type"]`` and dispatches to the matching subclass's
+``from_dict``.
+
+Block types that currently round-trip: ``AlertBlock``,
+``ContextBlock`` (text elements only), ``DividerBlock``,
+``FileBlock``, ``HeaderBlock``, ``ImageBlock``, ``MarkdownBlock``,
+``SectionBlock`` (without an accessory), and ``VideoBlock``.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["type"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not a recognised<br />block type. |
+| `NotImplementedError` | when the block type is recognised but its<br />round-trip parser depends on a part of the API that is not<br />yet implemented (currently: ``RichTextBlock`` and any block<br />containing nested elements, cards, tasks, charts, or<br />rich text -- ``ActionsBlock``, ``InputBlock``,<br />``TableBlock``, ``CardBlock``, ``CarouselBlock``,<br />``ContainerBlock``, ``ContextActionsBlock``,<br />``DataTableBlock``, ``DataVisualizationBlock``,<br />``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b<br />and 7.4c). |
+
+</div>
+
+## VideoBlock
+
+**Class**
+
+```python
+VideoBlock(alt_text: 'str', thumbnail_url: 'str', title: 'TextLike', video_url: 'str', author_name: 'str | None' = None, block_id: 'str | None' = None, description: 'TextLike | None' = None, provider_icon_url: 'str | None' = None, provider_name: 'str | None' = None, title_url: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Embeds a video. Used to display video content inside a Slack message,
+modal, or App Home tab.
+
+See: [https://api.slack.com/reference/block-kit/blocks#video](https://api.slack.com/reference/block-kit/blocks#video).
+
+Note: Slack restricts which domains may be embedded. The server-side
+whitelist (e.g. YouTube, Vimeo) is enforced by Slack on receipt of the
+payload, not by this library; supplying an unsupported URL will result
+in a Slack API error rather than an `InvalidUsageError` at construction.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `alt_text` | `str` | a plain-text summary of the video, used for accessibility<br />and notifications (max 200 chars). |
+| `thumbnail_url` | `str` | a URL pointing to the preview image shown before<br />playback. Must be HTTPS in production usage. |
+| `title` | `TextLike` | the title shown above the video player (plain text, max 200<br />chars). A `str` is coerced to `TextType.PLAINTEXT` `Text`. |
+| `video_url` | `str` | the URL of the video to embed. Must point to a<br />Slack-supported provider (see Slack's documentation). |
+| `author_name` | `str \| None` | optional author name shown beneath the video<br />(max 50 chars). |
+| `block_id` | `str \| None` | an optional deterministic identifier for the block. |
+| `description` | `TextLike \| None` | optional plain-text description below the video<br />(max 200 chars). A `str` is coerced to `TextType.PLAINTEXT`. |
+| `provider_icon_url` | `str \| None` | an optional URL to the provider's icon. |
+| `provider_name` | `str \| None` | an optional provider name shown alongside the icon<br />(max 50 chars). |
+| `title_url` | `str \| None` | an optional URL to link the title to. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `LengthError` | if any length-constrained string exceeds its limit. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'VideoBlock'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``video`` block payload.
+
+</div>

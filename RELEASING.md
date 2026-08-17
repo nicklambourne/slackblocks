@@ -48,14 +48,36 @@ These must be in place before the workflows can publish:
 
 ## Coordinated release procedure
 
-1. Bump the version in **both** manifests on one branch:
+The docs site serves the current package version live (`lastVersion:
+"current"`) and lists every earlier release as a frozen snapshot in the version
+dropdown. Each release therefore has to freeze the version it is moving *off*
+before the new version takes over as current — otherwise that version vanishes
+from the dropdown. CI enforces this: the `check:release-snapshots` guard fails
+if any released `python/v*` tag other than the current package version is
+missing from `docs/versions.json` (or the legacy manifest).
+
+1. On one branch, freeze the **outgoing** docs version — the value currently in
+   `python/pyproject.toml`, before you bump it — so it survives as a dropdown
+   entry once the new version becomes current:
+
+   ```sh
+   pnpm --filter @slackblocks/docs generate
+   pnpm --filter @slackblocks/docs exec docusaurus docs:version <outgoing>
+   ```
+
+   `generate` populates the gitignored API reference so the snapshot matches a
+   real build; `docs:version` then copies `docs/docs` into
+   `docs/versioned_docs/version-<outgoing>` and prepends `<outgoing>` to
+   `docs/versions.json`. (The very first monorepo release is the exception: its
+   outgoing `2.0.0` is a legacy version already frozen in the manifest.)
+2. Bump the version in **both** manifests on the same branch:
    - `python/pyproject.toml` (`project.version`)
    - `typescript/package.json` (`version`)
-2. Add a `## [X.Y.Z] — YYYY-MM-DD` section to both `python/CHANGELOG.md` and
+3. Add a `## [X.Y.Z] — YYYY-MM-DD` section to both `python/CHANGELOG.md` and
    `typescript/CHANGELOG.md`. The publish workflows extract this section for
    the GitHub Release notes.
-3. Merge to `master` and wait for CI to pass.
-4. Tag and push, Python first (either order works; the guards only require
+4. Merge to `master` and wait for CI to pass.
+5. Tag and push, Python first (either order works; the guards only require
    the two manifests to agree):
 
    ```sh
@@ -63,7 +85,7 @@ These must be in place before the workflows can publish:
    git tag ts/vX.Y.Z && git push origin ts/vX.Y.Z
    ```
 
-5. Each workflow publishes to its registry and then creates a GitHub Release
+6. Each workflow publishes to its registry and then creates a GitHub Release
    for its tag with the changelog section as notes.
 
 ## Partial-failure recovery

@@ -6,6 +6,7 @@
     "generate:python": "UV_CACHE_DIR=../.uv-cache uv run --project ../python --group docs python scripts/generate_python_reference.py",
     "generate:legacy": "UV_CACHE_DIR=../.uv-cache uv run --project ../python --group docs python scripts/port_legacy_docs.py generate",
     "check:legacy-snapshots": "UV_CACHE_DIR=../.uv-cache uv run --project ../python --group docs python scripts/port_legacy_docs.py check",
+    "check:release-snapshots": "node scripts/check_release_snapshots.mjs",
     "check:typescript-api": "node scripts/check_typescript_api_docs.mjs",
     "check:typescript-api-rendering": "node scripts/check_typescript_api_rendering.mjs",
     "check:legacy-contract": "node scripts/check_legacy_docs.mjs",
