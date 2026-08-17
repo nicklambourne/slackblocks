@@ -76,6 +76,9 @@ jobs:
       - name: Verify immutable historical snapshots
         run: pnpm --filter @slackblocks/docs check:legacy-snapshots
 
+      - name: Verify every released version has a docs snapshot
+        run: pnpm --filter @slackblocks/docs check:release-snapshots
+
       - name: Verify documentation generation is clean
         run: >-
           git diff --exit-code --
