@@ -61,7 +61,7 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install uv and Python
-        uses: astral-sh/setup-uv@v10.0.0
+        uses: astral-sh/setup-uv@v10.0.1
         with:
           enable-cache: false
           cache-dependency-glob: python/uv.lock
