@@ -1,0 +1,131 @@
+# Views
+
+## HomeTabView
+
+**Class**
+
+```python
+HomeTabView(blocks: 'Block | list[Block]', private_metadata: 'str | None' = None, callback_id: 'str | None' = None, external_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+`HomeTabViews` are used with the `views.publish` Web API method.
+
+See: [https://api.slack.com/reference/surfaces/views#home](https://api.slack.com/reference/surfaces/views#home).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `blocks` | `Block \| list[Block]` | A list of blocks that defines the content of the view (max 100). |
+| `private_metadata` | `str \| None` | a string (max 3000 chars) that will be sent to your app<br />in `view_submission`. |
+| `callback_id` | `str \| None` | A string that will identify submissions of this view. |
+| `external_id` | `str \| None` | A custom identifier that is unique within the views of a<br />given Slack team. |
+
+</div>
+
+### to_dict
+
+```python
+to_dict() -> 'dict[str, Any]'
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+## ModalView
+
+**Class**
+
+```python
+ModalView(title: 'TextLike', blocks: 'Block | list[Block]', close: 'TextLike | None' = None, submit: 'TextLike | None' = None, private_metadata: 'str | None' = None, callback_id: 'str | None' = None, clear_on_close: 'bool | None' = False, notify_on_close: 'bool | None' = False, external_id: 'str | None' = None, submit_disabled: 'bool | None' = False) -> 'None'
+```
+
+<div className="api-docstring">
+
+Modal views are used with the `views.open`, `views.update` and `views.push`
+    Slack Web API methods.
+
+See: [https://api.slack.com/reference/surfaces/views#modal](https://api.slack.com/reference/surfaces/views#modal)
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `title` | `TextLike` | heading that appears at the top left of the view. |
+| `blocks` | `Block \| list[Block]` | a list of blocks (max 100) that define the content of the view. |
+| `close` | `TextLike \| None` | the text of the close button (max 24 chars) in the view.<br />Must be `Text.PLAINTEXT`. |
+| `submit` | `TextLike \| None` | the text of the submit button (max 24 chars) in the view.<br />Must be `Text.PLAINTEXT`. |
+| `private_metadata` | `str \| None` | a string (max 3000 chars) that will be sent to your app<br />in `view_submission`. |
+| `callback_id` | `str \| None` | A string that will identify submissions of this view. |
+| `clear_on_close` | `bool \| None` | when `True` all views in the model will be cleared when<br />it is closed. |
+| `notify_on_close` | `bool \| None` | when `True` a `view_closed` event will be sent when the<br />modal is closed. |
+| `external_id` | `str \| None` | A custom identifier that is unique within the views of a<br />given Slack team. |
+| `submit_disabled` | `bool \| None` | when `True` disabled submitting the form until one or<br />more inputs have been provided. Used only for<br />[`configuaration models`](https://api.slack.com/reference/workflows/configuration-view). |
+
+</div>
+
+### to_dict
+
+```python
+to_dict() -> 'dict[str, Any]'
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+## View
+
+**Class**
+
+```python
+View(type: 'ViewType', blocks: 'Block | list[Block]', private_metadata: 'str | None' = None, callback_id: 'str | None' = None, external_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Base class for Slack app surfaces -- the visual areas an app can populate
+with blocks. Concrete subclasses are
+[`ModalView`](/reference/python/views#modalview) (for
+pop-up modals) and
+[`HomeTabView`](/reference/python/views#hometabview)
+(for the per-user App Home tab).
+
+See: [https://api.slack.com/reference/surfaces/views](https://api.slack.com/reference/surfaces/views).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `type` | `ViewType` | one of the `ViewType` enum members. Concrete subclasses set<br />this for you; in practice you should construct `ModalView` or<br />`HomeTabView` rather than `View` directly. |
+| `blocks` | `Block \| list[Block]` | 1-100 blocks that make up the contents of the view. |
+| `private_metadata` | `str \| None` | a string (max 3000 characters) that will be sent<br />back to your app in any view-related interaction payloads.<br />Useful for stashing per-view server-side context. |
+| `callback_id` | `str \| None` | an identifier (max 255 characters) for distinguishing<br />this view's submissions from other views your app exposes. |
+| `external_id` | `str \| None` | a custom identifier that is unique within the views of<br />a given Slack team. Slack uses it to find views your app has<br />previously published. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the validation checks fail. |
+
+</div>
+
+### to_dict
+
+```python
+to_dict() -> 'dict[str, Any]'
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>

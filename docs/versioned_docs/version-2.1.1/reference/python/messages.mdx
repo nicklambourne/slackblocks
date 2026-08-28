@@ -1,0 +1,207 @@
+# Messages
+
+## Message
+
+**Class**
+
+```python
+Message(channel: 'str', text: 'str | None' = '', blocks: 'list[Block] | Block | None' = None, attachments: 'list[Attachment] | None' = None, thread_ts: 'str | None' = None, mrkdwn: 'bool' = True, unfurl_links: 'bool | None' = None, unfurl_media: 'bool | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A Slack message object that can be converted to a JSON string for use with
+the Slack message API.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `channel` | `str` | the Slack channel to send the message to, e.g. "#general". |
+| `text` | `str \| None` | markdown text to send in the message. If `blocks` are provided<br />then this is a fallback to display in notifications. |
+| `blocks` | `list[Block] \| Block \| None` | a list of [`Blocks`](/reference/python/blocks) to form the contents<br />of the message instead of the contents of `text`. |
+| `attachments` | `list[Attachment] \| None` | a list of<br />[`Attachments`](/reference/python/attachments#attachment)<br />that form the secondary contents of the message (deprecated). |
+| `thread_ts` | `str \| None` | the timestamp ID of another unthreaded message that will<br />become the parent message of this message (now a reply in a thread). |
+| `mrkdwn` | `bool` | if `True` the contents of `text` will be rendered as markdown<br />rather than plain text. |
+| `unfurl_links` | `bool \| None` | if `True`, links in the message will be automatically<br />unfurled. |
+| `unfurl_media` | `bool \| None` | if `True`, media from links (e.g. images) will<br />automatically unfurl. |
+
+Raises:
+    InvalidUsageException: in the event that the items passed to `blocks`
+        are not valid [`Blocks`](/reference/python/blocks).
+
+</div>
+
+### json
+
+```python
+json() -> 'str'
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+### keys
+
+```python
+keys() -> 'list[str]'
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+### to_dict
+
+```python
+to_dict() -> 'dict[str, Any]'
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+## MessageResponse
+
+**Class**
+
+```python
+MessageResponse(text: 'str | None' = '', blocks: 'list[Block] | Block | None' = None, attachments: 'list[Attachment] | None' = None, thread_ts: 'str | None' = None, mrkdwn: 'bool' = True, replace_original: 'bool' = False, ephemeral: 'bool' = False) -> 'None'
+```
+
+<div className="api-docstring">
+
+A required, immediate response that confirms your app received the payload.
+
+</div>
+
+### json
+
+```python
+json() -> 'str'
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+### keys
+
+```python
+keys() -> 'list[str]'
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+### to_dict
+
+```python
+to_dict() -> 'dict[str, Any]'
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+## ResponseType
+
+**Class**
+
+```python
+ResponseType(*values)
+```
+
+<div className="api-docstring">
+
+Types of messages that can be sent via `WebhookMessage`.
+
+</div>
+
+## WebhookMessage
+
+**Class**
+
+```python
+WebhookMessage(text: 'str | None' = None, attachments: 'Attachment | list[Attachment] | None' = None, blocks: 'Block | list[Block] | None' = None, response_type: 'ResponseType | str | None' = None, replace_original: 'bool | None' = None, delete_original: 'bool | None' = None, unfurl_links: 'bool | None' = None, unfurl_media: 'bool | None' = None, metadata: 'dict[str, Any] | None' = None, headers: 'dict[str, str] | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Messages sent via the Slack `WebhookClient` takes different arguments than
+    those sent via the regular `WebClient`.
+
+See: [https://github.com/slackapi/python-slack-sdk/blob/7e71b73/slack_sdk/webhook/client.py#L28](https://github.com/slackapi/python-slack-sdk/blob/7e71b73/slack_sdk/webhook/client.py#L28)
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `str \| None` | markdown text to send in the message. If `blocks` are provided<br />then this is a fallback to display in notifications. |
+| `attachments` | `Attachment \| list[Attachment] \| None` | a list of<br />[`Attachments`](/reference/python/attachments#attachment)<br />that form the secondary contents of the message (deprecated). |
+| `blocks` | `Block \| list[Block] \| None` | a list of [`Blocks`](/reference/python/blocks) to form the contents<br />of the message instead of the contents of `text`. |
+| `response_type` | `ResponseType \| str \| None` | one of `ResponseType.EPHEMERAL` or `ResponseType.IN_CHANNEL`.<br />Ephemeral messages are shown only to the requesting user whereas<br />"in-channel" messages are shown to all channel participants. |
+| `replace_original` | `bool \| None` | when `True`, the message triggering this response will be<br />replaced by this message. Mutually exclusive with `delete_original`. |
+| `delete_original` | `bool \| None` | when `True`, the original message triggering this response<br />will be deleted, and any content of this message will be posted as a<br />new message. Mutually exclusive with `replace_original`. |
+| `unfurl_links` | `bool \| None` | if `True`, links in the message will be automatically<br />unfurled. |
+| `unfurl_media` | `bool \| None` | if `True`, media from links (e.g. images) will<br />automatically unfurl. |
+| `metadata` | `dict[str, Any] \| None` | additional metadata to attach to the message. |
+| `headers` | `dict[str, str] \| None` | HTTP request headers to include with the message. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | when any of the passed fields fail validation. |
+
+</div>
+
+### json
+
+```python
+json() -> 'str'
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+### keys
+
+```python
+keys() -> 'list[str]'
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+### to_dict
+
+```python
+to_dict() -> 'dict[str, Any]'
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>

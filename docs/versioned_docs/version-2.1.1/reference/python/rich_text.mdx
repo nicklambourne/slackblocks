@@ -1,0 +1,330 @@
+# Rich text
+
+## RichText
+
+**Class**
+
+```python
+RichText(text: 'str', bold: 'bool | None' = None, italic: 'bool | None' = None, strike: 'bool | None' = None, code: 'bool | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+The core unit of the rich text API. Allows for the formatting of text
+    with visual styles like bolding, italics and strikethroughs.
+    Combined with higher-level containers like `RichTextSection`,
+    `RichText` can be used to create complicated and deeply nested
+    rich text within Slack messages.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `str` | the text content to render. |
+| `bold` | `bool \| None` | whether to render the given text in bold font. |
+| `italic` | `bool \| None` | whether to render the given text in italics. |
+| `strike` | `bool \| None` | whether to render the given text with a "strikethrough". |
+| `code` | `bool \| None` | whether to render the given text as an inline code snippet<br />(monospaced). |
+
+</div>
+
+## RichTextChannel
+
+**Class**
+
+```python
+RichTextChannel(channel_id: 'str', bold: 'bool | None' = None, italic: 'bool | None' = None, strike: 'bool | None' = None, highlight: 'bool | None' = None, client_highlight: 'bool | None' = None, unlink: 'bool | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Rich text rendering of a Slack channel (e.g. #general).
+
+See: [https://api.slack.com/reference/block-kit/blocks#channel-element-type](https://api.slack.com/reference/block-kit/blocks#channel-element-type)
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `channel_id` | `str` | the ID of the channel to render. You can get this from<br />the channel settings or the URL (if using Slack in the browser). |
+| `bold` | `bool \| None` | whether to render the given channel in bold font. |
+| `italic` | `bool \| None` | whether to render the given channel in italics. |
+| `strike` | `bool \| None` | whether to render the given channel with a "strikethrough". |
+| `highlight` | `bool \| None` | whether to give the channel a distinct highlight when rendered. |
+| `client_highlight` | `bool \| None` | a Slack-internal rendering hint accompanying<br />mention-style elements. Rarely needed by app developers; pass<br />``None`` (the default) unless you have a specific reason to set<br />it. |
+| `unlink` | `bool \| None` | whether to remove the link to the channel from the channel when<br />rendered. |
+
+</div>
+
+## RichTextCodeBlock
+
+**Class**
+
+```python
+RichTextCodeBlock(elements: 'RichTextElement | list[RichTextElement]', border: 'int | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A rich text element for representing blocks of code in
+    [`RichTextBlocks`](/reference/python/blocks#richtextblock).
+
+This is roughly equivalent to the triple-backtick ```code``` syntax in markdown.
+
+See: [https://api.slack.com/reference/block-kit/blocks#rich_text_preformatted](https://api.slack.com/reference/block-kit/blocks#rich_text_preformatted).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `elements` | `RichTextElement \| list[RichTextElement]` | one or more rich text primitive objexts<br />(e.g. [`RichText`](/reference/python/rich_text#richtext)). |
+| `border` | `int \| None` | the thickness (in pixels) of the border around the code block. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the items in `elements` aren't valid rich<br />text elements. |
+
+</div>
+
+## RichTextElement
+
+**Class**
+
+```python
+RichTextElement(type_: 'RichTextElementType') -> 'None'
+```
+
+<div className="api-docstring">
+
+Abstract base class for all rich text element classes.
+
+These are the primitives that form the basis of rich text objects and
+the [`RichTextBlock`](/reference/python/blocks#richtextblock).
+
+</div>
+
+## RichTextEmoji
+
+**Class**
+
+```python
+RichTextEmoji(name: 'str') -> 'None'
+```
+
+<div className="api-docstring">
+
+A rich text element for displaying an emoji.
+
+The emoji can either be one built in to Slack or a custom workspace emoji.
+
+See: [https://api.slack.com/reference/block-kit/blocks#emoji-element-type](https://api.slack.com/reference/block-kit/blocks#emoji-element-type)
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `name` | `str` | the unique name of the emoji to represent e.g. "wave". |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if the emoji `name` provided is empty. |
+
+</div>
+
+## RichTextLink
+
+**Class**
+
+```python
+RichTextLink(url: 'str', text: 'str | None' = None, unsafe: 'bool | None' = None, bold: 'bool | None' = None, italic: 'bool | None' = None, strike: 'bool | None' = None, code: 'bool | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A rich text primitive to display links in text.
+
+See: [https://api.slack.com/reference/block-kit/blocks#link-element-type](https://api.slack.com/reference/block-kit/blocks#link-element-type)
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `url` | `str` | the url which the link will point to. |
+| `text` | `str \| None` | the text to render with the link. If not provided, the raw URL<br />will be used. |
+| `unsafe` | `bool \| None` | whether the link is "safe". |
+| `bold` | `bool \| None` | whether to render the given text in bold font. |
+| `italic` | `bool \| None` | whether to render the given text in italics. |
+| `strike` | `bool \| None` | whether to render the given text with a "strikethrough". |
+| `code` | `bool \| None` | whether to render the given text as an inline code snippet<br />(monospaced). |
+
+</div>
+
+## RichTextList
+
+**Class**
+
+```python
+RichTextList(style: 'str | ListType', elements: 'RichTextSection | list[RichTextSection]', indent: 'int | None' = None, offset: 'int | None' = 0, border: 'int | None' = 0) -> 'None'
+```
+
+<div className="api-docstring">
+
+Renders to a HTML list containing rich text elements.
+
+See: [https://api.slack.com/reference/block-kit/blocks#rich_text_list](https://api.slack.com/reference/block-kit/blocks#rich_text_list).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `style` | `str \| ListType` | one of `ListType.BULLET` or `ListType.ORDERED`. |
+| `elements` | `RichTextSection \| list[RichTextSection]` | a list of (possibly nested) `RichTextSection` elements.<br />Each object in this list will be rendered as a list item. |
+| `indent` | `int \| None` | indent (in pixels) of each list item. |
+| `offset` | `int \| None` | offset (in pixels) of each list item. |
+| `border` | `int \| None` | thickness (in pixels) of the (optional) border around the list. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if style is not a valid `ListType` or any of the<br />items in `elements` isn't a valid `RichTextSection`. |
+
+</div>
+
+## RichTextObject
+
+**Class**
+
+```python
+RichTextObject(type_: 'RichTextObjectType') -> 'None'
+```
+
+<div className="api-docstring">
+
+Abstract class housing shared functionality of RichTextObjects.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `type_` | `RichTextObjectType` | the type of rich text object this class is, from<br />`RichTextObjectType`. |
+
+</div>
+
+## RichTextQuote
+
+**Class**
+
+```python
+RichTextQuote(elements: 'RichTextElement | list[RichTextElement]', border: 'int | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A rich text object for representing a block quote.
+
+Block quotes are presented with a vertical bar to the left hand side of
+    the text.
+
+See: [https://api.slack.com/reference/block-kit/blocks#rich_text_quote](https://api.slack.com/reference/block-kit/blocks#rich_text_quote)
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `elements` | `RichTextElement \| list[RichTextElement]` | one or more rich text primitive objexts<br />(e.g. [`RichText`](/reference/python/rich_text#richtext)). |
+| `border` | `int \| None` | the thickness (in pixels) of the border around the code block. |
+
+</div>
+
+## RichTextSection
+
+**Class**
+
+```python
+RichTextSection(elements: 'RichTextElement | list[RichTextElement]') -> 'None'
+```
+
+<div className="api-docstring">
+
+The most basic rich text container object, which takes rich text elements
+    and renders them when `RichTextSection` is passed to a
+    [`RichTextBlock`](/reference/python/blocks#richtextblock).
+
+See: [https://api.slack.com/reference/block-kit/blocks#rich_text_section](https://api.slack.com/reference/block-kit/blocks#rich_text_section).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `elements` | `RichTextElement \| list[RichTextElement]` | one or more rich text elements that will form the content of the section.<br />e.g. `RichText`, `RichTextLink`. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the items passed to `elements` isn't a valid<br />`RichTextObject`. |
+
+</div>
+
+## RichTextUser
+
+**Class**
+
+```python
+RichTextUser(user_id: 'str', bold: 'bool | None' = None, italic: 'bool | None' = None, strike: 'bool | None' = None, highlight: 'bool | None' = None, client_highlight: 'bool | None' = None, unlink: 'bool | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Rich text element for representing users in
+    [`RichTextBlocks`](/reference/python/blocks#richtextblock).
+
+See: [https://api.slack.com/reference/block-kit/blocks#user-element-type](https://api.slack.com/reference/block-kit/blocks#user-element-type).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `user_id` | `str` | the Slack ID of the user in question, you can get these<br />from users' profiles or Slack client requests. |
+| `bold` | `bool \| None` | whether to render the given user in bold font. |
+| `italic` | `bool \| None` | whether to render the given user in italics. |
+| `strike` | `bool \| None` | whether to render the given user with a "strikethrough". |
+| `highlight` | `bool \| None` | whether to give the user a distinct highlight when rendered. |
+| `client_highlight` | `bool \| None` | a Slack-internal rendering hint accompanying<br />mention-style elements. Rarely needed by app developers; pass<br />``None`` (the default) unless you have a specific reason to set<br />it. |
+| `unlink` | `bool \| None` | whether to remove the link to the user from the channel when<br />rendered. |
+
+</div>
+
+## RichTextUserGroup
+
+**Class**
+
+```python
+RichTextUserGroup(user_group_id: 'str', bold: 'bool | None' = None, italic: 'bool | None' = None, strike: 'bool | None' = None, highlight: 'bool | None' = None, client_highlight: 'bool | None' = None, unlink: 'bool | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Rich text element for representing groups of users in
+    [`RichTextBlocks`](/reference/python/blocks#richtextblock)`.
+
+See: [https://api.slack.com/reference/block-kit/blocks#user-element-type](https://api.slack.com/reference/block-kit/blocks#user-element-type).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `user_group_id` | `str` | the Slack ID of the user group being represented. |
+| `bold` | `bool \| None` | whether to render the given user in bold font. |
+| `italic` | `bool \| None` | whether to render the given user in italics. |
+| `strike` | `bool \| None` | whether to render the given user with a "strikethrough". |
+| `highlight` | `bool \| None` | whether to give the user a distinct highlight when rendered. |
+| `client_highlight` | `bool \| None` | a Slack-internal rendering hint accompanying<br />mention-style elements. Rarely needed by app developers; pass<br />``None`` (the default) unless you have a specific reason to set<br />it. |
+| `unlink` | `bool \| None` | whether to remove the link to the user from the channel when<br />rendered. |
+
+</div>

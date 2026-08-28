@@ -1,0 +1,981 @@
+# Elements
+
+## Button
+
+**Class**
+
+```python
+Button(text: 'TextLike', action_id: 'str', url: 'str | None' = None, value: 'str | None' = None, style: 'ButtonStyle | ButtonStyleName | None' = None, confirm: 'ConfirmationDialogue | None' = None, accessibility_label: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+An interactive element that inserts a button. The button can be a
+trigger for anything from opening a simple link to starting a complex
+workflow.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#button](https://api.slack.com/reference/block-kit/block-elements#button).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `TextLike` | text on the button (plaintext only; max 75 chars). |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `url` | `str \| None` | a URL to load in the user's browser when the button is clicked. |
+| `value` | `str \| None` | the value sent with the interaction payload. |
+| `style` | `ButtonStyle \| ButtonStyleName \| None` | the visual style of the button, one of `primary`, `danger`. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when<br />the button is clicked. |
+| `accessibility_label` | `str \| None` | a string label for longer descriptive text about<br />a button element. Used by screen readers (max 75 chars). |
+
+Raises:
+    InvalidUsageError: if any of the provided arguments fail validation.
+
+</div>
+
+## ChannelMultiSelectMenu
+
+**Class**
+
+```python
+ChannelMultiSelectMenu(action_id: 'str', initial_channels: 'list[str] | None' = None, confirm: 'ConfirmationDialogue | None' = None, max_selected_items: 'int | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+This interactive UI element allows users to select multiple channels visible
+    to the current user in the active workspace.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#channel_multi_select](https://api.slack.com/reference/block-kit/block-elements#channel_multi_select).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_channels` | `list[str] \| None` | a list of conversation IDs as strings that will<br />already be selected when the menu renders. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when<br />the menu is used. |
+| `max_selected_items` | `int \| None` | the maximum number of items that can be selected<br />in the menu. |
+| `focus_on_load` | `bool` | whether or not the menu will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the menu when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## ChannelSelectMenu
+
+**Class**
+
+```python
+ChannelSelectMenu(action_id: 'str', initial_channel: 'str | None' = None, confirm: 'ConfirmationDialogue | None' = None, response_url_enabled: 'bool | None' = False, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A select menu interactive UI element, sourced with a list of public channels visible
+    to the current user.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#channels_select](https://api.slack.com/reference/block-kit/block-elements#channels_select).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_channel` | `str \| None` | the single (string) user ID that will be initially selected<br />when first presented to the user. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when an<br />option in the overflow menu is selected. |
+| `response_url_enabled` | `bool \| None` | When set to true, the view_submission payload from the<br />menu's parent view will contain a response_url. (This response_url can be<br />used for message responses). |
+| `focus_on_load` | `bool` | whether or not the input will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the input when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## CheckboxGroup
+
+**Class**
+
+```python
+CheckboxGroup(action_id: 'str', options: 'Option | list[Option]', initial_options: 'Option | list[Option] | None' = None, confirm: 'ConfirmationDialogue | None' = None, focus_on_load: 'bool' = False) -> 'None'
+```
+
+<div className="api-docstring">
+
+A checkbox group that allows a user to choose multiple items from a list
+of possible options.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#checkboxes](https://api.slack.com/reference/block-kit/block-elements#checkboxes).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `options` | `Option \| list[Option]` | a list of<br />[`Option`](/reference/python/objects#option) objects that will form<br />the content of the checkbox group. |
+| `initial_options` | `Option \| list[Option] \| None` | a list of<br />[`Option`](/reference/python/objects#option) objects that will be<br />initially selected when first presented to the user. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when<br />the checkbox group is used. |
+| `focus_on_load` | `bool` | whether or not the checkbox group will be set to autofocus<br />within the view object. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## ConversationMultiSelectMenu
+
+**Class**
+
+```python
+ConversationMultiSelectMenu(action_id: 'str', initial_conversations: 'list[str] | None' = None, default_to_current_conversation: 'bool | None' = False, confirm: 'ConfirmationDialogue | None' = None, max_selected_items: 'int | None' = None, filter: 'ConversationFilter | None' = None, focus_on_load: 'bool | None' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+This interactive UI element allows users to select multiple conversations visible
+    to the current user in the active workspace.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#conversation_multi_select](https://api.slack.com/reference/block-kit/block-elements#conversation_multi_select).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_conversations` | `list[str] \| None` | a list of conversation IDs as strings that will<br />already be selected when the menu renders. |
+| `default_to_current_conversation` | `bool \| None` | Pre-populates the select menu with the<br />conversation that the user was viewing when they opened the modal<br />(defaults to `False`). |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when<br />the menu is used. |
+| `max_selected_items` | `int \| None` | the maximum number of items that can be selected<br />in the menu. |
+| `filter` | `ConversationFilter \| None` | a [`Filter`](/reference/python/objects#conversationfilter)<br />object that filters out conversations that don't match the settings<br />of the filter. |
+| `focus_on_load` | `bool \| None` | whether or not the menu will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the menu when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## ConversationSelectMenu
+
+**Class**
+
+```python
+ConversationSelectMenu(action_id: 'str', initial_conversation: 'str | None' = None, default_to_current_conversation: 'bool | None' = False, confirm: 'ConfirmationDialogue | None' = None, response_url_enabled: 'bool | None' = False, filter: 'ConversationFilter | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A select menu interactive UI element, sourced with a list of public and private channels,
+    DMs, and MPIMs visible to the current user.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#conversations_select](https://api.slack.com/reference/block-kit/block-elements#conversations_select).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_conversation` | `str \| None` | the single (string) conversation ID that will be initially<br />selected when first presented to the user. |
+| `default_to_current_conversation` | `bool \| None` | Pre-populates the select menu with the<br />conversation that the user was viewing when they opened the modal<br />(defaults to `False`). |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when an<br />option in the overflow menu is selected. |
+| `response_url_enabled` | `bool \| None` | When set to true, the view_submission payload from the<br />menu's parent view will contain a response_url. (This response_url can be<br />used for message responses). |
+| `filter` | `ConversationFilter \| None` | a [`Filter`](/reference/python/objects#conversationfilter)<br />object that filters out conversations that don't match the settings<br />of the filter. |
+| `focus_on_load` | `bool` | whether or not the input will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the input when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## DatePicker
+
+**Class**
+
+```python
+DatePicker(action_id: 'str', initial_date: 'str | None' = None, confirm: 'ConfirmationDialogue | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Interactive element that allows users to select a date from a calendar.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#datepicker](https://api.slack.com/reference/block-kit/block-elements#datepicker).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_date` | `str \| None` | the date (in `YYYY-MM-DD` format) that will appear on the<br />picker when it first renders. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when<br />the date picker is clicked. |
+| `focus_on_load` | `bool` | whether or not the date picker will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a `TextType.PLAINTEXT` `Text` object that defines what text<br />will initially appear on the picker. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## DateTimePicker
+
+**Class**
+
+```python
+DateTimePicker(action_id: 'str', initial_datetime: 'int | None' = None, confirm: 'ConfirmationDialogue | None' = None, focus_on_load: 'bool' = False) -> 'None'
+```
+
+<div className="api-docstring">
+
+Allows users to select both a date and a time of day.
+
+Provides the date-time formatted as a Unix timestamp.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#datetimepicker](https://api.slack.com/reference/block-kit/block-elements#datetimepicker).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_datetime` | `int \| None` | the initial value the date-time picker will be set to<br />when it first renders. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when<br />the button is date-time picker is used. |
+| `focus_on_load` | `bool` | whether or not the datetime picker will be set to autofocus<br />within the view object. |
+
+Raises:
+    InvalidUsageError: if any of the provided arguments fail validation.
+
+</div>
+
+## Element
+
+**Class**
+
+```python
+Element(type_: 'ElementType') -> 'None'
+```
+
+<div className="api-docstring">
+
+Basis element containing attributes and behaviour common to all elements.
+N.B: Element is an abstract class and cannot be used directly.
+
+</div>
+
+## EmailInput
+
+**Class**
+
+```python
+EmailInput(action_id: 'str', initial_value: 'str | None' = None, dispatch_action_config: 'DispatchActionConfiguration | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Allows user to enter an email into a single-line text field.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#email](https://api.slack.com/reference/block-kit/block-elements#email).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_value` | `str \| None` | The initial value in the email input when it is loaded. |
+| `dispatch_action_config` | `DispatchActionConfiguration \| None` | a `DispatchActionConfiguration` object that<br />determines when during text input the element returns a<br />`block_actions` payload. |
+| `focus_on_load` | `bool` | whether or not the email input will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a `TextType.PLAINTEXT` `Text` object that defines what text<br />will initially appear in the input field. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## ExternalMultiSelectMenu
+
+**Class**
+
+```python
+ExternalMultiSelectMenu(action_id: 'str', min_query_length: 'int | None' = None, initial_options: 'Option | list[Option] | OptionGroup | list[OptionGroup] | None' = None, confirm: 'ConfirmationDialogue | None' = None, max_selected_items: 'int | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+An interactive UI element that loads its options from an external data source,
+    allowing for a dynamic list of options.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#external_multi_select](https://api.slack.com/reference/block-kit/block-elements#external_multi_select).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `min_query_length` | `int \| None` | minimum number of characters entered before the query<br />is dispactched (defaults to 3 if not provided). |
+| `initial_options` | `Option \| list[Option] \| OptionGroup \| list[OptionGroup] \| None` | the [`Options`](/reference/python/objects#option)<br />to be initially selected when the element is first rendered. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when<br />the menu is used. |
+| `max_selected_items` | `int \| None` | the highest number of items from the list that<br />can be selected at one time. |
+| `focus_on_load` | `bool` | whether or not the menu will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the menu when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## ExternalSelectMenu
+
+**Class**
+
+```python
+ExternalSelectMenu(action_id: 'str', initial_option: 'Option | OptionGroup | None' = None, min_query_length: 'int | None' = None, confirm: 'ConfirmationDialogue | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A select menu interactive UI element, sourced with externally provided options.
+
+**See:** [https://api.slack.com/slackblocks/latest/reference/block-kit/block-elements#external_select](https://api.slack.com/slackblocks/latest/reference/block-kit/block-elements#external_select).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_option` | `Option \| OptionGroup \| None` | an<br />[`Option`](/reference/python/objects#option) object that will be<br />initially selected when first presented to the user. |
+| `min_query_length` | `int \| None` | minimum number of characters entered before the query<br />is dispactched (defaults to 3 if not provided). |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when an<br />option in the overflow menu is selected. |
+| `focus_on_load` | `bool` | whether or not the input will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the input when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## FeedbackButton
+
+**Class**
+
+```python
+FeedbackButton(text: 'TextLike', value: 'str', accessibility_label: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+One of the positive or negative buttons in a
+[`FeedbackButtons`](/reference/python/elements#feedbackbuttons)
+element.
+
+See: [https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `TextLike` | the text on the button (plaintext only; max 75 chars). |
+| `value` | `str` | the value sent with the interaction payload (max 2000 chars). |
+| `accessibility_label` | `str \| None` | a string label for longer descriptive text about<br />the button. Used by screen readers (max 75 chars). |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## FeedbackButtons
+
+**Class**
+
+```python
+FeedbackButtons(positive_button: 'FeedbackButton', negative_button: 'FeedbackButton', action_id: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A paired positive/negative feedback control for a
+[`ContextActionsBlock`](/reference/python/blocks#contextactionsblock).
+
+See: [https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `positive_button` | `FeedbackButton` | a `FeedbackButton` used to indicate positive feedback. |
+| `negative_button` | `FeedbackButton` | a `FeedbackButton` used to indicate negative feedback. |
+| `action_id` | `str \| None` | an identifier so the source of the action can be known. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## FileInput
+
+**Class**
+
+```python
+FileInput(action_id: 'str | None' = None, filetypes: 'str | list[str] | None' = None, max_files: 'int | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+An interactive element that allows users to upload files.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#file_input](https://api.slack.com/reference/block-kit/block-elements#file_input).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str \| None` | an identifier so the source of the action can be known. |
+| `filetypes` | `str \| list[str] \| None` | a list of file extensions (as strings) that will be accepted<br />for upload. |
+| `max_files` | `int \| None` | the maximum number of files that can be uploaded (between 1<br />and 10). |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## IconButton
+
+**Class**
+
+```python
+IconButton(text: 'TextLike', icon: "Literal['trash']" = 'trash', action_id: 'str | None' = None, value: 'str | None' = None, confirm: 'ConfirmationDialogue | None' = None, accessibility_label: 'str | None' = None, visible_to_user_ids: 'list[str] | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A compact icon-only action for a
+[`ContextActionsBlock`](/reference/python/blocks#contextactionsblock).
+
+Slack currently supports only the `trash` icon.
+
+See: [https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element](https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `TextLike` | the text describing the button (plaintext only). |
+| `icon` | `Literal['trash']` | the icon to show; `trash` is the only icon currently<br />supported by Slack. |
+| `action_id` | `str \| None` | an identifier so the source of the action can be known. |
+| `value` | `str \| None` | the value sent with the interaction payload (max 2000 chars). |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when<br />the button is clicked. |
+| `accessibility_label` | `str \| None` | a string label for longer descriptive text about<br />the button. Used by screen readers (max 75 chars). |
+| `visible_to_user_ids` | `list[str] \| None` | a list of (string) user IDs for which the button<br />is visible (max 10). If not provided, the button is visible to<br />all users. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## Image
+
+**Class**
+
+```python
+Image(alt_text: 'str' = ' ', image_url: 'str | None' = None, slack_file: 'SlackFile | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+An element to insert an image - this element can be used in section
+and context blocks only. If you want a block with only an image in it,
+you're looking for the Image block.
+
+You must provide either one of `image_url` or `slack_file`
+
+See: [https://api.slack.com/reference/block-kit/block-elements#image](https://api.slack.com/reference/block-kit/block-elements#image).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `alt_text` | `str` | a plain-text-only summary of the content of the image. |
+| `image_url` | `str \| None` | a URL for a publicly hosted image (the user must provide<br />either `image_url` or `slack_file`). |
+| `slack_file` | `SlackFile \| None` | a [`SlackFile`](/reference/python/objects#slackfile)<br />(the user must provide either `image_url` or `slack_file`). |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation,<br />or both/neither of `image_url` and `slack_file` are provided. |
+
+</div>
+
+## NumberInput
+
+**Class**
+
+```python
+NumberInput(is_decimal_allowed: 'bool', action_id: 'str | None' = None, initial_value: 'str | None' = None, min_value: 'float | int | None' = None, max_value: 'float | int | None' = None, dispatch_action_config: 'DispatchActionConfiguration | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+This input elements accepts both integer and decimal numbers. For example,
+0.25, 5.5, and -10 are all valid input values.
+
+See [https://api.slack.com/reference/block-kit/block-elements#number](https://api.slack.com/reference/block-kit/block-elements#number).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `is_decimal_allowed` | `bool` | whether to accept decimal values as input. |
+| `action_id` | `str \| None` | an identifier so the source of the action can be known. |
+| `initial_value` | `str \| None` | the initial value in the number input when it is loaded. |
+| `min_value` | `float \| int \| None` | minimum accepted value for the input field. |
+| `max_value` | `float \| int \| None` | maximum accepted value for the input field. |
+| `dispatch_action_config` | `DispatchActionConfiguration \| None` | a `DispatchActionConfiguration` object that<br />determines when during text input the element returns a<br />`block_actions` payload. |
+| `focus_on_load` | `bool` | whether or not the menu will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the input when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## OverflowMenu
+
+**Class**
+
+```python
+OverflowMenu(action_id: 'str', options: 'Option | list[Option]', confirm: 'ConfirmationDialogue | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Context menu for additional options (think '...').
+
+See [https://api.slack.com/reference/block-kit/block-elements#overflow](https://api.slack.com/reference/block-kit/block-elements#overflow).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `options` | `Option \| list[Option]` | a list of<br />[`Option`](/reference/python/objects#option) objects that will form<br />the content of the overflow menu. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when an<br />option in the overflow menu is selected. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## PlainTextInput
+
+**Class**
+
+```python
+PlainTextInput(action_id: 'str', initial_value: 'str | None' = None, multiline: 'bool' = False, min_length: 'int | None' = None, max_length: 'int | None' = None, dispatch_action_config: 'DispatchActionConfiguration | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A plain-text input, similar to the HTML `<input>` tag, creates a field where a user
+can enter freeform data. It can appear as a single-line field or a larger text
+area using the multiline flag.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#input](https://api.slack.com/reference/block-kit/block-elements#input).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_value` | `str \| None` | the initial value in the plain-text input when it is loaded. |
+| `multiline` | `bool` | whether to accept multiple lines of input(defaults to false). |
+| `min_length` | `int \| None` | minimum number of characters to accept as input. |
+| `max_length` | `int \| None` | maximum number of characters to accept as input. |
+| `dispatch_action_config` | `DispatchActionConfiguration \| None` | a `DispatchActionConfiguration` object that<br />determines when during text input the element returns a<br />`block_actions` payload. |
+| `focus_on_load` | `bool` | whether or not the input will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the input when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## RadioButtonGroup
+
+**Class**
+
+```python
+RadioButtonGroup(action_id: 'str', options: 'list[Option]', initial_option: 'Option | None' = None, confirm: 'ConfirmationDialogue | None' = None, focus_on_load: 'bool' = False) -> 'None'
+```
+
+<div className="api-docstring">
+
+A radio button group that allows a user to choose one item from a list of possible options.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#radio](https://api.slack.com/reference/block-kit/block-elements#radio).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `options` | `list[Option]` | a list of<br />[`Option`](/reference/python/objects#option) objects that will form<br />the content of the radio button group. |
+| `initial_option` | `Option \| None` | an<br />[`Option`](/reference/python/objects#option) object that will be<br />initially selected when first presented to the user. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when an<br />option in the overflow menu is selected. |
+| `focus_on_load` | `bool` | whether or not the input will be set to autofocus<br />within the view object. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## RichTextInput
+
+**Class**
+
+```python
+RichTextInput(action_id: 'str', initial_value: 'RichText | None' = None, dispatch_action_config: 'DispatchActionConfiguration | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Allows users to enter formatted text in a WYSIWYG editor, similar to the Slack
+    messaging experience.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#rich_text_input](https://api.slack.com/reference/block-kit/block-elements#rich_text_input).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_value` | `RichText \| None` | The initial value in the rich text input when it is loaded. |
+| `dispatch_action_config` | `DispatchActionConfiguration \| None` | a `DispatchActionConfiguration` object that<br />determines when during text input the element returns a<br />`block_actions` payload. |
+| `focus_on_load` | `bool` | whether or not the menu will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the menu when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## StaticMultiSelectMenu
+
+**Class**
+
+```python
+StaticMultiSelectMenu(action_id: 'str', options: 'Option | list[Option]', option_groups: 'OptionGroup | list[OptionGroup] | None' = None, initial_options: 'Option | list[Option] | OptionGroup | list[OptionGroup] | None' = None, confirm: 'ConfirmationDialogue | None' = None, max_selected_items: 'int | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+The most basic form of select menu containing a static list of options
+passed in when defining the element.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#static_multi_select](https://api.slack.com/reference/block-kit/block-elements#static_multi_select).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `options` | `Option \| list[Option]` | a list of [`Options`](/reference/python/objects#option)<br />(max 100). Only one of `options` or `option_groups` must be<br />provided. |
+| `option_groups` | `OptionGroup \| list[OptionGroup] \| None` | a list of<br />[`OptionGroups`](/reference/python/objects#optiongroup)<br />(max 100). Only one of `options` or `option_groups` can be<br />provided. |
+| `initial_options` | `Option \| list[Option] \| OptionGroup \| list[OptionGroup] \| None` | the [`Options`](/reference/python/objects#option)<br />to be initially selected when the element is first rendered. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when<br />the menu is used. |
+| `max_selected_items` | `int \| None` | the |
+| `focus_on_load` | `bool` | whether or not the menu will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the menu when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## StaticSelectMenu
+
+**Class**
+
+```python
+StaticSelectMenu(action_id: 'str', options: 'list[Option] | None' = None, option_groups: 'list[OptionGroup] | None' = None, initial_option: 'Option | OptionGroup | None' = None, confirm: 'ConfirmationDialogue | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A simple select menu interactive UI element, with a static list of options passed in when
+    defining the element.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#static_select](https://api.slack.com/reference/block-kit/block-elements#static_select).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `options` | `list[Option] \| None` | a list of<br />[`Option`](/reference/python/objects#option) objects that will form<br />the content of the menu (max 100). |
+| `option_groups` | `list[OptionGroup] \| None` | a list of<br />[`OptionGroups`](/reference/python/objects#optiongroup)<br />(max 100). Only one of `options` or `option_groups` can be<br />provided. |
+| `initial_option` | `Option \| OptionGroup \| None` | an<br />[`Option`](/reference/python/objects#option) object that will be<br />initially selected when first presented to the user. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when an<br />option in the overflow menu is selected. |
+| `focus_on_load` | `bool` | whether or not the input will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the input when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## TimePicker
+
+**Class**
+
+```python
+TimePicker(action_id: 'str', initial_time: 'str | None' = None, confirm: 'ConfirmationDialogue | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None, timezone: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+An interactive UI element that allows users to select a time of day.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#timepicker](https://api.slack.com/reference/block-kit/block-elements#timepicker).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_time` | `str \| None` | — |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when<br />the input field is used. |
+| `focus_on_load` | `bool` | whether or not the menu will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the menu when it's initially rendered. |
+| `timezone` | `str \| None` | a string in the IANA format, e.g. "America/Chicago". |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## URLInput
+
+**Class**
+
+```python
+URLInput(action_id: 'str', initial_value: 'str | None' = None, dispatch_action_config: 'DispatchActionConfiguration | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+An interactive UI element for collecting URL input from users.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#url](https://api.slack.com/reference/block-kit/block-elements#url).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_value` | `str \| None` | the text to populate the input field with when it<br />is first rendered. |
+| `dispatch_action_config` | `DispatchActionConfiguration \| None` | a `DispatchActionConfiguration` object that<br />determines when during text input the element returns a<br />`block_actions` payload. |
+| `focus_on_load` | `bool` | whether or not the menu will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the input when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## URLSource
+
+**Class**
+
+```python
+URLSource(url: 'str', text: 'str') -> 'None'
+```
+
+<div className="api-docstring">
+
+A labelled URL source displayed by a
+[`TaskCardBlock`](/reference/python/blocks#taskcardblock).
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/task-card-block](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `url` | `str` | the URL of the source (max 3000 chars). |
+| `text` | `str` | the label displayed for the source. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## UserMultiSelectMenu
+
+**Class**
+
+```python
+UserMultiSelectMenu(action_id: 'str', initial_users: 'list[str] | None' = None, confirm: 'ConfirmationDialogue | None' = None, max_selected_items: 'int | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+This interactive UI element allows users to select multiple users visible
+    to the current user in the active workspace.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#users_multi_select](https://api.slack.com/reference/block-kit/block-elements#users_multi_select).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_users` | `list[str] \| None` | a list of string user IDs to be initially selected<br />when the element is first rendered. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when<br />the menu is used. |
+| `max_selected_items` | `int \| None` | the highest number of items from the list that<br />can be selected at one time. |
+| `focus_on_load` | `bool` | whether or not the menu will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the menu when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## UserSelectMenu
+
+**Class**
+
+```python
+UserSelectMenu(action_id: 'str', initial_user: 'str | None' = None, confirm: 'ConfirmationDialogue | None' = None, focus_on_load: 'bool' = False, placeholder: 'TextLike | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+A select menu interactive UI element, sourced automatically with Slack users from the
+    current workspace visible to the current user.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#users_select](https://api.slack.com/reference/block-kit/block-elements#users_select).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `action_id` | `str` | an identifier so the source of the action can be known. |
+| `initial_user` | `str \| None` | the single (string) user ID that will be initially selected<br />when first presented to the user. |
+| `confirm` | `ConfirmationDialogue \| None` | a `ConfirmationDialogue` object that will be presented when an<br />option in the overflow menu is selected. |
+| `focus_on_load` | `bool` | whether or not the input will be set to autofocus<br />within the view object. |
+| `placeholder` | `TextLike \| None` | a plain-text `Text` object (max 150 chars) that shows<br />in the input when it's initially rendered. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## WorkflowButton
+
+**Class**
+
+```python
+WorkflowButton(text: 'TextLike', workflow: 'Workflow | None' = None, style: 'ButtonStyleLike | None' = <ButtonStyle.DEFAULT: None>, accessibility_label: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+An interactive component that allows users to run a link trigger with
+    customizable inputs.
+
+See: [https://api.slack.com/reference/block-kit/block-elements#workflow_button](https://api.slack.com/reference/block-kit/block-elements#workflow_button).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `TextLike` | the text content that will appear in the button. |
+| `workflow` | `Workflow \| None` | a [`Workflow`](/reference/python/objects#workflow) object<br />that contains details about the workflow that will run when the<br />button is clicked. |
+| `style` | `ButtonStyleLike \| None` | one of `Default`, `Primary`, or `Danger`, determines the<br />visual style of the button. Consider using the `ButtonStyle`<br />object for this. |
+| `accessibility_label` | `str \| None` | a string label for longer descriptive text about<br />a button element. Used by screen readers (max 75 chars). |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
