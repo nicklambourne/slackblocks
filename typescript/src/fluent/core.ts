@@ -6,6 +6,7 @@
 import type { FactorySettings } from "../types.js";
 
 const FLUENT_BUILDER = Symbol("slackblocks.fluent-builder");
+const FLUENT_GROUP = Symbol("slackblocks.fluent-group");
 
 type NonNullish<Value> = Exclude<Value, null | undefined>;
 
@@ -17,7 +18,11 @@ export type Buildable<Value> =
 
 type CollectionArgument<Value> =
   | Buildable<NonNullish<Value>>
-  | readonly Buildable<NonNullish<Value>>[];
+  | FluentGroupBuilder<object, NonNullish<Value>>
+  | readonly (
+      | Buildable<NonNullish<Value>>
+      | FluentGroupBuilder<object, NonNullish<Value>>
+    )[];
 
 type FluentMethods<Input extends object, Output> = {
   [Key in keyof Input]-?: NonNullish<Input[Key]> extends readonly (infer Item)[]
@@ -31,6 +36,12 @@ export type FluentBuilder<Input extends object, Output> = FluentMethods<Input, O
   build(settings?: FactorySettings): Output;
 };
 
+/** A fluent component that expands to multiple values in a parent collection. */
+export type FluentGroupBuilder<Input extends object, Output> = FluentBuilder<
+  Input,
+  Output[]
+>;
+
 type FluentFactory<Input extends object, Output> = (
   input: Input,
   settings?: FactorySettings,
@@ -40,10 +51,12 @@ type CollectionMode = "flat" | "nested";
 
 interface FluentBuilderOptions<Input extends object> {
   collections?: Partial<Record<keyof Input, CollectionMode>>;
+  groupOutput?: boolean;
 }
 
 interface FluentBuilderRuntime {
   [FLUENT_BUILDER]: true;
+  [FLUENT_GROUP]?: true;
   build(settings?: FactorySettings): unknown;
 }
 
@@ -56,10 +69,31 @@ function isFluentBuilder(value: unknown): value is FluentBuilderRuntime {
   );
 }
 
+function isFluentGroup(value: unknown): value is FluentBuilderRuntime {
+  return isFluentBuilder(value) && value[FLUENT_GROUP] === true;
+}
+
 function materialise(value: unknown, settings: FactorySettings): unknown {
   if (isFluentBuilder(value)) return value.build(settings);
   if (Array.isArray(value)) return value.map((item) => materialise(item, settings));
   return value;
+}
+
+function materialiseFlatCollection(
+  value: unknown,
+  settings: FactorySettings,
+): unknown[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (isFluentGroup(item)) {
+      const built = item.build(settings);
+      if (!Array.isArray(built)) {
+        throw new TypeError("A fluent group must build an array");
+      }
+      return built.map((nested) => materialise(nested, settings));
+    }
+    return [materialise(item, settings)];
+  });
 }
 
 /** @internal */
@@ -72,11 +106,14 @@ export function createFluentBuilder<Input extends object, Output>(
 
   const runtime: FluentBuilderRuntime = {
     [FLUENT_BUILDER]: true,
+    ...(options.groupOutput === true ? { [FLUENT_GROUP]: true as const } : {}),
     build(settings: FactorySettings = {}) {
       const input = Object.fromEntries(
         [...state.entries()].map(([key, value]) => [
           key,
-          materialise(value, settings),
+          options.collections?.[key] === "flat"
+            ? materialiseFlatCollection(value, settings)
+            : materialise(value, settings),
         ]),
       ) as Input;
       return factory(input, settings);
@@ -117,4 +154,12 @@ export function createFluentBuilder<Input extends object, Output>(
   }) as unknown as FluentBuilder<Input, Output>;
 
   return proxy;
+}
+
+/** @internal */
+export function createFluentGroupBuilder<Input extends object, Output>(
+  factory: FluentFactory<Input, Output[]>,
+  options: Omit<FluentBuilderOptions<Input>, "groupOutput"> = {},
+): FluentGroupBuilder<Input, Output> {
+  return createFluentBuilder(factory, { ...options, groupOutput: true });
 }
