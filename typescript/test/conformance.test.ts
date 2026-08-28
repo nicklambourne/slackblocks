@@ -967,7 +967,12 @@ describe("capability registry", () => {
     const exported = Object.entries(api)
       .filter(([, value]) => typeof value === "function")
       .map(([exportName]) => exportName)
-      .filter((exportName) => !FACTORY_EXCLUSIONS.has(exportName));
+      // Fluent builders are PascalCase and produce builders rather than wire JSON.
+      .filter(
+        (exportName) =>
+          !FACTORY_EXCLUSIONS.has(exportName) &&
+          !/^[A-Z]/.test(exportName),
+      );
     expect(new Set(exported)).toEqual(new Set(Object.keys(CAPABILITY_BY_FACTORY)));
   });
 

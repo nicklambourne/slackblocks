@@ -8,5 +8,6 @@ export * from "./rich-text.js";
 export * from "./types.js";
 export * from "./validation.js";
 export * from "./views.js";
+export * from "./fluent/index.js";
 
 export const specVersion = "1.0.1";
