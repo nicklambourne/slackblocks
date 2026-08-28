@@ -33,6 +33,18 @@ const blocks = await readFile(
   path.join(referenceDirectory, "blocks.md"),
   "utf8",
 );
+const components = await readFile(
+  path.join(referenceDirectory, "components.md"),
+  "utf8",
+);
+const payloads = await readFile(
+  path.join(referenceDirectory, "payloads.md"),
+  "utf8",
+);
+const objects = await readFile(
+  path.join(referenceDirectory, "objects.md"),
+  "utf8",
+);
 
 function functionSection(contents, name) {
   const heading = `## ${name}()`;
@@ -42,46 +54,45 @@ function functionSection(contents, name) {
   return contents.slice(start, end === -1 ? contents.length : end);
 }
 
-const blockFactories = [
-  ...blocks.matchAll(/^## ([A-Za-z_$][\w$]*Block)\(\)$/gm),
-];
+const fluentPages = [blocks, components, elements, objects, payloads];
+const blockFactories = [...blocks.matchAll(/^## ([A-Z][\w$]*Block)\(\)$/gm)];
 assert.ok(blockFactories.length > 0, "No block factories were rendered");
 
 for (const [, name] of blockFactories) {
   const section = functionSection(blocks, name);
   assert.match(
     section,
-    /^### Input fields$/m,
-    `${name} must show its object fields directly`,
+    /^### Chainable setters$/m,
+    `${name} must show its fluent setters directly`,
   );
   assert.doesNotMatch(
     section,
-    /^### Parameters$/m,
-    `${name} must not group its object fields under a parameter`,
+    /^### Input fields$/m,
+    `${name} must not document the retired object-input convention`,
   );
   assert.match(
     section,
-    /^### Settings$/m,
-    `${name} must keep factory settings separate from its input fields`,
+    /^### Validation and errors$/m,
+    `${name} must document build-time validation`,
   );
 }
 
-const channelMultiSelect = functionSection(elements, "channelMultiSelect");
+const channelMultiSelect = functionSection(elements, "ChannelMultiSelect");
 assert.match(
   channelMultiSelect,
-  /^### Input fields$/m,
-  "Named input interfaces must be expanded beside their factories",
+  /^### Chainable setters$/m,
+  "Named input interfaces must be expanded beside their fluent builders",
 );
 assert.match(
   channelMultiSelect,
-  /^\| `initialChannels\?` \|/m,
-  "Expanded input tables must retain named interface fields",
+  /^\| `\.initialChannels\(\.\.\.values\)` \|/m,
+  "Fluent setter tables must retain named interface fields",
 );
 
 assert.doesNotMatch(
-  elements,
-  /\| `input` \| \[`ActionInput`\]/,
-  "Element factories must not render an opaque ActionInput parameter",
+  fluentPages.join("\n"),
+  /^## [a-z][A-Za-z0-9_$]*\(\)$/m,
+  "The fluent reference must not render legacy lowercase factories",
 );
 
 for (const property of [
@@ -91,12 +102,22 @@ for (const property of [
   "minLines",
   "maxLines",
 ]) {
-  const requiredProperty = "`" + property;
   assert.ok(
-    elements.includes(requiredProperty + "` |") ||
-      elements.includes(requiredProperty + "?` |"),
-    `${property} is missing from the rendered element input tables`,
+    elements.includes("`." + property + "("),
+    `${property} is missing from the rendered element setter tables`,
   );
+}
+
+for (const contents of fluentPages) {
+  for (const [, name] of contents.matchAll(/^## ([A-Z][\w$]*)\(\)$/gm)) {
+    const section = functionSection(contents, name);
+    assert.match(section, /^### Chainable setters$/m, `${name} lacks setter details`);
+    assert.match(
+      section,
+      /^### Validation and errors$/m,
+      `${name} lacks validation details`,
+    );
+  }
 }
 
 for (const name of ["SlackObject", "SlackWire"]) {

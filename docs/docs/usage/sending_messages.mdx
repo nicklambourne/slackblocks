@@ -169,17 +169,17 @@ urllib.request.urlopen(req)
 
 ## With `@slack/web-api`
 
-Factories return plain Slack-shaped objects, so pass the payload directly to the official client:
+`.build()` returns a plain Slack-shaped object, so pass the payload directly to the official client:
 
 ```ts
 import { WebClient } from "@slack/web-api";
-import { message, sectionBlock } from "@nicklambourne/slackblocks";
+import { Message, SectionBlock } from "@nicklambourne/slackblocks";
 
 const client = new WebClient(process.env.SLACK_API_TOKEN);
-const payload = message({
-  channel: "C0123456",
-  blocks: [sectionBlock({ text: "Hello, world!" })],
-});
+const payload = Message()
+  .channel("C0123456")
+  .blocks(SectionBlock().text("Hello, world!"))
+  .build();
 
 await client.chat.postMessage(payload);
 ```
@@ -190,12 +190,14 @@ Use a channel ID rather than a display name when possible. Provide a `text` fall
 
 ```ts
 import { IncomingWebhook } from "@slack/webhook";
-import { sectionBlock, webhookMessage } from "@nicklambourne/slackblocks";
+import { SectionBlock, WebhookMessage } from "@nicklambourne/slackblocks";
 
 const webhook = new IncomingWebhook(process.env.SLACK_WEBHOOK_URL!);
-await webhook.send(webhookMessage({
-  blocks: [sectionBlock({ text: "Build complete :white_check_mark:" })],
-}));
+await webhook.send(
+  WebhookMessage()
+    .blocks(SectionBlock().text("Build complete :white_check_mark:"))
+    .build(),
+);
 ```
 
 ## Slash-command and interaction responses
@@ -203,25 +205,25 @@ await webhook.send(webhookMessage({
 Construct the response body, then return it through your web framework:
 
 ```ts
-import { messageResponse, sectionBlock } from "@nicklambourne/slackblocks";
+import { MessageResponse, SectionBlock } from "@nicklambourne/slackblocks";
 
-const responseBody = messageResponse({
-  blocks: [sectionBlock({ text: "Got it! Working on that now..." })],
-  responseType: "ephemeral",
-});
+const responseBody = MessageResponse()
+  .blocks(SectionBlock().text("Got it! Working on that now..."))
+  .responseType("ephemeral")
+  .build();
 ```
 
 ## Modals and home tabs
 
 ```ts
-import { modal, sectionBlock } from "@nicklambourne/slackblocks";
+import { Modal, SectionBlock } from "@nicklambourne/slackblocks";
 
-const view = modal({
-  title: "Confirm action",
-  blocks: [sectionBlock({ text: "Are you sure?" })],
-  submit: "Yes",
-  close: "Cancel",
-});
+const view = Modal()
+  .title("Confirm action")
+  .blocks(SectionBlock().text("Are you sure?"))
+  .submit("Yes")
+  .close("Cancel")
+  .build();
 
 await client.views.open({ trigger_id: triggerId, view });
 ```

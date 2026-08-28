@@ -1,4 +1,8 @@
-/** Fluent builders for Block Kit interactive and visual elements. */
+/**
+ * Fluent builders for Block Kit interactive and visual elements.
+ *
+ * @module elements
+ */
 import {
   button as createButton,
   channelMultiSelect as createChannelMultiSelect,
@@ -133,9 +137,13 @@ export function FileInput(): FluentBuilder<
   return createFluentBuilder(createFileInput, { collections: { filetypes: "flat" } });
 }
 
+/** Values configured through {@link ImageElement}. */
 interface ImageElementBuilderInput {
+  /** Alternative text for screen readers and unavailable images. */
   altText: string;
+  /** Public URL of the image. Mutually exclusive with `slackFile`. */
   imageUrl?: string;
+  /** Slack-hosted file object. Mutually exclusive with `imageUrl`. */
   slackFile?: JsonObject;
 }
 

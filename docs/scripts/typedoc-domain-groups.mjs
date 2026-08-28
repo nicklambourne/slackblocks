@@ -1,15 +1,120 @@
 import { MarkdownPageEvent } from "typedoc-plugin-markdown";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import ts from "typescript";
 
 const DOMAIN_TITLES = {
   blocks: "Blocks",
+  components: "Components",
   elements: "Elements",
   errors: "Errors",
-  messages: "Messages",
   objects: "Composition Objects",
-  "rich-text": "Rich Text",
+  payloads: "Payloads",
   utilities: "Utilities",
-  views: "Views",
 };
+
+const fluentSetters = new Map();
+const fluentNames = new Set();
+const scriptsDirectory = path.dirname(fileURLToPath(import.meta.url));
+const typescriptDirectory = path.resolve(scriptsDirectory, "../../typescript");
+const fluentSourceFiles = [
+  "blocks.ts",
+  "components.ts",
+  "elements.ts",
+  "objects.ts",
+  "payloads.ts",
+].map((file) => path.join(typescriptDirectory, "src/fluent", file));
+
+function fluentTerminology(value) {
+  let result = value;
+  for (const name of fluentNames) {
+    const legacyName = name[0].toLowerCase() + name.slice(1);
+    result = result.replaceAll(`\`${legacyName}\``, `\`${name}()\``);
+  }
+  return result;
+}
+
+function markdownType(value) {
+  return value
+    .replace(/import\("[^"]+"\)\./g, "")
+    .replaceAll("|", "\\|");
+}
+
+function collectFluentSetters() {
+  const configPath = path.join(typescriptDirectory, "tsconfig.typedoc.json");
+  const config = ts.readConfigFile(configPath, ts.sys.readFile);
+  if (config.error) {
+    throw new Error(
+      ts.flattenDiagnosticMessageText(config.error.messageText, "\n"),
+    );
+  }
+
+  const parsed = ts.parseJsonConfigFileContent(
+    config.config,
+    ts.sys,
+    typescriptDirectory,
+    undefined,
+    configPath,
+  );
+  const program = ts.createProgram(parsed.fileNames, parsed.options);
+  const checker = program.getTypeChecker();
+  const functions = fluentSourceFiles.flatMap((file) => {
+    const source = program.getSourceFile(file);
+    if (!source) throw new Error(`TypeScript API source is missing: ${file}`);
+    return source.statements.filter(
+      (statement) =>
+        ts.isFunctionDeclaration(statement) &&
+        statement.name &&
+        statement.modifiers?.some(
+          (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword,
+        ),
+    );
+  });
+
+  for (const declaration of functions) fluentNames.add(declaration.name.text);
+
+  for (const declaration of functions) {
+    if (
+      !declaration.type ||
+      !ts.isTypeReferenceNode(declaration.type) ||
+      !["FluentBuilder", "FluentGroupBuilder"].includes(
+        declaration.type.typeName.getText(),
+      )
+    ) {
+      continue;
+    }
+
+    const inputNode = declaration.type.typeArguments?.[0];
+    if (!inputNode) continue;
+    const input = checker.getTypeFromTypeNode(inputNode);
+    const fields = checker.getPropertiesOfType(input);
+    if (fields.length === 0) continue;
+
+    fluentSetters.set(
+      declaration.name.text,
+      fields.map((field) => {
+        const location =
+          field.valueDeclaration ?? field.declarations?.[0] ?? inputNode;
+        const type = checker.getTypeOfSymbolAtLocation(field, location);
+        const nonNullableType = checker.getNonNullableType(type);
+        return {
+          collection:
+            checker.isArrayType(nonNullableType) ||
+            checker.isTupleType(nonNullableType) ||
+            nonNullableType.symbol?.name === "ReadonlyArray",
+          description: fluentTerminology(
+            ts.displayPartsToString(field.getDocumentationComment(checker)),
+          ),
+          name: field.name,
+          optional: (field.flags & ts.SymbolFlags.Optional) !== 0,
+          type: markdownType(
+            checker.typeToString(type, location, ts.TypeFormatFlags.NoTruncation),
+          ),
+        };
+      }),
+    );
+  }
+}
 
 function renderGenericSyntax(contents) {
   const escapedContents = contents
@@ -153,8 +258,60 @@ function renderFactoryInputs(contents) {
   return lines.join("\n");
 }
 
+function renderFluentSetters(contents) {
+  const lines = contents.split("\n");
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const functionName = lines[index].match(/^## ([A-Z][A-Za-z0-9_$]*)\(\)$/)?.[1];
+    const fields = fluentSetters.get(functionName);
+    if (!fields) continue;
+
+    const sectionEnd = lines.findIndex(
+      (line, nestedIndex) => nestedIndex > index && line === "***",
+    );
+    const returnsHeading = lines.findIndex(
+      (line, nestedIndex) =>
+        nestedIndex > index &&
+        (sectionEnd === -1 || nestedIndex < sectionEnd) &&
+        line === "### Returns",
+    );
+    if (returnsHeading === -1) continue;
+
+    const hasCollections = fields.some(({ collection }) => collection);
+    const replacement = [
+      "### Chainable setters",
+      "",
+      "Call these setters in any order before `.build()`. Repeating a singular setter replaces its previous value.",
+      ...(hasCollections
+        ? [
+            "Collection setters accept individual values, nested builders, or arrays and append each call.",
+          ]
+        : []),
+      "",
+      "| Setter | Value type | Required | Description |",
+      "| ------ | ------ | ------ | ------ |",
+      ...fields.map(
+        ({ collection, description, name, optional, type }) =>
+          `| \`.${name}(${collection ? "...values" : "value"})\` | \`${type}\` | ${optional ? "No" : "Yes"} | ${description || "—"} |`,
+      ),
+      "",
+      "### Validation and errors",
+      "",
+      "`.build()` materializes nested builders and validates the finished Slack object. It throws a typed slackblocks validation error when a required value is missing, a value has the wrong type or range, mutually exclusive setters are combined, or Slack rejects the resulting shape. Pass `{ validate: false }` to `.build()` only when intentionally creating an intermediate partial object.",
+      "",
+    ];
+
+    lines.splice(returnsHeading, 0, ...replacement);
+    index += replacement.length;
+  }
+
+  return lines.join("\n");
+}
+
 /** Flatten TypeDoc's kind-based index groups inside each domain. */
 export function load(app) {
+  collectFluentSetters();
+
   app.converter.on(
     "resolveEnd",
     (context) => {
@@ -186,6 +343,14 @@ export function load(app) {
   app.renderer.on(MarkdownPageEvent.END, (page) => {
     page.contents = renderGenericSyntax(page.contents);
     page.contents = renderFactoryInputs(page.contents);
+    page.contents = renderFluentSetters(page.contents);
+
+    if (page.url === "objects.md") {
+      page.contents = page.contents.replace(
+        "## Markdown()",
+        '<a id="mrkdwn"></a>\n\n## Markdown()',
+      );
+    }
 
     if (page.url !== "index.md") {
       page.contents = [

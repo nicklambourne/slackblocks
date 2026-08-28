@@ -1,4 +1,8 @@
-/** Fluent builders for messages, webhooks, interaction responses, and views. */
+/**
+ * Fluent builders for messages, webhooks, interaction responses, and views.
+ *
+ * @module payloads
+ */
 import {
   attachment as createAttachment,
   message as createMessage,

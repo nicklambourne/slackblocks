@@ -21,7 +21,7 @@ your tests, rather than in production.
 
 ## Why `slackblocks`?
 
-- **Concise** — `SectionBlock("Hello, *world*!")` / `sectionBlock({ text: "Hello, *world*!" })`
+- **Concise** — `SectionBlock("Hello, *world*!")` / `SectionBlock().text("Hello, *world*!").build()`
   instead of a ten-line JSON object.
 - **Validated up front** — character limits, required fields, mutually-exclusive options,
   and element-type restrictions are enforced when you construct the block, so you find
@@ -109,31 +109,32 @@ The same message in TypeScript:
 
 ```ts
 import {
-  actionsBlock,
-  button,
-  dividerBlock,
-  headerBlock,
-  message,
-  sectionBlock,
+  ActionsBlock,
+  Button,
+  DividerBlock,
+  HeaderBlock,
+  Message,
+  SectionBlock,
 } from "@nicklambourne/slackblocks";
 
-const payload = message({
-  channel: "#general",
-  text: "Build #482 passed", // plain-text fallback for notifications
-  blocks: [
-    headerBlock({ text: "Build #482 passed :white_check_mark:" }),
-    sectionBlock({
-      fields: ["*Branch*\n`main`", "*Author*\n@nick", "*Duration*\n3m 12s", "*Tests*\n1,247 passed"],
-    }),
-    dividerBlock(),
-    actionsBlock({
-      elements: [
-        button({ text: "View build", actionId: "view", url: "https://ci.example.com/482" }),
-        button({ text: "Re-run", actionId: "rerun", value: "482", style: "primary" }),
-      ],
-    }),
-  ],
-});
+const payload = Message()
+  .channel("#general")
+  .text("Build #482 passed") // plain-text fallback for notifications
+  .blocks(
+    HeaderBlock().text("Build #482 passed :white_check_mark:"),
+    SectionBlock().fields(
+      "*Branch*\n`main`",
+      "*Author*\n@nick",
+      "*Duration*\n3m 12s",
+      "*Tests*\n1,247 passed",
+    ),
+    DividerBlock(),
+    ActionsBlock().elements(
+      Button().text("View build").actionId("view").url("https://ci.example.com/482"),
+      Button().text("Re-run").actionId("rerun").value("482").style("primary"),
+    ),
+  )
+  .build();
 ```
 
 ```ts
@@ -154,7 +155,7 @@ await client.chat.postMessage(payload);
 - [Using Blocks](https://nicklambourne.github.io/slackblocks/usage/using_blocks) — every
   block type with code in both languages, the JSON it produces, and screenshots.
 - [Sending Messages](https://nicklambourne.github.io/slackblocks/usage/sending_messages)
-- [Cookbook](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end
+- [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end
   recipes for build notifications, approval requests, modals, and more.
 - [API Reference](https://nicklambourne.github.io/slackblocks/reference) —
   [Python](https://nicklambourne.github.io/slackblocks/reference/python) and
@@ -162,6 +163,7 @@ await client.chat.postMessage(payload);
 - [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/usage/migration) ·
   [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/usage/troubleshooting)
 - Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md)
+- [Roadmap](ROADMAP.md) — including the TypeScript legacy API removal planned for v3.0.
 
 ## Repository layout
 

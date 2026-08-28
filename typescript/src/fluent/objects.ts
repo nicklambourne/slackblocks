@@ -1,4 +1,8 @@
-/** Fluent builders for Block Kit composition and rich-text objects. */
+/**
+ * Fluent builders for Block Kit composition and rich-text objects.
+ *
+ * @module objects
+ */
 import {
   areaChart as createAreaChart,
   axisConfig as createAxisConfig,
@@ -53,7 +57,9 @@ import { createFluentBuilder, type FluentBuilder } from "./core.js";
 
 type FirstInput<Factory extends (...args: never[]) => unknown> = Parameters<Factory>[0];
 
+/** Values configured through {@link PlainText}. */
 interface PlainTextBuilderInput extends PlainTextOptions {
+  /** Text to display. */
   text: string;
 }
 
@@ -64,7 +70,9 @@ export function PlainText(): FluentBuilder<PlainTextBuilderInput, TextObject> {
   );
 }
 
+/** Values configured through {@link Markdown}. */
 interface MarkdownBuilderInput extends MarkdownOptions {
+  /** Slack mrkdwn text to display. */
   text: string;
 }
 
@@ -192,8 +200,11 @@ export function PieChart(): FluentBuilder<
   );
 }
 
+/** Values configured through {@link BarChart}, {@link AreaChart}, or {@link LineChart}. */
 interface AxisChartBuilderInput {
+  /** One or more named data series to plot. */
   series: JsonObject[];
+  /** Axis labels and category configuration. */
   axisConfig: JsonObject;
 }
 
@@ -225,8 +236,11 @@ export function LineChart(): FluentBuilder<AxisChartBuilderInput, SlackObject<"l
   return axisChart(createLineChart);
 }
 
+/** Values configured through {@link RichText}. */
 interface RichTextBuilderInput {
+  /** Text content for this run. */
   text: string;
+  /** Optional Slack rich-text styling. */
   style?: RichTextStyle;
 }
 
@@ -237,8 +251,11 @@ export function RichText(): FluentBuilder<RichTextBuilderInput, JsonObject> {
   );
 }
 
+/** Values configured through rich-text mention builders. */
 interface RichTextMentionBuilderInput {
+  /** Slack channel, user, or user-group identifier. */
   id: string;
+  /** Optional Slack rich-text styling. */
   style?: RichTextStyle;
 }
 
@@ -286,8 +303,11 @@ export function RichTextList(): FluentBuilder<FirstInput<typeof createRichTextLi
   return createFluentBuilder(createRichTextList, { collections: { elements: "flat" } });
 }
 
+/** Values configured through rich-text layout builders. */
 interface RichTextLayoutBuilderInput {
+  /** Rich-text elements displayed inside the layout. */
   elements: JsonObject[];
+  /** Optional border width. */
   border?: number;
 }
 

@@ -65,12 +65,12 @@ def build_status_message(
 
 ```ts
 import {
-  contextBlock,
-  dividerBlock,
-  headerBlock,
-  message,
-  mrkdwn,
-  sectionBlock,
+  ContextBlock,
+  DividerBlock,
+  HeaderBlock,
+  Markdown,
+  Message,
+  SectionBlock,
 } from "@nicklambourne/slackblocks";
 
 function buildStatusMessage(input: {
@@ -85,25 +85,23 @@ function buildStatusMessage(input: {
   const icon = input.passed ? ":white_check_mark:" : ":x:";
   const status = input.passed ? "passed" : "failed";
 
-  return message({
-    channel: input.channel,
-    text: `Build ${status} for ${input.project}@${input.branch}`,
-    blocks: [
-      headerBlock({ text: `${icon} ${input.project} build ${status}` }),
-      sectionBlock({
-        fields: [
-          `*Branch*\n\`${input.branch}\``,
-          `*Commit*\n\`${input.commit.slice(0, 7)}\``,
-          `*Author*\n${input.author}`,
-          `*Duration*\n${input.duration}`,
-        ],
-      }),
-      dividerBlock(),
-      contextBlock({
-        elements: [mrkdwn(`:calendar: Triggered by push to \`${input.branch}\``)],
-      }),
-    ],
-  });
+  return Message()
+    .channel(input.channel)
+    .text(`Build ${status} for ${input.project}@${input.branch}`)
+    .blocks(
+      HeaderBlock().text(`${icon} ${input.project} build ${status}`),
+      SectionBlock().fields(
+        `*Branch*\n\`${input.branch}\``,
+        `*Commit*\n\`${input.commit.slice(0, 7)}\``,
+        `*Author*\n${input.author}`,
+        `*Duration*\n${input.duration}`,
+      ),
+      DividerBlock(),
+      ContextBlock().elements(
+        Markdown().text(`:calendar: Triggered by push to \`${input.branch}\``),
+      ),
+    )
+    .build();
 }
 ```
 

@@ -84,23 +84,30 @@ See [Using Blocks](usage/using_blocks) for examples of all block types side-by-s
 </Python>
 <TypeScript>
 
-The TypeScript package exposes data-first factories that return typed, Slack-shaped objects.
+The TypeScript package exposes chainable PascalCase builders that produce typed,
+Slack-shaped objects when `.build()` is called.
 
 ### Composition objects
 
-Factories such as [`plainText`](reference/typescript/objects#plaintext), [`mrkdwn`](reference/typescript/objects#mrkdwn), and [`option`](reference/typescript/objects#option) create the small values used throughout Block Kit payloads.
+Builders such as [`PlainText`](reference/typescript/objects#plaintext), [`Markdown`](reference/typescript/objects#markdown), and [`Option`](reference/typescript/objects#option) create the small values used throughout Block Kit payloads.
 
 ### Elements
 
-Interactive controls are built with factories such as [`button`](reference/typescript/elements#button), [`checkboxes`](reference/typescript/elements#checkboxes), [`staticSelect`](reference/typescript/elements#staticselect), and [`datePicker`](reference/typescript/elements#datepicker).
+Interactive controls are built with [`Button`](reference/typescript/elements#button), [`Checkboxes`](reference/typescript/elements#checkboxes), [`StaticSelect`](reference/typescript/elements#staticselect), and [`DatePicker`](reference/typescript/elements#datepicker).
 
 ### Blocks
 
-Every block factory follows the same `<kind>Block` naming pattern. Alongside the familiar [`sectionBlock`](reference/typescript/blocks#sectionblock), [`actionsBlock`](reference/typescript/blocks#actionsblock), and [`videoBlock`](reference/typescript/blocks#videoblock), the API includes [`alertBlock`](reference/typescript/blocks#alertblock), [`cardBlock`](reference/typescript/blocks#cardblock), [`carouselBlock`](reference/typescript/blocks#carouselblock), [`containerBlock`](reference/typescript/blocks#containerblock), [`contextActionsBlock`](reference/typescript/blocks#contextactionsblock), [`dataTableBlock`](reference/typescript/blocks#datatableblock), [`dataVisualizationBlock`](reference/typescript/blocks#datavisualizationblock), [`planBlock`](reference/typescript/blocks#planblock), and [`taskCardBlock`](reference/typescript/blocks#taskcardblock).
+Every block builder follows the same `<Kind>Block` naming pattern. Alongside [`SectionBlock`](reference/typescript/blocks#sectionblock), [`ActionsBlock`](reference/typescript/blocks#actionsblock), and [`VideoBlock`](reference/typescript/blocks#videoblock), the API includes [`AlertBlock`](reference/typescript/blocks#alertblock), [`CardBlock`](reference/typescript/blocks#cardblock), [`CarouselBlock`](reference/typescript/blocks#carouselblock), [`ContainerBlock`](reference/typescript/blocks#containerblock), [`ContextActionsBlock`](reference/typescript/blocks#contextactionsblock), [`DataTableBlock`](reference/typescript/blocks#datatableblock), [`DataVisualizationBlock`](reference/typescript/blocks#datavisualizationblock), [`PlanBlock`](reference/typescript/blocks#planblock), and [`TaskCardBlock`](reference/typescript/blocks#taskcardblock).
 
-### Messages and views
+### Payloads
 
-Use [`message`](reference/typescript/messages#message), [`webhookMessage`](reference/typescript/messages#webhookmessage), and [`messageResponse`](reference/typescript/messages#messageresponse) for message payloads. Use [`modal`](reference/typescript/views#modal) and [`homeTab`](reference/typescript/views#hometab) for Slack views.
+Use [`Message`](reference/typescript/payloads#message), [`WebhookMessage`](reference/typescript/payloads#webhookmessage), and [`MessageResponse`](reference/typescript/payloads#messageresponse) for message payloads. Use [`Modal`](reference/typescript/payloads#modal) and [`HomeTab`](reference/typescript/payloads#hometab) for Slack views.
+
+### Higher-level components
+
+[`Paginator`](reference/typescript/components#paginator) renders a selected page
+with previous and next controls. [`Accordion`](reference/typescript/components#accordion)
+groups Slack-native collapsible sections. Both expand directly inside `.blocks()`.
 
 ### Utilities
 

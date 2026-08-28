@@ -50,18 +50,19 @@ pnpm add @nicklambourne/slackblocks
 ## Build a message
 
 ```ts
-import { message, sectionBlock } from "@nicklambourne/slackblocks";
+import { Message, SectionBlock } from "@nicklambourne/slackblocks";
 
-const payload = message({
-  channel: "C0123456",
-  text: "Hello from slackblocks!",
-  blocks: [sectionBlock({ text: "Hello, world!" })],
-});
+const payload = Message()
+  .channel("C0123456")
+  .text("Hello from slackblocks!")
+  .blocks(SectionBlock().text("Hello, world!"))
+  .build();
 
 console.log(JSON.stringify(payload, null, 2));
 ```
 
-Each factory validates its input and returns a plain Slack-compatible object. Factory inputs use camelCase; the resulting payload uses the snake_case keys expected by Slack.
+Each builder uses typed camelCase setters. `.build()` validates the completed
+payload and returns the plain snake_case object expected by Slack.
 
 </TypeScript>
 </LanguageContent>

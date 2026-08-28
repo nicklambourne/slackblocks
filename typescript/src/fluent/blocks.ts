@@ -1,4 +1,8 @@
-/** Fluent builders for messages, modal, and App Home blocks. */
+/**
+ * Fluent builders for messages, modal, and App Home blocks.
+ *
+ * @module blocks
+ */
 import {
   actionsBlock as createActionsBlock,
   alertBlock as createAlertBlock,
