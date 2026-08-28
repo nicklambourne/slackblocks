@@ -3,12 +3,12 @@
  *
  * @module messages
  */
-import limits from "../../spec/limits.json" with { type: "json" };
+import limits from "../../../spec/limits.json" with { type: "json" };
 
-import { LengthError, TypeMismatchError } from "./errors.js";
-import { createObject, dropEmpty } from "./internal.js";
-import { validateSurfaceBlocks } from "./surfaces.js";
-import type { FactorySettings, JsonObject } from "./types.js";
+import { LengthError, TypeMismatchError } from "../errors.js";
+import { createObject, dropEmpty } from "../internal.js";
+import { validateSurfaceBlocks } from "../surfaces.js";
+import type { FactorySettings, JsonObject } from "../types.js";
 
 /**
  * Preset side-border colors for legacy attachments.

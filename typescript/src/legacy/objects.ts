@@ -6,7 +6,7 @@
  *
  * @module objects
  */
-import limits from "../../spec/limits.json" with { type: "json" };
+import limits from "../../../spec/limits.json" with { type: "json" };
 
 import {
   InvalidUsageError,
@@ -15,9 +15,9 @@ import {
   MutualExclusivityError,
   OutOfRangeError,
   TypeMismatchError,
-} from "./errors.js";
-import { codePointLength, create, createObject, textValue } from "./internal.js";
-import type { FactorySettings, JsonObject, SlackObject } from "./types.js";
+} from "../errors.js";
+import { codePointLength, create, createObject, textValue } from "../internal.js";
+import type { FactorySettings, JsonObject, SlackObject } from "../types.js";
 
 /** A Slack plain-text or mrkdwn composition object. */
 export type TextObject = SlackObject<"plain_text" | "mrkdwn">;

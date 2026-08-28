@@ -3,11 +3,11 @@
  *
  * @module views
  */
-import { MissingRequiredError } from "./errors.js";
-import { create } from "./internal.js";
+import { MissingRequiredError } from "../errors.js";
+import { create } from "../internal.js";
 import { asText, type TextLike } from "./objects.js";
-import { validateSurfaceBlocks } from "./surfaces.js";
-import type { FactorySettings, JsonObject } from "./types.js";
+import { validateSurfaceBlocks } from "../surfaces.js";
+import type { FactorySettings, JsonObject } from "../types.js";
 
 /**
  * Creates a modal view payload.

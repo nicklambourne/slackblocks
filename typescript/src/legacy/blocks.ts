@@ -21,10 +21,10 @@ import type {
   VideoBlock,
 } from "@slack/types";
 
-import { create, dropEmpty } from "./internal.js";
+import { create, dropEmpty } from "../internal.js";
 import { asText, type TextLike } from "./objects.js";
-import type { FactorySettings, JsonObject, SlackWire } from "./types.js";
-import type { SlackObject } from "./types.js";
+import type { FactorySettings, JsonObject, SlackWire } from "../types.js";
+import type { SlackObject } from "../types.js";
 
 /** Severity shown by an alert block. */
 export type AlertLevel = "default" | "info" | "warning" | "error" | "success";
