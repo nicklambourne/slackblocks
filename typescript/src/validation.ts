@@ -8,6 +8,7 @@ import {
   OutOfRangeError,
   TypeMismatchError,
 } from "./errors.js";
+import { validateSurfaceBlocks } from "./surfaces.js";
 import type { BlockKitPayload, JsonObject, JsonValue } from "./types.js";
 
 function textValue(value: unknown): string | undefined {
@@ -1028,6 +1029,7 @@ function validateKnownObject(object: JsonObject, path: string): void {
         limits.view.blocks.min_items,
         limits.view.blocks.max_items,
       );
+      validateSurfaceBlocks(object.blocks, type, child(path, "blocks"));
       length(
         typeof object.private_metadata === "string" ? object.private_metadata : undefined,
         child(path, "private_metadata"),
@@ -1041,6 +1043,21 @@ function validateKnownObject(object: JsonObject, path: string): void {
         limits.view.callback_id.max_length,
       );
       if (type === "modal") {
+        if (
+          object.submit === undefined &&
+          object.blocks.some(
+            (block) =>
+              block !== null &&
+              !Array.isArray(block) &&
+              typeof block === "object" &&
+              block.type === "input",
+          )
+        ) {
+          throw new MissingRequiredError(
+            child(path, "submit"),
+            "required when the modal contains an input block",
+          );
+        }
         length(
           textValue(object.title),
           child(path, "title.text"),

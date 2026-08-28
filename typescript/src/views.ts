@@ -3,8 +3,10 @@
  *
  * @module views
  */
+import { MissingRequiredError } from "./errors.js";
 import { create } from "./internal.js";
 import { asText, type TextLike } from "./objects.js";
+import { validateSurfaceBlocks } from "./surfaces.js";
 import type { FactorySettings, JsonObject } from "./types.js";
 
 /**
@@ -40,6 +42,16 @@ export function modal(
   },
   settings: FactorySettings = {},
 ) {
+  validateSurfaceBlocks(input.blocks, "modal", "modal.blocks");
+  if (
+    input.submit === undefined &&
+    input.blocks.some((block) => block.type === "input")
+  ) {
+    throw new MissingRequiredError(
+      "modal.submit",
+      "required when the modal contains an input block",
+    );
+  }
   return create(
     "modal",
     {
@@ -74,5 +86,6 @@ export function homeTab(
   },
   settings: FactorySettings = {},
 ) {
+  validateSurfaceBlocks(input.blocks, "home", "homeTab.blocks");
   return create("home", input, settings);
 }

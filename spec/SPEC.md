@@ -1,6 +1,6 @@
 # slackblocks conformance specification
 
-Version 1.0.1 defines the language-neutral contract for slackblocks implementations.
+Version 1.1.0 defines the language-neutral contract for slackblocks implementations.
 
 ## Valid fixtures
 
@@ -9,6 +9,11 @@ Version 1.0.1 defines the language-neutral contract for slackblocks implementati
 ## Invalid cases
 
 `fixtures/invalid/manifest.json` names invalid constructions and their required error category. Each language owns the code that attempts the construction. Implementations may use language-native error types and messages.
+
+Payload-level cases also enforce the official 50-block message limit, the
+100-attachment message limit, block compatibility for message, modal, and App
+Home surfaces, and the requirement for submit text when a modal contains an
+input block.
 
 The normative categories are `length-exceeded`, `out-of-range`, `mutually-exclusive`, `type-mismatch`, `missing-required`, and `invalid-usage`.
 

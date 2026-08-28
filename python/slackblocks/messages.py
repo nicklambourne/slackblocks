@@ -12,7 +12,8 @@ from json import dumps
 from typing import Any
 
 from slackblocks._core import resolve
-from slackblocks.utils import coerce_to_list
+from slackblocks._surfaces import validate_surface_blocks
+from slackblocks.utils import coerce_to_list, validate_string_nonnull
 
 from .attachments import Attachment
 from .blocks import Block
@@ -79,12 +80,16 @@ class BaseMessage(_MessagePayloadMixin):
         thread_ts: str | None = None,
         mrkdwn: bool = True,
     ) -> None:
-        self.blocks = coerce_to_list(blocks, class_=Block, allow_none=True)
+        self.blocks = coerce_to_list(blocks, class_=Block, allow_none=True, max_size=50)
         self.channel = channel
         self.text = text
-        self.attachments = coerce_to_list(attachments, class_=Attachment, allow_none=True)
+        self.attachments = coerce_to_list(
+            attachments, class_=Attachment, allow_none=True, max_size=100
+        )
         self.thread_ts = thread_ts
         self.mrkdwn = mrkdwn
+        if self.blocks is not None:
+            validate_surface_blocks(self.blocks, "message")
 
     def _resolve(self) -> dict[str, Any]:
         # The 'text' field is intentionally emitted even when it is an empty
@@ -141,6 +146,7 @@ class Message(BaseMessage):
         unfurl_links: bool | None = None,
         unfurl_media: bool | None = None,
     ) -> None:
+        channel = validate_string_nonnull(channel, field_name="channel", min_length=1)
         super().__init__(channel, text, blocks, attachments, thread_ts, mrkdwn)
         self.unfurl_links = unfurl_links
         self.unfurl_media = unfurl_media
@@ -239,9 +245,13 @@ class WebhookMessage(_MessagePayloadMixin):
     ) -> None:
         self.text = text
         self.attachments: list[Attachment] | None = coerce_to_list(
-            attachments, Attachment, allow_none=True
+            attachments, Attachment, allow_none=True, max_size=100
         )
-        self.blocks: list[Block] | None = coerce_to_list(blocks, Block, allow_none=True)
+        self.blocks: list[Block] | None = coerce_to_list(
+            blocks, Block, allow_none=True, max_size=50
+        )
+        if self.blocks is not None:
+            validate_surface_blocks(self.blocks, "message")
         self.response_type = (
             ResponseType.get_value(response_type) if response_type is not None else None
         )

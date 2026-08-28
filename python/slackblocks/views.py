@@ -11,7 +11,9 @@ from json import dumps
 from typing import Any
 
 from slackblocks._core import resolve
+from slackblocks._surfaces import block_type, validate_surface_blocks
 from slackblocks.blocks import Block
+from slackblocks.errors import MissingRequiredError
 from slackblocks.objects import Text, TextLike
 from slackblocks.utils import coerce_to_list, validate_string
 
@@ -59,7 +61,10 @@ class View:
         external_id: str | None = None,
     ) -> None:
         self.type_ = type.value
-        self.blocks = coerce_to_list(blocks, class_=Block, min_size=1, max_size=100)
+        blocks_list = coerce_to_list(blocks, class_=Block, min_size=1, max_size=100)
+        assert blocks_list is not None
+        self.blocks = blocks_list
+        validate_surface_blocks(self.blocks, type.value)
         self.private_metadata = validate_string(
             private_metadata,
             field_name="private_metadata",
@@ -140,6 +145,8 @@ class ModalView(View):
         self.title = Text.to_text_nonnull(title, force_plaintext=True, max_length=24)
         self.close = Text.to_text(close, force_plaintext=True, max_length=24, allow_none=True)
         self.submit = Text.to_text(submit, force_plaintext=True, max_length=24, allow_none=True)
+        if self.submit is None and any(block_type(block) == "input" for block in self.blocks):
+            raise MissingRequiredError("submit is required when a modal contains an input block")
         self.clear_on_close = clear_on_close
         self.notify_on_close = notify_on_close
         self.submit_disabled = submit_disabled
