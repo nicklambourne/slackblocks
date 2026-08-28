@@ -5,12 +5,12 @@
  *
  * @module elements
  */
-import limits from "../../spec/limits.json" with { type: "json" };
+import limits from "../../../spec/limits.json" with { type: "json" };
 
-import { LengthError, OutOfRangeError, TypeMismatchError } from "./errors.js";
-import { create, createObject, dropEmpty } from "./internal.js";
+import { LengthError, OutOfRangeError, TypeMismatchError } from "../errors.js";
+import { create, createObject, dropEmpty } from "../internal.js";
 import { asText, type TextLike } from "./objects.js";
-import type { FactorySettings, JsonObject, SlackObject } from "./types.js";
+import type { FactorySettings, JsonObject, SlackObject } from "../types.js";
 
 /** Fields accepted by {@link checkboxes}. */
 export interface CheckboxesInput {

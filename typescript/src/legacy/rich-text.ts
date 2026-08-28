@@ -6,8 +6,8 @@
  *
  * @module rich-text
  */
-import { create } from "./internal.js";
-import type { FactorySettings, JsonObject } from "./types.js";
+import { create } from "../internal.js";
+import type { FactorySettings, JsonObject } from "../types.js";
 
 /** Inline formatting supported by rich-text text, links, users, and channels. */
 export interface RichTextStyle {

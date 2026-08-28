@@ -4,14 +4,14 @@ import {
   containerBlock,
   contextBlock,
   type ContainerWidth,
-} from "../blocks.js";
-import { button } from "../elements.js";
+} from "../legacy/blocks.js";
+import { button } from "../legacy/elements.js";
 import {
   MissingRequiredError,
   OutOfRangeError,
   TypeMismatchError,
 } from "../errors.js";
-import { mrkdwn, type TextLike } from "../objects.js";
+import { mrkdwn, type TextLike } from "../legacy/objects.js";
 import type { FactorySettings, JsonObject } from "../types.js";
 import {
   createFluentBuilder,

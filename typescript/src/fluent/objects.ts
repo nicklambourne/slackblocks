@@ -34,7 +34,7 @@ import {
   type PlainTextOptions,
   type SlackIconName,
   type TextObject,
-} from "../objects.js";
+} from "../legacy/objects.js";
 import {
   richText as createRichText,
   richTextChannel as createRichTextChannel,
@@ -47,7 +47,7 @@ import {
   richTextUser as createRichTextUser,
   richTextUserGroup as createRichTextUserGroup,
   type RichTextStyle,
-} from "../rich-text.js";
+} from "../legacy/rich-text.js";
 import type { FactorySettings, JsonObject, SlackObject } from "../types.js";
 import { createFluentBuilder, type FluentBuilder } from "./core.js";
 

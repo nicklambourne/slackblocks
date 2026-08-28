@@ -225,12 +225,12 @@ const config: Config = {
       {
         name: "TypeScript API reference",
         entryPoints: [
-          "../typescript/src/blocks.ts",
-          "../typescript/src/elements.ts",
-          "../typescript/src/objects.ts",
-          "../typescript/src/rich-text.ts",
-          "../typescript/src/messages.ts",
-          "../typescript/src/views.ts",
+          "../typescript/src/legacy/blocks.ts",
+          "../typescript/src/legacy/elements.ts",
+          "../typescript/src/legacy/objects.ts",
+          "../typescript/src/legacy/rich-text.ts",
+          "../typescript/src/legacy/messages.ts",
+          "../typescript/src/legacy/views.ts",
           "../typescript/src/utilities-reference.ts",
           "../typescript/src/errors.ts",
         ],

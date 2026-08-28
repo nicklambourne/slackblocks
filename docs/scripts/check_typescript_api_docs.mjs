@@ -3,12 +3,12 @@ import { fileURLToPath } from "node:url";
 import ts from "typescript";
 
 const SOURCE_FILES = [
-  "../../typescript/src/blocks.ts",
-  "../../typescript/src/elements.ts",
-  "../../typescript/src/objects.ts",
-  "../../typescript/src/rich-text.ts",
-  "../../typescript/src/messages.ts",
-  "../../typescript/src/views.ts",
+  "../../typescript/src/legacy/blocks.ts",
+  "../../typescript/src/legacy/elements.ts",
+  "../../typescript/src/legacy/objects.ts",
+  "../../typescript/src/legacy/rich-text.ts",
+  "../../typescript/src/legacy/messages.ts",
+  "../../typescript/src/legacy/views.ts",
   "../../typescript/src/builder.ts",
   "../../typescript/src/types.ts",
   "../../typescript/src/validation.ts",
@@ -16,10 +16,10 @@ const SOURCE_FILES = [
 ];
 
 const THROWS_REQUIRED_FILES = new Set([
-  "../../typescript/src/blocks.ts",
-  "../../typescript/src/elements.ts",
-  "../../typescript/src/messages.ts",
-  "../../typescript/src/views.ts",
+  "../../typescript/src/legacy/blocks.ts",
+  "../../typescript/src/legacy/elements.ts",
+  "../../typescript/src/legacy/messages.ts",
+  "../../typescript/src/legacy/views.ts",
 ]);
 
 const failures = [];

@@ -54,7 +54,7 @@ import {
   type UserMultiSelectInput,
   type UserSelectInput,
   type WorkflowButtonInput,
-} from "../elements.js";
+} from "../legacy/elements.js";
 import type { JsonObject, SlackObject } from "../types.js";
 import { createFluentBuilder, type FluentBuilder } from "./core.js";
 

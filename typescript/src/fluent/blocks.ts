@@ -23,7 +23,7 @@ import {
   videoBlock as createVideoBlock,
   type CardBlockInput,
   type SectionBlockInput,
-} from "../blocks.js";
+} from "../legacy/blocks.js";
 import { createFluentBuilder, type FluentBuilder } from "./core.js";
 
 type FirstInput<Factory extends (...args: never[]) => unknown> = Parameters<Factory>[0];

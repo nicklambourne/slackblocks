@@ -5,9 +5,9 @@ import {
   messageResponse as createMessageResponse,
   webhookMessage as createWebhookMessage,
   type MessageInput,
-} from "../messages.js";
+} from "../legacy/messages.js";
 import type { JsonObject } from "../types.js";
-import { homeTab as createHomeTab, modal as createModal } from "../views.js";
+import { homeTab as createHomeTab, modal as createModal } from "../legacy/views.js";
 import { createFluentBuilder, type FluentBuilder } from "./core.js";
 
 type FirstInput<Factory extends (...args: never[]) => unknown> = Parameters<Factory>[0];
