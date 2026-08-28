@@ -1,13 +1,106 @@
 /** Higher-level fluent components that render ordinary Block Kit blocks. */
-import { actionsBlock, contextBlock } from "../blocks.js";
+import {
+  actionsBlock,
+  containerBlock,
+  contextBlock,
+  type ContainerWidth,
+} from "../blocks.js";
 import { button } from "../elements.js";
-import { MissingRequiredError, OutOfRangeError } from "../errors.js";
-import { mrkdwn } from "../objects.js";
+import {
+  MissingRequiredError,
+  OutOfRangeError,
+  TypeMismatchError,
+} from "../errors.js";
+import { mrkdwn, type TextLike } from "../objects.js";
 import type { FactorySettings, JsonObject } from "../types.js";
 import {
+  createFluentBuilder,
   createFluentGroupBuilder,
+  type FluentBuilder,
   type FluentGroupBuilder,
 } from "./core.js";
+
+/** Configuration accepted by {@link AccordionSection}. */
+export interface AccordionSectionInput {
+  /** Plain-text heading shown above the collapsible content. */
+  title: TextLike;
+  /** Blocks revealed when the section is expanded. */
+  blocks: JsonObject[];
+  /** Optional supporting copy below the heading. */
+  subtitle?: TextLike;
+  /** Optional image displayed in the header. */
+  icon?: JsonObject;
+  /** Whether this section starts expanded. Defaults to `false`. */
+  expanded?: boolean;
+  /** Horizontal width of this section. Defaults to `standard`. */
+  width?: ContainerWidth;
+  /** Whether Slack draws a divider below the header. */
+  hasHeaderDivider?: boolean;
+  /** Optional deterministic identifier for this section. */
+  blockId?: string;
+}
+
+function renderAccordionSection(
+  input: AccordionSectionInput,
+  settings: FactorySettings = {},
+): JsonObject {
+  const { blocks, expanded, ...container } = input;
+  return containerBlock(
+    {
+      ...container,
+      childBlocks: blocks,
+      isCollapsible: true,
+      defaultCollapsed: !(expanded ?? false),
+    },
+    settings,
+  );
+}
+
+/** Starts one native collapsible section for an {@link Accordion}. */
+export function AccordionSection(): FluentBuilder<
+  AccordionSectionInput,
+  JsonObject
+> {
+  return createFluentBuilder(renderAccordionSection, {
+    collections: { blocks: "flat" },
+  });
+}
+
+/** Configuration accepted by {@link Accordion}. */
+export interface AccordionInput {
+  /** Sections created with {@link AccordionSection}, in display order. */
+  sections: JsonObject[];
+}
+
+function renderAccordion(input: AccordionInput): JsonObject[] {
+  if (!Array.isArray(input.sections) || input.sections.length === 0) {
+    throw new MissingRequiredError(
+      "Accordion.sections",
+      "expected at least one section",
+    );
+  }
+  input.sections.forEach((section, index) => {
+    if (section.type !== "container" || section.is_collapsible !== true) {
+      throw new TypeMismatchError(
+        `Accordion.sections[${index}]`,
+        "expected an AccordionSection",
+      );
+    }
+  });
+  return input.sections;
+}
+
+/**
+ * Starts an accordion made from Slack-native collapsible containers.
+ *
+ * Each section expands independently in Slack and requires no application-side
+ * interaction handler.
+ */
+export function Accordion(): FluentGroupBuilder<AccordionInput, JsonObject> {
+  return createFluentGroupBuilder(renderAccordion, {
+    collections: { sections: "flat" },
+  });
+}
 
 /** Configuration accepted by {@link Paginator}. */
 export interface PaginatorInput {
@@ -39,10 +132,10 @@ function renderPaginator(
   input: PaginatorInput,
   settings: FactorySettings = {},
 ): JsonObject[] {
-  if (input.blocks.length === 0) {
+  if (!Array.isArray(input.blocks) || input.blocks.length === 0) {
     throw new MissingRequiredError("Paginator.blocks", "expected at least one block");
   }
-  if (input.actionIdPrefix.length === 0) {
+  if (typeof input.actionIdPrefix !== "string" || input.actionIdPrefix.length === 0) {
     throw new MissingRequiredError(
       "Paginator.actionIdPrefix",
       "expected a non-empty prefix",
