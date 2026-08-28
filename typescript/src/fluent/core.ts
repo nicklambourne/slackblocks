@@ -9,8 +9,11 @@ const FLUENT_BUILDER = Symbol("slackblocks.fluent-builder");
 
 type NonNullish<Value> = Exclude<Value, null | undefined>;
 
-/** A value accepted by a fluent parent: either wire data or another builder. */
-export type Buildable<Value> = Value | FluentBuilder<object, Value>;
+/** A value accepted by a fluent parent: wire data, nested data, or another builder. */
+export type Buildable<Value> =
+  | Value
+  | FluentBuilder<object, Value>
+  | (Value extends readonly (infer Item)[] ? readonly Buildable<Item>[] : never);
 
 type CollectionArgument<Value> =
   | Buildable<NonNullish<Value>>
