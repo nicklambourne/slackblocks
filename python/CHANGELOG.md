@@ -5,6 +5,22 @@ All notable changes to `slackblocks` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] — 2026-08-29
+
+This coordinated release introduces the fluent TypeScript API while keeping the Python
+and TypeScript packages on one release number. Python constructor signatures are
+unchanged.
+
+### Changed
+
+- Complete message payloads now enforce Slack's 50-block and 100-attachment limits and
+  require a non-empty channel.
+- Message, modal, and App Home block collections now reject blocks that Slack does not
+  support on that surface.
+- Modals containing an input block now require submit text, matching Slack's view rules.
+- The shared cross-language conformance contract is now version 1.1.0 and covers these
+  complete-payload rules in both implementations.
+
 ## [2.1.1] — 2026-08-16
 
 A documentation and packaging-metadata patch; no library behaviour changes.

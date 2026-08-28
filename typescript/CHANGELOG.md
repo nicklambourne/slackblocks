@@ -5,7 +5,7 @@ All notable changes to the TypeScript package are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.2.0] — 2026-08-29
 
 ### Added
 
@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fluent builders are now the documented and recommended TypeScript API.
 - The generated API reference describes every chainable setter and its build-time
   validation behavior.
+- Lowercase compatibility factories now live in the internal `src/legacy` area while
+  retaining their v2 root-package exports.
 
 ### Deprecated
 
