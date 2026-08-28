@@ -1,5 +1,11 @@
 # Spec changelog
 
+## 1.1.0 - 2026-08-28
+
+- Enforce Slack surface compatibility for message, modal, and App Home block collections.
+- Enforce the 50-block message limit, 100-attachment message limit, and non-empty message channel.
+- Require submit text when a modal contains an input block.
+
 ## 1.0.1 - 2026-08-14
 
 - Correct `option.value.max_length` from 75 to 150 to match the current Slack

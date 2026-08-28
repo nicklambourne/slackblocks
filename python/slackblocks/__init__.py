@@ -123,4 +123,4 @@ name = "slackblocks"
 
 # The version of the shared conformance spec (spec/SPEC.md) this
 # implementation conforms to.
-SPEC_VERSION: str = "1.0.1"
+SPEC_VERSION: str = "1.1.0"

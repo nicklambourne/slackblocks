@@ -3,8 +3,11 @@
  *
  * @module messages
  */
-import { TypeMismatchError } from "./errors.js";
+import limits from "../../spec/limits.json" with { type: "json" };
+
+import { LengthError, TypeMismatchError } from "./errors.js";
 import { createObject, dropEmpty } from "./internal.js";
+import { validateSurfaceBlocks } from "./surfaces.js";
 import type { FactorySettings, JsonObject } from "./types.js";
 
 /**
@@ -27,6 +30,39 @@ export const Color = {
 } as const;
 
 const COLOR_ALIASES = new Set<string>([Color.GOOD, Color.WARNING, Color.DANGER]);
+
+function validateMessageCollections(
+  input: { blocks?: JsonObject[]; attachments?: JsonObject[] },
+  path: string,
+): void {
+  if (input.blocks !== undefined) {
+    if (!Array.isArray(input.blocks)) {
+      throw new TypeMismatchError(`${path}.blocks`, "expected an array");
+    }
+    if (input.blocks.length > limits.message.blocks.max_items) {
+      throw new LengthError(
+        `${path}.blocks`,
+        `exceeds maximum ${limits.message.blocks.max_items}`,
+      );
+    }
+    validateSurfaceBlocks(input.blocks, "message", `${path}.blocks`);
+  }
+  if (
+    input.attachments !== undefined &&
+    !Array.isArray(input.attachments)
+  ) {
+    throw new TypeMismatchError(`${path}.attachments`, "expected an array");
+  }
+  if (
+    input.attachments !== undefined &&
+    input.attachments.length > limits.message.attachments.max_items
+  ) {
+    throw new LengthError(
+      `${path}.attachments`,
+      `exceeds maximum ${limits.message.attachments.max_items}`,
+    );
+  }
+}
 
 function normalizeColor(color: string): string {
   if (COLOR_ALIASES.has(color)) {
@@ -110,6 +146,16 @@ export function message(
   input: MessageInput,
   settings: FactorySettings = {},
 ): JsonObject {
+  if (typeof input.channel !== "string") {
+    throw new TypeMismatchError("message.channel", "expected a string");
+  }
+  if (input.channel.length < limits.message.channel.min_length) {
+    throw new LengthError(
+      "message.channel",
+      `expected at least ${limits.message.channel.min_length} character`,
+    );
+  }
+  validateMessageCollections(input, "message");
   return createObject(
     {
       mrkdwn: true,
@@ -147,6 +193,7 @@ export function messageResponse(
   },
   settings: FactorySettings = {},
 ): JsonObject {
+  validateMessageCollections(input, "messageResponse");
   return createObject(
     {
       mrkdwn: true,
@@ -192,5 +239,6 @@ export function webhookMessage(
   },
   settings: FactorySettings = {},
 ): JsonObject {
+  validateMessageCollections(input, "webhookMessage");
   return createObject(input, settings);
 }

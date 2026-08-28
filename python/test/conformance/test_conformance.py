@@ -10,6 +10,7 @@ import slackblocks
 from slackblocks import (
     ActionsBlock,
     AlertBlock,
+    Attachment,
     AxisConfig,
     Button,
     CardBlock,
@@ -38,6 +39,7 @@ from slackblocks import (
     LengthError,
     LineChart,
     MarkdownBlock,
+    Message,
     MissingRequiredError,
     ModalView,
     MutualExclusivityError,
@@ -344,6 +346,29 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     ),
     "video-provider-name-too-long": lambda: video(
         provider_name="x" * (LIMITS["video"]["provider_name"]["max_length"] + 1)
+    ),
+    "message-channel-empty": lambda: Message(channel=""),
+    "message-too-many-blocks": lambda: Message(
+        channel="C123",
+        blocks=[DividerBlock() for _ in range(LIMITS["message"]["blocks"]["max_items"] + 1)],
+    ),
+    "message-too-many-attachments": lambda: Message(
+        channel="C123",
+        attachments=[
+            Attachment(blocks=[DividerBlock()])
+            for _ in range(LIMITS["message"]["attachments"]["max_items"] + 1)
+        ],
+    ),
+    "message-invalid-block-surface": lambda: Message(
+        channel="C123", blocks=[AlertBlock("Modal only")]
+    ),
+    "modal-invalid-block-surface": lambda: ModalView(
+        title="Invalid", blocks=[MarkdownBlock("Message only")]
+    ),
+    "home-invalid-block-surface": lambda: HomeTabView(blocks=[AlertBlock("Modal only")]),
+    "modal-input-requires-submit": lambda: ModalView(
+        title="Missing submit",
+        blocks=[InputBlock(label="Name", element=PlainTextInput(action_id="name"))],
     ),
     "view-missing-blocks": lambda: HomeTabView(blocks=[]),
     "view-too-many-blocks": lambda: HomeTabView(

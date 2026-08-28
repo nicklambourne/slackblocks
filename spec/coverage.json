@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.0.1",
+  "spec_version": "1.1.0",
   "capabilities": {
     "blocks.actions": ["blocks/actions_block_checkboxes"],
     "blocks.alert": ["blocks/alert_block"],

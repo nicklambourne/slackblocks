@@ -613,6 +613,39 @@ const invalidCases: Record<string, () => unknown> = {
     video({ description: "x".repeat(limits.video.description.max_length + 1) }),
   "video-provider-name-too-long": () =>
     video({ providerName: "x".repeat(limits.video.provider_name.max_length + 1) }),
+  "message-channel-empty": () => message({ channel: "" }),
+  "message-too-many-blocks": () =>
+    message({
+      channel: "C123",
+      blocks: Array.from(
+        { length: limits.message.blocks.max_items + 1 },
+        () => dividerBlock(),
+      ),
+    }),
+  "message-too-many-attachments": () =>
+    message({
+      channel: "C123",
+      attachments: Array.from(
+        { length: limits.message.attachments.max_items + 1 },
+        () => attachment({ blocks: [dividerBlock()] }),
+      ),
+    }),
+  "message-invalid-block-surface": () =>
+    message({ channel: "C123", blocks: [alertBlock({ text: "Modal only" })] }),
+  "modal-invalid-block-surface": () =>
+    modal({ title: "Invalid", blocks: [markdownBlock({ text: "Message only" })] }),
+  "home-invalid-block-surface": () =>
+    homeTab({ blocks: [alertBlock({ text: "Modal only" })] }),
+  "modal-input-requires-submit": () =>
+    modal({
+      title: "Missing submit",
+      blocks: [
+        inputBlock({
+          label: "Name",
+          element: plainTextInput({ actionId: "name" }),
+        }),
+      ],
+    }),
   "view-missing-blocks": () => homeTab({ blocks: [] }),
   "view-too-many-blocks": () =>
     homeTab({

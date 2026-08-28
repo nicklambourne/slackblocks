@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.0.1",
+  "spec_version": "1.1.0",
   "cases": [
     {
       "id": "text-empty",
@@ -312,6 +312,48 @@
       "category": "length-exceeded",
       "constraint": "video.provider_name.max_length",
       "description": "A video provider name longer than 50 characters must be rejected"
+    },
+    {
+      "id": "message-channel-empty",
+      "category": "length-exceeded",
+      "constraint": "message.channel.min_length",
+      "description": "A Web API message must name a non-empty destination channel"
+    },
+    {
+      "id": "message-too-many-blocks",
+      "category": "length-exceeded",
+      "constraint": "message.blocks.max_items",
+      "description": "A message with more than 50 blocks must be rejected"
+    },
+    {
+      "id": "message-too-many-attachments",
+      "category": "length-exceeded",
+      "constraint": "message.attachments.max_items",
+      "description": "A message with more than 100 attachments must be rejected"
+    },
+    {
+      "id": "message-invalid-block-surface",
+      "category": "type-mismatch",
+      "constraint": "message.blocks.surface",
+      "description": "A message cannot contain a modal-only alert block"
+    },
+    {
+      "id": "modal-invalid-block-surface",
+      "category": "type-mismatch",
+      "constraint": "view.modal.blocks.surface",
+      "description": "A modal cannot contain a message-only markdown block"
+    },
+    {
+      "id": "home-invalid-block-surface",
+      "category": "type-mismatch",
+      "constraint": "view.home.blocks.surface",
+      "description": "An App Home tab cannot contain a modal-only alert block"
+    },
+    {
+      "id": "modal-input-requires-submit",
+      "category": "missing-required",
+      "constraint": "view.modal.submit_for_input",
+      "description": "A modal containing an input block must define submit text"
     },
     {
       "id": "view-missing-blocks",
