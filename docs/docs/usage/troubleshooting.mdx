@@ -152,22 +152,22 @@ Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
 
 ## Why is my message showing literal `*asterisks*` instead of bold text?
 
-Slack supports `mrkdwn` and `plain_text`. The `sectionBlock()` factory turns a string into `mrkdwn` by default, but Slack requires headers, button labels, modal titles, input labels, and option labels to use `plain_text`. Markdown syntax in those fields is displayed literally.
+Slack supports `mrkdwn` and `plain_text`. `SectionBlock().text()` turns a string into `mrkdwn` by default, but Slack requires headers, button labels, modal titles, input labels, and option labels to use `plain_text`. Markdown syntax in those fields is displayed literally.
 
-If styling is missing from a field that supports it, check that you have not wrapped the value with `plainText()`. Use `mrkdwn()` when you need to choose the text type explicitly.
+If styling is missing from a field that supports it, check that you have not wrapped the value with `PlainText()`. Use `Markdown()` when you need to choose the text type explicitly.
 
 ## Why does Slack say `text` is required?
 
 Messages containing blocks should also provide a short plain-text fallback. Slack uses it for push notifications, assistive technology, and clients that cannot render Block Kit.
 
 ```ts
-import { headerBlock, message } from "@nicklambourne/slackblocks";
+import { HeaderBlock, Message } from "@nicklambourne/slackblocks";
 
-const payload = message({
-  channel: "C0123456",
-  text: "Build #482 passed",
-  blocks: [headerBlock({ text: "Build #482 passed :white_check_mark:" })],
-});
+const payload = Message()
+  .channel("C0123456")
+  .text("Build #482 passed")
+  .blocks(HeaderBlock().text("Build #482 passed :white_check_mark:"))
+  .build();
 ```
 
 ## What is `blockId` for? Should I set it?
@@ -177,47 +177,45 @@ const payload = message({
 You can omit it for non-interactive content. For interactive messages and views, use a stable value that your handlers understand:
 
 ```ts
-import { actionsBlock, button } from "@nicklambourne/slackblocks";
+import { ActionsBlock, Button } from "@nicklambourne/slackblocks";
 
-actionsBlock({
-  blockId: "approval:req-123",
-  elements: [
-    button({ text: "Approve", actionId: "approve", value: "req-123" }),
-  ],
-});
+ActionsBlock()
+  .blockId("approval:req-123")
+  .elements(Button().text("Approve").actionId("approve").value("req-123"))
+  .build();
 ```
 
 The same principle applies to `actionId`, which becomes `action_id` on the wire.
 
 ## What do `LengthError` and the other validation errors mean?
 
-`slackblocks` validates payloads while its factories construct them. An error such as `LengthError`, `RangeError`, or `MissingRequiredError` means the input would violate a known Block Kit rule. The error includes a path so you can find the invalid field before sending anything to Slack.
+`slackblocks` validates the complete object when `.build()` is called. An error such as `LengthError`, `OutOfRangeError`, or `MissingRequiredError` means the input would violate a known Block Kit rule. The error includes a path so you can find the invalid field before sending anything to Slack.
 
 Common limits include:
 
-| Factory field                       | Limit |
+| Builder field                       | Limit |
 |-------------------------------------|-------|
-| `sectionBlock().text`               | 3,000 characters |
-| `sectionBlock().fields[i]`          | 2,000 characters |
-| `headerBlock().text`                | 150 characters |
-| `button().text`                     | 75 characters |
-| `button().value`                    | 2,000 characters |
-| `button().url`                      | 3,000 characters |
-| `modal().title` / `submit` / `close`| 24 characters |
+| `SectionBlock().text()`             | 3,000 characters |
+| `SectionBlock().fields()` items     | 2,000 characters |
+| `HeaderBlock().text()`              | 150 characters |
+| `Button().text()`                   | 75 characters |
+| `Button().value()`                  | 2,000 characters |
+| `Button().url()`                    | 3,000 characters |
+| `Modal().title()` / `submit()` / `close()` | 24 characters |
 | `actionId`                          | 255 characters |
 | `privateMetadata`                   | 3,000 characters |
-| `option().url`                      | 3,000 characters |
+| `Option().url()`                    | 3,000 characters |
 
-If Slack adds a field or raises a limit before the package catches up, pass `{ validate: false }` as the final factory argument for that construction only.
+If Slack adds a field or raises a limit before the package catches up, pass `{ validate: false }` to `.build()` for that construction only.
 
 ## How many blocks can a payload contain?
 
 - Channel messages: **50 blocks**.
 - Modals and home tabs: **100 blocks**.
-- `contextBlock()`: up to **10 elements**.
-- `actionsBlock()`: up to **25 elements**.
-- `sectionBlock().fields`: up to **10 items**.
-- `tableBlock()`: up to **100 rows × 20 columns**.
+- `ContextBlock()`: up to **10 elements**.
+- `ActionsBlock()`: up to **25 elements**.
+- `SectionBlock().fields()`: up to **10 items**.
+- `TableBlock()`: up to **100 rows × 20 columns**.
 
 ## Why don't my buttons or selects do anything when clicked?
 
@@ -225,22 +223,22 @@ If Slack adds a field or raises a limit before the package catches up, pass `{ v
 
 [`@slack/bolt`](https://slack.dev/bolt-js/) is the usual starting point for a TypeScript or JavaScript app.
 
-## Why doesn't markdown work inside `headerBlock()`?
+## Why doesn't markdown work inside `HeaderBlock()`?
 
-Slack only accepts `plain_text` in header blocks. Use `sectionBlock()` followed by `dividerBlock()` when you need styled heading text.
+Slack only accepts `plain_text` in header blocks. Use `SectionBlock()` followed by `DividerBlock()` when you need styled heading text.
 
 ## How can I preview a message without sending it?
 
 Generate a Block Kit Builder URL and open it in your browser:
 
 ```ts
-import { blockKitBuilderUrl, message, sectionBlock } from "@nicklambourne/slackblocks";
+import { blockKitBuilderUrl, Message, SectionBlock } from "@nicklambourne/slackblocks";
 
-const payload = message({
-  channel: "C0123456",
-  text: "Preview message",
-  blocks: [sectionBlock({ text: "Hello!" })],
-});
+const payload = Message()
+  .channel("C0123456")
+  .text("Preview message")
+  .blocks(SectionBlock().text("Hello!"))
+  .build();
 
 console.log(blockKitBuilderUrl(payload));
 ```
@@ -249,16 +247,16 @@ You can also paste `JSON.stringify(payload, null, 2)` into Slack's [Block Kit Bu
 
 ## How do I send a payload with `fetch()`?
 
-Factories return plain objects, so no conversion step is required:
+`.build()` returns a plain object, so no conversion step is required:
 
 ```ts
-import { message, sectionBlock } from "@nicklambourne/slackblocks";
+import { Message, SectionBlock } from "@nicklambourne/slackblocks";
 
-const payload = message({
-  channel: "C0123456",
-  text: "Hello!",
-  blocks: [sectionBlock({ text: "Hello!" })],
-});
+const payload = Message()
+  .channel("C0123456")
+  .text("Hello!")
+  .blocks(SectionBlock().text("Hello!"))
+  .build();
 
 const response = await fetch("https://slack.com/api/chat.postMessage", {
   method: "POST",
@@ -274,11 +272,11 @@ if (!response.ok) throw new Error(`Slack returned ${response.status}`);
 
 ## Can I use `slackblocks` in async code?
 
-Yes. The factories are synchronous, side-effect-free functions that return ordinary objects. Construct the payload wherever it is convenient, then `await` your Slack SDK or HTTP client when you send it.
+Yes. The builders are synchronous and side-effect-free. Construct and build the payload wherever it is convenient, then `await` your Slack SDK or HTTP client when you send it.
 
 ## How does this differ from `@slack/types`?
 
-`@slack/types` supplies TypeScript definitions for Slack payloads. `slackblocks` adds small construction helpers, camelCase inputs, snake_case wire output, and eager validation with path-aware errors. The resulting objects remain compatible with Slack's official types and clients.
+`@slack/types` supplies TypeScript definitions for Slack payloads. `slackblocks` adds fluent construction, camelCase setters, snake_case wire output, and build-time validation with path-aware errors. The resulting objects remain compatible with Slack's official types and clients.
 
 ## Where do I report bugs or request features?
 

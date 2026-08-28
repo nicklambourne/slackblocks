@@ -3,24 +3,20 @@ import { fileURLToPath } from "node:url";
 import ts from "typescript";
 
 const SOURCE_FILES = [
-  "../../typescript/src/legacy/blocks.ts",
-  "../../typescript/src/legacy/elements.ts",
-  "../../typescript/src/legacy/objects.ts",
-  "../../typescript/src/legacy/rich-text.ts",
-  "../../typescript/src/legacy/messages.ts",
-  "../../typescript/src/legacy/views.ts",
+  "../../typescript/src/fluent/blocks.ts",
+  "../../typescript/src/fluent/components.ts",
+  "../../typescript/src/fluent/elements.ts",
+  "../../typescript/src/fluent/objects.ts",
+  "../../typescript/src/fluent/payloads.ts",
   "../../typescript/src/builder.ts",
   "../../typescript/src/types.ts",
   "../../typescript/src/validation.ts",
   "../../typescript/src/errors.ts",
 ];
 
-const THROWS_REQUIRED_FILES = new Set([
-  "../../typescript/src/legacy/blocks.ts",
-  "../../typescript/src/legacy/elements.ts",
-  "../../typescript/src/legacy/messages.ts",
-  "../../typescript/src/legacy/views.ts",
-]);
+const FLUENT_FILES = new Set(
+  SOURCE_FILES.filter((sourcePath) => sourcePath.includes("/fluent/")),
+);
 
 const failures = [];
 
@@ -134,16 +130,13 @@ for (const sourcePath of SOURCE_FILES) {
     if (!isExported(statement) || !statement.name) continue;
     const location = `${sourcePath}:${statement.name.getText()}`;
     if (ts.isFunctionDeclaration(statement)) {
-      inspectFunction(statement, location, THROWS_REQUIRED_FILES.has(sourcePath));
-      if (sourcePath.endsWith("/elements.ts")) {
-        const input = statement.parameters.find(
-          (parameter) => parameter.name.getText() === "input",
-        );
-        if (input?.type?.getText().includes("ActionInput")) {
-          failures.push(
-            `${location}(input): use a documented factory-specific input type`,
-          );
+      if (FLUENT_FILES.has(sourcePath)) {
+        requireDocumentation(statement, location);
+        if (!/^[A-Z]/.test(statement.name.getText())) {
+          failures.push(`${location}: fluent builders must use PascalCase`);
         }
+      } else {
+        inspectFunction(statement, location, false);
       }
     } else if (ts.isInterfaceDeclaration(statement)) inspectInterface(statement, location);
     else if (ts.isClassDeclaration(statement)) inspectClass(statement, location);

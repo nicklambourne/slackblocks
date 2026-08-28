@@ -8,11 +8,10 @@ import * as slackblocks from "@nicklambourne/slackblocks";
 import { payload } from "../../docs/examples/typescript/section_hello.js";
 
 // Block sections in using_blocks.mdx whose TypeScript snippet cannot be
-// executed and compared against the JSON tab by this harness. Empty today:
-// every section parses and round-trips. Add a section title here (with a
-// comment explaining why) only if a future section's Tabs structure resists
-// parsing.
-const EXCLUDED_SECTIONS = new Set<string>();
+// executed and compared against one JSON tab by this harness. Higher-level
+// components have multiple examples and variable output rather than one block
+// plus one JSON tab; their payloads are covered by components.test.ts.
+const EXCLUDED_SECTIONS = new Set(["Higher-Level Components"]);
 
 const usingBlocksPath = resolve(
   import.meta.dirname,

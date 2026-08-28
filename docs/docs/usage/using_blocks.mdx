@@ -21,7 +21,7 @@ For the reverse mapping — looking up a class by name — see the [Blocks refer
 </Python>
 <TypeScript>
 
-For exact factory inputs and return types, see the [TypeScript API reference](../reference/typescript). Interactive controls such as buttons, menus, and date pickers are documented alongside the other element factories.
+For exact setters and return types, see the [TypeScript API reference](../reference/typescript). Interactive controls such as buttons, menus, and date pickers are documented alongside the other element builders.
 
 </TypeScript>
 </LanguageContent>
@@ -57,21 +57,17 @@ SectionBlock(
 <TypeScript>
 
 ```ts
-import { checkboxes, mrkdwn, option, sectionBlock } from "@nicklambourne/slackblocks";
+import { Checkboxes, Markdown, Option, SectionBlock } from "@nicklambourne/slackblocks";
 
-sectionBlock({
-  text: "This is a section block with a checkbox accessory.",
-  blockId: "fake_block_id",
-  accessory: checkboxes({
-    actionId: "checkboxes-action",
-    options: [
-      option({
-        text: mrkdwn("*Your Only Option*"),
-        value: "option_one",
-      }),
-    ],
-  }),
-});
+SectionBlock()
+  .text("This is a section block with a checkbox accessory.")
+  .blockId("fake_block_id")
+  .accessory(
+    Checkboxes()
+      .actionId("checkboxes-action")
+      .options(Option().text(Markdown().text("*Your Only Option*")).value("option_one")),
+  )
+  .build();
 ```
 
 </TypeScript>
@@ -150,18 +146,18 @@ RichTextBlock(
 <TypeScript>
 
 ```ts
-import { richText, richTextBlock, richTextSection } from "@nicklambourne/slackblocks";
+import { RichText, RichTextBlock, RichTextSection } from "@nicklambourne/slackblocks";
 
-richTextBlock({
-  blockId: "fake_block_id",
-  elements: [
-    richTextSection([
-      richText("You 'bout to witness hip-hop in its most purest\n", { bold: true }),
-      richText("Most rawest form, flow almost flawless\n", { strike: true }),
-      richText("Most hardest, most honest known artist\n", { italic: true }),
-    ]),
-  ],
-});
+RichTextBlock()
+  .blockId("fake_block_id")
+  .elements(
+    RichTextSection().elements(
+      RichText().text("You 'bout to witness hip-hop in its most purest\n").style({ bold: true }),
+      RichText().text("Most rawest form, flow almost flawless\n").style({ strike: true }),
+      RichText().text("Most hardest, most honest known artist\n").style({ italic: true }),
+    ),
+  )
+  .build();
 ```
 
 </TypeScript>
@@ -237,12 +233,9 @@ HeaderBlock(
 <TypeScript>
 
 ```ts
-import { headerBlock } from "@nicklambourne/slackblocks";
+import { HeaderBlock } from "@nicklambourne/slackblocks";
 
-headerBlock({
-  text: "This is a header block",
-  blockId: "fake_block_id",
-});
+HeaderBlock().text("This is a header block").blockId("fake_block_id").build();
 ```
 
 </TypeScript>
@@ -298,12 +291,12 @@ MarkdownBlock(
 <TypeScript>
 
 ```ts
-import { markdownBlock } from "@nicklambourne/slackblocks";
+import { MarkdownBlock } from "@nicklambourne/slackblocks";
 
-markdownBlock({
-  text: "**Hello!** Markdown blocks support _GitHub-flavored_ syntax.",
-  blockId: "fake_block_id",
-});
+MarkdownBlock()
+  .text("**Hello!** Markdown blocks support _GitHub-flavored_ syntax.")
+  .blockId("fake_block_id")
+  .build();
 ```
 
 </TypeScript>
@@ -351,14 +344,14 @@ ImageBlock(
 <TypeScript>
 
 ```ts
-import { imageBlock } from "@nicklambourne/slackblocks";
+import { ImageBlock } from "@nicklambourne/slackblocks";
 
-imageBlock({
-  imageUrl: "https://api.slack.com/img/blocks/bkb_template_images/beagle.png",
-  altText: "a beagle",
-  title: "dog",
-  blockId: "fake_block_id",
-});
+ImageBlock()
+  .imageUrl("https://api.slack.com/img/blocks/bkb_template_images/beagle.png")
+  .altText("a beagle")
+  .title("dog")
+  .blockId("fake_block_id")
+  .build();
 ```
 
 </TypeScript>
@@ -415,15 +408,15 @@ InputBlock(
 <TypeScript>
 
 ```ts
-import { inputBlock, plainText, plainTextInput } from "@nicklambourne/slackblocks";
+import { InputBlock, PlainText, PlainTextInput } from "@nicklambourne/slackblocks";
 
-inputBlock({
-  label: plainText("Label", { emoji: true }),
-  hint: plainText("Hint", { emoji: true }),
-  element: plainTextInput({ actionId: "action" }),
-  blockId: "fake_block_id",
-  optional: true,
-});
+InputBlock()
+  .label(PlainText().text("Label").emoji(true))
+  .hint(PlainText().text("Hint").emoji(true))
+  .element(PlainTextInput().actionId("action"))
+  .blockId("fake_block_id")
+  .optional(true)
+  .build();
 ```
 
 </TypeScript>
@@ -483,9 +476,9 @@ DividerBlock(block_id="fake_block_id")
 <TypeScript>
 
 ```ts
-import { dividerBlock } from "@nicklambourne/slackblocks";
+import { DividerBlock } from "@nicklambourne/slackblocks";
 
-dividerBlock({ blockId: "fake_block_id" });
+DividerBlock().blockId("fake_block_id").build();
 ```
 
 </TypeScript>
@@ -533,12 +526,9 @@ FileBlock(
 <TypeScript>
 
 ```ts
-import { fileBlock } from "@nicklambourne/slackblocks";
+import { FileBlock } from "@nicklambourne/slackblocks";
 
-fileBlock({
-  externalId: "external_id",
-  blockId: "fake_block_id",
-});
+FileBlock().externalId("external_id").blockId("fake_block_id").build();
 ```
 
 </TypeScript>
@@ -591,12 +581,12 @@ ContextBlock(
 <TypeScript>
 
 ```ts
-import { contextBlock, mrkdwn } from "@nicklambourne/slackblocks";
+import { ContextBlock, Markdown } from "@nicklambourne/slackblocks";
 
-contextBlock({
-  elements: [mrkdwn("Hello, world!")],
-  blockId: "fake_block_id",
-});
+ContextBlock()
+  .elements(Markdown().text("Hello, world!"))
+  .blockId("fake_block_id")
+  .build();
 ```
 
 </TypeScript>
@@ -656,23 +646,23 @@ ActionsBlock(
 <TypeScript>
 
 ```ts
-import { actionsBlock, checkboxes, mrkdwn, option, plainText } from "@nicklambourne/slackblocks";
+import { ActionsBlock, Checkboxes, Markdown, Option, PlainText } from "@nicklambourne/slackblocks";
 
-actionsBlock({
-  blockId: "fake_block_id",
-  elements: [
-    checkboxes({
-      actionId: "actionId-0",
-      options: ["a", "b", "c"].map((value) =>
-        option({
-          text: mrkdwn(`*${value}*`),
-          value,
-          description: plainText(`*${value}*`),
-        }),
+ActionsBlock()
+  .blockId("fake_block_id")
+  .elements(
+    Checkboxes()
+      .actionId("actionId-0")
+      .options(
+        ["a", "b", "c"].map((value) =>
+          Option()
+            .text(Markdown().text(`*${value}*`))
+            .value(value)
+            .description(PlainText().text(`*${value}*`)),
+        ),
       ),
-    }),
-  ],
-});
+  )
+  .build();
 ```
 
 </TypeScript>
@@ -792,40 +782,38 @@ TableBlock(
 
 ```ts
 import {
-  columnSettings,
-  rawText,
-  richText,
-  richTextBlock,
-  richTextLink,
-  richTextSection,
-  tableBlock,
+  ColumnSettings,
+  RawText,
+  RichText,
+  RichTextBlock,
+  RichTextLink,
+  RichTextSection,
+  TableBlock,
 } from "@nicklambourne/slackblocks";
 
-tableBlock({
-  blockId: "fake_block_id",
-  columnSettings: [
-    columnSettings({ align: "right", isWrapped: true }),
-    columnSettings({ align: "left" }),
-  ],
-  rows: [
-    [
-      richTextBlock({
-        elements: [richTextSection([richText("Header 1", { bold: true })])],
-      }),
-      richTextBlock({
-        elements: [richTextSection([richText("Header 2", { bold: true })])],
-      }),
-    ],
-    [
-      rawText("Datum 1"),
-      richTextBlock({
-        elements: [
-          richTextSection([richTextLink({ url: "https://slack.com", text: "Datum 2" })]),
-        ],
-      }),
-    ],
-  ],
-});
+TableBlock()
+  .blockId("fake_block_id")
+  .columnSettings(
+    ColumnSettings().align("right").isWrapped(true),
+    ColumnSettings().align("left"),
+  )
+  .rows([
+    RichTextBlock().elements(
+      RichTextSection().elements(RichText().text("Header 1").style({ bold: true })),
+    ),
+    RichTextBlock().elements(
+      RichTextSection().elements(RichText().text("Header 2").style({ bold: true })),
+    ),
+  ])
+  .rows([
+    RawText().text("Datum 1"),
+    RichTextBlock().elements(
+      RichTextSection().elements(
+        RichTextLink().url("https://slack.com").text("Datum 2"),
+      ),
+    ),
+  ])
+  .build();
 ```
 
 </TypeScript>
@@ -952,19 +940,19 @@ VideoBlock(
 <TypeScript>
 
 ```ts
-import { videoBlock } from "@nicklambourne/slackblocks";
+import { VideoBlock } from "@nicklambourne/slackblocks";
 
-videoBlock({
-  altText: "How to use slackblocks",
-  blockId: "fake_block_id",
-  thumbnailUrl: "https://example.com/thumb.png",
-  title: "Getting Started",
-  videoUrl: "https://example.com/video.mp4",
-  authorName: "The slackblocks docs",
-  description: "A short walkthrough.",
-  providerName: "example.com",
-  titleUrl: "https://example.com",
-});
+VideoBlock()
+  .altText("How to use slackblocks")
+  .blockId("fake_block_id")
+  .thumbnailUrl("https://example.com/thumb.png")
+  .title("Getting Started")
+  .videoUrl("https://example.com/video.mp4")
+  .authorName("The slackblocks docs")
+  .description("A short walkthrough.")
+  .providerName("example.com")
+  .titleUrl("https://example.com")
+  .build();
 ```
 
 </TypeScript>
@@ -1024,13 +1012,13 @@ AlertBlock(
 <TypeScript>
 
 ```ts
-import { alertBlock } from "@nicklambourne/slackblocks";
+import { AlertBlock } from "@nicklambourne/slackblocks";
 
-alertBlock({
-  text: "The deployment needs attention.",
-  level: "warning",
-  blockId: "fake_block_id",
-});
+AlertBlock()
+  .text("The deployment needs attention.")
+  .level("warning")
+  .blockId("fake_block_id")
+  .build();
 ```
 
 </TypeScript>
@@ -1085,15 +1073,15 @@ CardBlock(
 <TypeScript>
 
 ```ts
-import { button, cardBlock, slackIcon } from "@nicklambourne/slackblocks";
+import { Button, CardBlock, SlackIcon } from "@nicklambourne/slackblocks";
 
-cardBlock({
-  title: "Build complete",
-  body: "Version 2.1.0 is ready to deploy.",
-  slackIcon: slackIcon("rocket"),
-  actions: [button({ text: "Open build", actionId: "open_build" })],
-  blockId: "fake_block_id",
-});
+CardBlock()
+  .title("Build complete")
+  .body("Version 2.1.0 is ready to deploy.")
+  .slackIcon(SlackIcon().name("rocket"))
+  .actions(Button().text("Open build").actionId("open_build"))
+  .blockId("fake_block_id")
+  .build();
 ```
 
 </TypeScript>
@@ -1162,15 +1150,15 @@ CarouselBlock([
 <TypeScript>
 
 ```ts
-import { cardBlock, carouselBlock } from "@nicklambourne/slackblocks";
+import { CardBlock, CarouselBlock } from "@nicklambourne/slackblocks";
 
-carouselBlock({
-  elements: [
-    cardBlock({ title: "First result", blockId: "card_1" }),
-    cardBlock({ title: "Second result", blockId: "card_2" }),
-  ],
-  blockId: "fake_block_id",
-});
+CarouselBlock()
+  .elements(
+    CardBlock().title("First result").blockId("card_1"),
+    CardBlock().title("Second result").blockId("card_2"),
+  )
+  .blockId("fake_block_id")
+  .build();
 ```
 
 </TypeScript>
@@ -1239,22 +1227,19 @@ ContainerBlock(
 <TypeScript>
 
 ```ts
-import { containerBlock, sectionBlock } from "@nicklambourne/slackblocks";
+import { ContainerBlock, SectionBlock } from "@nicklambourne/slackblocks";
 
-containerBlock({
-  title: "Deployment summary",
-  childBlocks: [
-    sectionBlock({
-      text: "All systems operational.",
-      blockId: "child_1",
-    }),
-  ],
-  width: "standard",
-  isCollapsible: false,
-  defaultCollapsed: false,
-  hasHeaderDivider: true,
-  blockId: "fake_block_id",
-});
+ContainerBlock()
+  .title("Deployment summary")
+  .childBlocks(
+    SectionBlock().text("All systems operational.").blockId("child_1"),
+  )
+  .width("standard")
+  .isCollapsible(false)
+  .defaultCollapsed(false)
+  .hasHeaderDivider(true)
+  .blockId("fake_block_id")
+  .build();
 ```
 
 </TypeScript>
@@ -1322,18 +1307,17 @@ ContextActionsBlock([
 <TypeScript>
 
 ```ts
-import { contextActionsBlock, feedbackButton, feedbackButtons } from "@nicklambourne/slackblocks";
+import { ContextActionsBlock, FeedbackButton, FeedbackButtons } from "@nicklambourne/slackblocks";
 
-contextActionsBlock({
-  elements: [
-    feedbackButtons({
-      actionId: "response_feedback",
-      positiveButton: feedbackButton({ text: "Good", value: "positive" }),
-      negativeButton: feedbackButton({ text: "Bad", value: "negative" }),
-    }),
-  ],
-  blockId: "fake_block_id",
-});
+ContextActionsBlock()
+  .elements(
+    FeedbackButtons()
+      .actionId("response_feedback")
+      .positiveButton(FeedbackButton().text("Good").value("positive"))
+      .negativeButton(FeedbackButton().text("Bad").value("negative")),
+  )
+  .blockId("fake_block_id")
+  .build();
 ```
 
 </TypeScript>
@@ -1404,16 +1388,14 @@ DataTableBlock(
 <TypeScript>
 
 ```ts
-import { dataTableBlock, rawNumber, rawText } from "@nicklambourne/slackblocks";
+import { DataTableBlock, RawNumber, RawText } from "@nicklambourne/slackblocks";
 
-dataTableBlock({
-  caption: "Team scores",
-  rows: [
-    [rawText("Name"), rawText("Score")],
-    [rawText("Alice"), rawNumber(42, "42")],
-  ],
-  blockId: "fake_block_id",
-});
+DataTableBlock()
+  .caption("Team scores")
+  .rows([RawText().text("Name"), RawText().text("Score")])
+  .rows([RawText().text("Alice"), RawNumber().value(42).text("42")])
+  .blockId("fake_block_id")
+  .build();
 ```
 
 </TypeScript>
@@ -1490,16 +1472,18 @@ DataVisualizationBlock(
 <TypeScript>
 
 ```ts
-import { chartSegment, dataVisualizationBlock, pieChart } from "@nicklambourne/slackblocks";
+import { ChartSegment, DataVisualizationBlock, PieChart } from "@nicklambourne/slackblocks";
 
-dataVisualizationBlock({
-  title: "Incidents by severity",
-  chart: pieChart([
-    chartSegment({ label: "High", value: 3 }),
-    chartSegment({ label: "Low", value: 12 }),
-  ]),
-  blockId: "fake_block_id",
-});
+DataVisualizationBlock()
+  .title("Incidents by severity")
+  .chart(
+    PieChart().segments(
+      ChartSegment().label("High").value(3),
+      ChartSegment().label("Low").value(12),
+    ),
+  )
+  .blockId("fake_block_id")
+  .build();
 ```
 
 </TypeScript>
@@ -1563,15 +1547,15 @@ TaskCardBlock(
 <TypeScript>
 
 ```ts
-import { taskCardBlock, urlSource } from "@nicklambourne/slackblocks";
+import { TaskCardBlock, UrlSource } from "@nicklambourne/slackblocks";
 
-taskCardBlock({
-  taskId: "weather_1",
-  title: "Fetch weather data",
-  status: "complete",
-  sources: [urlSource({ url: "https://weather.com/", text: "weather.com" })],
-  blockId: "fake_block_id",
-});
+TaskCardBlock()
+  .taskId("weather_1")
+  .title("Fetch weather data")
+  .status("complete")
+  .sources(UrlSource().url("https://weather.com/").text("weather.com"))
+  .blockId("fake_block_id")
+  .build();
 ```
 
 </TypeScript>
@@ -1632,16 +1616,16 @@ PlanBlock(
 <TypeScript>
 
 ```ts
-import { planBlock, taskCardBlock } from "@nicklambourne/slackblocks";
+import { PlanBlock, TaskCardBlock } from "@nicklambourne/slackblocks";
 
-planBlock({
-  title: "Release plan",
-  tasks: [
-    taskCardBlock({ taskId: "test", title: "Run the test suite", status: "complete" }),
-    taskCardBlock({ taskId: "deploy", title: "Deploy the release", status: "pending" }),
-  ],
-  blockId: "fake_block_id",
-});
+PlanBlock()
+  .title("Release plan")
+  .tasks(
+    TaskCardBlock().taskId("test").title("Run the test suite").status("complete"),
+    TaskCardBlock().taskId("deploy").title("Deploy the release").status("pending"),
+  )
+  .blockId("fake_block_id")
+  .build();
 ```
 
 </TypeScript>
@@ -1677,3 +1661,77 @@ planBlock({
 
 </TabItem>
 </Tabs>
+
+<LanguageContent>
+<TypeScript>
+
+## Higher-Level Components
+
+Components package common layout behavior while still producing ordinary Block Kit
+blocks. Pass them directly to a fluent collection setter such as `Message().blocks()`;
+the parent expands the component when you call `.build()`.
+
+### Paginator
+
+`Paginator()` selects one page of content and adds standard context and actions blocks
+for navigation. Its previous and next button values contain the one-based page number
+your interaction handler should render next.
+
+```ts
+import { Message, Paginator, SectionBlock } from "@nicklambourne/slackblocks";
+
+const payload = Message()
+  .channel("C01234567")
+  .text("Search results")
+  .blocks(
+    Paginator()
+      .blocks(
+        SectionBlock().text("Result one"),
+        SectionBlock().text("Result two"),
+        SectionBlock().text("Result three"),
+      )
+      .actionIdPrefix("search-results")
+      .page(1)
+      .pageSize(2),
+  )
+  .build();
+```
+
+The component is deliberately state-free: your Slack action handler reads the button
+value, creates the same paginator with that page, and updates the message.
+
+### Accordion
+
+`Accordion()` expands into Slack-native collapsible container blocks, so expanding and
+collapsing sections does not require an application-side interaction handler.
+
+```ts
+import {
+  Accordion,
+  AccordionSection,
+  Message,
+  SectionBlock,
+} from "@nicklambourne/slackblocks";
+
+const payload = Message()
+  .channel("C01234567")
+  .text("Deployment details")
+  .blocks(
+    Accordion().sections(
+      AccordionSection()
+        .title("Summary")
+        .expanded(true)
+        .blocks(SectionBlock().text("Version 2.2.0 is ready.")),
+      AccordionSection()
+        .title("Checks")
+        .blocks(SectionBlock().text("All required checks passed.")),
+    ),
+  )
+  .build();
+```
+
+See [Components](../reference/typescript/components) for every setter and validation
+rule.
+
+</TypeScript>
+</LanguageContent>

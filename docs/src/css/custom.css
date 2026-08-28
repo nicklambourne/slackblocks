@@ -9,6 +9,11 @@
   --ifm-code-font-size: 92%;
 }
 
+/* Historical TypeScript URLs remain linkable without appearing in navigation. */
+.api-redirect {
+  display: none;
+}
+
 [data-theme="dark"] {
   --ifm-color-primary: #d8a7db;
   --ifm-color-primary-dark: #ca8bce;

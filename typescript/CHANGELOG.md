@@ -5,6 +5,28 @@ All notable changes to the TypeScript package are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Fluent PascalCase builders for every composition object, element, block, message,
+  attachment, response, modal, and App Home payload.
+- Higher-level `Paginator` and Slack-native `Accordion` components that expand inside
+  fluent collection setters.
+- Complete payload-level validation for message block and attachment limits, required
+  channels, supported block surfaces, and modal submission rules.
+
+### Changed
+
+- Fluent builders are now the documented and recommended TypeScript API.
+- The generated API reference describes every chainable setter and its build-time
+  validation behavior.
+
+### Deprecated
+
+- Lowercase object-input factories remain available for v2 compatibility but are no
+  longer documented. They are scheduled for removal in v3.0; see the project roadmap.
+
 ## [2.1.1] — 2026-08-16
 
 A documentation-only patch; no library behaviour changes.

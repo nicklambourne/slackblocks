@@ -1,4 +1,8 @@
-/** Higher-level fluent components that render ordinary Block Kit blocks. */
+/**
+ * Higher-level fluent components that render ordinary Block Kit blocks.
+ *
+ * @module components
+ */
 import {
   actionsBlock,
   containerBlock,

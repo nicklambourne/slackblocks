@@ -134,13 +134,12 @@ const TYPESCRIPT_TYPE_ALIAS_NAMES = new Set([
 
 const TYPESCRIPT_DOMAIN_TITLES: Record<string, string> = {
   blocks: "Blocks",
+  components: "Components",
   elements: "Elements",
   errors: "Errors",
-  messages: "Messages",
   objects: "Composition Objects",
-  "rich-text": "Rich Text",
+  payloads: "Payloads",
   utilities: "Utilities",
-  views: "Views",
 };
 
 function typescriptDomainTitle({ rawName }: { rawName: string }): string {
@@ -225,12 +224,11 @@ const config: Config = {
       {
         name: "TypeScript API reference",
         entryPoints: [
-          "../typescript/src/legacy/blocks.ts",
-          "../typescript/src/legacy/elements.ts",
-          "../typescript/src/legacy/objects.ts",
-          "../typescript/src/legacy/rich-text.ts",
-          "../typescript/src/legacy/messages.ts",
-          "../typescript/src/legacy/views.ts",
+          "../typescript/src/fluent/blocks.ts",
+          "../typescript/src/fluent/components.ts",
+          "../typescript/src/fluent/elements.ts",
+          "../typescript/src/fluent/objects.ts",
+          "../typescript/src/fluent/payloads.ts",
           "../typescript/src/utilities-reference.ts",
           "../typescript/src/errors.ts",
         ],
@@ -280,6 +278,10 @@ const config: Config = {
           { from: "/reference/rich_text", to: "/reference/python/rich_text" },
           { from: "/reference/utils", to: "/reference/python/builder" },
           { from: "/reference/views", to: "/reference/python/views" },
+          {
+            from: "/reference/typescript/rich-text",
+            to: "/reference/typescript/objects",
+          },
         ],
         createRedirects: legacyTypeScriptRedirect,
       },

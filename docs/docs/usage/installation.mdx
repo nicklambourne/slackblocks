@@ -88,12 +88,14 @@ The package requires Node 20.19 or newer, is ESM-only, and emits no runtime impo
 Verify the installation in `hello.mjs`:
 
 ```ts
-import { message, sectionBlock } from "@nicklambourne/slackblocks";
+import { Message, SectionBlock } from "@nicklambourne/slackblocks";
 
-console.log(message({
-  channel: "C0123456",
-  blocks: [sectionBlock({ text: "Hello, world!" })],
-}));
+console.log(
+  Message()
+    .channel("C0123456")
+    .blocks(SectionBlock().text("Hello, world!"))
+    .build(),
+);
 ```
 
 Run it with `node hello.mjs`. Stay on the 2.x release line with `@nicklambourne/slackblocks@^2.1.0`, and uninstall with `pnpm remove @nicklambourne/slackblocks` (or your package manager's equivalent).

@@ -13,10 +13,10 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 USING_BLOCKS = REPO_ROOT / "docs/docs/usage/using_blocks.mdx"
 
 # Block sections in using_blocks.mdx whose Python snippet cannot be executed
-# and compared against the JSON tab by this harness. Empty today: every
-# section parses and round-trips. Add a section title here (with a comment
-# explaining why) only if a future section's Tabs structure resists parsing.
-EXCLUDED_SECTIONS: set[str] = set()
+# and compared against one JSON tab by this harness. Higher-level components
+# are TypeScript-only and have multiple examples rather than one block plus
+# one JSON tab; their payloads are covered by the TypeScript component tests.
+EXCLUDED_SECTIONS: set[str] = {"Higher-Level Components"}
 
 PYTHON_FENCE = re.compile(r"```python\n(.*?)```", re.DOTALL)
 JSON_FENCE = re.compile(r"```json\n(.*?)```", re.DOTALL)
