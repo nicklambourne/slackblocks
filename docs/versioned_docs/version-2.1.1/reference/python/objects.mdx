@@ -1,0 +1,1260 @@
+# Composition objects
+
+## AlertLevel
+
+**Function**
+
+```python
+AlertLevel(*args, **kwargs)
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+## AreaChart
+
+**Class**
+
+```python
+AreaChart(series: 'list[DataSeries]', axis_config: 'AxisConfig') -> 'None'
+```
+
+<div className="api-docstring">
+
+A layered area chart, for use in a
+[`DataVisualizationBlock`](/reference/python/blocks#datavisualizationblock).
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `series` | `list[DataSeries]` | a list of between 1 and 12 uniquely named `DataSeries`<br />objects. |
+| `axis_config` | `AxisConfig` | an `AxisConfig` defining the chart's category labels<br />and optional axis titles. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## AxisConfig
+
+**Class**
+
+```python
+AxisConfig(categories: 'list[str]', x_label: 'str | None' = None, y_label: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Category labels and optional axis titles for a bar, area, or line chart.
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `categories` | `list[str]` | a list of between 1 and 20 unique category labels<br />(max 20 chars each). |
+| `x_label` | `str \| None` | an optional title for the x-axis (max 50 chars). |
+| `y_label` | `str \| None` | an optional title for the y-axis (max 50 chars). |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## BarChart
+
+**Class**
+
+```python
+BarChart(series: 'list[DataSeries]', axis_config: 'AxisConfig') -> 'None'
+```
+
+<div className="api-docstring">
+
+A grouped bar chart, for use in a
+[`DataVisualizationBlock`](/reference/python/blocks#datavisualizationblock).
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `series` | `list[DataSeries]` | a list of between 1 and 12 uniquely named `DataSeries`<br />objects. |
+| `axis_config` | `AxisConfig` | an `AxisConfig` defining the chart's category labels<br />and optional axis titles. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## Chart
+
+**Value**
+
+```python
+Chart
+```
+
+<div className="api-docstring">
+
+Represent a union type
+
+E.g. for int | str
+
+</div>
+
+## ChartSegment
+
+**Class**
+
+```python
+ChartSegment(label: 'str', value: 'int | float') -> 'None'
+```
+
+<div className="api-docstring">
+
+A labelled, positive-valued slice in a
+[`PieChart`](/reference/python/objects#piechart).
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `label` | `str` | the label for the segment (max 20 chars). |
+| `value` | `int \| float` | the numeric value of the segment; must be greater than 0. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## ColumnSettings
+
+**Class**
+
+```python
+ColumnSettings(align: 'ColumnAlignment | None' = None, is_wrapped: 'bool | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+An object that defines the settings for a column in a `Table` block.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `align` | `ColumnAlignment \| None` | the alignment of the column, one of `left`, `center`, or `right`. |
+| `is_wrapped` | `bool \| None` | whether the text in the column should be wrapped. |
+
+</div>
+
+## Confirm
+
+**Class**
+
+```python
+Confirm(*args, **kwargs) -> 'None'
+```
+
+<div className="api-docstring">
+
+Alias for `ConfirmationDialogue` to retain backwards compatibility.
+
+See:
+    [`ConfirmationDialogue`](/reference/python/objects#confirmationdialogue).
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'ConfirmationDialogue'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``confirm`` composition object back into an instance.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if any of ``title``, ``text``, ``confirm``,<br />``deny`` is absent. |
+
+</div>
+
+## ConfirmationDialogue
+
+**Class**
+
+```python
+ConfirmationDialogue(title: 'TextLike', text: 'TextLike', confirm: 'TextLike', deny: 'TextLike') -> 'None'
+```
+
+<div className="api-docstring">
+
+An object that defines a dialog that provides a confirmation step
+to any interactive element. This dialog will ask the user to confirm
+their action by offering confirm and deny buttons.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `title` | `TextLike` | the text heading presented at the top of the dialogue box (max 100 chars). |
+| `text` | `TextLike` | the text explaining the decision being made by the user through<br />the dialogue box (max 300 chars). |
+| `confirm` | `TextLike` | the text inside the confirmation button of the dialogue box (max 30 chars). |
+| `deny` | `TextLike` | the text inside the deny button of the dialogue box (max 30 chars). |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the arguments fail to pass validation checks. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'ConfirmationDialogue'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``confirm`` composition object back into an instance.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if any of ``title``, ``text``, ``confirm``,<br />``deny`` is absent. |
+
+</div>
+
+## ContainerWidth
+
+**Function**
+
+```python
+ContainerWidth(*args, **kwargs)
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+## ConversationFilter
+
+**Class**
+
+```python
+ConversationFilter(include: 'ConversationType | list[ConversationType] | None' = None, exclude_external_shared_channels: 'bool | None' = None, exclude_bot_users: 'bool | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Provides a way to filter the list of options in a conversations select menu or
+conversations multi-select menu.
+
+See: [https://api.slack.com/reference/block-kit/composition-objects#filter_conversations](https://api.slack.com/reference/block-kit/composition-objects#filter_conversations).
+
+At least one of the available arguments _must_ be provided.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `include` | `ConversationType \| list[ConversationType] \| None` | Which types of conversations to include in the list.<br />One of more of `im`, `mpim`, `private`, `public`. |
+| `exclude_external_shared_channels` | `bool \| None` | whether to remove shared public channels<br />from the list. See [https://api.slack.com/enterprise/shared-channels](https://api.slack.com/enterprise/shared-channels). |
+| `exclude_bot_users` | `bool \| None` | whether to remove bot users from the list of conversations. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageException` | in the event that the user provides none of `include`,<br />`exclude_external_shared_channels`, or `exclude_bot_users` arguments. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'ConversationFilter'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``filter`` composition object.
+
+At least one of ``include``, ``exclude_external_shared_channels``,
+or ``exclude_bot_users`` must be present; otherwise the underlying
+constructor raises ``MissingRequiredError``.
+
+</div>
+
+## DataPoint
+
+**Class**
+
+```python
+DataPoint(label: 'str', value: 'int | float') -> 'None'
+```
+
+<div className="api-docstring">
+
+One labelled numeric point in an axis-based chart (a
+[`BarChart`](/reference/python/objects#barchart),
+[`AreaChart`](/reference/python/objects#areachart), or
+[`LineChart`](/reference/python/objects#linechart)).
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `label` | `str` | the label for the data point (max 20 chars); must match one<br />of the categories in the chart's `AxisConfig`. |
+| `value` | `int \| float` | the numeric value of the data point. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## DataSeries
+
+**Class**
+
+```python
+DataSeries(name: 'str', data: 'list[DataPoint]') -> 'None'
+```
+
+<div className="api-docstring">
+
+A named series containing between 1 and 20 chart data points.
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `name` | `str` | the name of the series (max 20 chars). |
+| `data` | `list[DataPoint]` | a list of between 1 and 20 `DataPoint` objects; there must<br />be exactly one point for every category in the chart's<br />`AxisConfig`. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## DispatchActionConfiguration
+
+**Class**
+
+```python
+DispatchActionConfiguration(trigger_actions_on: 'str | list[str] | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+Determines when a plain-text input element will return a `block_action`s interaction payload.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `trigger_actions_on` | `str \| list[str] \| None` | a list of strings representing interaction types that should return<br />a `block_actions` payload. One or both of `on_enter_pressed`, `on_character_entered`. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if an invalid value is provided amongst the options for<br />`trigger_actions_on`. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'DispatchActionConfiguration'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``dispatch_action_config`` composition object.
+
+</div>
+
+## InputParameter
+
+**Class**
+
+```python
+InputParameter(name: 'str', value: 'str') -> 'None'
+```
+
+<div className="api-docstring">
+
+Contains information about an input parameter.
+
+See [https://api.slack.com/automation/workflows#defining-input-parameters](https://api.slack.com/automation/workflows#defining-input-parameters).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `name` | `str` | the name of the input parameter. |
+| `value` | `str` | the value associated with the input parameter. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'InputParameter'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``input_parameter`` composition object.
+
+</div>
+
+## LineChart
+
+**Class**
+
+```python
+LineChart(series: 'list[DataSeries]', axis_config: 'AxisConfig') -> 'None'
+```
+
+<div className="api-docstring">
+
+A line chart, for use in a
+[`DataVisualizationBlock`](/reference/python/blocks#datavisualizationblock).
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `series` | `list[DataSeries]` | a list of between 1 and 12 uniquely named `DataSeries`<br />objects. |
+| `axis_config` | `AxisConfig` | an `AxisConfig` defining the chart's category labels<br />and optional axis titles. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## Markdown
+
+**Class**
+
+```python
+Markdown(text: 'str', verbatim: 'bool' = False) -> 'None'
+```
+
+<div className="api-docstring">
+
+Convenience wrapper for `Text` with `type_=TextType.MARKDOWN`.
+
+`Markdown("_italic_", verbatim=True)` is equivalent to
+`Text("_italic_", type_=TextType.MARKDOWN, verbatim=True)`. Anywhere a
+`Text` or `TextLike` is accepted, a `Markdown` works because `Markdown`
+is a subclass of `Text`. The rendered JSON is identical to the
+equivalent `Text` call.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `str` | the markdown-formatted text to render (1-3000 characters). |
+| `verbatim` | `bool` | if `True`, links, channel names, and user names are<br />rendered verbatim rather than as Slack-style references. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `LengthError` | if the provided `text` is empty or too long. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'Text'
+```
+
+<div className="api-docstring">
+
+Parse a Slack-shaped ``text`` composition object back into a ``Text``.
+
+Unknown fields are ignored so that future Slack additions do not
+break round-tripping.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `data` | `None` | a dict matching the Slack ``text`` composition-object shape,<br />e.g. ``{"type": "mrkdwn", "text": "hi", "verbatim": True}``. |
+
+### Returns
+
+| Type | Description |
+| --- | --- |
+| `None` | A ``Text`` instance. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["text"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not one of the<br />allowable ``TextType`` values. |
+
+</div>
+
+### to_text
+
+```python
+to_text(text: 'str | Text | None', force_plaintext: 'bool' = False, max_length: 'int | None' = None, allow_none: 'bool' = False) -> 'Text | None'
+```
+
+<div className="api-docstring">
+
+Coerces `str` or `Text` objects into `Text` objects.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `None` | the `str` or `Text` object to ensure is in `Text` format. |
+| `force_plaintext` | `None` | if `True`, forces the `str` or `Text` object<br />into a `Text` object with the type `TextType.PLAINTEXT`. |
+| `max_length` | `None` | `text` will be checked against this length in addition<br />to the standard `Text` limit of 3000 characters. |
+| `allow_none` | `None` | whether to accept `None` as a valid value for `text`.<br />The return type narrows based on this value:<br /><br />- ``allow_none=False`` (the default) -&gt; always returns ``Text``.<br />- ``allow_none=True`` -&gt; returns ``Text \| None``. |
+
+</div>
+
+### to_text_nonnull
+
+```python
+to_text_nonnull(text: 'str | Text', force_plaintext: 'bool' = False, max_length: 'int | None' = None) -> 'Text'
+```
+
+<div className="api-docstring">
+
+Coerces `str` or `Text` objects into `Text` objects, but does not allow `None` values.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `None` | the `str` or `Text` object to ensure is in `Text` format. |
+| `force_plaintext` | `None` | if `True`, forces the `str` or `Text` object<br />into a `Text` object with the type `TextType.PLAINTEXT`. |
+| `max_length` | `None` | `text` will be checked against this length in addition<br />to the standard `Text` limit of 3000 characters. |
+
+### Returns
+
+| Type | Description |
+| --- | --- |
+| `None` | A `Text` object created from the input. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if the text length exceeds the specified max_length. |
+
+</div>
+
+## Option
+
+**Class**
+
+```python
+Option(text: 'TextLike', value: 'str', description: 'TextLike | None' = None, url: 'str | None' = None) -> 'None'
+```
+
+<div className="api-docstring">
+
+An object that represents a single selectable item in a select menu, multi-select
+menu, checkbox group, radio button group, or overflow menu.
+
+See [https://api.slack.com/reference/block-kit/composition-objects#option](https://api.slack.com/reference/block-kit/composition-objects#option).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `TextLike` | the text identifying the option (that the user will see). |
+| `value` | `str` | the underlying value of that option (not seen by the user). |
+| `description` | `TextLike \| None` | a more detailed explanation of what the option means (user-facing). |
+| `url` | `str \| None` | a URL to load in the user's browser when the option is clicked.<br />Only available in `OverflowMenus`. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | when any of the provided arguments fail validation. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'Option'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``option`` composition object back into an ``Option``.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``text`` or ``value`` is absent. |
+
+</div>
+
+## OptionGroup
+
+**Class**
+
+```python
+OptionGroup(label: 'TextLike', options: 'list[Option]') -> 'None'
+```
+
+<div className="api-docstring">
+
+Provides a way to group options in a select menu or multi-select menu.
+
+See [https://api.slack.com/reference/block-kit/composition-objects#option_group](https://api.slack.com/reference/block-kit/composition-objects#option_group).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `label` | `TextLike` | a label shown above the group of options. |
+| `options` | `list[Option]` | a list of `Option` objects that will form the contents of the group (max 100). |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if no options are provided or the label is not valid. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'OptionGroup'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``option_group`` composition object.
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``label`` or ``options`` is absent. |
+
+</div>
+
+## PieChart
+
+**Class**
+
+```python
+PieChart(segments: 'list[ChartSegment]') -> 'None'
+```
+
+<div className="api-docstring">
+
+A pie chart containing between 1 and 12 segments, for use in a
+[`DataVisualizationBlock`](/reference/python/blocks#datavisualizationblock).
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `segments` | `list[ChartSegment]` | a list of between 1 and 12 `ChartSegment` objects. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## PlainText
+
+**Class**
+
+```python
+PlainText(text: 'str', emoji: 'bool' = False) -> 'None'
+```
+
+<div className="api-docstring">
+
+Convenience wrapper for `Text` with `type_=TextType.PLAINTEXT`.
+
+`PlainText("Hi", emoji=True)` is equivalent to
+`Text("Hi", type_=TextType.PLAINTEXT, emoji=True)`. Anywhere a `Text` or
+`TextLike` is accepted, a `PlainText` works because `PlainText` is a
+subclass of `Text`. The rendered JSON is identical to the equivalent
+`Text` call.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `str` | the text to render (1-3000 characters). |
+| `emoji` | `bool` | if `True`, emoji (e.g. `:smile:`) are escaped into Unicode. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `LengthError` | if the provided `text` is empty or too long. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'Text'
+```
+
+<div className="api-docstring">
+
+Parse a Slack-shaped ``text`` composition object back into a ``Text``.
+
+Unknown fields are ignored so that future Slack additions do not
+break round-tripping.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `data` | `None` | a dict matching the Slack ``text`` composition-object shape,<br />e.g. ``{"type": "mrkdwn", "text": "hi", "verbatim": True}``. |
+
+### Returns
+
+| Type | Description |
+| --- | --- |
+| `None` | A ``Text`` instance. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["text"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not one of the<br />allowable ``TextType`` values. |
+
+</div>
+
+### to_text
+
+```python
+to_text(text: 'str | Text | None', force_plaintext: 'bool' = False, max_length: 'int | None' = None, allow_none: 'bool' = False) -> 'Text | None'
+```
+
+<div className="api-docstring">
+
+Coerces `str` or `Text` objects into `Text` objects.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `None` | the `str` or `Text` object to ensure is in `Text` format. |
+| `force_plaintext` | `None` | if `True`, forces the `str` or `Text` object<br />into a `Text` object with the type `TextType.PLAINTEXT`. |
+| `max_length` | `None` | `text` will be checked against this length in addition<br />to the standard `Text` limit of 3000 characters. |
+| `allow_none` | `None` | whether to accept `None` as a valid value for `text`.<br />The return type narrows based on this value:<br /><br />- ``allow_none=False`` (the default) -&gt; always returns ``Text``.<br />- ``allow_none=True`` -&gt; returns ``Text \| None``. |
+
+</div>
+
+### to_text_nonnull
+
+```python
+to_text_nonnull(text: 'str | Text', force_plaintext: 'bool' = False, max_length: 'int | None' = None) -> 'Text'
+```
+
+<div className="api-docstring">
+
+Coerces `str` or `Text` objects into `Text` objects, but does not allow `None` values.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `None` | the `str` or `Text` object to ensure is in `Text` format. |
+| `force_plaintext` | `None` | if `True`, forces the `str` or `Text` object<br />into a `Text` object with the type `TextType.PLAINTEXT`. |
+| `max_length` | `None` | `text` will be checked against this length in addition<br />to the standard `Text` limit of 3000 characters. |
+
+### Returns
+
+| Type | Description |
+| --- | --- |
+| `None` | A `Text` object created from the input. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if the text length exceeds the specified max_length. |
+
+</div>
+
+## RawNumber
+
+**Class**
+
+```python
+RawNumber(value: 'int | float', text: 'str') -> 'None'
+```
+
+<div className="api-docstring">
+
+A numeric cell for a
+[`DataTableBlock`](/reference/python/blocks#datatableblock).
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/data-table-block](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `value` | `int \| float` | the numeric value Slack uses for sorting and display. |
+| `text` | `str` | the non-empty text Slack displays in the cell. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if any of the provided arguments fail validation. |
+
+</div>
+
+## RawText
+
+**Class**
+
+```python
+RawText(text: 'str', emoji: 'bool' = False) -> 'None'
+```
+
+<div className="api-docstring">
+
+An object containing some text, formatted as `raw_text` for use in
+`Table` blocks.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `str` | the text to be rendered in a message. |
+| `emoji` | `bool` | only usable with `TextType.PLAINTEXT`, if True: emoji will be<br />escaped into text format (e.g. `:smile:`). |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageException` | if the provided `text` fails validation. |
+
+</div>
+
+## SlackFile
+
+**Class**
+
+```python
+SlackFile(url: 'str | None', id: 'str | None') -> 'None'
+```
+
+<div className="api-docstring">
+
+Defines an object containing Slack file information to be used in an image
+    block or image element.
+
+This file must be an image and you must provide either the URL or ID (not both).
+
+See: [https://api.slack.com/reference/block-kit/composition-objects#slack_file](https://api.slack.com/reference/block-kit/composition-objects#slack_file).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `url` | `str \| None` | the URL can be the `url_private` or the `permalink` of the Slack file<br />(only one of `url` or `id` can be provided). |
+| `id` | `str \| None` | the Slack ID of the file<br />(only one of `url` or `id` can be provided). |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if both `url` and `id` are provided |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'SlackFile'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``slack_file`` composition object.
+
+</div>
+
+## SlackIcon
+
+**Class**
+
+```python
+SlackIcon(name: 'SlackIconName') -> 'None'
+```
+
+<div className="api-docstring">
+
+A named Slack-provided icon for a
+[`CardBlock`](/reference/python/blocks#cardblock).
+
+See: [https://docs.slack.dev/reference/block-kit/blocks/card-block](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `name` | `SlackIconName` | the name of a Slack-provided icon, e.g. `bot` or `rocket`<br />(see `SlackIconName` for the full list of valid names). |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `TypeMismatchError` | if `name` is not a recognised Slack icon name. |
+
+</div>
+
+## SlackIconName
+
+**Function**
+
+```python
+SlackIconName(*args, **kwargs)
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+## TaskStatus
+
+**Function**
+
+```python
+TaskStatus(*args, **kwargs)
+```
+
+<div className="api-docstring">
+
+No public documentation is available.
+
+</div>
+
+## Text
+
+**Class**
+
+```python
+Text(text: 'str', type_: 'TextType' = <TextType.MARKDOWN: 'mrkdwn'>, emoji: 'bool' = False, verbatim: 'bool' = False) -> 'None'
+```
+
+<div className="api-docstring">
+
+An object containing some text, formatted either as `plain_text` or using
+Slack's `mrkdwn`.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `str` | the text to be rendered in a message (max 3000 characters). |
+| `type_` | `TextType` | either `TextType.MARKDOWN` or `TextType.PLAINTEXT`. |
+| `emoji` | `bool` | only usable with `TextType.PLAINTEXT`, if True: emoji will be<br />escaped into text format (e.g. `:smile:`). |
+| `verbatim` | `bool` | only usable with `TextType.MARKDOWN`, if True: links, channel<br />names, user names will not automatically be rendered as links. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageException` | if the provided `text` fails validation. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'Text'
+```
+
+<div className="api-docstring">
+
+Parse a Slack-shaped ``text`` composition object back into a ``Text``.
+
+Unknown fields are ignored so that future Slack additions do not
+break round-tripping.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `data` | `dict[str, Any]` | a dict matching the Slack ``text`` composition-object shape,<br />e.g. ``{"type": "mrkdwn", "text": "hi", "verbatim": True}``. |
+
+### Returns
+
+| Type | Description |
+| --- | --- |
+| `Text` | A ``Text`` instance. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `MissingRequiredError` | if ``data["text"]`` is absent. |
+| `TypeMismatchError` | if ``data["type"]`` is not one of the<br />allowable ``TextType`` values. |
+
+</div>
+
+### to_text
+
+```python
+to_text(text: 'str | Text | None', force_plaintext: 'bool' = False, max_length: 'int | None' = None, allow_none: 'bool' = False) -> 'Text | None'
+```
+
+<div className="api-docstring">
+
+Coerces `str` or `Text` objects into `Text` objects.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `str \| Text \| None` | the `str` or `Text` object to ensure is in `Text` format. |
+| `force_plaintext` | `bool` | if `True`, forces the `str` or `Text` object<br />into a `Text` object with the type `TextType.PLAINTEXT`. |
+| `max_length` | `int \| None` | `text` will be checked against this length in addition<br />to the standard `Text` limit of 3000 characters. |
+| `allow_none` | `bool` | whether to accept `None` as a valid value for `text`.<br />The return type narrows based on this value:<br /><br />- ``allow_none=False`` (the default) -&gt; always returns ``Text``.<br />- ``allow_none=True`` -&gt; returns ``Text \| None``. |
+
+</div>
+
+### to_text_nonnull
+
+```python
+to_text_nonnull(text: 'str | Text', force_plaintext: 'bool' = False, max_length: 'int | None' = None) -> 'Text'
+```
+
+<div className="api-docstring">
+
+Coerces `str` or `Text` objects into `Text` objects, but does not allow `None` values.
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `text` | `str \| Text` | the `str` or `Text` object to ensure is in `Text` format. |
+| `force_plaintext` | `bool` | if `True`, forces the `str` or `Text` object<br />into a `Text` object with the type `TextType.PLAINTEXT`. |
+| `max_length` | `int \| None` | `text` will be checked against this length in addition<br />to the standard `Text` limit of 3000 characters. |
+
+### Returns
+
+| Type | Description |
+| --- | --- |
+| `Text` | A `Text` object created from the input. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | if the text length exceeds the specified max_length. |
+
+</div>
+
+## TextType
+
+**Class**
+
+```python
+TextType(*values)
+```
+
+<div className="api-docstring">
+
+Allowable types for Slack Text objects.
+
+MARKDOWN: traditional markdown formatting, see
+    [https://api.slack.com/reference/surfaces/formatting#basic-formatting](https://api.slack.com/reference/surfaces/formatting#basic-formatting)
+PLAINTEXT: simple Unicode text with no formatting (e.g. bold) features.
+
+N.B: some usages of Text objects only allow the `PLAINTEXT` variety.
+
+</div>
+
+## Trigger
+
+**Class**
+
+```python
+Trigger(url: 'str', customizable_input_parameters: 'InputParameter | list[InputParameter] | None') -> 'None'
+```
+
+<div className="api-docstring">
+
+Contains information about a trigger.
+
+See: [https://api.slack.com/automation/triggers](https://api.slack.com/automation/triggers).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `url` | `str` | a link trigger URL, see<br />[https://api.slack.com/automation/triggers/link](https://api.slack.com/automation/triggers/link) |
+| `customizable_input_parameters` | `InputParameter \| list[InputParameter] \| None` | a list of `InputParameter` objects<br />which map to those parameters defined on the Workflow in<br />which they are provided. |
+
+<h3>Errors</h3>
+
+| Error | When |
+| --- | --- |
+| `InvalidUsageError` | when any of the items in<br />`customizable_input_parameters` is not a valid `InputParameter`. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'Trigger'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``trigger`` composition object.
+
+</div>
+
+## Workflow
+
+**Class**
+
+```python
+Workflow(trigger: 'Trigger') -> 'None'
+```
+
+<div className="api-docstring">
+
+Contains information about a workflow.
+
+See [https://api.slack.com/automation/workflows](https://api.slack.com/automation/workflows).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `trigger` | `Trigger` | a `Trigger` object that will initiate the workflow. |
+
+</div>
+
+### from_dict
+
+```python
+from_dict(data: 'dict[str, Any]') -> 'Workflow'
+```
+
+<div className="api-docstring">
+
+Parse a Slack ``workflow`` composition object.
+
+</div>
+
+### from_url
+
+```python
+from_url(url: 'str', **input_parameters: 'str') -> 'Workflow'
+```
+
+<div className="api-docstring">
+
+Build a `Workflow` from a trigger URL and input parameters in one call.
+
+``Workflow.from_url(url, a='1', b='2')`` is equivalent to::
+
+    Workflow(
+        trigger=Trigger(
+            url=url,
+            customizable_input_parameters=[
+                InputParameter(name='a', value='1'),
+                InputParameter(name='b', value='2'),
+            ],
+        ),
+    )
+
+When no input parameters are supplied, the resulting trigger has
+``customizable_input_parameters=None`` (the key is omitted from JSON).
+
+<h3>Arguments</h3>
+
+| Argument | Type | Description |
+| --- | --- | --- |
+| `url` | `str` | the link trigger URL. |
+| `**input_parameters` | `str` | zero or more ``name=value`` pairs that become<br />``InputParameter`` entries on the trigger. |
+
+### Returns
+
+| Type | Description |
+| --- | --- |
+| `Workflow` | A new ``Workflow`` instance. |
+
+</div>

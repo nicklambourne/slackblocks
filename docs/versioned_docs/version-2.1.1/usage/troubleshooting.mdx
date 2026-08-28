@@ -1,0 +1,288 @@
+import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
+
+# Troubleshooting & FAQ
+
+Practical answers to common questions, gotchas, and validation errors.
+
+<LanguageContent>
+<Python>
+
+## Why is my message body coming through with literal `*asterisks*` instead of bold?
+
+Slack supports two text types: `mrkdwn` (a Slack-flavoured markdown) and `plain_text`. `slackblocks` uses `mrkdwn` by default for `SectionBlock` text, but **`HeaderBlock`, button labels, modal titles, input labels, and tab/option labels are forced to `plain_text` by Slack** — markdown syntax in those fields is rendered literally.
+
+If you need bold/italic styling in those places, you can't get it. If you need it elsewhere and aren't getting it, double-check you're not accidentally constructing a `Text(type_=TextType.PLAINTEXT, ...)`.
+
+## Why does my message say `text` is required?
+
+Slack will warn (or in some cases reject) messages that have `blocks` but no `text` fallback. The `text` field is used for:
+
+- Desktop and mobile **push notifications**.
+- Accessibility readers.
+- Clients that don't render Block Kit (rare, but they exist).
+
+Always pass a short `text=` summary alongside `blocks=`:
+
+```python
+Message(
+    channel="#general",
+    text="Build #482 passed",        # fallback
+    blocks=[HeaderBlock("Build #482 passed :white_check_mark:"), ...],
+)
+```
+
+## What is `block_id` for? Should I set it?
+
+`block_id` is a stable identifier for a block. Slack echoes it back to you in interaction payloads (button clicks, modal submits) so you can correlate which block produced the event.
+
+- For **non-interactive** messages, you can leave it unset — `slackblocks` generates a random UUID.
+- For **interactive** messages and modals, set explicit `block_id`s so your handlers can look up state reliably:
+
+  ```python
+  ActionsBlock(
+      block_id="approval:req-123",
+      elements=[Button(text="Approve", action_id="approve", value="req-123")],
+  )
+  ```
+
+The same applies to `action_id` for elements.
+
+## What does `InvalidUsageError: ... exceeds limit of N characters` mean?
+
+Slack imposes hard character limits on most fields. `slackblocks` validates these at construction time so you find out before hitting Slack. Common limits:
+
+| Field                              | Limit (chars) |
+|------------------------------------|---------------|
+| `SectionBlock.text`                | 3,000         |
+| `SectionBlock.fields[i]`           | 2,000         |
+| `HeaderBlock.text` (`plain_text`)  | 150           |
+| `Button.text`                      | 75            |
+| `Button.value`                     | 2,000         |
+| `Button.url`                       | 3,000         |
+| `Modal.title` / `submit` / `close` | 24            |
+| `action_id`                        | 255           |
+| `private_metadata`                 | 3,000         |
+| `Option.url`                       | 3,000         |
+
+If a field exceeds its limit, truncate or split the content.
+
+## How many blocks can a single message have?
+
+- Channel messages: **50 blocks** (Slack-side limit).
+- Modals and home tabs: **100 blocks**.
+- `ContextBlock`: max **10 elements**.
+- `ActionsBlock`: max **25 elements**.
+- `SectionBlock.fields`: max **10 items**.
+- `TableBlock`: max **100 rows × 20 columns**.
+
+## My buttons / selects don't do anything when clicked.
+
+`slackblocks` only constructs the *outgoing* payload. Handling button clicks, menu selections, and modal submissions requires:
+
+1. A public HTTPS endpoint registered as your app's **Interactivity & Shortcuts** URL.
+2. An interaction handler that parses the payload Slack POSTs to that URL.
+
+The [`slack-bolt`](https://slack.dev/bolt-python/) framework is the easiest way to wire this up.
+
+## Why doesn't markdown work inside a `HeaderBlock`?
+
+By design — Slack only allows `plain_text` in headers. Use a `SectionBlock` (which supports `mrkdwn`) followed by a `DividerBlock` if you want bold or styled text as a heading.
+
+## How do I preview a message without actually sending it?
+
+Use Slack's [Block Kit Builder](https://app.slack.com/block-kit-builder) and paste the JSON output from `message.json()`:
+
+```python
+print(message.json())
+```
+
+## How do I send a `slackblocks.Message` with `requests`?
+
+`Message` renders to a dict, so:
+
+```python
+import os
+import requests
+
+from slackblocks import Message, SectionBlock
+
+message = Message(channel="#general", blocks=SectionBlock("Hi!"))
+
+requests.post(
+    "https://slack.com/api/chat.postMessage",
+    json=message.to_dict(),
+    headers={"Authorization": f"Bearer {os.environ['SLACK_API_TOKEN']}"},
+).raise_for_status()
+```
+
+## Can I use `slackblocks` with async code?
+
+Yes — `slackblocks` itself is synchronous and side-effect-free, so `Message(...)` construction works identically inside `async def` functions. Use the async `WebClient` from `slack_sdk.web.async_client` to actually send:
+
+```python
+from slack_sdk.web.async_client import AsyncWebClient
+from slackblocks import Message, SectionBlock
+
+async def notify():
+    client = AsyncWebClient(token=...)
+    message = Message(channel="#general", blocks=SectionBlock("Hi!"))
+    await client.chat_postMessage(**message)
+```
+
+## How does `slackblocks` compare to the block classes in `slack-sdk`?
+
+`slack-sdk` ships its own `Block` / `SectionBlock` / etc. classes. `slackblocks` predates them and offers:
+
+- A more concise API (e.g. `SectionBlock("Hi!")` vs `SectionBlock(text=MarkdownTextObject(text="Hi!"))`).
+- Stricter up-front validation with informative `InvalidUsageError` messages.
+- Independent release cadence — usable with the legacy `slackclient` or no SDK at all.
+
+Use whichever you find more ergonomic; they produce equivalent JSON.
+
+## I'm getting a `pytest` `error` from a Python `DeprecationWarning`.
+
+`slackblocks`' own test suite turns warnings into errors via `pyproject.toml`. That setting only affects this project's CI — it doesn't propagate to your application. If you're seeing it, it's because you're running the `slackblocks` test suite as part of contributing.
+
+## Where do I report bugs / request features?
+
+Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
+
+</Python>
+<TypeScript>
+
+## Why is my message showing literal `*asterisks*` instead of bold text?
+
+Slack supports `mrkdwn` and `plain_text`. The `sectionBlock()` factory turns a string into `mrkdwn` by default, but Slack requires headers, button labels, modal titles, input labels, and option labels to use `plain_text`. Markdown syntax in those fields is displayed literally.
+
+If styling is missing from a field that supports it, check that you have not wrapped the value with `plainText()`. Use `mrkdwn()` when you need to choose the text type explicitly.
+
+## Why does Slack say `text` is required?
+
+Messages containing blocks should also provide a short plain-text fallback. Slack uses it for push notifications, assistive technology, and clients that cannot render Block Kit.
+
+```ts
+import { headerBlock, message } from "@nicklambourne/slackblocks";
+
+const payload = message({
+  channel: "C0123456",
+  text: "Build #482 passed",
+  blocks: [headerBlock({ text: "Build #482 passed :white_check_mark:" })],
+});
+```
+
+## What is `blockId` for? Should I set it?
+
+`blockId` becomes `block_id` in the Slack payload. Slack returns it in interaction payloads, which lets your app identify the block that produced a button click or modal submission.
+
+You can omit it for non-interactive content. For interactive messages and views, use a stable value that your handlers understand:
+
+```ts
+import { actionsBlock, button } from "@nicklambourne/slackblocks";
+
+actionsBlock({
+  blockId: "approval:req-123",
+  elements: [
+    button({ text: "Approve", actionId: "approve", value: "req-123" }),
+  ],
+});
+```
+
+The same principle applies to `actionId`, which becomes `action_id` on the wire.
+
+## What do `LengthError` and the other validation errors mean?
+
+`slackblocks` validates payloads while its factories construct them. An error such as `LengthError`, `RangeError`, or `MissingRequiredError` means the input would violate a known Block Kit rule. The error includes a path so you can find the invalid field before sending anything to Slack.
+
+Common limits include:
+
+| Factory field                       | Limit |
+|-------------------------------------|-------|
+| `sectionBlock().text`               | 3,000 characters |
+| `sectionBlock().fields[i]`          | 2,000 characters |
+| `headerBlock().text`                | 150 characters |
+| `button().text`                     | 75 characters |
+| `button().value`                    | 2,000 characters |
+| `button().url`                      | 3,000 characters |
+| `modal().title` / `submit` / `close`| 24 characters |
+| `actionId`                          | 255 characters |
+| `privateMetadata`                   | 3,000 characters |
+| `option().url`                      | 3,000 characters |
+
+If Slack adds a field or raises a limit before the package catches up, pass `{ validate: false }` as the final factory argument for that construction only.
+
+## How many blocks can a payload contain?
+
+- Channel messages: **50 blocks**.
+- Modals and home tabs: **100 blocks**.
+- `contextBlock()`: up to **10 elements**.
+- `actionsBlock()`: up to **25 elements**.
+- `sectionBlock().fields`: up to **10 items**.
+- `tableBlock()`: up to **100 rows × 20 columns**.
+
+## Why don't my buttons or selects do anything when clicked?
+
+`slackblocks` only constructs outgoing payloads. Handling interactions requires a public HTTPS endpoint configured as your Slack app's **Interactivity & Shortcuts** request URL, plus code that handles the payload Slack sends there.
+
+[`@slack/bolt`](https://slack.dev/bolt-js/) is the usual starting point for a TypeScript or JavaScript app.
+
+## Why doesn't markdown work inside `headerBlock()`?
+
+Slack only accepts `plain_text` in header blocks. Use `sectionBlock()` followed by `dividerBlock()` when you need styled heading text.
+
+## How can I preview a message without sending it?
+
+Generate a Block Kit Builder URL and open it in your browser:
+
+```ts
+import { blockKitBuilderUrl, message, sectionBlock } from "@nicklambourne/slackblocks";
+
+const payload = message({
+  channel: "C0123456",
+  text: "Preview message",
+  blocks: [sectionBlock({ text: "Hello!" })],
+});
+
+console.log(blockKitBuilderUrl(payload));
+```
+
+You can also paste `JSON.stringify(payload, null, 2)` into Slack's [Block Kit Builder](https://app.slack.com/block-kit-builder).
+
+## How do I send a payload with `fetch()`?
+
+Factories return plain objects, so no conversion step is required:
+
+```ts
+import { message, sectionBlock } from "@nicklambourne/slackblocks";
+
+const payload = message({
+  channel: "C0123456",
+  text: "Hello!",
+  blocks: [sectionBlock({ text: "Hello!" })],
+});
+
+const response = await fetch("https://slack.com/api/chat.postMessage", {
+  method: "POST",
+  headers: {
+    authorization: `Bearer ${process.env.SLACK_API_TOKEN}`,
+    "content-type": "application/json",
+  },
+  body: JSON.stringify(payload),
+});
+
+if (!response.ok) throw new Error(`Slack returned ${response.status}`);
+```
+
+## Can I use `slackblocks` in async code?
+
+Yes. The factories are synchronous, side-effect-free functions that return ordinary objects. Construct the payload wherever it is convenient, then `await` your Slack SDK or HTTP client when you send it.
+
+## How does this differ from `@slack/types`?
+
+`@slack/types` supplies TypeScript definitions for Slack payloads. `slackblocks` adds small construction helpers, camelCase inputs, snake_case wire output, and eager validation with path-aware errors. The resulting objects remain compatible with Slack's official types and clients.
+
+## Where do I report bugs or request features?
+
+Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
+
+</TypeScript>
+</LanguageContent>
