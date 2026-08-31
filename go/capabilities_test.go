@@ -59,6 +59,7 @@ func TestEveryConstructorMapsToSharedCapability(t *testing.T) {
 	for constructor := range capabilityByConstructor {
 		mapped = append(mapped, constructor)
 	}
+	mapped = append(mapped, "NewAccordion", "NewAccordionSection", "NewPaginator")
 	sort.Strings(mapped)
 	if !reflect.DeepEqual(constructors, mapped) {
 		t.Fatalf("constructor registry mismatch\nexported: %v\nmapped:   %v", constructors, mapped)

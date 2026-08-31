@@ -17,6 +17,12 @@ type Buildable interface {
 	Build() (Object, error)
 }
 
+// GroupBuildable is implemented by higher-level components that expand to
+// multiple ordinary Slack objects inside a parent collection.
+type GroupBuildable interface {
+	BuildMany() ([]Object, error)
+}
+
 type coercion func(any) (any, error)
 
 // builder incrementally configures one Slack wire object. Named constructors
@@ -275,6 +281,16 @@ func materialise(value any) (any, error) {
 	case []any:
 		result := make([]any, 0, len(typed))
 		for _, nested := range typed {
+			if group, ok := nested.(GroupBuildable); ok {
+				built, err := group.BuildMany()
+				if err != nil {
+					return nil, err
+				}
+				for _, item := range built {
+					result = append(result, item)
+				}
+				continue
+			}
 			built, err := materialise(nested)
 			if err != nil {
 				return nil, err

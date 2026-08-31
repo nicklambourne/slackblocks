@@ -126,9 +126,16 @@ func newModuleAwareImporter() types.Importer {
 	// using additional slack-go symbols.
 	const path = "github.com/slack-go/slack"
 	pkg := types.NewPackage(path, "slack")
-	name := types.NewTypeName(token.NoPos, pkg, "MessageBlockType", nil)
-	types.NewNamed(name, types.Typ[types.String], nil)
-	pkg.Scope().Insert(name)
+	messageBlockTypeName := types.NewTypeName(token.NoPos, pkg, "MessageBlockType", nil)
+	messageBlockType := types.NewNamed(messageBlockTypeName, types.Typ[types.String], nil)
+	pkg.Scope().Insert(messageBlockTypeName)
+	blockMethods := []*types.Func{
+		types.NewFunc(token.NoPos, pkg, "BlockType", types.NewSignatureType(nil, nil, nil, nil, types.NewTuple(types.NewVar(token.NoPos, pkg, "", messageBlockType)), false)),
+		types.NewFunc(token.NoPos, pkg, "ID", types.NewSignatureType(nil, nil, nil, nil, types.NewTuple(types.NewVar(token.NoPos, pkg, "", types.Typ[types.String])), false)),
+	}
+	blockName := types.NewTypeName(token.NoPos, pkg, "Block", nil)
+	types.NewNamed(blockName, types.NewInterfaceType(blockMethods, nil).Complete(), nil)
+	pkg.Scope().Insert(blockName)
 	pkg.MarkComplete()
 	return moduleAwareImporter{standard: importer.Default(), slack: pkg}
 }

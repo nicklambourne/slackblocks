@@ -227,6 +227,11 @@ func (b *builder) DefaultCollapsed(value bool) *builder {
 	return b.set("default_collapsed", value)
 }
 
+// Expanded controls whether an accordion section starts open. It stores a
+// private sentinel that the accordion-section transform converts to Slack's
+// inverse default_collapsed field during Build.
+func (b *builder) Expanded(value bool) *builder { return b.set("_expanded", value) }
+
 // DefaultToCurrentConversation selects the current conversation by default.
 func (b *builder) DefaultToCurrentConversation(value bool) *builder {
 	return b.set("default_to_current_conversation", value)
