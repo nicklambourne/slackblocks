@@ -13,6 +13,9 @@ const DOMAIN_TITLES = {
   utilities: "Utilities",
 };
 
+const API_TYPE_LINKS = new Map();
+const API_TYPE_GROUPS = new Set(["Classes", "Interfaces", "Type Aliases"]);
+
 const fluentSetters = new Map();
 const fluentNames = new Set();
 const scriptsDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -34,10 +37,31 @@ function fluentTerminology(value) {
   return result;
 }
 
-function markdownType(value) {
+function escapeTypeText(value) {
   return value
-    .replace(/import\("[^"]+"\)\./g, "")
-    .replaceAll("|", "\\|");
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll("{", "&#123;")
+    .replaceAll("}", "&#125;")
+    .replaceAll("|", "&#124;");
+}
+
+function markdownType(value) {
+  const cleaned = value.replace(/import\("[^"]+"\)\./g, "");
+  let rendered = "";
+  let last = 0;
+
+  for (const match of cleaned.matchAll(/\b[A-Za-z_$][\w$]*\b/g)) {
+    rendered += escapeTypeText(cleaned.slice(last, match.index));
+    const name = match[0];
+    const link = API_TYPE_LINKS.get(name);
+    rendered += link ? `<a href="${link}">${name}</a>` : name;
+    last = match.index + name.length;
+  }
+
+  rendered += escapeTypeText(cleaned.slice(last));
+  return `<code>${rendered}</code>`;
 }
 
 function collectFluentSetters() {
@@ -107,9 +131,7 @@ function collectFluentSetters() {
           ),
           name: field.name,
           optional: (field.flags & ts.SymbolFlags.Optional) !== 0,
-          type: markdownType(
-            checker.typeToString(type, location, ts.TypeFormatFlags.NoTruncation),
-          ),
+          type: checker.typeToString(type, location, ts.TypeFormatFlags.NoTruncation),
         };
       }),
     );
@@ -292,7 +314,7 @@ function renderFluentSetters(contents) {
       "| ------ | ------ | ------ | ------ |",
       ...fields.map(
         ({ collection, description, name, optional, type }) =>
-          `| \`.${name}(${collection ? "...values" : "value"})\` | \`${type}\` | ${optional ? "No" : "Yes"} | ${description || "—"} |`,
+          `| \`.${name}(${collection ? "...values" : "value"})\` | ${markdownType(type)} | ${optional ? "No" : "Yes"} | ${description || "—"} |`,
       ),
       "",
       "### Validation and errors",
@@ -324,6 +346,16 @@ export function load(app) {
       }
 
       for (const reflection of entryPoints) {
+        for (const group of reflection.groups ?? []) {
+          if (!API_TYPE_GROUPS.has(group.title)) continue;
+          for (const child of group.children) {
+            API_TYPE_LINKS.set(
+              child.name,
+              `/reference/typescript/${reflection.name}#${child.name.toLowerCase()}`,
+            );
+          }
+        }
+
         const [group, ...remainingGroups] = reflection.groups ?? [];
         if (!group) continue;
 

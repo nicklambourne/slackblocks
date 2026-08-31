@@ -134,4 +134,24 @@ for (const name of ["SlackObject", "SlackWire"]) {
   );
 }
 
+for (const [page, name] of [
+  [blocks, "AlertLevel"],
+  [blocks, "ContainerWidth"],
+  [blocks, "TaskStatus"],
+  [objects, "RichTextStyle"],
+  [objects, "SlackIconName"],
+  [objects, "TextLike"],
+  [utilities, "JsonObject"],
+]) {
+  assert.match(page, new RegExp(`^## ${name}$`, "m"), `${name} lacks an API section`);
+  const link = `/reference/typescript/${
+    page === blocks ? "blocks" : page === objects ? "objects" : "utilities"
+  }#${name.toLowerCase()}`;
+  assert.match(
+    fluentPages.join("\n"),
+    new RegExp(`<a href="${link}">${name}</a>`),
+    `${name} is not linked from fluent setter types`,
+  );
+}
+
 console.log("TypeScript API rendering checks passed.");

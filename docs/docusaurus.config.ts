@@ -224,11 +224,11 @@ const config: Config = {
       {
         name: "TypeScript API reference",
         entryPoints: [
-          "../typescript/src/fluent/blocks.ts",
+          "../typescript/src/blocks-reference.ts",
           "../typescript/src/fluent/components.ts",
-          "../typescript/src/fluent/elements.ts",
-          "../typescript/src/fluent/objects.ts",
-          "../typescript/src/fluent/payloads.ts",
+          "../typescript/src/elements-reference.ts",
+          "../typescript/src/objects-reference.ts",
+          "../typescript/src/payloads-reference.ts",
           "../typescript/src/utilities-reference.ts",
           "../typescript/src/errors.ts",
         ],

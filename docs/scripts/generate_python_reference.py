@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import html
 import importlib
 import inspect
 import re
@@ -45,6 +46,15 @@ GOOGLE_SECTION = re.compile(
 # characters in plain docstring text would break the docs build.
 MDX_ESCAPES = str.maketrans({"{": "&#123;", "}": "&#125;", "<": "&lt;", ">": "&gt;"})
 CODE_SPAN = re.compile(r"(`+)(?:[^`]|(?!\1)`)+?\1", re.DOTALL)
+TYPE_IDENTIFIER = re.compile(r"\b[A-Za-z_][A-Za-z0-9_]*\b")
+API_TYPE_LINKS: dict[str, str] = {}
+TYPE_ALIAS_DETAILS = {
+    "TextLike": (
+        "str | Text",
+        "Text accepted by slackblocks: either a string or an existing `Text` object.",
+    ),
+}
+SUPPORTING_TYPE_ALIASES = {"TextLike": ("objects", "objects")}
 
 
 def escape_mdx(text: str) -> str:
@@ -124,6 +134,23 @@ def markdown_table(headers: tuple[str, ...], rows: list[tuple[Any, ...]]) -> str
     return "\n".join([header, separator, *body])
 
 
+def render_type(annotation: Any) -> str:
+    """Render an annotation as code with links to documented slackblocks types."""
+    value = str(annotation)
+    rendered: list[str] = []
+    last = 0
+    for match in TYPE_IDENTIFIER.finditer(value):
+        rendered.append(html.escape(value[last : match.start()], quote=False))
+        name = match.group(0)
+        link = API_TYPE_LINKS.get(name)
+        rendered.append(f'<a href="{link}">{name}</a>' if link else name)
+        last = match.end()
+    rendered.append(html.escape(value[last:], quote=False))
+    contents = "".join(rendered).replace("|", "&#124;")
+    contents = contents.replace("{", "&#123;").replace("}", "&#125;")
+    return f"<code>{contents}</code>"
+
+
 def render_docstring(doc: str, parent: Any = None) -> str:
     doc = re.sub(r"<(https?://[^>]+)>", r"[\1](\1)", doc)
     doc = escape_mdx(doc)
@@ -146,17 +173,17 @@ def render_docstring(doc: str, parent: Any = None) -> str:
             rendered.append(section.value)
         elif isinstance(section, griffe.DocstringSectionParameters):
             rows = [
-                (f"`{parameter.name}`", f"`{parameter.annotation}`", parameter.description)
+                (f"`{parameter.name}`", render_type(parameter.annotation), parameter.description)
                 for parameter in section.value
             ]
             rendered.extend(
                 ["<h3>Arguments</h3>", markdown_table(("Argument", "Type", "Description"), rows)]
             )
         elif isinstance(section, griffe.DocstringSectionRaises):
-            rows = [(f"`{error.annotation}`", error.description) for error in section.value]
+            rows = [(render_type(error.annotation), error.description) for error in section.value]
             rendered.extend(["<h3>Errors</h3>", markdown_table(("Error", "When"), rows)])
         elif isinstance(section, griffe.DocstringSectionReturns):
-            rows = [(f"`{item.annotation}`", item.description) for item in section.value]
+            rows = [(render_type(item.annotation), item.description) for item in section.value]
             rendered.extend(["### Returns", markdown_table(("Type", "Description"), rows)])
         elif isinstance(section, griffe.DocstringSectionExamples):
             rendered.extend(["### Examples", *(value for _, value in section.value)])
@@ -188,9 +215,24 @@ def render_method(name: str, value: Any, parent: Any = None) -> str:
 
 
 def render_symbol(name: str, value: Any, parent: Any = None) -> str:
-    kind = "Class" if inspect.isclass(value) else "Function" if callable(value) else "Value"
-    definition = f"{name}{signature(value)}" if callable(value) else name
-    doc = inspect.getdoc(value) or "No public documentation is available."
+    alias = TYPE_ALIAS_DETAILS.get(name)
+    kind = (
+        "Type alias"
+        if alias
+        else "Class"
+        if inspect.isclass(value)
+        else "Function"
+        if callable(value)
+        else "Value"
+    )
+    definition = (
+        f"{name} = {alias[0]}"
+        if alias
+        else f"{name}{signature(value)}"
+        if callable(value)
+        else name
+    )
+    doc = alias[1] if alias else inspect.getdoc(value) or "No public documentation is available."
     doc = render_docstring(doc, parent)
     rendered = [
         f"## {name}",
@@ -214,7 +256,7 @@ def render_symbol(name: str, value: Any, parent: Any = None) -> str:
     return "\n".join(rendered)
 
 
-def declared_public_api() -> set[str]:
+def declared_public_api() -> dict[str, str]:
     """The package's public names: everything its ``__init__`` imports from the library.
 
     The package publishes no ``__all__``, so its curated public surface is the
@@ -224,7 +266,7 @@ def declared_public_api() -> set[str]:
     """
     tree = ast.parse((PYTHON_ROOT / "slackblocks" / "__init__.py").read_text())
     return {
-        alias.asname or alias.name
+        alias.asname or alias.name: (node.module or "").split(".", 1)[0]
         for node in tree.body
         if isinstance(node, ast.ImportFrom) and node.level > 0
         for alias in node.names
@@ -232,10 +274,13 @@ def declared_public_api() -> set[str]:
 
 
 def main() -> None:
+    global API_TYPE_LINKS
+
     analysis = griffe.load(PYTHON_ROOT / "slackblocks", submodules=True)
     sys.path.insert(0, str(PYTHON_ROOT))
     package = importlib.import_module("slackblocks")
-    declared = declared_public_api()
+    declared_origins = declared_public_api()
+    declared = set(declared_origins)
     runtime = {
         name
         for name, value in vars(package).items()
@@ -262,7 +307,19 @@ def main() -> None:
             parent = member.target if isinstance(member, griffe.Alias) else member
         except griffe.AliasResolutionError:
             parent = None
-        grouped[category_for(value)].append((name, value, parent))
+        origin = declared_origins[name]
+        category = origin if origin in CATEGORIES else category_for(value)
+        grouped[category].append((name, value, parent))
+
+    for name, (module_name, category) in SUPPORTING_TYPE_ALIASES.items():
+        module = importlib.import_module(f"slackblocks.{module_name}")
+        grouped[category].append((name, getattr(module, name), None))
+
+    API_TYPE_LINKS = {
+        name: f"/reference/python/{category}#{name.lower()}"
+        for category, symbols in grouped.items()
+        for name, _, _ in symbols
+    }
 
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
     index = [
@@ -275,7 +332,8 @@ def main() -> None:
         ),
         "",
         (
-            f"The {len(exports)} documented symbols are grouped by the part of Block Kit "
+            f"The {len(exports) + len(SUPPORTING_TYPE_ALIASES)} documented symbols and types "
+            "are grouped by the part of Block Kit "
             "they help you create."
         ),
         "",
@@ -290,11 +348,13 @@ def main() -> None:
         (OUTPUT_ROOT / f"{category}.mdx").write_text("\n".join(page))
     (OUTPUT_ROOT / "index.mdx").write_text("\n".join(index) + "\n")
 
-    if rendered_symbols != len(exports):
+    expected_symbols = len(exports) + len(SUPPORTING_TYPE_ALIASES)
+    if rendered_symbols != expected_symbols:
         raise RuntimeError(
-            f"Expected all {len(exports)} public symbols, generated {rendered_symbols}"
+            f"Expected {expected_symbols} public symbols and supporting types, "
+            f"generated {rendered_symbols}"
         )
-    print(f"Generated Python reference for {rendered_symbols} public symbols")
+    print(f"Generated Python reference for {rendered_symbols} public symbols and types")
 
 
 if __name__ == "__main__":
