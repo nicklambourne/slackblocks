@@ -220,6 +220,16 @@ const config: Config = {
   ],
   plugins: [
     [
+      "./plugins/language-search-indexes.cjs",
+      {
+        searchOptions: {
+          indexDocs: true,
+          docsRouteBasePath: "/",
+          forceIgnoreNoIndex: true,
+        },
+      },
+    ],
+    [
       "docusaurus-plugin-typedoc",
       {
         name: "TypeScript API reference",
