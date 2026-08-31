@@ -149,14 +149,20 @@ function renderGenericSyntax(contents) {
     if (!heading || lines[index + 1] !== "") continue;
 
     const name = heading[1];
-    const signature = lines[index + 2].match(
+    const quotedSignature = lines[index + 2].match(
       new RegExp(`^> \\*\\*${name}\\*\\*&lt;(.+?)&gt;`),
     );
-    if (!signature) continue;
+    const codeSignature =
+      lines[index + 2] === "```ts"
+        ? lines[index + 3]?.match(
+            new RegExp(`^(?:type|interface|class) ${name}<(.+?)>`),
+          )
+        : undefined;
+    const typeParameters = (quotedSignature ?? codeSignature)?.[1];
+    if (!typeParameters) continue;
 
-    const typeParameters = signature[1].replaceAll("`", "");
     lines[index] =
-      `## ${name}&lt;${typeParameters}&gt; {#${name.toLowerCase()}}`;
+      `## ${name}&lt;${typeParameters.replaceAll("`", "")}&gt; {#${name.toLowerCase()}}`;
   }
 
   return lines.join("\n");

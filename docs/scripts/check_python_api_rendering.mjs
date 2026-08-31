@@ -8,6 +8,10 @@ const referenceDirectory = path.resolve(
   scriptsDirectory,
   "../docs/reference/python",
 );
+const buildDirectory = path.resolve(
+  scriptsDirectory,
+  "../build/reference/python",
+);
 const files = (await readdir(referenceDirectory)).filter((file) =>
   file.endsWith(".mdx"),
 );
@@ -53,6 +57,28 @@ for (const match of rendered.matchAll(
     target,
     new RegExp(`^## ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "m"),
     `${name} links to missing #${anchor} in ${domain}.mdx`,
+  );
+}
+
+for (const domain of ["blocks", "objects"]) {
+  const html = await readFile(
+    path.join(buildDirectory, `${domain}.html`),
+    "utf8",
+  );
+  const toc = html.match(
+    /<ul class="table-of-contents table-of-contents__left-border">[\s\S]*?<\/ul>/,
+  )?.[0];
+
+  assert.ok(toc, `${domain}.html is missing its right-side table of contents`);
+  assert.doesNotMatch(
+    toc,
+    />from_dict</,
+    `from_dict must not appear in the ${domain} right-side navigation`,
+  );
+  assert.match(
+    html,
+    /id="from_dict"/,
+    `from_dict must remain documented on the ${domain} page`,
   );
 }
 

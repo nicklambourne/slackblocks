@@ -46,6 +46,11 @@ const objects = await readFile(
   "utf8",
 );
 
+const errors = await readFile(
+  path.join(referenceDirectory, "errors.md"),
+  "utf8",
+);
+
 function functionSection(contents, name) {
   const heading = `## ${name}()`;
   const start = contents.indexOf(heading);
@@ -55,6 +60,29 @@ function functionSection(contents, name) {
 }
 
 const fluentPages = [blocks, components, elements, objects, payloads];
+const apiPages = [...fluentPages, utilities, errors];
+
+assert.doesNotMatch(
+  apiPages.join("\n"),
+  /^> /m,
+  "TypeScript signatures and declarations must not render as blockquotes",
+);
+assert.match(
+  blocks,
+  /^```ts\nfunction ActionsBlock\(\): FluentBuilder</m,
+  "Function signatures must render as TypeScript code blocks",
+);
+assert.match(
+  errors,
+  /^```ts\nnew InvalidUsageError\(path, message\): InvalidUsageError;\n```$/m,
+  "Constructor signatures must render as TypeScript code blocks",
+);
+assert.match(
+  objects,
+  /^```ts\ntype TextLike = string \| TextObject;\n```$/m,
+  "Type aliases must render as TypeScript code blocks",
+);
+
 const blockFactories = [...blocks.matchAll(/^## ([A-Z][\w$]*Block)\(\)$/gm)];
 assert.ok(blockFactories.length > 0, "No block factories were rendered");
 
@@ -129,8 +157,8 @@ for (const name of ["SlackObject", "SlackWire"]) {
   );
   assert.match(
     utilities,
-    new RegExp("^> \\*\\*" + name + "\\*\\*&lt;`Type`&gt;", "m"),
-    `${name}<Type> is not safely escaped in its declaration`,
+    new RegExp("^```ts\\ntype " + name + "<Type> =", "m"),
+    `${name}<Type> is not rendered as valid TypeScript`,
   );
 }
 

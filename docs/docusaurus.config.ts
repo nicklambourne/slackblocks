@@ -245,6 +245,7 @@ const config: Config = {
           module: typescriptDomainTitle,
         },
         parametersFormat: "table",
+        useCodeBlocks: true,
         interfacePropertiesFormat: "table",
         classPropertiesFormat: "table",
         typeDeclarationFormat: "table",
