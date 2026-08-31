@@ -73,7 +73,7 @@
   background: var(--ifm-navbar-background-color);
   border: 1px solid var(--ifm-color-emphasis-400);
   border-radius: var(--ifm-global-radius);
-  padding: 0.35rem 0.55rem;
+  padding: 0 0.55rem;
 }
 
 .language-selector__trigger:focus-visible,
@@ -168,7 +168,15 @@
   border-radius: var(--ifm-global-radius);
   color: var(--ifm-navbar-link-color);
   font: inherit;
-  padding: 0.3rem;
+  padding: 0 0.55rem;
+}
+
+.language-selector__trigger,
+.docs-version-select {
+  box-sizing: border-box;
+  font-size: 1rem;
+  height: 2.25rem;
+  line-height: 1.25rem;
 }
 
 .docs-version-select:focus-visible {
