@@ -1,0 +1,62 @@
+name: Go
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "go/**"
+      - "spec/**"
+      - "docs/examples/go/**"
+      - ".github/workflows/go.yml"
+  pull_request:
+    paths:
+      - "go/**"
+      - "spec/**"
+      - "docs/examples/go/**"
+      - ".github/workflows/go.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Go ${{ matrix.go-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        go-version: ["1.22.x", "stable"]
+    defaults:
+      run:
+        working-directory: go
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ matrix.go-version }}
+          cache: false
+
+      - name: Check formatting
+        run: test -z "$(gofmt -l .)"
+
+      - name: Check module tidiness
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+
+      - name: Run vet
+        run: go vet ./...
+
+      - name: Run staticcheck
+        if: matrix.go-version == 'stable'
+        run: go run honnef.co/go/tools/cmd/staticcheck@v0.8.1 ./...
+
+      - name: Run tests
+        run: go test -race -cover ./...
