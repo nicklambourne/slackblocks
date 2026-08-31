@@ -1,5 +1,9 @@
 /**
- * Fluent composition-object builders and their supporting public types.
+ * Fluent builders for reusable composition objects nested inside blocks and
+ * elements. This includes text, selectable options, confirmation dialogs, files,
+ * workflow metadata, rich text, table cells, and chart data.
+ *
+ * See: <https://docs.slack.dev/reference/block-kit/composition-objects>.
  *
  * @module objects
  */

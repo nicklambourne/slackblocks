@@ -67,6 +67,24 @@ assert.doesNotMatch(
   /^> /m,
   "TypeScript signatures and declarations must not render as blockquotes",
 );
+assert.doesNotMatch(
+  apiPages.join("\n"),
+  /^#{2,3} See$/m,
+  "Slack reference links must remain inline instead of creating See headings",
+);
+assert.doesNotMatch(
+  fluentPages.join("\n"),
+  /^(?:Starts a fluent|Fields accepted by|Optional behavior for)\b/m,
+  "Public fluent API entries must use descriptive, reader-facing prose",
+);
+for (const [page, pattern, domain] of [
+  [blocks, /holds interactive controls such as buttons, select/, "blocks"],
+  [elements, /can submit an action, open a URL/, "elements"],
+  [objects, /core text run used by Slack's structured rich-text API/, "objects"],
+  [payloads, /message payload for Slack Web API methods/, "payloads"],
+]) {
+  assert.match(page, pattern, `${domain} must render its expanded API descriptions`);
+}
 assert.match(
   blocks,
   /^```ts\nfunction ActionsBlock\(\): FluentBuilder</m,

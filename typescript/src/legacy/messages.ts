@@ -114,7 +114,10 @@ export function attachment(
   );
 }
 
-/** Fields accepted by {@link message}. */
+/**
+ * Destination, Block Kit content, fallback text, attachments, metadata, and unfurl
+ * behavior for a Slack Web API message payload.
+ */
 export interface MessageInput {
   /** Channel, group, or direct-message conversation identifier. */
   channel: string;

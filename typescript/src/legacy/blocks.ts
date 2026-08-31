@@ -61,7 +61,10 @@ export function alertBlock(
   );
 }
 
-/** Fields accepted by {@link cardBlock}. */
+/**
+ * Content and presentation fields configured by `CardBlock()`. A card must set at
+ * least one of `heroImage`, `title`, `actions`, or `body` before it is built.
+ */
 export interface CardBlockInput {
   /** Large image displayed above the card content. */
   heroImage?: JsonObject;
@@ -302,7 +305,10 @@ export function planBlock(
   );
 }
 
-/** Fields accepted by {@link sectionBlock}. */
+/**
+ * Text, field, accessory, and identity fields configured by `SectionBlock()`.
+ * Every section must contain main text, one or more fields, or both.
+ */
 export interface SectionBlockInput {
   /** Main copy. Strings are converted to mrkdwn text. */
   text?: TextLike;

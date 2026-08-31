@@ -1,5 +1,7 @@
 /**
- * Higher-level fluent components that render ordinary Block Kit blocks.
+ * Higher-level fluent components assembled from ordinary Block Kit blocks.
+ * Components keep their output transparent: `.build()` returns standard Slack
+ * wire objects that can be inspected, rearranged, or mixed with other builders.
  *
  * @module components
  */
@@ -60,7 +62,11 @@ function renderAccordionSection(
   );
 }
 
-/** Starts one native collapsible section for an {@link Accordion}. */
+/**
+ * Creates one Slack-native collapsible container for an {@link Accordion}. Set a
+ * heading and child blocks, then optionally add supporting copy, an icon, width,
+ * divider behavior, or an initially expanded state.
+ */
 export function AccordionSection(): FluentBuilder<
   AccordionSectionInput,
   JsonObject

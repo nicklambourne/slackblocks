@@ -1,5 +1,7 @@
 /**
- * Typed validation errors returned by eager construction and explicit validation.
+ * Typed validation errors raised while builders materialize or explicit payload
+ * validation runs. Every subclass includes a machine-readable category and a
+ * path identifying the invalid field.
  *
  * @module errors
  */
@@ -38,31 +40,51 @@ export class InvalidUsageError extends Error {
   }
 }
 
-/** A string, array, or collection exceeded an allowed minimum or maximum length. */
+/**
+ * A string, array, or collection falls outside a field's allowed length. Typical
+ * causes include text exceeding Slack's limit, too many options, or an action
+ * identifier longer than 255 characters.
+ */
 export class LengthError extends InvalidUsageError {
   /** Machine-readable failure category. */
   override readonly category = "length-exceeded" as const;
 }
 
-/** A numeric value fell outside its allowed range. */
+/**
+ * A numeric value falls outside a field's allowed range. Typical causes include
+ * minimum values greater than maximum values or counts outside Slack's supported
+ * bounds.
+ */
 export class OutOfRangeError extends InvalidUsageError {
   /** Machine-readable failure category. */
   override readonly category = "out-of-range" as const;
 }
 
-/** Fields that cannot be used together were both supplied. */
+/**
+ * Mutually exclusive fields are supplied together. Examples include combining an
+ * image URL with a Slack file, or providing both options and option groups to a
+ * static select menu.
+ */
 export class MutualExclusivityError extends InvalidUsageError {
   /** Machine-readable failure category. */
   override readonly category = "mutually-exclusive" as const;
 }
 
-/** A payload field or nested object has the wrong runtime type. */
+/**
+ * A payload field or nested object has the wrong runtime type or an unsupported
+ * discrete value. The error path identifies the exact field that failed runtime
+ * validation.
+ */
 export class TypeMismatchError extends InvalidUsageError {
   /** Machine-readable failure category. */
   override readonly category = "type-mismatch" as const;
 }
 
-/** A required field or one-of requirement was not satisfied. */
+/**
+ * A required field or one-of requirement is not satisfied. Typical causes include
+ * building a section without text or fields, or creating a conversation filter
+ * without any filter options.
+ */
 export class MissingRequiredError extends InvalidUsageError {
   /** Machine-readable failure category. */
   override readonly category = "missing-required" as const;

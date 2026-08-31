@@ -1,5 +1,9 @@
 /**
- * Fluent element builders and the supporting types used by their setters.
+ * Fluent builders for interactive and visual elements placed inside Block Kit
+ * blocks. These controls collect input, trigger actions, display images, and let
+ * users choose from static, workspace, or application-provided data.
+ *
+ * See: <https://docs.slack.dev/reference/block-kit/block-elements>.
  *
  * @module elements
  */
