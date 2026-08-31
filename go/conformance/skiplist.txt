@@ -1,0 +1,2 @@
+# Temporary fixture skips may be listed here while a multi-PR spec change lands.
+# Released versions require this file to contain comments only.

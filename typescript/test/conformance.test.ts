@@ -679,6 +679,7 @@ const invalidCases: Record<string, () => unknown> = {
       blocks: [dividerBlock()],
     }),
   "section-missing-content": () => sectionBlock({}),
+  "section-empty-fields": () => sectionBlock({ fields: [] }),
   "static-select-options-and-groups": () =>
     staticSelect({ actionId: "a", options: [choice()], optionGroups: [{ label: plainText("A") }] }),
   "image-url-and-slack-file": () =>
@@ -836,6 +837,16 @@ const invalidCases: Record<string, () => unknown> = {
     }),
   "chart-segment-value-not-positive": () => chartSegment({ label: "A", value: 0 }),
   "chart-series-empty": () => lineChart([], validAxis()),
+  "chart-duplicate-point-labels": () =>
+    lineChart(
+      [
+        dataSeries({
+          name: "Series",
+          data: [dataPoint({ label: "A", value: 1 }), dataPoint({ label: "A", value: 2 })],
+        }),
+      ],
+      axisConfig({ categories: ["A", "B"] }),
+    ),
   "chart-too-many-series": () =>
     lineChart(
       Array.from({ length: limits.data_visualization.series.max_items + 1 }, (_, index) =>

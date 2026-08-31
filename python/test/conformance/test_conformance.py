@@ -397,6 +397,7 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         blocks=[DividerBlock()],
     ),
     "section-missing-content": lambda: SectionBlock(),
+    "section-empty-fields": lambda: SectionBlock(fields=[]),
     "static-select-options-and-groups": lambda: StaticSelectMenu(
         "a",
         options=[option()],
@@ -538,6 +539,10 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     ),
     "chart-segment-value-not-positive": lambda: ChartSegment("A", 0),
     "chart-series-empty": lambda: LineChart([], valid_axis()),
+    "chart-duplicate-point-labels": lambda: LineChart(
+        [DataSeries("Series", [DataPoint("A", 1), DataPoint("A", 2)])],
+        AxisConfig(["A", "B"]),
+    ),
     "chart-too-many-series": lambda: LineChart(
         [
             valid_series(f"S{index}")
