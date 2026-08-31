@@ -50,6 +50,10 @@ const errors = await readFile(
   path.join(referenceDirectory, "errors.md"),
   "utf8",
 );
+const blocksHtml = await readFile(
+  path.resolve(scriptsDirectory, "../build/reference/typescript/blocks.html"),
+  "utf8",
+);
 
 function functionSection(contents, name) {
   const heading = `## ${name}()`;
@@ -99,6 +103,17 @@ assert.match(
   objects,
   /^```ts\ntype TextLike = string \| TextObject;\n```$/m,
   "Type aliases must render as TypeScript code blocks",
+);
+
+const toc = blocksHtml.match(
+  /<ul class="table-of-contents table-of-contents__left-border">[\s\S]*?<\/ul>/,
+)?.[0];
+
+assert.ok(toc, "blocks.html is missing its right-side table of contents");
+assert.doesNotMatch(
+  toc,
+  />[A-Z][A-Za-z0-9_$]*\(\)<\//,
+  "TypeScript factory names in the right-side navigation must omit parentheses",
 );
 
 const blockFactories = [...blocks.matchAll(/^## ([A-Z][\w$]*Block)\(\)$/gm)];
