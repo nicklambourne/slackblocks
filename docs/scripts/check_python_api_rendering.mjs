@@ -68,8 +68,12 @@ for (const domain of ["blocks", "objects"]) {
   const toc = html.match(
     /<ul class="table-of-contents table-of-contents__left-border">[\s\S]*?<\/ul>/,
   )?.[0];
+  const breadcrumbs = html.match(
+    /<nav[^>]+aria-label="Breadcrumbs">[\s\S]*?<\/nav>/,
+  )?.[0];
 
   assert.ok(toc, `${domain}.html is missing its right-side table of contents`);
+  assert.ok(breadcrumbs, `${domain}.html is missing its breadcrumbs`);
   assert.doesNotMatch(
     toc,
     />from_dict</,
@@ -79,6 +83,11 @@ for (const domain of ["blocks", "objects"]) {
     html,
     /id="from_dict"/,
     `from_dict must remain documented on the ${domain} page`,
+  );
+  assert.doesNotMatch(
+    breadcrumbs,
+    />Python API reference</,
+    `Python API breadcrumbs must omit the redundant language layer on ${domain}`,
   );
 }
 

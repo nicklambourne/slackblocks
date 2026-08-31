@@ -328,7 +328,7 @@ const config: Config = {
     },
     footer: {
       style: "light",
-      copyright: `Copyright © ${new Date().getFullYear()} Nicholas Lambourne`,
+      copyright: `Copyright © ${new Date().getFullYear()} <a href="https://github.com/nicklambourne">Nicholas Lambourne</a>`,
     },
   },
 };
