@@ -116,6 +116,16 @@ assert.doesNotMatch(
   "TypeScript factory names in the right-side navigation must omit parentheses",
 );
 
+const breadcrumbs = blocksHtml.match(
+  /<nav[^>]+aria-label="Breadcrumbs">[\s\S]*?<\/nav>/,
+)?.[0];
+assert.ok(breadcrumbs, "blocks.html is missing its breadcrumbs");
+assert.doesNotMatch(
+  breadcrumbs,
+  />TypeScript API reference</,
+  "TypeScript API breadcrumbs must omit the redundant language level",
+);
+
 const blockFactories = [...blocks.matchAll(/^## ([A-Z][\w$]*Block)\(\)$/gm)];
 assert.ok(blockFactories.length > 0, "No block factories were rendered");
 
