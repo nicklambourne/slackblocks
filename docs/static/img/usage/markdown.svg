@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="944" height="216" viewBox="0 0 944 216" role="img" aria-labelledby="title description">
+  <title id="title">Markdown Block rendered in Slack</title>
+  <desc id="description">A Slack app message with bold Hello text and an italic GitHub-flavored phrase.</desc>
+  <rect x="0.5" y="0.5" width="943" height="215" rx="18" fill="#fff" stroke="#f0f0f0" />
+  <g transform="rotate(-12 78 78)">
+    <rect x="53" y="51" width="42" height="53" rx="2" fill="#1264a3" />
+    <rect x="59" y="55" width="36" height="45" fill="#36c5f0" opacity="0.45" />
+    <path d="M59 55h31M59 61h31M59 67h31M59 73h31M59 79h31M59 85h31M59 91h31" stroke="#fff" stroke-width="1" opacity="0.55" />
+    <rect x="96" y="48" width="8" height="57" rx="2" fill="#ecb22e" />
+    <path d="M96 48h8l-4-10z" fill="#8d5b31" />
+  </g>
+  <text x="128" y="92" fill="#1d1c1d" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="700">Your App</text>
+  <rect x="267" y="64" width="53" height="32" rx="4" fill="#e8e8e8" />
+  <text x="276" y="88" fill="#616061" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700">APP</text>
+  <text x="330" y="90" fill="#616061" font-family="Arial, Helvetica, sans-serif" font-size="24">03:37</text>
+  <text x="128" y="143" fill="#1d1c1d" font-family="Arial, Helvetica, sans-serif" font-size="27">
+    <tspan font-weight="700">Hello!</tspan>
+    <tspan> Markdown blocks support </tspan>
+    <tspan font-style="italic">GitHub-flavored</tspan>
+    <tspan> syntax.</tspan>
+  </text>
+</svg>

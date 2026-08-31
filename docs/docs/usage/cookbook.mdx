@@ -108,6 +108,8 @@ function buildStatusMessage(input: {
 </TypeScript>
 </LanguageContent>
 
+![A build status notification rendered in Slack](/img/usage/build_notification.png)
+
 Tips:
 
 - Always pass a `text=` fallback to `Message` — Slack uses it for desktop and mobile push notifications.
@@ -203,6 +205,8 @@ def deploy_alert(*, channel: str, service: str, version: str, dashboard_url: str
     )
 ```
 
+![Rich text formatting rendered in Slack](/img/usage/rich_text.png)
+
 ## Confirmation modal
 
 A modal is opened in response to an interaction `trigger_id` from Slack.
@@ -239,6 +243,8 @@ def open_confirmation_modal(client: WebClient, trigger_id: str, target: str) -> 
 
     client.views_open(trigger_id=trigger_id, view=modal.to_dict())
 ```
+
+![An input field rendered in a Slack modal](/img/usage/input.png)
 
 When the user submits, your `view_submission` handler will receive the input under `state.values["confirmation"]["confirmation_text"]`.
 
@@ -309,6 +315,8 @@ report = Message(
     ],
 )
 ```
+
+![A table block rendered in Slack](/img/usage/table.png)
 
 ## Deprecated: colored-bar attachment
 
