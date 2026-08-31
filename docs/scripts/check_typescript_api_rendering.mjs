@@ -54,6 +54,11 @@ const blocksHtml = await readFile(
   path.resolve(scriptsDirectory, "../build/reference/typescript/blocks.html"),
   "utf8",
 );
+assert.match(
+  blocksHtml,
+  /<a href="https:\/\/github\.com\/nicklambourne">Nicholas Lambourne<\/a>/,
+  "The footer author name must link to the GitHub profile",
+);
 
 function functionSection(contents, name) {
   const heading = `## ${name}()`;
