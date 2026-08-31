@@ -59,6 +59,16 @@ assert.match(
   /<a href="https:\/\/github\.com\/nicklambourne">Nicholas Lambourne<\/a>/,
   "The footer author name must link to the GitHub profile",
 );
+assert.match(
+  blocksHtml,
+  /setAttribute\("data-theme",([A-Za-z_$][\w$]*)\|\|"light"\),document\.documentElement\.setAttribute\("data-theme-choice",\1\|\|"light"\)/,
+  "The theme switcher must initialize with an explicit light or dark choice",
+);
+assert.doesNotMatch(
+  blocksHtml,
+  /prefers-color-scheme/,
+  "The theme switcher must not expose a third system-preference state",
+);
 
 function functionSection(contents, name) {
   const heading = `## ${name}()`;
