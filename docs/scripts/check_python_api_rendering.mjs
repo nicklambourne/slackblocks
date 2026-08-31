@@ -80,6 +80,16 @@ for (const domain of ["blocks", "objects"]) {
     /id="from_dict"/,
     `from_dict must remain documented on the ${domain} page`,
   );
+
+  const breadcrumbs = html.match(
+    /<nav[^>]+aria-label="Breadcrumbs">[\s\S]*?<\/nav>/,
+  )?.[0];
+  assert.ok(breadcrumbs, `${domain}.html is missing its breadcrumbs`);
+  assert.doesNotMatch(
+    breadcrumbs,
+    />Python API reference</,
+    `Python API breadcrumbs must omit the redundant language level on ${domain}`,
+  );
 }
 
 console.log("Python API rendering checks passed.");
