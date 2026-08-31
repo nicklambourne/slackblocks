@@ -17,7 +17,13 @@ import { createFluentBuilder, type FluentBuilder } from "./core.js";
 type FirstInput<Factory extends (...args: never[]) => unknown> = Parameters<Factory>[0];
 type Output<Factory extends (...args: never[]) => unknown> = ReturnType<Factory>;
 
-/** Starts fluent lower-priority content attached to a message. */
+/**
+ * Creates lower-priority supporting content using Slack's legacy secondary
+ * attachment format. Attachments add context beneath a message, while `fallback()`
+ * supplies text for notifications and clients that cannot display Block Kit.
+ *
+ * See: <https://docs.slack.dev/legacy/legacy-messaging/legacy-secondary-message-attachments>.
+ */
 export function Attachment(): FluentBuilder<
   FirstInput<typeof createAttachment>,
   JsonObject
@@ -25,14 +31,26 @@ export function Attachment(): FluentBuilder<
   return createFluentBuilder(createAttachment, { collections: { blocks: "flat" } });
 }
 
-/** Starts a fluent payload for Slack Web API message methods. */
+/**
+ * Creates a message payload for Slack Web API methods such as
+ * `chat.postMessage`. Set the destination channel and add Block Kit blocks,
+ * secondary attachments, fallback text, metadata, or unfurl behavior as needed.
+ *
+ * See: <https://docs.slack.dev/reference/methods/chat.postMessage>.
+ */
 export function Message(): FluentBuilder<MessageInput, JsonObject> {
   return createFluentBuilder(createMessage, {
     collections: { blocks: "flat", attachments: "flat" },
   });
 }
 
-/** Starts a fluent response to a slash command or interactive request. */
+/**
+ * Creates the immediate response payload returned for a slash command or
+ * interactive request. Configure its blocks, fallback text, visibility, and
+ * whether it replaces the original interaction message.
+ *
+ * See: <https://docs.slack.dev/interactivity/implementing-slash-commands#responding_to_commands>.
+ */
 export function MessageResponse(): FluentBuilder<
   FirstInput<typeof createMessageResponse>,
   JsonObject
@@ -42,7 +60,13 @@ export function MessageResponse(): FluentBuilder<
   });
 }
 
-/** Starts a fluent incoming-webhook or response-URL payload. */
+/**
+ * Creates a payload for an incoming webhook or an interaction response URL.
+ * Unlike a Web API message, this form can replace or delete the original message
+ * and does not require a destination channel field.
+ *
+ * See: <https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks>.
+ */
 export function WebhookMessage(): FluentBuilder<
   FirstInput<typeof createWebhookMessage>,
   JsonObject
@@ -52,7 +76,13 @@ export function WebhookMessage(): FluentBuilder<
   });
 }
 
-/** Starts a fluent modal view payload. */
+/**
+ * Creates a modal view for Slack's `views.open`, `views.update`, and `views.push`
+ * methods. Configure the title, compatible blocks, controls, metadata, and close
+ * behavior before building the payload.
+ *
+ * See: <https://docs.slack.dev/surfaces/modals>.
+ */
 export function Modal(): FluentBuilder<
   FirstInput<typeof createModal>,
   Output<typeof createModal>
@@ -60,7 +90,13 @@ export function Modal(): FluentBuilder<
   return createFluentBuilder(createModal, { collections: { blocks: "flat" } });
 }
 
-/** Starts a fluent App Home tab payload. */
+/**
+ * Creates an App Home tab view for Slack's `views.publish` method. Add up to 100
+ * compatible blocks and optional identifiers or private metadata for the
+ * application.
+ *
+ * See: <https://docs.slack.dev/surfaces/app-home>.
+ */
 export function HomeTab(): FluentBuilder<
   FirstInput<typeof createHomeTab>,
   Output<typeof createHomeTab>

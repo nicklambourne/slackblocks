@@ -25,13 +25,19 @@ export type TextObject = SlackObject<"plain_text" | "mrkdwn">;
 /** Text accepted by factories: a string or an existing Slack text object. */
 export type TextLike = string | TextObject;
 
-/** Optional behavior for {@link plainText}. */
+/**
+ * Optional rendering behavior for a plain-text object, controlling whether Slack expands
+ * emoji shortcodes.
+ */
 export interface PlainTextOptions {
   /** Whether Slack should render emoji shortcodes. */
   emoji?: boolean;
 }
 
-/** Optional behavior for {@link mrkdwn}. */
+/**
+ * Optional parsing behavior for a `mrkdwn` text object, controlling automatic links and
+ * mentions.
+ */
 export interface MarkdownOptions {
   /** Whether Slack should treat the text literally instead of auto-parsing links and mentions. */
   verbatim?: boolean;
@@ -98,7 +104,10 @@ export function asText(
   return kind === "plain_text" ? plainText(value, {}, settings) : mrkdwn(value, {}, settings);
 }
 
-/** Fields accepted by {@link confirmation}. */
+/**
+ * Text and button labels required to present a confirmation step before an interactive
+ * action is submitted.
+ */
 export interface ConfirmationInput {
   /** Plain-text dialog title, up to 100 characters. */
   title: TextLike;
@@ -142,7 +151,7 @@ export function confirmation(
   );
 }
 
-/** Fields accepted by {@link option}. */
+/** Label, returned value, and optional supporting content for one selectable option. */
 export interface OptionInput {
   /** Plain-text option label, up to 75 characters. */
   text: TextLike;
@@ -189,7 +198,7 @@ export function option(input: OptionInput, settings: FactorySettings = {}): Json
   );
 }
 
-/** Fields accepted by {@link optionGroup}. */
+/** Label and choices for a group of between one and 100 options in a static select menu. */
 export interface OptionGroupInput {
   /** Plain-text group label, up to 75 characters. */
   label: TextLike;
@@ -492,7 +501,7 @@ export function slackIcon(
   return create("icon", { name }, settings);
 }
 
-/** Fields accepted by {@link chartSegment}. */
+/** Label and positive finite value for one segment in a Slack-rendered pie chart. */
 export interface ChartSegmentInput {
   /** Segment label, up to 20 characters. */
   label: string;
@@ -526,7 +535,7 @@ export function chartSegment(
   return createObject({ ...input }, settings);
 }
 
-/** Fields accepted by {@link dataPoint}. */
+/** Category label and finite numeric value for one point in an axis-based chart series. */
 export interface DataPointInput {
   /** Category label, up to 20 characters. */
   label: string;
@@ -553,7 +562,7 @@ export function dataPoint(
   return createObject({ ...input }, settings);
 }
 
-/** Fields accepted by {@link dataSeries}. */
+/** Unique name and ordered data points for one series in a bar, area, or line chart. */
 export interface DataSeriesInput {
   /** Unique series name, up to 20 characters. */
   name: string;
@@ -587,7 +596,10 @@ export function dataSeries(
   return createObject({ ...input }, settings);
 }
 
-/** Fields accepted by {@link axisConfig}. */
+/**
+ * Ordered unique categories and optional axis titles shared by every series in an axis-
+ * based chart.
+ */
 export interface AxisConfigInput {
   /** Unique category labels, in display order. */
   categories: string[];

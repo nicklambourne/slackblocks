@@ -24,12 +24,29 @@ function hasText(comment) {
   return (ts.getTextOfJSDocComment(comment) ?? "").trim().length > 0;
 }
 
+function documentationText(node) {
+  return (node.jsDoc ?? [])
+    .map((documentation) => ts.getTextOfJSDocComment(documentation.comment) ?? "")
+    .join(" ")
+    .trim();
+}
+
 function hasSummary(node) {
-  return (node.jsDoc ?? []).some((documentation) => hasText(documentation.comment));
+  return documentationText(node).length > 0;
 }
 
 function requireDocumentation(node, location) {
   if (!hasSummary(node)) failures.push(`${location}: missing API description`);
+}
+
+function requireSubstantiveDocumentation(node, location) {
+  requireDocumentation(node, location);
+  const words = documentationText(node).split(/\s+/).filter(Boolean);
+  if (words.length < 18) {
+    failures.push(
+      `${location}: API description is too shallow (${words.length} words; expected at least 18)`,
+    );
+  }
 }
 
 function inspectType(type, location) {
@@ -131,7 +148,7 @@ for (const sourcePath of SOURCE_FILES) {
     const location = `${sourcePath}:${statement.name.getText()}`;
     if (ts.isFunctionDeclaration(statement)) {
       if (FLUENT_FILES.has(sourcePath)) {
-        requireDocumentation(statement, location);
+        requireSubstantiveDocumentation(statement, location);
         if (!/^[A-Z]/.test(statement.name.getText())) {
           failures.push(`${location}: fluent builders must use PascalCase`);
         }

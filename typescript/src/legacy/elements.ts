@@ -12,7 +12,10 @@ import { create, createObject, dropEmpty } from "../internal.js";
 import { asText, type TextLike } from "./objects.js";
 import type { FactorySettings, JsonObject, SlackObject } from "../types.js";
 
-/** Fields accepted by {@link checkboxes}. */
+/**
+ * Configuration for a checkbox group, including its choices, initial selection,
+ * confirmation step, and focus behavior.
+ */
 export interface CheckboxesInput {
   /** Identifier returned when the checkbox selection changes, up to 255 characters. */
   actionId: string;
@@ -26,7 +29,10 @@ export interface CheckboxesInput {
   focusOnLoad?: boolean;
 }
 
-/** Fields accepted by {@link datePicker}. */
+/**
+ * Configuration for a calendar date picker, including its action identifier, initial ISO
+ * date, prompt, and interaction behavior.
+ */
 export interface DatePickerInput {
   /** Identifier returned when a date is selected, up to 255 characters. */
   actionId: string;
@@ -40,7 +46,10 @@ export interface DatePickerInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link dateTimePicker}. */
+/**
+ * Configuration for a combined date-and-time picker whose initial and submitted values use
+ * Unix timestamps in seconds.
+ */
 export interface DateTimePickerInput {
   /** Identifier returned when a date and time are selected, up to 255 characters. */
   actionId: string;
@@ -52,7 +61,10 @@ export interface DateTimePickerInput {
   focusOnLoad?: boolean;
 }
 
-/** Fields accepted by {@link emailInput}. */
+/**
+ * Configuration for an email-address input, including its initial value, empty-state
+ * prompt, focus, and dispatch behavior.
+ */
 export interface EmailElementInput {
   /** Identifier used to find the submitted email value, up to 255 characters. */
   actionId: string;
@@ -66,7 +78,10 @@ export interface EmailElementInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link channelMultiSelect}. */
+/**
+ * Configuration for a public-channel multi-select, including initial channels, selection
+ * limit, confirmation step, and prompt.
+ */
 export interface ChannelMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
   actionId: string;
@@ -82,7 +97,10 @@ export interface ChannelMultiSelectInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link conversationMultiSelect}. */
+/**
+ * Configuration for a conversation multi-select, including initial conversations,
+ * filtering, selection limits, and modal-aware defaults.
+ */
 export interface ConversationMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
   actionId: string;
@@ -102,7 +120,10 @@ export interface ConversationMultiSelectInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link externalMultiSelect}. */
+/**
+ * Configuration for an externally populated multi-select, including query threshold,
+ * initial options, selection limit, and prompt.
+ */
 export interface ExternalMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
   actionId: string;
@@ -120,7 +141,10 @@ export interface ExternalMultiSelectInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link staticMultiSelect}. */
+/**
+ * Configuration for a static multi-select. Supply either direct options or option groups,
+ * never both.
+ */
 export interface StaticMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
   actionId: string;
@@ -140,7 +164,10 @@ export interface StaticMultiSelectInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link userMultiSelect}. */
+/**
+ * Configuration for a workspace-user multi-select, including initial users, selection
+ * limit, confirmation step, and prompt.
+ */
 export interface UserMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
   actionId: string;
@@ -156,7 +183,10 @@ export interface UserMultiSelectInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link numberInput}. */
+/**
+ * Configuration for a numeric input, including decimal support, initial value, permitted
+ * range, prompt, and dispatch behavior.
+ */
 export interface NumberElementInput {
   /** Identifier used to find the submitted numeric value, up to 255 characters. */
   actionId: string;
@@ -176,7 +206,10 @@ export interface NumberElementInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link overflow}. */
+/**
+ * Configuration for a compact overflow menu containing between two and five secondary
+ * action options.
+ */
 export interface OverflowInput {
   /** Identifier returned when an option is selected, up to 255 characters. */
   actionId: string;
@@ -186,7 +219,10 @@ export interface OverflowInput {
   confirm?: JsonObject;
 }
 
-/** Fields accepted by {@link plainTextInput}. */
+/**
+ * Configuration for a free-form text field, including multiline display, initial text,
+ * character bounds, prompt, and dispatch behavior.
+ */
 export interface PlainTextElementInput {
   /** Identifier used to find the submitted text value, up to 255 characters. */
   actionId: string;
@@ -206,7 +242,10 @@ export interface PlainTextElementInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link radioButtons}. */
+/**
+ * Configuration for a single-choice radio-button group, including its options, initial
+ * choice, confirmation step, and focus behavior.
+ */
 export interface RadioButtonsInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
   actionId: string;
@@ -220,7 +259,10 @@ export interface RadioButtonsInput {
   focusOnLoad?: boolean;
 }
 
-/** Fields accepted by {@link channelSelect}. */
+/**
+ * Configuration for a public-channel single-select, including its initial channel, modal
+ * response URL, confirmation step, and prompt.
+ */
 export interface ChannelSelectInput {
   /** Identifier returned when a channel is selected, up to 255 characters. */
   actionId: string;
@@ -236,7 +278,10 @@ export interface ChannelSelectInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link conversationSelect}. */
+/**
+ * Configuration for a conversation single-select, including filtering, modal-aware
+ * defaults, response URL behavior, and prompt.
+ */
 export interface ConversationSelectInput {
   /** Identifier returned when a conversation is selected, up to 255 characters. */
   actionId: string;
@@ -256,7 +301,10 @@ export interface ConversationSelectInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link externalSelect}. */
+/**
+ * Configuration for an externally populated single-select, including query threshold,
+ * initial option, confirmation step, and prompt.
+ */
 export interface ExternalSelectInput {
   /** Identifier returned when an option is selected, up to 255 characters. */
   actionId: string;
@@ -272,7 +320,10 @@ export interface ExternalSelectInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link staticSelect}. */
+/**
+ * Configuration for a static single-select. Supply either direct options or option groups,
+ * never both.
+ */
 export interface StaticSelectInput {
   /** Identifier returned when an option is selected, up to 255 characters. */
   actionId: string;
@@ -290,7 +341,10 @@ export interface StaticSelectInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link userSelect}. */
+/**
+ * Configuration for a workspace-user single-select, including its initial user,
+ * confirmation step, focus behavior, and prompt.
+ */
 export interface UserSelectInput {
   /** Identifier returned when a user is selected, up to 255 characters. */
   actionId: string;
@@ -304,7 +358,10 @@ export interface UserSelectInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link timePicker}. */
+/**
+ * Configuration for a time-of-day picker, including its initial 24-hour time, timezone,
+ * confirmation step, and prompt.
+ */
 export interface TimePickerInput {
   /** Identifier returned when a time is selected, up to 255 characters. */
   actionId: string;
@@ -320,7 +377,10 @@ export interface TimePickerInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link urlInput}. */
+/**
+ * Configuration for a URL input, including its initial value, empty-state prompt, focus,
+ * and dispatch behavior.
+ */
 export interface UrlElementInput {
   /** Identifier used to find the submitted URL, up to 255 characters. */
   actionId: string;
@@ -334,7 +394,10 @@ export interface UrlElementInput {
   placeholder?: TextLike;
 }
 
-/** Fields accepted by {@link richTextInput}. */
+/**
+ * Configuration for a WYSIWYG rich-text editor, including initial content, prompt,
+ * dispatch behavior, and visible line bounds.
+ */
 export interface RichTextElementInput {
   /** Identifier used to find the submitted rich-text value, up to 255 characters. */
   actionId: string;
@@ -368,7 +431,10 @@ function element<Type extends string>(
   return create(type, withPlaceholder(input, settings), settings);
 }
 
-/** Fields accepted by {@link button}. */
+/**
+ * Configuration for an interactive button, including its label, action identifier,
+ * behavior, confirmation step, and accessibility text.
+ */
 export interface ButtonInput {
   /** Plain-text label displayed on the button. */
   text: TextLike;
@@ -386,7 +452,10 @@ export interface ButtonInput {
   accessibilityLabel?: string;
 }
 
-/** Fields accepted by {@link workflowButton}. */
+/**
+ * Configuration for a workflow button that launches a Slack link trigger with optional
+ * interaction and accessibility settings.
+ */
 export interface WorkflowButtonInput {
   /** Plain-text label displayed on the button. */
   text: TextLike;
@@ -402,7 +471,10 @@ export interface WorkflowButtonInput {
   accessibilityLabel?: string;
 }
 
-/** URL-backed or Slack-file-backed image fields accepted by {@link imageElement}. */
+/**
+ * Configuration for an image element. Accessible alternative text is always
+ * required, together with exactly one public image URL or Slack-hosted file.
+ */
 export type ImageElementInput =
   | {
       /** Accessible plain-text summary of the image. */
@@ -440,7 +512,10 @@ export function button(
   );
 }
 
-/** Fields accepted by {@link feedbackButton}. */
+/**
+ * Configuration for one positive or negative feedback choice, including its visible text,
+ * returned value, and accessibility label.
+ */
 export interface FeedbackButtonInput {
   /** Plain-text feedback choice. */
   text: TextLike;

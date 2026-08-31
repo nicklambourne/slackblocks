@@ -46,6 +46,11 @@ const objects = await readFile(
   "utf8",
 );
 
+const errors = await readFile(
+  path.join(referenceDirectory, "errors.md"),
+  "utf8",
+);
+
 function functionSection(contents, name) {
   const heading = `## ${name}()`;
   const start = contents.indexOf(heading);
@@ -55,6 +60,47 @@ function functionSection(contents, name) {
 }
 
 const fluentPages = [blocks, components, elements, objects, payloads];
+const apiPages = [...fluentPages, utilities, errors];
+
+assert.doesNotMatch(
+  apiPages.join("\n"),
+  /^> /m,
+  "TypeScript signatures and declarations must not render as blockquotes",
+);
+assert.doesNotMatch(
+  apiPages.join("\n"),
+  /^#{2,3} See$/m,
+  "Slack reference links must remain inline instead of creating See headings",
+);
+assert.doesNotMatch(
+  fluentPages.join("\n"),
+  /^(?:Starts a fluent|Fields accepted by|Optional behavior for)\b/m,
+  "Public fluent API entries must use descriptive, reader-facing prose",
+);
+for (const [page, pattern, domain] of [
+  [blocks, /holds interactive controls such as buttons, select/, "blocks"],
+  [elements, /can submit an action, open a URL/, "elements"],
+  [objects, /core text run used by Slack's structured rich-text API/, "objects"],
+  [payloads, /message payload for Slack Web API methods/, "payloads"],
+]) {
+  assert.match(page, pattern, `${domain} must render its expanded API descriptions`);
+}
+assert.match(
+  blocks,
+  /^```ts\nfunction ActionsBlock\(\): FluentBuilder</m,
+  "Function signatures must render as TypeScript code blocks",
+);
+assert.match(
+  errors,
+  /^```ts\nnew InvalidUsageError\(path, message\): InvalidUsageError;\n```$/m,
+  "Constructor signatures must render as TypeScript code blocks",
+);
+assert.match(
+  objects,
+  /^```ts\ntype TextLike = string \| TextObject;\n```$/m,
+  "Type aliases must render as TypeScript code blocks",
+);
+
 const blockFactories = [...blocks.matchAll(/^## ([A-Z][\w$]*Block)\(\)$/gm)];
 assert.ok(blockFactories.length > 0, "No block factories were rendered");
 
@@ -129,8 +175,28 @@ for (const name of ["SlackObject", "SlackWire"]) {
   );
   assert.match(
     utilities,
-    new RegExp("^> \\*\\*" + name + "\\*\\*&lt;`Type`&gt;", "m"),
-    `${name}<Type> is not safely escaped in its declaration`,
+    new RegExp("^```ts\\ntype " + name + "<Type> =", "m"),
+    `${name}<Type> is not rendered as valid TypeScript`,
+  );
+}
+
+for (const [page, name] of [
+  [blocks, "AlertLevel"],
+  [blocks, "ContainerWidth"],
+  [blocks, "TaskStatus"],
+  [objects, "RichTextStyle"],
+  [objects, "SlackIconName"],
+  [objects, "TextLike"],
+  [utilities, "JsonObject"],
+]) {
+  assert.match(page, new RegExp(`^## ${name}$`, "m"), `${name} lacks an API section`);
+  const link = `/reference/typescript/${
+    page === blocks ? "blocks" : page === objects ? "objects" : "utilities"
+  }#${name.toLowerCase()}`;
+  assert.match(
+    fluentPages.join("\n"),
+    new RegExp(`<a href="${link}">${name}</a>`),
+    `${name} is not linked from fluent setter types`,
   );
 }
 
