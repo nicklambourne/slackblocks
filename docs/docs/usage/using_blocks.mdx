@@ -315,6 +315,11 @@ MarkdownBlock()
 
 
 </TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Markdown Block](/img/usage/markdown.svg)
+
+</TabItem>
 </Tabs>
 
 See the [Slack reference](https://api.slack.com/reference/block-kit/blocks#markdown) for the supported Markdown features.
@@ -924,15 +929,13 @@ Required: `alt_text`, `thumbnail_url`, `title`, `video_url`. Slack restricts whi
 from slackblocks import VideoBlock
 
 VideoBlock(
-    alt_text="How to use slackblocks",
+    alt_text="Use the Events API to create a dynamic App Home",
     block_id="fake_block_id",
-    thumbnail_url="https://example.com/thumb.png",
-    title="Getting Started",
-    video_url="https://example.com/video.mp4",
-    author_name="The slackblocks docs",
-    description="A short walkthrough.",
-    provider_name="example.com",
-    title_url="https://example.com",
+    thumbnail_url="https://i.ytimg.com/vi/8876OZV_Yy0/hqdefault.jpg",
+    title="Use the Events API to create a dynamic App Home",
+    video_url="https://www.youtube.com/embed/8876OZV_Yy0?feature=oembed&autoplay=1",
+    description="Slack sure is nifty!",
+    title_url="https://www.youtube.com/watch?v=8876OZV_Yy0",
 )
 ```
 
@@ -943,15 +946,13 @@ VideoBlock(
 import { VideoBlock } from "@nicklambourne/slackblocks";
 
 VideoBlock()
-  .altText("How to use slackblocks")
+  .altText("Use the Events API to create a dynamic App Home")
   .blockId("fake_block_id")
-  .thumbnailUrl("https://example.com/thumb.png")
-  .title("Getting Started")
-  .videoUrl("https://example.com/video.mp4")
-  .authorName("The slackblocks docs")
-  .description("A short walkthrough.")
-  .providerName("example.com")
-  .titleUrl("https://example.com")
+  .thumbnailUrl("https://i.ytimg.com/vi/8876OZV_Yy0/hqdefault.jpg")
+  .title("Use the Events API to create a dynamic App Home")
+  .videoUrl("https://www.youtube.com/embed/8876OZV_Yy0?feature=oembed&autoplay=1")
+  .description("Slack sure is nifty!")
+  .titleUrl("https://www.youtube.com/watch?v=8876OZV_Yy0")
   .build();
 ```
 
@@ -965,23 +966,26 @@ VideoBlock()
 {
     "type": "video",
     "block_id": "fake_block_id",
-    "alt_text": "How to use slackblocks",
-    "thumbnail_url": "https://example.com/thumb.png",
+    "alt_text": "Use the Events API to create a dynamic App Home",
+    "thumbnail_url": "https://i.ytimg.com/vi/8876OZV_Yy0/hqdefault.jpg",
     "title": {
         "type": "plain_text",
-        "text": "Getting Started"
+        "text": "Use the Events API to create a dynamic App Home"
     },
-    "video_url": "https://example.com/video.mp4",
-    "author_name": "The slackblocks docs",
+    "video_url": "https://www.youtube.com/embed/8876OZV_Yy0?feature=oembed&autoplay=1",
     "description": {
         "type": "plain_text",
-        "text": "A short walkthrough."
+        "text": "Slack sure is nifty!"
     },
-    "provider_name": "example.com",
-    "title_url": "https://example.com"
+    "title_url": "https://www.youtube.com/watch?v=8876OZV_Yy0"
 }
 ```
 
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![An example of the UI output of a Video Block](/img/usage/video.png)
 
 </TabItem>
 </Tabs>
