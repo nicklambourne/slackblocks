@@ -196,10 +196,6 @@ const config: Config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
-          editUrl: ({ version, docPath }) =>
-            version === "current"
-              ? `https://github.com/nicklambourne/slackblocks/tree/master/docs/${docPath}`
-              : undefined,
           showLastUpdateTime: true,
           lastVersion: "current",
           versions: {
