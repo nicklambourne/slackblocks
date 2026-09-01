@@ -112,3 +112,4 @@ node_modules/
 /docs/.docusaurus/
 /docs/docs/reference/python/
 /docs/docs/reference/typescript/
+/docs/docs/reference/go/

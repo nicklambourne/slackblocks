@@ -1,10 +1,10 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Installation
 
-Choose Python or TypeScript from the site navigation. The selection applies across the documentation and is preserved as you move between pages.
+Choose Python, TypeScript, or Go from the site navigation. The selection applies across the documentation and is preserved as you move between pages.
 
 <LanguageContent>
 <Python>
@@ -101,4 +101,40 @@ console.log(
 Run it with `node hello.mjs`. Stay on the 2.x release line with `@nicklambourne/slackblocks@^2.1.0`, and uninstall with `pnpm remove @nicklambourne/slackblocks` (or your package manager's equivalent).
 
 </TypeScript>
+<Go>
+
+From an existing Go module, install the v2 Go module directly from GitHub:
+
+```bash
+go get github.com/nicklambourne/slackblocks/go/v2
+```
+
+Go 1.22 or newer is required. Block builders implement `slack.Block` directly using the Go 1.22-compatible `github.com/slack-go/slack` release; `go get` installs that dependency automatically.
+
+Verify the installation in `main.go`:
+
+```go
+package main
+
+import (
+    "fmt"
+
+    slackblocks "github.com/nicklambourne/slackblocks/go/v2"
+)
+
+func main() {
+    payload, err := slackblocks.NewMessage().
+        Channel("C0123456").
+        Blocks(slackblocks.NewSectionBlock().Text("Hello, world!")).
+        Build()
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(payload)
+}
+```
+
+Run it with `go run .`. The `/v2` suffix is part of the module path under Go's semantic import versioning; update within the current major line with `go get -u github.com/nicklambourne/slackblocks/go/v2`.
+
+</Go>
 </LanguageContent>

@@ -3,7 +3,7 @@ sidebar_label: Quick Start
 sidebar_position: 2
 ---
 
-import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Quick Start
 
@@ -65,10 +65,55 @@ Each builder uses typed camelCase setters. `.build()` validates the completed
 payload and returns the plain snake_case object expected by Slack.
 
 </TypeScript>
+<Go>
+
+## Install the module
+
+Go 1.22 or newer is required.
+
+```bash
+mkdir slackblocks-hello
+cd slackblocks-hello
+go mod init example.com/slackblocks-hello
+go get github.com/nicklambourne/slackblocks/go/v2
+```
+
+## Build a message
+
+```go
+package main
+
+import (
+	"context"
+	"os"
+
+	slackblocks "github.com/nicklambourne/slackblocks/go/v2"
+	slack "github.com/slack-go/slack"
+)
+
+func main() {
+	client := slack.New(os.Getenv("SLACK_API_TOKEN"))
+	_, _, err := client.PostMessageContext(
+		context.Background(),
+		os.Getenv("SLACK_CHANNEL_ID"),
+		slack.MsgOptionText("Hello from slackblocks!", false),
+		slack.MsgOptionBlocks(
+			slackblocks.NewSectionBlock().Text("Hello, world!"),
+		),
+	)
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+The block builder implements `slack.Block` and validates when slack-go marshals it, before the request is sent. The channel and fallback text stay in slack-go, where its other message options can be added normally. Use `NewMessage().Build()` instead when you need a complete JSON-compatible [`Object`](/reference/go/core#object) for another client.
+
+</Go>
 </LanguageContent>
 
 ## Where to go next
 
-`slackblocks` constructs payloads but does not send HTTP requests. Continue with [Sending Messages](usage/sending_messages) to connect the payload to Slack, or explore [Using Blocks](usage/using_blocks) to build richer layouts.
+`slackblocks` constructs the Block Kit content while the established Slack client handles delivery. Continue with [Sending Messages](usage/sending_messages) for more client options, or explore [Using Blocks](usage/using_blocks) to build richer layouts.
 
 For package-manager alternatives and environment details, see [Installation](usage/installation).

@@ -165,7 +165,7 @@ function legacyTypeScriptRedirect(path: string): string | undefined {
 
 const config: Config = {
   title: "slackblocks",
-  tagline: "Validated Slack Block Kit construction for Python and TypeScript",
+  tagline: "Validated Slack Block Kit construction for Python, TypeScript, and Go",
   favicon: "img/sb.png",
   url: "https://nicklambourne.github.io",
   baseUrl: "/slackblocks/",
@@ -175,7 +175,7 @@ const config: Config = {
   onBrokenLinks: "throw",
   onBrokenAnchors: "throw",
   headTags: [
-    // Language switching needs JavaScript; without it, show both languages'
+    // Language switching needs JavaScript; without it, show every language's
     // content instead of leaving the non-default language unreachable.
     {
       tagName: "noscript",
@@ -316,7 +316,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.vsDark,
-      additionalLanguages: ["python", "typescript", "json", "toml"],
+      additionalLanguages: ["python", "typescript", "go", "json", "toml"],
     },
     navbar: {
       title: "slackblocks",

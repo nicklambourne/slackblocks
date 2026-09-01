@@ -1,10 +1,10 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Sending Messages
 
-`slackblocks` produces the JSON payloads that Slack APIs accept; it does **not** make HTTP calls itself. Send those payloads with Slack's official SDK or any HTTP client.
+`slackblocks` produces the JSON payloads that Slack APIs accept; it does **not** make HTTP calls itself. Send those payloads with the established Slack client for your language or any HTTP client.
 
 <LanguageContent>
 <Python>
@@ -242,4 +242,114 @@ await fetch("https://slack.com/api/chat.postMessage", {
 ```
 
 </TypeScript>
+<Go>
+
+## With `slack-go/slack`
+
+slackblocks block builders implement `slack.Block`, so they fit directly into the native options accepted by [`github.com/slack-go/slack`](https://github.com/slack-go/slack). Keep the channel, fallback text, threading, unfurling, and other delivery options in slack-go; use slackblocks for the Block Kit content.
+
+```go
+package example
+
+import (
+	"context"
+	"os"
+
+	slackblocks "github.com/nicklambourne/slackblocks/go/v2"
+	slack "github.com/slack-go/slack"
+)
+
+func send(ctx context.Context) (string, error) {
+	client := slack.New(os.Getenv("SLACK_API_TOKEN"))
+	_, timestamp, err := client.PostMessageContext(
+		ctx,
+		"C0123456",
+		slack.MsgOptionText("Hello from slackblocks!", false),
+		slack.MsgOptionBlocks(
+			slackblocks.NewSectionBlock().Text("Hello, world!"),
+		),
+	)
+	return timestamp, err
+}
+```
+
+slack-go marshals each builder while applying `MsgOptionBlocks`. That runs slackblocks validation before any HTTP request is made and preserves newer block types and fields even when the pinned slack-go release does not model them itself.
+
+Higher-level components expand to the same native type:
+
+```go
+blocks, err := slackblocks.NewPaginator().
+	Blocks(
+		slackblocks.NewSectionBlock().Text("Result one"),
+		slackblocks.NewSectionBlock().Text("Result two"),
+	).
+	ActionIDPrefix("results").
+	PageSize(1).
+	SlackBlocks()
+if err != nil {
+	return err
+}
+
+_, _, err = client.PostMessageContext(
+	ctx,
+	"C0123456",
+	slack.MsgOptionBlocks(blocks...),
+)
+```
+
+## Incoming webhooks
+
+Use slack-go's webhook envelope and put slackblocks builders in its `Blocks` collection:
+
+```go
+message := &slack.WebhookMessage{
+	Text: "Build complete",
+	Blocks: &slack.Blocks{BlockSet: []slack.Block{
+		slackblocks.NewSectionBlock().Text("Build complete :white_check_mark:"),
+	}},
+}
+return slack.PostWebhookContext(ctx, os.Getenv("SLACK_WEBHOOK_URL"), message)
+```
+
+## Slash-command and interaction responses
+
+Use `NewMessageResponse()` for the immediate JSON body returned by a slash-command or interaction endpoint. `Build()` returns an [`Object`](/reference/go/core#object), so encode it with `encoding/json` and return it through your web framework.
+
+## Modals and App Home
+
+Use slack-go's native view request types for the view envelope and slackblocks builders for its blocks:
+
+```go
+modal := slack.ModalViewRequest{
+	Type:   slack.VTModal,
+	Title:  slack.NewTextBlockObject("plain_text", "Confirm action", false, false),
+	Submit: slack.NewTextBlockObject("plain_text", "Yes", false, false),
+	Close:  slack.NewTextBlockObject("plain_text", "Cancel", false, false),
+	Blocks: slack.Blocks{BlockSet: []slack.Block{
+		slackblocks.NewSectionBlock().Text("Are you sure?"),
+	}},
+}
+_, err = client.OpenViewContext(ctx, triggerID, modal)
+```
+
+For App Home, place the same builders in `slack.HomeTabViewRequest`:
+
+```go
+home := slack.HomeTabViewRequest{
+	Type: slack.VTHomeTab,
+	Blocks: slack.Blocks{BlockSet: []slack.Block{
+		slackblocks.NewSectionBlock().Text("Welcome home!"),
+	}},
+}
+_, err = client.PublishViewContext(ctx, slack.PublishViewContextRequest{
+	UserID: userID,
+	View:   home,
+})
+```
+
+## Sending without a client library
+
+If an application deliberately does not use slack-go, `NewMessage().Build()` still returns an ordinary JSON-compatible payload. Set its channel and delivery fields there, marshal it with `encoding/json`, and post it with `net/http` or another client.
+
+</Go>
 </LanguageContent>

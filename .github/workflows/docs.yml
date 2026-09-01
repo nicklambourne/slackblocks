@@ -10,6 +10,7 @@ on:
       - "typescript/package.json"
       - "typescript/tsconfig.json"
       - "typescript/tsconfig.typedoc.json"
+      - "go/**"
       - "spec/**"
       - "package.json"
       - "pnpm-lock.yaml"
@@ -23,6 +24,7 @@ on:
       - "typescript/package.json"
       - "typescript/tsconfig.json"
       - "typescript/tsconfig.typedoc.json"
+      - "go/**"
       - "spec/**"
       - "package.json"
       - "pnpm-lock.yaml"
@@ -66,6 +68,12 @@ jobs:
           enable-cache: false
           cache-dependency-glob: python/uv.lock
           python-version: "3.14"
+
+      - name: Install Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "stable"
+          cache: false
 
       - name: Install JavaScript dependencies
         run: pnpm install --frozen-lockfile

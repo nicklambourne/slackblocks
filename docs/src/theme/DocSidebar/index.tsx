@@ -10,7 +10,7 @@ import type { Props } from "@theme/DocSidebar";
 // NOTE: the doc ids below are hardcoded couplings to files in docs/docs/usage.
 // Renaming or moving one of those documents must update these lists, or the
 // renamed page silently loses its hiding/ordering behaviour.
-const TYPESCRIPT_HIDDEN_DOCS = new Set([
+const NON_PYTHON_HIDDEN_DOCS = new Set([
   "usage/compatibility",
   "usage/migration",
 ]);
@@ -106,7 +106,7 @@ function filterUsage(
         child.type !== "link" ||
         language === "python" ||
         !child.docId ||
-        !TYPESCRIPT_HIDDEN_DOCS.has(child.docId),
+        !NON_PYTHON_HIDDEN_DOCS.has(child.docId),
     )
     .sort((left, right) => {
       const leftPosition =
@@ -181,7 +181,8 @@ function filterReference(
   const sharedItems = item.items.filter(
     (child) =>
       !isLanguageReference(child, "python") &&
-      !isLanguageReference(child, "typescript"),
+      !isLanguageReference(child, "typescript") &&
+      !isLanguageReference(child, "go"),
   );
 
   return {

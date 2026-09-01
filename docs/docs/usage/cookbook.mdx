@@ -1,4 +1,4 @@
-import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Recipe Book
 
@@ -106,6 +106,44 @@ function buildStatusMessage(input: {
 ```
 
 </TypeScript>
+<Go>
+
+```go
+package notifications
+
+import (
+    "fmt"
+
+    slackblocks "github.com/nicklambourne/slackblocks/go/v2"
+)
+
+func BuildStatusMessage(channel, project, branch, commit, author, duration string, passed bool) (slackblocks.Object, error) {
+    icon, status := ":x:", "failed"
+    if passed {
+        icon, status = ":white_check_mark:", "passed"
+    }
+
+    return slackblocks.NewMessage().
+        Channel(channel).
+        Text(fmt.Sprintf("Build %s for %s@%s", status, project, branch)).
+        Blocks(
+            slackblocks.NewHeaderBlock().Text(fmt.Sprintf("%s %s build %s", icon, project, status)),
+            slackblocks.NewSectionBlock().Fields(
+                fmt.Sprintf("*Branch*\n`%s`", branch),
+                fmt.Sprintf("*Commit*\n`%.7s`", commit),
+                fmt.Sprintf("*Author*\n%s", author),
+                fmt.Sprintf("*Duration*\n%s", duration),
+            ),
+            slackblocks.NewDividerBlock(),
+            slackblocks.NewContextBlock().Elements(
+                slackblocks.NewMarkdown().Text(fmt.Sprintf(":calendar: Triggered by push to `%s`", branch)),
+            ),
+        ).
+        Build()
+}
+```
+
+</Go>
 </LanguageContent>
 
 ![A build status notification rendered in Slack](/img/usage/build_notification.png)

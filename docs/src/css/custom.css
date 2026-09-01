@@ -59,6 +59,10 @@
   width: 18px;
 }
 
+.language-selector__logo--go {
+  width: 34px;
+}
+
 .language-selector__trigger,
 .language-selector__option {
   align-items: center;

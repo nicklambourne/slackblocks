@@ -50,7 +50,7 @@ export default function DocBreadcrumbs(): ReactNode {
   const sidebarBreadcrumbs = useSidebarBreadcrumbs();
   const homePageRoute = useHomePageRoute();
   const breadcrumbs = sidebarBreadcrumbs?.filter(
-    ({ label }) => !/^(?:Python|TypeScript) API reference$/i.test(label),
+    ({ label }) => !/^(?:Python|TypeScript|Go) API reference$/i.test(label),
   );
 
   if (!breadcrumbs) return null;

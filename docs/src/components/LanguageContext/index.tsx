@@ -11,7 +11,7 @@ import { useHistory, useLocation } from "@docusaurus/router";
 import { useAllDocsData } from "@docusaurus/plugin-content-docs/client";
 import legacyManifest from "@site/legacy/manifest.json";
 
-export type Language = "python" | "typescript";
+export type Language = "python" | "typescript" | "go";
 
 type LanguageContextValue = {
   language: Language;
@@ -32,12 +32,12 @@ export function legacyDocumentationVersion(pathname: string): string | null {
 }
 
 function isLanguage(value: string | null): value is Language {
-  return value === "python" || value === "typescript";
+  return value === "python" || value === "typescript" || value === "go";
 }
 
 function referenceLanguage(pathname: string): Language | null {
   const language =
-    pathname.match(/\/reference\/(python|typescript)(?:\/|$)/)?.[1] ?? null;
+    pathname.match(/\/reference\/(python|typescript|go)(?:\/|$)/)?.[1] ?? null;
   return isLanguage(language) ? language : null;
 }
 
@@ -47,7 +47,7 @@ function languagePath(
   docPaths: ReadonlySet<string>,
 ): string {
   const referenceMatch = pathname.match(
-    /^(.*\/reference\/)(python|typescript)(\/.*)?$/,
+    /^(.*\/reference\/)(python|typescript|go)(\/.*)?$/,
   );
   if (referenceMatch) {
     if (referenceMatch[2] === language) return pathname;
@@ -75,7 +75,7 @@ function latestLanguagePath(
     ? `${legacyMatch[1]}${legacyMatch[2] || "/"}`
     : pathname;
   const historicalReference = latestPathname.match(
-    /^(.*\/reference)\/(?!python(?:\/|$)|typescript(?:\/|$))[^/]+(?:\/.*)?$/,
+    /^(.*\/reference)\/(?!python(?:\/|$)|typescript(?:\/|$)|go(?:\/|$))[^/]+(?:\/.*)?$/,
   );
 
   return historicalReference
