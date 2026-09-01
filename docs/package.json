@@ -36,7 +36,7 @@
     "@nicklambourne/slackblocks": "workspace:*",
     "typedoc": "0.28.20",
     "typedoc-docusaurus-theme": "1.4.2",
-    "typedoc-plugin-markdown": "4.12.0"
+    "typedoc-plugin-markdown": "4.13.0"
   },
   "devDependencies": {
     "@docusaurus/tsconfig": "^3.10.2",
