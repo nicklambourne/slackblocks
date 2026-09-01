@@ -1,8 +1,9 @@
 # Releasing
 
-The Python (`slackblocks` on PyPI) and TypeScript (`@nicklambourne/slackblocks`
-on npm) packages are released together and always carry the same version
-number.
+The Python (`slackblocks` on PyPI), TypeScript
+(`@nicklambourne/slackblocks` on npm), and Go
+(`github.com/nicklambourne/slackblocks/go/v2`) packages are released together
+and always carry the same version number.
 
 ## Tag scheme
 
@@ -12,13 +13,15 @@ Releases are triggered by pushing tags:
 |---|---|---|
 | `python/vX.Y.Z` | [`.github/workflows/publish.yml`](.github/workflows/publish.yml) | `slackblocks` to PyPI |
 | `ts/vX.Y.Z` | [`.github/workflows/publish-npm.yml`](.github/workflows/publish-npm.yml) | `@nicklambourne/slackblocks` to npm |
+| `go/vX.Y.Z` | [`.github/workflows/publish-go.yml`](.github/workflows/publish-go.yml) | `github.com/nicklambourne/slackblocks/go/v2` to the Go module ecosystem |
 
 Plain `v*` tags (used by the pre-monorepo 1.x/2.0 releases) no longer trigger
 anything.
 
-Both workflows fail fast if the tag does not match the package manifest
-version, or if `python/pyproject.toml` and `typescript/package.json` disagree
-with each other.
+The Python and TypeScript workflows fail fast if the tag does not match their
+package manifest. Every workflow also verifies that `python/pyproject.toml`
+and `typescript/package.json` agree, and the Go workflow requires its tag to
+match that coordinated version.
 
 ## One-time setup
 
@@ -45,6 +48,12 @@ These must be in place before the workflows can publish:
       workflow `publish-npm.yml`, environment `npm`), then **delete the
       `NPM_TOKEN` secret**. Subsequent publishes use OIDC automatically; the
       token path only runs while the secret is present.
+4. **Go requires no registry credentials** — Go modules are published by
+   pushing the correctly prefixed repository tag. Because the module lives in
+   the `go/` subdirectory and declares the `/v2` module path, its tags must use
+   the exact form `go/vX.Y.Z`. The workflow verifies the module and creates the
+   corresponding GitHub Release; consumers and the public Go proxy resolve it
+   directly from the repository.
 
 ## Coordinated release procedure
 
@@ -73,24 +82,31 @@ missing from `docs/versions.json` (or the legacy manifest).
 2. Bump the version in **both** manifests on the same branch:
    - `python/pyproject.toml` (`project.version`)
    - `typescript/package.json` (`version`)
-3. Add a `## [X.Y.Z] — YYYY-MM-DD` section to both `python/CHANGELOG.md` and
-   `typescript/CHANGELOG.md`. The publish workflows extract this section for
-   the GitHub Release notes.
+
+   For a new major release, also change the Go semantic import path in
+   `go/go.mod` from `/v2` to `/vN`, update every Go import in code and docs,
+   and update the module-path assertion in `publish-go.yml`. A coordinated
+   Python/TypeScript 3.0.0 release therefore requires a Go `/v3` module; the
+   existing `/v2` path cannot publish `go/v3.0.0`.
+3. Add a `## [X.Y.Z] — YYYY-MM-DD` section to `python/CHANGELOG.md`,
+   `typescript/CHANGELOG.md`, and `go/CHANGELOG.md`. The publish workflows
+   extract the matching section for their GitHub Release notes.
 4. Merge to `master` and wait for CI to pass.
-5. Tag and push, Python first (either order works; the guards only require
-   the two manifests to agree):
+5. Tag and push all three releases. Any order works; every workflow checks the
+   same two package manifests:
 
    ```sh
    git tag python/vX.Y.Z && git push origin python/vX.Y.Z
    git tag ts/vX.Y.Z && git push origin ts/vX.Y.Z
+   git tag go/vX.Y.Z && git push origin go/vX.Y.Z
    ```
 
-6. Each workflow publishes to its registry and then creates a GitHub Release
-   for its tag with the changelog section as notes.
+6. Each workflow publishes or verifies its package and then creates a GitHub
+   Release for its tag with the changelog section as notes.
 
 ## Partial-failure recovery
 
-Both workflows are safe to re-run from the Actions UI:
+All three workflows are safe to re-run from the Actions UI:
 
 - **PyPI** — `uv publish` runs with
   `--check-url https://pypi.org/simple/slackblocks/`, so files already
@@ -98,6 +114,9 @@ Both workflows are safe to re-run from the Actions UI:
 - **npm** — the publish is a single atomic upload; if it failed, re-running
   simply retries it. If it already succeeded, npm rejects the duplicate
   version, which tells you the registry side is done.
+- **Go** — the tag is the published module version. Re-run the workflow if only
+  verification or GitHub Release creation failed; do not move or replace a
+  public module tag.
 - **GitHub Releases** — the release step skips itself if a release for the
   tag already exists.
 
@@ -107,8 +126,10 @@ After a failure, check:
   the sdist and the wheel.
 - npm: https://www.npmjs.com/package/@nicklambourne/slackblocks shows the new
   version (with provenance).
-- GitHub: a Release exists for each of the two tags with the changelog notes.
+- Go: https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2 lists the
+  new module version.
+- GitHub: a Release exists for each of the three tags with the changelog notes.
 
 If a bad artifact was published, do not delete and re-upload: registries
 reject reused file names and versions. Yank/deprecate the broken version and
-release a new patch version of **both** packages.
+release a new coordinated patch version of **all three** packages.

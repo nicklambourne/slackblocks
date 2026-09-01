@@ -37,8 +37,8 @@ function snapshottedVersions() {
   return versions;
 }
 
-// Python and TypeScript are released together under the same version number, so
-// the `python/v*` tags are the authoritative list of released versions. Plain
+// Python, TypeScript, and Go are released together under one version number, so
+// the `python/v*` tags remain the authoritative released-version list. Plain
 // `v*` tags belong to the pre-monorepo 1.x/2.0 line and are covered by the
 // legacy manifest instead.
 function releasedVersions() {
