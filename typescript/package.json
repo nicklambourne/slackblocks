@@ -44,7 +44,7 @@
   ],
   "slackblocksSpecVersion": "1.1.0",
   "dependencies": {
-    "@slack/types": "^3.0.0"
+    "@slack/types": "^3.1.0"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
