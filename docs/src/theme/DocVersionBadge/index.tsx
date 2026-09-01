@@ -7,6 +7,7 @@ import { useLanguage, type Language } from "@site/src/components/LanguageContext
 const languageLabels: Record<Language, string> = {
   python: "Python",
   typescript: "TypeScript",
+  go: "Go",
 };
 
 export default function DocVersionBadge({ className }: Props): ReactNode {

@@ -32,11 +32,12 @@ options remain ordinary slack-go values. slack-go marshals each builder before
 sending; if slackblocks validation fails, the call returns a typed
 `ValidationError` without making the HTTP request.
 
-Every `New…` constructor returns a chainable builder. Strings are promoted to
-the correct Slack text objects where the wire format requires them and nested
-builders are materialised automatically. Call `Build()` explicitly when you
-want eager validation or a complete JSON-compatible payload such as
-`NewMessage()` for a non-slack-go client.
+Every `New…` constructor returns a dedicated chainable builder that exposes only
+the fields valid for that Slack object. Strings are promoted to the correct
+Slack text objects where the wire format requires them and nested builders are
+materialised automatically. Call `Build()` explicitly when you want eager
+validation or a complete JSON-compatible payload such as `NewMessage()` for a
+non-slack-go client.
 
 The module path is `github.com/nicklambourne/slackblocks/go/v2`:
 

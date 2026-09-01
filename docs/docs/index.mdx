@@ -3,7 +3,7 @@ sidebar_label: Welcome
 sidebar_position: 1
 ---
 
-import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Welcome to `slackblocks`!
 
@@ -11,14 +11,14 @@ import LanguageContent, { Python, TypeScript } from '@site/src/components/Langua
   <img width="30%" src="/slackblocks/img/sb.png" alt="slackblocks logo" />
 </p>
 
-`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python and TypeScript — without writing JSON by hand.
+`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, and Go — without writing JSON by hand.
 
 It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control. `slackblocks` gives you:
 
-- **Typed, idiomatic APIs** for Python and TypeScript.
+- **Typed, idiomatic APIs** for Python, TypeScript, and Go.
 - **Validation as you build** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
-- **Drop-in compatibility** with the official Slack SDKs and their plain JSON payloads.
-- **Zero runtime dependencies.**
+- **Drop-in compatibility** with established Slack SDKs and clients and their plain JSON payloads.
+- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, and Go integrates with `slack-go/slack` for delivery.
 
 ## Quick Start
 
@@ -115,6 +115,36 @@ groups Slack-native collapsible sections. Both expand directly inside `.blocks()
 - [`validate`](reference/typescript/utilities#validate) and [`assertValid`](reference/typescript/utilities#assertvalid) validate existing Slack-shaped data.
 
 </TypeScript>
+<Go>
+
+The Go module exposes `New…` constructors whose fluent methods materialise ordinary
+`map[string]any`-compatible Slack objects at `Build()` time.
+
+### Composition objects
+
+[`NewPlainText`](/reference/go/objects#newplaintext), [`NewMarkdown`](/reference/go/objects#newmarkdown), and [`NewOption`](/reference/go/objects#newoption) create the small values shared by blocks and elements.
+
+### Elements
+
+Interactive controls include [`NewButton`](/reference/go/elements#newbutton), [`NewCheckboxes`](/reference/go/elements#newcheckboxes), [`NewStaticSelect`](/reference/go/elements#newstaticselect), and [`NewDatePicker`](/reference/go/elements#newdatepicker).
+
+### Blocks
+
+Every block uses the same `New<Kind>Block` naming pattern. Start with [`NewSectionBlock`](/reference/go/blocks#newsectionblock), [`NewActionsBlock`](/reference/go/blocks#newactionsblock), or [`NewHeaderBlock`](/reference/go/blocks#newheaderblock), then explore cards, carousels, containers, tables, charts, plans, task cards, rich text, and every other shared block capability.
+
+### Payloads and views
+
+[`NewMessage`](/reference/go/payloads#newmessage), [`NewWebhookMessage`](/reference/go/payloads#newwebhookmessage), and [`NewMessageResponse`](/reference/go/payloads#newmessageresponse) build messages. [`NewModal`](/reference/go/payloads#newmodal) and [`NewHomeTab`](/reference/go/payloads#newhometab) build Slack views.
+
+### Higher-level components
+
+[`NewPaginator`](/reference/go/components#newpaginator) renders one page plus navigation controls. [`NewAccordion`](/reference/go/components#newaccordion) expands collapsible sections directly inside `Blocks(...)`.
+
+### Validation and JSON
+
+[`ValidationError`](/reference/go/errors#validationerror) exposes stable error categories and field paths. [`Object`](/reference/go/core#object) is the JSON-compatible wire type returned by every completed builder.
+
+</Go>
 </LanguageContent>
 
 ## Guides
@@ -139,4 +169,14 @@ groups Slack-native collapsible sections. Both expand directly inside `.blocks()
 - [Contributing](contributing) — developing and contributing to `slackblocks` itself.
 
 </TypeScript>
+<Go>
+
+- [Installation](usage/installation)
+- [Using Blocks](usage/using_blocks)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook)
+- [Troubleshooting & FAQ](usage/troubleshooting)
+- [Contributing](contributing)
+
+</Go>
 </LanguageContent>

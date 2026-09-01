@@ -1,4 +1,4 @@
-import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Troubleshooting & FAQ
 
@@ -283,4 +283,56 @@ Yes. The builders are synchronous and side-effect-free. Construct and build the 
 Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
 
 </TypeScript>
+<Go>
+
+## Why is Slack showing literal `*asterisks*`?
+
+`NewSectionBlock().Text(...)` promotes a string to `mrkdwn`, but Slack requires headers, button labels, modal titles, input labels, and option labels to be `plain_text`. Markdown syntax in those fields is intentionally literal.
+
+## Why should a message set fallback text?
+
+Slack uses the top-level `Text(...)` value for notifications, accessibility, and clients that cannot render Block Kit:
+
+```go
+payload, err := slackblocks.NewMessage().
+    Channel("C0123456").
+    Text("Build #482 passed").
+    Blocks(slackblocks.NewHeaderBlock().Text("Build #482 passed :white_check_mark:")).
+    Build()
+```
+
+## What does a validation failure contain?
+
+`Build()` returns a `*slackblocks.ValidationError`. Use `errors.As` to inspect its stable `Category`, `Path`, and `Detail` fields:
+
+```go
+var validation *slackblocks.ValidationError
+if errors.As(err, &validation) {
+    log.Printf("%s at %s: %s", validation.Category, validation.Path, validation.Detail)
+}
+```
+
+Categories are identical across Python, TypeScript, and Go: `length-exceeded`, `out-of-range`, `mutually-exclusive`, `type-mismatch`, `missing-required`, and `invalid-usage`.
+
+## How many blocks can a payload contain?
+
+- Channel messages: **50 blocks**.
+- Modals and App Home tabs: **100 blocks**.
+- Context blocks: **10 elements**.
+- Actions blocks: **25 elements**.
+- Table blocks: **100 rows × 20 columns**.
+
+## Why do buttons and select menus not respond by themselves?
+
+slackblocks only constructs outgoing JSON. Your app still needs a public HTTPS interactivity endpoint and a handler for Slack's request payload. The builders are synchronous and side-effect-free, so they work normally inside concurrent handlers.
+
+## How do I preview a payload?
+
+Marshal the completed `Object` with `encoding/json`, then paste it into Slack's [Block Kit Builder](https://app.slack.com/block-kit-builder).
+
+## Where do I report bugs or request features?
+
+Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
+
+</Go>
 </LanguageContent>

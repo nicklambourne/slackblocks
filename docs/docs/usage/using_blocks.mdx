@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Using Blocks
 
@@ -24,6 +24,11 @@ For the reverse mapping — looking up a class by name — see the [Blocks refer
 For exact setters and return types, see the [TypeScript API reference](../reference/typescript). Interactive controls such as buttons, menus, and date pickers are documented alongside the other element builders.
 
 </TypeScript>
+<Go>
+
+For fluent constructors, JSON types, and validation errors, see the [Go API reference](../reference/go). Interactive controls such as buttons, menus, and date pickers are grouped under [Elements](../reference/go/elements).
+
+</Go>
 </LanguageContent>
 
 ## Section Block
@@ -71,6 +76,25 @@ SectionBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewSectionBlock().
+    Text("This is a section block with a checkbox accessory.").
+    BlockID("fake_block_id").
+    Accessory(
+        slackblocks.NewCheckboxes().
+            ActionID("checkboxes-action").
+            Options(
+                slackblocks.NewOption().
+                    Text(slackblocks.NewMarkdown().Text("*Your Only Option*")).
+                    Value("option_one"),
+            ),
+    ).
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -161,6 +185,22 @@ RichTextBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewRichTextBlock().
+    BlockID("fake_block_id").
+    Elements(
+        slackblocks.NewRichTextSection().Elements(
+            slackblocks.NewRichText().Text("You 'bout to witness hip-hop in its most purest\n").Style(slackblocks.Object{"bold": true}),
+            slackblocks.NewRichText().Text("Most rawest form, flow almost flawless\n").Style(slackblocks.Object{"strike": true}),
+            slackblocks.NewRichText().Text("Most hardest, most honest known artist\n").Style(slackblocks.Object{"italic": true}),
+        ),
+    ).
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -239,6 +279,16 @@ HeaderBlock().text("This is a header block").blockId("fake_block_id").build();
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewHeaderBlock().
+    Text("This is a header block").
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -300,6 +350,16 @@ MarkdownBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewMarkdownBlock().
+    Text("**Hello!** Markdown blocks support _GitHub-flavored_ syntax.").
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -360,6 +420,18 @@ ImageBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewImageBlock().
+    ImageURL("https://api.slack.com/img/blocks/bkb_template_images/beagle.png").
+    AltText("a beagle").
+    Title("dog").
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -425,6 +497,19 @@ InputBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewInputBlock().
+    Label(slackblocks.NewPlainText().Text("Label").Emoji(true)).
+    Hint(slackblocks.NewPlainText().Text("Hint").Emoji(true)).
+    Element(slackblocks.NewPlainTextInput().ActionID("action")).
+    BlockID("fake_block_id").
+    Optional(true).
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -487,6 +572,13 @@ DividerBlock().blockId("fake_block_id").build();
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewDividerBlock().BlockID("fake_block_id").Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -537,6 +629,16 @@ FileBlock().externalId("external_id").blockId("fake_block_id").build();
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewFileBlock().
+    ExternalID("external_id").
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -595,6 +697,16 @@ ContextBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewContextBlock().
+    Elements(slackblocks.NewMarkdown().Text("Hello, world!")).
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -671,6 +783,24 @@ ActionsBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewActionsBlock().
+    BlockID("fake_block_id").
+    Elements(
+        slackblocks.NewCheckboxes().
+            ActionID("actionId-0").
+            Options(
+                slackblocks.NewOption().Text(slackblocks.NewMarkdown().Text("*a*")).Value("a").Description("*a*"),
+                slackblocks.NewOption().Text(slackblocks.NewMarkdown().Text("*b*")).Value("b").Description("*b*"),
+                slackblocks.NewOption().Text(slackblocks.NewMarkdown().Text("*c*")).Value("c").Description("*c*"),
+            ),
+    ).
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -822,6 +952,41 @@ TableBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewTableBlock().
+    BlockID("fake_block_id").
+    ColumnSettings(
+        slackblocks.NewColumnSettings().Align("right").IsWrapped(true),
+        slackblocks.NewColumnSettings().Align("left"),
+    ).
+    Rows(
+        []any{
+            slackblocks.NewRichTextBlock().Elements(
+                slackblocks.NewRichTextSection().Elements(
+                    slackblocks.NewRichText().Text("Header 1").Style(slackblocks.Object{"bold": true}),
+                ),
+            ),
+            slackblocks.NewRichTextBlock().Elements(
+                slackblocks.NewRichTextSection().Elements(
+                    slackblocks.NewRichText().Text("Header 2").Style(slackblocks.Object{"bold": true}),
+                ),
+            ),
+        },
+        []any{
+            slackblocks.NewRawText().Text("Datum 1"),
+            slackblocks.NewRichTextBlock().Elements(
+                slackblocks.NewRichTextSection().Elements(
+                    slackblocks.NewRichTextLink().URL("https://slack.com").Text("Datum 2"),
+                ),
+            ),
+        },
+    ).
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -957,6 +1122,21 @@ VideoBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewVideoBlock().
+    AltText("Use the Events API to create a dynamic App Home").
+    BlockID("fake_block_id").
+    ThumbnailURL("https://i.ytimg.com/vi/8876OZV_Yy0/hqdefault.jpg").
+    Title("Use the Events API to create a dynamic App Home").
+    VideoURL("https://www.youtube.com/embed/8876OZV_Yy0?feature=oembed&autoplay=1").
+    Description("Slack sure is nifty!").
+    TitleURL("https://www.youtube.com/watch?v=8876OZV_Yy0").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -1026,6 +1206,17 @@ AlertBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewAlertBlock().
+    Text("The deployment needs attention.").
+    Level("warning").
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -1089,6 +1280,19 @@ CardBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewCardBlock().
+    Title("Build complete").
+    Body("Version 2.1.0 is ready to deploy.").
+    SlackIcon(slackblocks.NewSlackIcon().Name("rocket")).
+    Actions(slackblocks.NewButton().Text("Open build").ActionID("open_build")).
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -1166,6 +1370,19 @@ CarouselBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewCarouselBlock().
+    Elements(
+        slackblocks.NewCardBlock().Title("First result").BlockID("card_1"),
+        slackblocks.NewCardBlock().Title("Second result").BlockID("card_2"),
+    ).
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -1247,6 +1464,21 @@ ContainerBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewContainerBlock().
+    Title("Deployment summary").
+    ChildBlocks(slackblocks.NewSectionBlock().Text("All systems operational.").BlockID("child_1")).
+    Width("standard").
+    IsCollapsible(false).
+    DefaultCollapsed(false).
+    HasHeaderDivider(true).
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -1325,6 +1557,21 @@ ContextActionsBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewContextActionsBlock().
+    Elements(
+        slackblocks.NewFeedbackButtons().
+            ActionID("response_feedback").
+            PositiveButton(slackblocks.NewFeedbackButton().Text("Good").Value("positive")).
+            NegativeButton(slackblocks.NewFeedbackButton().Text("Bad").Value("negative")),
+    ).
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -1403,6 +1650,20 @@ DataTableBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewDataTableBlock().
+    Caption("Team scores").
+    Rows(
+        []any{slackblocks.NewRawText().Text("Name"), slackblocks.NewRawText().Text("Score")},
+        []any{slackblocks.NewRawText().Text("Alice"), slackblocks.NewRawNumber().Value(42).Text("42")},
+    ).
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -1491,6 +1752,22 @@ DataVisualizationBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewDataVisualizationBlock().
+    Title("Incidents by severity").
+    Chart(
+        slackblocks.NewPieChart().Segments(
+            slackblocks.NewChartSegment().Label("High").Value(3),
+            slackblocks.NewChartSegment().Label("Low").Value(12),
+        ),
+    ).
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -1563,6 +1840,19 @@ TaskCardBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewTaskCardBlock().
+    TaskID("weather_1").
+    Title("Fetch weather data").
+    Status("complete").
+    Sources(slackblocks.NewURLSource().URL("https://weather.com/").Text("weather.com")).
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -1633,6 +1923,20 @@ PlanBlock()
 ```
 
 </TypeScript>
+<Go>
+
+```go
+block, err := slackblocks.NewPlanBlock().
+    Title("Release plan").
+    Tasks(
+        slackblocks.NewTaskCardBlock().TaskID("test").Title("Run the test suite").Status("complete"),
+        slackblocks.NewTaskCardBlock().TaskID("deploy").Title("Deploy the release").Status("pending"),
+    ).
+    BlockID("fake_block_id").
+    Build()
+```
+
+</Go>
 </LanguageContent>
 
 </TabItem>
@@ -1738,4 +2042,62 @@ See [Components](../reference/typescript/components) for every setter and valida
 rule.
 
 </TypeScript>
+<Go>
+
+## Higher-Level Components
+
+Components expand to ordinary `slack.Block` values. Call `SlackBlocks()` and pass the
+result straight to `slack.MsgOptionBlocks`; use `BuildMany()` only when composing a raw
+JSON payload.
+
+### Paginator
+
+```go
+blocks, err := slackblocks.NewPaginator().
+	Blocks(
+		slackblocks.NewSectionBlock().Text("Result one"),
+		slackblocks.NewSectionBlock().Text("Result two"),
+		slackblocks.NewSectionBlock().Text("Result three"),
+	).
+	ActionIDPrefix("search-results").
+	Page(1).
+	PageSize(2).
+	SlackBlocks()
+if err == nil {
+	_, _, err = client.PostMessageContext(
+		ctx,
+		"C01234567",
+		slack.MsgOptionText("Search results", false),
+		slack.MsgOptionBlocks(blocks...),
+	)
+}
+```
+
+The previous and next button values contain the one-based page for your action handler to render.
+
+### Accordion
+
+```go
+blocks, err := slackblocks.NewAccordion().Sections(
+	slackblocks.NewAccordionSection().
+		Title("Summary").
+		Expanded(true).
+		Blocks(slackblocks.NewSectionBlock().Text("Version 2.2.0 is ready.")),
+	slackblocks.NewAccordionSection().
+		Title("Checks").
+		Blocks(slackblocks.NewSectionBlock().Text("All required checks passed.")),
+).SlackBlocks()
+if err == nil {
+	_, _, err = client.PostMessageContext(
+		ctx,
+		"C01234567",
+		slack.MsgOptionText("Deployment details", false),
+		slack.MsgOptionBlocks(blocks...),
+	)
+}
+```
+
+Accordion sections use Slack-native collapsible containers and need no application-side expansion handler. See [Components](../reference/go/components) for the complete API.
+
+</Go>
 </LanguageContent>

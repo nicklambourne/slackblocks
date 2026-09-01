@@ -10,6 +10,8 @@ export default function LanguageContent({ children }: PropsWithChildren) {
         ? "python"
         : child.type === TypeScript
           ? "typescript"
+          : child.type === Go
+            ? "go"
           : null;
     if (!childLanguage) return null;
 
@@ -32,5 +34,9 @@ export function Python({ children }: PropsWithChildren) {
 }
 
 export function TypeScript({ children }: PropsWithChildren) {
+  return <>{children}</>;
+}
+
+export function Go({ children }: PropsWithChildren) {
   return <>{children}</>;
 }

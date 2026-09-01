@@ -23,13 +23,21 @@ const DEFAULT_SEARCH_OPTIONS = {
 
 const LANGUAGE_INDEXES = {
   python: {
-    ignoredContent: '[data-language-content="typescript"]',
-    ignoredRoutes: [/^reference\/typescript(?:\/|$)/],
+    ignoredContent: '[data-language-content="typescript"], [data-language-content="go"]',
+    ignoredRoutes: [/^reference\/(?:typescript|go)(?:\/|$)/],
   },
   typescript: {
-    ignoredContent: '[data-language-content="python"]',
+    ignoredContent: '[data-language-content="python"], [data-language-content="go"]',
     ignoredRoutes: [
       /^reference\/python(?:\/|$)/,
+      /^reference\/go(?:\/|$)/,
+      /^usage\/(?:compatibility|migration)$/,
+    ],
+  },
+  go: {
+    ignoredContent: '[data-language-content="python"], [data-language-content="typescript"]',
+    ignoredRoutes: [
+      /^reference\/(?:python|typescript)(?:\/|$)/,
       /^usage\/(?:compatibility|migration)$/,
     ],
   },
