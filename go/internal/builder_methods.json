@@ -1,4 +1,11 @@
 {
+	"NewAccordionSection": [
+		"Title",
+		"Subtitle",
+		"Blocks",
+		"Expanded",
+		"BlockID"
+	],
 	"NewActionsBlock": [
 		"Elements",
 		"BlockID"

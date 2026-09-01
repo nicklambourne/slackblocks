@@ -2,6 +2,45 @@
 
 package slackblocks
 
+// AccordionSectionBuilder is the concrete fluent builder returned by NewAccordionSection.
+type AccordionSectionBuilder struct{ *concreteBuilder }
+
+func newAccordionSectionBuilder(core *builder) *AccordionSectionBuilder {
+	return &AccordionSectionBuilder{concreteBuilder: newConcreteBuilder(core)}
+}
+
+// Title sets a title field.
+func (b *AccordionSectionBuilder) Title(value any) *AccordionSectionBuilder {
+	b.core.Title(value)
+	return b
+}
+
+// Subtitle sets secondary heading copy.
+func (b *AccordionSectionBuilder) Subtitle(value any) *AccordionSectionBuilder {
+	b.core.Subtitle(value)
+	return b
+}
+
+// Blocks appends Block Kit blocks.
+func (b *AccordionSectionBuilder) Blocks(values ...any) *AccordionSectionBuilder {
+	b.core.Blocks(values...)
+	return b
+}
+
+// Expanded controls whether an accordion section starts open. It stores a
+// private sentinel that the accordion-section transform converts to Slack's
+// inverse default_collapsed field during Build.
+func (b *AccordionSectionBuilder) Expanded(value bool) *AccordionSectionBuilder {
+	b.core.Expanded(value)
+	return b
+}
+
+// BlockID assigns an application-defined block identifier.
+func (b *AccordionSectionBuilder) BlockID(value string) *AccordionSectionBuilder {
+	b.core.BlockID(value)
+	return b
+}
+
 // ActionsBlockBuilder is the concrete fluent builder returned by NewActionsBlock.
 type ActionsBlockBuilder struct{ *slackBlockBuilder }
 
