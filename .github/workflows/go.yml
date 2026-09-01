@@ -7,12 +7,14 @@ on:
       - "go/**"
       - "spec/**"
       - "docs/examples/go/**"
+      - ".github/scripts/extract-go-release-notes.awk"
       - ".github/workflows/go.yml"
   pull_request:
     paths:
       - "go/**"
       - "spec/**"
       - "docs/examples/go/**"
+      - ".github/scripts/extract-go-release-notes.awk"
       - ".github/workflows/go.yml"
 
 permissions:
@@ -55,6 +57,11 @@ jobs:
         run: |
           go generate ./...
           git diff --exit-code -- concrete_builders_gen.go
+
+      - name: Verify release-note extraction
+        run: |
+          notes=$(printf '## [9.9.9] — 2099-01-01\n\nExpected notes.\n\n## [9.9.8] — 2098-01-01\n\nOlder notes.\n' | awk -v version="9.9.9" -f ../.github/scripts/extract-go-release-notes.awk)
+          test "$notes" = "Expected notes."
 
       - name: Run vet
         run: go vet ./...
