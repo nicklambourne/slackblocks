@@ -1,8 +1,12 @@
 package slackblocks
 
+//go:generate go run ./internal/generatebuilders
+
 import (
 	"encoding/json"
 	"fmt"
+
+	slackapi "github.com/slack-go/slack"
 )
 
 // Object is a JSON-compatible Slack wire object.
@@ -15,30 +19,111 @@ type Buildable interface {
 
 type coercion func(any) (any, error)
 
-// Builder incrementally configures one Slack wire object. Named constructors
+// builder incrementally configures one Slack wire object. Named constructors
 // provide the discriminator and field-specific coercions; Build validates the
 // completed result.
-type Builder struct {
+type builder struct {
 	name      string
 	values    Object
 	coercions map[string]coercion
+	transform func(Object) (Object, error)
 	err       error
 }
 
-func newBuilder(name, objectType string) *Builder {
+// concreteBuilder provides the common terminal operations embedded by each
+// public object-specific builder.
+type concreteBuilder struct {
+	core *builder
+}
+
+// slackBlockBuilder adds slack-go's native Block contract only to concrete
+// block builders. Composition objects, elements, and payload builders
+// deliberately do not implement slack.Block.
+type slackBlockBuilder struct {
+	*concreteBuilder
+}
+
+func newSlackBlockBuilder(core *builder) *slackBlockBuilder {
+	return &slackBlockBuilder{concreteBuilder: newConcreteBuilder(core)}
+}
+
+// BlockType returns the Slack wire discriminator expected by slack.Block.
+func (b *slackBlockBuilder) BlockType() slackapi.MessageBlockType {
+	return slackapi.MessageBlockType(b.wireString("type"))
+}
+
+// ID returns the optional block_id expected by slack.Block.
+func (b *slackBlockBuilder) ID() string {
+	return b.wireString("block_id")
+}
+
+func (b *slackBlockBuilder) wireString(field string) string {
+	if b == nil || b.concreteBuilder == nil || b.concreteBuilder.core == nil {
+		return ""
+	}
+	value, _ := b.concreteBuilder.core.values[field].(string)
+	return value
+}
+
+func newConcreteBuilder(core *builder) *concreteBuilder {
+	return &concreteBuilder{core: core}
+}
+
+// Set configures an advanced wire-format field that does not yet have a
+// dedicated fluent method. Prefer the named methods on the concrete builder.
+func (b *concreteBuilder) Set(field string, value any) Buildable {
+	if b == nil || b.core == nil {
+		return b
+	}
+	b.core.Set(field, value)
+	return b
+}
+
+// Build materialises nested builders and validates the completed Slack object.
+func (b *concreteBuilder) Build() (Object, error) {
+	if b == nil || b.core == nil {
+		return nil, validationError(InvalidUsage, "Builder", "cannot build a nil builder")
+	}
+	return b.core.Build()
+}
+
+// MustBuild builds the configured object and panics if it is invalid.
+func (b *concreteBuilder) MustBuild() Object {
+	object, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return object
+}
+
+// MarshalJSON lets a completed concrete builder be passed to encoding/json.
+func (b *concreteBuilder) MarshalJSON() ([]byte, error) {
+	object, err := b.Build()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(object)
+}
+
+func newBuilder(name, objectType string) *builder {
 	values := Object{}
 	if objectType != "" {
 		values["type"] = objectType
 	}
-	return &Builder{name: name, values: values, coercions: map[string]coercion{}}
+	return &builder{name: name, values: values, coercions: map[string]coercion{}}
 }
 
-func (b *Builder) coerce(field string, fn coercion) *Builder {
+func (b *builder) coerce(field string, fn coercion) *builder {
 	b.coercions[field] = fn
 	return b
 }
 
-func (b *Builder) set(field string, value any) *Builder {
+func (b *builder) withTransform(fn func(Object) (Object, error)) *builder {
+	b.transform = fn
+	return b
+}
+
+func (b *builder) set(field string, value any) *builder {
 	if b.err != nil {
 		return b
 	}
@@ -52,7 +137,7 @@ func (b *Builder) set(field string, value any) *Builder {
 	return b
 }
 
-func (b *Builder) append(field string, values ...any) *Builder {
+func (b *builder) append(field string, values ...any) *builder {
 	if b.err != nil {
 		return b
 	}
@@ -82,9 +167,18 @@ func (b *Builder) append(field string, values ...any) *Builder {
 	return b
 }
 
+func (b *builder) appendNested(field string, values ...any) *builder {
+	if b.err != nil {
+		return b
+	}
+	current, _ := b.values[field].([]any)
+	b.values[field] = append(current, values...)
+	return b
+}
+
 // Set configures an advanced wire-format field that does not yet have a
 // dedicated fluent method. Prefer named methods for ordinary Block Kit use.
-func (b *Builder) Set(field string, value any) *Builder {
+func (b *builder) Set(field string, value any) *builder {
 	if field == "" {
 		b.err = validationError(MissingRequired, "Builder.Set", "field must not be empty")
 		return b
@@ -93,7 +187,7 @@ func (b *Builder) Set(field string, value any) *Builder {
 }
 
 // Build materialises nested builders and validates the completed Slack object.
-func (b *Builder) Build() (Object, error) {
+func (b *builder) Build() (Object, error) {
 	if b == nil {
 		return nil, validationError(InvalidUsage, "Builder", "cannot build a nil builder")
 	}
@@ -108,6 +202,15 @@ func (b *Builder) Build() (Object, error) {
 	if !ok {
 		return nil, validationError(TypeMismatch, b.name, "expected an object")
 	}
+	if b.transform != nil {
+		object, err = b.transform(object)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if err := validateBuilder(b.name, object); err != nil {
+		return nil, err
+	}
 	if err := Validate(object); err != nil {
 		return nil, err
 	}
@@ -116,7 +219,7 @@ func (b *Builder) Build() (Object, error) {
 
 // MustBuild is Build for package-level declarations and tests. It panics when
 // the configured object is invalid.
-func (b *Builder) MustBuild() Object {
+func (b *builder) MustBuild() Object {
 	object, err := b.Build()
 	if err != nil {
 		panic(err)
@@ -125,7 +228,7 @@ func (b *Builder) MustBuild() Object {
 }
 
 // MarshalJSON lets a completed builder be passed directly to encoding/json.
-func (b *Builder) MarshalJSON() ([]byte, error) {
+func (b *builder) MarshalJSON() ([]byte, error) {
 	object, err := b.Build()
 	if err != nil {
 		return nil, err

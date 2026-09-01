@@ -1,5 +1,10 @@
 # Spec changelog
 
+## Unreleased
+
+- Add shared invalid cases for empty section fields and duplicate chart-series
+  category labels. These close conformance gaps in the existing 1.1.0 contract.
+
 ## 1.1.0 - 2026-08-28
 
 - Enforce Slack surface compatibility for message, modal, and App Home block collections.

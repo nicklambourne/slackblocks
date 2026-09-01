@@ -1,0 +1,538 @@
+{
+	"NewActionsBlock": [
+		"Elements",
+		"BlockID"
+	],
+	"NewAlertBlock": [
+		"Text",
+		"Level",
+		"BlockID"
+	],
+	"NewAreaChart": [
+		"Series",
+		"AxisConfig"
+	],
+	"NewAttachment": [
+		"Blocks",
+		"Color",
+		"Fallback"
+	],
+	"NewAxisConfig": [
+		"Categories",
+		"XLabel",
+		"YLabel"
+	],
+	"NewBarChart": [
+		"Series",
+		"AxisConfig"
+	],
+	"NewButton": [
+		"Text",
+		"ActionID",
+		"URL",
+		"Value",
+		"Style",
+		"Confirm",
+		"AccessibilityLabel"
+	],
+	"NewCardBlock": [
+		"HeroImage",
+		"Icon",
+		"Title",
+		"Subtitle",
+		"Body",
+		"Actions",
+		"SlackIcon",
+		"Subtext",
+		"BlockID"
+	],
+	"NewCarouselBlock": [
+		"Elements",
+		"BlockID"
+	],
+	"NewChannelMultiSelect": [
+		"ActionID",
+		"InitialChannels",
+		"Confirm",
+		"MaxSelectedItems",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewChannelSelect": [
+		"ActionID",
+		"InitialChannel",
+		"ResponseURLEnabled",
+		"Confirm",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewChartSegment": [
+		"Label",
+		"Value"
+	],
+	"NewCheckboxes": [
+		"ActionID",
+		"Options",
+		"InitialOptions",
+		"Confirm",
+		"FocusOnLoad"
+	],
+	"NewColumnSettings": [
+		"Align",
+		"IsWrapped"
+	],
+	"NewConfirmation": [
+		"Title",
+		"Text",
+		"Confirm",
+		"Deny",
+		"Style"
+	],
+	"NewContainerBlock": [
+		"ChildBlocks",
+		"Title",
+		"RichTextTitle",
+		"Subtitle",
+		"Width",
+		"Icon",
+		"IsCollapsible",
+		"DefaultCollapsed",
+		"HasHeaderDivider",
+		"BlockID"
+	],
+	"NewContextActionsBlock": [
+		"Elements",
+		"BlockID"
+	],
+	"NewContextBlock": [
+		"Elements",
+		"BlockID"
+	],
+	"NewConversationFilter": [
+		"Include",
+		"ExcludeExternalSharedChannels",
+		"ExcludeBotUsers"
+	],
+	"NewConversationMultiSelect": [
+		"ActionID",
+		"InitialConversations",
+		"DefaultToCurrentConversation",
+		"Filter",
+		"Confirm",
+		"MaxSelectedItems",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewConversationSelect": [
+		"ActionID",
+		"InitialConversation",
+		"DefaultToCurrentConversation",
+		"Filter",
+		"ResponseURLEnabled",
+		"Confirm",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewDataPoint": [
+		"Label",
+		"Value"
+	],
+	"NewDataSeries": [
+		"Name",
+		"Data"
+	],
+	"NewDataTableBlock": [
+		"Rows",
+		"Caption",
+		"PageSize",
+		"RowHeaderColumnIndex",
+		"BlockID"
+	],
+	"NewDataVisualizationBlock": [
+		"Title",
+		"Chart",
+		"BlockID"
+	],
+	"NewDatePicker": [
+		"ActionID",
+		"InitialDate",
+		"Confirm",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewDateTimePicker": [
+		"ActionID",
+		"InitialDateTime",
+		"Confirm",
+		"FocusOnLoad"
+	],
+	"NewDispatchActionConfiguration": [
+		"TriggerActionsOn"
+	],
+	"NewDividerBlock": [
+		"BlockID"
+	],
+	"NewEmailInput": [
+		"ActionID",
+		"InitialValue",
+		"DispatchActionConfig",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewExternalMultiSelect": [
+		"ActionID",
+		"MinQueryLength",
+		"InitialOptions",
+		"Confirm",
+		"MaxSelectedItems",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewExternalSelect": [
+		"ActionID",
+		"MinQueryLength",
+		"InitialOption",
+		"Confirm",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewFeedbackButton": [
+		"Text",
+		"Value",
+		"AccessibilityLabel"
+	],
+	"NewFeedbackButtons": [
+		"PositiveButton",
+		"NegativeButton",
+		"ActionID"
+	],
+	"NewFileBlock": [
+		"ExternalID",
+		"Source",
+		"BlockID"
+	],
+	"NewFileInput": [
+		"ActionID",
+		"Filetypes",
+		"MaxFiles"
+	],
+	"NewHeaderBlock": [
+		"Text",
+		"BlockID"
+	],
+	"NewHomeTab": [
+		"Blocks",
+		"PrivateMetadata",
+		"CallbackID",
+		"ExternalID"
+	],
+	"NewIconButton": [
+		"Text",
+		"Icon",
+		"ActionID",
+		"Value",
+		"Confirm",
+		"AccessibilityLabel",
+		"VisibleToUserIDs"
+	],
+	"NewImageBlock": [
+		"ImageURL",
+		"AltText",
+		"Title",
+		"BlockID"
+	],
+	"NewImageElement": [
+		"AltText",
+		"ImageURL",
+		"SlackFile"
+	],
+	"NewInputBlock": [
+		"Label",
+		"Element",
+		"DispatchAction",
+		"BlockID",
+		"Hint",
+		"Optional"
+	],
+	"NewInputParameter": [
+		"Name",
+		"Value"
+	],
+	"NewLineChart": [
+		"Series",
+		"AxisConfig"
+	],
+	"NewMarkdown": [
+		"Text",
+		"Verbatim"
+	],
+	"NewMarkdownBlock": [
+		"Text",
+		"BlockID"
+	],
+	"NewMessage": [
+		"Channel",
+		"Blocks",
+		"Attachments",
+		"Text",
+		"Mrkdwn",
+		"UnfurlLinks",
+		"UnfurlMedia",
+		"Metadata"
+	],
+	"NewMessageResponse": [
+		"Blocks",
+		"Attachments",
+		"Text",
+		"Mrkdwn",
+		"ReplaceOriginal",
+		"ResponseType"
+	],
+	"NewModal": [
+		"Title",
+		"Blocks",
+		"Close",
+		"Submit",
+		"PrivateMetadata",
+		"CallbackID",
+		"ClearOnClose",
+		"NotifyOnClose",
+		"ExternalID",
+		"SubmitDisabled"
+	],
+	"NewNumberInput": [
+		"ActionID",
+		"IsDecimalAllowed",
+		"InitialValue",
+		"MinValue",
+		"MaxValue",
+		"DispatchActionConfig",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewOption": [
+		"Text",
+		"Value",
+		"Description",
+		"URL"
+	],
+	"NewOptionGroup": [
+		"Label",
+		"Options"
+	],
+	"NewOverflow": [
+		"ActionID",
+		"Options",
+		"Confirm"
+	],
+	"NewPieChart": [
+		"Segments"
+	],
+	"NewPlainText": [
+		"Text",
+		"Emoji"
+	],
+	"NewPlainTextInput": [
+		"ActionID",
+		"InitialValue",
+		"Multiline",
+		"MinLength",
+		"MaxLength",
+		"DispatchActionConfig",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewPlanBlock": [
+		"Title",
+		"Tasks",
+		"BlockID"
+	],
+	"NewRadioButtons": [
+		"ActionID",
+		"Options",
+		"InitialOption",
+		"Confirm",
+		"FocusOnLoad"
+	],
+	"NewRawNumber": [
+		"Value",
+		"Text"
+	],
+	"NewRawText": [
+		"Text"
+	],
+	"NewRichText": [
+		"Text",
+		"Style"
+	],
+	"NewRichTextBlock": [
+		"Elements",
+		"BlockID"
+	],
+	"NewRichTextChannel": [
+		"ChannelID",
+		"Style"
+	],
+	"NewRichTextCodeBlock": [
+		"Elements",
+		"Border"
+	],
+	"NewRichTextEmoji": [
+		"Name",
+		"SkinTone"
+	],
+	"NewRichTextInput": [
+		"ActionID",
+		"InitialValue",
+		"DispatchActionConfig",
+		"FocusOnLoad",
+		"Placeholder",
+		"MinLines",
+		"MaxLines"
+	],
+	"NewRichTextLink": [
+		"URL",
+		"Text",
+		"Style"
+	],
+	"NewRichTextList": [
+		"Style",
+		"Elements",
+		"Indent",
+		"Offset",
+		"Border"
+	],
+	"NewRichTextQuote": [
+		"Elements",
+		"Border"
+	],
+	"NewRichTextSection": [
+		"Elements"
+	],
+	"NewRichTextUser": [
+		"UserID",
+		"Style"
+	],
+	"NewRichTextUserGroup": [
+		"UserGroupID",
+		"Style"
+	],
+	"NewSectionBlock": [
+		"Text",
+		"Fields",
+		"Accessory",
+		"BlockID"
+	],
+	"NewSlackFile": [
+		"SlackFileID",
+		"SlackFileURL"
+	],
+	"NewSlackIcon": [
+		"Name"
+	],
+	"NewStaticMultiSelect": [
+		"ActionID",
+		"Options",
+		"OptionGroups",
+		"InitialOptions",
+		"Confirm",
+		"MaxSelectedItems",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewStaticSelect": [
+		"ActionID",
+		"Options",
+		"OptionGroups",
+		"InitialOption",
+		"Confirm",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewTableBlock": [
+		"Rows",
+		"ColumnSettings",
+		"BlockID"
+	],
+	"NewTaskCardBlock": [
+		"TaskID",
+		"Title",
+		"Details",
+		"Output",
+		"Sources",
+		"Status",
+		"BlockID"
+	],
+	"NewTimePicker": [
+		"ActionID",
+		"InitialTime",
+		"Timezone",
+		"Confirm",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewTrigger": [
+		"URL",
+		"CustomizableInputParameters"
+	],
+	"NewURLInput": [
+		"ActionID",
+		"InitialValue",
+		"DispatchActionConfig",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewURLSource": [
+		"URL",
+		"Text"
+	],
+	"NewUserMultiSelect": [
+		"ActionID",
+		"InitialUsers",
+		"Confirm",
+		"MaxSelectedItems",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewUserSelect": [
+		"ActionID",
+		"InitialUser",
+		"Confirm",
+		"FocusOnLoad",
+		"Placeholder"
+	],
+	"NewVideoBlock": [
+		"AltText",
+		"ThumbnailURL",
+		"Title",
+		"VideoURL",
+		"BlockID",
+		"AuthorName",
+		"Description",
+		"ProviderIconURL",
+		"ProviderName",
+		"TitleURL"
+	],
+	"NewWebhookMessage": [
+		"Blocks",
+		"Attachments",
+		"Text",
+		"ResponseType",
+		"ReplaceOriginal",
+		"DeleteOriginal",
+		"UnfurlLinks",
+		"UnfurlMedia",
+		"Metadata"
+	],
+	"NewWorkflow": [
+		"Trigger"
+	],
+	"NewWorkflowButton": [
+		"Text",
+		"Workflow",
+		"ActionID",
+		"Confirm",
+		"Style",
+		"AccessibilityLabel"
+	]
+}

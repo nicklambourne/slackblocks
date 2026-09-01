@@ -51,6 +51,11 @@ jobs:
           go mod tidy
           git diff --exit-code -- go.mod go.sum
 
+      - name: Verify generated builders
+        run: |
+          go generate ./...
+          git diff --exit-code -- concrete_builders_gen.go
+
       - name: Run vet
         run: go vet ./...
 

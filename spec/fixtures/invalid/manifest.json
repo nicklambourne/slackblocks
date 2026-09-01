@@ -404,6 +404,12 @@
       "description": "A section with neither text nor fields must be rejected"
     },
     {
+      "id": "section-empty-fields",
+      "category": "missing-required",
+      "constraint": "section.fields.non_empty",
+      "description": "An empty fields array does not satisfy a section's content requirement"
+    },
+    {
       "id": "static-select-options-and-groups",
       "category": "mutually-exclusive",
       "constraint": "static_select.choice_source",
@@ -624,6 +630,12 @@
       "category": "length-exceeded",
       "constraint": "data_visualization.series.min_items",
       "description": "An axis-based chart without a series must be rejected"
+    },
+    {
+      "id": "chart-duplicate-point-labels",
+      "category": "invalid-usage",
+      "constraint": "data_visualization.series.axis_category_coverage",
+      "description": "A chart series must contain exactly one point for each axis category"
     },
     {
       "id": "chart-too-many-series",
