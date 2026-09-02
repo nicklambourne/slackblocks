@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "python/v*"
+  workflow_dispatch:
 
 permissions:
   contents: read

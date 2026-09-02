@@ -5,6 +5,11 @@ The Python (`slackblocks` on PyPI), TypeScript
 (`github.com/nicklambourne/slackblocks/go/v2`) packages are released together
 and always carry the same version number.
 
+The recommended entry point is the **Coordinated Release** workflow in GitHub
+Actions. Run it from `master` with one `X.Y.Z` input; it validates the shared
+version and changelogs, creates all three annotated tags in one atomic push,
+dispatches each existing publisher at its tag, and waits for all three runs.
+
 ## Tag scheme
 
 Releases are triggered by pushing tags:
@@ -17,6 +22,10 @@ Releases are triggered by pushing tags:
 
 Plain `v*` tags (used by the pre-monorepo 1.x/2.0 releases) no longer trigger
 anything.
+
+The three publisher workflows also accept a manual dispatch at an existing,
+matching language tag. The coordinator uses those entry points so the PyPI and
+npm jobs retain their existing trusted-publisher workflow identities.
 
 The Python and TypeScript workflows fail fast if the tag does not match their
 package manifest. Every workflow also verifies that `python/pyproject.toml`
@@ -92,19 +101,40 @@ missing from `docs/versions.json` (or the legacy manifest).
    `typescript/CHANGELOG.md`, and `go/CHANGELOG.md`. The publish workflows
    extract the matching section for their GitHub Release notes.
 4. Merge to `master` and wait for CI to pass.
-5. Tag and push all three releases. Any order works; every workflow checks the
-   same two package manifests:
+5. In GitHub Actions, open **Coordinated Release**, select **Run workflow**,
+   keep the branch set to `master`, and enter `X.Y.Z`. The equivalent CLI
+   command is:
 
    ```sh
-   git tag python/vX.Y.Z && git push origin python/vX.Y.Z
-   git tag ts/vX.Y.Z && git push origin ts/vX.Y.Z
-   git tag go/vX.Y.Z && git push origin go/vX.Y.Z
+   gh workflow run coordinated-release.yml --ref master -f version=X.Y.Z
    ```
 
-6. Each workflow publishes or verifies its package and then creates a GitHub
-   Release for its tag with the changelog section as notes.
+6. The coordinator atomically pushes `python/vX.Y.Z`, `ts/vX.Y.Z`, and
+   `go/vX.Y.Z`, then dispatches and monitors the three existing publishers.
+   Each publisher creates its own GitHub Release after its registry step
+   succeeds.
+
+If the coordinator is unavailable, the direct tag triggers remain as a manual
+fallback. Create all three signed tags at the same commit and push them
+atomically:
+
+```sh
+git tag -s python/vX.Y.Z -m "slackblocks X.Y.Z (Python)"
+git tag -s ts/vX.Y.Z -m "@nicklambourne/slackblocks X.Y.Z (TypeScript)"
+git tag -s go/vX.Y.Z -m "slackblocks X.Y.Z (Go)"
+git push --atomic origin python/vX.Y.Z ts/vX.Y.Z go/vX.Y.Z
+```
+
+Tags created by the coordinator are annotated as `github-actions[bot]` but
+are not signed with a maintainer's personal key; CI deliberately does not
+store that private key.
 
 ## Partial-failure recovery
+
+The three tags are created atomically, but three external registries cannot be
+updated as one transaction. If one publisher fails after another succeeds,
+re-run the failed publisher from its existing workflow run; never move the
+tags or republish an already released version.
 
 All three workflows are safe to re-run from the Actions UI:
 
