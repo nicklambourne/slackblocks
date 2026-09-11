@@ -1,0 +1,183 @@
+name: Coordinated Release
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/coordinated-release.yml"
+      - ".github/workflows/publish.yml"
+      - ".github/workflows/publish-npm.yml"
+      - ".github/workflows/publish-go.yml"
+      - "python/pyproject.toml"
+      - "typescript/package.json"
+      - "python/CHANGELOG.md"
+      - "typescript/CHANGELOG.md"
+      - "go/CHANGELOG.md"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version (X.Y.Z)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coordinated-release-${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate coordinated release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Validate version and release notes
+        id: version
+        env:
+          RELEASE_EVENT: ${{ github.event_name }}
+          RELEASE_REF: ${{ github.ref }}
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+
+          typescript_version=$(node -p "require('./typescript/package.json').version")
+          python_version=$(node -e "const text = require('fs').readFileSync('python/pyproject.toml', 'utf8'); const match = text.match(/^version = \"([^\"]+)\"$/m); if (!match) process.exit(1); process.stdout.write(match[1]);")
+          version="${REQUESTED_VERSION:-$typescript_version}"
+
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Version '$version' must use the stable X.Y.Z format."
+            exit 1
+          fi
+          if [ "$python_version" != "$typescript_version" ]; then
+            echo "::error::Python version '$python_version' does not match TypeScript version '$typescript_version'."
+            exit 1
+          fi
+          if [ "$version" != "$python_version" ]; then
+            echo "::error::Requested version '$version' does not match the package manifests ('$python_version')."
+            exit 1
+          fi
+          if [ "$RELEASE_EVENT" = "workflow_dispatch" ] && [ "$RELEASE_REF" != "refs/heads/master" ]; then
+            echo "::error::Coordinated releases must be dispatched from the master branch."
+            exit 1
+          fi
+
+          for changelog in python/CHANGELOG.md typescript/CHANGELOG.md go/CHANGELOG.md; do
+            if ! grep -Fq "## [$version]" "$changelog"; then
+              echo "::error file=$changelog::Missing release notes for version $version."
+              exit 1
+            fi
+          done
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Validated coordinated release $version."
+
+  create-tags:
+    name: Create coordinated tags
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Create or verify release tags
+        env:
+          VERSION: ${{ needs.validate.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          tags=("python/v$VERSION" "ts/v$VERSION" "go/v$VERSION")
+          existing=0
+
+          for tag in "${tags[@]}"; do
+            if git show-ref --verify --quiet "refs/tags/$tag"; then
+              existing=$((existing + 1))
+              target=$(git rev-list -n 1 "$tag")
+              if [ "$target" != "$GITHUB_SHA" ]; then
+                echo "::error::Existing tag '$tag' points to $target instead of $GITHUB_SHA."
+                exit 1
+              fi
+            fi
+          done
+
+          if [ "$existing" -eq 3 ]; then
+            echo "All coordinated tags already point to $GITHUB_SHA; reusing them."
+            exit 0
+          fi
+          if [ "$existing" -ne 0 ]; then
+            echo "::error::Only $existing of the three release tags already exist. Resolve the partial release before retrying."
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag --annotate "python/v$VERSION" --message "slackblocks $VERSION (Python)"
+          git tag --annotate "ts/v$VERSION" --message "@nicklambourne/slackblocks $VERSION (TypeScript)"
+          git tag --annotate "go/v$VERSION" --message "slackblocks $VERSION (Go)"
+          git push --atomic origin "${tags[@]}"
+
+  publish:
+    name: Publish ${{ matrix.language }}
+    if: github.event_name == 'workflow_dispatch'
+    needs:
+      - validate
+      - create-tags
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: Python
+            workflow: publish.yml
+            tag_prefix: python/v
+          - language: TypeScript
+            workflow: publish-npm.yml
+            tag_prefix: ts/v
+          - language: Go
+            workflow: publish-go.yml
+            tag_prefix: go/v
+    steps:
+      - name: Dispatch and monitor publisher
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PUBLISH_WORKFLOW: ${{ matrix.workflow }}
+          RELEASE_TAG: ${{ format('{0}{1}', matrix.tag_prefix, needs.validate.outputs.version) }}
+        run: |
+          set -euo pipefail
+
+          previous_run=$(gh run list --workflow "$PUBLISH_WORKFLOW" --event workflow_dispatch --branch "$RELEASE_TAG" --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+          gh workflow run "$PUBLISH_WORKFLOW" --ref "$RELEASE_TAG"
+
+          run_id=""
+          for _ in {1..12}; do
+            run_id=$(gh run list --workflow "$PUBLISH_WORKFLOW" --event workflow_dispatch --branch "$RELEASE_TAG" --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+            if [ -n "$run_id" ] && [ "$run_id" != "$previous_run" ]; then
+              break
+            fi
+            sleep 5
+          done
+
+          if [ -z "$run_id" ] || [ "$run_id" = "$previous_run" ]; then
+            echo "::error::Could not find the dispatched $PUBLISH_WORKFLOW run for $RELEASE_TAG."
+            exit 1
+          fi
+
+          run_url=$(gh run view "$run_id" --json url --jq .url)
+          echo "Monitoring $run_url"
+          echo "- [${RELEASE_TAG} publisher](${run_url})" >> "$GITHUB_STEP_SUMMARY"
+          gh run watch "$run_id" --exit-status
