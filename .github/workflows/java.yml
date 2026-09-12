@@ -1,0 +1,61 @@
+name: Java CI
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "java/**"
+      - "go/**"
+      - "spec/**"
+      - ".github/workflows/java.yml"
+  pull_request:
+    paths:
+      - "java/**"
+      - "go/**"
+      - "spec/**"
+      - ".github/workflows/java.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: java-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Java ${{ matrix.java-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java-version: ["17", "latest"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Install Java ${{ matrix.java-version }}
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java-version }}
+          cache: maven
+          cache-dependency-path: java/pom.xml
+
+      - name: Verify generated model sources are current
+        run: |
+          python3 java/generator/generate_models.py
+          git diff --exit-code -- java/src/main/java
+
+      - name: Build and test
+        working-directory: java
+        run: ./mvnw -B -ntp clean verify
+
+      - name: Upload Maven artifacts
+        if: matrix.java-version == 'latest'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: java-distributions
+          path: java/target/*.jar
+          if-no-files-found: error
