@@ -37,7 +37,7 @@ function snapshottedVersions() {
   return versions;
 }
 
-// Python, TypeScript, and Go are released together under one version number, so
+// Python, TypeScript, Go, and Java are released together under one version number, so
 // the `python/v*` tags remain the authoritative released-version list. Plain
 // `v*` tags belong to the pre-monorepo 1.x/2.0 line and are covered by the
 // legacy manifest instead.

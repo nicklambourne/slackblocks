@@ -47,4 +47,4 @@ go get github.com/nicklambourne/slackblocks/go/v2
 
 This directory is part of the coordinated slackblocks monorepo. The Go module
 implements the same shared JSON fixtures and validation categories as the
-Python and TypeScript packages.
+Python, TypeScript, and Java packages.

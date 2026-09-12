@@ -1,9 +1,20 @@
 # Changelog
 
 All notable changes to the Go module are documented here. Go releases use the
-same version number as the Python and TypeScript packages.
+same version number as the Python, TypeScript, and Java packages.
 
-## Unreleased
+## [2.3.0] — Unreleased
+
+This coordinated release introduces the Java package. The Go public API and
+wire format are unchanged.
+
+### Changed
+
+- Coordinated release validation now requires the Python, TypeScript, and Java
+  package manifests and all four language changelogs to agree before any tags
+  are created.
+- Project documentation now includes the Java implementation alongside the
+  existing Python, TypeScript, and Go variants.
 
 ## [2.2.0] — 2026-09-02
 

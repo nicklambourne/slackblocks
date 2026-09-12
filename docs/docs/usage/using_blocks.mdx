@@ -1477,7 +1477,7 @@ block, err := slackblocks.NewCardBlock().
 ```java
 CardBlock block = CardBlock.builder()
     .title("Build complete")
-    .body("Version 2.2.0 is ready to deploy.")
+    .body("Version 2.3.0 is ready to deploy.")
     .slackIcon(SlackIcon.builder().name("rocket").build())
     .actions(ButtonElement.builder().text("Open build").actionId("open_build").build())
     .blockId("fake_block_id")
@@ -2318,7 +2318,7 @@ const payload = Message()
       AccordionSection()
         .title("Summary")
         .expanded(true)
-        .blocks(SectionBlock().text("Version 2.2.0 is ready.")),
+        .blocks(SectionBlock().text("Version 2.3.0 is ready.")),
       AccordionSection()
         .title("Checks")
         .blocks(SectionBlock().text("All required checks passed.")),
@@ -2371,7 +2371,7 @@ blocks, err := slackblocks.NewAccordion().Sections(
 	slackblocks.NewAccordionSection().
 		Title("Summary").
 		Expanded(true).
-		Blocks(slackblocks.NewSectionBlock().Text("Version 2.2.0 is ready.")),
+		Blocks(slackblocks.NewSectionBlock().Text("Version 2.3.0 is ready.")),
 	slackblocks.NewAccordionSection().
 		Title("Checks").
 		Blocks(slackblocks.NewSectionBlock().Text("All required checks passed.")),
@@ -2423,7 +2423,7 @@ List<Block> blocks = Accordion.builder()
     .sections(
         AccordionSection.builder("Summary")
             .expanded(true)
-            .blocks(SectionBlock.builder().markdownText("Version 2.2.0 is ready.").build())
+            .blocks(SectionBlock.builder().markdownText("Version 2.3.0 is ready.").build())
             .build(),
         AccordionSection.builder("Checks")
             .blocks(SectionBlock.builder().markdownText("All required checks passed.").build())

@@ -20,6 +20,11 @@ final class FoundationTest {
   }
 
   @Test
+  void reportsTheMavenProjectVersion() {
+    assertEquals(System.getProperty("slackblocks.project.version"), Slackblocks.VERSION);
+  }
+
+  @Test
   void serializesAsSlackWireObjectRatherThanAnImplementationWrapper() {
     BuilderState state = new BuilderState("Test", "divider");
     state.set("block_id", "summary");

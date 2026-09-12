@@ -1,0 +1,1157 @@
+---
+sidebar_position: 1
+toc_max_heading_level: 2
+---
+
+# Blocks
+
+This page documents the public Go API for blocks. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.
+
+Every block builder implements `slack.Block`: pass it directly to `slack.MsgOptionBlocks` while keeping the channel and other message options in slack-go. Validation runs when slack-go marshals the block, before it sends the request.
+
+## NewActionsBlock
+
+NewActionsBlock creates a row of interactive elements.
+
+```go
+func NewActionsBlock() *ActionsBlockBuilder
+```
+
+### ActionsBlockBuilder
+
+ActionsBlockBuilder is the concrete fluent builder returned by NewActionsBlock. Use NewActionsBlock rather than constructing this type directly.
+
+```go
+type ActionsBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### ActionsBlockBuilder.Elements
+
+Elements appends Slack elements.
+
+```go
+func (b *ActionsBlockBuilder) Elements(values ...any) *ActionsBlockBuilder
+```
+
+#### ActionsBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *ActionsBlockBuilder) BlockID(value string) *ActionsBlockBuilder
+```
+
+Every `ActionsBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewAlertBlock
+
+NewAlertBlock creates a severity-labelled notice for a modal.
+
+```go
+func NewAlertBlock() *AlertBlockBuilder
+```
+
+### AlertBlockBuilder
+
+AlertBlockBuilder is the concrete fluent builder returned by NewAlertBlock. Use NewAlertBlock rather than constructing this type directly.
+
+```go
+type AlertBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### AlertBlockBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *AlertBlockBuilder) Text(value any) *AlertBlockBuilder
+```
+
+#### AlertBlockBuilder.Level
+
+Level sets alert severity.
+
+```go
+func (b *AlertBlockBuilder) Level(value string) *AlertBlockBuilder
+```
+
+#### AlertBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *AlertBlockBuilder) BlockID(value string) *AlertBlockBuilder
+```
+
+Every `AlertBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewCardBlock
+
+NewCardBlock creates a compact card with text, imagery, and actions.
+
+```go
+func NewCardBlock() *CardBlockBuilder
+```
+
+### CardBlockBuilder
+
+CardBlockBuilder is the concrete fluent builder returned by NewCardBlock. Use NewCardBlock rather than constructing this type directly.
+
+```go
+type CardBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### CardBlockBuilder.HeroImage
+
+HeroImage sets the large image on a card.
+
+```go
+func (b *CardBlockBuilder) HeroImage(value any) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.Icon
+
+Icon sets an icon or icon element.
+
+```go
+func (b *CardBlockBuilder) Icon(value any) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.Title
+
+Title sets a title field.
+
+```go
+func (b *CardBlockBuilder) Title(value any) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.Subtitle
+
+Subtitle sets secondary heading copy.
+
+```go
+func (b *CardBlockBuilder) Subtitle(value any) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.Body
+
+Body sets main card copy.
+
+```go
+func (b *CardBlockBuilder) Body(value any) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.Actions
+
+Actions appends actions to a card.
+
+```go
+func (b *CardBlockBuilder) Actions(values ...any) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.SlackIcon
+
+SlackIcon sets a named Slack icon.
+
+```go
+func (b *CardBlockBuilder) SlackIcon(value any) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.Subtext
+
+Subtext sets supporting card copy.
+
+```go
+func (b *CardBlockBuilder) Subtext(value any) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *CardBlockBuilder) BlockID(value string) *CardBlockBuilder
+```
+
+Every `CardBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewCarouselBlock
+
+NewCarouselBlock creates a horizontally scrolling collection of cards.
+
+```go
+func NewCarouselBlock() *CarouselBlockBuilder
+```
+
+### CarouselBlockBuilder
+
+CarouselBlockBuilder is the concrete fluent builder returned by NewCarouselBlock. Use NewCarouselBlock rather than constructing this type directly.
+
+```go
+type CarouselBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### CarouselBlockBuilder.Elements
+
+Elements appends Slack elements.
+
+```go
+func (b *CarouselBlockBuilder) Elements(values ...any) *CarouselBlockBuilder
+```
+
+#### CarouselBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *CarouselBlockBuilder) BlockID(value string) *CarouselBlockBuilder
+```
+
+Every `CarouselBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewContainerBlock
+
+NewContainerBlock creates a titled group of child blocks.
+
+```go
+func NewContainerBlock() *ContainerBlockBuilder
+```
+
+### ContainerBlockBuilder
+
+ContainerBlockBuilder is the concrete fluent builder returned by NewContainerBlock. Use NewContainerBlock rather than constructing this type directly.
+
+```go
+type ContainerBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### ContainerBlockBuilder.ChildBlocks
+
+ChildBlocks appends blocks to a container.
+
+```go
+func (b *ContainerBlockBuilder) ChildBlocks(values ...any) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.Title
+
+Title sets a title field.
+
+```go
+func (b *ContainerBlockBuilder) Title(value any) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.RichTextTitle
+
+RichTextTitle sets a container rich-text title.
+
+```go
+func (b *ContainerBlockBuilder) RichTextTitle(value any) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.Subtitle
+
+Subtitle sets secondary heading copy.
+
+```go
+func (b *ContainerBlockBuilder) Subtitle(value any) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.Width
+
+Width sets container width.
+
+```go
+func (b *ContainerBlockBuilder) Width(value string) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.Icon
+
+Icon sets an icon or icon element.
+
+```go
+func (b *ContainerBlockBuilder) Icon(value any) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.IsCollapsible
+
+IsCollapsible controls container expansion.
+
+```go
+func (b *ContainerBlockBuilder) IsCollapsible(value bool) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.DefaultCollapsed
+
+DefaultCollapsed controls the initial state of a collapsible container.
+
+```go
+func (b *ContainerBlockBuilder) DefaultCollapsed(value bool) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.HasHeaderDivider
+
+HasHeaderDivider controls a container header divider.
+
+```go
+func (b *ContainerBlockBuilder) HasHeaderDivider(value bool) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *ContainerBlockBuilder) BlockID(value string) *ContainerBlockBuilder
+```
+
+Every `ContainerBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewContextActionsBlock
+
+NewContextActionsBlock creates contextual feedback or icon controls.
+
+```go
+func NewContextActionsBlock() *ContextActionsBlockBuilder
+```
+
+### ContextActionsBlockBuilder
+
+ContextActionsBlockBuilder is the concrete fluent builder returned by NewContextActionsBlock. Use NewContextActionsBlock rather than constructing this type directly.
+
+```go
+type ContextActionsBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### ContextActionsBlockBuilder.Elements
+
+Elements appends Slack elements.
+
+```go
+func (b *ContextActionsBlockBuilder) Elements(values ...any) *ContextActionsBlockBuilder
+```
+
+#### ContextActionsBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *ContextActionsBlockBuilder) BlockID(value string) *ContextActionsBlockBuilder
+```
+
+Every `ContextActionsBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewContextBlock
+
+NewContextBlock creates compact contextual text and images.
+
+```go
+func NewContextBlock() *ContextBlockBuilder
+```
+
+### ContextBlockBuilder
+
+ContextBlockBuilder is the concrete fluent builder returned by NewContextBlock. Use NewContextBlock rather than constructing this type directly.
+
+```go
+type ContextBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### ContextBlockBuilder.Elements
+
+Elements appends Slack elements.
+
+```go
+func (b *ContextBlockBuilder) Elements(values ...any) *ContextBlockBuilder
+```
+
+#### ContextBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *ContextBlockBuilder) BlockID(value string) *ContextBlockBuilder
+```
+
+Every `ContextBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDataTableBlock
+
+NewDataTableBlock creates a sortable, paginated data table.
+
+```go
+func NewDataTableBlock() *DataTableBlockBuilder
+```
+
+### DataTableBlockBuilder
+
+DataTableBlockBuilder is the concrete fluent builder returned by NewDataTableBlock. Use NewDataTableBlock rather than constructing this type directly.
+
+```go
+type DataTableBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### DataTableBlockBuilder.Rows
+
+Rows appends table rows. Each argument should be a slice of cells.
+
+```go
+func (b *DataTableBlockBuilder) Rows(values ...any) *DataTableBlockBuilder
+```
+
+#### DataTableBlockBuilder.Caption
+
+Caption sets an accessible data-table caption.
+
+```go
+func (b *DataTableBlockBuilder) Caption(value string) *DataTableBlockBuilder
+```
+
+#### DataTableBlockBuilder.PageSize
+
+PageSize sets data-table rows per page.
+
+```go
+func (b *DataTableBlockBuilder) PageSize(value int) *DataTableBlockBuilder
+```
+
+#### DataTableBlockBuilder.RowHeaderColumnIndex
+
+RowHeaderColumnIndex sets the zero-based data-table row-header column.
+
+```go
+func (b *DataTableBlockBuilder) RowHeaderColumnIndex(value int) *DataTableBlockBuilder
+```
+
+#### DataTableBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *DataTableBlockBuilder) BlockID(value string) *DataTableBlockBuilder
+```
+
+Every `DataTableBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDataVisualizationBlock
+
+NewDataVisualizationBlock creates a Slack-rendered chart block.
+
+```go
+func NewDataVisualizationBlock() *DataVisualizationBlockBuilder
+```
+
+### DataVisualizationBlockBuilder
+
+DataVisualizationBlockBuilder is the concrete fluent builder returned by NewDataVisualizationBlock. Use NewDataVisualizationBlock rather than constructing this type directly.
+
+```go
+type DataVisualizationBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### DataVisualizationBlockBuilder.Title
+
+Title sets a title field.
+
+```go
+func (b *DataVisualizationBlockBuilder) Title(value any) *DataVisualizationBlockBuilder
+```
+
+#### DataVisualizationBlockBuilder.Chart
+
+Chart sets a chart object on a data-visualization block.
+
+```go
+func (b *DataVisualizationBlockBuilder) Chart(value any) *DataVisualizationBlockBuilder
+```
+
+#### DataVisualizationBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *DataVisualizationBlockBuilder) BlockID(value string) *DataVisualizationBlockBuilder
+```
+
+Every `DataVisualizationBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDividerBlock
+
+NewDividerBlock creates a visual divider block.
+
+```go
+func NewDividerBlock() *DividerBlockBuilder
+```
+
+### DividerBlockBuilder
+
+DividerBlockBuilder is the concrete fluent builder returned by NewDividerBlock. Use NewDividerBlock rather than constructing this type directly.
+
+```go
+type DividerBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### DividerBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *DividerBlockBuilder) BlockID(value string) *DividerBlockBuilder
+```
+
+Every `DividerBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewFileBlock
+
+NewFileBlock creates a block for a Slack remote file.
+
+```go
+func NewFileBlock() *FileBlockBuilder
+```
+
+### FileBlockBuilder
+
+FileBlockBuilder is the concrete fluent builder returned by NewFileBlock. Use NewFileBlock rather than constructing this type directly.
+
+```go
+type FileBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### FileBlockBuilder.ExternalID
+
+ExternalID sets an application-defined external identifier.
+
+```go
+func (b *FileBlockBuilder) ExternalID(value string) *FileBlockBuilder
+```
+
+#### FileBlockBuilder.Source
+
+Source sets a file source.
+
+```go
+func (b *FileBlockBuilder) Source(value string) *FileBlockBuilder
+```
+
+#### FileBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *FileBlockBuilder) BlockID(value string) *FileBlockBuilder
+```
+
+Every `FileBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewHeaderBlock
+
+NewHeaderBlock creates a prominent plain-text heading.
+
+```go
+func NewHeaderBlock() *HeaderBlockBuilder
+```
+
+### HeaderBlockBuilder
+
+HeaderBlockBuilder is the concrete fluent builder returned by NewHeaderBlock. Use NewHeaderBlock rather than constructing this type directly.
+
+```go
+type HeaderBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### HeaderBlockBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *HeaderBlockBuilder) Text(value any) *HeaderBlockBuilder
+```
+
+#### HeaderBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *HeaderBlockBuilder) BlockID(value string) *HeaderBlockBuilder
+```
+
+Every `HeaderBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewImageBlock
+
+NewImageBlock creates an image block with optional title text.
+
+```go
+func NewImageBlock() *ImageBlockBuilder
+```
+
+### ImageBlockBuilder
+
+ImageBlockBuilder is the concrete fluent builder returned by NewImageBlock. Use NewImageBlock rather than constructing this type directly.
+
+```go
+type ImageBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### ImageBlockBuilder.ImageURL
+
+ImageURL sets a public image URL.
+
+```go
+func (b *ImageBlockBuilder) ImageURL(value string) *ImageBlockBuilder
+```
+
+#### ImageBlockBuilder.AltText
+
+AltText sets an accessible image or video description.
+
+```go
+func (b *ImageBlockBuilder) AltText(value string) *ImageBlockBuilder
+```
+
+#### ImageBlockBuilder.Title
+
+Title sets a title field.
+
+```go
+func (b *ImageBlockBuilder) Title(value any) *ImageBlockBuilder
+```
+
+#### ImageBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *ImageBlockBuilder) BlockID(value string) *ImageBlockBuilder
+```
+
+Every `ImageBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewInputBlock
+
+NewInputBlock creates a labelled form control.
+
+```go
+func NewInputBlock() *InputBlockBuilder
+```
+
+### InputBlockBuilder
+
+InputBlockBuilder is the concrete fluent builder returned by NewInputBlock. Use NewInputBlock rather than constructing this type directly.
+
+```go
+type InputBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### InputBlockBuilder.Label
+
+Label sets a label field.
+
+```go
+func (b *InputBlockBuilder) Label(value any) *InputBlockBuilder
+```
+
+#### InputBlockBuilder.Element
+
+Element sets the interactive element in an input block.
+
+```go
+func (b *InputBlockBuilder) Element(value any) *InputBlockBuilder
+```
+
+#### InputBlockBuilder.DispatchAction
+
+DispatchAction controls immediate input dispatch.
+
+```go
+func (b *InputBlockBuilder) DispatchAction(value bool) *InputBlockBuilder
+```
+
+#### InputBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *InputBlockBuilder) BlockID(value string) *InputBlockBuilder
+```
+
+#### InputBlockBuilder.Hint
+
+Hint sets supporting input help text.
+
+```go
+func (b *InputBlockBuilder) Hint(value any) *InputBlockBuilder
+```
+
+#### InputBlockBuilder.Optional
+
+Optional makes an input block optional.
+
+```go
+func (b *InputBlockBuilder) Optional(value bool) *InputBlockBuilder
+```
+
+Every `InputBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewMarkdownBlock
+
+NewMarkdownBlock creates a block rendered from GitHub-flavoured Markdown.
+
+```go
+func NewMarkdownBlock() *MarkdownBlockBuilder
+```
+
+### MarkdownBlockBuilder
+
+MarkdownBlockBuilder is the concrete fluent builder returned by NewMarkdownBlock. Use NewMarkdownBlock rather than constructing this type directly.
+
+```go
+type MarkdownBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### MarkdownBlockBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *MarkdownBlockBuilder) Text(value any) *MarkdownBlockBuilder
+```
+
+#### MarkdownBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *MarkdownBlockBuilder) BlockID(value string) *MarkdownBlockBuilder
+```
+
+Every `MarkdownBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewPlanBlock
+
+NewPlanBlock creates a titled sequence of tasks.
+
+```go
+func NewPlanBlock() *PlanBlockBuilder
+```
+
+### PlanBlockBuilder
+
+PlanBlockBuilder is the concrete fluent builder returned by NewPlanBlock. Use NewPlanBlock rather than constructing this type directly.
+
+```go
+type PlanBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### PlanBlockBuilder.Title
+
+Title sets a title field.
+
+```go
+func (b *PlanBlockBuilder) Title(value any) *PlanBlockBuilder
+```
+
+#### PlanBlockBuilder.Tasks
+
+Tasks appends task-card blocks.
+
+```go
+func (b *PlanBlockBuilder) Tasks(values ...any) *PlanBlockBuilder
+```
+
+#### PlanBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *PlanBlockBuilder) BlockID(value string) *PlanBlockBuilder
+```
+
+Every `PlanBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextBlock
+
+NewRichTextBlock creates a rich-text layout block.
+
+```go
+func NewRichTextBlock() *RichTextBlockBuilder
+```
+
+### RichTextBlockBuilder
+
+RichTextBlockBuilder is the concrete fluent builder returned by NewRichTextBlock. Use NewRichTextBlock rather than constructing this type directly.
+
+```go
+type RichTextBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### RichTextBlockBuilder.Elements
+
+Elements appends Slack elements.
+
+```go
+func (b *RichTextBlockBuilder) Elements(values ...any) *RichTextBlockBuilder
+```
+
+#### RichTextBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *RichTextBlockBuilder) BlockID(value string) *RichTextBlockBuilder
+```
+
+Every `RichTextBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewSectionBlock
+
+NewSectionBlock creates a section block. String text and fields are coerced
+to Slack mrkdwn objects.
+
+```go
+func NewSectionBlock() *SectionBlockBuilder
+```
+
+### SectionBlockBuilder
+
+SectionBlockBuilder is the concrete fluent builder returned by NewSectionBlock. Use NewSectionBlock rather than constructing this type directly.
+
+```go
+type SectionBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### SectionBlockBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *SectionBlockBuilder) Text(value any) *SectionBlockBuilder
+```
+
+#### SectionBlockBuilder.Fields
+
+Fields appends section fields in display order.
+
+```go
+func (b *SectionBlockBuilder) Fields(values ...any) *SectionBlockBuilder
+```
+
+#### SectionBlockBuilder.Accessory
+
+Accessory sets the optional section accessory element.
+
+```go
+func (b *SectionBlockBuilder) Accessory(value any) *SectionBlockBuilder
+```
+
+#### SectionBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *SectionBlockBuilder) BlockID(value string) *SectionBlockBuilder
+```
+
+Every `SectionBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewTableBlock
+
+NewTableBlock creates a table from raw-text or rich-text cells.
+
+```go
+func NewTableBlock() *TableBlockBuilder
+```
+
+### TableBlockBuilder
+
+TableBlockBuilder is the concrete fluent builder returned by NewTableBlock. Use NewTableBlock rather than constructing this type directly.
+
+```go
+type TableBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### TableBlockBuilder.Rows
+
+Rows appends table rows. Each argument should be a slice of cells.
+
+```go
+func (b *TableBlockBuilder) Rows(values ...any) *TableBlockBuilder
+```
+
+#### TableBlockBuilder.ColumnSettings
+
+ColumnSettings appends table column display settings.
+
+```go
+func (b *TableBlockBuilder) ColumnSettings(values ...any) *TableBlockBuilder
+```
+
+#### TableBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *TableBlockBuilder) BlockID(value string) *TableBlockBuilder
+```
+
+Every `TableBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewTaskCardBlock
+
+NewTaskCardBlock creates one task in a plan.
+
+```go
+func NewTaskCardBlock() *TaskCardBlockBuilder
+```
+
+### TaskCardBlockBuilder
+
+TaskCardBlockBuilder is the concrete fluent builder returned by NewTaskCardBlock. Use NewTaskCardBlock rather than constructing this type directly.
+
+```go
+type TaskCardBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### TaskCardBlockBuilder.TaskID
+
+TaskID sets a stable task identifier.
+
+```go
+func (b *TaskCardBlockBuilder) TaskID(value string) *TaskCardBlockBuilder
+```
+
+#### TaskCardBlockBuilder.Title
+
+Title sets a title field.
+
+```go
+func (b *TaskCardBlockBuilder) Title(value any) *TaskCardBlockBuilder
+```
+
+#### TaskCardBlockBuilder.Details
+
+Details sets rich task details.
+
+```go
+func (b *TaskCardBlockBuilder) Details(value any) *TaskCardBlockBuilder
+```
+
+#### TaskCardBlockBuilder.Output
+
+Output sets rich task output.
+
+```go
+func (b *TaskCardBlockBuilder) Output(value any) *TaskCardBlockBuilder
+```
+
+#### TaskCardBlockBuilder.Sources
+
+Sources appends task source links.
+
+```go
+func (b *TaskCardBlockBuilder) Sources(values ...any) *TaskCardBlockBuilder
+```
+
+#### TaskCardBlockBuilder.Status
+
+Status sets task lifecycle state.
+
+```go
+func (b *TaskCardBlockBuilder) Status(value string) *TaskCardBlockBuilder
+```
+
+#### TaskCardBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *TaskCardBlockBuilder) BlockID(value string) *TaskCardBlockBuilder
+```
+
+Every `TaskCardBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewVideoBlock
+
+NewVideoBlock creates an embedded video block.
+
+```go
+func NewVideoBlock() *VideoBlockBuilder
+```
+
+### VideoBlockBuilder
+
+VideoBlockBuilder is the concrete fluent builder returned by NewVideoBlock. Use NewVideoBlock rather than constructing this type directly.
+
+```go
+type VideoBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### VideoBlockBuilder.AltText
+
+AltText sets an accessible image or video description.
+
+```go
+func (b *VideoBlockBuilder) AltText(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.ThumbnailURL
+
+ThumbnailURL sets a video preview image.
+
+```go
+func (b *VideoBlockBuilder) ThumbnailURL(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.Title
+
+Title sets a title field.
+
+```go
+func (b *VideoBlockBuilder) Title(value any) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.VideoURL
+
+VideoURL sets the hosted video URL.
+
+```go
+func (b *VideoBlockBuilder) VideoURL(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.BlockID
+
+BlockID assigns an application-defined block identifier.
+
+```go
+func (b *VideoBlockBuilder) BlockID(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.AuthorName
+
+AuthorName sets video author attribution.
+
+```go
+func (b *VideoBlockBuilder) AuthorName(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.Description
+
+Description sets supporting descriptive text.
+
+```go
+func (b *VideoBlockBuilder) Description(value any) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.ProviderIconURL
+
+ProviderIconURL sets a video provider icon.
+
+```go
+func (b *VideoBlockBuilder) ProviderIconURL(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.ProviderName
+
+ProviderName sets video provider attribution.
+
+```go
+func (b *VideoBlockBuilder) ProviderName(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.TitleURL
+
+TitleURL sets a video or card title URL.
+
+```go
+func (b *VideoBlockBuilder) TitleURL(value string) *VideoBlockBuilder
+```
+
+Every `VideoBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.

@@ -1,0 +1,17 @@
+---
+sidebar_position: 0
+---
+
+# Go API reference
+
+This is the complete guide to slackblocks' public Go API. Use it to check concrete fluent constructor and method signatures, returned JSON types, validation failures, and the higher-level components available for building a message, modal, or App Home tab.
+
+Most slack-go programs pass builders such as `NewSectionBlock()` directly to `slack.MsgOptionBlocks`. Each block builder implements `slack.Block`, exposes only the fields valid for that Slack object, and validates before slack-go sends the request. Use `NewMessage()` and `Build()` when you need a complete JSON payload for another client.
+
+- [Blocks](/reference/go/blocks)
+- [Elements](/reference/go/elements)
+- [Composition Objects](/reference/go/objects)
+- [Payloads And Views](/reference/go/payloads)
+- [Components](/reference/go/components)
+- [Core JSON Types](/reference/go/core)
+- [Validation And Errors](/reference/go/errors)
