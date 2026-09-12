@@ -79,6 +79,22 @@ public final class SlackIcon implements SlackObject {
       state.set("name", Objects.requireNonNull(value, "name"));
       return this;
     }
+    /**
+     * Sets a forward-compatible wire field that does not yet have a named fluent method.
+     * Prefer the named methods for normal Block Kit use.
+     *
+     * @param field Slack JSON field name
+     * @param value wire-compatible value
+     * @return this builder
+     */
+    public Builder wireField(String field, Object value) {
+      if (field.isEmpty()) {
+        throw new IllegalArgumentException("field must not be empty");
+      }
+      state.set(field, Objects.requireNonNull(value, "value"));
+      return this;
+    }
+
     /** {@inheritDoc} */
     @Override
     public SlackIcon build() {

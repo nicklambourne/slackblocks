@@ -21,17 +21,17 @@ final class FoundationTest {
 
   @Test
   void serializesAsSlackWireObjectRatherThanAnImplementationWrapper() {
-    BuilderState state = new BuilderState("Test", "section");
+    BuilderState state = new BuilderState("Test", "divider");
     state.set("block_id", "summary");
 
     TestValue value = state.build(TestValue::new);
 
-    assertEquals("{\"type\":\"section\",\"block_id\":\"summary\"}", value.toJson());
+    assertEquals("{\"type\":\"divider\",\"block_id\":\"summary\"}", value.toJson());
   }
 
   @Test
   void builtValuesAreDefensiveSnapshots() {
-    BuilderState state = new BuilderState("Test", "section");
+    BuilderState state = new BuilderState("Test", "divider");
     state.set("block_id", "first");
     TestValue first = state.build(TestValue::new);
     state.set("block_id", "second");
