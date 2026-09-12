@@ -6,13 +6,21 @@ import org.jspecify.annotations.Nullable;
 
 /** A validated Slack layout block accepted directly by Slack's official Java SDK. */
 public interface Block extends LayoutBlock, SlackObject {
-  /** {@inheritDoc} */
+  /**
+   * Returns the Slack block type.
+   *
+   * @return Slack wire type
+   */
   @Override
   default String getType() {
     return (String) toMap().get("type");
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns the configured block identifier.
+   *
+   * @return block identifier, or {@code null} when none was set
+   */
   @Override
   @Nullable
   default String getBlockId() {

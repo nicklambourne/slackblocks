@@ -50,18 +50,6 @@ public final class DividerBlock implements Block {
 
   /** {@inheritDoc} */
   @Override
-  public String getType() {
-    return (String) values.get("type");
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getBlockId() {
-    return (String) values.get("block_id");
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public boolean equals(Object other) {
     return this == other || (other instanceof DividerBlock that && toMap().equals(that.toMap()));
   }

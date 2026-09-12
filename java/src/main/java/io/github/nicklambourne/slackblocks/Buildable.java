@@ -1,6 +1,10 @@
 package io.github.nicklambourne.slackblocks;
 
-/** A concrete fluent builder that materializes one immutable Slack value. */
+/**
+ * A concrete fluent builder that materializes one immutable Slack value.
+ *
+ * @param <T> immutable Slack value produced by this builder
+ */
 @FunctionalInterface
 public interface Buildable<T extends SlackObject> {
   /**

@@ -50,13 +50,21 @@ public final class PlainText extends TextObject implements SlackObject {
     return WireObjects.materialize(values);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns the Slack text representation type.
+   *
+   * @return Slack wire type
+   */
   @Override
   public String getType() {
     return (String) values.get("type");
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns the text content.
+   *
+   * @return text content
+   */
   @Override
   public String getText() {
     return (String) values.get("text");

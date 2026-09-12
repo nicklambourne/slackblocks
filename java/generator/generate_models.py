@@ -338,29 +338,23 @@ def class_source(definition: Definition, fields_source: str) -> str:
     methods = "\n\n".join(method_source(definition, method, fields_source) for method in definition.methods)
     convenience = convenience_source(definition)
     extra_methods = ""
-    if definition.package == "block":
+    if definition.go_name in TEXT_CLASSES:
         extra_methods = """
-  /** {@inheritDoc} */
+  /**
+   * Returns the Slack text representation type.
+   *
+   * @return Slack wire type
+   */
   @Override
   public String getType() {
     return (String) values.get("type");
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public String getBlockId() {
-    return (String) values.get("block_id");
-  }
-"""
-    elif definition.go_name in TEXT_CLASSES:
-        extra_methods = """
-  /** {@inheritDoc} */
-  @Override
-  public String getType() {
-    return (String) values.get("type");
-  }
-
-  /** {@inheritDoc} */
+  /**
+   * Returns the text content.
+   *
+   * @return text content
+   */
   @Override
   public String getText() {
     return (String) values.get("text");
@@ -496,13 +490,21 @@ import org.jspecify.annotations.Nullable;
 
 /** A validated Slack layout block accepted directly by Slack's official Java SDK. */
 public interface Block extends LayoutBlock, SlackObject {
-  /** {@inheritDoc} */
+  /**
+   * Returns the Slack block type.
+   *
+   * @return Slack wire type
+   */
   @Override
   default String getType() {
     return (String) toMap().get("type");
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns the configured block identifier.
+   *
+   * @return block identifier, or {@code null} when none was set
+   */
   @Override
   @Nullable
   default String getBlockId() {

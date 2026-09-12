@@ -43,18 +43,6 @@ public final class TaskCardBlock implements Block {
 
   /** {@inheritDoc} */
   @Override
-  public String getType() {
-    return (String) values.get("type");
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getBlockId() {
-    return (String) values.get("block_id");
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public boolean equals(Object other) {
     return this == other || (other instanceof TaskCardBlock that && toMap().equals(that.toMap()));
   }
