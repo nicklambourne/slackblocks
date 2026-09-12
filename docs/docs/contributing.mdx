@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Contributing
 
-`slackblocks` is a monorepo containing three handwritten implementations and one shared conformance contract. A feature is complete when its wire output and validation category agree in Python, TypeScript, and Go.
+`slackblocks` is a monorepo containing four language-native implementations and one shared conformance contract. A feature is complete when its wire output and validation category agree in Python, TypeScript, Go, and Java.
 
 ## Repository layout
 
@@ -12,6 +12,7 @@ sidebar_position: 5
 - `python/` contains the Python package and its tests.
 - `typescript/` contains the ESM TypeScript package and its tests.
 - `go/` contains the Go v2 module, its direct `slack-go/slack` block integration, and its tests.
+- `java/` contains the Java 17 Maven artifact, concrete fluent builders, direct Slack Java SDK model integration, and its tests.
 - `docs/` contains this Docusaurus site and executable examples.
 
 ## Set up the workspace
@@ -57,7 +58,13 @@ go test -race -cover ./...
 go vet ./...
 ```
 
-All three conformance suites exercise every ID in `spec/manifest.json`. A checked-in `conformance/skiplist.txt` may document an intentional language gap, but unknown failures and stale skips fail the suite.
+From `java/`:
+
+```bash
+./mvnw clean verify
+```
+
+All four conformance suites exercise every ID in `spec/manifest.json`. A checked-in `conformance/skiplist.txt` may document an intentional language gap, but unknown failures and stale skips fail the suite.
 
 ## Add or change a Block Kit feature
 
@@ -65,7 +72,7 @@ All three conformance suites exercise every ID in `spec/manifest.json`. A checke
 2. Map every new JSON-producing capability to at least one valid fixture in `spec/coverage.json`.
 3. Add invalid behavior to `spec/fixtures/invalid/manifest.json` when the feature introduces a validation rule. Every scalar leaf in `spec/limits.json` must have a matching invalid case.
 4. Update `spec/limits.json` for shared scalar constraints.
-5. Implement the feature idiomatically in all three packages, or record a reason in the affected skip list.
+5. Implement the feature idiomatically in all four packages, or record a reason in the affected skip list.
 6. Add language-native tests and update the relevant guide or executable example.
 
 When introducing a cross-language API, serialized JSON and validation outcomes are shared; public naming and construction style are language-native.
@@ -78,9 +85,9 @@ Run the local site from the repository root:
 pnpm --filter @slackblocks/docs start
 ```
 
-Narrative pages live in `docs/docs/`. Python, TypeScript, and Go API pages are generated during every docs build. Reusable examples live under the matching directory in `docs/examples/`; tests execute them and compare their output with `docs/examples/section_hello.json`.
+Narrative pages live in `docs/docs/`. Python, TypeScript, Go, and Java API pages are generated during every docs build. Reusable examples live under the matching directory in `docs/examples/`; tests execute them and compare their output with `docs/examples/section_hello.json`.
 
-Use `LanguageContent` with `Python`, `TypeScript`, and `Go` children for language-specific prose or examples. The site-level selector controls which child is shown.
+Use `LanguageContent` with `Python`, `TypeScript`, `Go`, and `Java` children for language-specific prose or examples. The site-level selector controls which child is shown.
 
 ## Pull requests
 

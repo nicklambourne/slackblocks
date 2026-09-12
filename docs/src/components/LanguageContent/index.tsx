@@ -12,7 +12,9 @@ export default function LanguageContent({ children }: PropsWithChildren) {
           ? "typescript"
           : child.type === Go
             ? "go"
-          : null;
+            : child.type === Java
+              ? "java"
+              : null;
     if (!childLanguage) return null;
 
     return (
@@ -38,5 +40,9 @@ export function TypeScript({ children }: PropsWithChildren) {
 }
 
 export function Go({ children }: PropsWithChildren) {
+  return <>{children}</>;
+}
+
+export function Java({ children }: PropsWithChildren) {
   return <>{children}</>;
 }

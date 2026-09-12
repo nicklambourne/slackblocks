@@ -1,10 +1,10 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Installation
 
-Choose Python, TypeScript, or Go from the site navigation. The selection applies across the documentation and is preserved as you move between pages.
+Choose Python, TypeScript, Go, or Java from the site navigation. The selection applies across the documentation and is preserved as you move between pages.
 
 <LanguageContent>
 <Python>
@@ -137,4 +137,55 @@ func main() {
 Run it with `go run .`. The `/v2` suffix is part of the module path under Go's semantic import versioning; update within the current major line with `go get -u github.com/nicklambourne/slackblocks/go/v2`.
 
 </Go>
+<Java>
+
+Install the Java artifact from Maven Central. Java 17 or newer is required.
+
+<Tabs>
+<TabItem value="maven" label="Maven">
+
+```xml
+<dependency>
+  <groupId>io.github.nicklambourne</groupId>
+  <artifactId>slackblocks</artifactId>
+  <version>2.2.0</version>
+</dependency>
+```
+
+</TabItem>
+<TabItem value="gradle-kotlin" label="Gradle (Kotlin)">
+
+```kotlin
+implementation("io.github.nicklambourne:slackblocks:2.2.0")
+```
+
+</TabItem>
+<TabItem value="gradle-groovy" label="Gradle (Groovy)">
+
+```groovy
+implementation 'io.github.nicklambourne:slackblocks:2.2.0'
+```
+
+</TabItem>
+</Tabs>
+
+The core artifact includes the official Slack Block Kit model interfaces so completed blocks can be passed directly to the Slack Java SDK. Add `com.slack.api:slack-api-client` separately when your application sends messages; keeping the transport client optional avoids pulling HTTP dependencies into applications that only construct payloads.
+
+Verify the installation:
+
+```java
+import io.github.nicklambourne.slackblocks.SlackblocksJson;
+import io.github.nicklambourne.slackblocks.block.SectionBlock;
+
+public final class HelloSlackblocks {
+  public static void main(String[] args) {
+    var block = SectionBlock.builder().markdownText("Hello, world!").build();
+    System.out.println(SlackblocksJson.write(block));
+  }
+}
+```
+
+Pin compatible 2.x updates with Maven's dependency-management facilities or your usual version catalog. slackblocks' Java artifact uses the same release number as the Python, TypeScript, and Go packages.
+
+</Java>
 </LanguageContent>

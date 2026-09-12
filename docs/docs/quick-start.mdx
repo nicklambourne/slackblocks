@@ -3,7 +3,7 @@ sidebar_label: Quick Start
 sidebar_position: 2
 ---
 
-import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Quick Start
 
@@ -110,6 +110,47 @@ func main() {
 The block builder implements `slack.Block` and validates when slack-go marshals it, before the request is sent. The channel and fallback text stay in slack-go, where its other message options can be added normally. Use `NewMessage().Build()` instead when you need a complete JSON-compatible [`Object`](/reference/go/core#object) for another client.
 
 </Go>
+<Java>
+
+## Install the artifact
+
+Java 17 or newer is required. Add slackblocks and the official Slack Java SDK client to your Maven project:
+
+```xml
+<dependency>
+  <groupId>io.github.nicklambourne</groupId>
+  <artifactId>slackblocks</artifactId>
+  <version>2.2.0</version>
+</dependency>
+<dependency>
+  <groupId>com.slack.api</groupId>
+  <artifactId>slack-api-client</artifactId>
+  <version>1.51.0</version>
+</dependency>
+```
+
+## Build and send a message
+
+```java
+import com.slack.api.Slack;
+import com.slack.api.methods.MethodsClient;
+import com.slack.api.methods.request.chat.ChatPostMessageRequest;
+import io.github.nicklambourne.slackblocks.block.SectionBlock;
+import java.util.List;
+
+MethodsClient client = Slack.getInstance().methods(System.getenv("SLACK_API_TOKEN"));
+SectionBlock block = SectionBlock.builder().markdownText("Hello, world!").build();
+
+client.chatPostMessage(ChatPostMessageRequest.builder()
+    .channel("C0123456")
+    .text("Hello from slackblocks!")
+    .blocks(List.of(block))
+    .build());
+```
+
+`build()` validates the completed value and returns an immutable object. Blocks implement the Slack SDK's `LayoutBlock` directly, so the channel, fallback text, threading, and other delivery options remain on the SDK request where Java developers expect them.
+
+</Java>
 </LanguageContent>
 
 ## Where to go next
