@@ -8,8 +8,11 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.Block;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A complete payload for chat.postMessage and related Web API methods.
@@ -27,10 +30,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class MessagePayload implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private MessagePayload(Map<String, Object> values) {
+  private MessagePayload(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -41,6 +46,94 @@ public final class MessagePayload implements SlackObject {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the ID of the channel, private group, or conversation that receives the message.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getChannel() {
+    return TypedFields.required(fields, "MessagePayload", "channel", String.class);
+  }
+
+  /**
+   * Returns the message blocks in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<Block> getBlocks() {
+    return TypedFields.list(fields, "MessagePayload", "blocks", Block.class);
+  }
+
+  /**
+   * Returns legacy attachments in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<Attachment> getAttachments() {
+    return TypedFields.list(fields, "MessagePayload", "attachments", Attachment.class);
+  }
+
+  /**
+   * Returns the fallback text used in notifications and by clients that cannot display blocks.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getText() {
+    return TypedFields.optional(fields, "MessagePayload", "text", String.class);
+  }
+
+  /**
+   * Returns whether Slack formats the top-level text as mrkdwn.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getMrkdwn() {
+    return TypedFields.optional(fields, "MessagePayload", "mrkdwn", Boolean.class);
+  }
+
+  /**
+   * Returns whether Slack unfurls text-based links.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getUnfurlLinks() {
+    return TypedFields.optional(fields, "MessagePayload", "unfurl_links", Boolean.class);
+  }
+
+  /**
+   * Returns whether Slack unfurls media links.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getUnfurlMedia() {
+    return TypedFields.optional(fields, "MessagePayload", "unfurl_media", Boolean.class);
+  }
+
+  /**
+   * Returns message metadata as a JSON-compatible map, such as event_type and event_payload.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Map<String, Object>> getMetadata() {
+    return TypedFields.optionalMap(values, "MessagePayload", "metadata");
   }
 
   @Override

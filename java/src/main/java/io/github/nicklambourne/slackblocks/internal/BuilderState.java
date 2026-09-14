@@ -6,7 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.function.BiFunction;
+import java.util.function.UnaryOperator;
 import org.jspecify.annotations.Nullable;
 
 /** Mutable state composed by generated concrete builders. */
@@ -79,10 +80,23 @@ public final class BuilderState {
   /**
    * Materializes, validates, and wraps one immutable value. Nested builders are built exactly once
    * here, so later changes to them cannot affect the returned value.
+   *
+   * @param factory creates the value from its wire map and a snapshot of the configured fields
    */
-  public <T extends SlackObject> T build(Function<Map<String, Object>, T> factory) {
-    Map<String, Object> materialized = WireObjects.materialize(values);
+  public <T extends SlackObject> T build(
+      BiFunction<Map<String, Object>, Map<String, Object>, T> factory) {
+    return build(factory, UnaryOperator.identity());
+  }
+
+  /**
+   * Like {@link #build(BiFunction)}, but adjusts the wire map before it is validated. The typed
+   * field snapshot is unaffected.
+   */
+  public <T extends SlackObject> T build(
+      BiFunction<Map<String, Object>, Map<String, Object>, T> factory,
+      UnaryOperator<Map<String, Object>> wire) {
+    Map<String, Object> materialized = wire.apply(WireObjects.materialize(values));
     Validator.validate(name, materialized);
-    return factory.apply(materialized);
+    return factory.apply(materialized, WireObjects.snapshot(values));
   }
 }

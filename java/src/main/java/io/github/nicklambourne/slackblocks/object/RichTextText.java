@@ -6,8 +6,10 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A run of optionally styled text inside rich text.
@@ -25,10 +27,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class RichTextText implements RichTextSectionElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private RichTextText(Map<String, Object> values) {
+  private RichTextText(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -39,6 +43,28 @@ public final class RichTextText implements RichTextSectionElement {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the text content.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getText() {
+    return TypedFields.required(fields, "RichTextText", "text", String.class);
+  }
+
+  /**
+   * Returns the visual style.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<RichTextStyle> getStyle() {
+    return TypedFields.optionalStyle(fields, "RichTextText", "style");
   }
 
   @Override

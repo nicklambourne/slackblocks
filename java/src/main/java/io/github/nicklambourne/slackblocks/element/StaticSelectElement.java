@@ -7,13 +7,16 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.Confirmation;
 import io.github.nicklambourne.slackblocks.object.Option;
 import io.github.nicklambourne.slackblocks.object.OptionGroup;
 import io.github.nicklambourne.slackblocks.object.PlainText;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A menu for selecting one option defined in the payload.
@@ -33,10 +36,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class StaticSelectElement extends BlockElement implements InputElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private StaticSelectElement(Map<String, Object> values) {
+  private StaticSelectElement(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -47,6 +52,85 @@ public final class StaticSelectElement extends BlockElement implements InputElem
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the identifier Slack returns in interaction payloads when a user acts on this element.
+   * It must be unique among the elements of its block.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getActionId() {
+    return TypedFields.required(fields, "StaticSelectElement", "action_id", String.class);
+  }
+
+  /**
+   * Returns selectable options in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<Option> getOptions() {
+    return TypedFields.list(fields, "StaticSelectElement", "options", Option.class);
+  }
+
+  /**
+   * Returns labelled groups of options in display order. Cannot be combined with ungrouped options.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<OptionGroup> getOptionGroups() {
+    return TypedFields.list(fields, "StaticSelectElement", "option_groups", OptionGroup.class);
+  }
+
+  /**
+   * Returns the option selected when the element loads. It must match an option in the element.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Option> getInitialOption() {
+    return TypedFields.optional(fields, "StaticSelectElement", "initial_option", Option.class);
+  }
+
+  /**
+   * Returns a confirmation dialog shown before the action is sent.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Confirmation> getConfirm() {
+    return TypedFields.optional(fields, "StaticSelectElement", "confirm", Confirmation.class);
+  }
+
+  /**
+   * Returns whether the element receives focus when the view opens. Only one element per view may
+   * do so.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getFocusOnLoad() {
+    return TypedFields.optional(fields, "StaticSelectElement", "focus_on_load", Boolean.class);
+  }
+
+  /**
+   * Returns the placeholder text shown before a value is chosen.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<PlainText> getPlaceholder() {
+    return TypedFields.optionalText(fields, "StaticSelectElement", "placeholder", PlainText.class);
   }
 
   @Override

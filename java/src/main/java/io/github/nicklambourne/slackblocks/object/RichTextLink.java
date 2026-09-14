@@ -6,8 +6,10 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A hyperlink inside rich text.
@@ -25,10 +27,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class RichTextLink implements RichTextSectionElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private RichTextLink(Map<String, Object> values) {
+  private RichTextLink(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -39,6 +43,50 @@ public final class RichTextLink implements RichTextSectionElement {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the link target.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getUrl() {
+    return TypedFields.required(fields, "RichTextLink", "url", String.class);
+  }
+
+  /**
+   * Returns the visible link text. Slack shows the URL when omitted.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getText() {
+    return TypedFields.optional(fields, "RichTextLink", "text", String.class);
+  }
+
+  /**
+   * Returns the visual style.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<RichTextStyle> getStyle() {
+    return TypedFields.optionalStyle(fields, "RichTextLink", "style");
+  }
+
+  /**
+   * Returns whether Slack treats the link as unsafe.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getUnsafe() {
+    return TypedFields.optional(fields, "RichTextLink", "unsafe", Boolean.class);
   }
 
   @Override

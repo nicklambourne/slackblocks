@@ -6,10 +6,13 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.UrlSource;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * One task with its status, details, output, and sources.
@@ -27,10 +30,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class TaskCardBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private TaskCardBlock(Map<String, Object> values) {
+  private TaskCardBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -41,6 +46,72 @@ public final class TaskCardBlock implements Block {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the identifier of the task.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getTaskId() {
+    return TypedFields.required(fields, "TaskCardBlock", "task_id", String.class);
+  }
+
+  /**
+   * Returns the task title.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getTitle() {
+    return TypedFields.required(fields, "TaskCardBlock", "title", String.class);
+  }
+
+  /**
+   * Returns a rich text description of the task.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<RichTextBlock> getDetails() {
+    return TypedFields.optional(fields, "TaskCardBlock", "details", RichTextBlock.class);
+  }
+
+  /**
+   * Returns rich text describing the task's output.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<RichTextBlock> getOutput() {
+    return TypedFields.optional(fields, "TaskCardBlock", "output", RichTextBlock.class);
+  }
+
+  /**
+   * Returns links to the sources the task used, in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<UrlSource> getSources() {
+    return TypedFields.list(fields, "TaskCardBlock", "sources", UrlSource.class);
+  }
+
+  /**
+   * Returns the task's current state.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<TaskStatus> getStatus() {
+    return TypedFields.optionalEnum(fields, "TaskCardBlock", "status", TaskStatus::fromWireValue);
   }
 
   @Override

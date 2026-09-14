@@ -7,7 +7,9 @@ import io.github.nicklambourne.slackblocks.SlackObject;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,10 +29,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class Trigger implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private Trigger(Map<String, Object> values) {
+  private Trigger(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -41,6 +45,29 @@ public final class Trigger implements SlackObject {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the link trigger URL.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getUrl() {
+    return TypedFields.required(fields, "Trigger", "url", String.class);
+  }
+
+  /**
+   * Returns the input values passed to the workflow's trigger.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<InputParameter> getCustomizableInputParameters() {
+    return TypedFields.list(
+        fields, "Trigger", "customizable_input_parameters", InputParameter.class);
   }
 
   @Override
