@@ -5,8 +5,10 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
+import org.jspecify.annotations.Nullable;
 
 /** Central, language-neutral Slack wire validation. */
 public final class Validator {
@@ -78,50 +80,168 @@ public final class Validator {
 
   private static final Set<String> INPUT_ELEMENT_TYPES =
       Set.of(
-          "plain_text_input", "number_input", "checkboxes", "radio_buttons", "datepicker",
-          "datetimepicker", "timepicker", "channels_select", "multi_channels_select",
-          "conversations_select", "multi_conversations_select", "external_select",
-          "multi_external_select", "static_select", "multi_static_select", "users_select",
-          "multi_users_select", "rich_text_input", "email_text_input", "url_text_input",
+          "plain_text_input",
+          "number_input",
+          "checkboxes",
+          "radio_buttons",
+          "datepicker",
+          "datetimepicker",
+          "timepicker",
+          "channels_select",
+          "multi_channels_select",
+          "conversations_select",
+          "multi_conversations_select",
+          "external_select",
+          "multi_external_select",
+          "static_select",
+          "multi_static_select",
+          "users_select",
+          "multi_users_select",
+          "rich_text_input",
+          "email_text_input",
+          "url_text_input",
           "file_input");
 
   private static final Set<String> CONFIRM_TYPES =
       Set.of(
-          "button", "channels_select", "checkboxes", "conversations_select", "datepicker",
-          "datetimepicker", "external_select", "icon_button", "multi_channels_select",
-          "multi_conversations_select", "multi_external_select", "multi_static_select",
-          "multi_users_select", "overflow", "radio_buttons", "static_select", "timepicker",
-          "users_select", "workflow_button");
+          "button",
+          "channels_select",
+          "checkboxes",
+          "conversations_select",
+          "datepicker",
+          "datetimepicker",
+          "external_select",
+          "icon_button",
+          "multi_channels_select",
+          "multi_conversations_select",
+          "multi_external_select",
+          "multi_static_select",
+          "multi_users_select",
+          "overflow",
+          "radio_buttons",
+          "static_select",
+          "timepicker",
+          "users_select",
+          "workflow_button");
 
   private static final Set<String> SLACK_ICON_NAMES =
       Set.of(
-          "archive", "book", "bookmark", "bot", "bug", "calendar", "call", "caret-left",
-          "caret-right", "check", "clipboard", "code", "comment", "compass", "copy", "cube",
-          "download", "edit", "email", "eye-closed", "eye-open", "file", "flag", "folder",
-          "gear", "globe", "heart", "help", "image", "info", "key", "lightbulb", "link",
-          "map", "mobile", "new-window", "pin", "plus", "refine", "refresh", "rocket",
-          "save", "screen", "share", "sparkle", "star", "star-filled", "tag", "thumbs-down",
-          "thumbs-up", "trash", "upload", "user", "warning");
+          "archive",
+          "book",
+          "bookmark",
+          "bot",
+          "bug",
+          "calendar",
+          "call",
+          "caret-left",
+          "caret-right",
+          "check",
+          "clipboard",
+          "code",
+          "comment",
+          "compass",
+          "copy",
+          "cube",
+          "download",
+          "edit",
+          "email",
+          "eye-closed",
+          "eye-open",
+          "file",
+          "flag",
+          "folder",
+          "gear",
+          "globe",
+          "heart",
+          "help",
+          "image",
+          "info",
+          "key",
+          "lightbulb",
+          "link",
+          "map",
+          "mobile",
+          "new-window",
+          "pin",
+          "plus",
+          "refine",
+          "refresh",
+          "rocket",
+          "save",
+          "screen",
+          "share",
+          "sparkle",
+          "star",
+          "star-filled",
+          "tag",
+          "thumbs-down",
+          "thumbs-up",
+          "trash",
+          "upload",
+          "user",
+          "warning");
 
   private static final Set<String> CONTEXT_ELEMENT_TYPES = Set.of("plain_text", "mrkdwn", "image");
-  private static final Set<String> ALERT_LEVELS = Set.of("default", "info", "warning", "error", "success");
+  private static final Set<String> ALERT_LEVELS =
+      Set.of("default", "info", "warning", "error", "success");
   private static final Set<String> CONTAINER_WIDTHS = Set.of("narrow", "standard", "wide", "full");
-  private static final Set<String> TASK_STATUSES = Set.of("pending", "in_progress", "complete", "error");
+  private static final Set<String> TASK_STATUSES =
+      Set.of("pending", "in_progress", "complete", "error");
   private static final Set<String> TABLE_CELL_TYPES = Set.of("raw_text", "rich_text");
-  private static final Set<String> DATA_TABLE_CELL_TYPES = Set.of("raw_text", "rich_text", "raw_number");
+  private static final Set<String> DATA_TABLE_CELL_TYPES =
+      Set.of("raw_text", "rich_text", "raw_number");
 
   private static final Map<String, Set<String>> SURFACE_BLOCKS =
       Map.of(
           "message",
-              Set.of("actions", "card", "carousel", "container", "context", "context_actions",
-                  "data_table", "data_visualization", "divider", "file", "header", "image",
-                  "markdown", "plan", "rich_text", "section", "table", "task_card", "video"),
+              Set.of(
+                  "actions",
+                  "card",
+                  "carousel",
+                  "container",
+                  "context",
+                  "context_actions",
+                  "data_table",
+                  "data_visualization",
+                  "divider",
+                  "file",
+                  "header",
+                  "image",
+                  "markdown",
+                  "plan",
+                  "rich_text",
+                  "section",
+                  "table",
+                  "task_card",
+                  "video"),
           "modal",
-              Set.of("actions", "alert", "card", "context", "divider", "header", "image",
-                  "input", "rich_text", "section", "video"),
+              Set.of(
+                  "actions",
+                  "alert",
+                  "card",
+                  "context",
+                  "divider",
+                  "header",
+                  "image",
+                  "input",
+                  "rich_text",
+                  "section",
+                  "video"),
           "home",
-              Set.of("actions", "card", "carousel", "container", "context", "data_table",
-                  "divider", "header", "image", "input", "rich_text", "section", "table",
+              Set.of(
+                  "actions",
+                  "card",
+                  "carousel",
+                  "container",
+                  "context",
+                  "data_table",
+                  "divider",
+                  "header",
+                  "image",
+                  "input",
+                  "rich_text",
+                  "section",
+                  "table",
                   "video"));
 
   private static final Pattern ATTACHMENT_COLOR = Pattern.compile("^#[0-9a-fA-F]{6}$");
@@ -134,11 +254,10 @@ public final class Validator {
       throw new IllegalArgumentException("builder name must not be empty");
     }
     if (value.isEmpty()) {
-      throw new ValidationException(
-          ErrorCategory.MISSING_REQUIRED, name, "expected at least one field");
+      fail(ErrorCategory.MISSING_REQUIRED, name, "expected at least one field");
     }
     validateBuilder(name, value);
-    validateObject(value, "");
+    validateObject(value, name);
   }
 
   private static Map.Entry<String, List<String>> entry(String type, String... fields) {
@@ -178,11 +297,13 @@ public final class Validator {
         if (raw instanceof String color
             && !Set.of("good", "warning", "danger").contains(color)
             && !ATTACHMENT_COLOR.matcher(color).matches()) {
-          fail(ErrorCategory.TYPE_MISMATCH, child(name, "color"),
+          fail(
+              ErrorCategory.TYPE_MISMATCH,
+              child(name, "color"),
               "expected a six-digit hex color or Slack alias");
         }
       }
-      case "Message" -> {
+      case "MessagePayload" -> {
         require(value, "channel", name);
         Object raw = value.get("channel");
         if (!(raw instanceof String channel)) {
@@ -211,7 +332,8 @@ public final class Validator {
       stringLength(actionId, child(path, "action_id"), 0, 255);
     }
     if (CONFIRM_TYPES.contains(type) && value.containsKey("confirm")) {
-      validateConfirmation(objectAt(value.get("confirm"), child(path, "confirm")), child(path, "confirm"));
+      validateConfirmation(
+          objectAt(value.get("confirm"), child(path, "confirm")), child(path, "confirm"));
     }
 
     switch (type) {
@@ -227,13 +349,17 @@ public final class Validator {
       case "icon_button" -> validateIconButton(value, path);
       case "feedback_buttons" -> {
         for (String field : List.of("positive_button", "negative_button")) {
-          validateFeedbackButton(objectAt(value.get(field), child(path, field)), child(path, field));
+          validateFeedbackButton(
+              objectAt(value.get(field), child(path, field)), child(path, field));
         }
       }
       case "file_input" -> {
         Double number = number(value.get("max_files"));
         if (number != null && (number < 1 || number > 10)) {
-          fail(ErrorCategory.OUT_OF_RANGE, child(path, "max_files"), "expected a value between 1 and 10");
+          fail(
+              ErrorCategory.OUT_OF_RANGE,
+              child(path, "max_files"),
+              "expected a value between 1 and 10");
         }
       }
       case "plain_text_input" -> {
@@ -250,7 +376,8 @@ public final class Validator {
         sliceLength(options, child(path, "options"), 1, type.equals("overflow") ? 5 : 10);
         validateOptions(options, child(path, "options"));
       }
-      case "url" -> stringLength(stringAt(value.get("url"), child(path, "url")), child(path, "url"), 1, 3000);
+      case "url" ->
+          stringLength(stringAt(value.get("url"), child(path, "url")), child(path, "url"), 1, 3000);
       case "static_select", "multi_static_select" -> validateStaticSelect(value, path);
       case "number_input" -> {
         Double minimum = number(value.get("min_value"));
@@ -261,7 +388,12 @@ public final class Validator {
       }
       case "image" -> validateImage(value, path);
       case "context" -> validateContext(value, path);
-      case "actions" -> sliceLength(listAt(value.get("elements"), child(path, "elements")), child(path, "elements"), 0, 25);
+      case "actions" ->
+          sliceLength(
+              listAt(value.get("elements"), child(path, "elements")),
+              child(path, "elements"),
+              0,
+              25);
       case "alert" -> {
         textLength(value.get("text"), child(path, "text.text"), 0, 200);
         if (value.get("level") instanceof String level && !ALERT_LEVELS.contains(level)) {
@@ -271,7 +403,12 @@ public final class Validator {
       case "card" -> validateCard(value, path);
       case "carousel" -> validateCarousel(value, path);
       case "container" -> validateContainer(value, path);
-      case "context_actions" -> sliceLength(listAt(value.get("elements"), child(path, "elements")), child(path, "elements"), 1, 5);
+      case "context_actions" ->
+          sliceLength(
+              listAt(value.get("elements"), child(path, "elements")),
+              child(path, "elements"),
+              1,
+              5);
       case "data_table" -> validateTable(value, path, true);
       case "table" -> validateTable(value, path, false);
       case "data_visualization" -> {
@@ -288,7 +425,9 @@ public final class Validator {
         }
       }
       case "input" -> validateInput(value, path);
-      case "markdown" -> stringLength(stringAt(value.get("text"), child(path, "text")), child(path, "text"), 1, 12000);
+      case "markdown" ->
+          stringLength(
+              stringAt(value.get("text"), child(path, "text")), child(path, "text"), 1, 12000);
       case "video" -> validateVideo(value, path);
       case "modal", "home" -> validateView(value, path, type);
       default -> {
@@ -305,7 +444,10 @@ public final class Validator {
 
   private static void validateSection(Map<String, Object> value, String path) {
     boolean hasText = value.containsKey("text");
-    List<?> fields = value.containsKey("fields") ? listAt(value.get("fields"), child(path, "fields")) : List.of();
+    List<?> fields =
+        value.containsKey("fields")
+            ? listAt(value.get("fields"), child(path, "fields"))
+            : List.of();
     if (!hasText && fields.isEmpty()) {
       fail(ErrorCategory.MISSING_REQUIRED, path, "expected text, fields, or both");
     }
@@ -342,7 +484,10 @@ public final class Validator {
     boolean hasOptions = value.containsKey("options");
     boolean hasGroups = value.containsKey("option_groups");
     if (hasOptions && hasGroups) {
-      fail(ErrorCategory.MUTUALLY_EXCLUSIVE, path, "options and option_groups cannot be provided together");
+      fail(
+          ErrorCategory.MUTUALLY_EXCLUSIVE,
+          path,
+          "options and option_groups cannot be provided together");
     }
     if (hasOptions) {
       List<?> options = listAt(value.get("options"), child(path, "options"));
@@ -353,7 +498,8 @@ public final class Validator {
       List<?> groups = listAt(value.get("option_groups"), child(path, "option_groups"));
       sliceLength(groups, child(path, "option_groups"), 0, 100);
       for (int index = 0; index < groups.size(); index++) {
-        validateOptionGroup(objectAt(groups.get(index), child(path, "option_groups") + "[" + index + "]"),
+        validateOptionGroup(
+            objectAt(groups.get(index), child(path, "option_groups") + "[" + index + "]"),
             child(path, "option_groups") + "[" + index + "]");
       }
     }
@@ -369,7 +515,10 @@ public final class Validator {
       fail(ErrorCategory.MISSING_REQUIRED, path, "expected image_url or slack_file");
     }
     if (hasUrl && hasSlackFile) {
-      fail(ErrorCategory.MUTUALLY_EXCLUSIVE, path, "image_url and slack_file cannot be provided together");
+      fail(
+          ErrorCategory.MUTUALLY_EXCLUSIVE,
+          path,
+          "image_url and slack_file cannot be provided together");
     }
     checkOptionalString(value, "image_url", path, 3000);
     checkOptionalString(value, "alt_text", path, 2000);
@@ -387,12 +536,17 @@ public final class Validator {
   }
 
   private static void validateCard(Map<String, Object> value, String path) {
-    if (!value.containsKey("hero_image") && !value.containsKey("title")
-        && !value.containsKey("actions") && !value.containsKey("body")) {
+    if (!value.containsKey("hero_image")
+        && !value.containsKey("title")
+        && !value.containsKey("actions")
+        && !value.containsKey("body")) {
       fail(ErrorCategory.MISSING_REQUIRED, path, "expected hero_image, title, actions, or body");
     }
     if (value.containsKey("icon") && value.containsKey("slack_icon")) {
-      fail(ErrorCategory.MUTUALLY_EXCLUSIVE, path, "icon and slack_icon cannot be provided together");
+      fail(
+          ErrorCategory.MUTUALLY_EXCLUSIVE,
+          path,
+          "icon and slack_icon cannot be provided together");
     }
     checkOptionalText(value, "title", path, 150);
     checkOptionalText(value, "subtitle", path, 150);
@@ -427,11 +581,14 @@ public final class Validator {
     }
     if (Boolean.TRUE.equals(value.get("default_collapsed"))
         && !Boolean.TRUE.equals(value.get("is_collapsible"))) {
-      fail(ErrorCategory.INVALID_USAGE, child(path, "default_collapsed"), "requires is_collapsible");
+      fail(
+          ErrorCategory.INVALID_USAGE, child(path, "default_collapsed"), "requires is_collapsible");
     }
     if (Boolean.TRUE.equals(value.get("has_header_divider"))
         && Boolean.TRUE.equals(value.get("is_collapsible"))) {
-      fail(ErrorCategory.INVALID_USAGE, child(path, "has_header_divider"),
+      fail(
+          ErrorCategory.INVALID_USAGE,
+          child(path, "has_header_divider"),
           "requires a non-collapsible container");
     }
   }
@@ -452,7 +609,10 @@ public final class Validator {
     }
     Map<String, Object> element = objectAt(value.get("element"), child(path, "element"));
     if (!INPUT_ELEMENT_TYPES.contains(objectType(element))) {
-      fail(ErrorCategory.TYPE_MISMATCH, child(path, "element"), "expected an input-compatible element");
+      fail(
+          ErrorCategory.TYPE_MISMATCH,
+          child(path, "element"),
+          "expected an input-compatible element");
     }
   }
 
@@ -474,10 +634,13 @@ public final class Validator {
     checkOptionalString(value, "callback_id", path, 255);
     if (type.equals("modal")) {
       if (!value.containsKey("submit")) {
-        for (Object raw : blocks) {
-          if (raw instanceof Map<?, ?> && "input".equals(objectType(objectAt(raw, child(path, "blocks"))))) {
-            fail(ErrorCategory.MISSING_REQUIRED, child(path, "submit"),
-                "required when the modal contains an input block");
+        for (int index = 0; index < blocks.size(); index++) {
+          String blockPath = child(path, "blocks") + "[" + index + "]";
+          if ("input".equals(objectType(objectAt(blocks.get(index), blockPath)))) {
+            fail(
+                ErrorCategory.MISSING_REQUIRED,
+                child(path, "submit"),
+                "required when the modal contains an input block (" + blockPath + ")");
           }
         }
       }
@@ -530,7 +693,8 @@ public final class Validator {
     Map<String, Integer> limits = Map.of("title", 100, "text", 300, "confirm", 30, "deny", 30);
     for (Map.Entry<String, Integer> field : limits.entrySet()) {
       require(value, field.getKey(), path);
-      textLength(value.get(field.getKey()), child(path, field.getKey() + ".text"), 0, field.getValue());
+      textLength(
+          value.get(field.getKey()), child(path, field.getKey() + ".text"), 0, field.getValue());
     }
   }
 
@@ -579,7 +743,8 @@ public final class Validator {
         }
         contentLength += textCharacterCount(cell);
         if (dataTable && Set.of("raw_text", "raw_number").contains(objectType(cell))) {
-          stringLength(stringAt(cell.get("text"), child(cellPath, "text")), child(cellPath, "text"), 1, 0);
+          stringLength(
+              stringAt(cell.get("text"), child(cellPath, "text")), child(cellPath, "text"), 1, 0);
         }
       }
     }
@@ -587,14 +752,19 @@ public final class Validator {
       List<?> settings = listAt(value.get("column_settings"), child(path, "column_settings"));
       sliceLength(settings, child(path, "column_settings"), 0, 20);
       if (settings.size() != columns) {
-        fail(ErrorCategory.INVALID_USAGE, child(path, "column_settings"),
+        fail(
+            ErrorCategory.INVALID_USAGE,
+            child(path, "column_settings"),
             "expected one entry for every column");
       }
     }
     if (dataTable) {
       Double pageSize = number(value.get("page_size"));
       if (pageSize != null && (pageSize < 1 || pageSize > 100)) {
-        fail(ErrorCategory.OUT_OF_RANGE, child(path, "page_size"), "expected a value between 1 and 100");
+        fail(
+            ErrorCategory.OUT_OF_RANGE,
+            child(path, "page_size"),
+            "expected a value between 1 and 100");
       }
       String caption = stringAt(value.get("caption"), child(path, "caption"));
       stringLength(caption, child(path, "caption"), 1, 0);
@@ -632,7 +802,9 @@ public final class Validator {
         seen.add(stringAt(point.get("label"), child(pointPath, "label")));
       }
       if (points.size() != categorySet.size() || !seen.equals(categorySet)) {
-        fail(ErrorCategory.INVALID_USAGE, child(itemPath, "data"),
+        fail(
+            ErrorCategory.INVALID_USAGE,
+            child(itemPath, "data"),
             "expected exactly one point for every axis category");
       }
     }
@@ -646,6 +818,7 @@ public final class Validator {
     Double number = number(value.get("value"));
     if (number == null || !Double.isFinite(number)) {
       fail(ErrorCategory.TYPE_MISMATCH, child(path, "value"), "expected a finite number");
+      return;
     }
     if (positive && number <= 0) {
       fail(ErrorCategory.OUT_OF_RANGE, child(path, "value"), "expected a value greater than 0");
@@ -659,25 +832,32 @@ public final class Validator {
       validateSurface(blocks, "message", child(path, "blocks"));
     }
     if (value.containsKey("attachments")) {
-      sliceLength(listAt(value.get("attachments"), child(path, "attachments")),
-          child(path, "attachments"), 0, 100);
+      sliceLength(
+          listAt(value.get("attachments"), child(path, "attachments")),
+          child(path, "attachments"),
+          0,
+          100);
     }
   }
 
   private static void validateSurface(List<?> blocks, String surface, String path) {
-    Set<String> allowed = SURFACE_BLOCKS.get(surface);
+    Set<String> allowed = Objects.requireNonNull(SURFACE_BLOCKS.get(surface), surface);
     for (int index = 0; index < blocks.size(); index++) {
       String blockPath = path + "[" + index + "]";
       String type = objectType(objectAt(blocks.get(index), blockPath));
       if (!allowed.contains(type)) {
-        fail(ErrorCategory.TYPE_MISMATCH, blockPath + ".type",
+        fail(
+            ErrorCategory.TYPE_MISMATCH,
+            blockPath + ".type",
             "block type " + type + " is not supported on " + surface + " surfaces");
       }
     }
   }
 
-  private static void validateNested(Object value, String path) {
-    if (value instanceof Map<?, ?>) {
+  private static void validateNested(@Nullable Object value, String path) {
+    if (value == null) {
+      fail(ErrorCategory.TYPE_MISMATCH, path, "expected a value, not null");
+    } else if (value instanceof Map<?, ?>) {
       validateObject(objectAt(value, path), path);
     } else if (value instanceof List<?> list) {
       for (int index = 0; index < list.size(); index++) {
@@ -690,7 +870,7 @@ public final class Validator {
     }
   }
 
-  private static Map<String, Object> objectAt(Object value, String path) {
+  private static Map<String, Object> objectAt(@Nullable Object value, String path) {
     if (!(value instanceof Map<?, ?> map)) {
       fail(ErrorCategory.TYPE_MISMATCH, path, "expected an object");
       throw new AssertionError("unreachable");
@@ -706,7 +886,7 @@ public final class Validator {
     return result;
   }
 
-  private static List<?> listAt(Object value, String path) {
+  private static List<?> listAt(@Nullable Object value, String path) {
     if (!(value instanceof List<?> list)) {
       fail(ErrorCategory.TYPE_MISMATCH, path, "expected an array");
       throw new AssertionError("unreachable");
@@ -714,7 +894,7 @@ public final class Validator {
     return list;
   }
 
-  private static String stringAt(Object value, String path) {
+  private static String stringAt(@Nullable Object value, String path) {
     if (!(value instanceof String text)) {
       fail(ErrorCategory.TYPE_MISMATCH, path, "expected a string");
       throw new AssertionError("unreachable");
@@ -726,7 +906,7 @@ public final class Validator {
     return value.get("type") instanceof String type ? type : "";
   }
 
-  private static void textLength(Object value, String path, int minimum, int maximum) {
+  private static void textLength(@Nullable Object value, String path, int minimum, int maximum) {
     String text;
     if (value instanceof String direct) {
       text = direct;
@@ -758,11 +938,11 @@ public final class Validator {
     }
   }
 
-  private static Double number(Object value) {
+  private static @Nullable Double number(@Nullable Object value) {
     return value instanceof Number number ? number.doubleValue() : null;
   }
 
-  private static int textCharacterCount(Object value) {
+  private static int textCharacterCount(@Nullable Object value) {
     if (value instanceof Map<?, ?>) {
       int total = 0;
       for (Map.Entry<String, Object> entry : objectAt(value, "").entrySet()) {

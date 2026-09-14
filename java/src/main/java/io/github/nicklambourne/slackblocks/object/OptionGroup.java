@@ -117,18 +117,23 @@ public final class OptionGroup implements SlackObject {
     }
 
     /**
-     * Sets a forward-compatible wire field that does not yet have a named fluent method. Prefer the
-     * named methods for normal Block Kit use.
+     * Sets a Slack field that has no named method yet, such as a field Slack introduced after this
+     * release. Prefer the named methods, which are typed and documented.
+     *
+     * <p>The value is checked at build time like any other field. It must be a string, number,
+     * boolean, slackblocks value or builder, or a list or map containing only those.
      *
      * @param field Slack JSON field name
-     * @param value wire-compatible value
+     * @param value JSON-compatible value
      * @return this builder
+     * @throws IllegalArgumentException if the field name is empty or the value cannot be written as
+     *     Slack JSON
      */
     public Builder wireField(String field, Object value) {
       if (field.isEmpty()) {
         throw new IllegalArgumentException("field must not be empty");
       }
-      state.set(field, value);
+      state.set(field, WireObjects.requireWireValue(field, value));
       return this;
     }
 
