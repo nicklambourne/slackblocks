@@ -7,11 +7,13 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.Confirmation;
 import io.github.nicklambourne.slackblocks.object.PlainText;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * An interactive button that sends a payload or opens a URL.
@@ -29,10 +31,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class ButtonElement extends BlockElement implements Element {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private ButtonElement(Map<String, Object> values) {
+  private ButtonElement(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -54,6 +58,85 @@ public final class ButtonElement extends BlockElement implements Element {
    */
   public static Builder builder(String text, String actionId) {
     return builder().text(text).actionId(actionId);
+  }
+
+  /**
+   * Returns the button label.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public PlainText getText() {
+    return TypedFields.requiredText(fields, "ButtonElement", "text", PlainText.class);
+  }
+
+  /**
+   * Returns the identifier Slack returns in interaction payloads when a user acts on this element.
+   * It must be unique among the elements of its block.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getActionId() {
+    return TypedFields.required(fields, "ButtonElement", "action_id", String.class);
+  }
+
+  /**
+   * Returns a URL opened in the user's browser when the button is clicked. Slack still sends an
+   * interaction payload.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getUrl() {
+    return TypedFields.optional(fields, "ButtonElement", "url", String.class);
+  }
+
+  /**
+   * Returns the application-defined value sent in interaction payloads.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getValue() {
+    return TypedFields.optional(fields, "ButtonElement", "value", String.class);
+  }
+
+  /**
+   * Returns the button's emphasis. Omit it for the default neutral style.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<ButtonStyle> getStyle() {
+    return TypedFields.optionalEnum(fields, "ButtonElement", "style", ButtonStyle::fromWireValue);
+  }
+
+  /**
+   * Returns a confirmation dialog shown before the action is sent.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Confirmation> getConfirm() {
+    return TypedFields.optional(fields, "ButtonElement", "confirm", Confirmation.class);
+  }
+
+  /**
+   * Returns the label read by screen readers in place of the visible text.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getAccessibilityLabel() {
+    return TypedFields.optional(fields, "ButtonElement", "accessibility_label", String.class);
   }
 
   @Override

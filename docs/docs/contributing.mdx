@@ -79,7 +79,7 @@ All four conformance suites exercise every ID in `spec/manifest.json`. A checked
 
 1. Add or update canonical JSON in `spec/fixtures/valid/`, register it in `spec/manifest.json`, and link the exact official Slack reference used to validate it.
 2. Map every new JSON-producing capability to at least one valid fixture in `spec/coverage.json`.
-3. Add invalid behavior to `spec/fixtures/invalid/manifest.json` when the feature introduces a validation rule. Every scalar leaf in `spec/limits.json` must have a matching invalid case.
+3. Add invalid behavior to `spec/fixtures/invalid/manifest.json` when the feature introduces a validation rule. New Slack icon names and surface block types go in `spec/vocabulary.json`. Every scalar leaf in `spec/limits.json` must have a matching invalid case.
 4. Update `spec/limits.json` for shared scalar constraints.
 5. Implement the feature idiomatically in all four packages, or record a reason in the affected skip list.
 6. Add language-native tests and update the relevant guide or executable example.
@@ -94,7 +94,7 @@ Run the local site from the repository root:
 pnpm --filter @slackblocks/docs start
 ```
 
-Narrative pages live in `docs/docs/`. Python, TypeScript, Go, and Java API pages are generated during every docs build. Reusable examples live under the matching directory in `docs/examples/`; tests execute them and compare their output with `docs/examples/section_hello.json`.
+Narrative pages live in `docs/docs/`. Python, TypeScript, Go, and Java API pages are generated during every docs build. The Java pages come from the javadoc tool, through `docs/scripts/java-reference/ReferenceDoclet.java`, so building the site needs a JDK 17 or newer on `PATH` or in `JAVA_HOME`. Reusable examples live under the matching directory in `docs/examples/`; tests execute them and compare their output with `docs/examples/section_hello.json`.
 
 Use `LanguageContent` with `Python`, `TypeScript`, `Go`, and `Java` children for language-specific prose or examples. The site-level selector controls which child is shown.
 

@@ -8,9 +8,11 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.ContextElement;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A mrkdwn text composition object.
@@ -28,10 +30,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class MarkdownText extends TextObject implements Text, ContextElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private MarkdownText(Map<String, Object> values) {
+  private MarkdownText(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -53,6 +57,17 @@ public final class MarkdownText extends TextObject implements Text, ContextEleme
    */
   public static MarkdownText of(String text) {
     return builder().text(text).build();
+  }
+
+  /**
+   * Returns whether Slack leaves URLs, mentions, and channel names unlinked.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getVerbatim() {
+    return TypedFields.optional(fields, "MarkdownText", "verbatim", Boolean.class);
   }
 
   @Override

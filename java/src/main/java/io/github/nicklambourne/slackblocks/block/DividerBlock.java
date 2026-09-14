@@ -122,7 +122,7 @@ public final class DividerBlock implements Block {
      */
     @Override
     public DividerBlock build() {
-      return state.build(DividerBlock::new);
+      return state.build((wire, fields) -> new DividerBlock(wire));
     }
   }
 }

@@ -7,10 +7,12 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.element.InputElement;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.PlainText;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A labelled input that collects a value in a modal, App Home, or message.
@@ -27,10 +29,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class InputBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private InputBlock(Map<String, Object> values) {
+  private InputBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -41,6 +45,61 @@ public final class InputBlock implements Block {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the label shown above the input.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public PlainText getLabel() {
+    return TypedFields.requiredText(fields, "InputBlock", "label", PlainText.class);
+  }
+
+  /**
+   * Returns the input element that collects the user's value.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public InputElement getElement() {
+    return TypedFields.required(fields, "InputBlock", "element", InputElement.class);
+  }
+
+  /**
+   * Returns whether changing the element sends a block_actions payload immediately.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getDispatchAction() {
+    return TypedFields.optional(fields, "InputBlock", "dispatch_action", Boolean.class);
+  }
+
+  /**
+   * Returns helper text shown below the input.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<PlainText> getHint() {
+    return TypedFields.optionalText(fields, "InputBlock", "hint", PlainText.class);
+  }
+
+  /**
+   * Returns whether the modal can be submitted when this input is empty.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getOptional() {
+    return TypedFields.optional(fields, "InputBlock", "optional", Boolean.class);
   }
 
   @Override

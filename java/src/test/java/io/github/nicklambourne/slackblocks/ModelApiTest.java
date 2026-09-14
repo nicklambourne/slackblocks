@@ -169,6 +169,53 @@ final class ModelApiTest {
   }
 
   @Test
+  void typedGettersReturnTheConfiguredValues() {
+    ButtonElement approve =
+        ButtonElement.builder("Approve", "approve").style(ButtonStyle.PRIMARY).build();
+    SectionBlock section =
+        SectionBlock.builder()
+            .text("*Deploy* ready")
+            .fields(PlainText.of("Branch"))
+            .markdownFields("`main`")
+            .accessory(approve)
+            .blockId("deploy")
+            .build();
+
+    assertEquals(MarkdownText.of("*Deploy* ready"), section.getText().orElseThrow());
+    assertEquals(List.of(PlainText.of("Branch"), MarkdownText.of("`main`")), section.getFields());
+    assertEquals(approve, section.getAccessory().orElseThrow());
+    assertEquals("deploy", section.getBlockId());
+    assertEquals(PlainText.of("Approve"), approve.getText());
+    assertEquals("approve", approve.getActionId());
+    assertEquals(ButtonStyle.PRIMARY, approve.getStyle().orElseThrow());
+    assertEquals(java.util.Optional.empty(), approve.getUrl());
+  }
+
+  @Test
+  void gettersExposeNestedTypesNumbersRowsAndStyles() {
+    TaskCardBlock task =
+        TaskCardBlock.builder().taskId("test").title("Run").status(TaskStatus.COMPLETE).build();
+    PlanBlock plan = PlanBlock.builder().title("Release").tasks(task).build();
+    RawNumber score = RawNumber.builder().value(42).text("42").build();
+    DataTableBlock table =
+        DataTableBlock.builder()
+            .caption("Scores")
+            .rows(List.of(RawText.of("Name"), RawText.of("Score")))
+            .rows(List.of(RawText.of("Alice"), score))
+            .build();
+    RichTextText text = RichTextText.builder().text("Deploy").bold(true).italic(false).build();
+
+    assertEquals(List.of(task), plan.getTasks());
+    assertEquals(TaskStatus.COMPLETE, plan.getTasks().get(0).getStatus().orElseThrow());
+    assertEquals(42L, score.getValue());
+    assertEquals(score, table.getRows().get(1).get(1));
+    assertEquals(java.util.OptionalInt.of(5), table.getPageSize());
+    assertEquals(
+        RichTextStyle.builder().bold(true).italic(false).build(), text.getStyle().orElseThrow());
+    assertEquals(List.of(), SectionBlock.builder().text("x").build().getFields());
+  }
+
+  @Test
   void valuesHaveValueSemantics() {
     DividerBlock first = DividerBlock.builder().blockId("divider").build();
     DividerBlock second = DividerBlock.builder().blockId("divider").build();

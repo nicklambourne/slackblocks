@@ -6,6 +6,7 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +26,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class PlanBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private PlanBlock(Map<String, Object> values) {
+  private PlanBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -39,6 +42,28 @@ public final class PlanBlock implements Block {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the plan title.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getTitle() {
+    return TypedFields.required(fields, "PlanBlock", "title", String.class);
+  }
+
+  /**
+   * Returns task cards in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<TaskCardBlock> getTasks() {
+    return TypedFields.list(fields, "PlanBlock", "tasks", TaskCardBlock.class);
   }
 
   @Override
@@ -142,10 +167,7 @@ public final class PlanBlock implements Block {
      */
     @Override
     public PlanBlock build() {
-      if (state.get("tasks") instanceof List<?> tasks) {
-        state.set("tasks", WireObjects.withoutType(tasks));
-      }
-      return state.build(PlanBlock::new);
+      return state.build(PlanBlock::new, wire -> WireObjects.withoutItemTypes(wire, "tasks"));
     }
   }
 }

@@ -8,9 +8,11 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.element.ButtonStyle;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A dialog that asks users to confirm an action before it is sent.
@@ -29,10 +31,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class Confirmation implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private Confirmation(Map<String, Object> values) {
+  private Confirmation(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -43,6 +47,61 @@ public final class Confirmation implements SlackObject {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the dialog title.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public PlainText getTitle() {
+    return TypedFields.requiredText(fields, "Confirmation", "title", PlainText.class);
+  }
+
+  /**
+   * Returns the explanatory text in the dialog body.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Text getText() {
+    return TypedFields.requiredText(fields, "Confirmation", "text", Text.class);
+  }
+
+  /**
+   * Returns the label of the button that confirms the action.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public PlainText getConfirm() {
+    return TypedFields.requiredText(fields, "Confirmation", "confirm", PlainText.class);
+  }
+
+  /**
+   * Returns the label of the button that cancels the action.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public PlainText getDeny() {
+    return TypedFields.requiredText(fields, "Confirmation", "deny", PlainText.class);
+  }
+
+  /**
+   * Returns the emphasis of the confirm button.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<ButtonStyle> getStyle() {
+    return TypedFields.optionalEnum(fields, "Confirmation", "style", ButtonStyle::fromWireValue);
   }
 
   @Override

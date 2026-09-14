@@ -32,14 +32,16 @@ public final class WireObjects {
   }
 
   /**
-   * Returns copies of nested objects without their {@code type} discriminator, for fields whose
-   * items Slack expects untyped.
+   * Returns a copy of a wire map whose list field holds nested objects without their {@code type}
+   * discriminator, for fields whose items Slack expects untyped.
    */
-  public static List<Object> withoutType(List<?> items) {
-    List<Object> result = new ArrayList<>(items.size());
+  public static Map<String, Object> withoutItemTypes(Map<String, Object> wire, String field) {
+    if (!(wire.get(field) instanceof List<?> items)) {
+      return wire;
+    }
+    List<Object> stripped = new ArrayList<>(items.size());
     for (Object item : items) {
-      Object materialized = materializeValue(Objects.requireNonNull(item, "item"));
-      if (materialized instanceof Map<?, ?> map) {
+      if (item instanceof Map<?, ?> map) {
         Map<String, Object> copy = new LinkedHashMap<>();
         map.forEach(
             (key, nested) -> {
@@ -47,12 +49,41 @@ public final class WireObjects {
                 copy.put(String.valueOf(key), nested);
               }
             });
-        result.add(Collections.unmodifiableMap(copy));
+        stripped.add(Collections.unmodifiableMap(copy));
       } else {
-        result.add(materialized);
+        stripped.add(Objects.requireNonNull(item, field));
       }
     }
-    return result;
+    Map<String, Object> result = new LinkedHashMap<>(wire);
+    result.put(field, Collections.unmodifiableList(stripped));
+    return Collections.unmodifiableMap(result);
+  }
+
+  /**
+   * Returns an unmodifiable snapshot of configured builder fields that keeps the typed values
+   * passed to the builder, copying any lists and maps so later builder changes cannot leak in.
+   */
+  public static Map<String, Object> snapshot(Map<String, Object> values) {
+    Map<String, Object> result = new LinkedHashMap<>();
+    values.forEach((key, value) -> result.put(key, snapshotValue(value)));
+    return Collections.unmodifiableMap(result);
+  }
+
+  private static Object snapshotValue(Object value) {
+    if (value instanceof List<?> list) {
+      List<Object> copy = new ArrayList<>(list.size());
+      list.forEach(item -> copy.add(snapshotValue(Objects.requireNonNull(item, "item"))));
+      return Collections.unmodifiableList(copy);
+    }
+    if (value instanceof Map<?, ?> map) {
+      Map<String, Object> copy = new LinkedHashMap<>();
+      map.forEach(
+          (key, nested) ->
+              copy.put(
+                  String.valueOf(key), snapshotValue(Objects.requireNonNull(nested, "value"))));
+      return Collections.unmodifiableMap(copy);
+    }
+    return value;
   }
 
   /**
