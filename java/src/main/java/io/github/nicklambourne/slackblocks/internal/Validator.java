@@ -124,63 +124,6 @@ public final class Validator {
           "users_select",
           "workflow_button");
 
-  private static final Set<String> SLACK_ICON_NAMES =
-      Set.of(
-          "archive",
-          "book",
-          "bookmark",
-          "bot",
-          "bug",
-          "calendar",
-          "call",
-          "caret-left",
-          "caret-right",
-          "check",
-          "clipboard",
-          "code",
-          "comment",
-          "compass",
-          "copy",
-          "cube",
-          "download",
-          "edit",
-          "email",
-          "eye-closed",
-          "eye-open",
-          "file",
-          "flag",
-          "folder",
-          "gear",
-          "globe",
-          "heart",
-          "help",
-          "image",
-          "info",
-          "key",
-          "lightbulb",
-          "link",
-          "map",
-          "mobile",
-          "new-window",
-          "pin",
-          "plus",
-          "refine",
-          "refresh",
-          "rocket",
-          "save",
-          "screen",
-          "share",
-          "sparkle",
-          "star",
-          "star-filled",
-          "tag",
-          "thumbs-down",
-          "thumbs-up",
-          "trash",
-          "upload",
-          "user",
-          "warning");
-
   private static final Set<String> CONTEXT_ELEMENT_TYPES = Set.of("plain_text", "mrkdwn", "image");
   private static final Set<String> ALERT_LEVELS =
       Set.of("default", "info", "warning", "error", "success");
@@ -190,59 +133,6 @@ public final class Validator {
   private static final Set<String> TABLE_CELL_TYPES = Set.of("raw_text", "rich_text");
   private static final Set<String> DATA_TABLE_CELL_TYPES =
       Set.of("raw_text", "rich_text", "raw_number");
-
-  private static final Map<String, Set<String>> SURFACE_BLOCKS =
-      Map.of(
-          "message",
-              Set.of(
-                  "actions",
-                  "card",
-                  "carousel",
-                  "container",
-                  "context",
-                  "context_actions",
-                  "data_table",
-                  "data_visualization",
-                  "divider",
-                  "file",
-                  "header",
-                  "image",
-                  "markdown",
-                  "plan",
-                  "rich_text",
-                  "section",
-                  "table",
-                  "task_card",
-                  "video"),
-          "modal",
-              Set.of(
-                  "actions",
-                  "alert",
-                  "card",
-                  "context",
-                  "divider",
-                  "header",
-                  "image",
-                  "input",
-                  "rich_text",
-                  "section",
-                  "video"),
-          "home",
-              Set.of(
-                  "actions",
-                  "card",
-                  "carousel",
-                  "container",
-                  "context",
-                  "data_table",
-                  "divider",
-                  "header",
-                  "image",
-                  "input",
-                  "rich_text",
-                  "section",
-                  "table",
-                  "video"));
 
   private static final Pattern ATTACHMENT_COLOR = Pattern.compile("^#[0-9a-fA-F]{6}$");
 
@@ -339,7 +229,8 @@ public final class Validator {
     switch (type) {
       case "plain_text", "mrkdwn" -> textLength(value, child(path, "text"), 1, 3000);
       case "icon" -> {
-        if (!(value.get("name") instanceof String name) || !SLACK_ICON_NAMES.contains(name)) {
+        if (!(value.get("name") instanceof String name)
+            || !SlackVocabulary.SLACK_ICON_NAMES.contains(name)) {
           fail(ErrorCategory.TYPE_MISMATCH, child(path, "name"), "unknown Slack icon");
         }
       }
@@ -841,7 +732,8 @@ public final class Validator {
   }
 
   private static void validateSurface(List<?> blocks, String surface, String path) {
-    Set<String> allowed = Objects.requireNonNull(SURFACE_BLOCKS.get(surface), surface);
+    Set<String> allowed =
+        Objects.requireNonNull(SlackVocabulary.SURFACE_BLOCK_TYPES.get(surface), surface);
     for (int index = 0; index < blocks.size(); index++) {
       String blockPath = path + "[" + index + "]";
       String type = objectType(objectAt(blocks.get(index), blockPath));

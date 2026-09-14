@@ -285,6 +285,22 @@ final class BuilderMethodsTest {
         default -> throw new AssertionError("Unknown field kind " + kind);
       }
     }
+    for (JsonElement fieldElement : type.getAsJsonArray("fields")) {
+      JsonObject field = fieldElement.getAsJsonObject();
+      String wire = field.get("wire").getAsString();
+      boolean inherited =
+          (type.get("package").getAsString().equals("block") && wire.equals("block_id"))
+              || (Set.of("PlainText", "MarkdownText").contains(type.get("name").getAsString())
+                  && wire.equals("text"));
+      Method getter = valueClass.getMethod(getterName(field.get("method").getAsString()));
+      assertEquals(
+          true,
+          Modifier.isPublic(getter.getModifiers()) && getter.getReturnType() != void.class,
+          valueClass.getSimpleName() + " needs a typed getter for " + wire);
+      if (!inherited) {
+        assertEquals(valueClass, getter.getDeclaringClass(), getter.toString());
+      }
+    }
     List<String> untested =
         Arrays.stream(builderClass.getDeclaredMethods())
             .filter(
@@ -349,6 +365,14 @@ final class BuilderMethodsTest {
       throw new AssertionError("Add a sample value for " + type + " to BuilderMethodsTest");
     }
     return supplier.get();
+  }
+
+  private static String getterName(String method) {
+    String name =
+        method.startsWith("is") && Character.isUpperCase(method.charAt(2))
+            ? method.substring(2)
+            : method;
+    return "get" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
   }
 
   private static String camel(String snake) {

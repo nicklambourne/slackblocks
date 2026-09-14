@@ -8,8 +8,11 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.Block;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * The payload for publishing an App Home tab with views.publish.
@@ -27,10 +30,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class HomeTabView implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private HomeTabView(Map<String, Object> values) {
+  private HomeTabView(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -41,6 +46,50 @@ public final class HomeTabView implements SlackObject {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the blocks shown on the App Home tab, in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<Block> getBlocks() {
+    return TypedFields.list(fields, "HomeTabView", "blocks", Block.class);
+  }
+
+  /**
+   * Returns application-defined data returned in view payloads.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getPrivateMetadata() {
+    return TypedFields.optional(fields, "HomeTabView", "private_metadata", String.class);
+  }
+
+  /**
+   * Returns an identifier returned in view payloads so your app can recognize the view.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getCallbackId() {
+    return TypedFields.optional(fields, "HomeTabView", "callback_id", String.class);
+  }
+
+  /**
+   * Returns a workspace-unique identifier you can use to update the view later.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getExternalId() {
+    return TypedFields.optional(fields, "HomeTabView", "external_id", String.class);
   }
 
   @Override

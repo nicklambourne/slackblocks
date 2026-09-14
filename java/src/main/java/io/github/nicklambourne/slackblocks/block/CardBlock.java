@@ -8,11 +8,14 @@ import io.github.nicklambourne.slackblocks.element.ButtonElement;
 import io.github.nicklambourne.slackblocks.element.ImageElement;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.SlackIcon;
 import io.github.nicklambourne.slackblocks.object.Text;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A compact card with an image, text, and up to three buttons.
@@ -30,10 +33,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class CardBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private CardBlock(Map<String, Object> values) {
+  private CardBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -44,6 +49,95 @@ public final class CardBlock implements Block {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the image displayed prominently at the top of the card.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<ImageElement> getHeroImage() {
+    return TypedFields.optional(fields, "CardBlock", "hero_image", ImageElement.class);
+  }
+
+  /**
+   * Returns the image displayed beside the title.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<ImageElement> getIcon() {
+    return TypedFields.optional(fields, "CardBlock", "icon", ImageElement.class);
+  }
+
+  /**
+   * Returns the card title.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Text> getTitle() {
+    return TypedFields.optionalText(fields, "CardBlock", "title", Text.class);
+  }
+
+  /**
+   * Returns the supporting text shown below the title.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Text> getSubtitle() {
+    return TypedFields.optionalText(fields, "CardBlock", "subtitle", Text.class);
+  }
+
+  /**
+   * Returns the main body text of the card.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Text> getBody() {
+    return TypedFields.optionalText(fields, "CardBlock", "body", Text.class);
+  }
+
+  /**
+   * Returns buttons displayed at the bottom of the card, in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<ButtonElement> getActions() {
+    return TypedFields.list(fields, "CardBlock", "actions", ButtonElement.class);
+  }
+
+  /**
+   * Returns a Slack-provided icon displayed beside the title. Cannot be combined with an image
+   * icon.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<SlackIcon> getSlackIcon() {
+    return TypedFields.optional(fields, "CardBlock", "slack_icon", SlackIcon.class);
+  }
+
+  /**
+   * Returns the small print shown at the bottom of the card.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Text> getSubtext() {
+    return TypedFields.optionalText(fields, "CardBlock", "subtext", Text.class);
   }
 
   @Override

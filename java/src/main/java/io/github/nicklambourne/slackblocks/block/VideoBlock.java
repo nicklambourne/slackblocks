@@ -6,10 +6,12 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.PlainText;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * An embedded video player.
@@ -26,10 +28,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class VideoBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private VideoBlock(Map<String, Object> values) {
+  private VideoBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -40,6 +44,105 @@ public final class VideoBlock implements Block {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns a plain-text summary of the image or video for assistive technology.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getAltText() {
+    return TypedFields.required(fields, "VideoBlock", "alt_text", String.class);
+  }
+
+  /**
+   * Returns the URL of the image shown before the video plays.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getThumbnailUrl() {
+    return TypedFields.required(fields, "VideoBlock", "thumbnail_url", String.class);
+  }
+
+  /**
+   * Returns the video title.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public PlainText getTitle() {
+    return TypedFields.requiredText(fields, "VideoBlock", "title", PlainText.class);
+  }
+
+  /**
+   * Returns the embeddable URL of the video. The domain must be listed in the app's unfurl domains.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getVideoUrl() {
+    return TypedFields.required(fields, "VideoBlock", "video_url", String.class);
+  }
+
+  /**
+   * Returns the name of the video's author.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getAuthorName() {
+    return TypedFields.optional(fields, "VideoBlock", "author_name", String.class);
+  }
+
+  /**
+   * Returns the video description.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<PlainText> getDescription() {
+    return TypedFields.optionalText(fields, "VideoBlock", "description", PlainText.class);
+  }
+
+  /**
+   * Returns the URL of the video provider's icon.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getProviderIconUrl() {
+    return TypedFields.optional(fields, "VideoBlock", "provider_icon_url", String.class);
+  }
+
+  /**
+   * Returns the name of the video provider, such as YouTube.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getProviderName() {
+    return TypedFields.optional(fields, "VideoBlock", "provider_name", String.class);
+  }
+
+  /**
+   * Returns the HTTPS URL opened when the title is clicked.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getTitleUrl() {
+    return TypedFields.optional(fields, "VideoBlock", "title_url", String.class);
   }
 
   @Override

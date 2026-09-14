@@ -97,7 +97,7 @@ final class ConformanceTest {
     assertEquals(FluentDriver.canonical(expected), FluentDriver.canonical(actual));
   }
 
-  private static Class<?> rootType(FluentDriver driver, String id) throws Exception {
+  static Class<?> rootType(FluentDriver driver, String id) throws Exception {
     for (Map.Entry<String, String> root : UNTYPED_ROOTS) {
       if (id.startsWith(root.getKey())) {
         return driver.type(root.getValue());

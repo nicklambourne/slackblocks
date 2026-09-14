@@ -6,9 +6,12 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.OptionalInt;
 
 /**
  * A bulleted or numbered list inside rich text.
@@ -26,10 +29,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class RichTextList implements RichTextBlockElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private RichTextList(Map<String, Object> values) {
+  private RichTextList(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -40,6 +45,62 @@ public final class RichTextList implements RichTextBlockElement {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns whether the list is bulleted or numbered.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public RichTextListStyle getStyle() {
+    return TypedFields.requiredEnum(
+        fields, "RichTextList", "style", RichTextListStyle::fromWireValue);
+  }
+
+  /**
+   * Returns list items, one rich text section per item.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<RichTextSection> getElements() {
+    return TypedFields.list(fields, "RichTextList", "elements", RichTextSection.class);
+  }
+
+  /**
+   * Returns the list's indentation level.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public OptionalInt getIndent() {
+    return TypedFields.optionalInt(fields, "RichTextList", "indent");
+  }
+
+  /**
+   * Returns the number of items to skip when numbering an ordered list.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public OptionalInt getOffset() {
+    return TypedFields.optionalInt(fields, "RichTextList", "offset");
+  }
+
+  /**
+   * Returns the width of the left border, in pixels.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public OptionalInt getBorder() {
+    return TypedFields.optionalInt(fields, "RichTextList", "border");
   }
 
   @Override

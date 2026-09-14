@@ -7,6 +7,7 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.DataTableCell;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import java.util.Map;
 
@@ -26,10 +27,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class RawNumber implements DataTableCell {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private RawNumber(Map<String, Object> values) {
+  private RawNumber(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -40,6 +43,28 @@ public final class RawNumber implements DataTableCell {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the numeric value used for sorting.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Number getValue() {
+    return TypedFields.required(fields, "RawNumber", "value", Number.class);
+  }
+
+  /**
+   * Returns the formatted text displayed for the number, such as 1,234.5.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getText() {
+    return TypedFields.required(fields, "RawNumber", "text", String.class);
   }
 
   @Override
