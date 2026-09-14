@@ -75,6 +75,14 @@ jobs:
           go-version: "stable"
           cache: false
 
+      - name: Install Java for the javadoc-generated API reference
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: java/pom.xml
+
       - name: Install JavaScript dependencies
         run: pnpm install --frozen-lockfile
 
