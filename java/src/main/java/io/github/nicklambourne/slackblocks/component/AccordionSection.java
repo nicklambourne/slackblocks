@@ -1,8 +1,10 @@
 package io.github.nicklambourne.slackblocks.component;
 
-import io.github.nicklambourne.slackblocks.SlackObject;
 import io.github.nicklambourne.slackblocks.block.Block;
 import io.github.nicklambourne.slackblocks.block.ContainerBlock;
+import io.github.nicklambourne.slackblocks.block.ContainerWidth;
+import io.github.nicklambourne.slackblocks.element.ImageElement;
+import io.github.nicklambourne.slackblocks.object.Text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,8 +27,8 @@ public final class AccordionSection {
   public static final class Builder {
     private final String title;
     private final List<Block> blocks = new ArrayList<>();
-    private SlackObject subtitle;
-    private SlackObject icon;
+    private Text subtitle;
+    private ImageElement icon;
     private boolean expanded;
     private ContainerWidth width = ContainerWidth.STANDARD;
     private boolean hasHeaderDivider;
@@ -63,7 +65,7 @@ public final class AccordionSection {
      * @param value Slack text object
      * @return this builder
      */
-    public Builder subtitle(SlackObject value) {
+    public Builder subtitle(Text value) {
       subtitle = Objects.requireNonNull(value, "subtitle");
       return this;
     }
@@ -71,10 +73,10 @@ public final class AccordionSection {
     /**
      * Sets the section header icon.
      *
-     * @param value Slack icon or image object
+     * @param value image element
      * @return this builder
      */
-    public Builder icon(SlackObject value) {
+    public Builder icon(ImageElement value) {
       icon = Objects.requireNonNull(value, "icon");
       return this;
     }
@@ -134,7 +136,7 @@ public final class AccordionSection {
           .childBlocks(blocks.toArray(Block[]::new))
           .isCollapsible(true)
           .defaultCollapsed(!expanded)
-          .width(width.wireValue())
+          .width(width)
           .hasHeaderDivider(hasHeaderDivider);
       if (subtitle != null) {
         result.subtitle(subtitle);

@@ -149,7 +149,7 @@ public final class Paginator {
         return List.copyOf(result);
       }
 
-      List<io.github.nicklambourne.slackblocks.SlackObject> controls = new ArrayList<>();
+      List<ButtonElement> controls = new ArrayList<>();
       if (page > 1) {
         controls.add(ButtonElement.builder(previousText, actionIdPrefix + ".previous")
             .value(Integer.toString(page - 1)).build());
@@ -163,7 +163,7 @@ public final class Paginator {
             .elements(MarkdownText.of("Page " + page + " of " + pageCount)).build());
       }
       ActionsBlock.Builder actions = ActionsBlock.builder()
-          .elements(controls.toArray(io.github.nicklambourne.slackblocks.SlackObject[]::new));
+          .elements(controls.toArray(ButtonElement[]::new));
       if (blockId != null) {
         actions.blockId(blockId);
       }
