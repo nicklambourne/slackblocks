@@ -1,21 +1,24 @@
 package io.github.nicklambourne.slackblocks;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.gson.annotations.JsonAdapter;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
-import io.github.nicklambourne.slackblocks.internal.WireObjects;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 final class FoundationTest {
   @JsonAdapter(SlackObjectJsonAdapter.class)
-  private record TestValue(Map<String, Object> values) implements SlackObject {
+  private record TestValue(Map<String, Object> toMap) implements SlackObject {}
+
+  private record TestBuilder(BuilderState state) implements Buildable<TestValue> {
     @Override
-    public Map<String, Object> toMap() {
-      return WireObjects.materialize(values);
+    public TestValue build() {
+      return state.build(TestValue::new);
     }
   }
 
@@ -27,6 +30,8 @@ final class FoundationTest {
     TestValue value = state.build(TestValue::new);
 
     assertEquals("{\"type\":\"section\",\"block_id\":\"summary\"}", value.toJson());
+    assertEquals(
+        "[{\"type\":\"section\",\"block_id\":\"summary\"}]", SlackblocksJson.write(List.of(value)));
   }
 
   @Test
@@ -40,9 +45,46 @@ final class FoundationTest {
   }
 
   @Test
-  void rejectsStructurallyEmptyObjects() {
+  void nestedBuildersAreMaterializedOnceAtBuildTime() {
+    BuilderState nestedState = new BuilderState("Nested", "button");
+    nestedState.set("action_id", "first");
+    BuilderState parent = new BuilderState("Test", "section");
+    parent.set("accessory", new TestBuilder(nestedState));
+
+    TestValue value = parent.build(TestValue::new);
+    nestedState.set("action_id", "second");
+
+    assertEquals(Map.of("type", "button", "action_id", "first"), value.toMap().get("accessory"));
+  }
+
+  @Test
+  void materializedValuesCannotBeModified() {
+    BuilderState state = new BuilderState("Test", "section");
+    state.append("fields", Map.of("type", "mrkdwn", "text", "a"));
+    Map<String, Object> wire = state.build(TestValue::new).toMap();
+
+    assertThrows(UnsupportedOperationException.class, () -> wire.put("block_id", "x"));
+    assertThrows(UnsupportedOperationException.class, () -> ((List<?>) wire.get("fields")).clear());
+  }
+
+  @Test
+  void appendingNothingLeavesTheFieldUnsetAndNullItemsAreRejected() {
+    BuilderState state = new BuilderState("Test", "section");
+    state.append("fields");
+
+    assertFalse(state.build(TestValue::new).toMap().containsKey("fields"));
+    NullPointerException error =
+        assertThrows(NullPointerException.class, () -> state.append("fields", "a", null));
+    assertEquals("fields[1] is null", error.getMessage());
+  }
+
+  @Test
+  void rejectsStructurallyEmptyObjectsWithAStructuredError() {
     BuilderState state = new BuilderState("Test", "");
 
-    assertThrows(IllegalArgumentException.class, () -> state.build(TestValue::new));
+    ValidationException error =
+        assertThrows(ValidationException.class, () -> state.build(TestValue::new));
+    assertEquals(ErrorCategory.MISSING_REQUIRED, error.getCategory());
+    assertEquals("Test", error.getPath());
   }
 }
