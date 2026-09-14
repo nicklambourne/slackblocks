@@ -49,6 +49,9 @@
     <slack.java.sdk.version>1.51.0</slack.java.sdk.version>
     <gson.version>2.13.2</gson.version>
     <junit.version>5.13.4</junit.version>
+    <error.prone.version>2.50.0</error.prone.version>
+    <nullaway.version>0.14.1</nullaway.version>
+    <google.java.format.version>1.36.1</google.java.format.version>
   </properties>
 
   <dependencies>
@@ -179,6 +182,84 @@
   </build>
 
   <profiles>
+    <profile>
+      <!-- Error Prone, NullAway, and google-java-format need a JDK 21+ runtime. The Java 17 CI
+           leg still compiles and tests on a genuine Java 17 runtime; newer legs enforce these. -->
+      <id>static-analysis</id>
+      <activation>
+        <jdk>[21,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <compilerArgs combine.children="append">
+                <arg>-XDcompilePolicy=simple</arg>
+                <arg>-XDaddTypeAnnotationsToSymbol=true</arg>
+                <arg>--should-stop=ifError=FLOW</arg>
+                <arg>-Xplugin:ErrorProne -Xep:NullAway:ERROR -XepOpt:NullAway:OnlyNullMarked=true -XepOpt:NullAway:JSpecifyMode=true</arg>
+              </compilerArgs>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>${error.prone.version}</version>
+                </path>
+                <path>
+                  <groupId>com.uber.nullaway</groupId>
+                  <artifactId>nullaway</artifactId>
+                  <version>${nullaway.version}</version>
+                </path>
+              </annotationProcessorPaths>
+            </configuration>
+            <executions>
+              <execution>
+                <!-- Tests pass null deliberately to exercise argument checks. -->
+                <id>default-testCompile</id>
+                <configuration>
+                  <compilerArgs combine.self="override">
+                    <arg>-Xlint:all</arg>
+                    <arg>-Werror</arg>
+                    <arg>-XDcompilePolicy=simple</arg>
+                    <arg>-XDaddTypeAnnotationsToSymbol=true</arg>
+                    <arg>--should-stop=ifError=FLOW</arg>
+                    <arg>-Xplugin:ErrorProne -Xep:NullAway:OFF</arg>
+                  </compilerArgs>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.diffplug.spotless</groupId>
+            <artifactId>spotless-maven-plugin</artifactId>
+            <version>3.10.2</version>
+            <configuration>
+              <java>
+                <includes>
+                  <include>src/main/java/**/*.java</include>
+                  <include>src/test/java/**/*.java</include>
+                </includes>
+                <googleJavaFormat>
+                  <version>${google.java.format.version}</version>
+                </googleJavaFormat>
+                <removeUnusedImports />
+              </java>
+            </configuration>
+            <executions>
+              <execution>
+                <id>check-formatting</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>release</id>
       <build>

@@ -185,6 +185,10 @@ public final class HelloSlackblocks {
 }
 ```
 
+### Import slackblocks types by name
+
+Several slackblocks class names, such as `SectionBlock`, `HeaderBlock`, and `ButtonElement`, also exist in the Slack SDK's `com.slack.api.model.block` packages. Import slackblocks classes individually, as the examples on this site do. A file that combines `import com.slack.api.model.block.*;` with a slackblocks wildcard import fails to compile with a "reference to SectionBlock is ambiguous" error.
+
 Pin compatible 2.x updates with Maven's dependency-management facilities or your usual version catalog. slackblocks' Java artifact uses the same release number as the Python, TypeScript, and Go packages.
 
 </Java>

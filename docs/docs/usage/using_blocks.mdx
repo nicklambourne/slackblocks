@@ -231,11 +231,11 @@ RichTextBlock block = RichTextBlock.builder()
     .elements(RichTextSection.builder()
         .elements(
             RichTextText.builder().text("You 'bout to witness hip-hop in its most purest\n")
-                .wireField("style", Map.of("bold", true)).build(),
+                .bold(true).build(),
             RichTextText.builder().text("Most rawest form, flow almost flawless\n")
-                .wireField("style", Map.of("strike", true)).build(),
+                .strike(true).build(),
             RichTextText.builder().text("Most hardest, most honest known artist\n")
-                .wireField("style", Map.of("italic", true)).build())
+                .italic(true).build())
         .build())
     .build();
 ```
@@ -921,9 +921,9 @@ ActionsBlock block = ActionsBlock.builder()
     .elements(CheckboxesElement.builder()
         .actionId("actionId-0")
         .options(
-            Option.builder().text(MarkdownText.of("*a*")).value("a").description("a").build(),
-            Option.builder().text(MarkdownText.of("*b*")).value("b").description("b").build(),
-            Option.builder().text(MarkdownText.of("*c*")).value("c").description("c").build())
+            Option.builder().text(MarkdownText.of("*a*")).value("a").description("*a*").build(),
+            Option.builder().text(MarkdownText.of("*b*")).value("b").description("*b*").build(),
+            Option.builder().text(MarkdownText.of("*c*")).value("c").description("*c*").build())
         .build())
     .build();
 ```
@@ -1121,16 +1121,16 @@ block, err := slackblocks.NewTableBlock().
 TableBlock block = TableBlock.builder()
     .blockId("fake_block_id")
     .columnSettings(
-        ColumnSettings.builder().align("right").isWrapped(true).build(),
-        ColumnSettings.builder().align("left").build())
+        ColumnSettings.builder().align(ColumnAlign.RIGHT).isWrapped(true).build(),
+        ColumnSettings.builder().align(ColumnAlign.LEFT).build())
     .rows(
         List.of(
             RichTextBlock.builder().elements(RichTextSection.builder()
                 .elements(RichTextText.builder().text("Header 1")
-                    .wireField("style", Map.of("bold", true)).build()).build()).build(),
+                    .bold(true).build()).build()).build(),
             RichTextBlock.builder().elements(RichTextSection.builder()
                 .elements(RichTextText.builder().text("Header 2")
-                    .wireField("style", Map.of("bold", true)).build()).build()).build()),
+                    .bold(true).build()).build()).build()),
         List.of(
             RawText.builder().text("Datum 1").build(),
             RichTextBlock.builder().elements(RichTextSection.builder()
@@ -1390,7 +1390,7 @@ block, err := slackblocks.NewAlertBlock().
 ```java
 AlertBlock block = AlertBlock.builder()
     .text("The deployment needs attention.")
-    .level("warning")
+    .level(AlertLevel.WARNING)
     .blockId("fake_block_id")
     .build();
 ```
@@ -1477,7 +1477,7 @@ block, err := slackblocks.NewCardBlock().
 ```java
 CardBlock block = CardBlock.builder()
     .title("Build complete")
-    .body("Version 2.3.0 is ready to deploy.")
+    .body("Version 2.1.0 is ready to deploy.")
     .slackIcon(SlackIcon.builder().name("rocket").build())
     .actions(ButtonElement.builder().text("Open build").actionId("open_build").build())
     .blockId("fake_block_id")
@@ -1690,7 +1690,7 @@ ContainerBlock block = ContainerBlock.builder()
     .title("Deployment summary")
     .childBlocks(SectionBlock.builder()
         .markdownText("All systems operational.").blockId("child_1").build())
-    .width("standard")
+    .width(ContainerWidth.STANDARD)
     .isCollapsible(false)
     .defaultCollapsed(false)
     .hasHeaderDivider(true)
@@ -2122,7 +2122,7 @@ block, err := slackblocks.NewTaskCardBlock().
 TaskCardBlock block = TaskCardBlock.builder()
     .taskId("weather_1")
     .title("Fetch weather data")
-    .status("complete")
+    .status(TaskStatus.COMPLETE)
     .sources(UrlSource.builder().url("https://weather.com/").text("weather.com").build())
     .blockId("fake_block_id")
     .build();
@@ -2219,8 +2219,8 @@ block, err := slackblocks.NewPlanBlock().
 PlanBlock block = PlanBlock.builder()
     .title("Release plan")
     .tasks(
-        TaskCardBlock.builder().taskId("test").title("Run the test suite").status("complete").build(),
-        TaskCardBlock.builder().taskId("deploy").title("Deploy the release").status("pending").build())
+        TaskCardBlock.builder().taskId("test").title("Run the test suite").status(TaskStatus.COMPLETE).build(),
+        TaskCardBlock.builder().taskId("deploy").title("Deploy the release").status(TaskStatus.PENDING).build())
     .blockId("fake_block_id")
     .build();
 ```
@@ -2318,7 +2318,7 @@ const payload = Message()
       AccordionSection()
         .title("Summary")
         .expanded(true)
-        .blocks(SectionBlock().text("Version 2.3.0 is ready.")),
+        .blocks(SectionBlock().text("Version 2.2.0 is ready.")),
       AccordionSection()
         .title("Checks")
         .blocks(SectionBlock().text("All required checks passed.")),
@@ -2371,7 +2371,7 @@ blocks, err := slackblocks.NewAccordion().Sections(
 	slackblocks.NewAccordionSection().
 		Title("Summary").
 		Expanded(true).
-		Blocks(slackblocks.NewSectionBlock().Text("Version 2.3.0 is ready.")),
+		Blocks(slackblocks.NewSectionBlock().Text("Version 2.2.0 is ready.")),
 	slackblocks.NewAccordionSection().
 		Title("Checks").
 		Blocks(slackblocks.NewSectionBlock().Text("All required checks passed.")),
@@ -2410,7 +2410,7 @@ List<Block> blocks = Paginator.builder("search-results")
 ChatPostMessageRequest request = ChatPostMessageRequest.builder()
     .channel("C01234567")
     .text("Search results")
-    .blocks(new ArrayList<>(blocks))
+    .blocks(List.copyOf(blocks))
     .build();
 ```
 
@@ -2423,7 +2423,7 @@ List<Block> blocks = Accordion.builder()
     .sections(
         AccordionSection.builder("Summary")
             .expanded(true)
-            .blocks(SectionBlock.builder().markdownText("Version 2.3.0 is ready.").build())
+            .blocks(SectionBlock.builder().markdownText("Version 2.2.0 is ready.").build())
             .build(),
         AccordionSection.builder("Checks")
             .blocks(SectionBlock.builder().markdownText("All required checks passed.").build())
@@ -2433,7 +2433,7 @@ List<Block> blocks = Accordion.builder()
 ChatPostMessageRequest request = ChatPostMessageRequest.builder()
     .channel("C01234567")
     .text("Deployment details")
-    .blocks(new ArrayList<>(blocks))
+    .blocks(List.copyOf(blocks))
     .build();
 ```
 

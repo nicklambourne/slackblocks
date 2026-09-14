@@ -5,12 +5,12 @@ package io.github.nicklambourne.slackblocks;
  *
  * @param <T> immutable Slack value produced by this builder
  */
-@FunctionalInterface
 public interface Buildable<T extends SlackObject> {
   /**
    * Builds and validates an immutable value.
    *
    * @return a defensive snapshot of the configured value
+   * @throws ValidationException if the configured value breaks a Slack Block Kit rule
    */
   T build();
 }

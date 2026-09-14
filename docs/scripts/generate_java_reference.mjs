@@ -21,25 +21,42 @@ function cleanJavadoc(raw) {
   const lines = raw.split("\n").map((line) => line.replace(/^\s*\* ?/, ""));
   const tags = new Map();
   const prose = [];
+  let see;
+  let current;
   for (const line of lines) {
     const tag = line.match(/^@(param|return|throws)\s+(\S+)?\s*(.*)$/);
+    const seeTag = line.match(/^@see\s+<a href="([^"]+)">([^<]*)<\/a>/);
     if (tag) {
       const [, kind, name = "", description] = tag;
-      const key = kind === "return" ? "return" : `${kind}:${name}`;
-      tags.set(key, renderInline(description));
-    } else if (!line.startsWith("@see") && !line.includes("{@inheritDoc}")) {
+      current = kind === "return" ? "return" : `${kind}:${name}`;
+      tags.set(current, kind === "return" ? `${name} ${description}`.trim() : description);
+    } else if (line.startsWith("@see")) {
+      current = undefined;
+      const joined = line.match(/^@see\s+<a href="([^"]+)">/);
+      see = seeTag ? { url: seeTag[1], label: seeTag[2] } : joined ? { url: joined[1], label: "Slack reference" } : see;
+    } else if (current && line.trim() && !line.startsWith("@")) {
+      tags.set(current, `${tags.get(current)} ${line.trim()}`);
+    } else if (!line.includes("{@inheritDoc}")) {
+      current = undefined;
       prose.push(line);
     }
   }
-  return { prose: renderInline(prose.join("\n").trim()), tags };
+  for (const [key, value] of tags) {
+    tags.set(key, renderInline(value));
+  }
+  return { prose: renderInline(prose.join("\n").trim()), tags, see };
 }
 
 function renderInline(value) {
   return value
+    .replace(/<pre>\{@code\n?([\s\S]*?)\n?}<\/pre>/g, (_, code) => `\n\n\`\`\`java\n${code}\n\`\`\`\n\n`)
+    .replace(/<ul>\s*/g, "\n\n")
+    .replace(/\s*<li>\s*/g, "\n- ")
+    .replace(/\s*<\/ul>/g, "\n\n")
     .replace(/\{@code\s+([^}]+)}/g, "`$1`")
-    .replace(/\{@link\s+([^}\s#]+)(?:#[^}\s]+)?(?:\s+([^}]+))?}/g, (_, target, label) => `\`${label ?? target}\``)
+    .replace(/\{@link\s+([^}\s]+)(?:\s+([^}]+))?}/g, (_, target, label) => `\`${label ?? target.replace(/^#/, "").replace("#", ".")}\``)
     .replace(/<p>/g, "\n\n")
-    .replace(/<\/?[^>]+>/g, "")
+    .replace(/<\/?(?:p|a|em|strong|b|i)(?:\s[^>]*)?>/g, "")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
@@ -50,8 +67,16 @@ function className(source, file) {
 }
 
 function classDocumentation(source, name) {
-  const declaration = new RegExp(`/\\*\\*([\\s\\S]*?)\\*/\\s*(?:@\\w+(?:\\([^\\n]+\\))?\\s*)*public\\s+(?:final\\s+)?(?:class|interface|enum)\\s+${name}\\b`);
-  return cleanJavadoc(source.match(declaration)?.[1] ?? "").prose;
+  const declaration = new RegExp(`/\\*\\*((?:(?!\\*/)[\\s\\S])*)\\*/\\s*(?:@\\w+(?:\\([^\\n]+\\))?\\s*)*public\\s+(?:final\\s+)?(?:class|interface|enum)\\s+${name}\\b`);
+  return cleanJavadoc(source.match(declaration)?.[1] ?? "");
+}
+
+function enumConstants(source) {
+  const constants = [];
+  for (const match of source.matchAll(/\/\*\*\s*([^*]*?)\s*\*\/\s*([A-Z][A-Z0-9_]*)\("([^"]*)"\)[,;]/g)) {
+    constants.push({ name: match[2], wire: match[3], description: renderInline(match[1]) });
+  }
+  return constants;
 }
 
 function publicMethods(source) {
@@ -90,7 +115,8 @@ function parameterTypes(signature) {
 
 function methodSection(method, typeLinks, overloaded) {
   const baseHeading = method.name === "build" ? "Build" : method.name.replace(/^[a-z]/, (letter) => letter.toUpperCase());
-  const heading = overloaded ? `${baseHeading} — ${parameterTypes(method.signature)}` : baseHeading;
+  const parameterList = parameterTypes(method.signature);
+  const heading = overloaded ? `${baseHeading} — ${parameterList ? `\`${parameterList}\`` : "no arguments"}` : baseHeading;
   let output = `### ${heading}\n\n`;
   if (method.docs.prose) output += `${linkTypes(method.docs.prose, typeLinks)}\n\n`;
   output += `\`\`\`java\n${method.signature}\n\`\`\`\n\n`;
@@ -104,6 +130,14 @@ function methodSection(method, typeLinks, overloaded) {
   }
   const returns = method.docs.tags.get("return");
   if (returns) output += `**Returns:** ${linkTypes(returns, typeLinks)}\n\n`;
+  const throws = [...method.docs.tags.entries()].filter(([key]) => key.startsWith("throws:"));
+  if (throws.length) {
+    output += "| Throws | When |\n| --- | --- |\n";
+    for (const [key, description] of throws) {
+      output += `| ${linkTypes(key.slice(7), typeLinks)} | ${linkTypes(description, typeLinks)} |\n`;
+    }
+    output += "\n";
+  }
   const related = [...typeLinks.keys()]
     .filter((name) => new RegExp(`\\b${name}\\b`).test(method.signature))
     .sort();
@@ -114,12 +148,19 @@ function methodSection(method, typeLinks, overloaded) {
 }
 
 function linkTypes(value, typeLinks) {
-  let result = value;
-  for (const [name, href] of [...typeLinks].sort((a, b) => b[0].length - a[0].length)) {
-    if (name === "Block") continue;
-    result = result.replace(new RegExp(`(?<![\\w\`])${name}(?![\\w\`])`, "g"), `[\`${name}\`](${href})`);
-  }
-  return result;
+  // Leave fenced code untouched; link type names only in prose.
+  return value
+    .split(/(```[\s\S]*?```)/)
+    .map((part) => {
+      if (part.startsWith("```")) return part;
+      let result = part;
+      for (const [name, href] of [...typeLinks].sort((a, b) => b[0].length - a[0].length)) {
+        if (name === "Block") continue;
+        result = result.replace(new RegExp(`(?<![\\w\`\\[])${name}(?![\\w\`\\]])`, "g"), `[\`${name}\`](${href})`);
+      }
+      return result;
+    })
+    .join("");
 }
 
 function anchor(name) {
@@ -135,7 +176,8 @@ for (const domain of domains) {
   for (const file of await sourceFiles(domain)) {
     const source = await readFile(file, "utf8");
     const name = className(source, file);
-    types.push({ name, description: classDocumentation(source, name), methods: publicMethods(source) });
+    const docs = classDocumentation(source, name);
+    types.push({ name, description: docs.prose, see: docs.see, constants: enumConstants(source), methods: publicMethods(source) });
   }
   parsed.push({ ...domain, types });
 }
@@ -153,6 +195,14 @@ for (const domain of parsed) {
   for (const type of domain.types) {
     output += `## ${type.name}\n\n`;
     output += `${linkTypes(type.description || `Public ${type.name} API.`, typeLinks)}\n\n`;
+    if (type.see) output += `See the [Slack reference](${type.see.url}).\n\n`;
+    if (type.constants.length) {
+      output += "| Constant | Slack value | Meaning |\n| --- | --- | --- |\n";
+      for (const constant of type.constants) {
+        output += `| \`${constant.name}\` | \`${constant.wire}\` | ${constant.description} |\n`;
+      }
+      output += "\n";
+    }
     const methodCounts = new Map();
     for (const method of type.methods) {
       methodCounts.set(method.name, (methodCounts.get(method.name) ?? 0) + 1);
