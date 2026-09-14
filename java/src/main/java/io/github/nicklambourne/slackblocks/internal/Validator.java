@@ -134,7 +134,8 @@ public final class Validator {
       throw new IllegalArgumentException("builder name must not be empty");
     }
     if (value.isEmpty()) {
-      throw new IllegalArgumentException("Slack object must not be empty");
+      throw new ValidationException(
+          ErrorCategory.MISSING_REQUIRED, name, "expected at least one field");
     }
     validateBuilder(name, value);
     validateObject(value, "");
