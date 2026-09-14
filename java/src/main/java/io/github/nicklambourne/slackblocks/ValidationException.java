@@ -1,6 +1,13 @@
 package io.github.nicklambourne.slackblocks;
 
-/** Thrown when a builder cannot produce a valid Slack Block Kit value. */
+/**
+ * Thrown when a builder cannot produce a valid Slack Block Kit value.
+ *
+ * <p>This is an {@link IllegalArgumentException}, so code that already treats invalid arguments
+ * uniformly continues to work. Catch {@code ValidationException} when you need the stable {@link
+ * #getCategory() category} or the {@link #getPath() path} of the invalid field. Paths start with
+ * the public Java type being built, for example {@code SectionBlock.fields[2].text}.
+ */
 public final class ValidationException extends IllegalArgumentException {
   private static final long serialVersionUID = 1L;
 
@@ -33,7 +40,7 @@ public final class ValidationException extends IllegalArgumentException {
   }
 
   /**
-   * Returns the dotted path of the invalid field.
+   * Returns the dotted path of the invalid field, starting with the Java type being built.
    *
    * @return the field path
    */
