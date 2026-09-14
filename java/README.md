@@ -45,6 +45,22 @@ SectionBlock block = SectionBlock.builder()
 
 Known Slack limits, required fields, mutually exclusive fields, and composition restrictions are checked at `build()`. A failure throws `ValidationException` with a stable `ErrorCategory` and field path.
 
+## Read built values
+
+Built values have typed getters. Required fields return their type, optional fields return `Optional`, and collections return lists:
+
+```java
+import io.github.nicklambourne.slackblocks.object.Text;
+import java.util.Optional;
+
+Optional<Text> text = block.getText();
+Optional<ButtonElement> review =
+    block.getAccessory().map(ButtonElement.class::cast);
+String actionId = review.orElseThrow().getActionId();
+```
+
+`toMap()` and `toJson()` return the Slack wire form.
+
 ## Send with the official Slack Java SDK
 
 Built blocks implement `com.slack.api.model.block.LayoutBlock` directly, so no adapter or transport wrapper is needed. Keep delivery concerns on the Slack SDK request:
