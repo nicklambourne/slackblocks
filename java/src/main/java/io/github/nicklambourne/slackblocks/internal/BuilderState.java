@@ -50,6 +50,22 @@ public final class BuilderState {
     values.put(field, existing);
   }
 
+  /**
+   * Sets one key inside a nested wire object, keeping any keys already set. Used for rich text
+   * style flags.
+   */
+  public void merge(String field, String key, Object value) {
+    Map<String, Object> merged = new LinkedHashMap<>();
+    Object existing = values.get(field);
+    if (existing instanceof SlackObject slackObject) {
+      merged.putAll(slackObject.toMap());
+    } else if (existing instanceof Map<?, ?> map) {
+      map.forEach((nestedKey, nested) -> merged.put(String.valueOf(nestedKey), nested));
+    }
+    merged.put(key, Objects.requireNonNull(value, key));
+    values.put(field, merged);
+  }
+
   /** Returns a configured field for builder-specific transforms. */
   public @Nullable Object get(String field) {
     return values.get(field);
