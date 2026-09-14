@@ -5,15 +5,14 @@ on:
     branches: [master]
     paths:
       - "java/**"
-      - "go/**"
       - "spec/**"
+      - "go/internal/builder_methods.json"
+      - "docs/docs/**"
+      - "docs/examples/java/**"
+      - "docs/examples/section_hello.json"
+      - "README.md"
       - ".github/workflows/java.yml"
   pull_request:
-    paths:
-      - "java/**"
-      - "go/**"
-      - "spec/**"
-      - ".github/workflows/java.yml"
   workflow_dispatch:
 
 permissions:
@@ -24,18 +23,50 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: Detect relevant changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Compare changed files against this workflow's scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ]; then
+            # Fail open: if the file list cannot be read, run the real checks.
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if grep -qE '^(java/|spec/|go/internal/builder_methods\.json$|docs/docs/|docs/examples/java/|docs/examples/section_hello\.json$|README\.md$|\.github/workflows/java\.yml$)' <<<"$files"; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
+
   test:
+    needs: changes
     name: Java ${{ matrix.java-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        java-version: ["17", "latest"]
+        # 17 is the minimum runtime; 21 and 25 are the current LTS releases; latest catches
+        # breakage from the next JDK early. Formatting and static analysis need JDK 21+.
+        java-version: ["17", "21", "25", "latest"]
     steps:
       - name: Check out repository
+        if: needs.changes.outputs.relevant == 'true'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Install Java ${{ matrix.java-version }}
+        if: needs.changes.outputs.relevant == 'true'
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
         with:
           distribution: temurin
@@ -43,17 +74,26 @@ jobs:
           cache: maven
           cache-dependency-path: java/pom.xml
 
+      - name: Install Python for the model generator
+        if: needs.changes.outputs.relevant == 'true' && matrix.java-version == '21'
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
       - name: Verify generated model sources are current
+        if: needs.changes.outputs.relevant == 'true' && matrix.java-version == '21'
         run: |
-          python3 java/generator/generate_models.py
+          python java/generator/generate_models.py --check-go
+          (cd java && ./mvnw -B -ntp spotless:apply)
           git diff --exit-code -- java/src/main/java
 
       - name: Build and test
+        if: needs.changes.outputs.relevant == 'true'
         working-directory: java
         run: ./mvnw -B -ntp clean verify
 
       - name: Upload Maven artifacts
-        if: matrix.java-version == 'latest'
+        if: needs.changes.outputs.relevant == 'true' && matrix.java-version == '21'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: java-distributions
