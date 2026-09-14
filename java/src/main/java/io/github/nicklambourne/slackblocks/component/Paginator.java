@@ -10,8 +10,25 @@ import io.github.nicklambourne.slackblocks.object.MarkdownText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
-/** Renders one page of blocks plus transparent Block Kit navigation controls. */
+/**
+ * Renders one page of blocks plus previous and next buttons.
+ *
+ * <p>The buttons' action IDs are {@code <prefix>.previous} and {@code <prefix>.next}, and their
+ * values hold the one-based page to show next, so an action handler can rebuild the message for
+ * that page. Pass the result to the Slack SDK with {@code List.copyOf}, which widens it to {@code
+ * List<LayoutBlock>}:
+ *
+ * <pre>{@code
+ * List<Block> page = Paginator.builder("results").blocks(results).page(2).build();
+ * client.chatPostMessage(ChatPostMessageRequest.builder()
+ *     .channel("C0123456")
+ *     .text("Search results")
+ *     .blocks(List.copyOf(page))
+ *     .build());
+ * }</pre>
+ */
 public final class Paginator {
   private Paginator() {}
 
@@ -34,7 +51,7 @@ public final class Paginator {
     private String previousText = "Previous";
     private String nextText = "Next";
     private boolean showPageIndicator = true;
-    private String blockId;
+    private @Nullable String blockId;
 
     private Builder(String actionIdPrefix) {
       this.actionIdPrefix = Objects.requireNonNull(actionIdPrefix, "actionIdPrefix");
@@ -107,7 +124,8 @@ public final class Paginator {
     }
 
     /**
-     * Sets the generated actions block identifier.
+     * Sets the identifier of the generated actions block. It is not used when every block fits on
+     * one page, because no controls are rendered.
      *
      * @param value block identifier
      * @return this builder
@@ -118,9 +136,12 @@ public final class Paginator {
     }
 
     /**
-     * Builds ordinary blocks ready for {@code ChatPostMessageRequest.blocks}.
+     * Builds the selected page followed, when there is more than one page, by a "Page n of m"
+     * context block and the navigation buttons.
      *
-     * @return immutable selected-page blocks followed by controls when needed
+     * @return immutable list of ordinary blocks
+     * @throws ValidationException if there are no blocks, the prefix is empty, or the page or page
+     *     size is out of range
      */
     public List<Block> build() {
       if (blocks.isEmpty()) {
@@ -151,21 +172,28 @@ public final class Paginator {
 
       List<ButtonElement> controls = new ArrayList<>();
       if (page > 1) {
-        controls.add(ButtonElement.builder(previousText, actionIdPrefix + ".previous")
-            .value(Integer.toString(page - 1)).build());
+        controls.add(
+            ButtonElement.builder(previousText, actionIdPrefix + ".previous")
+                .value(Integer.toString(page - 1))
+                .build());
       }
       if (page < pageCount) {
-        controls.add(ButtonElement.builder(nextText, actionIdPrefix + ".next")
-            .value(Integer.toString(page + 1)).build());
+        controls.add(
+            ButtonElement.builder(nextText, actionIdPrefix + ".next")
+                .value(Integer.toString(page + 1))
+                .build());
       }
       if (showPageIndicator) {
-        result.add(ContextBlock.builder()
-            .elements(MarkdownText.of("Page " + page + " of " + pageCount)).build());
+        result.add(
+            ContextBlock.builder()
+                .elements(MarkdownText.of("Page " + page + " of " + pageCount))
+                .build());
       }
-      ActionsBlock.Builder actions = ActionsBlock.builder()
-          .elements(controls.toArray(ButtonElement[]::new));
-      if (blockId != null) {
-        actions.blockId(blockId);
+      ActionsBlock.Builder actions =
+          ActionsBlock.builder().elements(controls.toArray(ButtonElement[]::new));
+      String identifier = blockId;
+      if (identifier != null) {
+        actions.blockId(identifier);
       }
       result.add(actions.build());
       return List.copyOf(result);

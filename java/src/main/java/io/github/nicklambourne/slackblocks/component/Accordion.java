@@ -7,7 +7,11 @@ import io.github.nicklambourne.slackblocks.block.ContainerBlock;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Assembles independently collapsible sections without application-side state. */
+/**
+ * Assembles independently collapsible sections. Slack handles expanding and collapsing, so no
+ * interaction handler is needed. Pass the result to the Slack SDK with {@code List.copyOf}, which
+ * widens it to {@code List<LayoutBlock>}.
+ */
 public final class Accordion {
   private Accordion() {}
 
@@ -41,6 +45,7 @@ public final class Accordion {
      * Builds ordinary Slack container blocks ready for an SDK request.
      *
      * @return immutable list of container blocks
+     * @throws ValidationException if there are no sections or a section is not collapsible
      */
     public List<Block> build() {
       if (sections.isEmpty()) {
