@@ -377,13 +377,13 @@ var response = client.chatPostMessage(ChatPostMessageRequest.builder()
 
 Validation runs in `build()` before the request is created. Use a channel ID where possible and always supply a short `text` fallback for notifications and accessibility.
 
-Higher-level components produce the same native block values:
+Import slackblocks classes by name, because the SDK defines classes with the same simple names in `com.slack.api.model.block`.
+
+Higher-level components produce the same native block values. `List.copyOf` widens their `List<Block>` result to the `List<LayoutBlock>` the SDK expects:
 
 ```java
-import com.slack.api.model.block.LayoutBlock;
 import io.github.nicklambourne.slackblocks.block.Block;
 import io.github.nicklambourne.slackblocks.component.Paginator;
-import java.util.ArrayList;
 import java.util.List;
 
 List<Block> pages = Paginator.builder("search-results")
@@ -393,11 +393,10 @@ List<Block> pages = Paginator.builder("search-results")
     .pageSize(1)
     .build();
 
-List<LayoutBlock> sdkBlocks = new ArrayList<>(pages);
 client.chatPostMessage(ChatPostMessageRequest.builder()
     .channel("C0123456")
     .text("Search results")
-    .blocks(sdkBlocks)
+    .blocks(List.copyOf(pages)) // widens List<Block> to List<LayoutBlock>
     .build());
 ```
 
@@ -424,10 +423,11 @@ Slack.getInstance().send(System.getenv("SLACK_WEBHOOK_URL"), payload);
 
 ```java
 import io.github.nicklambourne.slackblocks.payload.MessageResponse;
+import io.github.nicklambourne.slackblocks.payload.ResponseType;
 
 String responseBody = MessageResponse.builder()
     .blocks(SectionBlock.builder().markdownText("Got it! Working on that now...").build())
-    .responseType("ephemeral")
+    .responseType(ResponseType.EPHEMERAL)
     .build()
     .toJson();
 ```

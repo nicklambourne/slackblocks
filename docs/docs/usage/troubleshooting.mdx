@@ -381,6 +381,14 @@ Categories are identical across every implementation: `length-exceeded`, `out-of
 
 slackblocks constructs outgoing Block Kit values. Your application still needs an interactivity endpoint and event handlers. [Bolt for Java](https://slack.dev/java-slack-sdk/guides/bolt-basics) is the usual starting point; the builders are immutable and safe to construct inside concurrent handlers.
 
+## Why does the compiler say a block class reference is ambiguous?
+
+slackblocks and the Slack SDK both define classes such as `SectionBlock` and `ButtonElement`. Replace wildcard imports with single-type imports of the slackblocks classes you use. If one file genuinely needs both versions, refer to the SDK class by its fully qualified name.
+
+## How do I pass a `Paginator` or `Accordion` result to the SDK?
+
+Components return `List<Block>`, and the SDK request builder expects `List<LayoutBlock>`. `List.copyOf(blocks)` widens the list without a cast: `.blocks(List.copyOf(blocks))`.
+
 ## How do I preview a payload?
 
 Print `SlackblocksJson.write(value)` and paste it into Slack's [Block Kit Builder](https://app.slack.com/block-kit-builder).

@@ -28,6 +28,14 @@ for (const [domain, type, method] of [
 }
 
 assert.match(pages.get("blocks"), /official `LayoutBlock` interface/);
+assert.match(pages.get("blocks"), /Slack allows at most 3000 characters\./, "limits must be documented");
+assert.match(pages.get("blocks"), /\| Throws \| When \|/, "build exceptions must be documented");
+assert.match(pages.get("blocks"), /See the \[Slack reference\]\(https:\/\/docs\.slack\.dev\/reference\/block-kit\/blocks\/section-block\)/);
+assert.match(pages.get("blocks"), /^- Required: `text`\.$/m, "required fields must be listed");
+assert.doesNotMatch(rendered, /\{@(?:code|link)/, "Javadoc inline tags must be rendered");
+assert.match(pages.get("elements"), /^\| `PRIMARY` \| `primary` \|/m, "enum constants must be documented");
+assert.doesNotMatch(rendered, /^### \w+ — $/m, "overload headings must name their parameters");
+assert.doesNotMatch(rendered, /<\/?(?:ul|li|pre)>/, "Javadoc HTML must be rendered as Markdown");
 assert.match(pages.get("components"), /ordinary `List<Block>` values/);
 assert.match(pages.get("core"), /^## SlackObject$/m);
 assert.match(pages.get("errors"), /^## ValidationException$/m);
