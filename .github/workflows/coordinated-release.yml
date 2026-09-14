@@ -72,12 +72,39 @@ jobs:
             exit 1
           fi
 
+          release_date=""
           for changelog in python/CHANGELOG.md typescript/CHANGELOG.md go/CHANGELOG.md java/CHANGELOG.md; do
-            if ! grep -Fq "## [$version]" "$changelog"; then
+            heading=$(grep -F "## [$version]" "$changelog" | head -n 1 || true)
+            if [ -z "$heading" ]; then
               echo "::error file=$changelog::Missing release notes for version $version."
               exit 1
             fi
+            date=$(grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' <<<"$heading" || true)
+            if [ -z "$date" ]; then
+              # Pull requests may carry "Unreleased"; the release itself needs the real date,
+              # because each publisher copies this section into its GitHub Release.
+              if [ "$RELEASE_EVENT" = "workflow_dispatch" ]; then
+                echo "::error file=$changelog::Replace 'Unreleased' in the $version heading with the release date (YYYY-MM-DD)."
+                exit 1
+              fi
+              echo "::warning file=$changelog::The $version heading has no release date yet."
+            elif [ -n "$release_date" ] && [ "$date" != "$release_date" ]; then
+              echo "::error file=$changelog::Changelog release dates differ ($date and $release_date)."
+              exit 1
+            else
+              release_date="$date"
+            fi
           done
+
+          timestamp=$(node -e "const text = require('fs').readFileSync('java/pom.xml', 'utf8'); const match = text.match(/<project.build.outputTimestamp>([^<]+)</); if (!match) process.exit(1); process.stdout.write(match[1]);")
+          if [ -n "$release_date" ] && [[ "$timestamp" != "$release_date"T* ]]; then
+            message="Set project.build.outputTimestamp in java/pom.xml to ${release_date}T00:00:00Z so the Java artifacts are reproducible for this release (found $timestamp)."
+            if [ "$RELEASE_EVENT" = "workflow_dispatch" ]; then
+              echo "::error file=java/pom.xml::$message"
+              exit 1
+            fi
+            echo "::warning file=java/pom.xml::$message"
+          fi
 
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "Validated coordinated release $version."

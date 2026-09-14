@@ -92,11 +92,6 @@ jobs:
         working-directory: java
         run: ./mvnw -B -ntp clean verify
 
-      - name: Validate Maven Central bundle configuration
-        if: matrix.java-version == 'latest'
-        working-directory: java
-        run: ./mvnw -B -ntp -Prelease -Dgpg.skip=true package
-
       - name: Upload Maven artifacts
         if: needs.changes.outputs.relevant == 'true' && matrix.java-version == '21'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -104,3 +99,65 @@ jobs:
           name: java-distributions
           path: java/target/*.jar
           if-no-files-found: error
+
+  release-dry-run:
+    needs: changes
+    name: Signed Maven Central bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      # A throwaway key that expires in a day exercises the same import, passphrase, and signing
+      # path as the real publisher without touching the maven-central environment secrets.
+      - name: Create a throwaway signing key
+        if: needs.changes.outputs.relevant == 'true'
+        id: key
+        run: |
+          set -euo pipefail
+          export GNUPGHOME="$RUNNER_TEMP/throwaway-gnupg"
+          mkdir -m 700 "$GNUPGHOME"
+          passphrase="$(openssl rand -hex 24)"
+          echo "::add-mask::$passphrase"
+          gpg --batch --pinentry-mode loopback --passphrase "$passphrase" \
+            --quick-gen-key "slackblocks CI dry run <ci-dry-run@invalid>" ed25519 sign 1d
+          {
+            echo "passphrase=$passphrase"
+            echo "private-key<<THROWAWAY_KEY"
+            gpg --batch --pinentry-mode loopback --passphrase "$passphrase" --armor --export-secret-keys
+            echo "THROWAWAY_KEY"
+          } >> "$GITHUB_OUTPUT"
+          gpgconf --kill gpg-agent
+
+      - name: Install Java and import the throwaway key
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: java/pom.xml
+          server-id: central
+          server-username-env-var: MAVEN_CENTRAL_USERNAME
+          server-password-env-var: MAVEN_CENTRAL_TOKEN
+          gpg-private-key: ${{ steps.key.outputs.private-key }}
+          gpg-passphrase-env-var: MAVEN_GPG_PASSPHRASE
+
+      - name: Build and sign the release bundle without deploying
+        if: needs.changes.outputs.relevant == 'true'
+        working-directory: java
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ steps.key.outputs.passphrase }}
+        run: ./mvnw -B -ntp -Prelease -DskipTests clean verify
+
+      - name: Verify every artifact is signed
+        if: needs.changes.outputs.relevant == 'true'
+        working-directory: java/target
+        run: |
+          set -euo pipefail
+          for artifact in slackblocks-*.jar slackblocks-*.pom; do
+            gpg --verify "$artifact.asc" "$artifact"
+          done
+          signatures=(slackblocks-*.asc)
+          test "${#signatures[@]}" -eq 4

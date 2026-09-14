@@ -10,17 +10,30 @@ TypeScript, and Go packages. The package supports Java 17 and newer.
 
 ### Added
 
-- Immutable, fluent concrete builders for Slack Block Kit composition objects,
-  elements, blocks, messages, attachments, responses, modals, and App Home
-  payloads.
-- Typed, path-aware validation for required fields, string and collection
-  limits, supported block surfaces, and modal submission rules.
-- Direct Slack Java SDK interoperability: top-level block values implement
-  `LayoutBlock` and can be supplied directly to the official Slack client.
-- Shared valid and invalid conformance coverage against the same JSON fixtures
-  used by the Python, TypeScript, and Go implementations.
+- Immutable values with concrete fluent builders for Slack Block Kit
+  composition objects, elements, blocks, messages, attachments, responses,
+  modals, and App Home payloads.
+- Typed builder methods: text fields accept a string or a `PlainText`/`Text`
+  object, nested fields accept their Slack type, and closed value sets use enums
+  such as `ButtonStyle`, `AlertLevel`, `ContainerWidth`, and `TaskStatus`.
+- Rich text style methods (`bold`, `italic`, `strike`, `code`, and mention
+  highlighting) and a reusable `RichTextStyle`.
+- Validation at `build()` for required fields, string and collection limits,
+  mutually exclusive fields, supported block surfaces, and modal submission
+  rules. `ValidationException` reports a stable category and a path rooted at
+  the Java type being built.
+- Direct Slack Java SDK interoperability: blocks implement `LayoutBlock`,
+  elements extend `BlockElement`, and text objects extend `TextObject`.
 - Higher-level `Accordion` and `Paginator` components that expand into ordinary
   Slack blocks.
-- Complete language-specific guides and generated API reference documentation.
-- Java 17 and latest-stable CI coverage, reproducible source generation, signed
-  Maven Central publishing, and coordinated release automation.
+- A `wireField` escape hatch for Slack fields that do not have a named method
+  yet, restricted to JSON-compatible values.
+- Shared valid and invalid conformance coverage, built through the named
+  builder methods, against the same JSON fixtures as the Python, TypeScript,
+  and Go implementations.
+- Language-specific guides and a generated API reference that documents limits,
+  required fields, and exceptions; every Java documentation snippet is compiled
+  and checked in CI.
+- Java 17, 21, 25, and latest-JDK CI with google-java-format, Error Prone, and
+  NullAway, reproducible source generation, signed Maven Central publishing,
+  and coordinated release automation.

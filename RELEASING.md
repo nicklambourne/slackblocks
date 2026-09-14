@@ -65,14 +65,41 @@ These must be in place before the workflows can publish:
    the exact form `go/vX.Y.Z`. The workflow verifies the module and creates the
    corresponding GitHub Release; consumers and the public Go proxy resolve it
    directly from the repository.
-5. **Maven Central credentials and signing** — create a Central Portal account,
-   verify the `io.github.nicklambourne` namespace, and generate a Portal user
-   token. Generate a GPG signing key and publish its public key to a public key
-   server. Add the following secrets to the `maven-central` environment:
-   `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_TOKEN`,
-   `MAVEN_GPG_PRIVATE_KEY` (the ASCII-armored private key), and
-   `MAVEN_GPG_PASSPHRASE`. The Java publisher signs the POM and all three JARs,
-   uploads the bundle, and waits for Central to validate and publish it.
+5. **Maven Central namespace, credentials, and signing**
+   1. Sign in to the [Central Portal](https://central.sonatype.com) with the
+      `nicklambourne` GitHub account.
+   2. Open **Namespaces** and add `io.github.nicklambourne`. The portal shows a
+      verification key. Create a temporary **public** repository named exactly
+      that key under `github.com/nicklambourne`, return to the portal, and
+      select **Verify Namespace**. Delete the temporary repository once the
+      namespace shows as verified. The first publish fails until this is done.
+   3. Open **View Account** → **Generate User Token**. Store the token's
+      username and password as `MAVEN_CENTRAL_USERNAME` and
+      `MAVEN_CENTRAL_TOKEN` in the `maven-central` environment.
+   4. Create a dedicated release signing key with an expiry, and note its key ID
+      and expiry date in this file:
+
+      ```sh
+      gpg --quick-gen-key "slackblocks release signing <maintainer-email>" rsa4096 sign 2y
+      gpg --list-secret-keys --keyid-format long
+      gpg --keyserver hkps://keyserver.ubuntu.com --send-keys <KEY_ID>
+      gpg --keyserver hkps://keys.openpgp.org --send-keys <KEY_ID>
+      gpg --armor --export-secret-keys <KEY_ID>
+      ```
+
+      keys.openpgp.org emails a confirmation link before it serves the key.
+      Central fetches public keys from these servers to verify signatures, so
+      publish before the first release and again after extending the expiry.
+   5. Store the armored private key as `MAVEN_GPG_PRIVATE_KEY` and its
+      passphrase as `MAVEN_GPG_PASSPHRASE` in the `maven-central` environment.
+
+   The Java publisher signs the POM and all three JARs, uploads the bundle, and
+   waits until Central has **validated** it. `java/pom.xml` sets
+   `autoPublish` to `false` for the first Java release, so 2.3.0 stays in the
+   portal until a maintainer publishes it (see the procedure below). Java CI's
+   **Signed Maven Central bundle** job signs a dry-run bundle with a throwaway
+   key on every relevant pull request, so signing problems surface before a
+   release.
 
 ## Coordinated release procedure
 
@@ -98,7 +125,8 @@ missing from `docs/versions.json` (or the legacy manifest).
    `docs/versioned_docs/version-<outgoing>` and prepends `<outgoing>` to
    `docs/versions.json`. (The very first monorepo release is the exception: its
    outgoing `2.0.0` is a legacy version already frozen in the manifest.)
-2. Bump the version in **all three** package manifests on the same branch:
+2. Bump the version in every package manifest and the Java version constant
+   on the same branch:
    - `python/pyproject.toml` (`project.version`)
    - `typescript/package.json` (`version`)
    - `java/pom.xml` (`project.version`)
@@ -113,9 +141,15 @@ missing from `docs/versions.json` (or the legacy manifest).
 3. Add a `## [X.Y.Z] — YYYY-MM-DD` section to `python/CHANGELOG.md`,
    `typescript/CHANGELOG.md`, `go/CHANGELOG.md`, and `java/CHANGELOG.md`. The
    publish workflows extract the matching section for their GitHub Release
-   notes.
-4. Merge to `master` and wait for CI to pass.
-5. In GitHub Actions, open **Coordinated Release**, select **Run workflow**,
+   notes. Pull requests may use `Unreleased` while the release is prepared, but
+   replace it with the release date before dispatching: the coordinator rejects
+   headings without a date, and dates that differ between changelogs.
+4. Set `project.build.outputTimestamp` in `java/pom.xml` to the same date,
+   such as `2026-09-20T00:00:00Z`. The value makes the Java JARs reproducible,
+   and the coordinator rejects a release whose timestamp does not match the
+   changelog date.
+5. Merge to `master` and wait for CI to pass.
+6. In GitHub Actions, open **Coordinated Release**, select **Run workflow**,
    keep the branch set to `master`, and enter `X.Y.Z`. The equivalent CLI
    command is:
 
@@ -123,11 +157,20 @@ missing from `docs/versions.json` (or the legacy manifest).
    gh workflow run coordinated-release.yml --ref master -f version=X.Y.Z
    ```
 
-6. The coordinator atomically pushes `python/vX.Y.Z`, `ts/vX.Y.Z`,
+7. The coordinator atomically pushes `python/vX.Y.Z`, `ts/vX.Y.Z`,
    `go/vX.Y.Z`, and `java/vX.Y.Z`, then dispatches and monitors all four
    publishers.
    Each publisher creates its own GitHub Release after its registry step
    succeeds.
+8. **Java only, while `autoPublish` is `false`:** when the Java publisher
+   finishes, open **Deployments** in the Central Portal. Check that the
+   `io.github.nicklambourne:slackblocks:X.Y.Z` deployment is validated and
+   contains the binary, sources, and Javadoc JARs, the POM, and a `.asc`
+   signature for each, then select **Publish**. Do this promptly: the Java
+   GitHub Release already exists. If the bundle is wrong, select **Drop**
+   instead, fix the problem, and release a new patch version of every package.
+   After the first Java release, set `autoPublish` to `true` in `java/pom.xml`
+   so later releases publish without this step.
 
 If the coordinator is unavailable, the direct tag triggers remain as a manual
 fallback. Create all four signed tags at the same commit and push them
@@ -163,9 +206,12 @@ All four workflows are safe to re-run from the Actions UI:
 - **Go** — the tag is the published module version. Re-run the workflow if only
   verification or GitHub Release creation failed; do not move or replace a
   public module tag.
-- **Maven Central** — published versions are immutable. Re-run only if the
-  deployment did not reach the published state; if Central already lists the
-  version, treat the registry step as complete.
+- **Maven Central** — published versions are immutable. If the Central
+  Portal shows the deployment as **validated** but not published, publish or
+  drop it in the portal rather than re-running the workflow: a second upload of
+  the same version is rejected. Re-run the workflow only if no deployment for
+  the version exists, or after dropping a failed one. If Central already lists
+  the version, treat the registry step as complete.
 - **GitHub Releases** — the release step skips itself if a release for the
   tag already exists.
 
