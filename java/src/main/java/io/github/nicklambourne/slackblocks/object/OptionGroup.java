@@ -7,7 +7,9 @@ import io.github.nicklambourne.slackblocks.SlackObject;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -28,10 +30,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class OptionGroup implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private OptionGroup(Map<String, Object> values) {
+  private OptionGroup(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -42,6 +46,28 @@ public final class OptionGroup implements SlackObject {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the group heading.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public PlainText getLabel() {
+    return TypedFields.requiredText(fields, "OptionGroup", "label", PlainText.class);
+  }
+
+  /**
+   * Returns selectable options in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<Option> getOptions() {
+    return TypedFields.list(fields, "OptionGroup", "options", Option.class);
   }
 
   @Override

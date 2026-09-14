@@ -8,7 +8,10 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.Block;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A legacy message attachment containing blocks and an optional color bar.
@@ -27,10 +30,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class Attachment implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private Attachment(Map<String, Object> values) {
+  private Attachment(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -41,6 +46,39 @@ public final class Attachment implements SlackObject {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the attachment's blocks in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<Block> getBlocks() {
+    return TypedFields.list(fields, "Attachment", "blocks", Block.class);
+  }
+
+  /**
+   * Returns the attachment's left border color: a six-digit hex color or good, warning, or danger.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getColor() {
+    return TypedFields.optional(fields, "Attachment", "color", String.class);
+  }
+
+  /**
+   * Returns plain-text summary shown in clients that cannot display attachments.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getFallback() {
+    return TypedFields.optional(fields, "Attachment", "fallback", String.class);
   }
 
   @Override

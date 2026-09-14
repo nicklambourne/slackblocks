@@ -8,11 +8,14 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.ContextActionsElement;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.Confirmation;
 import io.github.nicklambourne.slackblocks.object.PlainText;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A button that shows an icon instead of text.
@@ -32,10 +35,12 @@ import java.util.Objects;
 public final class IconButtonElement extends BlockElement
     implements Element, ContextActionsElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private IconButtonElement(Map<String, Object> values) {
+  private IconButtonElement(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -46,6 +51,85 @@ public final class IconButtonElement extends BlockElement
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the text used as the button's accessible name.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public PlainText getText() {
+    return TypedFields.requiredText(fields, "IconButtonElement", "text", PlainText.class);
+  }
+
+  /**
+   * Returns the icon shown on the button.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<IconButtonIcon> getIcon() {
+    return TypedFields.optionalEnum(
+        fields, "IconButtonElement", "icon", IconButtonIcon::fromWireValue);
+  }
+
+  /**
+   * Returns the identifier Slack returns in interaction payloads when a user acts on this element.
+   * It must be unique among the elements of its block.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getActionId() {
+    return TypedFields.optional(fields, "IconButtonElement", "action_id", String.class);
+  }
+
+  /**
+   * Returns the application-defined value sent in interaction payloads.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getValue() {
+    return TypedFields.optional(fields, "IconButtonElement", "value", String.class);
+  }
+
+  /**
+   * Returns a confirmation dialog shown before the action is sent.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Confirmation> getConfirm() {
+    return TypedFields.optional(fields, "IconButtonElement", "confirm", Confirmation.class);
+  }
+
+  /**
+   * Returns the label read by screen readers in place of the visible text.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getAccessibilityLabel() {
+    return TypedFields.optional(fields, "IconButtonElement", "accessibility_label", String.class);
+  }
+
+  /**
+   * Returns the IDs of users who can see this button.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<String> getVisibleToUserIds() {
+    return TypedFields.list(fields, "IconButtonElement", "visible_to_user_ids", String.class);
   }
 
   @Override

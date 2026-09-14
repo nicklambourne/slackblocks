@@ -8,8 +8,10 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.ContextActionsElement;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.object.FeedbackButton;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A pair of thumbs-up and thumbs-down feedback buttons.
@@ -29,10 +31,12 @@ import java.util.Map;
 public final class FeedbackButtonsElement extends BlockElement
     implements Element, ContextActionsElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private FeedbackButtonsElement(Map<String, Object> values) {
+  private FeedbackButtonsElement(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -43,6 +47,42 @@ public final class FeedbackButtonsElement extends BlockElement
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the button for positive feedback.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public FeedbackButton getPositiveButton() {
+    return TypedFields.required(
+        fields, "FeedbackButtonsElement", "positive_button", FeedbackButton.class);
+  }
+
+  /**
+   * Returns the button for negative feedback.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public FeedbackButton getNegativeButton() {
+    return TypedFields.required(
+        fields, "FeedbackButtonsElement", "negative_button", FeedbackButton.class);
+  }
+
+  /**
+   * Returns the identifier Slack returns in interaction payloads when a user acts on this element.
+   * It must be unique among the elements of its block.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getActionId() {
+    return TypedFields.optional(fields, "FeedbackButtonsElement", "action_id", String.class);
   }
 
   @Override

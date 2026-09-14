@@ -6,6 +6,8 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,10 +27,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class BarChart implements Chart {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private BarChart(Map<String, Object> values) {
+  private BarChart(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -39,6 +43,28 @@ public final class BarChart implements Chart {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns data series in display order. Series names must be unique.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<DataSeries> getSeries() {
+    return TypedFields.list(fields, "BarChart", "series", DataSeries.class);
+  }
+
+  /**
+   * Returns the axis categories and labels. Every series needs exactly one point per category.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public AxisConfig getAxisConfig() {
+    return TypedFields.required(fields, "BarChart", "axis_config", AxisConfig.class);
   }
 
   @Override

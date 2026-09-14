@@ -7,9 +7,11 @@ import io.github.nicklambourne.slackblocks.SlackObject;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * One button of a feedback buttons element.
@@ -28,10 +30,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class FeedbackButton implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private FeedbackButton(Map<String, Object> values) {
+  private FeedbackButton(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -42,6 +46,39 @@ public final class FeedbackButton implements SlackObject {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the button label.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public PlainText getText() {
+    return TypedFields.requiredText(fields, "FeedbackButton", "text", PlainText.class);
+  }
+
+  /**
+   * Returns the application-defined value sent in interaction payloads.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getValue() {
+    return TypedFields.required(fields, "FeedbackButton", "value", String.class);
+  }
+
+  /**
+   * Returns the label read by screen readers in place of the visible text.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getAccessibilityLabel() {
+    return TypedFields.optional(fields, "FeedbackButton", "accessibility_label", String.class);
   }
 
   @Override

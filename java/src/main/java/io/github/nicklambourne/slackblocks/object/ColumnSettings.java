@@ -7,8 +7,10 @@ import io.github.nicklambourne.slackblocks.SlackObject;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Alignment and wrapping settings for one table column.
@@ -21,10 +23,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class ColumnSettings implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private ColumnSettings(Map<String, Object> values) {
+  private ColumnSettings(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -35,6 +39,28 @@ public final class ColumnSettings implements SlackObject {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns how cell content in the column is aligned.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<ColumnAlign> getAlign() {
+    return TypedFields.optionalEnum(fields, "ColumnSettings", "align", ColumnAlign::fromWireValue);
+  }
+
+  /**
+   * Returns whether long cell content wraps instead of being truncated.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getWrapped() {
+    return TypedFields.optional(fields, "ColumnSettings", "is_wrapped", Boolean.class);
   }
 
   @Override

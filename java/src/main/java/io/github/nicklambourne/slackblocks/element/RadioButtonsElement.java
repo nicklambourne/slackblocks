@@ -7,9 +7,12 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.object.Confirmation;
 import io.github.nicklambourne.slackblocks.object.Option;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A group of radio buttons.
@@ -28,10 +31,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class RadioButtonsElement extends BlockElement implements InputElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private RadioButtonsElement(Map<String, Object> values) {
+  private RadioButtonsElement(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -42,6 +47,63 @@ public final class RadioButtonsElement extends BlockElement implements InputElem
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the identifier Slack returns in interaction payloads when a user acts on this element.
+   * It must be unique among the elements of its block.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getActionId() {
+    return TypedFields.required(fields, "RadioButtonsElement", "action_id", String.class);
+  }
+
+  /**
+   * Returns selectable options in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<Option> getOptions() {
+    return TypedFields.list(fields, "RadioButtonsElement", "options", Option.class);
+  }
+
+  /**
+   * Returns the option selected when the element loads. It must match an option in the element.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Option> getInitialOption() {
+    return TypedFields.optional(fields, "RadioButtonsElement", "initial_option", Option.class);
+  }
+
+  /**
+   * Returns a confirmation dialog shown before the action is sent.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Confirmation> getConfirm() {
+    return TypedFields.optional(fields, "RadioButtonsElement", "confirm", Confirmation.class);
+  }
+
+  /**
+   * Returns whether the element receives focus when the view opens. Only one element per view may
+   * do so.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getFocusOnLoad() {
+    return TypedFields.optional(fields, "RadioButtonsElement", "focus_on_load", Boolean.class);
   }
 
   @Override

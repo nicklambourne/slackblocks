@@ -6,7 +6,9 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import java.util.Map;
+import java.util.OptionalInt;
 
 /**
  * An emoji inside rich text.
@@ -24,10 +26,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class RichTextEmoji implements RichTextSectionElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private RichTextEmoji(Map<String, Object> values) {
+  private RichTextEmoji(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -38,6 +42,28 @@ public final class RichTextEmoji implements RichTextSectionElement {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the emoji shortcode name, without colons.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getName() {
+    return TypedFields.required(fields, "RichTextEmoji", "name", String.class);
+  }
+
+  /**
+   * Returns the emoji skin tone, from 1 to 6.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public OptionalInt getSkinTone() {
+    return TypedFields.optionalInt(fields, "RichTextEmoji", "skin_tone");
   }
 
   @Override

@@ -7,12 +7,15 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.Confirmation;
 import io.github.nicklambourne.slackblocks.object.Option;
 import io.github.nicklambourne.slackblocks.object.PlainText;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * A menu for selecting one option loaded from your app.
@@ -31,10 +34,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class ExternalSelectElement extends BlockElement implements InputElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private ExternalSelectElement(Map<String, Object> values) {
+  private ExternalSelectElement(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -45,6 +50,75 @@ public final class ExternalSelectElement extends BlockElement implements InputEl
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the identifier Slack returns in interaction payloads when a user acts on this element.
+   * It must be unique among the elements of its block.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getActionId() {
+    return TypedFields.required(fields, "ExternalSelectElement", "action_id", String.class);
+  }
+
+  /**
+   * Returns how many characters the user must type before Slack queries your options endpoint.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public OptionalInt getMinQueryLength() {
+    return TypedFields.optionalInt(fields, "ExternalSelectElement", "min_query_length");
+  }
+
+  /**
+   * Returns the option selected when the element loads. It must match an option in the element.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Option> getInitialOption() {
+    return TypedFields.optional(fields, "ExternalSelectElement", "initial_option", Option.class);
+  }
+
+  /**
+   * Returns a confirmation dialog shown before the action is sent.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Confirmation> getConfirm() {
+    return TypedFields.optional(fields, "ExternalSelectElement", "confirm", Confirmation.class);
+  }
+
+  /**
+   * Returns whether the element receives focus when the view opens. Only one element per view may
+   * do so.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getFocusOnLoad() {
+    return TypedFields.optional(fields, "ExternalSelectElement", "focus_on_load", Boolean.class);
+  }
+
+  /**
+   * Returns the placeholder text shown before a value is chosen.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<PlainText> getPlaceholder() {
+    return TypedFields.optionalText(
+        fields, "ExternalSelectElement", "placeholder", PlainText.class);
   }
 
   @Override

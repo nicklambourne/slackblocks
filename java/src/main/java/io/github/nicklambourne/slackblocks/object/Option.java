@@ -7,9 +7,11 @@ import io.github.nicklambourne.slackblocks.SlackObject;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A selectable option for menus, checkboxes, radio buttons, and overflow menus.
@@ -27,10 +29,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class Option implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private Option(Map<String, Object> values) {
+  private Option(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -52,6 +56,50 @@ public final class Option implements SlackObject {
    */
   public static Builder builder(String text, String value) {
     return builder().text(text).value(value);
+  }
+
+  /**
+   * Returns the option label shown to users.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Text getText() {
+    return TypedFields.requiredText(fields, "Option", "text", Text.class);
+  }
+
+  /**
+   * Returns the value sent in interaction payloads when this option is chosen.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getValue() {
+    return TypedFields.required(fields, "Option", "value", String.class);
+  }
+
+  /**
+   * Returns supporting text shown below the label. Only rendered by checkboxes and radio buttons.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Text> getDescription() {
+    return TypedFields.optionalText(fields, "Option", "description", Text.class);
+  }
+
+  /**
+   * Returns a URL loaded in the user's browser when an overflow menu option is chosen.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getUrl() {
+    return TypedFields.optional(fields, "Option", "url", String.class);
   }
 
   @Override

@@ -8,10 +8,13 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.Block;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.PlainText;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * The view payload for views.open, views.push, and views.update.
@@ -30,10 +33,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class ModalView implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private ModalView(Map<String, Object> values) {
+  private ModalView(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -44,6 +49,116 @@ public final class ModalView implements SlackObject {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the title in the modal's top bar.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public PlainText getTitle() {
+    return TypedFields.requiredText(fields, "ModalView", "title", PlainText.class);
+  }
+
+  /**
+   * Returns the blocks shown in the modal, in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<Block> getBlocks() {
+    return TypedFields.list(fields, "ModalView", "blocks", Block.class);
+  }
+
+  /**
+   * Returns the label of the button that closes the modal.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<PlainText> getClose() {
+    return TypedFields.optionalText(fields, "ModalView", "close", PlainText.class);
+  }
+
+  /**
+   * Returns the label of the button that submits the modal.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<PlainText> getSubmit() {
+    return TypedFields.optionalText(fields, "ModalView", "submit", PlainText.class);
+  }
+
+  /**
+   * Returns application-defined data returned in view payloads.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getPrivateMetadata() {
+    return TypedFields.optional(fields, "ModalView", "private_metadata", String.class);
+  }
+
+  /**
+   * Returns an identifier returned in view payloads so your app can recognize the view.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getCallbackId() {
+    return TypedFields.optional(fields, "ModalView", "callback_id", String.class);
+  }
+
+  /**
+   * Returns whether closing this modal closes every view in its stack.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getClearOnClose() {
+    return TypedFields.optional(fields, "ModalView", "clear_on_close", Boolean.class);
+  }
+
+  /**
+   * Returns whether Slack sends a view_closed event when the user closes the modal.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getNotifyOnClose() {
+    return TypedFields.optional(fields, "ModalView", "notify_on_close", Boolean.class);
+  }
+
+  /**
+   * Returns a workspace-unique identifier you can use to update the view later.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getExternalId() {
+    return TypedFields.optional(fields, "ModalView", "external_id", String.class);
+  }
+
+  /**
+   * Returns whether the submit button starts disabled. Only valid in workflow configuration modals.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getSubmitDisabled() {
+    return TypedFields.optional(fields, "ModalView", "submit_disabled", Boolean.class);
   }
 
   @Override

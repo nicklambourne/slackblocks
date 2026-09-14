@@ -7,12 +7,14 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.Confirmation;
 import io.github.nicklambourne.slackblocks.object.ConversationFilter;
 import io.github.nicklambourne.slackblocks.object.PlainText;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A menu for selecting one conversation.
@@ -31,10 +33,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class ConversationSelectElement extends BlockElement implements InputElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private ConversationSelectElement(Map<String, Object> values) {
+  private ConversationSelectElement(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -45,6 +49,103 @@ public final class ConversationSelectElement extends BlockElement implements Inp
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the identifier Slack returns in interaction payloads when a user acts on this element.
+   * It must be unique among the elements of its block.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getActionId() {
+    return TypedFields.required(fields, "ConversationSelectElement", "action_id", String.class);
+  }
+
+  /**
+   * Returns the conversation ID selected when the menu loads.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getInitialConversation() {
+    return TypedFields.optional(
+        fields, "ConversationSelectElement", "initial_conversation", String.class);
+  }
+
+  /**
+   * Returns whether the menu pre-selects the conversation the user is viewing.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getDefaultToCurrentConversation() {
+    return TypedFields.optional(
+        fields, "ConversationSelectElement", "default_to_current_conversation", Boolean.class);
+  }
+
+  /**
+   * Returns which conversation types the menu offers.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<ConversationFilter> getFilter() {
+    return TypedFields.optional(
+        fields, "ConversationSelectElement", "filter", ConversationFilter.class);
+  }
+
+  /**
+   * Returns whether the selected conversation receives a response URL in the view submission
+   * payload. Only valid in modals.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getResponseUrlEnabled() {
+    return TypedFields.optional(
+        fields, "ConversationSelectElement", "response_url_enabled", Boolean.class);
+  }
+
+  /**
+   * Returns a confirmation dialog shown before the action is sent.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Confirmation> getConfirm() {
+    return TypedFields.optional(fields, "ConversationSelectElement", "confirm", Confirmation.class);
+  }
+
+  /**
+   * Returns whether the element receives focus when the view opens. Only one element per view may
+   * do so.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getFocusOnLoad() {
+    return TypedFields.optional(
+        fields, "ConversationSelectElement", "focus_on_load", Boolean.class);
+  }
+
+  /**
+   * Returns the placeholder text shown before a value is chosen.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<PlainText> getPlaceholder() {
+    return TypedFields.optionalText(
+        fields, "ConversationSelectElement", "placeholder", PlainText.class);
   }
 
   @Override

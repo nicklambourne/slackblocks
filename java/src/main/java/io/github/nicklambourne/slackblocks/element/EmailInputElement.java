@@ -7,11 +7,13 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.DispatchActionConfiguration;
 import io.github.nicklambourne.slackblocks.object.PlainText;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A single-line input that accepts an email address.
@@ -30,10 +32,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class EmailInputElement extends BlockElement implements InputElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private EmailInputElement(Map<String, Object> values) {
+  private EmailInputElement(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -44,6 +48,64 @@ public final class EmailInputElement extends BlockElement implements InputElemen
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the identifier Slack returns in interaction payloads when a user acts on this element.
+   * It must be unique among the elements of its block.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getActionId() {
+    return TypedFields.required(fields, "EmailInputElement", "action_id", String.class);
+  }
+
+  /**
+   * Returns the value present when the input loads.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getInitialValue() {
+    return TypedFields.optional(fields, "EmailInputElement", "initial_value", String.class);
+  }
+
+  /**
+   * Returns which user interactions send a block_actions payload.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<DispatchActionConfiguration> getDispatchActionConfig() {
+    return TypedFields.optional(
+        fields, "EmailInputElement", "dispatch_action_config", DispatchActionConfiguration.class);
+  }
+
+  /**
+   * Returns whether the element receives focus when the view opens. Only one element per view may
+   * do so.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getFocusOnLoad() {
+    return TypedFields.optional(fields, "EmailInputElement", "focus_on_load", Boolean.class);
+  }
+
+  /**
+   * Returns the placeholder text shown before a value is chosen.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<PlainText> getPlaceholder() {
+    return TypedFields.optionalText(fields, "EmailInputElement", "placeholder", PlainText.class);
   }
 
   @Override

@@ -6,10 +6,12 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.Text;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A severity-labelled alert, available in modals.
@@ -26,10 +28,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class AlertBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private AlertBlock(Map<String, Object> values) {
+  private AlertBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -40,6 +44,28 @@ public final class AlertBlock implements Block {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the alert message.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Text getText() {
+    return TypedFields.requiredText(fields, "AlertBlock", "text", Text.class);
+  }
+
+  /**
+   * Returns the alert severity, which controls its color and icon.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<AlertLevel> getLevel() {
+    return TypedFields.optionalEnum(fields, "AlertBlock", "level", AlertLevel::fromWireValue);
   }
 
   @Override

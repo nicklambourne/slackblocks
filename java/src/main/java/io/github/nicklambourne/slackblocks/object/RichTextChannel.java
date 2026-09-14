@@ -6,7 +6,9 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A channel mention inside rich text.
@@ -24,10 +26,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class RichTextChannel implements RichTextSectionElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private RichTextChannel(Map<String, Object> values) {
+  private RichTextChannel(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -38,6 +42,28 @@ public final class RichTextChannel implements RichTextSectionElement {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the ID of the mentioned channel.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getChannelId() {
+    return TypedFields.required(fields, "RichTextChannel", "channel_id", String.class);
+  }
+
+  /**
+   * Returns the mention style.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<RichTextStyle> getStyle() {
+    return TypedFields.optionalStyle(fields, "RichTextChannel", "style");
   }
 
   @Override

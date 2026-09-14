@@ -7,6 +7,8 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.element.Element;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,10 +27,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class ActionsBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private ActionsBlock(Map<String, Object> values) {
+  private ActionsBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -39,6 +43,17 @@ public final class ActionsBlock implements Block {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns interactive elements in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<Element> getElements() {
+    return TypedFields.list(fields, "ActionsBlock", "elements", Element.class);
   }
 
   @Override

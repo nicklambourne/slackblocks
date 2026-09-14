@@ -6,6 +6,7 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.object.ColumnSettings;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +28,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class TableBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private TableBlock(Map<String, Object> values) {
+  private TableBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -41,6 +44,28 @@ public final class TableBlock implements Block {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns complete table rows in display order. Every row must have the same number of cells.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<List<TableCell>> getRows() {
+    return TypedFields.rows(fields, "TableBlock", "rows", TableCell.class);
+  }
+
+  /**
+   * Returns per-column settings in column order. Provide one entry for every column.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<ColumnSettings> getColumnSettings() {
+    return TypedFields.list(fields, "TableBlock", "column_settings", ColumnSettings.class);
   }
 
   @Override

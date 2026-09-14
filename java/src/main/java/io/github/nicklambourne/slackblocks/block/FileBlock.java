@@ -6,7 +6,9 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A remote file previously added with the files.remote API.
@@ -23,10 +25,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class FileBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private FileBlock(Map<String, Object> values) {
+  private FileBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -37,6 +41,28 @@ public final class FileBlock implements Block {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the external identifier of a remote file previously added with the files.remote API.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getExternalId() {
+    return TypedFields.required(fields, "FileBlock", "external_id", String.class);
+  }
+
+  /**
+   * Returns the file source. Slack currently supports only remote files.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getSource() {
+    return TypedFields.optional(fields, "FileBlock", "source", String.class);
   }
 
   @Override

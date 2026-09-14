@@ -7,7 +7,10 @@ import io.github.nicklambourne.slackblocks.SlackObject;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * The categories and labels shared by bar, area, and line chart axes.
@@ -25,10 +28,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class AxisConfig implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private AxisConfig(Map<String, Object> values) {
+  private AxisConfig(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -39,6 +44,39 @@ public final class AxisConfig implements SlackObject {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns axis categories in display order. Labels must be unique.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<String> getCategories() {
+    return TypedFields.list(fields, "AxisConfig", "categories", String.class);
+  }
+
+  /**
+   * Returns the horizontal axis label.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getXLabel() {
+    return TypedFields.optional(fields, "AxisConfig", "x_label", String.class);
+  }
+
+  /**
+   * Returns the vertical axis label.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getYLabel() {
+    return TypedFields.optional(fields, "AxisConfig", "y_label", String.class);
   }
 
   @Override

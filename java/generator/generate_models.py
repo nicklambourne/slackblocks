@@ -255,6 +255,104 @@ def field_methods(model: Model, owner: dict, field: dict, imports: Imports) -> l
     raise ValueError(f"Unsupported field kind {kind} on {owner['name']}.{wire}")
 
 
+GETTER_SKIPS = {("block", "block_id")}  # Block#getBlockId comes from the SDK LayoutBlock contract
+
+
+def getter_name(method_name: str) -> str:
+    if method_name.startswith("is") and method_name[2:3].isupper():
+        method_name = method_name[2:]
+    return "get" + method_name[:1].upper() + method_name[1:]
+
+
+def getter_description(field: dict) -> str:
+    text = sentence(field["description"])
+    for prefix in ("Sets ", "Adds "):
+        if text.startswith(prefix):
+            return "Returns " + text[len(prefix):]
+    return f"Returns the {{@code {field['wire']}}} field."
+
+
+def field_getter(model: Model, owner: dict, field: dict, imports: Imports) -> str | None:
+    name, wire, kind = owner["name"], field["wire"], field["kind"]
+    if (owner["package"], wire) in GETTER_SKIPS or (name in TEXT_OBJECT_TYPES and wire == "text"):
+        return None
+    required = bool(field.get("required"))
+    target = field.get("type")
+    helper = f'"{name}", "{wire}"'
+    imports.add(f"{BASE_PACKAGE}.internal.TypedFields")
+    boxed = {"string": "String", "boolean": "Boolean", "number": "Number"}
+    if kind in boxed:
+        java = boxed[kind]
+        if required:
+            signature, body = java, f"TypedFields.required(fields, {helper}, {java}.class)"
+        else:
+            imports.add("java.util.Optional")
+            signature, body = f"Optional<{java}>", f"TypedFields.optional(fields, {helper}, {java}.class)"
+    elif kind in ("int", "long", "double"):
+        optional_type = {"int": "OptionalInt", "long": "OptionalLong", "double": "OptionalDouble"}[kind]
+        imports.add(f"java.util.{optional_type}")
+        signature, body = optional_type, f"TypedFields.optional{kind.capitalize()}(fields, {helper})"
+    elif kind == "stringList":
+        imports.add("java.util.List")
+        signature, body = "List<String>", f"TypedFields.list(fields, {helper}, String.class)"
+    elif kind == "enum":
+        if required:
+            signature, body = target, f"TypedFields.requiredEnum(fields, {helper}, {target}::fromWireValue)"
+        else:
+            imports.add("java.util.Optional")
+            signature, body = f"Optional<{target}>", f"TypedFields.optionalEnum(fields, {helper}, {target}::fromWireValue)"
+    elif kind == "map":
+        imports.add("java.util.Optional")
+        signature, body = "Optional<Map<String, Object>>", f"TypedFields.optionalMap(values, {helper})"
+    elif kind == "object":
+        if required:
+            signature, body = target, f"TypedFields.required(fields, {helper}, {target}.class)"
+        else:
+            imports.add("java.util.Optional")
+            signature, body = f"Optional<{target}>", f"TypedFields.optional(fields, {helper}, {target}.class)"
+    elif kind == "list":
+        imports.add("java.util.List")
+        signature, body = f"List<{target}>", f"TypedFields.list(fields, {helper}, {target}.class)"
+    elif kind == "rows":
+        imports.add("java.util.List")
+        signature, body = f"List<List<{target}>>", f"TypedFields.rows(fields, {helper}, {target}.class)"
+    elif kind == "text":
+        if required:
+            signature, body = target, f"TypedFields.requiredText(fields, {helper}, {target}.class)"
+        else:
+            imports.add("java.util.Optional")
+            signature, body = f"Optional<{target}>", f"TypedFields.optionalText(fields, {helper}, {target}.class)"
+    elif kind == "textList":
+        imports.add("java.util.List")
+        signature, body = f"List<{target}>", f"TypedFields.textList(fields, {helper}, {target}.class)"
+    elif kind == "style":
+        imports.add("java.util.Optional")
+        imports.add(model.qualified("RichTextStyle"))
+        signature, body = "Optional<RichTextStyle>", f"TypedFields.optionalStyle(fields, {helper})"
+    else:
+        raise ValueError(f"Unsupported getter kind {kind}")
+
+    if signature.startswith("List<"):
+        returns = "the values in order, or an empty list when none were set"
+    elif signature.startswith("Optional"):
+        returns = "the value, or an empty optional when it was not set"
+    else:
+        returns = "the value"
+    doc = [
+        getter_description(field),
+        "",
+        f"@return {returns}",
+        "@throws IllegalStateException if the field was set through a raw wire field to a value"
+        " this type cannot represent",
+    ]
+    return "\n".join([
+        javadoc(doc, "  "),
+        f"  public {signature} {getter_name(field['method'])}() {{",
+        f"    return {body};",
+        "  }",
+    ])
+
+
 CONVENIENCE = {
     "PlainText": ("of", "String text", "builder().text(text).build()", "Creates and validates plain text in one call.", [("text", "text content")]),
     "MarkdownText": ("of", "String text", "builder().text(text).build()", "Creates and validates mrkdwn text in one call.", [("text", "mrkdwn content")]),
@@ -268,8 +366,6 @@ BUILDER_SHORTCUTS = {
     "ImageBlock": ("String imageUrl, String altText", "builder().imageUrl(imageUrl).altText(altText)", "Starts an image builder with its required URL and alternative text.", [("imageUrl", "public image URL"), ("altText", "accessible image description")]),
 }
 BUILD_TRANSFORMS = {
-    # Plan tasks are task cards without their "type" discriminator on the wire.
-    "PlanBlock": ['if (state.get("tasks") instanceof List<?> tasks) {', '  state.set("tasks", WireObjects.withoutType(tasks));', "}"],
     # Accept six-digit colors without the leading hash, as the other implementations do.
     "Attachment": [
         'if (state.get("color") instanceof String color',
@@ -313,14 +409,16 @@ def class_source(model: Model, spec: dict) -> str:
     elif package == "element":
         imports.add("com.slack.api.model.block.element.BlockElement")
         extends = " extends BlockElement"
-    if name in BUILD_TRANSFORMS:
+    if name in BUILD_TRANSFORMS or name == "PlanBlock":
         imports.add(f"{BASE_PACKAGE}.internal.WireObjects")
-    if name == "PlanBlock":
-        imports.add("java.util.List")
 
     methods = []
+    getters = []
     for field in spec["fields"]:
         methods.extend(field_methods(model, spec, field, imports))
+        getter = field_getter(model, spec, field, imports)
+        if getter:
+            getters.append(getter)
 
     class_doc = [sentence(spec["description"]), ""]
     class_doc.append(
@@ -384,7 +482,32 @@ def class_source(model: Model, spec: dict) -> str:
         literal = str(value).lower() if isinstance(value, bool) else json.dumps(value) if isinstance(value, str) else str(value)
         defaults.append(f'      state.set("{field}", {literal});')
     transform = "".join(f"      {line}\n" for line in BUILD_TRANSFORMS.get(name, []))
+    factory = f"{name}::new" if getters else f"(wire, fields) -> new {name}(wire)"
+    build_call = (
+        f'state.build({factory}, wire -> WireObjects.withoutItemTypes(wire, "tasks"))'
+        if name == "PlanBlock"
+        else f"state.build({factory})"
+    )
+    if getters:
+        state_source = f"""  private final Map<String, Object> values;
+  private final Map<String, Object> fields;
+  private final int hash;
+
+  private {name}(Map<String, Object> values, Map<String, Object> fields) {{
+    this.values = values;
+    this.fields = fields;
+    this.hash = values.hashCode();
+  }}"""
+    else:
+        state_source = f"""  private final Map<String, Object> values;
+  private final int hash;
+
+  private {name}(Map<String, Object> values) {{
+    this.values = values;
+    this.hash = values.hashCode();
+  }}"""
     statics_source = "\n".join(statics)
+    getter_source = "\n\n".join(getters) + ("\n" if getters else "")
     method_source = "\n\n".join(methods)
 
     return f"""{MARKER}
@@ -395,13 +518,7 @@ package {BASE_PACKAGE}.{package};
 {javadoc(class_doc, "")}
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class {name}{extends} implements {", ".join(interfaces)} {{
-  private final Map<String, Object> values;
-  private final int hash;
-
-  private {name}(Map<String, Object> values) {{
-    this.values = values;
-    this.hash = values.hashCode();
-  }}
+{state_source}
 
   /**
    * Starts a new builder.
@@ -413,6 +530,7 @@ public final class {name}{extends} implements {", ".join(interfaces)} {{
   }}
 
 {statics_source}
+{getter_source}
   @Override
   public Map<String, Object> toMap() {{
     return values;
@@ -457,7 +575,7 @@ public final class {name}{extends} implements {", ".join(interfaces)} {{
      */
     @Override
     public {name} build() {{
-{transform}      return state.build({name}::new);
+{transform}      return {build_call};
     }}
   }}
 }}
@@ -535,6 +653,8 @@ def enum_source(spec: dict) -> str:
     return f"""{MARKER}
 package {BASE_PACKAGE}.{spec["package"]};
 
+import java.util.Optional;
+
 /** {sentence(spec["description"])} */
 public enum {spec["name"]} {{
 {joined}
@@ -552,6 +672,21 @@ public enum {spec["name"]} {{
    */
   public String wireValue() {{
     return wireValue;
+  }}
+
+  /**
+   * Finds the constant for a Slack JSON value.
+   *
+   * @param wireValue the value Slack uses in JSON
+   * @return the matching constant, or an empty optional for an unknown value
+   */
+  public static Optional<{spec["name"]}> fromWireValue(String wireValue) {{
+    for ({spec["name"]} constant : values()) {{
+      if (constant.wireValue.equals(wireValue)) {{
+        return Optional.of(constant);
+      }}
+    }}
+    return Optional.empty();
   }}
 }}
 """

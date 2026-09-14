@@ -13,7 +13,8 @@ import org.junit.jupiter.api.Test;
 
 final class FoundationTest {
   @JsonAdapter(SlackObjectJsonAdapter.class)
-  private record TestValue(Map<String, Object> toMap) implements SlackObject {}
+  private record TestValue(Map<String, Object> toMap, Map<String, Object> fields)
+      implements SlackObject {}
 
   private record TestBuilder(BuilderState state) implements Buildable<TestValue> {
     @Override

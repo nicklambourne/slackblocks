@@ -7,12 +7,14 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.Confirmation;
 import io.github.nicklambourne.slackblocks.object.PlainText;
 import io.github.nicklambourne.slackblocks.object.Workflow;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A button that starts a workflow through a link trigger.
@@ -31,10 +33,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class WorkflowButtonElement extends BlockElement implements Element {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private WorkflowButtonElement(Map<String, Object> values) {
+  private WorkflowButtonElement(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -45,6 +49,75 @@ public final class WorkflowButtonElement extends BlockElement implements Element
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the button label.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public PlainText getText() {
+    return TypedFields.requiredText(fields, "WorkflowButtonElement", "text", PlainText.class);
+  }
+
+  /**
+   * Returns the workflow started when the button is clicked.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Workflow getWorkflow() {
+    return TypedFields.required(fields, "WorkflowButtonElement", "workflow", Workflow.class);
+  }
+
+  /**
+   * Returns the identifier Slack returns in interaction payloads when a user acts on this element.
+   * It must be unique among the elements of its block.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getActionId() {
+    return TypedFields.optional(fields, "WorkflowButtonElement", "action_id", String.class);
+  }
+
+  /**
+   * Returns a confirmation dialog shown before the action is sent.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Confirmation> getConfirm() {
+    return TypedFields.optional(fields, "WorkflowButtonElement", "confirm", Confirmation.class);
+  }
+
+  /**
+   * Returns the button's emphasis. Omit it for the default neutral style.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<ButtonStyle> getStyle() {
+    return TypedFields.optionalEnum(
+        fields, "WorkflowButtonElement", "style", ButtonStyle::fromWireValue);
+  }
+
+  /**
+   * Returns the label read by screen readers in place of the visible text.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getAccessibilityLabel() {
+    return TypedFields.optional(
+        fields, "WorkflowButtonElement", "accessibility_label", String.class);
   }
 
   @Override

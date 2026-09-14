@@ -8,6 +8,7 @@ import io.github.nicklambourne.slackblocks.block.DataTableCell;
 import io.github.nicklambourne.slackblocks.block.TableCell;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import java.util.Map;
 
 /**
@@ -25,10 +26,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class RawText implements TableCell, DataTableCell {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private RawText(Map<String, Object> values) {
+  private RawText(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -50,6 +53,17 @@ public final class RawText implements TableCell, DataTableCell {
    */
   public static RawText of(String text) {
     return builder().text(text).build();
+  }
+
+  /**
+   * Returns the cell text.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getText() {
+    return TypedFields.required(fields, "RawText", "text", String.class);
   }
 
   @Override

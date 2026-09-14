@@ -6,8 +6,10 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 
 /**
  * A sortable, paginated table of raw text, numbers, and rich text.
@@ -28,10 +30,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class DataTableBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private DataTableBlock(Map<String, Object> values) {
+  private DataTableBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -42,6 +46,50 @@ public final class DataTableBlock implements Block {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns complete table rows in display order. Every row must have the same number of cells.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<List<DataTableCell>> getRows() {
+    return TypedFields.rows(fields, "DataTableBlock", "rows", DataTableCell.class);
+  }
+
+  /**
+   * Returns the caption that describes the table's contents.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getCaption() {
+    return TypedFields.required(fields, "DataTableBlock", "caption", String.class);
+  }
+
+  /**
+   * Returns how many rows Slack shows per page.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public OptionalInt getPageSize() {
+    return TypedFields.optionalInt(fields, "DataTableBlock", "page_size");
+  }
+
+  /**
+   * Returns the zero-based index of the column whose cells act as row headers.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public OptionalInt getRowHeaderColumnIndex() {
+    return TypedFields.optionalInt(fields, "DataTableBlock", "row_header_column_index");
   }
 
   @Override
