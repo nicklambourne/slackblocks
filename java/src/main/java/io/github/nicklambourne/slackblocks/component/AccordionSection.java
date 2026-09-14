@@ -1,11 +1,15 @@
 package io.github.nicklambourne.slackblocks.component;
 
-import io.github.nicklambourne.slackblocks.SlackObject;
+import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.Block;
 import io.github.nicklambourne.slackblocks.block.ContainerBlock;
+import io.github.nicklambourne.slackblocks.block.ContainerWidth;
+import io.github.nicklambourne.slackblocks.element.ImageElement;
+import io.github.nicklambourne.slackblocks.object.Text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /** Builds one independently collapsible, Slack-native accordion section. */
 public final class AccordionSection {
@@ -25,12 +29,12 @@ public final class AccordionSection {
   public static final class Builder {
     private final String title;
     private final List<Block> blocks = new ArrayList<>();
-    private SlackObject subtitle;
-    private SlackObject icon;
+    private @Nullable Text subtitle;
+    private @Nullable ImageElement icon;
     private boolean expanded;
     private ContainerWidth width = ContainerWidth.STANDARD;
     private boolean hasHeaderDivider;
-    private String blockId;
+    private @Nullable String blockId;
 
     private Builder(String title) {
       this.title = Objects.requireNonNull(title, "title");
@@ -63,7 +67,7 @@ public final class AccordionSection {
      * @param value Slack text object
      * @return this builder
      */
-    public Builder subtitle(SlackObject value) {
+    public Builder subtitle(Text value) {
       subtitle = Objects.requireNonNull(value, "subtitle");
       return this;
     }
@@ -71,10 +75,10 @@ public final class AccordionSection {
     /**
      * Sets the section header icon.
      *
-     * @param value Slack icon or image object
+     * @param value image element
      * @return this builder
      */
-    public Builder icon(SlackObject value) {
+    public Builder icon(ImageElement value) {
       icon = Objects.requireNonNull(value, "icon");
       return this;
     }
@@ -124,26 +128,32 @@ public final class AccordionSection {
     }
 
     /**
-     * Builds this section as an ordinary Slack container block.
+     * Builds this section as an ordinary, collapsible Slack container block.
      *
      * @return validated container block
+     * @throws ValidationException if the section breaks a container block rule, such as having no
+     *     blocks or more than ten
      */
     public ContainerBlock build() {
-      ContainerBlock.Builder result = ContainerBlock.builder()
-          .title(title)
-          .childBlocks(blocks.toArray(Block[]::new))
-          .isCollapsible(true)
-          .defaultCollapsed(!expanded)
-          .width(width.wireValue())
-          .hasHeaderDivider(hasHeaderDivider);
-      if (subtitle != null) {
-        result.subtitle(subtitle);
+      ContainerBlock.Builder result =
+          ContainerBlock.builder()
+              .title(title)
+              .childBlocks(blocks.toArray(Block[]::new))
+              .isCollapsible(true)
+              .defaultCollapsed(!expanded)
+              .width(width)
+              .hasHeaderDivider(hasHeaderDivider);
+      Text subtitleValue = subtitle;
+      if (subtitleValue != null) {
+        result.subtitle(subtitleValue);
       }
-      if (icon != null) {
-        result.icon(icon);
+      ImageElement iconValue = icon;
+      if (iconValue != null) {
+        result.icon(iconValue);
       }
-      if (blockId != null) {
-        result.blockId(blockId);
+      String identifier = blockId;
+      if (identifier != null) {
+        result.blockId(identifier);
       }
       return result.build();
     }

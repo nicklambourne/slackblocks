@@ -64,6 +64,15 @@ From `java/`:
 ./mvnw clean verify
 ```
 
+On JDK 21 or newer the Java build also runs google-java-format, Error Prone, and NullAway; on JDK 17 it compiles and tests only. The generated Java model comes from `java/generator/model.json`. After changing that file or `spec/limits.json`, regenerate and format the sources from the repository root:
+
+```bash
+python3 java/generator/generate_models.py --check-go
+(cd java && ./mvnw spotless:apply)
+```
+
+`--check-go` fails if the Java model and the Go builder registry expose different fields.
+
 All four conformance suites exercise every ID in `spec/manifest.json`. A checked-in `conformance/skiplist.txt` may document an intentional language gap, but unknown failures and stale skips fail the suite.
 
 ## Add or change a Block Kit feature
