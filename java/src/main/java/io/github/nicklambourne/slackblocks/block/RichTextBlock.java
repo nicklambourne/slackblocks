@@ -6,8 +6,10 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.RichTextBlockElement;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,10 +28,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class RichTextBlock implements Block, TableCell, DataTableCell {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private RichTextBlock(Map<String, Object> values) {
+  private RichTextBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -40,6 +44,17 @@ public final class RichTextBlock implements Block, TableCell, DataTableCell {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns sections, lists, preformatted blocks, and quotes in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<RichTextBlockElement> getElements() {
+    return TypedFields.list(fields, "RichTextBlock", "elements", RichTextBlockElement.class);
   }
 
   @Override

@@ -8,9 +8,11 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.ContextElement;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.SlackFile;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * An image displayed inside a section, context, or card.
@@ -29,10 +31,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class ImageElement extends BlockElement implements Element, ContextElement {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private ImageElement(Map<String, Object> values) {
+  private ImageElement(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -43,6 +47,39 @@ public final class ImageElement extends BlockElement implements Element, Context
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns a plain-text summary of the image or video for assistive technology.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getAltText() {
+    return TypedFields.required(fields, "ImageElement", "alt_text", String.class);
+  }
+
+  /**
+   * Returns the publicly accessible URL of the image. Cannot be combined with a Slack file.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getImageUrl() {
+    return TypedFields.optional(fields, "ImageElement", "image_url", String.class);
+  }
+
+  /**
+   * Returns a file hosted in Slack as the image source. Cannot be combined with an image URL.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<SlackFile> getSlackFile() {
+    return TypedFields.optional(fields, "ImageElement", "slack_file", SlackFile.class);
   }
 
   @Override

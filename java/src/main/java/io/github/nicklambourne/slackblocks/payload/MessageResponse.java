@@ -8,9 +8,12 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.Block;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A response body for slash commands and interaction response URLs.
@@ -29,10 +32,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class MessageResponse implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private MessageResponse(Map<String, Object> values) {
+  private MessageResponse(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -43,6 +48,73 @@ public final class MessageResponse implements SlackObject {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the response blocks in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<Block> getBlocks() {
+    return TypedFields.list(fields, "MessageResponse", "blocks", Block.class);
+  }
+
+  /**
+   * Returns legacy attachments in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<Attachment> getAttachments() {
+    return TypedFields.list(fields, "MessageResponse", "attachments", Attachment.class);
+  }
+
+  /**
+   * Returns the fallback text used in notifications and by clients that cannot display blocks.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getText() {
+    return TypedFields.optional(fields, "MessageResponse", "text", String.class);
+  }
+
+  /**
+   * Returns whether Slack formats the top-level text as mrkdwn.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getMrkdwn() {
+    return TypedFields.optional(fields, "MessageResponse", "mrkdwn", Boolean.class);
+  }
+
+  /**
+   * Returns whether the response replaces the message that triggered it.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getReplaceOriginal() {
+    return TypedFields.optional(fields, "MessageResponse", "replace_original", Boolean.class);
+  }
+
+  /**
+   * Returns who can see the response.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<ResponseType> getResponseType() {
+    return TypedFields.optionalEnum(
+        fields, "MessageResponse", "response_type", ResponseType::fromWireValue);
   }
 
   @Override

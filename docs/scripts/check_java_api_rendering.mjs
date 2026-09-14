@@ -35,6 +35,12 @@ assert.match(pages.get("blocks"), /^- Required: `text`\.$/m, "required fields mu
 assert.doesNotMatch(rendered, /\{@(?:code|link)/, "Javadoc inline tags must be rendered");
 assert.match(pages.get("elements"), /^\| `PRIMARY` \| `primary` \|/m, "enum constants must be documented");
 assert.doesNotMatch(rendered, /^### \w+ — $/m, "overload headings must name their parameters");
+assert.match(pages.get("blocks"), /generated from the Javadoc by the javadoc tool/);
+assert.match(pages.get("blocks"), /^### GetAccessory$/m, "typed getters must be documented");
+assert.match(pages.get("blocks"), /```java\npublic Optional<Element> getAccessory\(\)\n```/, "signatures must come from the javadoc model");
+assert.match(pages.get("components"), /```java\nList<Block> page = Paginator/, "Javadoc code examples must be rendered without comment indentation");
+assert.doesNotMatch(rendered, /\]\(javadoc:/, "javadoc links must be resolved");
+assert.doesNotMatch(rendered, /^\s+$/m, "pages must not contain whitespace-only lines");
 assert.doesNotMatch(rendered, /<\/?(?:ul|li|pre)>/, "Javadoc HTML must be rendered as Markdown");
 assert.match(pages.get("components"), /ordinary `List<Block>` values/);
 assert.match(pages.get("core"), /^## SlackObject$/m);

@@ -7,8 +7,11 @@ import io.github.nicklambourne.slackblocks.SlackObject;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Limits which conversations a conversation menu offers.
@@ -27,10 +30,12 @@ import java.util.Map;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class ConversationFilter implements SlackObject {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private ConversationFilter(Map<String, Object> values) {
+  private ConversationFilter(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -41,6 +46,40 @@ public final class ConversationFilter implements SlackObject {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns conversation types to offer: im, mpim, private, or public.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<String> getInclude() {
+    return TypedFields.list(fields, "ConversationFilter", "include", String.class);
+  }
+
+  /**
+   * Returns whether externally shared channels are excluded.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getExcludeExternalSharedChannels() {
+    return TypedFields.optional(
+        fields, "ConversationFilter", "exclude_external_shared_channels", Boolean.class);
+  }
+
+  /**
+   * Returns whether bot users are excluded.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getExcludeBotUsers() {
+    return TypedFields.optional(fields, "ConversationFilter", "exclude_bot_users", Boolean.class);
   }
 
   @Override
