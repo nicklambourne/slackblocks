@@ -6,6 +6,7 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.PlainText;
 import java.util.Map;
@@ -26,10 +27,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class HeaderBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private HeaderBlock(Map<String, Object> values) {
+  private HeaderBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -50,6 +53,17 @@ public final class HeaderBlock implements Block {
    */
   public static Builder builder(String text) {
     return builder().text(text);
+  }
+
+  /**
+   * Returns the header text, shown in a larger bold font.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public PlainText getText() {
+    return TypedFields.requiredText(fields, "HeaderBlock", "text", PlainText.class);
   }
 
   @Override

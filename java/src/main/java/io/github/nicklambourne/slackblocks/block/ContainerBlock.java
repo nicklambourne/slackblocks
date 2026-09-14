@@ -7,11 +7,14 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.element.ImageElement;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.PlainText;
 import io.github.nicklambourne.slackblocks.object.Text;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A titled group of blocks that can optionally collapse.
@@ -30,10 +33,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class ContainerBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private ContainerBlock(Map<String, Object> values) {
+  private ContainerBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -44,6 +49,108 @@ public final class ContainerBlock implements Block {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  /**
+   * Returns the blocks grouped inside the container, in display order.
+   *
+   * @return the values in order, or an empty list when none were set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public List<Block> getChildBlocks() {
+    return TypedFields.list(fields, "ContainerBlock", "child_blocks", Block.class);
+  }
+
+  /**
+   * Returns the container title. Provide either a title or a rich text title.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<PlainText> getTitle() {
+    return TypedFields.optionalText(fields, "ContainerBlock", "title", PlainText.class);
+  }
+
+  /**
+   * Returns a rich text block used as the title in place of a plain-text title.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<RichTextBlock> getRichTextTitle() {
+    return TypedFields.optional(fields, "ContainerBlock", "rich_text_title", RichTextBlock.class);
+  }
+
+  /**
+   * Returns the supporting text shown below the title.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Text> getSubtitle() {
+    return TypedFields.optionalText(fields, "ContainerBlock", "subtitle", Text.class);
+  }
+
+  /**
+   * Returns the horizontal width of the container.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<ContainerWidth> getWidth() {
+    return TypedFields.optionalEnum(
+        fields, "ContainerBlock", "width", ContainerWidth::fromWireValue);
+  }
+
+  /**
+   * Returns the image displayed beside the title.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<ImageElement> getIcon() {
+    return TypedFields.optional(fields, "ContainerBlock", "icon", ImageElement.class);
+  }
+
+  /**
+   * Returns whether users can collapse and expand the container.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getCollapsible() {
+    return TypedFields.optional(fields, "ContainerBlock", "is_collapsible", Boolean.class);
+  }
+
+  /**
+   * Returns whether a collapsible container starts collapsed. Requires the container to be
+   * collapsible.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getDefaultCollapsed() {
+    return TypedFields.optional(fields, "ContainerBlock", "default_collapsed", Boolean.class);
+  }
+
+  /**
+   * Returns whether Slack draws a divider below the container header. Only valid for
+   * non-collapsible containers.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<Boolean> getHasHeaderDivider() {
+    return TypedFields.optional(fields, "ContainerBlock", "has_header_divider", Boolean.class);
   }
 
   @Override

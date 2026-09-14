@@ -6,10 +6,12 @@ import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
+import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.PlainText;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A standalone image with alternative text and an optional title.
@@ -26,10 +28,12 @@ import java.util.Objects;
 @JsonAdapter(SlackObjectJsonAdapter.class)
 public final class ImageBlock implements Block {
   private final Map<String, Object> values;
+  private final Map<String, Object> fields;
   private final int hash;
 
-  private ImageBlock(Map<String, Object> values) {
+  private ImageBlock(Map<String, Object> values, Map<String, Object> fields) {
     this.values = values;
+    this.fields = fields;
     this.hash = values.hashCode();
   }
 
@@ -51,6 +55,39 @@ public final class ImageBlock implements Block {
    */
   public static Builder builder(String imageUrl, String altText) {
     return builder().imageUrl(imageUrl).altText(altText);
+  }
+
+  /**
+   * Returns the publicly accessible URL of the image. Cannot be combined with a Slack file.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getImageUrl() {
+    return TypedFields.required(fields, "ImageBlock", "image_url", String.class);
+  }
+
+  /**
+   * Returns a plain-text summary of the image or video for assistive technology.
+   *
+   * @return the value
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public String getAltText() {
+    return TypedFields.required(fields, "ImageBlock", "alt_text", String.class);
+  }
+
+  /**
+   * Returns the title shown above the image.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<PlainText> getTitle() {
+    return TypedFields.optionalText(fields, "ImageBlock", "title", PlainText.class);
   }
 
   @Override
