@@ -56,13 +56,14 @@ jobs:
             exit 1
           fi
 
-      - name: Verify Python and TypeScript versions match
+      - name: Verify coordinated package versions
         run: |
           set -euo pipefail
           typescript_version=$(node -p "require('./typescript/package.json').version")
           python_version=$(python3 -c "import tomllib; print(tomllib.load(open('python/pyproject.toml', 'rb'))['project']['version'])")
-          if [ "$python_version" != "$typescript_version" ]; then
-            echo "::error::TypeScript version '$typescript_version' does not match Python version '$python_version'. Releases are coordinated; bump both together."
+          java_version=$(node -e "const text = require('fs').readFileSync('java/pom.xml', 'utf8'); const match = text.match(/<artifactId>slackblocks<\/artifactId>\s*<version>([^<]+)<\/version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
+          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ]; then
+            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version."
             exit 1
           fi
 

@@ -1,0 +1,1908 @@
+---
+sidebar_position: 2
+toc_max_heading_level: 2
+---
+
+# Elements
+
+This page documents the public Go API for elements. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.
+
+## NewButton
+
+NewButton creates an interactive button.
+
+```go
+func NewButton() *ButtonBuilder
+```
+
+### ButtonBuilder
+
+ButtonBuilder is the concrete fluent builder returned by NewButton. Use NewButton rather than constructing this type directly.
+
+```go
+type ButtonBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ButtonBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *ButtonBuilder) Text(value any) *ButtonBuilder
+```
+
+#### ButtonBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *ButtonBuilder) ActionID(value string) *ButtonBuilder
+```
+
+#### ButtonBuilder.URL
+
+URL sets a URL field.
+
+```go
+func (b *ButtonBuilder) URL(value string) *ButtonBuilder
+```
+
+#### ButtonBuilder.Value
+
+Value sets an application-defined value.
+
+```go
+func (b *ButtonBuilder) Value(value any) *ButtonBuilder
+```
+
+#### ButtonBuilder.Style
+
+Style sets a Slack-supported visual or layout style.
+
+```go
+func (b *ButtonBuilder) Style(value any) *ButtonBuilder
+```
+
+#### ButtonBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *ButtonBuilder) Confirm(value any) *ButtonBuilder
+```
+
+#### ButtonBuilder.AccessibilityLabel
+
+AccessibilityLabel sets assistive text for an interactive control.
+
+```go
+func (b *ButtonBuilder) AccessibilityLabel(value string) *ButtonBuilder
+```
+
+Every `ButtonBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewChannelMultiSelect
+
+NewChannelMultiSelect creates a multi-select of public channels.
+
+```go
+func NewChannelMultiSelect() *ChannelMultiSelectBuilder
+```
+
+### ChannelMultiSelectBuilder
+
+ChannelMultiSelectBuilder is the concrete fluent builder returned by NewChannelMultiSelect. Use NewChannelMultiSelect rather than constructing this type directly.
+
+```go
+type ChannelMultiSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ChannelMultiSelectBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *ChannelMultiSelectBuilder) ActionID(value string) *ChannelMultiSelectBuilder
+```
+
+#### ChannelMultiSelectBuilder.InitialChannels
+
+InitialChannels appends initially selected public channels.
+
+```go
+func (b *ChannelMultiSelectBuilder) InitialChannels(values ...string) *ChannelMultiSelectBuilder
+```
+
+#### ChannelMultiSelectBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *ChannelMultiSelectBuilder) Confirm(value any) *ChannelMultiSelectBuilder
+```
+
+#### ChannelMultiSelectBuilder.MaxSelectedItems
+
+MaxSelectedItems sets a select-menu selection limit.
+
+```go
+func (b *ChannelMultiSelectBuilder) MaxSelectedItems(value int) *ChannelMultiSelectBuilder
+```
+
+#### ChannelMultiSelectBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *ChannelMultiSelectBuilder) FocusOnLoad(value bool) *ChannelMultiSelectBuilder
+```
+
+#### ChannelMultiSelectBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *ChannelMultiSelectBuilder) Placeholder(value any) *ChannelMultiSelectBuilder
+```
+
+Every `ChannelMultiSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewChannelSelect
+
+NewChannelSelect creates a public-channel single-select.
+
+```go
+func NewChannelSelect() *ChannelSelectBuilder
+```
+
+### ChannelSelectBuilder
+
+ChannelSelectBuilder is the concrete fluent builder returned by NewChannelSelect. Use NewChannelSelect rather than constructing this type directly.
+
+```go
+type ChannelSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ChannelSelectBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *ChannelSelectBuilder) ActionID(value string) *ChannelSelectBuilder
+```
+
+#### ChannelSelectBuilder.InitialChannel
+
+InitialChannel sets an initially selected public channel.
+
+```go
+func (b *ChannelSelectBuilder) InitialChannel(value string) *ChannelSelectBuilder
+```
+
+#### ChannelSelectBuilder.ResponseURLEnabled
+
+ResponseURLEnabled requests a modal submission response URL.
+
+```go
+func (b *ChannelSelectBuilder) ResponseURLEnabled(value bool) *ChannelSelectBuilder
+```
+
+#### ChannelSelectBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *ChannelSelectBuilder) Confirm(value any) *ChannelSelectBuilder
+```
+
+#### ChannelSelectBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *ChannelSelectBuilder) FocusOnLoad(value bool) *ChannelSelectBuilder
+```
+
+#### ChannelSelectBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *ChannelSelectBuilder) Placeholder(value any) *ChannelSelectBuilder
+```
+
+Every `ChannelSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewCheckboxes
+
+NewCheckboxes creates a checkbox group.
+
+```go
+func NewCheckboxes() *CheckboxesBuilder
+```
+
+### CheckboxesBuilder
+
+CheckboxesBuilder is the concrete fluent builder returned by NewCheckboxes. Use NewCheckboxes rather than constructing this type directly.
+
+```go
+type CheckboxesBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### CheckboxesBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *CheckboxesBuilder) ActionID(value string) *CheckboxesBuilder
+```
+
+#### CheckboxesBuilder.Options
+
+Options appends selectable option objects.
+
+```go
+func (b *CheckboxesBuilder) Options(values ...any) *CheckboxesBuilder
+```
+
+#### CheckboxesBuilder.InitialOptions
+
+InitialOptions appends initially selected options.
+
+```go
+func (b *CheckboxesBuilder) InitialOptions(values ...any) *CheckboxesBuilder
+```
+
+#### CheckboxesBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *CheckboxesBuilder) Confirm(value any) *CheckboxesBuilder
+```
+
+#### CheckboxesBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *CheckboxesBuilder) FocusOnLoad(value bool) *CheckboxesBuilder
+```
+
+Every `CheckboxesBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewConversationMultiSelect
+
+NewConversationMultiSelect creates a multi-select of conversations.
+
+```go
+func NewConversationMultiSelect() *ConversationMultiSelectBuilder
+```
+
+### ConversationMultiSelectBuilder
+
+ConversationMultiSelectBuilder is the concrete fluent builder returned by NewConversationMultiSelect. Use NewConversationMultiSelect rather than constructing this type directly.
+
+```go
+type ConversationMultiSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ConversationMultiSelectBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *ConversationMultiSelectBuilder) ActionID(value string) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.InitialConversations
+
+InitialConversations appends initially selected conversations.
+
+```go
+func (b *ConversationMultiSelectBuilder) InitialConversations(values ...string) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.DefaultToCurrentConversation
+
+DefaultToCurrentConversation selects the current conversation by default.
+
+```go
+func (b *ConversationMultiSelectBuilder) DefaultToCurrentConversation(value bool) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.Filter
+
+Filter sets a conversation filter.
+
+```go
+func (b *ConversationMultiSelectBuilder) Filter(value any) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *ConversationMultiSelectBuilder) Confirm(value any) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.MaxSelectedItems
+
+MaxSelectedItems sets a select-menu selection limit.
+
+```go
+func (b *ConversationMultiSelectBuilder) MaxSelectedItems(value int) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *ConversationMultiSelectBuilder) FocusOnLoad(value bool) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *ConversationMultiSelectBuilder) Placeholder(value any) *ConversationMultiSelectBuilder
+```
+
+Every `ConversationMultiSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewConversationSelect
+
+NewConversationSelect creates a conversation single-select.
+
+```go
+func NewConversationSelect() *ConversationSelectBuilder
+```
+
+### ConversationSelectBuilder
+
+ConversationSelectBuilder is the concrete fluent builder returned by NewConversationSelect. Use NewConversationSelect rather than constructing this type directly.
+
+```go
+type ConversationSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ConversationSelectBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *ConversationSelectBuilder) ActionID(value string) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.InitialConversation
+
+InitialConversation sets an initially selected conversation.
+
+```go
+func (b *ConversationSelectBuilder) InitialConversation(value string) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.DefaultToCurrentConversation
+
+DefaultToCurrentConversation selects the current conversation by default.
+
+```go
+func (b *ConversationSelectBuilder) DefaultToCurrentConversation(value bool) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.Filter
+
+Filter sets a conversation filter.
+
+```go
+func (b *ConversationSelectBuilder) Filter(value any) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.ResponseURLEnabled
+
+ResponseURLEnabled requests a modal submission response URL.
+
+```go
+func (b *ConversationSelectBuilder) ResponseURLEnabled(value bool) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *ConversationSelectBuilder) Confirm(value any) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *ConversationSelectBuilder) FocusOnLoad(value bool) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *ConversationSelectBuilder) Placeholder(value any) *ConversationSelectBuilder
+```
+
+Every `ConversationSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDatePicker
+
+NewDatePicker creates a calendar date picker.
+
+```go
+func NewDatePicker() *DatePickerBuilder
+```
+
+### DatePickerBuilder
+
+DatePickerBuilder is the concrete fluent builder returned by NewDatePicker. Use NewDatePicker rather than constructing this type directly.
+
+```go
+type DatePickerBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### DatePickerBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *DatePickerBuilder) ActionID(value string) *DatePickerBuilder
+```
+
+#### DatePickerBuilder.InitialDate
+
+InitialDate sets an ISO calendar date.
+
+```go
+func (b *DatePickerBuilder) InitialDate(value string) *DatePickerBuilder
+```
+
+#### DatePickerBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *DatePickerBuilder) Confirm(value any) *DatePickerBuilder
+```
+
+#### DatePickerBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *DatePickerBuilder) FocusOnLoad(value bool) *DatePickerBuilder
+```
+
+#### DatePickerBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *DatePickerBuilder) Placeholder(value any) *DatePickerBuilder
+```
+
+Every `DatePickerBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDateTimePicker
+
+NewDateTimePicker creates a combined date-and-time picker.
+
+```go
+func NewDateTimePicker() *DateTimePickerBuilder
+```
+
+### DateTimePickerBuilder
+
+DateTimePickerBuilder is the concrete fluent builder returned by NewDateTimePicker. Use NewDateTimePicker rather than constructing this type directly.
+
+```go
+type DateTimePickerBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### DateTimePickerBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *DateTimePickerBuilder) ActionID(value string) *DateTimePickerBuilder
+```
+
+#### DateTimePickerBuilder.InitialDateTime
+
+InitialDateTime sets an initial Unix timestamp in seconds.
+
+```go
+func (b *DateTimePickerBuilder) InitialDateTime(value int64) *DateTimePickerBuilder
+```
+
+#### DateTimePickerBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *DateTimePickerBuilder) Confirm(value any) *DateTimePickerBuilder
+```
+
+#### DateTimePickerBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *DateTimePickerBuilder) FocusOnLoad(value bool) *DateTimePickerBuilder
+```
+
+Every `DateTimePickerBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewEmailInput
+
+NewEmailInput creates an email-address input.
+
+```go
+func NewEmailInput() *EmailInputBuilder
+```
+
+### EmailInputBuilder
+
+EmailInputBuilder is the concrete fluent builder returned by NewEmailInput. Use NewEmailInput rather than constructing this type directly.
+
+```go
+type EmailInputBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### EmailInputBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *EmailInputBuilder) ActionID(value string) *EmailInputBuilder
+```
+
+#### EmailInputBuilder.InitialValue
+
+InitialValue sets initial input content.
+
+```go
+func (b *EmailInputBuilder) InitialValue(value any) *EmailInputBuilder
+```
+
+#### EmailInputBuilder.DispatchActionConfig
+
+DispatchActionConfig sets input dispatch behavior.
+
+```go
+func (b *EmailInputBuilder) DispatchActionConfig(value any) *EmailInputBuilder
+```
+
+#### EmailInputBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *EmailInputBuilder) FocusOnLoad(value bool) *EmailInputBuilder
+```
+
+#### EmailInputBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *EmailInputBuilder) Placeholder(value any) *EmailInputBuilder
+```
+
+Every `EmailInputBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewExternalMultiSelect
+
+NewExternalMultiSelect creates an externally populated multi-select.
+
+```go
+func NewExternalMultiSelect() *ExternalMultiSelectBuilder
+```
+
+### ExternalMultiSelectBuilder
+
+ExternalMultiSelectBuilder is the concrete fluent builder returned by NewExternalMultiSelect. Use NewExternalMultiSelect rather than constructing this type directly.
+
+```go
+type ExternalMultiSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ExternalMultiSelectBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *ExternalMultiSelectBuilder) ActionID(value string) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.MinQueryLength
+
+MinQueryLength sets the external select query threshold.
+
+```go
+func (b *ExternalMultiSelectBuilder) MinQueryLength(value int) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.InitialOptions
+
+InitialOptions appends initially selected options.
+
+```go
+func (b *ExternalMultiSelectBuilder) InitialOptions(values ...any) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *ExternalMultiSelectBuilder) Confirm(value any) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.MaxSelectedItems
+
+MaxSelectedItems sets a select-menu selection limit.
+
+```go
+func (b *ExternalMultiSelectBuilder) MaxSelectedItems(value int) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *ExternalMultiSelectBuilder) FocusOnLoad(value bool) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *ExternalMultiSelectBuilder) Placeholder(value any) *ExternalMultiSelectBuilder
+```
+
+Every `ExternalMultiSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewExternalSelect
+
+NewExternalSelect creates an externally populated single-select.
+
+```go
+func NewExternalSelect() *ExternalSelectBuilder
+```
+
+### ExternalSelectBuilder
+
+ExternalSelectBuilder is the concrete fluent builder returned by NewExternalSelect. Use NewExternalSelect rather than constructing this type directly.
+
+```go
+type ExternalSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ExternalSelectBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *ExternalSelectBuilder) ActionID(value string) *ExternalSelectBuilder
+```
+
+#### ExternalSelectBuilder.MinQueryLength
+
+MinQueryLength sets the external select query threshold.
+
+```go
+func (b *ExternalSelectBuilder) MinQueryLength(value int) *ExternalSelectBuilder
+```
+
+#### ExternalSelectBuilder.InitialOption
+
+InitialOption sets a single initially selected option.
+
+```go
+func (b *ExternalSelectBuilder) InitialOption(value any) *ExternalSelectBuilder
+```
+
+#### ExternalSelectBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *ExternalSelectBuilder) Confirm(value any) *ExternalSelectBuilder
+```
+
+#### ExternalSelectBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *ExternalSelectBuilder) FocusOnLoad(value bool) *ExternalSelectBuilder
+```
+
+#### ExternalSelectBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *ExternalSelectBuilder) Placeholder(value any) *ExternalSelectBuilder
+```
+
+Every `ExternalSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewFeedbackButton
+
+NewFeedbackButton creates one positive or negative feedback choice.
+
+```go
+func NewFeedbackButton() *FeedbackButtonBuilder
+```
+
+### FeedbackButtonBuilder
+
+FeedbackButtonBuilder is the concrete fluent builder returned by NewFeedbackButton. Use NewFeedbackButton rather than constructing this type directly.
+
+```go
+type FeedbackButtonBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### FeedbackButtonBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *FeedbackButtonBuilder) Text(value any) *FeedbackButtonBuilder
+```
+
+#### FeedbackButtonBuilder.Value
+
+Value sets an application-defined value.
+
+```go
+func (b *FeedbackButtonBuilder) Value(value any) *FeedbackButtonBuilder
+```
+
+#### FeedbackButtonBuilder.AccessibilityLabel
+
+AccessibilityLabel sets assistive text for an interactive control.
+
+```go
+func (b *FeedbackButtonBuilder) AccessibilityLabel(value string) *FeedbackButtonBuilder
+```
+
+Every `FeedbackButtonBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewFeedbackButtons
+
+NewFeedbackButtons creates a paired positive/negative feedback control.
+
+```go
+func NewFeedbackButtons() *FeedbackButtonsBuilder
+```
+
+### FeedbackButtonsBuilder
+
+FeedbackButtonsBuilder is the concrete fluent builder returned by NewFeedbackButtons. Use NewFeedbackButtons rather than constructing this type directly.
+
+```go
+type FeedbackButtonsBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### FeedbackButtonsBuilder.PositiveButton
+
+PositiveButton sets the positive feedback choice.
+
+```go
+func (b *FeedbackButtonsBuilder) PositiveButton(value any) *FeedbackButtonsBuilder
+```
+
+#### FeedbackButtonsBuilder.NegativeButton
+
+NegativeButton sets the negative feedback choice.
+
+```go
+func (b *FeedbackButtonsBuilder) NegativeButton(value any) *FeedbackButtonsBuilder
+```
+
+#### FeedbackButtonsBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *FeedbackButtonsBuilder) ActionID(value string) *FeedbackButtonsBuilder
+```
+
+Every `FeedbackButtonsBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewFileInput
+
+NewFileInput creates a file-upload input.
+
+```go
+func NewFileInput() *FileInputBuilder
+```
+
+### FileInputBuilder
+
+FileInputBuilder is the concrete fluent builder returned by NewFileInput. Use NewFileInput rather than constructing this type directly.
+
+```go
+type FileInputBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### FileInputBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *FileInputBuilder) ActionID(value string) *FileInputBuilder
+```
+
+#### FileInputBuilder.Filetypes
+
+Filetypes appends allowed file extensions.
+
+```go
+func (b *FileInputBuilder) Filetypes(values ...string) *FileInputBuilder
+```
+
+#### FileInputBuilder.MaxFiles
+
+MaxFiles sets a file-upload count limit.
+
+```go
+func (b *FileInputBuilder) MaxFiles(value int) *FileInputBuilder
+```
+
+Every `FileInputBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewIconButton
+
+NewIconButton creates a compact context action.
+
+```go
+func NewIconButton() *IconButtonBuilder
+```
+
+### IconButtonBuilder
+
+IconButtonBuilder is the concrete fluent builder returned by NewIconButton. Use NewIconButton rather than constructing this type directly.
+
+```go
+type IconButtonBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### IconButtonBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *IconButtonBuilder) Text(value any) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.Icon
+
+Icon sets an icon or icon element.
+
+```go
+func (b *IconButtonBuilder) Icon(value any) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *IconButtonBuilder) ActionID(value string) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.Value
+
+Value sets an application-defined value.
+
+```go
+func (b *IconButtonBuilder) Value(value any) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *IconButtonBuilder) Confirm(value any) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.AccessibilityLabel
+
+AccessibilityLabel sets assistive text for an interactive control.
+
+```go
+func (b *IconButtonBuilder) AccessibilityLabel(value string) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.VisibleToUserIDs
+
+VisibleToUserIDs appends user IDs allowed to see an icon action.
+
+```go
+func (b *IconButtonBuilder) VisibleToUserIDs(values ...string) *IconButtonBuilder
+```
+
+Every `IconButtonBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewImageElement
+
+NewImageElement creates an image element from a URL or Slack-hosted file.
+
+```go
+func NewImageElement() *ImageElementBuilder
+```
+
+### ImageElementBuilder
+
+ImageElementBuilder is the concrete fluent builder returned by NewImageElement. Use NewImageElement rather than constructing this type directly.
+
+```go
+type ImageElementBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ImageElementBuilder.AltText
+
+AltText sets an accessible image or video description.
+
+```go
+func (b *ImageElementBuilder) AltText(value string) *ImageElementBuilder
+```
+
+#### ImageElementBuilder.ImageURL
+
+ImageURL sets a public image URL.
+
+```go
+func (b *ImageElementBuilder) ImageURL(value string) *ImageElementBuilder
+```
+
+#### ImageElementBuilder.SlackFile
+
+SlackFile sets a Slack-hosted image reference.
+
+```go
+func (b *ImageElementBuilder) SlackFile(value any) *ImageElementBuilder
+```
+
+Every `ImageElementBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewNumberInput
+
+NewNumberInput creates a numeric input.
+
+```go
+func NewNumberInput() *NumberInputBuilder
+```
+
+### NumberInputBuilder
+
+NumberInputBuilder is the concrete fluent builder returned by NewNumberInput. Use NewNumberInput rather than constructing this type directly.
+
+```go
+type NumberInputBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### NumberInputBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *NumberInputBuilder) ActionID(value string) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.IsDecimalAllowed
+
+IsDecimalAllowed controls decimal input.
+
+```go
+func (b *NumberInputBuilder) IsDecimalAllowed(value bool) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.InitialValue
+
+InitialValue sets initial input content.
+
+```go
+func (b *NumberInputBuilder) InitialValue(value any) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.MinValue
+
+MinValue sets a numeric input minimum.
+
+```go
+func (b *NumberInputBuilder) MinValue(value float64) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.MaxValue
+
+MaxValue sets a numeric input maximum.
+
+```go
+func (b *NumberInputBuilder) MaxValue(value float64) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.DispatchActionConfig
+
+DispatchActionConfig sets input dispatch behavior.
+
+```go
+func (b *NumberInputBuilder) DispatchActionConfig(value any) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *NumberInputBuilder) FocusOnLoad(value bool) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *NumberInputBuilder) Placeholder(value any) *NumberInputBuilder
+```
+
+Every `NumberInputBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewOverflow
+
+NewOverflow creates a compact overflow menu.
+
+```go
+func NewOverflow() *OverflowBuilder
+```
+
+### OverflowBuilder
+
+OverflowBuilder is the concrete fluent builder returned by NewOverflow. Use NewOverflow rather than constructing this type directly.
+
+```go
+type OverflowBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### OverflowBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *OverflowBuilder) ActionID(value string) *OverflowBuilder
+```
+
+#### OverflowBuilder.Options
+
+Options appends selectable option objects.
+
+```go
+func (b *OverflowBuilder) Options(values ...any) *OverflowBuilder
+```
+
+#### OverflowBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *OverflowBuilder) Confirm(value any) *OverflowBuilder
+```
+
+Every `OverflowBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewPlainTextInput
+
+NewPlainTextInput creates a free-form text input.
+
+```go
+func NewPlainTextInput() *PlainTextInputBuilder
+```
+
+### PlainTextInputBuilder
+
+PlainTextInputBuilder is the concrete fluent builder returned by NewPlainTextInput. Use NewPlainTextInput rather than constructing this type directly.
+
+```go
+type PlainTextInputBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### PlainTextInputBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *PlainTextInputBuilder) ActionID(value string) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.InitialValue
+
+InitialValue sets initial input content.
+
+```go
+func (b *PlainTextInputBuilder) InitialValue(value any) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.Multiline
+
+Multiline controls text input layout.
+
+```go
+func (b *PlainTextInputBuilder) Multiline(value bool) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.MinLength
+
+MinLength sets a minimum input character count.
+
+```go
+func (b *PlainTextInputBuilder) MinLength(value int) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.MaxLength
+
+MaxLength sets an input character limit.
+
+```go
+func (b *PlainTextInputBuilder) MaxLength(value int) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.DispatchActionConfig
+
+DispatchActionConfig sets input dispatch behavior.
+
+```go
+func (b *PlainTextInputBuilder) DispatchActionConfig(value any) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *PlainTextInputBuilder) FocusOnLoad(value bool) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *PlainTextInputBuilder) Placeholder(value any) *PlainTextInputBuilder
+```
+
+Every `PlainTextInputBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRadioButtons
+
+NewRadioButtons creates a single-choice radio group.
+
+```go
+func NewRadioButtons() *RadioButtonsBuilder
+```
+
+### RadioButtonsBuilder
+
+RadioButtonsBuilder is the concrete fluent builder returned by NewRadioButtons. Use NewRadioButtons rather than constructing this type directly.
+
+```go
+type RadioButtonsBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RadioButtonsBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *RadioButtonsBuilder) ActionID(value string) *RadioButtonsBuilder
+```
+
+#### RadioButtonsBuilder.Options
+
+Options appends selectable option objects.
+
+```go
+func (b *RadioButtonsBuilder) Options(values ...any) *RadioButtonsBuilder
+```
+
+#### RadioButtonsBuilder.InitialOption
+
+InitialOption sets a single initially selected option.
+
+```go
+func (b *RadioButtonsBuilder) InitialOption(value any) *RadioButtonsBuilder
+```
+
+#### RadioButtonsBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *RadioButtonsBuilder) Confirm(value any) *RadioButtonsBuilder
+```
+
+#### RadioButtonsBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *RadioButtonsBuilder) FocusOnLoad(value bool) *RadioButtonsBuilder
+```
+
+Every `RadioButtonsBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextInput
+
+NewRichTextInput creates a WYSIWYG rich-text editor.
+
+```go
+func NewRichTextInput() *RichTextInputBuilder
+```
+
+### RichTextInputBuilder
+
+RichTextInputBuilder is the concrete fluent builder returned by NewRichTextInput. Use NewRichTextInput rather than constructing this type directly.
+
+```go
+type RichTextInputBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RichTextInputBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *RichTextInputBuilder) ActionID(value string) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.InitialValue
+
+InitialValue sets initial input content.
+
+```go
+func (b *RichTextInputBuilder) InitialValue(value any) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.DispatchActionConfig
+
+DispatchActionConfig sets input dispatch behavior.
+
+```go
+func (b *RichTextInputBuilder) DispatchActionConfig(value any) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *RichTextInputBuilder) FocusOnLoad(value bool) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *RichTextInputBuilder) Placeholder(value any) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.MinLines
+
+MinLines sets a rich-text editor minimum line count.
+
+```go
+func (b *RichTextInputBuilder) MinLines(value int) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.MaxLines
+
+MaxLines sets a rich-text editor line limit.
+
+```go
+func (b *RichTextInputBuilder) MaxLines(value int) *RichTextInputBuilder
+```
+
+Every `RichTextInputBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewStaticMultiSelect
+
+NewStaticMultiSelect creates a multi-select with embedded options.
+
+```go
+func NewStaticMultiSelect() *StaticMultiSelectBuilder
+```
+
+### StaticMultiSelectBuilder
+
+StaticMultiSelectBuilder is the concrete fluent builder returned by NewStaticMultiSelect. Use NewStaticMultiSelect rather than constructing this type directly.
+
+```go
+type StaticMultiSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### StaticMultiSelectBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *StaticMultiSelectBuilder) ActionID(value string) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.Options
+
+Options appends selectable option objects.
+
+```go
+func (b *StaticMultiSelectBuilder) Options(values ...any) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.OptionGroups
+
+OptionGroups appends selectable option groups.
+
+```go
+func (b *StaticMultiSelectBuilder) OptionGroups(values ...any) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.InitialOptions
+
+InitialOptions appends initially selected options.
+
+```go
+func (b *StaticMultiSelectBuilder) InitialOptions(values ...any) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *StaticMultiSelectBuilder) Confirm(value any) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.MaxSelectedItems
+
+MaxSelectedItems sets a select-menu selection limit.
+
+```go
+func (b *StaticMultiSelectBuilder) MaxSelectedItems(value int) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *StaticMultiSelectBuilder) FocusOnLoad(value bool) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *StaticMultiSelectBuilder) Placeholder(value any) *StaticMultiSelectBuilder
+```
+
+Every `StaticMultiSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewStaticSelect
+
+NewStaticSelect creates a single-select with embedded options.
+
+```go
+func NewStaticSelect() *StaticSelectBuilder
+```
+
+### StaticSelectBuilder
+
+StaticSelectBuilder is the concrete fluent builder returned by NewStaticSelect. Use NewStaticSelect rather than constructing this type directly.
+
+```go
+type StaticSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### StaticSelectBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *StaticSelectBuilder) ActionID(value string) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.Options
+
+Options appends selectable option objects.
+
+```go
+func (b *StaticSelectBuilder) Options(values ...any) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.OptionGroups
+
+OptionGroups appends selectable option groups.
+
+```go
+func (b *StaticSelectBuilder) OptionGroups(values ...any) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.InitialOption
+
+InitialOption sets a single initially selected option.
+
+```go
+func (b *StaticSelectBuilder) InitialOption(value any) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *StaticSelectBuilder) Confirm(value any) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *StaticSelectBuilder) FocusOnLoad(value bool) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *StaticSelectBuilder) Placeholder(value any) *StaticSelectBuilder
+```
+
+Every `StaticSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewTimePicker
+
+NewTimePicker creates a time-of-day picker.
+
+```go
+func NewTimePicker() *TimePickerBuilder
+```
+
+### TimePickerBuilder
+
+TimePickerBuilder is the concrete fluent builder returned by NewTimePicker. Use NewTimePicker rather than constructing this type directly.
+
+```go
+type TimePickerBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### TimePickerBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *TimePickerBuilder) ActionID(value string) *TimePickerBuilder
+```
+
+#### TimePickerBuilder.InitialTime
+
+InitialTime sets an initial 24-hour time.
+
+```go
+func (b *TimePickerBuilder) InitialTime(value string) *TimePickerBuilder
+```
+
+#### TimePickerBuilder.Timezone
+
+Timezone sets an IANA timezone.
+
+```go
+func (b *TimePickerBuilder) Timezone(value string) *TimePickerBuilder
+```
+
+#### TimePickerBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *TimePickerBuilder) Confirm(value any) *TimePickerBuilder
+```
+
+#### TimePickerBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *TimePickerBuilder) FocusOnLoad(value bool) *TimePickerBuilder
+```
+
+#### TimePickerBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *TimePickerBuilder) Placeholder(value any) *TimePickerBuilder
+```
+
+Every `TimePickerBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewURLInput
+
+NewURLInput creates a URL input.
+
+```go
+func NewURLInput() *URLInputBuilder
+```
+
+### URLInputBuilder
+
+URLInputBuilder is the concrete fluent builder returned by NewURLInput. Use NewURLInput rather than constructing this type directly.
+
+```go
+type URLInputBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### URLInputBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *URLInputBuilder) ActionID(value string) *URLInputBuilder
+```
+
+#### URLInputBuilder.InitialValue
+
+InitialValue sets initial input content.
+
+```go
+func (b *URLInputBuilder) InitialValue(value any) *URLInputBuilder
+```
+
+#### URLInputBuilder.DispatchActionConfig
+
+DispatchActionConfig sets input dispatch behavior.
+
+```go
+func (b *URLInputBuilder) DispatchActionConfig(value any) *URLInputBuilder
+```
+
+#### URLInputBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *URLInputBuilder) FocusOnLoad(value bool) *URLInputBuilder
+```
+
+#### URLInputBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *URLInputBuilder) Placeholder(value any) *URLInputBuilder
+```
+
+Every `URLInputBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewURLSource
+
+NewURLSource creates a source link for a task card.
+
+```go
+func NewURLSource() *URLSourceBuilder
+```
+
+### URLSourceBuilder
+
+URLSourceBuilder is the concrete fluent builder returned by NewURLSource. Use NewURLSource rather than constructing this type directly.
+
+```go
+type URLSourceBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### URLSourceBuilder.URL
+
+URL sets a URL field.
+
+```go
+func (b *URLSourceBuilder) URL(value string) *URLSourceBuilder
+```
+
+#### URLSourceBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *URLSourceBuilder) Text(value any) *URLSourceBuilder
+```
+
+Every `URLSourceBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewUserMultiSelect
+
+NewUserMultiSelect creates a workspace-user multi-select.
+
+```go
+func NewUserMultiSelect() *UserMultiSelectBuilder
+```
+
+### UserMultiSelectBuilder
+
+UserMultiSelectBuilder is the concrete fluent builder returned by NewUserMultiSelect. Use NewUserMultiSelect rather than constructing this type directly.
+
+```go
+type UserMultiSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### UserMultiSelectBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *UserMultiSelectBuilder) ActionID(value string) *UserMultiSelectBuilder
+```
+
+#### UserMultiSelectBuilder.InitialUsers
+
+InitialUsers appends initially selected users.
+
+```go
+func (b *UserMultiSelectBuilder) InitialUsers(values ...string) *UserMultiSelectBuilder
+```
+
+#### UserMultiSelectBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *UserMultiSelectBuilder) Confirm(value any) *UserMultiSelectBuilder
+```
+
+#### UserMultiSelectBuilder.MaxSelectedItems
+
+MaxSelectedItems sets a select-menu selection limit.
+
+```go
+func (b *UserMultiSelectBuilder) MaxSelectedItems(value int) *UserMultiSelectBuilder
+```
+
+#### UserMultiSelectBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *UserMultiSelectBuilder) FocusOnLoad(value bool) *UserMultiSelectBuilder
+```
+
+#### UserMultiSelectBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *UserMultiSelectBuilder) Placeholder(value any) *UserMultiSelectBuilder
+```
+
+Every `UserMultiSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewUserSelect
+
+NewUserSelect creates a workspace-user single-select.
+
+```go
+func NewUserSelect() *UserSelectBuilder
+```
+
+### UserSelectBuilder
+
+UserSelectBuilder is the concrete fluent builder returned by NewUserSelect. Use NewUserSelect rather than constructing this type directly.
+
+```go
+type UserSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### UserSelectBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *UserSelectBuilder) ActionID(value string) *UserSelectBuilder
+```
+
+#### UserSelectBuilder.InitialUser
+
+InitialUser sets an initially selected user.
+
+```go
+func (b *UserSelectBuilder) InitialUser(value string) *UserSelectBuilder
+```
+
+#### UserSelectBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *UserSelectBuilder) Confirm(value any) *UserSelectBuilder
+```
+
+#### UserSelectBuilder.FocusOnLoad
+
+FocusOnLoad controls initial focus in a view.
+
+```go
+func (b *UserSelectBuilder) FocusOnLoad(value bool) *UserSelectBuilder
+```
+
+#### UserSelectBuilder.Placeholder
+
+Placeholder sets empty-state prompt text.
+
+```go
+func (b *UserSelectBuilder) Placeholder(value any) *UserSelectBuilder
+```
+
+Every `UserSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewWorkflowButton
+
+NewWorkflowButton creates a button that launches a Slack workflow.
+
+```go
+func NewWorkflowButton() *WorkflowButtonBuilder
+```
+
+### WorkflowButtonBuilder
+
+WorkflowButtonBuilder is the concrete fluent builder returned by NewWorkflowButton. Use NewWorkflowButton rather than constructing this type directly.
+
+```go
+type WorkflowButtonBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### WorkflowButtonBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *WorkflowButtonBuilder) Text(value any) *WorkflowButtonBuilder
+```
+
+#### WorkflowButtonBuilder.Workflow
+
+Workflow sets a workflow object on a workflow button.
+
+```go
+func (b *WorkflowButtonBuilder) Workflow(value any) *WorkflowButtonBuilder
+```
+
+#### WorkflowButtonBuilder.ActionID
+
+ActionID sets an interaction identifier.
+
+```go
+func (b *WorkflowButtonBuilder) ActionID(value string) *WorkflowButtonBuilder
+```
+
+#### WorkflowButtonBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *WorkflowButtonBuilder) Confirm(value any) *WorkflowButtonBuilder
+```
+
+#### WorkflowButtonBuilder.Style
+
+Style sets a Slack-supported visual or layout style.
+
+```go
+func (b *WorkflowButtonBuilder) Style(value any) *WorkflowButtonBuilder
+```
+
+#### WorkflowButtonBuilder.AccessibilityLabel
+
+AccessibilityLabel sets assistive text for an interactive control.
+
+```go
+func (b *WorkflowButtonBuilder) AccessibilityLabel(value string) *WorkflowButtonBuilder
+```
+
+Every `WorkflowButtonBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.

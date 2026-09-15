@@ -13,6 +13,15 @@ major release.
 - Keep the lowercase object-input TypeScript factories available only as a deprecated
   compatibility layer under `src/legacy`.
 
+## 2.3
+
+- Add a Java 17+ implementation with immutable values, concrete fluent builders,
+  and direct interoperability with the official Slack Java SDK.
+- Publish Java to Maven Central and release Python, TypeScript, Go, and Java in
+  lockstep from one coordinated workflow.
+- Add Java-specific guides and generated API reference documentation to the
+  language-aware documentation site.
+
 ## 3.0
 
 - Remove every deprecated lowercase TypeScript factory and its root-package re-export.

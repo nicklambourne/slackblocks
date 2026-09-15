@@ -1,14 +1,15 @@
 # Releasing
 
 The Python (`slackblocks` on PyPI), TypeScript
-(`@nicklambourne/slackblocks` on npm), and Go
-(`github.com/nicklambourne/slackblocks/go/v2`) packages are released together
-and always carry the same version number.
+(`@nicklambourne/slackblocks` on npm), Go
+(`github.com/nicklambourne/slackblocks/go/v2`), and Java
+(`io.github.nicklambourne:slackblocks` on Maven Central) packages are released
+together and always carry the same version number.
 
 The recommended entry point is the **Coordinated Release** workflow in GitHub
 Actions. Run it from `master` with one `X.Y.Z` input; it validates the shared
-version and changelogs, creates all three annotated tags in one atomic push,
-dispatches each existing publisher at its tag, and waits for all three runs.
+version and changelogs, creates all four annotated tags in one atomic push,
+dispatches each publisher at its tag, and waits for all four runs.
 
 ## Tag scheme
 
@@ -19,27 +20,28 @@ Releases are triggered by pushing tags:
 | `python/vX.Y.Z` | [`.github/workflows/publish.yml`](.github/workflows/publish.yml) | `slackblocks` to PyPI |
 | `ts/vX.Y.Z` | [`.github/workflows/publish-npm.yml`](.github/workflows/publish-npm.yml) | `@nicklambourne/slackblocks` to npm |
 | `go/vX.Y.Z` | [`.github/workflows/publish-go.yml`](.github/workflows/publish-go.yml) | `github.com/nicklambourne/slackblocks/go/v2` to the Go module ecosystem |
+| `java/vX.Y.Z` | [`.github/workflows/publish-java.yml`](.github/workflows/publish-java.yml) | `io.github.nicklambourne:slackblocks` to Maven Central |
 
 Plain `v*` tags (used by the pre-monorepo 1.x/2.0 releases) no longer trigger
 anything.
 
-The three publisher workflows also accept a manual dispatch at an existing,
-matching language tag. The coordinator uses those entry points so the PyPI and
-npm jobs retain their existing trusted-publisher workflow identities.
+The four publisher workflows also accept a manual dispatch at an existing,
+matching language tag. The coordinator uses those entry points so each job
+retains its registry-specific publisher workflow identity.
 
-The Python and TypeScript workflows fail fast if the tag does not match their
-package manifest. Every workflow also verifies that `python/pyproject.toml`
-and `typescript/package.json` agree, and the Go workflow requires its tag to
-match that coordinated version.
+The Python, TypeScript, and Java workflows fail fast if the tag does not match
+their package manifest. Every workflow also verifies that
+`python/pyproject.toml`, `typescript/package.json`, and `java/pom.xml` agree;
+the Go workflow requires its tag to match that coordinated version.
 
 ## One-time setup
 
 These must be in place before the workflows can publish:
 
-1. **GitHub environments** — create `pypi` and `npm` environments in the
-   repository settings (Settings → Environments). The publish jobs run inside
-   them; add required reviewers there if you want manual approval before
-   publishing.
+1. **GitHub environments** — create `pypi`, `npm`, and `maven-central`
+   environments in the repository settings (Settings → Environments). The
+   publish jobs run inside them; add required reviewers there if you want
+   manual approval before publishing.
 2. **PyPI trusted publisher** — on PyPI, add a trusted publisher for the
    `slackblocks` project pointing at this repository with workflow
    `publish.yml` and environment `pypi`. No API token is needed after that;
@@ -63,6 +65,47 @@ These must be in place before the workflows can publish:
    the exact form `go/vX.Y.Z`. The workflow verifies the module and creates the
    corresponding GitHub Release; consumers and the public Go proxy resolve it
    directly from the repository.
+5. **Maven Central namespace, credentials, and signing**
+   1. Sign in to the [Central Portal](https://central.sonatype.com) with the
+      `nicklambourne` GitHub account.
+   2. Open **Namespaces** and add `io.github.nicklambourne`. The portal shows a
+      verification key. Create a temporary **public** repository named exactly
+      that key under `github.com/nicklambourne`, return to the portal, and
+      select **Verify Namespace**. Delete the temporary repository once the
+      namespace shows as verified. The first publish fails until this is done.
+   3. Open **View Account** → **Generate User Token**. Store the token's
+      username and password as `MAVEN_CENTRAL_USERNAME` and
+      `MAVEN_CENTRAL_TOKEN` in the `maven-central` environment.
+   4. Create a dedicated release signing key with an expiry, and note its key ID
+      and expiry date in this file:
+
+      ```sh
+      gpg --quick-gen-key "slackblocks release signing <maintainer-email>" rsa4096 sign 2y
+      gpg --list-secret-keys --keyid-format long
+      gpg --keyserver hkps://keyserver.ubuntu.com --send-keys <KEY_ID>
+      gpg --keyserver hkps://keys.openpgp.org --send-keys <KEY_ID>
+      gpg --armor --export-secret-keys <KEY_ID>
+      ```
+
+      The current key is `16B380B037C8DC16` (fingerprint
+      `3897 1573 4B85 1218 2C42  B197 16B3 80B0 37C8 DC16`), created
+      2026-09-15 and expiring 2028-09-14. Extend it with
+      `gpg --quick-set-expire 16B380B037C8DC16 2y` before then, and publish it
+      to both keyservers again.
+
+      keys.openpgp.org emails a confirmation link before it serves the key.
+      Central fetches public keys from these servers to verify signatures, so
+      publish before the first release and again after extending the expiry.
+   5. Store the armored private key as `MAVEN_GPG_PRIVATE_KEY` and its
+      passphrase as `MAVEN_GPG_PASSPHRASE` in the `maven-central` environment.
+
+   The Java publisher signs the POM and all three JARs, uploads the bundle, and
+   waits until Central has **validated** it. `java/pom.xml` sets
+   `autoPublish` to `false` for the first Java release, so 2.3.0 stays in the
+   portal until a maintainer publishes it (see the procedure below). Java CI's
+   **Signed Maven Central bundle** job signs a dry-run bundle with a throwaway
+   key on every relevant pull request, so signing problems surface before a
+   release.
 
 ## Coordinated release procedure
 
@@ -88,20 +131,31 @@ missing from `docs/versions.json` (or the legacy manifest).
    `docs/versioned_docs/version-<outgoing>` and prepends `<outgoing>` to
    `docs/versions.json`. (The very first monorepo release is the exception: its
    outgoing `2.0.0` is a legacy version already frozen in the manifest.)
-2. Bump the version in **both** manifests on the same branch:
+2. Bump the version in every package manifest and the Java version constant
+   on the same branch:
    - `python/pyproject.toml` (`project.version`)
    - `typescript/package.json` (`version`)
+   - `java/pom.xml` (`project.version`)
+   - `java/src/main/java/io/github/nicklambourne/slackblocks/Slackblocks.java`
+     (`VERSION`; Java CI verifies that it matches the POM)
 
    For a new major release, also change the Go semantic import path in
    `go/go.mod` from `/v2` to `/vN`, update every Go import in code and docs,
    and update the module-path assertion in `publish-go.yml`. A coordinated
-   Python/TypeScript 3.0.0 release therefore requires a Go `/v3` module; the
+   3.0.0 release therefore requires a Go `/v3` module; the
    existing `/v2` path cannot publish `go/v3.0.0`.
 3. Add a `## [X.Y.Z] — YYYY-MM-DD` section to `python/CHANGELOG.md`,
-   `typescript/CHANGELOG.md`, and `go/CHANGELOG.md`. The publish workflows
-   extract the matching section for their GitHub Release notes.
-4. Merge to `master` and wait for CI to pass.
-5. In GitHub Actions, open **Coordinated Release**, select **Run workflow**,
+   `typescript/CHANGELOG.md`, `go/CHANGELOG.md`, and `java/CHANGELOG.md`. The
+   publish workflows extract the matching section for their GitHub Release
+   notes. Pull requests may use `Unreleased` while the release is prepared, but
+   replace it with the release date before dispatching: the coordinator rejects
+   headings without a date, and dates that differ between changelogs.
+4. Set `project.build.outputTimestamp` in `java/pom.xml` to the same date,
+   such as `2026-09-20T00:00:00Z`. The value makes the Java JARs reproducible,
+   and the coordinator rejects a release whose timestamp does not match the
+   changelog date.
+5. Merge to `master` and wait for CI to pass.
+6. In GitHub Actions, open **Coordinated Release**, select **Run workflow**,
    keep the branch set to `master`, and enter `X.Y.Z`. The equivalent CLI
    command is:
 
@@ -109,20 +163,31 @@ missing from `docs/versions.json` (or the legacy manifest).
    gh workflow run coordinated-release.yml --ref master -f version=X.Y.Z
    ```
 
-6. The coordinator atomically pushes `python/vX.Y.Z`, `ts/vX.Y.Z`, and
-   `go/vX.Y.Z`, then dispatches and monitors the three existing publishers.
+7. The coordinator atomically pushes `python/vX.Y.Z`, `ts/vX.Y.Z`,
+   `go/vX.Y.Z`, and `java/vX.Y.Z`, then dispatches and monitors all four
+   publishers.
    Each publisher creates its own GitHub Release after its registry step
    succeeds.
+8. **Java only, while `autoPublish` is `false`:** when the Java publisher
+   finishes, open **Deployments** in the Central Portal. Check that the
+   `io.github.nicklambourne:slackblocks:X.Y.Z` deployment is validated and
+   contains the binary, sources, and Javadoc JARs, the POM, and a `.asc`
+   signature for each, then select **Publish**. Do this promptly: the Java
+   GitHub Release already exists. If the bundle is wrong, select **Drop**
+   instead, fix the problem, and release a new patch version of every package.
+   After the first Java release, set `autoPublish` to `true` in `java/pom.xml`
+   so later releases publish without this step.
 
 If the coordinator is unavailable, the direct tag triggers remain as a manual
-fallback. Create all three signed tags at the same commit and push them
+fallback. Create all four signed tags at the same commit and push them
 atomically:
 
 ```sh
 git tag -s python/vX.Y.Z -m "slackblocks X.Y.Z (Python)"
 git tag -s ts/vX.Y.Z -m "@nicklambourne/slackblocks X.Y.Z (TypeScript)"
 git tag -s go/vX.Y.Z -m "slackblocks X.Y.Z (Go)"
-git push --atomic origin python/vX.Y.Z ts/vX.Y.Z go/vX.Y.Z
+git tag -s java/vX.Y.Z -m "slackblocks X.Y.Z (Java)"
+git push --atomic origin python/vX.Y.Z ts/vX.Y.Z go/vX.Y.Z java/vX.Y.Z
 ```
 
 Tags created by the coordinator are annotated as `github-actions[bot]` but
@@ -131,12 +196,12 @@ store that private key.
 
 ## Partial-failure recovery
 
-The three tags are created atomically, but three external registries cannot be
+The four tags are created atomically, but four external registries cannot be
 updated as one transaction. If one publisher fails after another succeeds,
 re-run the failed publisher from its existing workflow run; never move the
 tags or republish an already released version.
 
-All three workflows are safe to re-run from the Actions UI:
+All four workflows are safe to re-run from the Actions UI:
 
 - **PyPI** — `uv publish` runs with
   `--check-url https://pypi.org/simple/slackblocks/`, so files already
@@ -147,6 +212,12 @@ All three workflows are safe to re-run from the Actions UI:
 - **Go** — the tag is the published module version. Re-run the workflow if only
   verification or GitHub Release creation failed; do not move or replace a
   public module tag.
+- **Maven Central** — published versions are immutable. If the Central
+  Portal shows the deployment as **validated** but not published, publish or
+  drop it in the portal rather than re-running the workflow: a second upload of
+  the same version is rejected. Re-run the workflow only if no deployment for
+  the version exists, or after dropping a failed one. If Central already lists
+  the version, treat the registry step as complete.
 - **GitHub Releases** — the release step skips itself if a release for the
   tag already exists.
 
@@ -158,8 +229,10 @@ After a failure, check:
   version (with provenance).
 - Go: https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2 lists the
   new module version.
-- GitHub: a Release exists for each of the three tags with the changelog notes.
+- Maven Central: https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks
+  lists the new artifact version with binary, source, and Javadoc JARs.
+- GitHub: a Release exists for each of the four tags with the changelog notes.
 
 If a bad artifact was published, do not delete and re-upload: registries
 reject reused file names and versions. Yank/deprecate the broken version and
-release a new coordinated patch version of **all three** packages.
+release a new coordinated patch version of **all four** packages.
