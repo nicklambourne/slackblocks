@@ -90,6 +90,21 @@ func TestConcreteBuildersExposeOnlyRegisteredFluentMethods(t *testing.T) {
 		}
 		sort.Strings(actual)
 		want := append([]string(nil), expected...)
+		// Text fields also expose a companion that takes a text object: TitleObject for Title,
+		// and FieldObjects for the Fields list.
+		registered := map[string]bool{}
+		for _, name := range expected {
+			registered[name] = true
+		}
+		for _, name := range actual {
+			base := strings.TrimSuffix(name, "Object")
+			if strings.HasSuffix(name, "Objects") {
+				base = strings.TrimSuffix(name, "Objects") + "s"
+			}
+			if base != name && registered[base] {
+				want = append(want, name)
+			}
+		}
 		sort.Strings(want)
 		if !reflect.DeepEqual(actual, want) {
 			t.Errorf("%s methods mismatch\nactual: %v\nwant:   %v", expectedType, actual, want)

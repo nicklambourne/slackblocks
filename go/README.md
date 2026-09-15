@@ -39,6 +39,21 @@ materialised automatically. Call `Build()` explicitly when you want eager
 validation or a complete JSON-compatible payload such as `NewMessage()` for a
 non-slack-go client.
 
+Builder methods are typed, so a value of the wrong kind fails to compile:
+
+- Nested fields take a role interface: `Accessory(Element)`, `Elements(...ContextElement)`,
+  `Element(InputElement)`, `Chart(Chart)`, and `Rows(...[]TableCell)`. Only slackblocks
+  builders implement these interfaces.
+- Text fields take a string, which slackblocks sends as the field's text object type. Use the
+  companion method, such as `TextObject(NewPlainText().Text("Hi").Emoji(true))`, to pass a
+  text object.
+- Closed value sets are named string types with constants, such as `ButtonStylePrimary`.
+  Untyped string constants still work: `Style("primary")`.
+- Rich text styles take `RichTextStyle{"bold": true}`.
+
+`Set(field, value)` remains the raw wire-format escape hatch for fields slackblocks does not
+model yet.
+
 The module path is `github.com/nicklambourne/slackblocks/go/v2`:
 
 ```bash

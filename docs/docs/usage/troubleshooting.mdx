@@ -301,6 +301,23 @@ payload, err := slackblocks.NewMessage().
     Build()
 ```
 
+## What is `BlockID` for? Should I set it?
+
+`block_id` is a stable identifier for a block. Slack echoes it back in interaction payloads (button clicks, modal submissions) so a handler can tell which block produced the event. Go omits the field unless you set it, unlike Python, which generates a UUID.
+
+- For **non-interactive** messages, leave it unset.
+- For **interactive** messages and modals, set an explicit `BlockID(...)` so handlers can look up state reliably:
+
+  ```go
+  slackblocks.NewActionsBlock().
+      BlockID("approval:req-123").
+      Elements(slackblocks.NewButton().Text("Approve").ActionID("approve").Value("req-123"))
+  ```
+
+## Why doesn't markdown work inside `NewHeaderBlock()`?
+
+By design: Slack only allows `plain_text` in headers, so `NewHeaderBlock().Text(...)` always produces a plain-text object. Use `NewSectionBlock()` (which supports `mrkdwn`) followed by `NewDividerBlock()` if you want bold or styled text as a heading.
+
 ## What does a validation failure contain?
 
 `Build()` returns a `*slackblocks.ValidationError`. Use `errors.As` to inspect its stable `Category`, `Path`, and `Detail` fields:
@@ -329,6 +346,16 @@ slackblocks only constructs outgoing JSON. Your app still needs a public HTTPS i
 ## How do I preview a payload?
 
 Marshal the completed `Object` with `encoding/json`, then paste it into Slack's [Block Kit Builder](https://app.slack.com/block-kit-builder).
+
+## How does slackblocks compare to the block types in `slack-go/slack`?
+
+`slack-go/slack` ships its own `slack.SectionBlock` and related structs. slackblocks builders implement `slack.Block`, so both work with `slack.MsgOptionBlocks`, and slackblocks adds:
+
+- A fluent API that coerces strings to the right text object and exposes only the fields each block supports.
+- Validation before the request is sent, with a stable `ErrorCategory` and field path in every `ValidationError`.
+- The newer Block Kit shapes (tables, cards, carousels, charts, plans) and the same JSON as the Python, TypeScript, and Java packages.
+
+Use whichever you find more ergonomic; they produce equivalent JSON.
 
 ## Where do I report bugs or request features?
 
