@@ -14,9 +14,11 @@ async function readDocuments(language) {
 const pythonDocuments = await readDocuments("python");
 const typescriptDocuments = await readDocuments("typescript");
 const goDocuments = await readDocuments("go");
+const javaDocuments = await readDocuments("java");
 const pythonText = pythonDocuments.map(({ t }) => t).join("\n");
 const typescriptText = typescriptDocuments.map(({ t }) => t).join("\n");
 const goText = goDocuments.map(({ t }) => t).join("\n");
+const javaText = javaDocuments.map(({ t }) => t).join("\n");
 
 assert.equal(
   pythonDocuments.some(({ u }) => u.includes("/reference/typescript")),
@@ -27,9 +29,14 @@ assert.equal(
   false,
 );
 assert.equal(
-  goDocuments.some(({ u }) => /\/reference\/(?:python|typescript)/.test(u)),
+  goDocuments.some(({ u }) => /\/reference\/(?:python|typescript|java)/.test(u)),
   false,
   "Go search leaked another language's API reference",
+);
+assert.equal(
+  javaDocuments.some(({ u }) => /\/reference\/(?:python|typescript|go)/.test(u)),
+  false,
+  "Java search leaked another language's API reference",
 );
 assert.equal(
   pythonDocuments.some(({ u }) => u.includes("/reference/go")),
@@ -40,6 +47,16 @@ assert.equal(
   typescriptDocuments.some(({ u }) => u.includes("/reference/go")),
   false,
   "TypeScript search leaked the Go API reference",
+);
+assert.equal(
+  pythonDocuments.some(({ u }) => u.includes("/reference/java")),
+  false,
+  "Python search leaked the Java API reference",
+);
+assert.equal(
+  typescriptDocuments.some(({ u }) => u.includes("/reference/java")),
+  false,
+  "TypeScript search leaked the Java API reference",
 );
 assert.equal(
   typescriptDocuments.some(({ u }) =>
@@ -55,5 +72,9 @@ assert.doesNotMatch(typescriptText, /Python 3\.10 or newer is required/);
 assert.match(goText, /Go 1\.22 or newer is required/);
 assert.doesNotMatch(goText, /Python 3\.10 or newer is required/);
 assert.doesNotMatch(goText, /Node\.js 20\.19 or newer is required/);
+assert.match(javaText, /Java 17 or newer is required/);
+assert.doesNotMatch(javaText, /Python 3\.10 or newer is required/);
+assert.doesNotMatch(javaText, /Node\.js 20\.19 or newer is required/);
+assert.doesNotMatch(javaText, /Go 1\.22 or newer is required/);
 
 console.log("Search indexes are scoped to their selected languages.");

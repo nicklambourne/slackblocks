@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Using Blocks
 
@@ -29,10 +29,18 @@ For exact setters and return types, see the [TypeScript API reference](../refere
 For fluent constructors, JSON types, and validation errors, see the [Go API reference](../reference/go). Interactive controls such as buttons, menus, and date pickers are grouped under [Elements](../reference/go/elements).
 
 </Go>
+<Java>
+
+For concrete fluent builders, immutable values, and validation errors, see the [Java API reference](../reference/java). Interactive controls such as buttons, menus, and date pickers are grouped under [Elements](../reference/java/elements).
+
+</Java>
 </LanguageContent>
 
 ## Section Block
 
+A section is the most versatile block. It shows `text`, a two-column grid of `fields`, or both, and can carry one interactive `accessory` such as a button, menu, or image.
+
+Provide `text`, `fields`, or both. `text` allows up to 3,000 characters, and `fields` allows up to 10 items of up to 2,000 characters each.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -87,7 +95,7 @@ block, err := slackblocks.NewSectionBlock().
             ActionID("checkboxes-action").
             Options(
                 slackblocks.NewOption().
-                    Text(slackblocks.NewMarkdown().Text("*Your Only Option*")).
+                    TextObject(slackblocks.NewMarkdown().Text("*Your Only Option*")).
                     Value("option_one"),
             ),
     ).
@@ -95,6 +103,23 @@ block, err := slackblocks.NewSectionBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+SectionBlock block = SectionBlock.builder()
+    .markdownText("This is a section block with a checkbox accessory.")
+    .blockId("fake_block_id")
+    .accessory(CheckboxesElement.builder()
+        .actionId("checkboxes-action")
+        .options(Option.builder()
+            .text(MarkdownText.of("*Your Only Option*"))
+            .value("option_one")
+            .build())
+        .build())
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -135,6 +160,10 @@ block, err := slackblocks.NewSectionBlock().
 </Tabs>
 
 ## Rich Text Block
+
+Rich text carries formatted content built from sections, lists, preformatted code, and quotes. Inline elements add bold, italic, strikethrough, and code styling, along with links, emoji, and user, channel, or user group mentions.
+
+Required: `elements`.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -192,15 +221,33 @@ block, err := slackblocks.NewRichTextBlock().
     BlockID("fake_block_id").
     Elements(
         slackblocks.NewRichTextSection().Elements(
-            slackblocks.NewRichText().Text("You 'bout to witness hip-hop in its most purest\n").Style(slackblocks.Object{"bold": true}),
-            slackblocks.NewRichText().Text("Most rawest form, flow almost flawless\n").Style(slackblocks.Object{"strike": true}),
-            slackblocks.NewRichText().Text("Most hardest, most honest known artist\n").Style(slackblocks.Object{"italic": true}),
+            slackblocks.NewRichText().Text("You 'bout to witness hip-hop in its most purest\n").Style(slackblocks.RichTextStyle{"bold": true}),
+            slackblocks.NewRichText().Text("Most rawest form, flow almost flawless\n").Style(slackblocks.RichTextStyle{"strike": true}),
+            slackblocks.NewRichText().Text("Most hardest, most honest known artist\n").Style(slackblocks.RichTextStyle{"italic": true}),
         ),
     ).
     Build()
 ```
 
 </Go>
+<Java>
+
+```java
+RichTextBlock block = RichTextBlock.builder()
+    .blockId("fake_block_id")
+    .elements(RichTextSection.builder()
+        .elements(
+            RichTextText.builder().text("You 'bout to witness hip-hop in its most purest\n")
+                .bold(true).build(),
+            RichTextText.builder().text("Most rawest form, flow almost flawless\n")
+                .strike(true).build(),
+            RichTextText.builder().text("Most hardest, most honest known artist\n")
+                .italic(true).build())
+        .build())
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -253,6 +300,9 @@ block, err := slackblocks.NewRichTextBlock().
 
 ## Header Block
 
+A header shows large, bold plain text that introduces a group of blocks. Plain strings are converted to Slack `plain_text` objects automatically.
+
+Required: `text` (up to 150 characters).
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -289,6 +339,16 @@ block, err := slackblocks.NewHeaderBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+HeaderBlock block = HeaderBlock.builder()
+    .text("This is a header block")
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -360,6 +420,16 @@ block, err := slackblocks.NewMarkdownBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+MarkdownBlock block = MarkdownBlock.builder()
+    .text("**Hello!** Markdown blocks support _GitHub-flavored_ syntax.")
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -387,6 +457,9 @@ See the [Slack reference](https://api.slack.com/reference/block-kit/blocks#markd
 
 ## Image Block
 
+An image block displays a standalone image from a URL, with alternative text for screen readers and an optional plain-text title.
+
+Required: `image_url` (up to 3,000 characters) and `alt_text` (up to 2,000 characters).
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -432,6 +505,18 @@ block, err := slackblocks.NewImageBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+ImageBlock block = ImageBlock.builder()
+    .imageUrl("https://api.slack.com/img/blocks/bkb_template_images/beagle.png")
+    .altText("a beagle")
+    .title("dog")
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -462,6 +547,9 @@ block, err := slackblocks.NewImageBlock().
 
 ## Input Block
 
+An input block pairs a label with one input element, such as a text input, select menu, or date picker, to collect a value from the user. Input blocks are most common in modals, and can also appear in messages and App Home.
+
+Required: `label` (up to 2,000 characters) and `element`. Set `optional` to allow submission without a value, and `dispatch_action` to receive an interaction payload as the value changes.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -501,8 +589,8 @@ InputBlock()
 
 ```go
 block, err := slackblocks.NewInputBlock().
-    Label(slackblocks.NewPlainText().Text("Label").Emoji(true)).
-    Hint(slackblocks.NewPlainText().Text("Hint").Emoji(true)).
+    LabelObject(slackblocks.NewPlainText().Text("Label").Emoji(true)).
+    HintObject(slackblocks.NewPlainText().Text("Hint").Emoji(true)).
     Element(slackblocks.NewPlainTextInput().ActionID("action")).
     BlockID("fake_block_id").
     Optional(true).
@@ -510,6 +598,19 @@ block, err := slackblocks.NewInputBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+InputBlock block = InputBlock.builder()
+    .label(PlainText.builder().text("Label").emoji(true).build())
+    .hint(PlainText.builder().text("Hint").emoji(true).build())
+    .element(PlainTextInputElement.builder().actionId("action").build())
+    .blockId("fake_block_id")
+    .optional(true)
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -549,6 +650,9 @@ block, err := slackblocks.NewInputBlock().
 
 ## Divider Block
 
+A divider draws a horizontal rule between blocks, much like an HTML `<hr>` element.
+
+No fields are required.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -579,6 +683,13 @@ block, err := slackblocks.NewDividerBlock().BlockID("fake_block_id").Build()
 ```
 
 </Go>
+<Java>
+
+```java
+DividerBlock block = DividerBlock.builder().blockId("fake_block_id").build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -603,6 +714,9 @@ block, err := slackblocks.NewDividerBlock().BlockID("fake_block_id").Build()
 
 ## File Block
 
+A file block displays a remote file that was previously added to Slack with the `files.remote.add` API. It references the existing file by ID and does not upload anything itself.
+
+Required: `external_id`. `source` defaults to `remote`, the only value Slack currently accepts.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -639,6 +753,16 @@ block, err := slackblocks.NewFileBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+FileBlock block = FileBlock.builder()
+    .externalId("external_id")
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -666,6 +790,9 @@ block, err := slackblocks.NewFileBlock().
 
 ## Context Block
 
+A context block shows small, secondary images and text, such as an author, a timestamp, or a status line beneath other content.
+
+Required: `elements` (up to 10 images or text objects).
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -707,6 +834,16 @@ block, err := slackblocks.NewContextBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+ContextBlock block = ContextBlock.builder()
+    .elements(MarkdownText.of("Hello, world!"))
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -736,6 +873,10 @@ block, err := slackblocks.NewContextBlock().
 </Tabs>
 
 ## Actions Block
+
+An actions block holds a row of interactive elements, such as buttons, select menus, overflow menus, checkboxes, and date pickers.
+
+Required: `elements` (up to 25 elements).
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -792,15 +933,31 @@ block, err := slackblocks.NewActionsBlock().
         slackblocks.NewCheckboxes().
             ActionID("actionId-0").
             Options(
-                slackblocks.NewOption().Text(slackblocks.NewMarkdown().Text("*a*")).Value("a").Description("*a*"),
-                slackblocks.NewOption().Text(slackblocks.NewMarkdown().Text("*b*")).Value("b").Description("*b*"),
-                slackblocks.NewOption().Text(slackblocks.NewMarkdown().Text("*c*")).Value("c").Description("*c*"),
+                slackblocks.NewOption().TextObject(slackblocks.NewMarkdown().Text("*a*")).Value("a").Description("*a*"),
+                slackblocks.NewOption().TextObject(slackblocks.NewMarkdown().Text("*b*")).Value("b").Description("*b*"),
+                slackblocks.NewOption().TextObject(slackblocks.NewMarkdown().Text("*c*")).Value("c").Description("*c*"),
             ),
     ).
     Build()
 ```
 
 </Go>
+<Java>
+
+```java
+ActionsBlock block = ActionsBlock.builder()
+    .blockId("fake_block_id")
+    .elements(CheckboxesElement.builder()
+        .actionId("actionId-0")
+        .options(
+            Option.builder().text(MarkdownText.of("*a*")).value("a").description("*a*").build(),
+            Option.builder().text(MarkdownText.of("*b*")).value("b").description("*b*").build(),
+            Option.builder().text(MarkdownText.of("*c*")).value("c").description("*c*").build())
+        .build())
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -865,6 +1022,10 @@ block, err := slackblocks.NewActionsBlock().
 </Tabs>
 
 ## Table Block
+
+A table block lays out raw text and rich text cells in rows and columns. Optional `column_settings` control each column's alignment and whether its text wraps.
+
+Required: `rows`. Every row must have the same number of cells, and `column_settings` needs one entry for every column.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -962,19 +1123,19 @@ block, err := slackblocks.NewTableBlock().
         slackblocks.NewColumnSettings().Align("left"),
     ).
     Rows(
-        []any{
+        []slackblocks.TableCell{
             slackblocks.NewRichTextBlock().Elements(
                 slackblocks.NewRichTextSection().Elements(
-                    slackblocks.NewRichText().Text("Header 1").Style(slackblocks.Object{"bold": true}),
+                    slackblocks.NewRichText().Text("Header 1").Style(slackblocks.RichTextStyle{"bold": true}),
                 ),
             ),
             slackblocks.NewRichTextBlock().Elements(
                 slackblocks.NewRichTextSection().Elements(
-                    slackblocks.NewRichText().Text("Header 2").Style(slackblocks.Object{"bold": true}),
+                    slackblocks.NewRichText().Text("Header 2").Style(slackblocks.RichTextStyle{"bold": true}),
                 ),
             ),
         },
-        []any{
+        []slackblocks.TableCell{
             slackblocks.NewRawText().Text("Datum 1"),
             slackblocks.NewRichTextBlock().Elements(
                 slackblocks.NewRichTextSection().Elements(
@@ -987,6 +1148,31 @@ block, err := slackblocks.NewTableBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+TableBlock block = TableBlock.builder()
+    .blockId("fake_block_id")
+    .columnSettings(
+        ColumnSettings.builder().align(ColumnAlign.RIGHT).isWrapped(true).build(),
+        ColumnSettings.builder().align(ColumnAlign.LEFT).build())
+    .rows(
+        List.of(
+            RichTextBlock.builder().elements(RichTextSection.builder()
+                .elements(RichTextText.builder().text("Header 1")
+                    .bold(true).build()).build()).build(),
+            RichTextBlock.builder().elements(RichTextSection.builder()
+                .elements(RichTextText.builder().text("Header 2")
+                    .bold(true).build()).build()).build()),
+        List.of(
+            RawText.builder().text("Datum 1").build(),
+            RichTextBlock.builder().elements(RichTextSection.builder()
+                .elements(RichTextLink.builder().url("https://slack.com").text("Datum 2").build())
+                .build()).build()))
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -1137,6 +1323,21 @@ block, err := slackblocks.NewVideoBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+VideoBlock block = VideoBlock.builder()
+    .altText("Use the Events API to create a dynamic App Home")
+    .blockId("fake_block_id")
+    .thumbnailUrl("https://i.ytimg.com/vi/8876OZV_Yy0/hqdefault.jpg")
+    .title("Use the Events API to create a dynamic App Home")
+    .videoUrl("https://www.youtube.com/embed/8876OZV_Yy0?feature=oembed&autoplay=1")
+    .description("Slack sure is nifty!")
+    .titleUrl("https://www.youtube.com/watch?v=8876OZV_Yy0")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -1175,6 +1376,8 @@ See the [Slack reference](https://api.slack.com/reference/block-kit/blocks#video
 ## Alert Block
 
 Alerts add a severity-labelled notice to a modal.
+
+Required: `text` (up to 200 characters). `level` sets the severity: `default`, `info`, `warning`, `error`, or `success`.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1217,6 +1420,17 @@ block, err := slackblocks.NewAlertBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+AlertBlock block = AlertBlock.builder()
+    .text("The deployment needs attention.")
+    .level(AlertLevel.WARNING)
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -1245,6 +1459,8 @@ block, err := slackblocks.NewAlertBlock().
 ## Card Block
 
 Cards combine text, images, Slack-provided icons, and up to three buttons in a compact panel.
+
+Provide at least one of `hero_image`, `title`, `actions`, or `body`. An image `icon` and a `slack_icon` cannot be combined.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1293,6 +1509,19 @@ block, err := slackblocks.NewCardBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+CardBlock block = CardBlock.builder()
+    .title("Build complete")
+    .body("Version 2.1.0 is ready to deploy.")
+    .slackIcon(SlackIcon.builder().name("rocket").build())
+    .actions(ButtonElement.builder().text("Open build").actionId("open_build").build())
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -1339,6 +1568,8 @@ block, err := slackblocks.NewCardBlock().
 
 A carousel presents between one and ten cards in a horizontally scrolling collection.
 
+Required: `elements`.
+
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
 
@@ -1383,6 +1614,18 @@ block, err := slackblocks.NewCarouselBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+CarouselBlock block = CarouselBlock.builder()
+    .elements(
+        CardBlock.builder().title("First result").blockId("card_1").build(),
+        CardBlock.builder().title("Second result").blockId("card_2").build())
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -1424,6 +1667,8 @@ block, err := slackblocks.NewCarouselBlock().
 ## Container Block
 
 Containers group up to ten related child blocks under a plain-text or rich-text title.
+
+Required: `child_blocks`, plus either `title` or `rich_text_title`.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1479,6 +1724,22 @@ block, err := slackblocks.NewContainerBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+ContainerBlock block = ContainerBlock.builder()
+    .title("Deployment summary")
+    .childBlocks(SectionBlock.builder()
+        .markdownText("All systems operational.").blockId("child_1").build())
+    .width(ContainerWidth.STANDARD)
+    .isCollapsible(false)
+    .defaultCollapsed(false)
+    .hasHeaderDivider(true)
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -1520,6 +1781,8 @@ block, err := slackblocks.NewContainerBlock().
 ## Context Actions Block
 
 Context actions hold feedback controls or compact icon buttons. Slack currently offers the `trash` icon for icon buttons.
+
+Required: `elements` (up to 5).
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1572,6 +1835,20 @@ block, err := slackblocks.NewContextActionsBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+ContextActionsBlock block = ContextActionsBlock.builder()
+    .elements(FeedbackButtonsElement.builder()
+        .actionId("response_feedback")
+        .positiveButton(FeedbackButton.builder().plainText("Good").value("positive").build())
+        .negativeButton(FeedbackButton.builder().plainText("Bad").value("negative").build())
+        .build())
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -1616,6 +1893,8 @@ block, err := slackblocks.NewContextActionsBlock().
 
 Data tables support raw text, sortable raw numbers, and rich-text body cells. They require a header plus at least one data row.
 
+Required: `rows` and `caption`. Tables hold up to 200 data rows, every row must have the same number of cells, and all cell text together is limited to 20,000 characters.
+
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
 
@@ -1656,14 +1935,28 @@ DataTableBlock()
 block, err := slackblocks.NewDataTableBlock().
     Caption("Team scores").
     Rows(
-        []any{slackblocks.NewRawText().Text("Name"), slackblocks.NewRawText().Text("Score")},
-        []any{slackblocks.NewRawText().Text("Alice"), slackblocks.NewRawNumber().Value(42).Text("42")},
+        []slackblocks.DataTableCell{slackblocks.NewRawText().Text("Name"), slackblocks.NewRawText().Text("Score")},
+        []slackblocks.DataTableCell{slackblocks.NewRawText().Text("Alice"), slackblocks.NewRawNumber().Value(42).Text("42")},
     ).
     BlockID("fake_block_id").
     Build()
 ```
 
 </Go>
+<Java>
+
+```java
+DataTableBlock block = DataTableBlock.builder()
+    .caption("Team scores")
+    .rows(
+        List.of(RawText.builder().text("Name").build(), RawText.builder().text("Score").build()),
+        List.of(RawText.builder().text("Alice").build(),
+            RawNumber.builder().value(42).text("42").build()))
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -1713,6 +2006,8 @@ block, err := slackblocks.NewDataTableBlock().
 ## Data Visualization Block
 
 Slack can render pie charts or axis-based bar, area, and line charts directly from Block Kit data.
+
+Required: `title` (up to 50 characters) and `chart`.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1768,6 +2063,21 @@ block, err := slackblocks.NewDataVisualizationBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+DataVisualizationBlock block = DataVisualizationBlock.builder()
+    .title("Incidents by severity")
+    .chart(PieChart.builder()
+        .segments(
+            ChartSegment.builder().label("High").value(3).build(),
+            ChartSegment.builder().label("Low").value(12).build())
+        .build())
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -1805,6 +2115,8 @@ block, err := slackblocks.NewDataVisualizationBlock().
 ## Task Card Block
 
 Task cards show a task's state, optional rich-text details or output, and the URL sources used to produce it.
+
+Required: `task_id` and `title`.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1853,6 +2165,19 @@ block, err := slackblocks.NewTaskCardBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+TaskCardBlock block = TaskCardBlock.builder()
+    .taskId("weather_1")
+    .title("Fetch weather data")
+    .status(TaskStatus.COMPLETE)
+    .sources(UrlSource.builder().url("https://weather.com/").text("weather.com").build())
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -1886,6 +2211,8 @@ block, err := slackblocks.NewTaskCardBlock().
 ## Plan Block
 
 A plan groups task cards. `slackblocks` automatically renders nested tasks in Slack's plan-specific wire format.
+
+Required: `title`.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1937,6 +2264,19 @@ block, err := slackblocks.NewPlanBlock().
 ```
 
 </Go>
+<Java>
+
+```java
+PlanBlock block = PlanBlock.builder()
+    .title("Release plan")
+    .tasks(
+        TaskCardBlock.builder().taskId("test").title("Run the test suite").status(TaskStatus.COMPLETE).build(),
+        TaskCardBlock.builder().taskId("deploy").title("Deploy the release").status(TaskStatus.PENDING).build())
+    .blockId("fake_block_id")
+    .build();
+```
+
+</Java>
 </LanguageContent>
 
 </TabItem>
@@ -2100,4 +2440,55 @@ if err == nil {
 Accordion sections use Slack-native collapsible containers and need no application-side expansion handler. See [Components](../reference/go/components) for the complete API.
 
 </Go>
+<Java>
+
+## Higher-Level Components
+
+Components expand to ordinary immutable `Block` values. Pass those values directly to the official Slack Java SDK, just like a single block.
+
+### Paginator
+
+```java
+List<Block> blocks = Paginator.builder("search-results")
+    .blocks(
+        SectionBlock.builder().markdownText("Result one").build(),
+        SectionBlock.builder().markdownText("Result two").build(),
+        SectionBlock.builder().markdownText("Result three").build())
+    .page(1)
+    .pageSize(2)
+    .build();
+
+ChatPostMessageRequest request = ChatPostMessageRequest.builder()
+    .channel("C01234567")
+    .text("Search results")
+    .blocks(List.copyOf(blocks))
+    .build();
+```
+
+The previous and next button values contain the one-based page for your action handler to render.
+
+### Accordion
+
+```java
+List<Block> blocks = Accordion.builder()
+    .sections(
+        AccordionSection.builder("Summary")
+            .expanded(true)
+            .blocks(SectionBlock.builder().markdownText("Version 2.2.0 is ready.").build())
+            .build(),
+        AccordionSection.builder("Checks")
+            .blocks(SectionBlock.builder().markdownText("All required checks passed.").build())
+            .build())
+    .build();
+
+ChatPostMessageRequest request = ChatPostMessageRequest.builder()
+    .channel("C01234567")
+    .text("Deployment details")
+    .blocks(List.copyOf(blocks))
+    .build();
+```
+
+Accordion sections use Slack-native collapsible containers and need no application-side expansion handler. See [Components](../reference/java/components) for the complete API.
+
+</Java>
 </LanguageContent>

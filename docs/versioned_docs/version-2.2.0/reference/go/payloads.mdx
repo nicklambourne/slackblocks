@@ -1,0 +1,451 @@
+---
+sidebar_position: 4
+toc_max_heading_level: 2
+---
+
+# Payloads And Views
+
+This page documents the public Go API for payloads and views. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.
+
+## NewAttachment
+
+NewAttachment creates a legacy secondary message attachment.
+
+```go
+func NewAttachment() *AttachmentBuilder
+```
+
+### AttachmentBuilder
+
+AttachmentBuilder is the concrete fluent builder returned by NewAttachment. Use NewAttachment rather than constructing this type directly.
+
+```go
+type AttachmentBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### AttachmentBuilder.Blocks
+
+Blocks appends Block Kit blocks.
+
+```go
+func (b *AttachmentBuilder) Blocks(values ...any) *AttachmentBuilder
+```
+
+#### AttachmentBuilder.Color
+
+Color sets an attachment side-border color.
+
+```go
+func (b *AttachmentBuilder) Color(value string) *AttachmentBuilder
+```
+
+#### AttachmentBuilder.Fallback
+
+Fallback sets attachment fallback text.
+
+```go
+func (b *AttachmentBuilder) Fallback(value string) *AttachmentBuilder
+```
+
+Every `AttachmentBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewHomeTab
+
+NewHomeTab creates an App Home tab view payload.
+
+```go
+func NewHomeTab() *HomeTabBuilder
+```
+
+### HomeTabBuilder
+
+HomeTabBuilder is the concrete fluent builder returned by NewHomeTab. Use NewHomeTab rather than constructing this type directly.
+
+```go
+type HomeTabBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### HomeTabBuilder.Blocks
+
+Blocks appends Block Kit blocks.
+
+```go
+func (b *HomeTabBuilder) Blocks(values ...any) *HomeTabBuilder
+```
+
+#### HomeTabBuilder.PrivateMetadata
+
+PrivateMetadata sets opaque view metadata.
+
+```go
+func (b *HomeTabBuilder) PrivateMetadata(value string) *HomeTabBuilder
+```
+
+#### HomeTabBuilder.CallbackID
+
+CallbackID sets an application-defined view callback identifier.
+
+```go
+func (b *HomeTabBuilder) CallbackID(value string) *HomeTabBuilder
+```
+
+#### HomeTabBuilder.ExternalID
+
+ExternalID sets an application-defined external identifier.
+
+```go
+func (b *HomeTabBuilder) ExternalID(value string) *HomeTabBuilder
+```
+
+Every `HomeTabBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewMessage
+
+NewMessage creates a payload for chat.postMessage and related Web API methods.
+
+```go
+func NewMessage() *MessageBuilder
+```
+
+### MessageBuilder
+
+MessageBuilder is the concrete fluent builder returned by NewMessage. Use NewMessage rather than constructing this type directly.
+
+```go
+type MessageBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### MessageBuilder.Channel
+
+Channel sets a message destination.
+
+```go
+func (b *MessageBuilder) Channel(value string) *MessageBuilder
+```
+
+#### MessageBuilder.Blocks
+
+Blocks appends Block Kit blocks.
+
+```go
+func (b *MessageBuilder) Blocks(values ...any) *MessageBuilder
+```
+
+#### MessageBuilder.Attachments
+
+Attachments appends legacy secondary attachments.
+
+```go
+func (b *MessageBuilder) Attachments(values ...any) *MessageBuilder
+```
+
+#### MessageBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *MessageBuilder) Text(value any) *MessageBuilder
+```
+
+#### MessageBuilder.Mrkdwn
+
+Mrkdwn controls fallback text parsing.
+
+```go
+func (b *MessageBuilder) Mrkdwn(value bool) *MessageBuilder
+```
+
+#### MessageBuilder.UnfurlLinks
+
+UnfurlLinks controls message link unfurling.
+
+```go
+func (b *MessageBuilder) UnfurlLinks(value bool) *MessageBuilder
+```
+
+#### MessageBuilder.UnfurlMedia
+
+UnfurlMedia controls message media unfurling.
+
+```go
+func (b *MessageBuilder) UnfurlMedia(value bool) *MessageBuilder
+```
+
+#### MessageBuilder.Metadata
+
+Metadata sets message metadata.
+
+```go
+func (b *MessageBuilder) Metadata(value any) *MessageBuilder
+```
+
+Every `MessageBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewMessageResponse
+
+NewMessageResponse creates an immediate interaction-response payload.
+
+```go
+func NewMessageResponse() *MessageResponseBuilder
+```
+
+### MessageResponseBuilder
+
+MessageResponseBuilder is the concrete fluent builder returned by NewMessageResponse. Use NewMessageResponse rather than constructing this type directly.
+
+```go
+type MessageResponseBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### MessageResponseBuilder.Blocks
+
+Blocks appends Block Kit blocks.
+
+```go
+func (b *MessageResponseBuilder) Blocks(values ...any) *MessageResponseBuilder
+```
+
+#### MessageResponseBuilder.Attachments
+
+Attachments appends legacy secondary attachments.
+
+```go
+func (b *MessageResponseBuilder) Attachments(values ...any) *MessageResponseBuilder
+```
+
+#### MessageResponseBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *MessageResponseBuilder) Text(value any) *MessageResponseBuilder
+```
+
+#### MessageResponseBuilder.Mrkdwn
+
+Mrkdwn controls fallback text parsing.
+
+```go
+func (b *MessageResponseBuilder) Mrkdwn(value bool) *MessageResponseBuilder
+```
+
+#### MessageResponseBuilder.ReplaceOriginal
+
+ReplaceOriginal controls interaction message replacement.
+
+```go
+func (b *MessageResponseBuilder) ReplaceOriginal(value bool) *MessageResponseBuilder
+```
+
+#### MessageResponseBuilder.ResponseType
+
+ResponseType sets response visibility.
+
+```go
+func (b *MessageResponseBuilder) ResponseType(value string) *MessageResponseBuilder
+```
+
+Every `MessageResponseBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewModal
+
+NewModal creates a modal view payload.
+
+```go
+func NewModal() *ModalBuilder
+```
+
+### ModalBuilder
+
+ModalBuilder is the concrete fluent builder returned by NewModal. Use NewModal rather than constructing this type directly.
+
+```go
+type ModalBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ModalBuilder.Title
+
+Title sets a title field.
+
+```go
+func (b *ModalBuilder) Title(value any) *ModalBuilder
+```
+
+#### ModalBuilder.Blocks
+
+Blocks appends Block Kit blocks.
+
+```go
+func (b *ModalBuilder) Blocks(values ...any) *ModalBuilder
+```
+
+#### ModalBuilder.Close
+
+Close sets a modal close-button label.
+
+```go
+func (b *ModalBuilder) Close(value any) *ModalBuilder
+```
+
+#### ModalBuilder.Submit
+
+Submit sets a modal submit-button label.
+
+```go
+func (b *ModalBuilder) Submit(value any) *ModalBuilder
+```
+
+#### ModalBuilder.PrivateMetadata
+
+PrivateMetadata sets opaque view metadata.
+
+```go
+func (b *ModalBuilder) PrivateMetadata(value string) *ModalBuilder
+```
+
+#### ModalBuilder.CallbackID
+
+CallbackID sets an application-defined view callback identifier.
+
+```go
+func (b *ModalBuilder) CallbackID(value string) *ModalBuilder
+```
+
+#### ModalBuilder.ClearOnClose
+
+ClearOnClose controls modal stack clearing.
+
+```go
+func (b *ModalBuilder) ClearOnClose(value bool) *ModalBuilder
+```
+
+#### ModalBuilder.NotifyOnClose
+
+NotifyOnClose controls modal close events.
+
+```go
+func (b *ModalBuilder) NotifyOnClose(value bool) *ModalBuilder
+```
+
+#### ModalBuilder.ExternalID
+
+ExternalID sets an application-defined external identifier.
+
+```go
+func (b *ModalBuilder) ExternalID(value string) *ModalBuilder
+```
+
+#### ModalBuilder.SubmitDisabled
+
+SubmitDisabled controls the initial modal submit state.
+
+```go
+func (b *ModalBuilder) SubmitDisabled(value bool) *ModalBuilder
+```
+
+Every `ModalBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewWebhookMessage
+
+NewWebhookMessage creates an incoming-webhook or response-URL payload.
+
+```go
+func NewWebhookMessage() *WebhookMessageBuilder
+```
+
+### WebhookMessageBuilder
+
+WebhookMessageBuilder is the concrete fluent builder returned by NewWebhookMessage. Use NewWebhookMessage rather than constructing this type directly.
+
+```go
+type WebhookMessageBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### WebhookMessageBuilder.Blocks
+
+Blocks appends Block Kit blocks.
+
+```go
+func (b *WebhookMessageBuilder) Blocks(values ...any) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.Attachments
+
+Attachments appends legacy secondary attachments.
+
+```go
+func (b *WebhookMessageBuilder) Attachments(values ...any) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *WebhookMessageBuilder) Text(value any) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.ResponseType
+
+ResponseType sets response visibility.
+
+```go
+func (b *WebhookMessageBuilder) ResponseType(value string) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.ReplaceOriginal
+
+ReplaceOriginal controls interaction message replacement.
+
+```go
+func (b *WebhookMessageBuilder) ReplaceOriginal(value bool) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.DeleteOriginal
+
+DeleteOriginal controls response-URL message deletion.
+
+```go
+func (b *WebhookMessageBuilder) DeleteOriginal(value bool) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.UnfurlLinks
+
+UnfurlLinks controls message link unfurling.
+
+```go
+func (b *WebhookMessageBuilder) UnfurlLinks(value bool) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.UnfurlMedia
+
+UnfurlMedia controls message media unfurling.
+
+```go
+func (b *WebhookMessageBuilder) UnfurlMedia(value bool) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.Metadata
+
+Metadata sets message metadata.
+
+```go
+func (b *WebhookMessageBuilder) Metadata(value any) *WebhookMessageBuilder
+```
+
+Every `WebhookMessageBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
