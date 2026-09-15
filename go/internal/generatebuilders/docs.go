@@ -22,14 +22,19 @@ type model struct {
 }
 
 type modelEnum struct {
-	Name      string `json:"name"`
-	Constants []struct {
-		Wire string `json:"wire"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Constants   []struct {
+		Name        string `json:"name"`
+		Wire        string `json:"wire"`
+		Description string `json:"description"`
 	} `json:"constants"`
 }
 
 type modelType struct {
 	Name          string       `json:"name"`
+	Package       string       `json:"package"`
+	Implements    []string     `json:"implements"`
 	GoConstructor string       `json:"goConstructor"`
 	Description   string       `json:"description"`
 	DocURL        string       `json:"docUrl"`
@@ -53,10 +58,12 @@ type modelField struct {
 type builderDocs struct {
 	typeComment string
 	methods     map[string]string
+	fields      map[string]modelField
 }
 
-// loadDocs reads the shared model and returns generated documentation keyed by Go constructor.
-func loadDocs(root string) map[string]builderDocs {
+// loadDocs reads the shared model and returns generated documentation keyed by Go constructor,
+// together with the model itself for type generation.
+func loadDocs(root string) (map[string]builderDocs, model) {
 	repository := filepath.Join(root, "..")
 	modelData, err := os.ReadFile(filepath.Join(repository, modelFile))
 	must(err)
@@ -80,6 +87,7 @@ func loadDocs(root string) map[string]builderDocs {
 	docs := map[string]builderDocs{}
 	for _, item := range shared.Types {
 		methods := map[string]string{}
+		fields := map[string]modelField{}
 		var required []string
 		for _, field := range item.Fields {
 			if field.GoMethod == "" {
@@ -89,13 +97,24 @@ func loadDocs(root string) map[string]builderDocs {
 				required = append(required, field.GoMethod)
 			}
 			methods[field.GoMethod] = methodComment(field, limits, enums)
+			fields[field.GoMethod] = field
 		}
 		docs[item.GoConstructor] = builderDocs{
 			typeComment: typeComment(item, required),
 			methods:     methods,
+			fields:      fields,
 		}
 	}
-	return docs
+	accordion := builderDocs{
+		typeComment: "// AccordionSectionBuilder is the concrete fluent builder returned by NewAccordionSection.\n//\n// One independently collapsible section of an accordion, rendered as a Slack container block.\n//\n//   - Required: Title and Blocks.\n",
+		methods:     map[string]string{},
+		fields:      accordionSectionFields,
+	}
+	for name, field := range accordionSectionFields {
+		accordion.methods[name] = methodComment(field, limits, enums)
+	}
+	docs["NewAccordionSection"] = accordion
+	return docs, shared
 }
 
 func typeComment(item modelType, required []string) string {
@@ -136,9 +155,9 @@ func methodComment(field modelField, limits map[string]any, enums map[string][]s
 	}
 	switch field.Kind {
 	case "text":
-		notes = append(notes, fmt.Sprintf("A string is sent as a %s text object; pass a text object to choose the type.", field.Coerce))
+		notes = append(notes, fmt.Sprintf("The string is sent as a %s text object; use %s to pass a text object instead.", field.Coerce, objectMethodName(field.GoMethod, "text")))
 	case "textList":
-		notes = append(notes, fmt.Sprintf("Strings are sent as %s text objects. Each call appends to any values already added.", field.Coerce))
+		notes = append(notes, fmt.Sprintf("Strings are sent as %s text objects; use %s to pass text objects. Each call appends to any values already added.", field.Coerce, objectMethodName(field.GoMethod, "textList")))
 	case "list", "stringList", "rows":
 		notes = append(notes, "Each call appends to any values already added.")
 	case "enum":

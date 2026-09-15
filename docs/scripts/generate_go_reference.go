@@ -36,6 +36,7 @@ var domains = []domain{
 	{Slug: "components", Title: "Components", Position: 5, Files: []string{"components.go"}},
 	{Slug: "core", Title: "Core JSON Types", Position: 6, Files: []string{"doc.go", "core.go"}},
 	{Slug: "errors", Title: "Validation And Errors", Position: 7, Files: []string{"errors.go", "validation.go"}},
+	{Slug: "types", Title: "Interfaces And Enums", Position: 8, Files: []string{"concrete_builders_gen.go"}},
 }
 
 var constructorMethods map[string][]string
@@ -99,6 +100,9 @@ func parseDomain(root string, group domain) []symbol {
 				if !node.Name.IsExported() || (name == "validation.go" && node.Name.Name != "Validate") {
 					continue
 				}
+				if name == "concrete_builders_gen.go" && group.Slug == "types" {
+					continue
+				}
 				receiver := ""
 				if node.Recv != nil && len(node.Recv.List) > 0 {
 					receiver = expression(set, node.Recv.List[0].Type)
@@ -117,6 +121,9 @@ func parseDomain(root string, group domain) []symbol {
 						if node.Tok != token.TYPE || !spec.Name.IsExported() {
 							continue
 						}
+						if name == "concrete_builders_gen.go" && group.Slug == "types" && strings.HasSuffix(spec.Name.Name, "Builder") {
+							continue
+						}
 						typeCopy := *spec
 						typeCopy.Doc = nil
 						typeCopy.Comment = nil
@@ -125,6 +132,27 @@ func parseDomain(root string, group domain) []symbol {
 							comment = docText(node.Doc)
 						}
 						signature := "type " + expression(set, &typeCopy)
+						if iface, ok := spec.Type.(*ast.InterfaceType); ok {
+							exported := false
+							for _, method := range iface.Methods.List {
+								for _, methodName := range method.Names {
+									exported = exported || methodName.IsExported()
+								}
+							}
+							if !exported {
+								embeds := []string{}
+								for _, method := range iface.Methods.List {
+									if len(method.Names) == 0 {
+										embeds = append(embeds, expression(set, method.Type))
+									}
+								}
+								body := "/* unexported marker method: only slackblocks builders implement this interface */"
+								if len(embeds) > 0 {
+									body = strings.Join(embeds, "; ") + "; " + body
+								}
+								signature = "type " + spec.Name.Name + " interface { " + body + " }"
+							}
+						}
 						if structure, ok := spec.Type.(*ast.StructType); ok {
 							exported := 0
 							for _, field := range structure.Fields.List {
@@ -218,7 +246,7 @@ func renderConcreteBuilder(output *strings.Builder, constructor string, builderT
 	}
 	fmt.Fprintf(output, "Use %s rather than constructing this type directly.\n\n", constructor)
 	fmt.Fprintf(output, "```go\n%s\n```\n\n", builderType.Signature)
-	output.WriteString("Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.\n\n")
+	output.WriteString("Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.\n\n")
 	if isBlock {
 		output.WriteString("It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.\n\n")
 	}
@@ -233,6 +261,15 @@ func renderConcreteBuilder(output *strings.Builder, constructor string, builderT
 			fmt.Fprintf(output, "%s\n\n", method.Comment)
 		}
 		fmt.Fprintf(output, "```go\n%s\n```\n\n", method.Signature)
+		for _, companion := range []string{methodName + "Object", strings.TrimSuffix(methodName, "s") + "Objects"} {
+			if extra, ok := builderMethods[typeName][companion]; ok && companion != methodName {
+				fmt.Fprintf(output, "#### %s.%s\n\n", typeName, companion)
+				if extra.Comment != "" {
+					fmt.Fprintf(output, "%s\n\n", extra.Comment)
+				}
+				fmt.Fprintf(output, "```go\n%s\n```\n\n", extra.Signature)
+			}
+		}
 	}
 
 	fmt.Fprintf(output, "Every `%s` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.\n\n", typeName)
@@ -304,6 +341,7 @@ Most slack-go programs pass builders such as ` + "`NewSectionBlock()`" + ` direc
 - [Components](/reference/go/components)
 - [Core JSON Types](/reference/go/core)
 - [Validation And Errors](/reference/go/errors)
+- [Interfaces And Enums](/reference/go/types)
 `
 }
 
