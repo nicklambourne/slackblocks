@@ -76,6 +76,31 @@ assert.match(
 assert.equal(pages.has("slack-go"), false, "obsolete adapter page must not exist");
 assert.match(
   pages.get("blocks"),
+  /Slack allows at most 3000 characters\./,
+  "Builder method docs must state the shared Slack limits",
+);
+assert.match(
+  pages.get("elements"),
+  /^- Required: Text and ActionID\.$/m,
+  "Builder docs must list required fields",
+);
+assert.match(
+  pages.get("blocks"),
+  /See the \[Slack reference\]\(https:\/\/docs\.slack\.dev\/reference\/block-kit\/blocks\/section-block\)\./,
+  "Each builder must link to its Slack reference page",
+);
+assert.match(
+  pages.get("elements"),
+  /Accepted values:\s+"primary" and "danger"\./,
+  "Enumerated fields must list their accepted values",
+);
+assert.doesNotMatch(
+  pages.get("blocks"),
+  /^Text sets a text-bearing field\./m,
+  "Builder methods must carry field-specific documentation, not the shared fallback",
+);
+assert.match(
+  pages.get("blocks"),
   /implements `slack\.Block`/,
   "Block reference must explain direct slack.Block compatibility",
 );

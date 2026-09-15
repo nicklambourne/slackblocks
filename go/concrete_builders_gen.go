@@ -42,2811 +42,3597 @@ func (b *AccordionSectionBuilder) BlockID(value string) *AccordionSectionBuilder
 }
 
 // ActionsBlockBuilder is the concrete fluent builder returned by NewActionsBlock.
+//
+// A block that holds interactive elements such as buttons and menus.
+//
+//   - Required: Elements.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/actions-block for Slack's reference.
 type ActionsBlockBuilder struct{ *slackBlockBuilder }
 
 func newActionsBlockBuilder(core *builder) *ActionsBlockBuilder {
 	return &ActionsBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Elements appends Slack elements.
+// Elements adds interactive elements in display order. Required. Slack allows at most 25 items.
+// Each call appends to any values already added.
 func (b *ActionsBlockBuilder) Elements(values ...any) *ActionsBlockBuilder {
 	b.core.Elements(values...)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *ActionsBlockBuilder) BlockID(value string) *ActionsBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // AlertBlockBuilder is the concrete fluent builder returned by NewAlertBlock.
+//
+// A severity-labelled alert, available in modals.
+//
+//   - Required: Text.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/alert-block for Slack's reference.
 type AlertBlockBuilder struct{ *slackBlockBuilder }
 
 func newAlertBlockBuilder(core *builder) *AlertBlockBuilder {
 	return &AlertBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the alert message. Required. Slack allows at most 200 characters. A string is sent
+// as a mrkdwn text object; pass a text object to choose the type.
 func (b *AlertBlockBuilder) Text(value any) *AlertBlockBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Level sets alert severity.
+// Level sets the alert severity, which controls its color and icon. Accepted values: "default",
+// "info", "warning", "error", and "success".
 func (b *AlertBlockBuilder) Level(value string) *AlertBlockBuilder {
 	b.core.Level(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *AlertBlockBuilder) BlockID(value string) *AlertBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // AreaChartBuilder is the concrete fluent builder returned by NewAreaChart.
+//
+// An area chart for a data visualization block.
+//
+//   - Required: Series and AxisConfig.
+//   - Every series needs exactly one data point for each axis category.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block for Slack's reference.
 type AreaChartBuilder struct{ *concreteBuilder }
 
 func newAreaChartBuilder(core *builder) *AreaChartBuilder {
 	return &AreaChartBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Series appends chart series.
+// Series adds data series in display order. Series names must be unique. Required. Must contain
+// between 1 and 12 items. Each call appends to any values already added.
 func (b *AreaChartBuilder) Series(values ...any) *AreaChartBuilder {
 	b.core.Series(values...)
 	return b
 }
 
-// AxisConfig sets chart-axis configuration.
+// AxisConfig sets the axis categories and labels. Every series needs exactly one point per
+// category. Required.
 func (b *AreaChartBuilder) AxisConfig(value any) *AreaChartBuilder {
 	b.core.AxisConfig(value)
 	return b
 }
 
 // AttachmentBuilder is the concrete fluent builder returned by NewAttachment.
+//
+// A legacy message attachment containing blocks and an optional color bar.
+//
+//   - Only blocks supported in messages are accepted.
+//
+// See https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments for Slack's reference.
 type AttachmentBuilder struct{ *concreteBuilder }
 
 func newAttachmentBuilder(core *builder) *AttachmentBuilder {
 	return &AttachmentBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Blocks appends Block Kit blocks.
+// Blocks adds the attachment's blocks in display order. Each call appends to any values already
+// added.
 func (b *AttachmentBuilder) Blocks(values ...any) *AttachmentBuilder {
 	b.core.Blocks(values...)
 	return b
 }
 
-// Color sets an attachment side-border color.
+// Color sets the attachment's left border color: a six-digit hex color or good, warning, or
+// danger.
 func (b *AttachmentBuilder) Color(value string) *AttachmentBuilder {
 	b.core.Color(value)
 	return b
 }
 
-// Fallback sets attachment fallback text.
+// Fallback sets plain-text summary shown in clients that cannot display attachments.
 func (b *AttachmentBuilder) Fallback(value string) *AttachmentBuilder {
 	b.core.Fallback(value)
 	return b
 }
 
 // AxisConfigBuilder is the concrete fluent builder returned by NewAxisConfig.
+//
+// The categories and labels shared by bar, area, and line chart axes.
+//
+//   - Required: Categories.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block for Slack's reference.
 type AxisConfigBuilder struct{ *concreteBuilder }
 
 func newAxisConfigBuilder(core *builder) *AxisConfigBuilder {
 	return &AxisConfigBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Categories appends chart axis categories.
+// Categories adds axis categories in display order. Labels must be unique. Required. Must
+// contain between 1 and 20 items. Each call appends to any values already added.
 func (b *AxisConfigBuilder) Categories(values ...string) *AxisConfigBuilder {
 	b.core.Categories(values...)
 	return b
 }
 
-// XLabel sets a chart x-axis label.
+// XLabel sets the horizontal axis label. Slack allows at most 50 characters.
 func (b *AxisConfigBuilder) XLabel(value string) *AxisConfigBuilder {
 	b.core.XLabel(value)
 	return b
 }
 
-// YLabel sets a chart y-axis label.
+// YLabel sets the vertical axis label. Slack allows at most 50 characters.
 func (b *AxisConfigBuilder) YLabel(value string) *AxisConfigBuilder {
 	b.core.YLabel(value)
 	return b
 }
 
 // BarChartBuilder is the concrete fluent builder returned by NewBarChart.
+//
+// A bar chart for a data visualization block.
+//
+//   - Required: Series and AxisConfig.
+//   - Every series needs exactly one data point for each axis category.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block for Slack's reference.
 type BarChartBuilder struct{ *concreteBuilder }
 
 func newBarChartBuilder(core *builder) *BarChartBuilder {
 	return &BarChartBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Series appends chart series.
+// Series adds data series in display order. Series names must be unique. Required. Must contain
+// between 1 and 12 items. Each call appends to any values already added.
 func (b *BarChartBuilder) Series(values ...any) *BarChartBuilder {
 	b.core.Series(values...)
 	return b
 }
 
-// AxisConfig sets chart-axis configuration.
+// AxisConfig sets the axis categories and labels. Every series needs exactly one point per
+// category. Required.
 func (b *BarChartBuilder) AxisConfig(value any) *BarChartBuilder {
 	b.core.AxisConfig(value)
 	return b
 }
 
 // ButtonBuilder is the concrete fluent builder returned by NewButton.
+//
+// An interactive button that sends a payload or opens a URL.
+//
+//   - Required: Text and ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/button-element for Slack's reference.
 type ButtonBuilder struct{ *concreteBuilder }
 
 func newButtonBuilder(core *builder) *ButtonBuilder {
 	return &ButtonBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the button label. Required. Slack allows at most 75 characters. A string is sent as
+// a plain_text text object; pass a text object to choose the type.
 func (b *ButtonBuilder) Text(value any) *ButtonBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *ButtonBuilder) ActionID(value string) *ButtonBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// URL sets a URL field.
+// URL sets a URL opened in the user's browser when the button is clicked. Slack still sends an
+// interaction payload. Slack allows at most 3000 characters.
 func (b *ButtonBuilder) URL(value string) *ButtonBuilder {
 	b.core.URL(value)
 	return b
 }
 
-// Value sets an application-defined value.
+// Value sets the application-defined value sent in interaction payloads. Slack allows at most
+// 2000 characters.
 func (b *ButtonBuilder) Value(value any) *ButtonBuilder {
 	b.core.Value(value)
 	return b
 }
 
-// Style sets a Slack-supported visual or layout style.
+// Style sets the button's emphasis. Omit it for the default neutral style. Accepted values:
+// "primary" and "danger".
 func (b *ButtonBuilder) Style(value any) *ButtonBuilder {
 	b.core.Style(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *ButtonBuilder) Confirm(value any) *ButtonBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// AccessibilityLabel sets assistive text for an interactive control.
+// AccessibilityLabel sets the label read by screen readers in place of the visible text. Slack
+// allows at most 75 characters.
 func (b *ButtonBuilder) AccessibilityLabel(value string) *ButtonBuilder {
 	b.core.AccessibilityLabel(value)
 	return b
 }
 
 // CardBlockBuilder is the concrete fluent builder returned by NewCardBlock.
+//
+// A compact card with an image, text, and up to three buttons.
+//
+//   - Provide at least one of a hero image, title, actions, or body.
+//   - An image icon and a Slack icon cannot be combined.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/card-block for Slack's reference.
 type CardBlockBuilder struct{ *slackBlockBuilder }
 
 func newCardBlockBuilder(core *builder) *CardBlockBuilder {
 	return &CardBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// HeroImage sets the large image on a card.
+// HeroImage sets the image displayed prominently at the top of the card.
 func (b *CardBlockBuilder) HeroImage(value any) *CardBlockBuilder {
 	b.core.HeroImage(value)
 	return b
 }
 
-// Icon sets an icon or icon element.
+// Icon sets the image displayed beside the title.
 func (b *CardBlockBuilder) Icon(value any) *CardBlockBuilder {
 	b.core.Icon(value)
 	return b
 }
 
-// Title sets a title field.
+// Title sets the card title. Slack allows at most 150 characters. A string is sent as a mrkdwn
+// text object; pass a text object to choose the type.
 func (b *CardBlockBuilder) Title(value any) *CardBlockBuilder {
 	b.core.Title(value)
 	return b
 }
 
-// Subtitle sets secondary heading copy.
+// Subtitle sets the supporting text shown below the title. Slack allows at most 150 characters.
+// A string is sent as a mrkdwn text object; pass a text object to choose the type.
 func (b *CardBlockBuilder) Subtitle(value any) *CardBlockBuilder {
 	b.core.Subtitle(value)
 	return b
 }
 
-// Body sets main card copy.
+// Body sets the main body text of the card. Slack allows at most 200 characters. A string is
+// sent as a mrkdwn text object; pass a text object to choose the type.
 func (b *CardBlockBuilder) Body(value any) *CardBlockBuilder {
 	b.core.Body(value)
 	return b
 }
 
-// Actions appends actions to a card.
+// Actions adds buttons displayed at the bottom of the card, in display order. Slack allows at
+// most 3 items. Each call appends to any values already added.
 func (b *CardBlockBuilder) Actions(values ...any) *CardBlockBuilder {
 	b.core.Actions(values...)
 	return b
 }
 
-// SlackIcon sets a named Slack icon.
+// SlackIcon sets a Slack-provided icon displayed beside the title. Cannot be combined with an
+// image icon.
 func (b *CardBlockBuilder) SlackIcon(value any) *CardBlockBuilder {
 	b.core.SlackIcon(value)
 	return b
 }
 
-// Subtext sets supporting card copy.
+// Subtext sets the small print shown at the bottom of the card. Slack allows at most 200
+// characters. A string is sent as a mrkdwn text object; pass a text object to choose the type.
 func (b *CardBlockBuilder) Subtext(value any) *CardBlockBuilder {
 	b.core.Subtext(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *CardBlockBuilder) BlockID(value string) *CardBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // CarouselBlockBuilder is the concrete fluent builder returned by NewCarouselBlock.
+//
+// A horizontally scrolling set of cards, available in messages and App Home.
+//
+//   - Required: Elements.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/carousel-block for Slack's reference.
 type CarouselBlockBuilder struct{ *slackBlockBuilder }
 
 func newCarouselBlockBuilder(core *builder) *CarouselBlockBuilder {
 	return &CarouselBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Elements appends Slack elements.
+// Elements adds the cards in display order. Required. Must contain between 1 and 10 items. Each
+// call appends to any values already added.
 func (b *CarouselBlockBuilder) Elements(values ...any) *CarouselBlockBuilder {
 	b.core.Elements(values...)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *CarouselBlockBuilder) BlockID(value string) *CarouselBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // ChannelMultiSelectBuilder is the concrete fluent builder returned by NewChannelMultiSelect.
+//
+// A menu for selecting multiple public channels.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element for Slack's reference.
 type ChannelMultiSelectBuilder struct{ *concreteBuilder }
 
 func newChannelMultiSelectBuilder(core *builder) *ChannelMultiSelectBuilder {
 	return &ChannelMultiSelectBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *ChannelMultiSelectBuilder) ActionID(value string) *ChannelMultiSelectBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialChannels appends initially selected public channels.
+// InitialChannels adds channel IDs that are selected when the menu loads. Each call appends to
+// any values already added.
 func (b *ChannelMultiSelectBuilder) InitialChannels(values ...string) *ChannelMultiSelectBuilder {
 	b.core.InitialChannels(values...)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *ChannelMultiSelectBuilder) Confirm(value any) *ChannelMultiSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// MaxSelectedItems sets a select-menu selection limit.
+// MaxSelectedItems sets the maximum number of items a user can select.
 func (b *ChannelMultiSelectBuilder) MaxSelectedItems(value int) *ChannelMultiSelectBuilder {
 	b.core.MaxSelectedItems(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *ChannelMultiSelectBuilder) FocusOnLoad(value bool) *ChannelMultiSelectBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
+// the type.
 func (b *ChannelMultiSelectBuilder) Placeholder(value any) *ChannelMultiSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // ChannelSelectBuilder is the concrete fluent builder returned by NewChannelSelect.
+//
+// A menu for selecting one public channel.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element for Slack's reference.
 type ChannelSelectBuilder struct{ *concreteBuilder }
 
 func newChannelSelectBuilder(core *builder) *ChannelSelectBuilder {
 	return &ChannelSelectBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *ChannelSelectBuilder) ActionID(value string) *ChannelSelectBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialChannel sets an initially selected public channel.
+// InitialChannel sets the channel ID selected when the menu loads.
 func (b *ChannelSelectBuilder) InitialChannel(value string) *ChannelSelectBuilder {
 	b.core.InitialChannel(value)
 	return b
 }
 
-// ResponseURLEnabled requests a modal submission response URL.
+// ResponseURLEnabled sets whether the selected conversation receives a response URL in the view
+// submission payload. Only valid in modals.
 func (b *ChannelSelectBuilder) ResponseURLEnabled(value bool) *ChannelSelectBuilder {
 	b.core.ResponseURLEnabled(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *ChannelSelectBuilder) Confirm(value any) *ChannelSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *ChannelSelectBuilder) FocusOnLoad(value bool) *ChannelSelectBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
+// the type.
 func (b *ChannelSelectBuilder) Placeholder(value any) *ChannelSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // ChartSegmentBuilder is the concrete fluent builder returned by NewChartSegment.
+//
+// One labelled segment of a pie chart.
+//
+//   - Required: Label and Value.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block for Slack's reference.
 type ChartSegmentBuilder struct{ *concreteBuilder }
 
 func newChartSegmentBuilder(core *builder) *ChartSegmentBuilder {
 	return &ChartSegmentBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Label sets a label field.
+// Label sets the segment label. Required. Slack allows at most 20 characters.
 func (b *ChartSegmentBuilder) Label(value any) *ChartSegmentBuilder {
 	b.core.Label(value)
 	return b
 }
 
-// Value sets an application-defined value.
+// Value sets the segment's size. Must be greater than zero. Required.
 func (b *ChartSegmentBuilder) Value(value any) *ChartSegmentBuilder {
 	b.core.Value(value)
 	return b
 }
 
 // CheckboxesBuilder is the concrete fluent builder returned by NewCheckboxes.
+//
+// A group of checkboxes.
+//
+//   - Required: ActionID and Options.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/checkboxes-element for Slack's reference.
 type CheckboxesBuilder struct{ *concreteBuilder }
 
 func newCheckboxesBuilder(core *builder) *CheckboxesBuilder {
 	return &CheckboxesBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *CheckboxesBuilder) ActionID(value string) *CheckboxesBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// Options appends selectable option objects.
+// Options adds selectable options in display order. Required. Must contain between 1 and 10
+// items. Each call appends to any values already added.
 func (b *CheckboxesBuilder) Options(values ...any) *CheckboxesBuilder {
 	b.core.Options(values...)
 	return b
 }
 
-// InitialOptions appends initially selected options.
+// InitialOptions adds options that are selected when the element loads. Each must match an
+// option in the element. Each call appends to any values already added.
 func (b *CheckboxesBuilder) InitialOptions(values ...any) *CheckboxesBuilder {
 	b.core.InitialOptions(values...)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *CheckboxesBuilder) Confirm(value any) *CheckboxesBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *CheckboxesBuilder) FocusOnLoad(value bool) *CheckboxesBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
 // ColumnSettingsBuilder is the concrete fluent builder returned by NewColumnSettings.
+//
+// Alignment and wrapping settings for one table column.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/table-block for Slack's reference.
 type ColumnSettingsBuilder struct{ *concreteBuilder }
 
 func newColumnSettingsBuilder(core *builder) *ColumnSettingsBuilder {
 	return &ColumnSettingsBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Align sets table-column alignment.
+// Align sets how cell content in the column is aligned. Accepted values: "left", "center", and
+// "right".
 func (b *ColumnSettingsBuilder) Align(value string) *ColumnSettingsBuilder {
 	b.core.Align(value)
 	return b
 }
 
-// IsWrapped controls table-column text wrapping.
+// IsWrapped sets whether long cell content wraps instead of being truncated.
 func (b *ColumnSettingsBuilder) IsWrapped(value bool) *ColumnSettingsBuilder {
 	b.core.IsWrapped(value)
 	return b
 }
 
 // ConfirmationBuilder is the concrete fluent builder returned by NewConfirmation.
+//
+// A dialog that asks users to confirm an action before it is sent.
+//
+//   - Required: Title, Text, Confirm, and Deny.
+//
+// See https://docs.slack.dev/reference/block-kit/composition-objects/confirmation-dialog-object for Slack's reference.
 type ConfirmationBuilder struct{ *concreteBuilder }
 
 func newConfirmationBuilder(core *builder) *ConfirmationBuilder {
 	return &ConfirmationBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Title sets a title field.
+// Title sets the dialog title. Required. Slack allows at most 100 characters. A string is sent
+// as a plain_text text object; pass a text object to choose the type.
 func (b *ConfirmationBuilder) Title(value any) *ConfirmationBuilder {
 	b.core.Title(value)
 	return b
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the explanatory text in the dialog body. Required. Slack allows at most 300
+// characters. A string is sent as a mrkdwn text object; pass a text object to choose the type.
 func (b *ConfirmationBuilder) Text(value any) *ConfirmationBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets the label of the button that confirms the action. Required. Slack allows at most
+// 30 characters. A string is sent as a plain_text text object; pass a text object to choose the
+// type.
 func (b *ConfirmationBuilder) Confirm(value any) *ConfirmationBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// Deny sets the denial-button label on a confirmation object.
+// Deny sets the label of the button that cancels the action. Required. Slack allows at most 30
+// characters. A string is sent as a plain_text text object; pass a text object to choose the
+// type.
 func (b *ConfirmationBuilder) Deny(value any) *ConfirmationBuilder {
 	b.core.Deny(value)
 	return b
 }
 
-// Style sets a Slack-supported visual or layout style.
+// Style sets the emphasis of the confirm button. Accepted values: "primary" and "danger".
 func (b *ConfirmationBuilder) Style(value any) *ConfirmationBuilder {
 	b.core.Style(value)
 	return b
 }
 
 // ContainerBlockBuilder is the concrete fluent builder returned by NewContainerBlock.
+//
+// A titled group of blocks that can optionally collapse.
+//
+//   - Required: ChildBlocks.
+//   - Provide a title or a rich text title.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/container-block for Slack's reference.
 type ContainerBlockBuilder struct{ *slackBlockBuilder }
 
 func newContainerBlockBuilder(core *builder) *ContainerBlockBuilder {
 	return &ContainerBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// ChildBlocks appends blocks to a container.
+// ChildBlocks adds the blocks grouped inside the container, in display order. Required. Slack
+// allows at most 10 items. Each call appends to any values already added.
 func (b *ContainerBlockBuilder) ChildBlocks(values ...any) *ContainerBlockBuilder {
 	b.core.ChildBlocks(values...)
 	return b
 }
 
-// Title sets a title field.
+// Title sets the container title. Provide either a title or a rich text title. Slack allows at
+// most 150 characters. A string is sent as a plain_text text object; pass a text object to
+// choose the type.
 func (b *ContainerBlockBuilder) Title(value any) *ContainerBlockBuilder {
 	b.core.Title(value)
 	return b
 }
 
-// RichTextTitle sets a container rich-text title.
+// RichTextTitle sets a rich text block used as the title in place of a plain-text title.
 func (b *ContainerBlockBuilder) RichTextTitle(value any) *ContainerBlockBuilder {
 	b.core.RichTextTitle(value)
 	return b
 }
 
-// Subtitle sets secondary heading copy.
+// Subtitle sets the supporting text shown below the title. Slack allows at most 150 characters.
+// A string is sent as a mrkdwn text object; pass a text object to choose the type.
 func (b *ContainerBlockBuilder) Subtitle(value any) *ContainerBlockBuilder {
 	b.core.Subtitle(value)
 	return b
 }
 
-// Width sets container width.
+// Width sets the horizontal width of the container. Accepted values: "narrow", "standard",
+// "wide", and "full".
 func (b *ContainerBlockBuilder) Width(value string) *ContainerBlockBuilder {
 	b.core.Width(value)
 	return b
 }
 
-// Icon sets an icon or icon element.
+// Icon sets the image displayed beside the title.
 func (b *ContainerBlockBuilder) Icon(value any) *ContainerBlockBuilder {
 	b.core.Icon(value)
 	return b
 }
 
-// IsCollapsible controls container expansion.
+// IsCollapsible sets whether users can collapse and expand the container.
 func (b *ContainerBlockBuilder) IsCollapsible(value bool) *ContainerBlockBuilder {
 	b.core.IsCollapsible(value)
 	return b
 }
 
-// DefaultCollapsed controls the initial state of a collapsible container.
+// DefaultCollapsed sets whether a collapsible container starts collapsed. Requires the
+// container to be collapsible.
 func (b *ContainerBlockBuilder) DefaultCollapsed(value bool) *ContainerBlockBuilder {
 	b.core.DefaultCollapsed(value)
 	return b
 }
 
-// HasHeaderDivider controls a container header divider.
+// HasHeaderDivider sets whether Slack draws a divider below the container header. Only valid
+// for non-collapsible containers.
 func (b *ContainerBlockBuilder) HasHeaderDivider(value bool) *ContainerBlockBuilder {
 	b.core.HasHeaderDivider(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *ContainerBlockBuilder) BlockID(value string) *ContainerBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // ContextActionsBlockBuilder is the concrete fluent builder returned by NewContextActionsBlock.
+//
+// A row of feedback or icon buttons, usually shown below AI-generated content.
+//
+//   - Required: Elements.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/context-actions-block for Slack's reference.
 type ContextActionsBlockBuilder struct{ *slackBlockBuilder }
 
 func newContextActionsBlockBuilder(core *builder) *ContextActionsBlockBuilder {
 	return &ContextActionsBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Elements appends Slack elements.
+// Elements adds feedback buttons or icon buttons in display order. Required. Slack allows at
+// most 5 items. Each call appends to any values already added.
 func (b *ContextActionsBlockBuilder) Elements(values ...any) *ContextActionsBlockBuilder {
 	b.core.Elements(values...)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *ContextActionsBlockBuilder) BlockID(value string) *ContextActionsBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // ContextBlockBuilder is the concrete fluent builder returned by NewContextBlock.
+//
+// A block of small, secondary images and text.
+//
+//   - Required: Elements.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/context-block for Slack's reference.
 type ContextBlockBuilder struct{ *slackBlockBuilder }
 
 func newContextBlockBuilder(core *builder) *ContextBlockBuilder {
 	return &ContextBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Elements appends Slack elements.
+// Elements adds images and text in display order. Required. Slack allows at most 10 items. Each
+// call appends to any values already added.
 func (b *ContextBlockBuilder) Elements(values ...any) *ContextBlockBuilder {
 	b.core.Elements(values...)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *ContextBlockBuilder) BlockID(value string) *ContextBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // ConversationFilterBuilder is the concrete fluent builder returned by NewConversationFilter.
+//
+// Limits which conversations a conversation menu offers.
+//
+//   - Set at least one filter.
+//
+// See https://docs.slack.dev/reference/block-kit/composition-objects/conversation-filter-object for Slack's reference.
 type ConversationFilterBuilder struct{ *concreteBuilder }
 
 func newConversationFilterBuilder(core *builder) *ConversationFilterBuilder {
 	return &ConversationFilterBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Include appends conversation kinds to a conversation filter.
+// Include adds conversation types to offer: im, mpim, private, or public. Each call appends to
+// any values already added.
 func (b *ConversationFilterBuilder) Include(values ...string) *ConversationFilterBuilder {
 	b.core.Include(values...)
 	return b
 }
 
-// ExcludeExternalSharedChannels configures conversation filtering.
+// ExcludeExternalSharedChannels sets whether externally shared channels are excluded.
 func (b *ConversationFilterBuilder) ExcludeExternalSharedChannels(value bool) *ConversationFilterBuilder {
 	b.core.ExcludeExternalSharedChannels(value)
 	return b
 }
 
-// ExcludeBotUsers configures conversation filtering.
+// ExcludeBotUsers sets whether bot users are excluded.
 func (b *ConversationFilterBuilder) ExcludeBotUsers(value bool) *ConversationFilterBuilder {
 	b.core.ExcludeBotUsers(value)
 	return b
 }
 
 // ConversationMultiSelectBuilder is the concrete fluent builder returned by NewConversationMultiSelect.
+//
+// A menu for selecting multiple conversations.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element for Slack's reference.
 type ConversationMultiSelectBuilder struct{ *concreteBuilder }
 
 func newConversationMultiSelectBuilder(core *builder) *ConversationMultiSelectBuilder {
 	return &ConversationMultiSelectBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *ConversationMultiSelectBuilder) ActionID(value string) *ConversationMultiSelectBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialConversations appends initially selected conversations.
+// InitialConversations adds conversation IDs that are selected when the menu loads. Each call
+// appends to any values already added.
 func (b *ConversationMultiSelectBuilder) InitialConversations(values ...string) *ConversationMultiSelectBuilder {
 	b.core.InitialConversations(values...)
 	return b
 }
 
-// DefaultToCurrentConversation selects the current conversation by default.
+// DefaultToCurrentConversation sets whether the menu pre-selects the conversation the user is
+// viewing.
 func (b *ConversationMultiSelectBuilder) DefaultToCurrentConversation(value bool) *ConversationMultiSelectBuilder {
 	b.core.DefaultToCurrentConversation(value)
 	return b
 }
 
-// Filter sets a conversation filter.
+// Filter sets which conversation types the menu offers.
 func (b *ConversationMultiSelectBuilder) Filter(value any) *ConversationMultiSelectBuilder {
 	b.core.Filter(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *ConversationMultiSelectBuilder) Confirm(value any) *ConversationMultiSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// MaxSelectedItems sets a select-menu selection limit.
+// MaxSelectedItems sets the maximum number of items a user can select.
 func (b *ConversationMultiSelectBuilder) MaxSelectedItems(value int) *ConversationMultiSelectBuilder {
 	b.core.MaxSelectedItems(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *ConversationMultiSelectBuilder) FocusOnLoad(value bool) *ConversationMultiSelectBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
+// the type.
 func (b *ConversationMultiSelectBuilder) Placeholder(value any) *ConversationMultiSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // ConversationSelectBuilder is the concrete fluent builder returned by NewConversationSelect.
+//
+// A menu for selecting one conversation.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element for Slack's reference.
 type ConversationSelectBuilder struct{ *concreteBuilder }
 
 func newConversationSelectBuilder(core *builder) *ConversationSelectBuilder {
 	return &ConversationSelectBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *ConversationSelectBuilder) ActionID(value string) *ConversationSelectBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialConversation sets an initially selected conversation.
+// InitialConversation sets the conversation ID selected when the menu loads.
 func (b *ConversationSelectBuilder) InitialConversation(value string) *ConversationSelectBuilder {
 	b.core.InitialConversation(value)
 	return b
 }
 
-// DefaultToCurrentConversation selects the current conversation by default.
+// DefaultToCurrentConversation sets whether the menu pre-selects the conversation the user is
+// viewing.
 func (b *ConversationSelectBuilder) DefaultToCurrentConversation(value bool) *ConversationSelectBuilder {
 	b.core.DefaultToCurrentConversation(value)
 	return b
 }
 
-// Filter sets a conversation filter.
+// Filter sets which conversation types the menu offers.
 func (b *ConversationSelectBuilder) Filter(value any) *ConversationSelectBuilder {
 	b.core.Filter(value)
 	return b
 }
 
-// ResponseURLEnabled requests a modal submission response URL.
+// ResponseURLEnabled sets whether the selected conversation receives a response URL in the view
+// submission payload. Only valid in modals.
 func (b *ConversationSelectBuilder) ResponseURLEnabled(value bool) *ConversationSelectBuilder {
 	b.core.ResponseURLEnabled(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *ConversationSelectBuilder) Confirm(value any) *ConversationSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *ConversationSelectBuilder) FocusOnLoad(value bool) *ConversationSelectBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
+// the type.
 func (b *ConversationSelectBuilder) Placeholder(value any) *ConversationSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // DataPointBuilder is the concrete fluent builder returned by NewDataPoint.
+//
+// One value of a chart series, keyed by axis category.
+//
+//   - Required: Label and Value.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block for Slack's reference.
 type DataPointBuilder struct{ *concreteBuilder }
 
 func newDataPointBuilder(core *builder) *DataPointBuilder {
 	return &DataPointBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Label sets a label field.
+// Label sets the axis category this point belongs to. Required. Slack allows at most 20
+// characters.
 func (b *DataPointBuilder) Label(value any) *DataPointBuilder {
 	b.core.Label(value)
 	return b
 }
 
-// Value sets an application-defined value.
+// Value sets the point's value. Required.
 func (b *DataPointBuilder) Value(value any) *DataPointBuilder {
 	b.core.Value(value)
 	return b
 }
 
 // DataSeriesBuilder is the concrete fluent builder returned by NewDataSeries.
+//
+// A named series of chart data points.
+//
+//   - Required: Name and Data.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block for Slack's reference.
 type DataSeriesBuilder struct{ *concreteBuilder }
 
 func newDataSeriesBuilder(core *builder) *DataSeriesBuilder {
 	return &DataSeriesBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Name sets a named Slack value.
+// Name sets the series name shown in the legend. Required. Slack allows at most 20 characters.
 func (b *DataSeriesBuilder) Name(value string) *DataSeriesBuilder {
 	b.core.Name(value)
 	return b
 }
 
-// Data appends data points.
+// Data adds data points in axis-category order. Required. Must contain between 1 and 20 items.
+// Each call appends to any values already added.
 func (b *DataSeriesBuilder) Data(values ...any) *DataSeriesBuilder {
 	b.core.Data(values...)
 	return b
 }
 
 // DataTableBlockBuilder is the concrete fluent builder returned by NewDataTableBlock.
+//
+// A sortable, paginated table of raw text, numbers, and rich text.
+//
+//   - Required: Rows and Caption.
+//   - The first row is the header row and cannot contain rich text.
+//   - Every row must have the same number of cells, and all cell text together is limited to 20,000 characters.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/data-table-block for Slack's reference.
 type DataTableBlockBuilder struct{ *slackBlockBuilder }
 
 func newDataTableBlockBuilder(core *builder) *DataTableBlockBuilder {
 	return &DataTableBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Rows appends table rows. Each argument should be a slice of cells.
+// Rows adds complete table rows in display order. Every row must have the same number of cells.
+// Required. Must contain between 2 and 201 items. Each call appends to any values already
+// added.
 func (b *DataTableBlockBuilder) Rows(values ...any) *DataTableBlockBuilder {
 	b.core.Rows(values...)
 	return b
 }
 
-// Caption sets an accessible data-table caption.
+// Caption sets the caption that describes the table's contents. Required.
 func (b *DataTableBlockBuilder) Caption(value string) *DataTableBlockBuilder {
 	b.core.Caption(value)
 	return b
 }
 
-// PageSize sets data-table rows per page.
+// PageSize sets how many rows Slack shows per page. Must be between 1 and 100.
 func (b *DataTableBlockBuilder) PageSize(value int) *DataTableBlockBuilder {
 	b.core.PageSize(value)
 	return b
 }
 
-// RowHeaderColumnIndex sets the zero-based data-table row-header column.
+// RowHeaderColumnIndex sets the zero-based index of the column whose cells act as row headers.
 func (b *DataTableBlockBuilder) RowHeaderColumnIndex(value int) *DataTableBlockBuilder {
 	b.core.RowHeaderColumnIndex(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *DataTableBlockBuilder) BlockID(value string) *DataTableBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // DataVisualizationBlockBuilder is the concrete fluent builder returned by NewDataVisualizationBlock.
+//
+// A titled pie, bar, area, or line chart.
+//
+//   - Required: Title and Chart.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block for Slack's reference.
 type DataVisualizationBlockBuilder struct{ *slackBlockBuilder }
 
 func newDataVisualizationBlockBuilder(core *builder) *DataVisualizationBlockBuilder {
 	return &DataVisualizationBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Title sets a title field.
+// Title sets the chart title. Required. Slack allows at most 50 characters.
 func (b *DataVisualizationBlockBuilder) Title(value any) *DataVisualizationBlockBuilder {
 	b.core.Title(value)
 	return b
 }
 
-// Chart sets a chart object on a data-visualization block.
+// Chart sets the chart to display. Required.
 func (b *DataVisualizationBlockBuilder) Chart(value any) *DataVisualizationBlockBuilder {
 	b.core.Chart(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *DataVisualizationBlockBuilder) BlockID(value string) *DataVisualizationBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // DatePickerBuilder is the concrete fluent builder returned by NewDatePicker.
+//
+// A calendar date picker.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element for Slack's reference.
 type DatePickerBuilder struct{ *concreteBuilder }
 
 func newDatePickerBuilder(core *builder) *DatePickerBuilder {
 	return &DatePickerBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *DatePickerBuilder) ActionID(value string) *DatePickerBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialDate sets an ISO calendar date.
+// InitialDate sets the initially selected date, formatted as YYYY-MM-DD.
 func (b *DatePickerBuilder) InitialDate(value string) *DatePickerBuilder {
 	b.core.InitialDate(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *DatePickerBuilder) Confirm(value any) *DatePickerBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *DatePickerBuilder) FocusOnLoad(value bool) *DatePickerBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
+// plain_text text object; pass a text object to choose the type.
 func (b *DatePickerBuilder) Placeholder(value any) *DatePickerBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // DateTimePickerBuilder is the concrete fluent builder returned by NewDateTimePicker.
+//
+// A combined date and time picker.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/datetime-picker-element for Slack's reference.
 type DateTimePickerBuilder struct{ *concreteBuilder }
 
 func newDateTimePickerBuilder(core *builder) *DateTimePickerBuilder {
 	return &DateTimePickerBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *DateTimePickerBuilder) ActionID(value string) *DateTimePickerBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialDateTime sets an initial Unix timestamp in seconds.
+// InitialDateTime sets the initially selected moment as a UNIX timestamp in seconds.
 func (b *DateTimePickerBuilder) InitialDateTime(value int64) *DateTimePickerBuilder {
 	b.core.InitialDateTime(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *DateTimePickerBuilder) Confirm(value any) *DateTimePickerBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *DateTimePickerBuilder) FocusOnLoad(value bool) *DateTimePickerBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
 // DispatchActionConfigurationBuilder is the concrete fluent builder returned by NewDispatchActionConfiguration.
+//
+// Chooses which interactions with an input send a block_actions payload.
+//
+// See https://docs.slack.dev/reference/block-kit/composition-objects/dispatch-action-configuration-object for Slack's reference.
 type DispatchActionConfigurationBuilder struct{ *concreteBuilder }
 
 func newDispatchActionConfigurationBuilder(core *builder) *DispatchActionConfigurationBuilder {
 	return &DispatchActionConfigurationBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// TriggerActionsOn appends dispatch-action trigger names.
+// TriggerActionsOn adds the interactions that send a payload: on_enter_pressed or
+// on_character_entered. Each call appends to any values already added.
 func (b *DispatchActionConfigurationBuilder) TriggerActionsOn(values ...string) *DispatchActionConfigurationBuilder {
 	b.core.TriggerActionsOn(values...)
 	return b
 }
 
 // DividerBlockBuilder is the concrete fluent builder returned by NewDividerBlock.
+//
+// A horizontal rule that separates blocks.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/divider-block for Slack's reference.
 type DividerBlockBuilder struct{ *slackBlockBuilder }
 
 func newDividerBlockBuilder(core *builder) *DividerBlockBuilder {
 	return &DividerBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *DividerBlockBuilder) BlockID(value string) *DividerBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // EmailInputBuilder is the concrete fluent builder returned by NewEmailInput.
+//
+// A single-line input that accepts an email address.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/email-input-element for Slack's reference.
 type EmailInputBuilder struct{ *concreteBuilder }
 
 func newEmailInputBuilder(core *builder) *EmailInputBuilder {
 	return &EmailInputBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *EmailInputBuilder) ActionID(value string) *EmailInputBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialValue sets initial input content.
+// InitialValue sets the value present when the input loads.
 func (b *EmailInputBuilder) InitialValue(value any) *EmailInputBuilder {
 	b.core.InitialValue(value)
 	return b
 }
 
-// DispatchActionConfig sets input dispatch behavior.
+// DispatchActionConfig sets which user interactions send a block_actions payload.
 func (b *EmailInputBuilder) DispatchActionConfig(value any) *EmailInputBuilder {
 	b.core.DispatchActionConfig(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *EmailInputBuilder) FocusOnLoad(value bool) *EmailInputBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
+// plain_text text object; pass a text object to choose the type.
 func (b *EmailInputBuilder) Placeholder(value any) *EmailInputBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // ExternalMultiSelectBuilder is the concrete fluent builder returned by NewExternalMultiSelect.
+//
+// A menu for selecting multiple options loaded from your app.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element for Slack's reference.
 type ExternalMultiSelectBuilder struct{ *concreteBuilder }
 
 func newExternalMultiSelectBuilder(core *builder) *ExternalMultiSelectBuilder {
 	return &ExternalMultiSelectBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *ExternalMultiSelectBuilder) ActionID(value string) *ExternalMultiSelectBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// MinQueryLength sets the external select query threshold.
+// MinQueryLength sets how many characters the user must type before Slack queries your options
+// endpoint.
 func (b *ExternalMultiSelectBuilder) MinQueryLength(value int) *ExternalMultiSelectBuilder {
 	b.core.MinQueryLength(value)
 	return b
 }
 
-// InitialOptions appends initially selected options.
+// InitialOptions adds options that are selected when the element loads. Each must match an
+// option in the element. Each call appends to any values already added.
 func (b *ExternalMultiSelectBuilder) InitialOptions(values ...any) *ExternalMultiSelectBuilder {
 	b.core.InitialOptions(values...)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *ExternalMultiSelectBuilder) Confirm(value any) *ExternalMultiSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// MaxSelectedItems sets a select-menu selection limit.
+// MaxSelectedItems sets the maximum number of items a user can select.
 func (b *ExternalMultiSelectBuilder) MaxSelectedItems(value int) *ExternalMultiSelectBuilder {
 	b.core.MaxSelectedItems(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *ExternalMultiSelectBuilder) FocusOnLoad(value bool) *ExternalMultiSelectBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
+// the type.
 func (b *ExternalMultiSelectBuilder) Placeholder(value any) *ExternalMultiSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // ExternalSelectBuilder is the concrete fluent builder returned by NewExternalSelect.
+//
+// A menu for selecting one option loaded from your app.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element for Slack's reference.
 type ExternalSelectBuilder struct{ *concreteBuilder }
 
 func newExternalSelectBuilder(core *builder) *ExternalSelectBuilder {
 	return &ExternalSelectBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *ExternalSelectBuilder) ActionID(value string) *ExternalSelectBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// MinQueryLength sets the external select query threshold.
+// MinQueryLength sets how many characters the user must type before Slack queries your options
+// endpoint.
 func (b *ExternalSelectBuilder) MinQueryLength(value int) *ExternalSelectBuilder {
 	b.core.MinQueryLength(value)
 	return b
 }
 
-// InitialOption sets a single initially selected option.
+// InitialOption sets the option selected when the element loads. It must match an option in the
+// element.
 func (b *ExternalSelectBuilder) InitialOption(value any) *ExternalSelectBuilder {
 	b.core.InitialOption(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *ExternalSelectBuilder) Confirm(value any) *ExternalSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *ExternalSelectBuilder) FocusOnLoad(value bool) *ExternalSelectBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
+// the type.
 func (b *ExternalSelectBuilder) Placeholder(value any) *ExternalSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // FeedbackButtonBuilder is the concrete fluent builder returned by NewFeedbackButton.
+//
+// One button of a feedback buttons element.
+//
+//   - Required: Text and Value.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element for Slack's reference.
 type FeedbackButtonBuilder struct{ *concreteBuilder }
 
 func newFeedbackButtonBuilder(core *builder) *FeedbackButtonBuilder {
 	return &FeedbackButtonBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the button label. Required. Slack allows at most 75 characters. A string is sent as
+// a plain_text text object; pass a text object to choose the type.
 func (b *FeedbackButtonBuilder) Text(value any) *FeedbackButtonBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Value sets an application-defined value.
+// Value sets the application-defined value sent in interaction payloads. Required. Slack allows
+// at most 2000 characters.
 func (b *FeedbackButtonBuilder) Value(value any) *FeedbackButtonBuilder {
 	b.core.Value(value)
 	return b
 }
 
-// AccessibilityLabel sets assistive text for an interactive control.
+// AccessibilityLabel sets the label read by screen readers in place of the visible text. Slack
+// allows at most 75 characters.
 func (b *FeedbackButtonBuilder) AccessibilityLabel(value string) *FeedbackButtonBuilder {
 	b.core.AccessibilityLabel(value)
 	return b
 }
 
 // FeedbackButtonsBuilder is the concrete fluent builder returned by NewFeedbackButtons.
+//
+// A pair of thumbs-up and thumbs-down feedback buttons.
+//
+//   - Required: PositiveButton and NegativeButton.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element for Slack's reference.
 type FeedbackButtonsBuilder struct{ *concreteBuilder }
 
 func newFeedbackButtonsBuilder(core *builder) *FeedbackButtonsBuilder {
 	return &FeedbackButtonsBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// PositiveButton sets the positive feedback choice.
+// PositiveButton sets the button for positive feedback. Required.
 func (b *FeedbackButtonsBuilder) PositiveButton(value any) *FeedbackButtonsBuilder {
 	b.core.PositiveButton(value)
 	return b
 }
 
-// NegativeButton sets the negative feedback choice.
+// NegativeButton sets the button for negative feedback. Required.
 func (b *FeedbackButtonsBuilder) NegativeButton(value any) *FeedbackButtonsBuilder {
 	b.core.NegativeButton(value)
 	return b
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *FeedbackButtonsBuilder) ActionID(value string) *FeedbackButtonsBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
 // FileBlockBuilder is the concrete fluent builder returned by NewFileBlock.
+//
+// A remote file previously added with the files.remote API.
+//
+//   - Required: ExternalID.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/file-block for Slack's reference.
 type FileBlockBuilder struct{ *slackBlockBuilder }
 
 func newFileBlockBuilder(core *builder) *FileBlockBuilder {
 	return &FileBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// ExternalID sets an application-defined external identifier.
+// ExternalID sets the external identifier of a remote file previously added with the
+// files.remote API. Required.
 func (b *FileBlockBuilder) ExternalID(value string) *FileBlockBuilder {
 	b.core.ExternalID(value)
 	return b
 }
 
-// Source sets a file source.
+// Source sets the file source. Slack currently supports only remote files.
 func (b *FileBlockBuilder) Source(value string) *FileBlockBuilder {
 	b.core.Source(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *FileBlockBuilder) BlockID(value string) *FileBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // FileInputBuilder is the concrete fluent builder returned by NewFileInput.
+//
+// An input that lets users upload files.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/file-input-element for Slack's reference.
 type FileInputBuilder struct{ *concreteBuilder }
 
 func newFileInputBuilder(core *builder) *FileInputBuilder {
 	return &FileInputBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *FileInputBuilder) ActionID(value string) *FileInputBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// Filetypes appends allowed file extensions.
+// Filetypes adds accepted file extensions, such as pdf or png. Each call appends to any values
+// already added.
 func (b *FileInputBuilder) Filetypes(values ...string) *FileInputBuilder {
 	b.core.Filetypes(values...)
 	return b
 }
 
-// MaxFiles sets a file-upload count limit.
+// MaxFiles sets the maximum number of files a user can upload. Must be between 1 and 10.
 func (b *FileInputBuilder) MaxFiles(value int) *FileInputBuilder {
 	b.core.MaxFiles(value)
 	return b
 }
 
 // HeaderBlockBuilder is the concrete fluent builder returned by NewHeaderBlock.
+//
+// Large, bold plain text that introduces a group of blocks.
+//
+//   - Required: Text.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/header-block for Slack's reference.
 type HeaderBlockBuilder struct{ *slackBlockBuilder }
 
 func newHeaderBlockBuilder(core *builder) *HeaderBlockBuilder {
 	return &HeaderBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the header text, shown in a larger bold font. Required. Slack allows at most 150
+// characters. A string is sent as a plain_text text object; pass a text object to choose the
+// type.
 func (b *HeaderBlockBuilder) Text(value any) *HeaderBlockBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *HeaderBlockBuilder) BlockID(value string) *HeaderBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // HomeTabBuilder is the concrete fluent builder returned by NewHomeTab.
+//
+// The payload for publishing an App Home tab with views.publish.
+//
+//   - Required: Blocks.
+//   - Only blocks supported on the App Home tab are accepted.
+//
+// See https://docs.slack.dev/surfaces/app-home for Slack's reference.
 type HomeTabBuilder struct{ *concreteBuilder }
 
 func newHomeTabBuilder(core *builder) *HomeTabBuilder {
 	return &HomeTabBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Blocks appends Block Kit blocks.
+// Blocks adds the blocks shown on the App Home tab, in display order. Required. Must contain
+// between 1 and 100 items. Each call appends to any values already added.
 func (b *HomeTabBuilder) Blocks(values ...any) *HomeTabBuilder {
 	b.core.Blocks(values...)
 	return b
 }
 
-// PrivateMetadata sets opaque view metadata.
+// PrivateMetadata sets application-defined data returned in view payloads. Slack allows at most
+// 3000 characters.
 func (b *HomeTabBuilder) PrivateMetadata(value string) *HomeTabBuilder {
 	b.core.PrivateMetadata(value)
 	return b
 }
 
-// CallbackID sets an application-defined view callback identifier.
+// CallbackID sets an identifier returned in view payloads so your app can recognize the view.
+// Slack allows at most 255 characters.
 func (b *HomeTabBuilder) CallbackID(value string) *HomeTabBuilder {
 	b.core.CallbackID(value)
 	return b
 }
 
-// ExternalID sets an application-defined external identifier.
+// ExternalID sets a workspace-unique identifier you can use to update the view later.
 func (b *HomeTabBuilder) ExternalID(value string) *HomeTabBuilder {
 	b.core.ExternalID(value)
 	return b
 }
 
 // IconButtonBuilder is the concrete fluent builder returned by NewIconButton.
+//
+// A button that shows an icon instead of text.
+//
+//   - Required: Text.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element for Slack's reference.
 type IconButtonBuilder struct{ *concreteBuilder }
 
 func newIconButtonBuilder(core *builder) *IconButtonBuilder {
 	return &IconButtonBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the text used as the button's accessible name. Required. A string is sent as a
+// plain_text text object; pass a text object to choose the type.
 func (b *IconButtonBuilder) Text(value any) *IconButtonBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Icon sets an icon or icon element.
+// Icon sets the icon shown on the button. Accepted values: "trash".
 func (b *IconButtonBuilder) Icon(value any) *IconButtonBuilder {
 	b.core.Icon(value)
 	return b
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *IconButtonBuilder) ActionID(value string) *IconButtonBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// Value sets an application-defined value.
+// Value sets the application-defined value sent in interaction payloads.
 func (b *IconButtonBuilder) Value(value any) *IconButtonBuilder {
 	b.core.Value(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *IconButtonBuilder) Confirm(value any) *IconButtonBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// AccessibilityLabel sets assistive text for an interactive control.
+// AccessibilityLabel sets the label read by screen readers in place of the visible text.
 func (b *IconButtonBuilder) AccessibilityLabel(value string) *IconButtonBuilder {
 	b.core.AccessibilityLabel(value)
 	return b
 }
 
-// VisibleToUserIDs appends user IDs allowed to see an icon action.
+// VisibleToUserIDs adds the IDs of users who can see this button. Slack allows at most 10
+// items. Each call appends to any values already added.
 func (b *IconButtonBuilder) VisibleToUserIDs(values ...string) *IconButtonBuilder {
 	b.core.VisibleToUserIDs(values...)
 	return b
 }
 
 // ImageBlockBuilder is the concrete fluent builder returned by NewImageBlock.
+//
+// A standalone image with alternative text and an optional title.
+//
+//   - Required: ImageURL and AltText.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/image-block for Slack's reference.
 type ImageBlockBuilder struct{ *slackBlockBuilder }
 
 func newImageBlockBuilder(core *builder) *ImageBlockBuilder {
 	return &ImageBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// ImageURL sets a public image URL.
+// ImageURL sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+// Required. Slack allows at most 3000 characters.
 func (b *ImageBlockBuilder) ImageURL(value string) *ImageBlockBuilder {
 	b.core.ImageURL(value)
 	return b
 }
 
-// AltText sets an accessible image or video description.
+// AltText sets a plain-text summary of the image or video for assistive technology. Required.
+// Slack allows at most 2000 characters.
 func (b *ImageBlockBuilder) AltText(value string) *ImageBlockBuilder {
 	b.core.AltText(value)
 	return b
 }
 
-// Title sets a title field.
+// Title sets the title shown above the image. A string is sent as a plain_text text object;
+// pass a text object to choose the type.
 func (b *ImageBlockBuilder) Title(value any) *ImageBlockBuilder {
 	b.core.Title(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *ImageBlockBuilder) BlockID(value string) *ImageBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // ImageElementBuilder is the concrete fluent builder returned by NewImageElement.
+//
+// An image displayed inside a section, context, or card.
+//
+//   - Required: AltText.
+//   - Provide exactly one of an image URL or a Slack file.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/image-element for Slack's reference.
 type ImageElementBuilder struct{ *concreteBuilder }
 
 func newImageElementBuilder(core *builder) *ImageElementBuilder {
 	return &ImageElementBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// AltText sets an accessible image or video description.
+// AltText sets a plain-text summary of the image or video for assistive technology. Required.
 func (b *ImageElementBuilder) AltText(value string) *ImageElementBuilder {
 	b.core.AltText(value)
 	return b
 }
 
-// ImageURL sets a public image URL.
+// ImageURL sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
 func (b *ImageElementBuilder) ImageURL(value string) *ImageElementBuilder {
 	b.core.ImageURL(value)
 	return b
 }
 
-// SlackFile sets a Slack-hosted image reference.
+// SlackFile sets a file hosted in Slack as the image source. Cannot be combined with an image
+// URL.
 func (b *ImageElementBuilder) SlackFile(value any) *ImageElementBuilder {
 	b.core.SlackFile(value)
 	return b
 }
 
 // InputBlockBuilder is the concrete fluent builder returned by NewInputBlock.
+//
+// A labelled input that collects a value in a modal, App Home, or message.
+//
+//   - Required: Label and Element.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/input-block for Slack's reference.
 type InputBlockBuilder struct{ *slackBlockBuilder }
 
 func newInputBlockBuilder(core *builder) *InputBlockBuilder {
 	return &InputBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Label sets a label field.
+// Label sets the label shown above the input. Required. Slack allows at most 2000 characters. A
+// string is sent as a plain_text text object; pass a text object to choose the type.
 func (b *InputBlockBuilder) Label(value any) *InputBlockBuilder {
 	b.core.Label(value)
 	return b
 }
 
-// Element sets the interactive element in an input block.
+// Element sets the input element that collects the user's value. Required.
 func (b *InputBlockBuilder) Element(value any) *InputBlockBuilder {
 	b.core.Element(value)
 	return b
 }
 
-// DispatchAction controls immediate input dispatch.
+// DispatchAction sets whether changing the element sends a block_actions payload immediately.
 func (b *InputBlockBuilder) DispatchAction(value bool) *InputBlockBuilder {
 	b.core.DispatchAction(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *InputBlockBuilder) BlockID(value string) *InputBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
-// Hint sets supporting input help text.
+// Hint sets helper text shown below the input. Slack allows at most 2000 characters. A string
+// is sent as a plain_text text object; pass a text object to choose the type.
 func (b *InputBlockBuilder) Hint(value any) *InputBlockBuilder {
 	b.core.Hint(value)
 	return b
 }
 
-// Optional makes an input block optional.
+// Optional sets whether the modal can be submitted when this input is empty.
 func (b *InputBlockBuilder) Optional(value bool) *InputBlockBuilder {
 	b.core.Optional(value)
 	return b
 }
 
 // InputParameterBuilder is the concrete fluent builder returned by NewInputParameter.
+//
+// A named value passed to a workflow trigger.
+//
+//   - Required: Name and Value.
+//
+// See https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object for Slack's reference.
 type InputParameterBuilder struct{ *concreteBuilder }
 
 func newInputParameterBuilder(core *builder) *InputParameterBuilder {
 	return &InputParameterBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Name sets a named Slack value.
+// Name sets the workflow input parameter name. Required.
 func (b *InputParameterBuilder) Name(value string) *InputParameterBuilder {
 	b.core.Name(value)
 	return b
 }
 
-// Value sets an application-defined value.
+// Value sets the value passed to the workflow input. Required.
 func (b *InputParameterBuilder) Value(value any) *InputParameterBuilder {
 	b.core.Value(value)
 	return b
 }
 
 // LineChartBuilder is the concrete fluent builder returned by NewLineChart.
+//
+// A line chart for a data visualization block.
+//
+//   - Required: Series and AxisConfig.
+//   - Every series needs exactly one data point for each axis category.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block for Slack's reference.
 type LineChartBuilder struct{ *concreteBuilder }
 
 func newLineChartBuilder(core *builder) *LineChartBuilder {
 	return &LineChartBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Series appends chart series.
+// Series adds data series in display order. Series names must be unique. Required. Must contain
+// between 1 and 12 items. Each call appends to any values already added.
 func (b *LineChartBuilder) Series(values ...any) *LineChartBuilder {
 	b.core.Series(values...)
 	return b
 }
 
-// AxisConfig sets chart-axis configuration.
+// AxisConfig sets the axis categories and labels. Every series needs exactly one point per
+// category. Required.
 func (b *LineChartBuilder) AxisConfig(value any) *LineChartBuilder {
 	b.core.AxisConfig(value)
 	return b
 }
 
 // MarkdownBuilder is the concrete fluent builder returned by NewMarkdown.
+//
+// A mrkdwn text composition object.
+//
+//   - Required: Text.
+//
+// See https://docs.slack.dev/reference/block-kit/composition-objects/text-object for Slack's reference.
 type MarkdownBuilder struct{ *concreteBuilder }
 
 func newMarkdownBuilder(core *builder) *MarkdownBuilder {
 	return &MarkdownBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the mrkdwn-formatted text content. Required.
 func (b *MarkdownBuilder) Text(value any) *MarkdownBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Verbatim controls automatic Slack mrkdwn parsing.
+// Verbatim sets whether Slack leaves URLs, mentions, and channel names unlinked.
 func (b *MarkdownBuilder) Verbatim(value bool) *MarkdownBuilder {
 	b.core.Verbatim(value)
 	return b
 }
 
 // MarkdownBlockBuilder is the concrete fluent builder returned by NewMarkdownBlock.
+//
+// Standard markdown rendered by Slack, intended for AI-generated content.
+//
+//   - Required: Text.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/markdown-block for Slack's reference.
 type MarkdownBlockBuilder struct{ *slackBlockBuilder }
 
 func newMarkdownBlockBuilder(core *builder) *MarkdownBlockBuilder {
 	return &MarkdownBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets standard markdown content, which Slack renders directly. Required. Must be between
+// 1 and 12000 characters.
 func (b *MarkdownBlockBuilder) Text(value any) *MarkdownBlockBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *MarkdownBlockBuilder) BlockID(value string) *MarkdownBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // MessageBuilder is the concrete fluent builder returned by NewMessage.
+//
+// A complete payload for chat.postMessage and related Web API methods.
+//
+//   - Required: Channel.
+//   - Only blocks supported in messages are accepted.
+//
+// See https://docs.slack.dev/reference/methods/chat.postMessage for Slack's reference.
 type MessageBuilder struct{ *concreteBuilder }
 
 func newMessageBuilder(core *builder) *MessageBuilder {
 	return &MessageBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Channel sets a message destination.
+// Channel sets the ID of the channel, private group, or conversation that receives the message.
+// Required. Must not be empty.
 func (b *MessageBuilder) Channel(value string) *MessageBuilder {
 	b.core.Channel(value)
 	return b
 }
 
-// Blocks appends Block Kit blocks.
+// Blocks adds the message blocks in display order. Slack allows at most 50 items. Each call
+// appends to any values already added.
 func (b *MessageBuilder) Blocks(values ...any) *MessageBuilder {
 	b.core.Blocks(values...)
 	return b
 }
 
-// Attachments appends legacy secondary attachments.
+// Attachments adds legacy attachments in display order. Slack allows at most 100 items. Each
+// call appends to any values already added.
 func (b *MessageBuilder) Attachments(values ...any) *MessageBuilder {
 	b.core.Attachments(values...)
 	return b
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the fallback text used in notifications and by clients that cannot display blocks.
 func (b *MessageBuilder) Text(value any) *MessageBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Mrkdwn controls fallback text parsing.
+// Mrkdwn sets whether Slack formats the top-level text as mrkdwn.
 func (b *MessageBuilder) Mrkdwn(value bool) *MessageBuilder {
 	b.core.Mrkdwn(value)
 	return b
 }
 
-// UnfurlLinks controls message link unfurling.
+// UnfurlLinks sets whether Slack unfurls text-based links.
 func (b *MessageBuilder) UnfurlLinks(value bool) *MessageBuilder {
 	b.core.UnfurlLinks(value)
 	return b
 }
 
-// UnfurlMedia controls message media unfurling.
+// UnfurlMedia sets whether Slack unfurls media links.
 func (b *MessageBuilder) UnfurlMedia(value bool) *MessageBuilder {
 	b.core.UnfurlMedia(value)
 	return b
 }
 
-// Metadata sets message metadata.
+// Metadata sets message metadata as a JSON-compatible map, such as event_type and
+// event_payload. Pass an Object or map of JSON-compatible values.
 func (b *MessageBuilder) Metadata(value any) *MessageBuilder {
 	b.core.Metadata(value)
 	return b
 }
 
 // MessageResponseBuilder is the concrete fluent builder returned by NewMessageResponse.
+//
+// A response body for slash commands and interaction response URLs.
+//
+//   - Only blocks supported in messages are accepted.
+//
+// See https://docs.slack.dev/interactivity/handling-user-interaction#message_responses for Slack's reference.
 type MessageResponseBuilder struct{ *concreteBuilder }
 
 func newMessageResponseBuilder(core *builder) *MessageResponseBuilder {
 	return &MessageResponseBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Blocks appends Block Kit blocks.
+// Blocks adds the response blocks in display order. Slack allows at most 50 items. Each call
+// appends to any values already added.
 func (b *MessageResponseBuilder) Blocks(values ...any) *MessageResponseBuilder {
 	b.core.Blocks(values...)
 	return b
 }
 
-// Attachments appends legacy secondary attachments.
+// Attachments adds legacy attachments in display order. Slack allows at most 100 items. Each
+// call appends to any values already added.
 func (b *MessageResponseBuilder) Attachments(values ...any) *MessageResponseBuilder {
 	b.core.Attachments(values...)
 	return b
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the fallback text used in notifications and by clients that cannot display blocks.
 func (b *MessageResponseBuilder) Text(value any) *MessageResponseBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Mrkdwn controls fallback text parsing.
+// Mrkdwn sets whether Slack formats the top-level text as mrkdwn.
 func (b *MessageResponseBuilder) Mrkdwn(value bool) *MessageResponseBuilder {
 	b.core.Mrkdwn(value)
 	return b
 }
 
-// ReplaceOriginal controls interaction message replacement.
+// ReplaceOriginal sets whether the response replaces the message that triggered it.
 func (b *MessageResponseBuilder) ReplaceOriginal(value bool) *MessageResponseBuilder {
 	b.core.ReplaceOriginal(value)
 	return b
 }
 
-// ResponseType sets response visibility.
+// ResponseType sets who can see the response. Accepted values: "in_channel" and "ephemeral".
 func (b *MessageResponseBuilder) ResponseType(value string) *MessageResponseBuilder {
 	b.core.ResponseType(value)
 	return b
 }
 
 // ModalBuilder is the concrete fluent builder returned by NewModal.
+//
+// The view payload for views.open, views.push, and views.update.
+//
+//   - Required: Title and Blocks.
+//   - Only blocks supported in modals are accepted.
+//   - A modal that contains an input block must have a submit label.
+//
+// See https://docs.slack.dev/surfaces/modals for Slack's reference.
 type ModalBuilder struct{ *concreteBuilder }
 
 func newModalBuilder(core *builder) *ModalBuilder {
 	return &ModalBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Title sets a title field.
+// Title sets the title in the modal's top bar. Required. Slack allows at most 24 characters. A
+// string is sent as a plain_text text object; pass a text object to choose the type.
 func (b *ModalBuilder) Title(value any) *ModalBuilder {
 	b.core.Title(value)
 	return b
 }
 
-// Blocks appends Block Kit blocks.
+// Blocks adds the blocks shown in the modal, in display order. Required. Must contain between 1
+// and 100 items. Each call appends to any values already added.
 func (b *ModalBuilder) Blocks(values ...any) *ModalBuilder {
 	b.core.Blocks(values...)
 	return b
 }
 
-// Close sets a modal close-button label.
+// Close sets the label of the button that closes the modal. Slack allows at most 24 characters.
+// A string is sent as a plain_text text object; pass a text object to choose the type.
 func (b *ModalBuilder) Close(value any) *ModalBuilder {
 	b.core.Close(value)
 	return b
 }
 
-// Submit sets a modal submit-button label.
+// Submit sets the label of the button that submits the modal. Slack allows at most 24
+// characters. A string is sent as a plain_text text object; pass a text object to choose the
+// type.
 func (b *ModalBuilder) Submit(value any) *ModalBuilder {
 	b.core.Submit(value)
 	return b
 }
 
-// PrivateMetadata sets opaque view metadata.
+// PrivateMetadata sets application-defined data returned in view payloads. Slack allows at most
+// 3000 characters.
 func (b *ModalBuilder) PrivateMetadata(value string) *ModalBuilder {
 	b.core.PrivateMetadata(value)
 	return b
 }
 
-// CallbackID sets an application-defined view callback identifier.
+// CallbackID sets an identifier returned in view payloads so your app can recognize the view.
+// Slack allows at most 255 characters.
 func (b *ModalBuilder) CallbackID(value string) *ModalBuilder {
 	b.core.CallbackID(value)
 	return b
 }
 
-// ClearOnClose controls modal stack clearing.
+// ClearOnClose sets whether closing this modal closes every view in its stack.
 func (b *ModalBuilder) ClearOnClose(value bool) *ModalBuilder {
 	b.core.ClearOnClose(value)
 	return b
 }
 
-// NotifyOnClose controls modal close events.
+// NotifyOnClose sets whether Slack sends a view_closed event when the user closes the modal.
 func (b *ModalBuilder) NotifyOnClose(value bool) *ModalBuilder {
 	b.core.NotifyOnClose(value)
 	return b
 }
 
-// ExternalID sets an application-defined external identifier.
+// ExternalID sets a workspace-unique identifier you can use to update the view later.
 func (b *ModalBuilder) ExternalID(value string) *ModalBuilder {
 	b.core.ExternalID(value)
 	return b
 }
 
-// SubmitDisabled controls the initial modal submit state.
+// SubmitDisabled sets whether the submit button starts disabled. Only valid in workflow
+// configuration modals.
 func (b *ModalBuilder) SubmitDisabled(value bool) *ModalBuilder {
 	b.core.SubmitDisabled(value)
 	return b
 }
 
 // NumberInputBuilder is the concrete fluent builder returned by NewNumberInput.
+//
+// An input that accepts whole or decimal numbers.
+//
+//   - Required: ActionID.
+//   - The minimum value cannot exceed the maximum value.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/number-input-element for Slack's reference.
 type NumberInputBuilder struct{ *concreteBuilder }
 
 func newNumberInputBuilder(core *builder) *NumberInputBuilder {
 	return &NumberInputBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *NumberInputBuilder) ActionID(value string) *NumberInputBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// IsDecimalAllowed controls decimal input.
+// IsDecimalAllowed sets whether the input accepts decimal numbers.
 func (b *NumberInputBuilder) IsDecimalAllowed(value bool) *NumberInputBuilder {
 	b.core.IsDecimalAllowed(value)
 	return b
 }
 
-// InitialValue sets initial input content.
+// InitialValue sets the number present when the input loads, as a string such as 42 or 3.5.
 func (b *NumberInputBuilder) InitialValue(value any) *NumberInputBuilder {
 	b.core.InitialValue(value)
 	return b
 }
 
-// MinValue sets a numeric input minimum.
+// MinValue sets the smallest accepted number.
 func (b *NumberInputBuilder) MinValue(value float64) *NumberInputBuilder {
 	b.core.MinValue(value)
 	return b
 }
 
-// MaxValue sets a numeric input maximum.
+// MaxValue sets the largest accepted number.
 func (b *NumberInputBuilder) MaxValue(value float64) *NumberInputBuilder {
 	b.core.MaxValue(value)
 	return b
 }
 
-// DispatchActionConfig sets input dispatch behavior.
+// DispatchActionConfig sets which user interactions send a block_actions payload.
 func (b *NumberInputBuilder) DispatchActionConfig(value any) *NumberInputBuilder {
 	b.core.DispatchActionConfig(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *NumberInputBuilder) FocusOnLoad(value bool) *NumberInputBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
+// plain_text text object; pass a text object to choose the type.
 func (b *NumberInputBuilder) Placeholder(value any) *NumberInputBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // OptionBuilder is the concrete fluent builder returned by NewOption.
+//
+// A selectable option for menus, checkboxes, radio buttons, and overflow menus.
+//
+//   - Required: Text and Value.
+//
+// See https://docs.slack.dev/reference/block-kit/composition-objects/option-object for Slack's reference.
 type OptionBuilder struct{ *concreteBuilder }
 
 func newOptionBuilder(core *builder) *OptionBuilder {
 	return &OptionBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the option label shown to users. Required. Slack allows at most 75 characters. A
+// string is sent as a plain_text text object; pass a text object to choose the type.
 func (b *OptionBuilder) Text(value any) *OptionBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Value sets an application-defined value.
+// Value sets the value sent in interaction payloads when this option is chosen. Required. Slack
+// allows at most 150 characters.
 func (b *OptionBuilder) Value(value any) *OptionBuilder {
 	b.core.Value(value)
 	return b
 }
 
-// Description sets supporting descriptive text.
+// Description sets supporting text shown below the label. Only rendered by checkboxes and radio
+// buttons. Slack allows at most 75 characters. A string is sent as a plain_text text object;
+// pass a text object to choose the type.
 func (b *OptionBuilder) Description(value any) *OptionBuilder {
 	b.core.Description(value)
 	return b
 }
 
-// URL sets a URL field.
+// URL sets a URL loaded in the user's browser when an overflow menu option is chosen. Slack
+// allows at most 3000 characters.
 func (b *OptionBuilder) URL(value string) *OptionBuilder {
 	b.core.URL(value)
 	return b
 }
 
 // OptionGroupBuilder is the concrete fluent builder returned by NewOptionGroup.
+//
+// A labelled group of options in a static select menu.
+//
+//   - Required: Label and Options.
+//
+// See https://docs.slack.dev/reference/block-kit/composition-objects/option-group-object for Slack's reference.
 type OptionGroupBuilder struct{ *concreteBuilder }
 
 func newOptionGroupBuilder(core *builder) *OptionGroupBuilder {
 	return &OptionGroupBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Label sets a label field.
+// Label sets the group heading. Required. Slack allows at most 75 characters. A string is sent
+// as a plain_text text object; pass a text object to choose the type.
 func (b *OptionGroupBuilder) Label(value any) *OptionGroupBuilder {
 	b.core.Label(value)
 	return b
 }
 
-// Options appends selectable option objects.
+// Options adds selectable options in display order. Required. Must contain between 1 and 100
+// items. Each call appends to any values already added.
 func (b *OptionGroupBuilder) Options(values ...any) *OptionGroupBuilder {
 	b.core.Options(values...)
 	return b
 }
 
 // OverflowBuilder is the concrete fluent builder returned by NewOverflow.
+//
+// A compact menu of up to five options.
+//
+//   - Required: ActionID and Options.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/overflow-menu-element for Slack's reference.
 type OverflowBuilder struct{ *concreteBuilder }
 
 func newOverflowBuilder(core *builder) *OverflowBuilder {
 	return &OverflowBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *OverflowBuilder) ActionID(value string) *OverflowBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// Options appends selectable option objects.
+// Options adds selectable options in display order. Required. Must contain between 1 and 5
+// items. Each call appends to any values already added.
 func (b *OverflowBuilder) Options(values ...any) *OverflowBuilder {
 	b.core.Options(values...)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *OverflowBuilder) Confirm(value any) *OverflowBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
 // PieChartBuilder is the concrete fluent builder returned by NewPieChart.
+//
+// A pie chart for a data visualization block.
+//
+//   - Required: Segments.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block for Slack's reference.
 type PieChartBuilder struct{ *concreteBuilder }
 
 func newPieChartBuilder(core *builder) *PieChartBuilder {
 	return &PieChartBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Segments appends pie-chart segments.
+// Segments adds pie segments in display order. Required. Must contain between 1 and 12 items.
+// Each call appends to any values already added.
 func (b *PieChartBuilder) Segments(values ...any) *PieChartBuilder {
 	b.core.Segments(values...)
 	return b
 }
 
 // PlainTextBuilder is the concrete fluent builder returned by NewPlainText.
+//
+// A plain-text composition object.
+//
+//   - Required: Text.
+//
+// See https://docs.slack.dev/reference/block-kit/composition-objects/text-object for Slack's reference.
 type PlainTextBuilder struct{ *concreteBuilder }
 
 func newPlainTextBuilder(core *builder) *PlainTextBuilder {
 	return &PlainTextBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the text content. Required.
 func (b *PlainTextBuilder) Text(value any) *PlainTextBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Emoji controls Slack emoji shortcode conversion for plain text.
+// Emoji sets whether emoji shortcodes such as :tada: are rendered as emoji.
 func (b *PlainTextBuilder) Emoji(value bool) *PlainTextBuilder {
 	b.core.Emoji(value)
 	return b
 }
 
 // PlainTextInputBuilder is the concrete fluent builder returned by NewPlainTextInput.
+//
+// A single-line or multi-line free-text input.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element for Slack's reference.
 type PlainTextInputBuilder struct{ *concreteBuilder }
 
 func newPlainTextInputBuilder(core *builder) *PlainTextInputBuilder {
 	return &PlainTextInputBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *PlainTextInputBuilder) ActionID(value string) *PlainTextInputBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialValue sets initial input content.
+// InitialValue sets the value present when the input loads.
 func (b *PlainTextInputBuilder) InitialValue(value any) *PlainTextInputBuilder {
 	b.core.InitialValue(value)
 	return b
 }
 
-// Multiline controls text input layout.
+// Multiline sets whether the input is a multi-line text area.
 func (b *PlainTextInputBuilder) Multiline(value bool) *PlainTextInputBuilder {
 	b.core.Multiline(value)
 	return b
 }
 
-// MinLength sets a minimum input character count.
+// MinLength sets the minimum number of characters the user must enter.
 func (b *PlainTextInputBuilder) MinLength(value int) *PlainTextInputBuilder {
 	b.core.MinLength(value)
 	return b
 }
 
-// MaxLength sets an input character limit.
+// MaxLength sets the maximum number of characters the user can enter. Must be at most 3000.
 func (b *PlainTextInputBuilder) MaxLength(value int) *PlainTextInputBuilder {
 	b.core.MaxLength(value)
 	return b
 }
 
-// DispatchActionConfig sets input dispatch behavior.
+// DispatchActionConfig sets which user interactions send a block_actions payload.
 func (b *PlainTextInputBuilder) DispatchActionConfig(value any) *PlainTextInputBuilder {
 	b.core.DispatchActionConfig(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *PlainTextInputBuilder) FocusOnLoad(value bool) *PlainTextInputBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
+// plain_text text object; pass a text object to choose the type.
 func (b *PlainTextInputBuilder) Placeholder(value any) *PlainTextInputBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // PlanBlockBuilder is the concrete fluent builder returned by NewPlanBlock.
+//
+// A titled sequence of task cards.
+//
+//   - Required: Title.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/plan-block for Slack's reference.
 type PlanBlockBuilder struct{ *slackBlockBuilder }
 
 func newPlanBlockBuilder(core *builder) *PlanBlockBuilder {
 	return &PlanBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Title sets a title field.
+// Title sets the plan title. Required.
 func (b *PlanBlockBuilder) Title(value any) *PlanBlockBuilder {
 	b.core.Title(value)
 	return b
 }
 
-// Tasks appends task-card blocks.
+// Tasks adds task cards in display order. Each call appends to any values already added.
 func (b *PlanBlockBuilder) Tasks(values ...any) *PlanBlockBuilder {
 	b.core.Tasks(values...)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *PlanBlockBuilder) BlockID(value string) *PlanBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // RadioButtonsBuilder is the concrete fluent builder returned by NewRadioButtons.
+//
+// A group of radio buttons.
+//
+//   - Required: ActionID and Options.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/radio-button-group-element for Slack's reference.
 type RadioButtonsBuilder struct{ *concreteBuilder }
 
 func newRadioButtonsBuilder(core *builder) *RadioButtonsBuilder {
 	return &RadioButtonsBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *RadioButtonsBuilder) ActionID(value string) *RadioButtonsBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// Options appends selectable option objects.
+// Options adds selectable options in display order. Required. Must contain between 1 and 10
+// items. Each call appends to any values already added.
 func (b *RadioButtonsBuilder) Options(values ...any) *RadioButtonsBuilder {
 	b.core.Options(values...)
 	return b
 }
 
-// InitialOption sets a single initially selected option.
+// InitialOption sets the option selected when the element loads. It must match an option in the
+// element.
 func (b *RadioButtonsBuilder) InitialOption(value any) *RadioButtonsBuilder {
 	b.core.InitialOption(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *RadioButtonsBuilder) Confirm(value any) *RadioButtonsBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *RadioButtonsBuilder) FocusOnLoad(value bool) *RadioButtonsBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
 // RawNumberBuilder is the concrete fluent builder returned by NewRawNumber.
+//
+// A numeric data table cell with display text.
+//
+//   - Required: Value and Text.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/data-table-block for Slack's reference.
 type RawNumberBuilder struct{ *concreteBuilder }
 
 func newRawNumberBuilder(core *builder) *RawNumberBuilder {
 	return &RawNumberBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Value sets an application-defined value.
+// Value sets the numeric value used for sorting. Required.
 func (b *RawNumberBuilder) Value(value any) *RawNumberBuilder {
 	b.core.Value(value)
 	return b
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the formatted text displayed for the number, such as 1,234.5. Required.
 func (b *RawNumberBuilder) Text(value any) *RawNumberBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // RawTextBuilder is the concrete fluent builder returned by NewRawText.
+//
+// An unformatted table cell.
+//
+//   - Required: Text.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/table-block for Slack's reference.
 type RawTextBuilder struct{ *concreteBuilder }
 
 func newRawTextBuilder(core *builder) *RawTextBuilder {
 	return &RawTextBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the cell text. Required.
 func (b *RawTextBuilder) Text(value any) *RawTextBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // RichTextBuilder is the concrete fluent builder returned by NewRichText.
+//
+// A run of optionally styled text inside rich text.
+//
+//   - Required: Text.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/rich-text-block for Slack's reference.
 type RichTextBuilder struct{ *concreteBuilder }
 
 func newRichTextBuilder(core *builder) *RichTextBuilder {
 	return &RichTextBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the text content. Required.
 func (b *RichTextBuilder) Text(value any) *RichTextBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Style sets a Slack-supported visual or layout style.
+// Style sets the visual style. Pass an Object of boolean flags, such as `Object{"bold": true}`.
+// Supported flags: "bold", "italic", "strike", and "code".
 func (b *RichTextBuilder) Style(value any) *RichTextBuilder {
 	b.core.Style(value)
 	return b
 }
 
 // RichTextBlockBuilder is the concrete fluent builder returned by NewRichTextBlock.
+//
+// Formatted text built from sections, lists, preformatted blocks, and quotes.
+//
+//   - Required: Elements.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/rich-text-block for Slack's reference.
 type RichTextBlockBuilder struct{ *slackBlockBuilder }
 
 func newRichTextBlockBuilder(core *builder) *RichTextBlockBuilder {
 	return &RichTextBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Elements appends Slack elements.
+// Elements adds sections, lists, preformatted blocks, and quotes in display order. Required.
+// Each call appends to any values already added.
 func (b *RichTextBlockBuilder) Elements(values ...any) *RichTextBlockBuilder {
 	b.core.Elements(values...)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *RichTextBlockBuilder) BlockID(value string) *RichTextBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // RichTextChannelBuilder is the concrete fluent builder returned by NewRichTextChannel.
+//
+// A channel mention inside rich text.
+//
+//   - Required: ChannelID.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/rich-text-block for Slack's reference.
 type RichTextChannelBuilder struct{ *concreteBuilder }
 
 func newRichTextChannelBuilder(core *builder) *RichTextChannelBuilder {
 	return &RichTextChannelBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ChannelID sets a Slack channel ID.
+// ChannelID sets the ID of the mentioned channel. Required.
 func (b *RichTextChannelBuilder) ChannelID(value string) *RichTextChannelBuilder {
 	b.core.ChannelID(value)
 	return b
 }
 
-// Style sets a Slack-supported visual or layout style.
+// Style sets the mention style. Pass an Object of boolean flags, such as `Object{"bold":
+// true}`. Supported flags: "bold", "italic", "strike", "highlight", "client_highlight", and
+// "unlink".
 func (b *RichTextChannelBuilder) Style(value any) *RichTextChannelBuilder {
 	b.core.Style(value)
 	return b
 }
 
 // RichTextCodeBlockBuilder is the concrete fluent builder returned by NewRichTextCodeBlock.
+//
+// A preformatted code block inside rich text.
+//
+//   - Required: Elements.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/rich-text-block for Slack's reference.
 type RichTextCodeBlockBuilder struct{ *concreteBuilder }
 
 func newRichTextCodeBlockBuilder(core *builder) *RichTextCodeBlockBuilder {
 	return &RichTextCodeBlockBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Elements appends Slack elements.
+// Elements adds inline rich text elements in display order. Required. Each call appends to any
+// values already added.
 func (b *RichTextCodeBlockBuilder) Elements(values ...any) *RichTextCodeBlockBuilder {
 	b.core.Elements(values...)
 	return b
 }
 
-// Border sets a rich-text border depth.
+// Border sets the width of the left border, in pixels.
 func (b *RichTextCodeBlockBuilder) Border(value int) *RichTextCodeBlockBuilder {
 	b.core.Border(value)
 	return b
 }
 
 // RichTextEmojiBuilder is the concrete fluent builder returned by NewRichTextEmoji.
+//
+// An emoji inside rich text.
+//
+//   - Required: Name.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/rich-text-block for Slack's reference.
 type RichTextEmojiBuilder struct{ *concreteBuilder }
 
 func newRichTextEmojiBuilder(core *builder) *RichTextEmojiBuilder {
 	return &RichTextEmojiBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Name sets a named Slack value.
+// Name sets the emoji shortcode name, without colons. Required.
 func (b *RichTextEmojiBuilder) Name(value string) *RichTextEmojiBuilder {
 	b.core.Name(value)
 	return b
 }
 
-// SkinTone sets an emoji skin-tone index.
+// SkinTone sets the emoji skin tone, from 1 to 6.
 func (b *RichTextEmojiBuilder) SkinTone(value int) *RichTextEmojiBuilder {
 	b.core.SkinTone(value)
 	return b
 }
 
 // RichTextInputBuilder is the concrete fluent builder returned by NewRichTextInput.
+//
+// An input that accepts formatted rich text.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/rich-text-input-element for Slack's reference.
 type RichTextInputBuilder struct{ *concreteBuilder }
 
 func newRichTextInputBuilder(core *builder) *RichTextInputBuilder {
 	return &RichTextInputBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *RichTextInputBuilder) ActionID(value string) *RichTextInputBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialValue sets initial input content.
+// InitialValue sets the rich text present when the input loads.
 func (b *RichTextInputBuilder) InitialValue(value any) *RichTextInputBuilder {
 	b.core.InitialValue(value)
 	return b
 }
 
-// DispatchActionConfig sets input dispatch behavior.
+// DispatchActionConfig sets which user interactions send a block_actions payload.
 func (b *RichTextInputBuilder) DispatchActionConfig(value any) *RichTextInputBuilder {
 	b.core.DispatchActionConfig(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *RichTextInputBuilder) FocusOnLoad(value bool) *RichTextInputBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
+// plain_text text object; pass a text object to choose the type.
 func (b *RichTextInputBuilder) Placeholder(value any) *RichTextInputBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
-// MinLines sets a rich-text editor minimum line count.
+// MinLines sets the minimum visible height of the input, in lines.
 func (b *RichTextInputBuilder) MinLines(value int) *RichTextInputBuilder {
 	b.core.MinLines(value)
 	return b
 }
 
-// MaxLines sets a rich-text editor line limit.
+// MaxLines sets the maximum visible height of the input, in lines.
 func (b *RichTextInputBuilder) MaxLines(value int) *RichTextInputBuilder {
 	b.core.MaxLines(value)
 	return b
 }
 
 // RichTextLinkBuilder is the concrete fluent builder returned by NewRichTextLink.
+//
+// A hyperlink inside rich text.
+//
+//   - Required: URL.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/rich-text-block for Slack's reference.
 type RichTextLinkBuilder struct{ *concreteBuilder }
 
 func newRichTextLinkBuilder(core *builder) *RichTextLinkBuilder {
 	return &RichTextLinkBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// URL sets a URL field.
+// URL sets the link target. Required.
 func (b *RichTextLinkBuilder) URL(value string) *RichTextLinkBuilder {
 	b.core.URL(value)
 	return b
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the visible link text. Slack shows the URL when omitted.
 func (b *RichTextLinkBuilder) Text(value any) *RichTextLinkBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Style sets a Slack-supported visual or layout style.
+// Style sets the visual style. Pass an Object of boolean flags, such as `Object{"bold": true}`.
+// Supported flags: "bold", "italic", "strike", and "code".
 func (b *RichTextLinkBuilder) Style(value any) *RichTextLinkBuilder {
 	b.core.Style(value)
 	return b
 }
 
 // RichTextListBuilder is the concrete fluent builder returned by NewRichTextList.
+//
+// A bulleted or numbered list inside rich text.
+//
+//   - Required: Style and Elements.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/rich-text-block for Slack's reference.
 type RichTextListBuilder struct{ *concreteBuilder }
 
 func newRichTextListBuilder(core *builder) *RichTextListBuilder {
 	return &RichTextListBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Style sets a Slack-supported visual or layout style.
+// Style sets whether the list is bulleted or numbered. Required. Accepted values: "bullet" and
+// "ordered".
 func (b *RichTextListBuilder) Style(value any) *RichTextListBuilder {
 	b.core.Style(value)
 	return b
 }
 
-// Elements appends Slack elements.
+// Elements adds list items, one rich text section per item. Required. Each call appends to any
+// values already added.
 func (b *RichTextListBuilder) Elements(values ...any) *RichTextListBuilder {
 	b.core.Elements(values...)
 	return b
 }
 
-// Indent sets a rich-text list indent level.
+// Indent sets the list's indentation level.
 func (b *RichTextListBuilder) Indent(value int) *RichTextListBuilder {
 	b.core.Indent(value)
 	return b
 }
 
-// Offset sets a rich-text list nesting offset.
+// Offset sets the number of items to skip when numbering an ordered list.
 func (b *RichTextListBuilder) Offset(value int) *RichTextListBuilder {
 	b.core.Offset(value)
 	return b
 }
 
-// Border sets a rich-text border depth.
+// Border sets the width of the left border, in pixels.
 func (b *RichTextListBuilder) Border(value int) *RichTextListBuilder {
 	b.core.Border(value)
 	return b
 }
 
 // RichTextQuoteBuilder is the concrete fluent builder returned by NewRichTextQuote.
+//
+// A quotation inside rich text.
+//
+//   - Required: Elements.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/rich-text-block for Slack's reference.
 type RichTextQuoteBuilder struct{ *concreteBuilder }
 
 func newRichTextQuoteBuilder(core *builder) *RichTextQuoteBuilder {
 	return &RichTextQuoteBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Elements appends Slack elements.
+// Elements adds inline rich text elements in display order. Required. Each call appends to any
+// values already added.
 func (b *RichTextQuoteBuilder) Elements(values ...any) *RichTextQuoteBuilder {
 	b.core.Elements(values...)
 	return b
 }
 
-// Border sets a rich-text border depth.
+// Border sets the width of the left border, in pixels.
 func (b *RichTextQuoteBuilder) Border(value int) *RichTextQuoteBuilder {
 	b.core.Border(value)
 	return b
 }
 
 // RichTextSectionBuilder is the concrete fluent builder returned by NewRichTextSection.
+//
+// A paragraph of inline rich text elements.
+//
+//   - Required: Elements.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/rich-text-block for Slack's reference.
 type RichTextSectionBuilder struct{ *concreteBuilder }
 
 func newRichTextSectionBuilder(core *builder) *RichTextSectionBuilder {
 	return &RichTextSectionBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Elements appends Slack elements.
+// Elements adds inline rich text elements in display order. Required. Each call appends to any
+// values already added.
 func (b *RichTextSectionBuilder) Elements(values ...any) *RichTextSectionBuilder {
 	b.core.Elements(values...)
 	return b
 }
 
 // RichTextUserBuilder is the concrete fluent builder returned by NewRichTextUser.
+//
+// A user mention inside rich text.
+//
+//   - Required: UserID.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/rich-text-block for Slack's reference.
 type RichTextUserBuilder struct{ *concreteBuilder }
 
 func newRichTextUserBuilder(core *builder) *RichTextUserBuilder {
 	return &RichTextUserBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// UserID sets a Slack user ID.
+// UserID sets the ID of the mentioned user. Required.
 func (b *RichTextUserBuilder) UserID(value string) *RichTextUserBuilder {
 	b.core.UserID(value)
 	return b
 }
 
-// Style sets a Slack-supported visual or layout style.
+// Style sets the visual style. Pass an Object of boolean flags, such as `Object{"bold": true}`.
+// Supported flags: "bold", "italic", "strike", "highlight", "client_highlight", and "unlink".
 func (b *RichTextUserBuilder) Style(value any) *RichTextUserBuilder {
 	b.core.Style(value)
 	return b
 }
 
 // RichTextUserGroupBuilder is the concrete fluent builder returned by NewRichTextUserGroup.
+//
+// A user group mention inside rich text.
+//
+//   - Required: UserGroupID.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/rich-text-block for Slack's reference.
 type RichTextUserGroupBuilder struct{ *concreteBuilder }
 
 func newRichTextUserGroupBuilder(core *builder) *RichTextUserGroupBuilder {
 	return &RichTextUserGroupBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// UserGroupID sets a Slack user-group ID.
+// UserGroupID sets the ID of the mentioned user group. Required.
 func (b *RichTextUserGroupBuilder) UserGroupID(value string) *RichTextUserGroupBuilder {
 	b.core.UserGroupID(value)
 	return b
 }
 
-// Style sets a Slack-supported visual or layout style.
+// Style sets the visual style. Pass an Object of boolean flags, such as `Object{"bold": true}`.
+// Supported flags: "bold", "italic", "strike", "highlight", "client_highlight", and "unlink".
 func (b *RichTextUserGroupBuilder) Style(value any) *RichTextUserGroupBuilder {
 	b.core.Style(value)
 	return b
 }
 
 // SectionBlockBuilder is the concrete fluent builder returned by NewSectionBlock.
+//
+// Text, a grid of fields, or both, with an optional accessory element.
+//
+//   - Provide text, fields, or both.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/section-block for Slack's reference.
 type SectionBlockBuilder struct{ *slackBlockBuilder }
 
 func newSectionBlockBuilder(core *builder) *SectionBlockBuilder {
 	return &SectionBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the main text of the section. Slack allows at most 3000 characters. A string is
+// sent as a mrkdwn text object; pass a text object to choose the type.
 func (b *SectionBlockBuilder) Text(value any) *SectionBlockBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Fields appends section fields in display order.
+// Fields adds section fields, shown in a two-column grid, in display order. Slack allows at
+// most 10 items, each at most 2000 characters. Strings are sent as mrkdwn text objects. Each
+// call appends to any values already added.
 func (b *SectionBlockBuilder) Fields(values ...any) *SectionBlockBuilder {
 	b.core.Fields(values...)
 	return b
 }
 
-// Accessory sets the optional section accessory element.
+// Accessory sets the element displayed beside the section text.
 func (b *SectionBlockBuilder) Accessory(value any) *SectionBlockBuilder {
 	b.core.Accessory(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *SectionBlockBuilder) BlockID(value string) *SectionBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // SlackFileBuilder is the concrete fluent builder returned by NewSlackFile.
+//
+// A reference to an image file hosted in Slack.
+//
+//   - Provide exactly one of an ID or a URL.
+//
+// See https://docs.slack.dev/reference/block-kit/composition-objects/slack-file-object for Slack's reference.
 type SlackFileBuilder struct{ *concreteBuilder }
 
 func newSlackFileBuilder(core *builder) *SlackFileBuilder {
 	return &SlackFileBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// SlackFileID sets a Slack-hosted file identifier.
+// SlackFileID sets the ID of a file previously uploaded to Slack. Cannot be combined with a
+// URL.
 func (b *SlackFileBuilder) SlackFileID(value string) *SlackFileBuilder {
 	b.core.SlackFileID(value)
 	return b
 }
 
-// SlackFileURL sets a Slack-hosted file URL.
+// SlackFileURL sets the URL of a file hosted in Slack. Cannot be combined with an ID.
 func (b *SlackFileBuilder) SlackFileURL(value string) *SlackFileBuilder {
 	b.core.SlackFileURL(value)
 	return b
 }
 
 // SlackIconBuilder is the concrete fluent builder returned by NewSlackIcon.
+//
+// A Slack-provided icon, referenced by name.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/card-block for Slack's reference.
 type SlackIconBuilder struct{ *concreteBuilder }
 
 func newSlackIconBuilder(core *builder) *SlackIconBuilder {
 	return &SlackIconBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Name sets a named Slack value.
+// Name sets the name of the Slack-provided icon, such as rocket.
 func (b *SlackIconBuilder) Name(value string) *SlackIconBuilder {
 	b.core.Name(value)
 	return b
 }
 
 // StaticMultiSelectBuilder is the concrete fluent builder returned by NewStaticMultiSelect.
+//
+// A menu for selecting multiple options defined in the payload.
+//
+//   - Required: ActionID.
+//   - Use options or option groups, not both.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element for Slack's reference.
 type StaticMultiSelectBuilder struct{ *concreteBuilder }
 
 func newStaticMultiSelectBuilder(core *builder) *StaticMultiSelectBuilder {
 	return &StaticMultiSelectBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *StaticMultiSelectBuilder) ActionID(value string) *StaticMultiSelectBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// Options appends selectable option objects.
+// Options adds selectable options in display order. Slack allows at most 100 items. Each call
+// appends to any values already added.
 func (b *StaticMultiSelectBuilder) Options(values ...any) *StaticMultiSelectBuilder {
 	b.core.Options(values...)
 	return b
 }
 
-// OptionGroups appends selectable option groups.
+// OptionGroups adds labelled groups of options in display order. Cannot be combined with
+// ungrouped options. Slack allows at most 100 items. Each call appends to any values already
+// added.
 func (b *StaticMultiSelectBuilder) OptionGroups(values ...any) *StaticMultiSelectBuilder {
 	b.core.OptionGroups(values...)
 	return b
 }
 
-// InitialOptions appends initially selected options.
+// InitialOptions adds options that are selected when the element loads. Each must match an
+// option in the element. Each call appends to any values already added.
 func (b *StaticMultiSelectBuilder) InitialOptions(values ...any) *StaticMultiSelectBuilder {
 	b.core.InitialOptions(values...)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *StaticMultiSelectBuilder) Confirm(value any) *StaticMultiSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// MaxSelectedItems sets a select-menu selection limit.
+// MaxSelectedItems sets the maximum number of items a user can select.
 func (b *StaticMultiSelectBuilder) MaxSelectedItems(value int) *StaticMultiSelectBuilder {
 	b.core.MaxSelectedItems(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *StaticMultiSelectBuilder) FocusOnLoad(value bool) *StaticMultiSelectBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
+// the type.
 func (b *StaticMultiSelectBuilder) Placeholder(value any) *StaticMultiSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // StaticSelectBuilder is the concrete fluent builder returned by NewStaticSelect.
+//
+// A menu for selecting one option defined in the payload.
+//
+//   - Required: ActionID.
+//   - Use options or option groups, not both.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element for Slack's reference.
 type StaticSelectBuilder struct{ *concreteBuilder }
 
 func newStaticSelectBuilder(core *builder) *StaticSelectBuilder {
 	return &StaticSelectBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *StaticSelectBuilder) ActionID(value string) *StaticSelectBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// Options appends selectable option objects.
+// Options adds selectable options in display order. Slack allows at most 100 items. Each call
+// appends to any values already added.
 func (b *StaticSelectBuilder) Options(values ...any) *StaticSelectBuilder {
 	b.core.Options(values...)
 	return b
 }
 
-// OptionGroups appends selectable option groups.
+// OptionGroups adds labelled groups of options in display order. Cannot be combined with
+// ungrouped options. Slack allows at most 100 items. Each call appends to any values already
+// added.
 func (b *StaticSelectBuilder) OptionGroups(values ...any) *StaticSelectBuilder {
 	b.core.OptionGroups(values...)
 	return b
 }
 
-// InitialOption sets a single initially selected option.
+// InitialOption sets the option selected when the element loads. It must match an option in the
+// element.
 func (b *StaticSelectBuilder) InitialOption(value any) *StaticSelectBuilder {
 	b.core.InitialOption(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *StaticSelectBuilder) Confirm(value any) *StaticSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *StaticSelectBuilder) FocusOnLoad(value bool) *StaticSelectBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
+// the type.
 func (b *StaticSelectBuilder) Placeholder(value any) *StaticSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // TableBlockBuilder is the concrete fluent builder returned by NewTableBlock.
+//
+// A simple table of raw text and rich text cells.
+//
+//   - Required: Rows.
+//   - Every row must have the same number of cells.
+//   - Column settings need one entry for every column.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/table-block for Slack's reference.
 type TableBlockBuilder struct{ *slackBlockBuilder }
 
 func newTableBlockBuilder(core *builder) *TableBlockBuilder {
 	return &TableBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Rows appends table rows. Each argument should be a slice of cells.
+// Rows adds complete table rows in display order. Every row must have the same number of cells.
+// Required. Each call appends to any values already added.
 func (b *TableBlockBuilder) Rows(values ...any) *TableBlockBuilder {
 	b.core.Rows(values...)
 	return b
 }
 
-// ColumnSettings appends table column display settings.
+// ColumnSettings adds per-column settings in column order. Provide one entry for every column.
+// Each call appends to any values already added.
 func (b *TableBlockBuilder) ColumnSettings(values ...any) *TableBlockBuilder {
 	b.core.ColumnSettings(values...)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *TableBlockBuilder) BlockID(value string) *TableBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // TaskCardBlockBuilder is the concrete fluent builder returned by NewTaskCardBlock.
+//
+// One task with its status, details, output, and sources.
+//
+//   - Required: TaskID and Title.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/task-card-block for Slack's reference.
 type TaskCardBlockBuilder struct{ *slackBlockBuilder }
 
 func newTaskCardBlockBuilder(core *builder) *TaskCardBlockBuilder {
 	return &TaskCardBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// TaskID sets a stable task identifier.
+// TaskID sets the identifier of the task. Required.
 func (b *TaskCardBlockBuilder) TaskID(value string) *TaskCardBlockBuilder {
 	b.core.TaskID(value)
 	return b
 }
 
-// Title sets a title field.
+// Title sets the task title. Required.
 func (b *TaskCardBlockBuilder) Title(value any) *TaskCardBlockBuilder {
 	b.core.Title(value)
 	return b
 }
 
-// Details sets rich task details.
+// Details sets a rich text description of the task.
 func (b *TaskCardBlockBuilder) Details(value any) *TaskCardBlockBuilder {
 	b.core.Details(value)
 	return b
 }
 
-// Output sets rich task output.
+// Output sets rich text describing the task's output.
 func (b *TaskCardBlockBuilder) Output(value any) *TaskCardBlockBuilder {
 	b.core.Output(value)
 	return b
 }
 
-// Sources appends task source links.
+// Sources adds links to the sources the task used, in display order. Each call appends to any
+// values already added.
 func (b *TaskCardBlockBuilder) Sources(values ...any) *TaskCardBlockBuilder {
 	b.core.Sources(values...)
 	return b
 }
 
-// Status sets task lifecycle state.
+// Status sets the task's current state. Accepted values: "pending", "in_progress", "complete",
+// and "error".
 func (b *TaskCardBlockBuilder) Status(value string) *TaskCardBlockBuilder {
 	b.core.Status(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *TaskCardBlockBuilder) BlockID(value string) *TaskCardBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
 // TimePickerBuilder is the concrete fluent builder returned by NewTimePicker.
+//
+// A time-of-day picker.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element for Slack's reference.
 type TimePickerBuilder struct{ *concreteBuilder }
 
 func newTimePickerBuilder(core *builder) *TimePickerBuilder {
 	return &TimePickerBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *TimePickerBuilder) ActionID(value string) *TimePickerBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialTime sets an initial 24-hour time.
+// InitialTime sets the initially selected time, formatted as HH:mm in 24-hour time.
 func (b *TimePickerBuilder) InitialTime(value string) *TimePickerBuilder {
 	b.core.InitialTime(value)
 	return b
 }
 
-// Timezone sets an IANA timezone.
+// Timezone sets the IANA time zone used to display the time, such as Australia/Brisbane.
 func (b *TimePickerBuilder) Timezone(value string) *TimePickerBuilder {
 	b.core.Timezone(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *TimePickerBuilder) Confirm(value any) *TimePickerBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *TimePickerBuilder) FocusOnLoad(value bool) *TimePickerBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
+// plain_text text object; pass a text object to choose the type.
 func (b *TimePickerBuilder) Placeholder(value any) *TimePickerBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // TriggerBuilder is the concrete fluent builder returned by NewTrigger.
+//
+// A link trigger that starts a workflow.
+//
+//   - Required: URL.
+//
+// See https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object for Slack's reference.
 type TriggerBuilder struct{ *concreteBuilder }
 
 func newTriggerBuilder(core *builder) *TriggerBuilder {
 	return &TriggerBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// URL sets a URL field.
+// URL sets the link trigger URL. Required.
 func (b *TriggerBuilder) URL(value string) *TriggerBuilder {
 	b.core.URL(value)
 	return b
 }
 
-// CustomizableInputParameters appends workflow parameters.
+// CustomizableInputParameters adds the input values passed to the workflow's trigger. Each call
+// appends to any values already added.
 func (b *TriggerBuilder) CustomizableInputParameters(values ...any) *TriggerBuilder {
 	b.core.CustomizableInputParameters(values...)
 	return b
 }
 
 // URLInputBuilder is the concrete fluent builder returned by NewURLInput.
+//
+// A single-line input that accepts a URL.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/url-input-element for Slack's reference.
 type URLInputBuilder struct{ *concreteBuilder }
 
 func newURLInputBuilder(core *builder) *URLInputBuilder {
 	return &URLInputBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *URLInputBuilder) ActionID(value string) *URLInputBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialValue sets initial input content.
+// InitialValue sets the value present when the input loads.
 func (b *URLInputBuilder) InitialValue(value any) *URLInputBuilder {
 	b.core.InitialValue(value)
 	return b
 }
 
-// DispatchActionConfig sets input dispatch behavior.
+// DispatchActionConfig sets which user interactions send a block_actions payload.
 func (b *URLInputBuilder) DispatchActionConfig(value any) *URLInputBuilder {
 	b.core.DispatchActionConfig(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *URLInputBuilder) FocusOnLoad(value bool) *URLInputBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
+// plain_text text object; pass a text object to choose the type.
 func (b *URLInputBuilder) Placeholder(value any) *URLInputBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // URLSourceBuilder is the concrete fluent builder returned by NewURLSource.
+//
+// A linked source cited by a task card.
+//
+//   - Required: URL and Text.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/task-card-block for Slack's reference.
 type URLSourceBuilder struct{ *concreteBuilder }
 
 func newURLSourceBuilder(core *builder) *URLSourceBuilder {
 	return &URLSourceBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// URL sets a URL field.
+// URL sets the source URL. Required. Must be between 1 and 3000 characters.
 func (b *URLSourceBuilder) URL(value string) *URLSourceBuilder {
 	b.core.URL(value)
 	return b
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the source link text. Required.
 func (b *URLSourceBuilder) Text(value any) *URLSourceBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // UserMultiSelectBuilder is the concrete fluent builder returned by NewUserMultiSelect.
+//
+// A menu for selecting multiple workspace users.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element for Slack's reference.
 type UserMultiSelectBuilder struct{ *concreteBuilder }
 
 func newUserMultiSelectBuilder(core *builder) *UserMultiSelectBuilder {
 	return &UserMultiSelectBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *UserMultiSelectBuilder) ActionID(value string) *UserMultiSelectBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialUsers appends initially selected users.
+// InitialUsers adds user IDs that are selected when the menu loads. Each call appends to any
+// values already added.
 func (b *UserMultiSelectBuilder) InitialUsers(values ...string) *UserMultiSelectBuilder {
 	b.core.InitialUsers(values...)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *UserMultiSelectBuilder) Confirm(value any) *UserMultiSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// MaxSelectedItems sets a select-menu selection limit.
+// MaxSelectedItems sets the maximum number of items a user can select.
 func (b *UserMultiSelectBuilder) MaxSelectedItems(value int) *UserMultiSelectBuilder {
 	b.core.MaxSelectedItems(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *UserMultiSelectBuilder) FocusOnLoad(value bool) *UserMultiSelectBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
+// the type.
 func (b *UserMultiSelectBuilder) Placeholder(value any) *UserMultiSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // UserSelectBuilder is the concrete fluent builder returned by NewUserSelect.
+//
+// A menu for selecting one workspace user.
+//
+//   - Required: ActionID.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element for Slack's reference.
 type UserSelectBuilder struct{ *concreteBuilder }
 
 func newUserSelectBuilder(core *builder) *UserSelectBuilder {
 	return &UserSelectBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *UserSelectBuilder) ActionID(value string) *UserSelectBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// InitialUser sets an initially selected user.
+// InitialUser sets the user ID selected when the menu loads.
 func (b *UserSelectBuilder) InitialUser(value string) *UserSelectBuilder {
 	b.core.InitialUser(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *UserSelectBuilder) Confirm(value any) *UserSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// FocusOnLoad controls initial focus in a view.
+// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+// view may do so.
 func (b *UserSelectBuilder) FocusOnLoad(value bool) *UserSelectBuilder {
 	b.core.FocusOnLoad(value)
 	return b
 }
 
-// Placeholder sets empty-state prompt text.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
+// the type.
 func (b *UserSelectBuilder) Placeholder(value any) *UserSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
 
 // VideoBlockBuilder is the concrete fluent builder returned by NewVideoBlock.
+//
+// An embedded video player.
+//
+//   - Required: AltText, ThumbnailURL, Title, and VideoURL.
+//
+// See https://docs.slack.dev/reference/block-kit/blocks/video-block for Slack's reference.
 type VideoBlockBuilder struct{ *slackBlockBuilder }
 
 func newVideoBlockBuilder(core *builder) *VideoBlockBuilder {
 	return &VideoBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// AltText sets an accessible image or video description.
+// AltText sets a plain-text summary of the image or video for assistive technology. Required.
+// Must be between 1 and 200 characters.
 func (b *VideoBlockBuilder) AltText(value string) *VideoBlockBuilder {
 	b.core.AltText(value)
 	return b
 }
 
-// ThumbnailURL sets a video preview image.
+// ThumbnailURL sets the URL of the image shown before the video plays. Required.
 func (b *VideoBlockBuilder) ThumbnailURL(value string) *VideoBlockBuilder {
 	b.core.ThumbnailURL(value)
 	return b
 }
 
-// Title sets a title field.
+// Title sets the video title. Required. Slack allows at most 200 characters. A string is sent
+// as a plain_text text object; pass a text object to choose the type.
 func (b *VideoBlockBuilder) Title(value any) *VideoBlockBuilder {
 	b.core.Title(value)
 	return b
 }
 
-// VideoURL sets the hosted video URL.
+// VideoURL sets the embeddable URL of the video. The domain must be listed in the app's unfurl
+// domains. Required.
 func (b *VideoBlockBuilder) VideoURL(value string) *VideoBlockBuilder {
 	b.core.VideoURL(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+// use a stable value when you need to find the block again. Slack allows at most 255
+// characters.
 func (b *VideoBlockBuilder) BlockID(value string) *VideoBlockBuilder {
 	b.core.BlockID(value)
 	return b
 }
 
-// AuthorName sets video author attribution.
+// AuthorName sets the name of the video's author. Slack allows at most 50 characters.
 func (b *VideoBlockBuilder) AuthorName(value string) *VideoBlockBuilder {
 	b.core.AuthorName(value)
 	return b
 }
 
-// Description sets supporting descriptive text.
+// Description sets the video description. Slack allows at most 200 characters. A string is sent
+// as a plain_text text object; pass a text object to choose the type.
 func (b *VideoBlockBuilder) Description(value any) *VideoBlockBuilder {
 	b.core.Description(value)
 	return b
 }
 
-// ProviderIconURL sets a video provider icon.
+// ProviderIconURL sets the URL of the video provider's icon.
 func (b *VideoBlockBuilder) ProviderIconURL(value string) *VideoBlockBuilder {
 	b.core.ProviderIconURL(value)
 	return b
 }
 
-// ProviderName sets video provider attribution.
+// ProviderName sets the name of the video provider, such as YouTube. Slack allows at most 50
+// characters.
 func (b *VideoBlockBuilder) ProviderName(value string) *VideoBlockBuilder {
 	b.core.ProviderName(value)
 	return b
 }
 
-// TitleURL sets a video or card title URL.
+// TitleURL sets the HTTPS URL opened when the title is clicked.
 func (b *VideoBlockBuilder) TitleURL(value string) *VideoBlockBuilder {
 	b.core.TitleURL(value)
 	return b
 }
 
 // WebhookMessageBuilder is the concrete fluent builder returned by NewWebhookMessage.
+//
+// A payload for incoming webhooks.
+//
+//   - Only blocks supported in messages are accepted.
+//
+// See https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks for Slack's reference.
 type WebhookMessageBuilder struct{ *concreteBuilder }
 
 func newWebhookMessageBuilder(core *builder) *WebhookMessageBuilder {
 	return &WebhookMessageBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Blocks appends Block Kit blocks.
+// Blocks adds the message blocks in display order. Slack allows at most 50 items. Each call
+// appends to any values already added.
 func (b *WebhookMessageBuilder) Blocks(values ...any) *WebhookMessageBuilder {
 	b.core.Blocks(values...)
 	return b
 }
 
-// Attachments appends legacy secondary attachments.
+// Attachments adds legacy attachments in display order. Slack allows at most 100 items. Each
+// call appends to any values already added.
 func (b *WebhookMessageBuilder) Attachments(values ...any) *WebhookMessageBuilder {
 	b.core.Attachments(values...)
 	return b
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the fallback text used in notifications and by clients that cannot display blocks.
 func (b *WebhookMessageBuilder) Text(value any) *WebhookMessageBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// ResponseType sets response visibility.
+// ResponseType sets who can see the response. Accepted values: "in_channel" and "ephemeral".
 func (b *WebhookMessageBuilder) ResponseType(value string) *WebhookMessageBuilder {
 	b.core.ResponseType(value)
 	return b
 }
 
-// ReplaceOriginal controls interaction message replacement.
+// ReplaceOriginal sets whether the response replaces the message that triggered it.
 func (b *WebhookMessageBuilder) ReplaceOriginal(value bool) *WebhookMessageBuilder {
 	b.core.ReplaceOriginal(value)
 	return b
 }
 
-// DeleteOriginal controls response-URL message deletion.
+// DeleteOriginal sets whether the response deletes the message that triggered it.
 func (b *WebhookMessageBuilder) DeleteOriginal(value bool) *WebhookMessageBuilder {
 	b.core.DeleteOriginal(value)
 	return b
 }
 
-// UnfurlLinks controls message link unfurling.
+// UnfurlLinks sets whether Slack unfurls text-based links.
 func (b *WebhookMessageBuilder) UnfurlLinks(value bool) *WebhookMessageBuilder {
 	b.core.UnfurlLinks(value)
 	return b
 }
 
-// UnfurlMedia controls message media unfurling.
+// UnfurlMedia sets whether Slack unfurls media links.
 func (b *WebhookMessageBuilder) UnfurlMedia(value bool) *WebhookMessageBuilder {
 	b.core.UnfurlMedia(value)
 	return b
 }
 
-// Metadata sets message metadata.
+// Metadata sets message metadata as a JSON-compatible map, such as event_type and
+// event_payload. Pass an Object or map of JSON-compatible values.
 func (b *WebhookMessageBuilder) Metadata(value any) *WebhookMessageBuilder {
 	b.core.Metadata(value)
 	return b
 }
 
 // WorkflowBuilder is the concrete fluent builder returned by NewWorkflow.
+//
+// The workflow started by a workflow button.
+//
+//   - Required: Trigger.
+//
+// See https://docs.slack.dev/reference/block-kit/composition-objects/workflow-object for Slack's reference.
 type WorkflowBuilder struct{ *concreteBuilder }
 
 func newWorkflowBuilder(core *builder) *WorkflowBuilder {
 	return &WorkflowBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Trigger sets a workflow trigger.
+// Trigger sets the link trigger that starts the workflow. Required.
 func (b *WorkflowBuilder) Trigger(value any) *WorkflowBuilder {
 	b.core.Trigger(value)
 	return b
 }
 
 // WorkflowButtonBuilder is the concrete fluent builder returned by NewWorkflowButton.
+//
+// A button that starts a workflow through a link trigger.
+//
+//   - Required: Text and Workflow.
+//
+// See https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element for Slack's reference.
 type WorkflowButtonBuilder struct{ *concreteBuilder }
 
 func newWorkflowButtonBuilder(core *builder) *WorkflowButtonBuilder {
 	return &WorkflowButtonBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets a text-bearing field. Constructors coerce strings to the Slack
-// text-object form required by that field.
+// Text sets the button label. Required. A string is sent as a plain_text text object; pass a
+// text object to choose the type.
 func (b *WorkflowButtonBuilder) Text(value any) *WorkflowButtonBuilder {
 	b.core.Text(value)
 	return b
 }
 
-// Workflow sets a workflow object on a workflow button.
+// Workflow sets the workflow started when the button is clicked. Required.
 func (b *WorkflowButtonBuilder) Workflow(value any) *WorkflowButtonBuilder {
 	b.core.Workflow(value)
 	return b
 }
 
-// ActionID sets an interaction identifier.
+// ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *WorkflowButtonBuilder) ActionID(value string) *WorkflowButtonBuilder {
 	b.core.ActionID(value)
 	return b
 }
 
-// Confirm sets a confirmation object or its confirm-button label, according to
-// the builder being configured.
+// Confirm sets a confirmation dialog shown before the action is sent.
 func (b *WorkflowButtonBuilder) Confirm(value any) *WorkflowButtonBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
-// Style sets a Slack-supported visual or layout style.
+// Style sets the button's emphasis. Omit it for the default neutral style. Accepted values:
+// "primary" and "danger".
 func (b *WorkflowButtonBuilder) Style(value any) *WorkflowButtonBuilder {
 	b.core.Style(value)
 	return b
 }
 
-// AccessibilityLabel sets assistive text for an interactive control.
+// AccessibilityLabel sets the label read by screen readers in place of the visible text.
 func (b *WorkflowButtonBuilder) AccessibilityLabel(value string) *WorkflowButtonBuilder {
 	b.core.AccessibilityLabel(value)
 	return b

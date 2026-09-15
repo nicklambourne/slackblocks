@@ -214,8 +214,9 @@ func renderConcreteBuilder(output *strings.Builder, constructor string, builderT
 
 	fmt.Fprintf(output, "### %s\n\n", typeName)
 	if builderType.Comment != "" {
-		fmt.Fprintf(output, "%s Use %s rather than constructing this type directly.\n\n", builderType.Comment, constructor)
+		fmt.Fprintf(output, "%s\n\n", renderBuilderComment(builderType.Comment))
 	}
+	fmt.Fprintf(output, "Use %s rather than constructing this type directly.\n\n", constructor)
 	fmt.Fprintf(output, "```go\n%s\n```\n\n", builderType.Signature)
 	output.WriteString("Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.\n\n")
 	if isBlock {
@@ -235,6 +236,22 @@ func renderConcreteBuilder(output *strings.Builder, constructor string, builderT
 	}
 
 	fmt.Fprintf(output, "Every `%s` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.\n\n", typeName)
+}
+
+// renderBuilderComment turns the generated builder doc comment into Markdown: list items keep
+// their markers, and the trailing "See <url> for Slack's reference." line becomes a link.
+func renderBuilderComment(comment string) string {
+	lines := strings.Split(comment, "\n")
+	for index, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if strings.HasPrefix(trimmed, "See https://") && strings.HasSuffix(trimmed, "for Slack's reference.") {
+			url := strings.TrimSuffix(strings.TrimPrefix(trimmed, "See "), " for Slack's reference.")
+			lines[index] = "See the [Slack reference](" + url + ")."
+		} else if strings.HasPrefix(trimmed, "- ") {
+			lines[index] = trimmed
+		}
+	}
+	return strings.Join(lines, "\n")
 }
 
 func relatedTypes(signature, ownName string, links map[string]string) []string {
@@ -300,7 +317,23 @@ func docText(group *ast.CommentGroup) string {
 	if group == nil {
 		return ""
 	}
-	return strings.TrimSpace(group.Text())
+	return escapeMDX(strings.TrimSpace(group.Text()))
+}
+
+// escapeMDX escapes braces outside inline code so MDX does not read them as expressions.
+func escapeMDX(text string) string {
+	var output strings.Builder
+	inCode := false
+	for _, character := range text {
+		switch {
+		case character == '`':
+			inCode = !inCode
+		case !inCode && (character == '{' || character == '}'):
+			output.WriteByte('\\')
+		}
+		output.WriteRune(character)
+	}
+	return output.String()
 }
 
 func must(err error) {

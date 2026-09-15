@@ -33,6 +33,7 @@ func main() {
 	must(json.Unmarshal(registryData, &registry))
 
 	methods := loadMethods(root)
+	docs := loadDocs(root)
 	blockConstructors := loadConstructors(filepath.Join(root, "blocks.go"))
 	constructors := make([]string, 0, len(registry))
 	for constructor := range registry {
@@ -51,7 +52,12 @@ func main() {
 			embeddedType = "slackBlockBuilder"
 			factory = "newSlackBlockBuilder"
 		}
-		fmt.Fprintf(&output, "// %s is the concrete fluent builder returned by %s.\n", typeName, constructor)
+		shared, documented := docs[constructor]
+		if documented {
+			output.WriteString(shared.typeComment)
+		} else {
+			fmt.Fprintf(&output, "// %s is the concrete fluent builder returned by %s.\n", typeName, constructor)
+		}
 		fmt.Fprintf(&output, "type %s struct { *%s }\n\n", typeName, embeddedType)
 		fmt.Fprintf(&output, "func new%s(core *builder) *%s {\n", typeName, typeName)
 		fmt.Fprintf(&output, "\treturn &%s{%s: %s(core)}\n", typeName, embeddedType, factory)
@@ -62,9 +68,15 @@ func main() {
 			if !ok {
 				panic(fmt.Sprintf("%s references unknown builder method %s", constructor, methodName))
 			}
-			if method.comment != "" {
-				output.WriteString(method.comment)
-				if !strings.HasSuffix(method.comment, "\n") {
+			comment := method.comment
+			if generated, ok := shared.methods[methodName]; ok {
+				comment = generated
+			} else if documented {
+				panic(fmt.Sprintf("%s.%s is missing from %s", constructor, methodName, modelFile))
+			}
+			if comment != "" {
+				output.WriteString(comment)
+				if !strings.HasSuffix(comment, "\n") {
 					output.WriteByte('\n')
 				}
 			}
