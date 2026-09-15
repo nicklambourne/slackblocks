@@ -3,7 +3,7 @@
 All notable changes to the Java package are documented here. Java versions move
 in lockstep with the Python, TypeScript, and Go packages.
 
-## [2.3.0] — Unreleased
+## [2.3.0] — 2026-09-16
 
 The first public Java release of slackblocks, versioned in step with the Python,
 TypeScript, and Go packages. The package supports Java 17 and newer.

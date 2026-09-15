@@ -3,7 +3,7 @@
 All notable changes to the Go module are documented here. Go releases use the
 same version number as the Python, TypeScript, and Java packages.
 
-## [2.3.0] — Unreleased
+## [2.3.0] — 2026-09-16
 
 This coordinated release introduces the Java package and replaces the `any`
 parameters on Go builder methods with typed parameters. The wire format is
