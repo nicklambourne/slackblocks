@@ -33,7 +33,7 @@
     "@easyops-cn/docusaurus-search-local": "^0.55.3",
     "@easyops-cn/autocomplete.js": "^0.38.1",
     "clsx": "^2.1.1",
-    "docusaurus-plugin-typedoc": "1.4.2",
+    "docusaurus-plugin-typedoc": "1.4.3",
     "prism-react-renderer": "^2.4.1",
     "raw-loader": "^4.0.2",
     "@nicklambourne/slackblocks": "workspace:*",
