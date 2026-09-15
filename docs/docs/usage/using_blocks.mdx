@@ -38,6 +38,9 @@ For concrete fluent builders, immutable values, and validation errors, see the [
 
 ## Section Block
 
+A section is the most versatile block. It shows `text`, a two-column grid of `fields`, or both, and can carry one interactive `accessory` such as a button, menu, or image.
+
+Provide `text`, `fields`, or both. `text` allows up to 3,000 characters, and `fields` allows up to 10 items of up to 2,000 characters each.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -157,6 +160,10 @@ SectionBlock block = SectionBlock.builder()
 </Tabs>
 
 ## Rich Text Block
+
+Rich text carries formatted content built from sections, lists, preformatted code, and quotes. Inline elements add bold, italic, strikethrough, and code styling, along with links, emoji, and user, channel, or user group mentions.
+
+Required: `elements`.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -293,6 +300,9 @@ RichTextBlock block = RichTextBlock.builder()
 
 ## Header Block
 
+A header shows large, bold plain text that introduces a group of blocks. Plain strings are converted to Slack `plain_text` objects automatically.
+
+Required: `text` (up to 150 characters).
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -447,6 +457,9 @@ See the [Slack reference](https://api.slack.com/reference/block-kit/blocks#markd
 
 ## Image Block
 
+An image block displays a standalone image from a URL, with alternative text for screen readers and an optional plain-text title.
+
+Required: `image_url` (up to 3,000 characters) and `alt_text` (up to 2,000 characters).
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -534,6 +547,9 @@ ImageBlock block = ImageBlock.builder()
 
 ## Input Block
 
+An input block pairs a label with one input element, such as a text input, select menu, or date picker, to collect a value from the user. Input blocks are most common in modals, and can also appear in messages and App Home.
+
+Required: `label` (up to 2,000 characters) and `element`. Set `optional` to allow submission without a value, and `dispatch_action` to receive an interaction payload as the value changes.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -634,6 +650,9 @@ InputBlock block = InputBlock.builder()
 
 ## Divider Block
 
+A divider draws a horizontal rule between blocks, much like an HTML `<hr>` element.
+
+No fields are required.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -695,6 +714,9 @@ DividerBlock block = DividerBlock.builder().blockId("fake_block_id").build();
 
 ## File Block
 
+A file block displays a remote file that was previously added to Slack with the `files.remote.add` API. It references the existing file by ID and does not upload anything itself.
+
+Required: `external_id`. `source` defaults to `remote`, the only value Slack currently accepts.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -768,6 +790,9 @@ FileBlock block = FileBlock.builder()
 
 ## Context Block
 
+A context block shows small, secondary images and text, such as an author, a timestamp, or a status line beneath other content.
+
+Required: `elements` (up to 10 images or text objects).
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -848,6 +873,10 @@ ContextBlock block = ContextBlock.builder()
 </Tabs>
 
 ## Actions Block
+
+An actions block holds a row of interactive elements, such as buttons, select menus, overflow menus, checkboxes, and date pickers.
+
+Required: `elements` (up to 25 elements).
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -993,6 +1022,10 @@ ActionsBlock block = ActionsBlock.builder()
 </Tabs>
 
 ## Table Block
+
+A table block lays out raw text and rich text cells in rows and columns. Optional `column_settings` control each column's alignment and whether its text wraps.
+
+Required: `rows`. Every row must have the same number of cells, and `column_settings` needs one entry for every column.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1344,6 +1377,8 @@ See the [Slack reference](https://api.slack.com/reference/block-kit/blocks#video
 
 Alerts add a severity-labelled notice to a modal.
 
+Required: `text` (up to 200 characters). `level` sets the severity: `default`, `info`, `warning`, `error`, or `success`.
+
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
 
@@ -1424,6 +1459,8 @@ AlertBlock block = AlertBlock.builder()
 ## Card Block
 
 Cards combine text, images, Slack-provided icons, and up to three buttons in a compact panel.
+
+Provide at least one of `hero_image`, `title`, `actions`, or `body`. An image `icon` and a `slack_icon` cannot be combined.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1531,6 +1568,8 @@ CardBlock block = CardBlock.builder()
 
 A carousel presents between one and ten cards in a horizontally scrolling collection.
 
+Required: `elements`.
+
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
 
@@ -1628,6 +1667,8 @@ CarouselBlock block = CarouselBlock.builder()
 ## Container Block
 
 Containers group up to ten related child blocks under a plain-text or rich-text title.
+
+Required: `child_blocks`, plus either `title` or `rich_text_title`.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1741,6 +1782,8 @@ ContainerBlock block = ContainerBlock.builder()
 
 Context actions hold feedback controls or compact icon buttons. Slack currently offers the `trash` icon for icon buttons.
 
+Required: `elements` (up to 5).
+
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
 
@@ -1849,6 +1892,8 @@ ContextActionsBlock block = ContextActionsBlock.builder()
 ## Data Table Block
 
 Data tables support raw text, sortable raw numbers, and rich-text body cells. They require a header plus at least one data row.
+
+Required: `rows` and `caption`. Tables hold up to 200 data rows, every row must have the same number of cells, and all cell text together is limited to 20,000 characters.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
@@ -1962,6 +2007,8 @@ DataTableBlock block = DataTableBlock.builder()
 
 Slack can render pie charts or axis-based bar, area, and line charts directly from Block Kit data.
 
+Required: `title` (up to 50 characters) and `chart`.
+
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
 
@@ -2069,6 +2116,8 @@ DataVisualizationBlock block = DataVisualizationBlock.builder()
 
 Task cards show a task's state, optional rich-text details or output, and the URL sources used to produce it.
 
+Required: `task_id` and `title`.
+
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
 
@@ -2162,6 +2211,8 @@ TaskCardBlock block = TaskCardBlock.builder()
 ## Plan Block
 
 A plan groups task cards. `slackblocks` automatically renders nested tasks in Slack's plan-specific wire format.
+
+Required: `title`.
 
 <Tabs>
 <TabItem value={"slackblocks"} label={"slackblocks"}>
