@@ -87,6 +87,12 @@ These must be in place before the workflows can publish:
       gpg --armor --export-secret-keys <KEY_ID>
       ```
 
+      The current key is `16B380B037C8DC16` (fingerprint
+      `3897 1573 4B85 1218 2C42  B197 16B3 80B0 37C8 DC16`), created
+      2026-09-15 and expiring 2028-09-14. Extend it with
+      `gpg --quick-set-expire 16B380B037C8DC16 2y` before then, and publish it
+      to both keyservers again.
+
       keys.openpgp.org emails a confirmation link before it serves the key.
       Central fetches public keys from these servers to verify signatures, so
       publish before the first release and again after extending the expiry.
