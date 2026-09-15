@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add `vocabulary.json`, the shared registry of Slack icon names and per-surface
+  block types. Java generates its validation tables from it, and the Python,
+  TypeScript, and Go suites fail if their tables differ. The contents match the
+  tables all four implementations already enforced.
 - Add shared invalid cases for empty section fields and duplicate chart-series
   category labels. These close conformance gaps in the existing 1.1.0 contract.
 

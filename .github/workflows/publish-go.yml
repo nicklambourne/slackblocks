@@ -36,9 +36,10 @@ jobs:
           tag="${GITHUB_REF_NAME#go/v}"
           python_version=$(node -e "const text = require('fs').readFileSync('../python/pyproject.toml', 'utf8'); const match = text.match(/^version = \"([^\"]+)\"$/m); if (!match) process.exit(1); process.stdout.write(match[1]);")
           typescript_version=$(node -p "require('../typescript/package.json').version")
+          java_version=$(node -e "const text = require('fs').readFileSync('../java/pom.xml', 'utf8'); const match = text.match(/<artifactId>slackblocks<\/artifactId>\s*<version>([^<]+)<\/version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
           module=$(go list -m -f '{{.Path}}')
-          if [ "$python_version" != "$typescript_version" ]; then
-            echo "::error::Python version '$python_version' does not match TypeScript version '$typescript_version'. Releases are coordinated; bump both together."
+          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ]; then
+            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version."
             exit 1
           fi
           if [ "$tag" != "$python_version" ]; then
