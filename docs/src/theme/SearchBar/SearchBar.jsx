@@ -112,6 +112,8 @@ export default function SearchBar({ handleSearchBarToggle, }) {
                         ? "TypeScript"
                     : searchContext === "go"
                         ? "Go"
+                    : searchContext === "java"
+                        ? "Java"
                     : searchContext === "python"
                             ? "Python"
                             : normalizeContextByPath(detailedSearchContext, currentLocale).label

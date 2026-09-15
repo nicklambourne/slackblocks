@@ -1,0 +1,163 @@
+name: Java CI
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "java/**"
+      - "spec/**"
+      - "go/internal/builder_methods.json"
+      - "docs/docs/**"
+      - "docs/examples/java/**"
+      - "docs/examples/section_hello.json"
+      - "README.md"
+      - ".github/workflows/java.yml"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: java-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect relevant changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Compare changed files against this workflow's scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ]; then
+            # Fail open: if the file list cannot be read, run the real checks.
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if grep -qE '^(java/|spec/|go/internal/builder_methods\.json$|docs/docs/|docs/examples/java/|docs/examples/section_hello\.json$|README\.md$|\.github/workflows/java\.yml$)' <<<"$files"; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  test:
+    needs: changes
+    name: Java ${{ matrix.java-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 17 is the minimum runtime; 21 and 25 are the current LTS releases; latest catches
+        # breakage from the next JDK early. Formatting and static analysis need JDK 21+.
+        java-version: ["17", "21", "25", "latest"]
+    steps:
+      - name: Check out repository
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Install Java ${{ matrix.java-version }}
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java-version }}
+          cache: maven
+          cache-dependency-path: java/pom.xml
+
+      - name: Install Python for the model generator
+        if: needs.changes.outputs.relevant == 'true' && matrix.java-version == '21'
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: Verify generated model sources are current
+        if: needs.changes.outputs.relevant == 'true' && matrix.java-version == '21'
+        run: |
+          python java/generator/generate_models.py --check-go
+          (cd java && ./mvnw -B -ntp spotless:apply)
+          git diff --exit-code -- java/src/main/java
+
+      - name: Build and test
+        if: needs.changes.outputs.relevant == 'true'
+        working-directory: java
+        run: ./mvnw -B -ntp clean verify
+
+      - name: Upload Maven artifacts
+        if: needs.changes.outputs.relevant == 'true' && matrix.java-version == '21'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: java-distributions
+          path: java/target/*.jar
+          if-no-files-found: error
+
+  release-dry-run:
+    needs: changes
+    name: Signed Maven Central bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      # A throwaway key that expires in a day exercises the same import, passphrase, and signing
+      # path as the real publisher without touching the maven-central environment secrets.
+      - name: Create a throwaway signing key
+        if: needs.changes.outputs.relevant == 'true'
+        id: key
+        run: |
+          set -euo pipefail
+          export GNUPGHOME="$RUNNER_TEMP/throwaway-gnupg"
+          mkdir -m 700 "$GNUPGHOME"
+          passphrase="$(openssl rand -hex 24)"
+          echo "::add-mask::$passphrase"
+          gpg --batch --pinentry-mode loopback --passphrase "$passphrase" \
+            --quick-gen-key "slackblocks CI dry run <ci-dry-run@invalid>" ed25519 sign 1d
+          {
+            echo "passphrase=$passphrase"
+            echo "private-key<<THROWAWAY_KEY"
+            gpg --batch --pinentry-mode loopback --passphrase "$passphrase" --armor --export-secret-keys
+            echo "THROWAWAY_KEY"
+          } >> "$GITHUB_OUTPUT"
+          gpgconf --kill gpg-agent
+
+      - name: Install Java and import the throwaway key
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: java/pom.xml
+          server-id: central
+          server-username-env-var: MAVEN_CENTRAL_USERNAME
+          server-password-env-var: MAVEN_CENTRAL_TOKEN
+          gpg-private-key: ${{ steps.key.outputs.private-key }}
+          gpg-passphrase-env-var: MAVEN_GPG_PASSPHRASE
+
+      - name: Build and sign the release bundle without deploying
+        if: needs.changes.outputs.relevant == 'true'
+        working-directory: java
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ steps.key.outputs.passphrase }}
+        run: ./mvnw -B -ntp -Prelease -DskipTests clean verify
+
+      - name: Verify every artifact is signed
+        if: needs.changes.outputs.relevant == 'true'
+        working-directory: java/target
+        run: |
+          set -euo pipefail
+          for artifact in slackblocks-*.jar slackblocks-*.pom; do
+            gpg --verify "$artifact.asc" "$artifact"
+          done
+          signatures=(slackblocks-*.asc)
+          test "${#signatures[@]}" -eq 4

@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Sending Messages
 
@@ -352,4 +352,93 @@ _, err = client.PublishViewContext(ctx, slack.PublishViewContextRequest{
 If an application deliberately does not use slack-go, `NewMessage().Build()` still returns an ordinary JSON-compatible payload. Set its channel and delivery fields there, marshal it with `encoding/json`, and post it with `net/http` or another client.
 
 </Go>
+<Java>
+
+## With the official Slack Java SDK
+
+Completed slackblocks block values implement the Slack SDK's `LayoutBlock` interface directly. Keep the channel, fallback text, threading, unfurling, and other delivery options on `ChatPostMessageRequest`; no adapter is involved.
+
+```java
+import com.slack.api.Slack;
+import com.slack.api.methods.MethodsClient;
+import com.slack.api.methods.request.chat.ChatPostMessageRequest;
+import io.github.nicklambourne.slackblocks.block.SectionBlock;
+import java.util.List;
+
+MethodsClient client = Slack.getInstance().methods(System.getenv("SLACK_API_TOKEN"));
+SectionBlock block = SectionBlock.builder().markdownText("Hello, world!").build();
+
+var response = client.chatPostMessage(ChatPostMessageRequest.builder()
+    .channel("C0123456")
+    .text("Hello from slackblocks!")
+    .blocks(List.of(block))
+    .build());
+```
+
+Validation runs in `build()` before the request is created. Use a channel ID where possible and always supply a short `text` fallback for notifications and accessibility.
+
+Import slackblocks classes by name, because the SDK defines classes with the same simple names in `com.slack.api.model.block`.
+
+Higher-level components produce the same native block values. `List.copyOf` widens their `List<Block>` result to the `List<LayoutBlock>` the SDK expects:
+
+```java
+import io.github.nicklambourne.slackblocks.block.Block;
+import io.github.nicklambourne.slackblocks.component.Paginator;
+import java.util.List;
+
+List<Block> pages = Paginator.builder("search-results")
+    .blocks(
+        SectionBlock.builder().markdownText("Result one").build(),
+        SectionBlock.builder().markdownText("Result two").build())
+    .pageSize(1)
+    .build();
+
+client.chatPostMessage(ChatPostMessageRequest.builder()
+    .channel("C0123456")
+    .text("Search results")
+    .blocks(List.copyOf(pages)) // widens List<Block> to List<LayoutBlock>
+    .build());
+```
+
+## Incoming webhooks
+
+Use the official SDK's webhook envelope and put slackblocks values directly in its blocks list:
+
+```java
+import com.slack.api.webhook.Payload;
+
+var payload = Payload.builder()
+    .text("Build complete")
+    .blocks(List.of(SectionBlock.builder()
+        .markdownText("Build complete :white_check_mark:")
+        .build()))
+    .build();
+
+Slack.getInstance().send(System.getenv("SLACK_WEBHOOK_URL"), payload);
+```
+
+## Slash-command and interaction responses
+
+`MessageResponse` builds the JSON body returned by your web framework:
+
+```java
+import io.github.nicklambourne.slackblocks.payload.MessageResponse;
+import io.github.nicklambourne.slackblocks.payload.ResponseType;
+
+String responseBody = MessageResponse.builder()
+    .blocks(SectionBlock.builder().markdownText("Got it! Working on that now...").build())
+    .responseType(ResponseType.EPHEMERAL)
+    .build()
+    .toJson();
+```
+
+## Modals and App Home
+
+Use the Slack Java SDK for the request and view envelope, and slackblocks for its Block Kit contents. This keeps trigger IDs and view lifecycle calls on the SDK while preserving the same fluent, validated block construction.
+
+## Sending without a client library
+
+When an application intentionally does not use the Slack Java SDK client, serialize a completed [`MessagePayload`](../reference/java/payloads#messagepayload) with `SlackblocksJson.write(...)` and send the resulting JSON through its existing HTTP stack.
+
+</Java>
 </LanguageContent>
