@@ -22,6 +22,14 @@ updates:
       - dependency-name: typescript
         update-types: ["version-update:semver-major"]
 
+  - package-ecosystem: maven
+    directory: /java
+    schedule:
+      interval: weekly
+    groups:
+      java-development:
+        dependency-type: development
+
   - package-ecosystem: github-actions
     directory: /
     schedule:

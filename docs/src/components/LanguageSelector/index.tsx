@@ -14,6 +14,7 @@ const languageLabels: Record<Language, string> = {
   python: "Python",
   typescript: "TypeScript",
   go: "Go",
+  java: "Java",
 };
 
 function LanguageLogo({ language }: { language: Language }) {
@@ -54,6 +55,20 @@ function LanguageLogo({ language }: { language: Language }) {
       >
         TS
       </text>
+    </svg>
+  );
+
+  if (language === "java") return (
+    <svg
+      aria-hidden="true"
+      className="language-selector__logo"
+      viewBox="0 0 64 64"
+    >
+      <path d="M20 45c-9 2-5 7 2 8 10 2 20 1 28-2" fill="none" stroke="#5382a1" strokeLinecap="round" strokeWidth="4" />
+      <path d="M17 38c-10 3-5 9 5 10 9 1 18 0 25-3" fill="none" stroke="#5382a1" strokeLinecap="round" strokeWidth="4" />
+      <path d="M25 34c-5-8 12-9 8-17-2-4-5-6 1-12" fill="none" stroke="#e76f00" strokeLinecap="round" strokeWidth="4" />
+      <path d="M33 36c-2-5 9-6 8-12" fill="none" stroke="#e76f00" strokeLinecap="round" strokeWidth="3" />
+      <path d="M18 56c9 4 29 4 37-2" fill="none" stroke="#5382a1" strokeLinecap="round" strokeWidth="4" />
     </svg>
   );
 

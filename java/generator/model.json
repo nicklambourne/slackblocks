@@ -1,0 +1,4533 @@
+{
+  "$comment": "Source of truth for the generated Java Block Kit model. Edit this file, then run java/generator/generate_models.py and ./mvnw spotless:apply.",
+  "interfaces": [
+    {
+      "package": "block",
+      "name": "Block",
+      "description": "A validated Slack layout block accepted directly by Slack's official Java SDK."
+    },
+    {
+      "package": "block",
+      "name": "ContextElement",
+      "description": "A value that can appear in a context block: an image element or a text object."
+    },
+    {
+      "package": "block",
+      "name": "ContextActionsElement",
+      "description": "A value that can appear in a context actions block: feedback buttons or an icon button."
+    },
+    {
+      "package": "block",
+      "name": "TableCell",
+      "description": "A value that can appear as a table block cell: raw text or a rich text block."
+    },
+    {
+      "package": "block",
+      "name": "DataTableCell",
+      "description": "A value that can appear as a data table cell: raw text, a raw number, or a rich text block."
+    },
+    {
+      "package": "element",
+      "name": "Element",
+      "description": "A validated interactive, visual, or input element nested inside a Slack block."
+    },
+    {
+      "package": "element",
+      "name": "InputElement",
+      "description": "An element that can be placed in an input block."
+    },
+    {
+      "package": "object",
+      "name": "Text",
+      "description": "A Slack text composition object: plain text or mrkdwn."
+    },
+    {
+      "package": "object",
+      "name": "Chart",
+      "description": "A chart that can be displayed by a data visualization block."
+    },
+    {
+      "package": "object",
+      "name": "RichTextBlockElement",
+      "description": "A top-level element of a rich text block: a section, list, preformatted block, or quote."
+    },
+    {
+      "package": "object",
+      "name": "RichTextSectionElement",
+      "description": "An inline rich text element: text, a link, an emoji, or a channel, user, or user group mention."
+    }
+  ],
+  "enums": [
+    {
+      "package": "block",
+      "name": "AlertLevel",
+      "description": "Severity levels supported by alert blocks.",
+      "constants": [
+        {
+          "name": "DEFAULT",
+          "wire": "default",
+          "description": "Neutral styling."
+        },
+        {
+          "name": "INFO",
+          "wire": "info",
+          "description": "Informational styling."
+        },
+        {
+          "name": "WARNING",
+          "wire": "warning",
+          "description": "Warning styling."
+        },
+        {
+          "name": "ERROR",
+          "wire": "error",
+          "description": "Error styling."
+        },
+        {
+          "name": "SUCCESS",
+          "wire": "success",
+          "description": "Success styling."
+        }
+      ]
+    },
+    {
+      "package": "block",
+      "name": "ContainerWidth",
+      "description": "Widths supported by Slack container blocks.",
+      "constants": [
+        {
+          "name": "NARROW",
+          "wire": "narrow",
+          "description": "A compact container."
+        },
+        {
+          "name": "STANDARD",
+          "wire": "standard",
+          "description": "Slack's standard container width."
+        },
+        {
+          "name": "WIDE",
+          "wire": "wide",
+          "description": "A wide container."
+        },
+        {
+          "name": "FULL",
+          "wire": "full",
+          "description": "The full available width."
+        }
+      ]
+    },
+    {
+      "package": "block",
+      "name": "TaskStatus",
+      "description": "States supported by task card blocks.",
+      "constants": [
+        {
+          "name": "PENDING",
+          "wire": "pending",
+          "description": "The task has not started."
+        },
+        {
+          "name": "IN_PROGRESS",
+          "wire": "in_progress",
+          "description": "The task is running."
+        },
+        {
+          "name": "COMPLETE",
+          "wire": "complete",
+          "description": "The task finished successfully."
+        },
+        {
+          "name": "ERROR",
+          "wire": "error",
+          "description": "The task failed."
+        }
+      ]
+    },
+    {
+      "package": "element",
+      "name": "ButtonStyle",
+      "description": "Visual emphasis for buttons and confirmation dialogs.",
+      "constants": [
+        {
+          "name": "PRIMARY",
+          "wire": "primary",
+          "description": "Green emphasis for the affirmative action."
+        },
+        {
+          "name": "DANGER",
+          "wire": "danger",
+          "description": "Red emphasis for destructive actions."
+        }
+      ]
+    },
+    {
+      "package": "element",
+      "name": "IconButtonIcon",
+      "description": "Icons supported by icon buttons.",
+      "constants": [
+        {
+          "name": "TRASH",
+          "wire": "trash",
+          "description": "A trash can, for delete actions."
+        }
+      ]
+    },
+    {
+      "package": "object",
+      "name": "ColumnAlign",
+      "description": "Horizontal alignment for table columns.",
+      "constants": [
+        {
+          "name": "LEFT",
+          "wire": "left",
+          "description": "Align cell content to the left."
+        },
+        {
+          "name": "CENTER",
+          "wire": "center",
+          "description": "Center cell content."
+        },
+        {
+          "name": "RIGHT",
+          "wire": "right",
+          "description": "Align cell content to the right."
+        }
+      ]
+    },
+    {
+      "package": "object",
+      "name": "RichTextListStyle",
+      "description": "Marker styles for rich text lists.",
+      "constants": [
+        {
+          "name": "BULLET",
+          "wire": "bullet",
+          "description": "An unordered, bulleted list."
+        },
+        {
+          "name": "ORDERED",
+          "wire": "ordered",
+          "description": "A numbered list."
+        }
+      ]
+    },
+    {
+      "package": "payload",
+      "name": "ResponseType",
+      "description": "Visibility of a slash-command or interaction response.",
+      "constants": [
+        {
+          "name": "IN_CHANNEL",
+          "wire": "in_channel",
+          "description": "Visible to everyone in the channel."
+        },
+        {
+          "name": "EPHEMERAL",
+          "wire": "ephemeral",
+          "description": "Visible only to the user who triggered the response."
+        }
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "ActionsBlock",
+      "package": "block",
+      "goConstructor": "NewActionsBlock",
+      "wireType": "actions",
+      "description": "A block that holds interactive elements such as buttons and menus.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/actions-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "elements",
+          "goMethod": "Elements",
+          "wire": "elements",
+          "kind": "list",
+          "type": "Element",
+          "description": "Adds interactive elements in display order.",
+          "limits": "actions.elements",
+          "required": true
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "AlertBlock",
+      "package": "block",
+      "goConstructor": "NewAlertBlock",
+      "wireType": "alert",
+      "description": "A severity-labelled alert, available in modals.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/alert-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "text",
+          "type": "Text",
+          "coerce": "mrkdwn",
+          "description": "Sets the alert message.",
+          "limits": "alert.text",
+          "required": true
+        },
+        {
+          "method": "level",
+          "goMethod": "Level",
+          "wire": "level",
+          "kind": "enum",
+          "type": "AlertLevel",
+          "description": "Sets the alert severity, which controls its color and icon."
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "CardBlock",
+      "package": "block",
+      "goConstructor": "NewCardBlock",
+      "wireType": "card",
+      "description": "A compact card with an image, text, and up to three buttons.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/card-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "heroImage",
+          "goMethod": "HeroImage",
+          "wire": "hero_image",
+          "kind": "object",
+          "type": "ImageElement",
+          "description": "Sets the image displayed prominently at the top of the card."
+        },
+        {
+          "method": "icon",
+          "goMethod": "Icon",
+          "wire": "icon",
+          "kind": "object",
+          "type": "ImageElement",
+          "description": "Sets the image displayed beside the title."
+        },
+        {
+          "method": "title",
+          "goMethod": "Title",
+          "wire": "title",
+          "kind": "text",
+          "type": "Text",
+          "coerce": "mrkdwn",
+          "description": "Sets the card title.",
+          "limits": "card.title"
+        },
+        {
+          "method": "subtitle",
+          "goMethod": "Subtitle",
+          "wire": "subtitle",
+          "kind": "text",
+          "type": "Text",
+          "coerce": "mrkdwn",
+          "description": "Sets the supporting text shown below the title.",
+          "limits": "card.subtitle"
+        },
+        {
+          "method": "body",
+          "goMethod": "Body",
+          "wire": "body",
+          "kind": "text",
+          "type": "Text",
+          "coerce": "mrkdwn",
+          "description": "Sets the main body text of the card.",
+          "limits": "card.body"
+        },
+        {
+          "method": "actions",
+          "goMethod": "Actions",
+          "wire": "actions",
+          "kind": "list",
+          "type": "ButtonElement",
+          "description": "Adds buttons displayed at the bottom of the card, in display order.",
+          "limits": "card.actions"
+        },
+        {
+          "method": "slackIcon",
+          "goMethod": "SlackIcon",
+          "wire": "slack_icon",
+          "kind": "object",
+          "type": "SlackIcon",
+          "description": "Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon."
+        },
+        {
+          "method": "subtext",
+          "goMethod": "Subtext",
+          "wire": "subtext",
+          "kind": "text",
+          "type": "Text",
+          "coerce": "mrkdwn",
+          "description": "Sets the small print shown at the bottom of the card.",
+          "limits": "card.subtext"
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": [
+        "Provide at least one of a hero image, title, actions, or body.",
+        "An image icon and a Slack icon cannot be combined."
+      ]
+    },
+    {
+      "name": "CarouselBlock",
+      "package": "block",
+      "goConstructor": "NewCarouselBlock",
+      "wireType": "carousel",
+      "description": "A horizontally scrolling set of cards, available in messages and App Home.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/carousel-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "elements",
+          "goMethod": "Elements",
+          "wire": "elements",
+          "kind": "list",
+          "type": "CardBlock",
+          "description": "Adds the cards in display order.",
+          "limits": "carousel.elements",
+          "required": true
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ContainerBlock",
+      "package": "block",
+      "goConstructor": "NewContainerBlock",
+      "wireType": "container",
+      "description": "A titled group of blocks that can optionally collapse.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/container-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "childBlocks",
+          "goMethod": "ChildBlocks",
+          "wire": "child_blocks",
+          "kind": "list",
+          "type": "Block",
+          "description": "Adds the blocks grouped inside the container, in display order.",
+          "limits": "container.child_blocks",
+          "required": true
+        },
+        {
+          "method": "title",
+          "goMethod": "Title",
+          "wire": "title",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the container title. Provide either a title or a rich text title.",
+          "limits": "container.title"
+        },
+        {
+          "method": "richTextTitle",
+          "goMethod": "RichTextTitle",
+          "wire": "rich_text_title",
+          "kind": "object",
+          "type": "RichTextBlock",
+          "description": "Sets a rich text block used as the title in place of a plain-text title."
+        },
+        {
+          "method": "subtitle",
+          "goMethod": "Subtitle",
+          "wire": "subtitle",
+          "kind": "text",
+          "type": "Text",
+          "coerce": "mrkdwn",
+          "description": "Sets the supporting text shown below the title.",
+          "limits": "container.subtitle"
+        },
+        {
+          "method": "width",
+          "goMethod": "Width",
+          "wire": "width",
+          "kind": "enum",
+          "type": "ContainerWidth",
+          "description": "Sets the horizontal width of the container."
+        },
+        {
+          "method": "icon",
+          "goMethod": "Icon",
+          "wire": "icon",
+          "kind": "object",
+          "type": "ImageElement",
+          "description": "Sets the image displayed beside the title."
+        },
+        {
+          "method": "isCollapsible",
+          "goMethod": "IsCollapsible",
+          "wire": "is_collapsible",
+          "kind": "boolean",
+          "description": "Sets whether users can collapse and expand the container."
+        },
+        {
+          "method": "defaultCollapsed",
+          "goMethod": "DefaultCollapsed",
+          "wire": "default_collapsed",
+          "kind": "boolean",
+          "description": "Sets whether a collapsible container starts collapsed. Requires the container to be collapsible."
+        },
+        {
+          "method": "hasHeaderDivider",
+          "goMethod": "HasHeaderDivider",
+          "wire": "has_header_divider",
+          "kind": "boolean",
+          "description": "Sets whether Slack draws a divider below the container header. Only valid for non-collapsible containers."
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": [
+        "Provide a title or a rich text title."
+      ]
+    },
+    {
+      "name": "ContextActionsBlock",
+      "package": "block",
+      "goConstructor": "NewContextActionsBlock",
+      "wireType": "context_actions",
+      "description": "A row of feedback or icon buttons, usually shown below AI-generated content.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/context-actions-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "elements",
+          "goMethod": "Elements",
+          "wire": "elements",
+          "kind": "list",
+          "type": "ContextActionsElement",
+          "description": "Adds feedback buttons or icon buttons in display order.",
+          "limits": "context_actions.elements",
+          "required": true
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ContextBlock",
+      "package": "block",
+      "goConstructor": "NewContextBlock",
+      "wireType": "context",
+      "description": "A block of small, secondary images and text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/context-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "elements",
+          "goMethod": "Elements",
+          "wire": "elements",
+          "kind": "list",
+          "type": "ContextElement",
+          "description": "Adds images and text in display order.",
+          "limits": "context.elements",
+          "required": true
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "DataTableBlock",
+      "package": "block",
+      "goConstructor": "NewDataTableBlock",
+      "wireType": "data_table",
+      "description": "A sortable, paginated table of raw text, numbers, and rich text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-table-block",
+      "implements": [],
+      "defaults": {
+        "page_size": 5,
+        "row_header_column_index": 0
+      },
+      "fields": [
+        {
+          "method": "rows",
+          "goMethod": "Rows",
+          "wire": "rows",
+          "kind": "rows",
+          "type": "DataTableCell",
+          "description": "Adds complete table rows in display order. Every row must have the same number of cells.",
+          "limits": "data_table.rows",
+          "required": true
+        },
+        {
+          "method": "caption",
+          "goMethod": "Caption",
+          "wire": "caption",
+          "kind": "string",
+          "description": "Sets the caption that describes the table's contents.",
+          "required": true
+        },
+        {
+          "method": "pageSize",
+          "goMethod": "PageSize",
+          "wire": "page_size",
+          "kind": "int",
+          "description": "Sets how many rows Slack shows per page.",
+          "limits": "data_table.page_size"
+        },
+        {
+          "method": "rowHeaderColumnIndex",
+          "goMethod": "RowHeaderColumnIndex",
+          "wire": "row_header_column_index",
+          "kind": "int",
+          "description": "Sets the zero-based index of the column whose cells act as row headers."
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": [
+        "The first row is the header row and cannot contain rich text.",
+        "Every row must have the same number of cells, and all cell text together is limited to 20,000 characters."
+      ]
+    },
+    {
+      "name": "DataVisualizationBlock",
+      "package": "block",
+      "goConstructor": "NewDataVisualizationBlock",
+      "wireType": "data_visualization",
+      "description": "A titled pie, bar, area, or line chart.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "title",
+          "goMethod": "Title",
+          "wire": "title",
+          "kind": "string",
+          "description": "Sets the chart title.",
+          "limits": "data_visualization.title",
+          "required": true
+        },
+        {
+          "method": "chart",
+          "goMethod": "Chart",
+          "wire": "chart",
+          "kind": "object",
+          "type": "Chart",
+          "description": "Sets the chart to display.",
+          "required": true
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "DividerBlock",
+      "package": "block",
+      "goConstructor": "NewDividerBlock",
+      "wireType": "divider",
+      "description": "A horizontal rule that separates blocks.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/divider-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "FileBlock",
+      "package": "block",
+      "goConstructor": "NewFileBlock",
+      "wireType": "file",
+      "description": "A remote file previously added with the files.remote API.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/file-block",
+      "implements": [],
+      "defaults": {
+        "source": "remote"
+      },
+      "fields": [
+        {
+          "method": "externalId",
+          "goMethod": "ExternalID",
+          "wire": "external_id",
+          "kind": "string",
+          "description": "Sets the external identifier of a remote file previously added with the files.remote API.",
+          "required": true
+        },
+        {
+          "method": "source",
+          "goMethod": "Source",
+          "wire": "source",
+          "kind": "string",
+          "description": "Sets the file source. Slack currently supports only remote files."
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "HeaderBlock",
+      "package": "block",
+      "goConstructor": "NewHeaderBlock",
+      "wireType": "header",
+      "description": "Large, bold plain text that introduces a group of blocks.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/header-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the header text, shown in a larger bold font.",
+          "limits": "header.text",
+          "required": true
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ImageBlock",
+      "package": "block",
+      "goConstructor": "NewImageBlock",
+      "wireType": "image",
+      "description": "A standalone image with alternative text and an optional title.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/image-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "imageUrl",
+          "goMethod": "ImageURL",
+          "wire": "image_url",
+          "kind": "string",
+          "description": "Sets the publicly accessible URL of the image. Cannot be combined with a Slack file.",
+          "limits": "image.image_url",
+          "required": true
+        },
+        {
+          "method": "altText",
+          "goMethod": "AltText",
+          "wire": "alt_text",
+          "kind": "string",
+          "description": "Sets a plain-text summary of the image or video for assistive technology.",
+          "limits": "image.alt_text",
+          "required": true
+        },
+        {
+          "method": "title",
+          "goMethod": "Title",
+          "wire": "title",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the title shown above the image."
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "InputBlock",
+      "package": "block",
+      "goConstructor": "NewInputBlock",
+      "wireType": "input",
+      "description": "A labelled input that collects a value in a modal, App Home, or message.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/input-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "label",
+          "goMethod": "Label",
+          "wire": "label",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the label shown above the input.",
+          "limits": "input.label",
+          "required": true
+        },
+        {
+          "method": "element",
+          "goMethod": "Element",
+          "wire": "element",
+          "kind": "object",
+          "type": "InputElement",
+          "description": "Sets the input element that collects the user's value.",
+          "required": true
+        },
+        {
+          "method": "dispatchAction",
+          "goMethod": "DispatchAction",
+          "wire": "dispatch_action",
+          "kind": "boolean",
+          "description": "Sets whether changing the element sends a block_actions payload immediately."
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        },
+        {
+          "method": "hint",
+          "goMethod": "Hint",
+          "wire": "hint",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets helper text shown below the input.",
+          "limits": "input.hint"
+        },
+        {
+          "method": "optional",
+          "goMethod": "Optional",
+          "wire": "optional",
+          "kind": "boolean",
+          "description": "Sets whether the modal can be submitted when this input is empty."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "MarkdownBlock",
+      "package": "block",
+      "goConstructor": "NewMarkdownBlock",
+      "wireType": "markdown",
+      "description": "Standard markdown rendered by Slack, intended for AI-generated content.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/markdown-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "string",
+          "description": "Sets standard markdown content, which Slack renders directly.",
+          "limits": "markdown.text",
+          "required": true
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "PlanBlock",
+      "package": "block",
+      "goConstructor": "NewPlanBlock",
+      "wireType": "plan",
+      "description": "A titled sequence of task cards.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/plan-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "title",
+          "goMethod": "Title",
+          "wire": "title",
+          "kind": "string",
+          "description": "Sets the plan title.",
+          "required": true
+        },
+        {
+          "method": "tasks",
+          "goMethod": "Tasks",
+          "wire": "tasks",
+          "kind": "list",
+          "type": "TaskCardBlock",
+          "description": "Adds task cards in display order."
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RichTextBlock",
+      "package": "block",
+      "goConstructor": "NewRichTextBlock",
+      "wireType": "rich_text",
+      "description": "Formatted text built from sections, lists, preformatted blocks, and quotes.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block",
+      "implements": [
+        "TableCell",
+        "DataTableCell"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "elements",
+          "goMethod": "Elements",
+          "wire": "elements",
+          "kind": "list",
+          "type": "RichTextBlockElement",
+          "description": "Adds sections, lists, preformatted blocks, and quotes in display order.",
+          "required": true
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "SectionBlock",
+      "package": "block",
+      "goConstructor": "NewSectionBlock",
+      "wireType": "section",
+      "description": "Text, a grid of fields, or both, with an optional accessory element.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/section-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "text",
+          "type": "Text",
+          "coerce": "mrkdwn",
+          "description": "Sets the main text of the section.",
+          "limits": "section.text"
+        },
+        {
+          "method": "fields",
+          "goMethod": "Fields",
+          "wire": "fields",
+          "kind": "textList",
+          "type": "Text",
+          "coerce": "mrkdwn",
+          "description": "Adds section fields, shown in a two-column grid, in display order.",
+          "limits": "section.fields"
+        },
+        {
+          "method": "accessory",
+          "goMethod": "Accessory",
+          "wire": "accessory",
+          "kind": "object",
+          "type": "Element",
+          "description": "Sets the element displayed beside the section text."
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": [
+        "Provide text, fields, or both."
+      ]
+    },
+    {
+      "name": "TableBlock",
+      "package": "block",
+      "goConstructor": "NewTableBlock",
+      "wireType": "table",
+      "description": "A simple table of raw text and rich text cells.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/table-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "rows",
+          "goMethod": "Rows",
+          "wire": "rows",
+          "kind": "rows",
+          "type": "TableCell",
+          "description": "Adds complete table rows in display order. Every row must have the same number of cells.",
+          "required": true
+        },
+        {
+          "method": "columnSettings",
+          "goMethod": "ColumnSettings",
+          "wire": "column_settings",
+          "kind": "list",
+          "type": "ColumnSettings",
+          "description": "Adds per-column settings in column order. Provide one entry for every column."
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": [
+        "Every row must have the same number of cells.",
+        "Column settings need one entry for every column."
+      ]
+    },
+    {
+      "name": "TaskCardBlock",
+      "package": "block",
+      "goConstructor": "NewTaskCardBlock",
+      "wireType": "task_card",
+      "description": "One task with its status, details, output, and sources.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/task-card-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "taskId",
+          "goMethod": "TaskID",
+          "wire": "task_id",
+          "kind": "string",
+          "description": "Sets the identifier of the task.",
+          "required": true
+        },
+        {
+          "method": "title",
+          "goMethod": "Title",
+          "wire": "title",
+          "kind": "string",
+          "description": "Sets the task title.",
+          "required": true
+        },
+        {
+          "method": "details",
+          "goMethod": "Details",
+          "wire": "details",
+          "kind": "object",
+          "type": "RichTextBlock",
+          "description": "Sets a rich text description of the task."
+        },
+        {
+          "method": "output",
+          "goMethod": "Output",
+          "wire": "output",
+          "kind": "object",
+          "type": "RichTextBlock",
+          "description": "Sets rich text describing the task's output."
+        },
+        {
+          "method": "sources",
+          "goMethod": "Sources",
+          "wire": "sources",
+          "kind": "list",
+          "type": "UrlSource",
+          "description": "Adds links to the sources the task used, in display order."
+        },
+        {
+          "method": "status",
+          "goMethod": "Status",
+          "wire": "status",
+          "kind": "enum",
+          "type": "TaskStatus",
+          "description": "Sets the task's current state."
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "VideoBlock",
+      "package": "block",
+      "goConstructor": "NewVideoBlock",
+      "wireType": "video",
+      "description": "An embedded video player.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/video-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "altText",
+          "goMethod": "AltText",
+          "wire": "alt_text",
+          "kind": "string",
+          "description": "Sets a plain-text summary of the image or video for assistive technology.",
+          "limits": "video.alt_text",
+          "required": true
+        },
+        {
+          "method": "thumbnailUrl",
+          "goMethod": "ThumbnailURL",
+          "wire": "thumbnail_url",
+          "kind": "string",
+          "description": "Sets the URL of the image shown before the video plays.",
+          "required": true
+        },
+        {
+          "method": "title",
+          "goMethod": "Title",
+          "wire": "title",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the video title.",
+          "limits": "video.title",
+          "required": true
+        },
+        {
+          "method": "videoUrl",
+          "goMethod": "VideoURL",
+          "wire": "video_url",
+          "kind": "string",
+          "description": "Sets the embeddable URL of the video. The domain must be listed in the app's unfurl domains.",
+          "required": true
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        },
+        {
+          "method": "authorName",
+          "goMethod": "AuthorName",
+          "wire": "author_name",
+          "kind": "string",
+          "description": "Sets the name of the video's author.",
+          "limits": "video.author_name"
+        },
+        {
+          "method": "description",
+          "goMethod": "Description",
+          "wire": "description",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the video description.",
+          "limits": "video.description"
+        },
+        {
+          "method": "providerIconUrl",
+          "goMethod": "ProviderIconURL",
+          "wire": "provider_icon_url",
+          "kind": "string",
+          "description": "Sets the URL of the video provider's icon."
+        },
+        {
+          "method": "providerName",
+          "goMethod": "ProviderName",
+          "wire": "provider_name",
+          "kind": "string",
+          "description": "Sets the name of the video provider, such as YouTube.",
+          "limits": "video.provider_name"
+        },
+        {
+          "method": "titleUrl",
+          "goMethod": "TitleURL",
+          "wire": "title_url",
+          "kind": "string",
+          "description": "Sets the HTTPS URL opened when the title is clicked."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ButtonElement",
+      "package": "element",
+      "goConstructor": "NewButton",
+      "wireType": "button",
+      "description": "An interactive button that sends a payload or opens a URL.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/button-element",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the button label.",
+          "limits": "button.text",
+          "required": true
+        },
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "url",
+          "goMethod": "URL",
+          "wire": "url",
+          "kind": "string",
+          "description": "Sets a URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload.",
+          "limits": "button.url"
+        },
+        {
+          "method": "value",
+          "goMethod": "Value",
+          "wire": "value",
+          "kind": "string",
+          "description": "Sets the application-defined value sent in interaction payloads.",
+          "limits": "button.value"
+        },
+        {
+          "method": "style",
+          "goMethod": "Style",
+          "wire": "style",
+          "kind": "enum",
+          "type": "ButtonStyle",
+          "description": "Sets the button's emphasis. Omit it for the default neutral style."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "accessibilityLabel",
+          "goMethod": "AccessibilityLabel",
+          "wire": "accessibility_label",
+          "kind": "string",
+          "description": "Sets the label read by screen readers in place of the visible text.",
+          "limits": "button.accessibility_label"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ChannelMultiSelectElement",
+      "package": "element",
+      "goConstructor": "NewChannelMultiSelect",
+      "wireType": "multi_channels_select",
+      "description": "A menu for selecting multiple public channels.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialChannels",
+          "goMethod": "InitialChannels",
+          "wire": "initial_channels",
+          "kind": "stringList",
+          "description": "Adds channel IDs that are selected when the menu loads."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "maxSelectedItems",
+          "goMethod": "MaxSelectedItems",
+          "wire": "max_selected_items",
+          "kind": "int",
+          "description": "Sets the maximum number of items a user can select."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "select.placeholder"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ChannelSelectElement",
+      "package": "element",
+      "goConstructor": "NewChannelSelect",
+      "wireType": "channels_select",
+      "description": "A menu for selecting one public channel.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialChannel",
+          "goMethod": "InitialChannel",
+          "wire": "initial_channel",
+          "kind": "string",
+          "description": "Sets the channel ID selected when the menu loads."
+        },
+        {
+          "method": "responseUrlEnabled",
+          "goMethod": "ResponseURLEnabled",
+          "wire": "response_url_enabled",
+          "kind": "boolean",
+          "description": "Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "select.placeholder"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "CheckboxesElement",
+      "package": "element",
+      "goConstructor": "NewCheckboxes",
+      "wireType": "checkboxes",
+      "description": "A group of checkboxes.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/checkboxes-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "options",
+          "goMethod": "Options",
+          "wire": "options",
+          "kind": "list",
+          "type": "Option",
+          "description": "Adds selectable options in display order.",
+          "limits": "checkboxes.options",
+          "required": true
+        },
+        {
+          "method": "initialOptions",
+          "goMethod": "InitialOptions",
+          "wire": "initial_options",
+          "kind": "list",
+          "type": "Option",
+          "description": "Adds options that are selected when the element loads. Each must match an option in the element."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ConversationMultiSelectElement",
+      "package": "element",
+      "goConstructor": "NewConversationMultiSelect",
+      "wireType": "multi_conversations_select",
+      "description": "A menu for selecting multiple conversations.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialConversations",
+          "goMethod": "InitialConversations",
+          "wire": "initial_conversations",
+          "kind": "stringList",
+          "description": "Adds conversation IDs that are selected when the menu loads."
+        },
+        {
+          "method": "defaultToCurrentConversation",
+          "goMethod": "DefaultToCurrentConversation",
+          "wire": "default_to_current_conversation",
+          "kind": "boolean",
+          "description": "Sets whether the menu pre-selects the conversation the user is viewing."
+        },
+        {
+          "method": "filter",
+          "goMethod": "Filter",
+          "wire": "filter",
+          "kind": "object",
+          "type": "ConversationFilter",
+          "description": "Sets which conversation types the menu offers."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "maxSelectedItems",
+          "goMethod": "MaxSelectedItems",
+          "wire": "max_selected_items",
+          "kind": "int",
+          "description": "Sets the maximum number of items a user can select."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "select.placeholder"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ConversationSelectElement",
+      "package": "element",
+      "goConstructor": "NewConversationSelect",
+      "wireType": "conversations_select",
+      "description": "A menu for selecting one conversation.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialConversation",
+          "goMethod": "InitialConversation",
+          "wire": "initial_conversation",
+          "kind": "string",
+          "description": "Sets the conversation ID selected when the menu loads."
+        },
+        {
+          "method": "defaultToCurrentConversation",
+          "goMethod": "DefaultToCurrentConversation",
+          "wire": "default_to_current_conversation",
+          "kind": "boolean",
+          "description": "Sets whether the menu pre-selects the conversation the user is viewing."
+        },
+        {
+          "method": "filter",
+          "goMethod": "Filter",
+          "wire": "filter",
+          "kind": "object",
+          "type": "ConversationFilter",
+          "description": "Sets which conversation types the menu offers."
+        },
+        {
+          "method": "responseUrlEnabled",
+          "goMethod": "ResponseURLEnabled",
+          "wire": "response_url_enabled",
+          "kind": "boolean",
+          "description": "Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "select.placeholder"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "DatePickerElement",
+      "package": "element",
+      "goConstructor": "NewDatePicker",
+      "wireType": "datepicker",
+      "description": "A calendar date picker.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialDate",
+          "goMethod": "InitialDate",
+          "wire": "initial_date",
+          "kind": "string",
+          "description": "Sets the initially selected date, formatted as YYYY-MM-DD."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "DateTimePickerElement",
+      "package": "element",
+      "goConstructor": "NewDateTimePicker",
+      "wireType": "datetimepicker",
+      "description": "A combined date and time picker.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/datetime-picker-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialDateTime",
+          "goMethod": "InitialDateTime",
+          "wire": "initial_date_time",
+          "kind": "long",
+          "description": "Sets the initially selected moment as a UNIX timestamp in seconds."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "EmailInputElement",
+      "package": "element",
+      "goConstructor": "NewEmailInput",
+      "wireType": "email_text_input",
+      "description": "A single-line input that accepts an email address.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/email-input-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialValue",
+          "goMethod": "InitialValue",
+          "wire": "initial_value",
+          "kind": "string",
+          "description": "Sets the value present when the input loads."
+        },
+        {
+          "method": "dispatchActionConfig",
+          "goMethod": "DispatchActionConfig",
+          "wire": "dispatch_action_config",
+          "kind": "object",
+          "type": "DispatchActionConfiguration",
+          "description": "Sets which user interactions send a block_actions payload."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ExternalMultiSelectElement",
+      "package": "element",
+      "goConstructor": "NewExternalMultiSelect",
+      "wireType": "multi_external_select",
+      "description": "A menu for selecting multiple options loaded from your app.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "minQueryLength",
+          "goMethod": "MinQueryLength",
+          "wire": "min_query_length",
+          "kind": "int",
+          "description": "Sets how many characters the user must type before Slack queries your options endpoint."
+        },
+        {
+          "method": "initialOptions",
+          "goMethod": "InitialOptions",
+          "wire": "initial_options",
+          "kind": "list",
+          "type": "Option",
+          "description": "Adds options that are selected when the element loads. Each must match an option in the element."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "maxSelectedItems",
+          "goMethod": "MaxSelectedItems",
+          "wire": "max_selected_items",
+          "kind": "int",
+          "description": "Sets the maximum number of items a user can select."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "select.placeholder"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ExternalSelectElement",
+      "package": "element",
+      "goConstructor": "NewExternalSelect",
+      "wireType": "external_select",
+      "description": "A menu for selecting one option loaded from your app.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "minQueryLength",
+          "goMethod": "MinQueryLength",
+          "wire": "min_query_length",
+          "kind": "int",
+          "description": "Sets how many characters the user must type before Slack queries your options endpoint."
+        },
+        {
+          "method": "initialOption",
+          "goMethod": "InitialOption",
+          "wire": "initial_option",
+          "kind": "object",
+          "type": "Option",
+          "description": "Sets the option selected when the element loads. It must match an option in the element."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "select.placeholder"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "FeedbackButtonsElement",
+      "package": "element",
+      "goConstructor": "NewFeedbackButtons",
+      "wireType": "feedback_buttons",
+      "description": "A pair of thumbs-up and thumbs-down feedback buttons.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element",
+      "implements": [
+        "ContextActionsElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "positiveButton",
+          "goMethod": "PositiveButton",
+          "wire": "positive_button",
+          "kind": "object",
+          "type": "FeedbackButton",
+          "description": "Sets the button for positive feedback.",
+          "required": true
+        },
+        {
+          "method": "negativeButton",
+          "goMethod": "NegativeButton",
+          "wire": "negative_button",
+          "kind": "object",
+          "type": "FeedbackButton",
+          "description": "Sets the button for negative feedback.",
+          "required": true
+        },
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "FileInputElement",
+      "package": "element",
+      "goConstructor": "NewFileInput",
+      "wireType": "file_input",
+      "description": "An input that lets users upload files.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/file-input-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "filetypes",
+          "goMethod": "Filetypes",
+          "wire": "filetypes",
+          "kind": "stringList",
+          "description": "Adds accepted file extensions, such as pdf or png."
+        },
+        {
+          "method": "maxFiles",
+          "goMethod": "MaxFiles",
+          "wire": "max_files",
+          "kind": "int",
+          "description": "Sets the maximum number of files a user can upload.",
+          "limits": "file_input.max_files"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "IconButtonElement",
+      "package": "element",
+      "goConstructor": "NewIconButton",
+      "wireType": "icon_button",
+      "description": "A button that shows an icon instead of text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element",
+      "implements": [
+        "ContextActionsElement"
+      ],
+      "defaults": {
+        "icon": "trash"
+      },
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the text used as the button's accessible name.",
+          "required": true
+        },
+        {
+          "method": "icon",
+          "goMethod": "Icon",
+          "wire": "icon",
+          "kind": "enum",
+          "type": "IconButtonIcon",
+          "description": "Sets the icon shown on the button."
+        },
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id"
+        },
+        {
+          "method": "value",
+          "goMethod": "Value",
+          "wire": "value",
+          "kind": "string",
+          "description": "Sets the application-defined value sent in interaction payloads."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "accessibilityLabel",
+          "goMethod": "AccessibilityLabel",
+          "wire": "accessibility_label",
+          "kind": "string",
+          "description": "Sets the label read by screen readers in place of the visible text."
+        },
+        {
+          "method": "visibleToUserIds",
+          "goMethod": "VisibleToUserIDs",
+          "wire": "visible_to_user_ids",
+          "kind": "stringList",
+          "description": "Adds the IDs of users who can see this button.",
+          "limits": "icon_button.visible_to_user_ids"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ImageElement",
+      "package": "element",
+      "goConstructor": "NewImageElement",
+      "wireType": "image",
+      "description": "An image displayed inside a section, context, or card.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/image-element",
+      "implements": [
+        "ContextElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "altText",
+          "goMethod": "AltText",
+          "wire": "alt_text",
+          "kind": "string",
+          "description": "Sets a plain-text summary of the image or video for assistive technology.",
+          "required": true
+        },
+        {
+          "method": "imageUrl",
+          "goMethod": "ImageURL",
+          "wire": "image_url",
+          "kind": "string",
+          "description": "Sets the publicly accessible URL of the image. Cannot be combined with a Slack file."
+        },
+        {
+          "method": "slackFile",
+          "goMethod": "SlackFile",
+          "wire": "slack_file",
+          "kind": "object",
+          "type": "SlackFile",
+          "description": "Sets a file hosted in Slack as the image source. Cannot be combined with an image URL."
+        }
+      ],
+      "rules": [
+        "Provide exactly one of an image URL or a Slack file."
+      ]
+    },
+    {
+      "name": "NumberInputElement",
+      "package": "element",
+      "goConstructor": "NewNumberInput",
+      "wireType": "number_input",
+      "description": "An input that accepts whole or decimal numbers.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/number-input-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "isDecimalAllowed",
+          "goMethod": "IsDecimalAllowed",
+          "wire": "is_decimal_allowed",
+          "kind": "boolean",
+          "description": "Sets whether the input accepts decimal numbers."
+        },
+        {
+          "method": "initialValue",
+          "goMethod": "InitialValue",
+          "wire": "initial_value",
+          "kind": "string",
+          "description": "Sets the number present when the input loads, as a string such as 42 or 3.5."
+        },
+        {
+          "method": "minValue",
+          "goMethod": "MinValue",
+          "wire": "min_value",
+          "kind": "double",
+          "description": "Sets the smallest accepted number."
+        },
+        {
+          "method": "maxValue",
+          "goMethod": "MaxValue",
+          "wire": "max_value",
+          "kind": "double",
+          "description": "Sets the largest accepted number."
+        },
+        {
+          "method": "dispatchActionConfig",
+          "goMethod": "DispatchActionConfig",
+          "wire": "dispatch_action_config",
+          "kind": "object",
+          "type": "DispatchActionConfiguration",
+          "description": "Sets which user interactions send a block_actions payload."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen."
+        }
+      ],
+      "rules": [
+        "The minimum value cannot exceed the maximum value."
+      ]
+    },
+    {
+      "name": "OverflowElement",
+      "package": "element",
+      "goConstructor": "NewOverflow",
+      "wireType": "overflow",
+      "description": "A compact menu of up to five options.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/overflow-menu-element",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "options",
+          "goMethod": "Options",
+          "wire": "options",
+          "kind": "list",
+          "type": "Option",
+          "description": "Adds selectable options in display order.",
+          "limits": "overflow.options",
+          "required": true
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "PlainTextInputElement",
+      "package": "element",
+      "goConstructor": "NewPlainTextInput",
+      "wireType": "plain_text_input",
+      "description": "A single-line or multi-line free-text input.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialValue",
+          "goMethod": "InitialValue",
+          "wire": "initial_value",
+          "kind": "string",
+          "description": "Sets the value present when the input loads."
+        },
+        {
+          "method": "multiline",
+          "goMethod": "Multiline",
+          "wire": "multiline",
+          "kind": "boolean",
+          "description": "Sets whether the input is a multi-line text area."
+        },
+        {
+          "method": "minLength",
+          "goMethod": "MinLength",
+          "wire": "min_length",
+          "kind": "int",
+          "description": "Sets the minimum number of characters the user must enter."
+        },
+        {
+          "method": "maxLength",
+          "goMethod": "MaxLength",
+          "wire": "max_length",
+          "kind": "int",
+          "description": "Sets the maximum number of characters the user can enter.",
+          "limits": "plain_text_input.max_length"
+        },
+        {
+          "method": "dispatchActionConfig",
+          "goMethod": "DispatchActionConfig",
+          "wire": "dispatch_action_config",
+          "kind": "object",
+          "type": "DispatchActionConfiguration",
+          "description": "Sets which user interactions send a block_actions payload."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RadioButtonsElement",
+      "package": "element",
+      "goConstructor": "NewRadioButtons",
+      "wireType": "radio_buttons",
+      "description": "A group of radio buttons.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/radio-button-group-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "options",
+          "goMethod": "Options",
+          "wire": "options",
+          "kind": "list",
+          "type": "Option",
+          "description": "Adds selectable options in display order.",
+          "limits": "radio_buttons.options",
+          "required": true
+        },
+        {
+          "method": "initialOption",
+          "goMethod": "InitialOption",
+          "wire": "initial_option",
+          "kind": "object",
+          "type": "Option",
+          "description": "Sets the option selected when the element loads. It must match an option in the element."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RichTextInputElement",
+      "package": "element",
+      "goConstructor": "NewRichTextInput",
+      "wireType": "rich_text_input",
+      "description": "An input that accepts formatted rich text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/rich-text-input-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialValue",
+          "goMethod": "InitialValue",
+          "wire": "initial_value",
+          "kind": "object",
+          "type": "RichTextText",
+          "description": "Sets the rich text present when the input loads."
+        },
+        {
+          "method": "dispatchActionConfig",
+          "goMethod": "DispatchActionConfig",
+          "wire": "dispatch_action_config",
+          "kind": "object",
+          "type": "DispatchActionConfiguration",
+          "description": "Sets which user interactions send a block_actions payload."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen."
+        },
+        {
+          "method": "minLines",
+          "goMethod": "MinLines",
+          "wire": "min_lines",
+          "kind": "int",
+          "description": "Sets the minimum visible height of the input, in lines."
+        },
+        {
+          "method": "maxLines",
+          "goMethod": "MaxLines",
+          "wire": "max_lines",
+          "kind": "int",
+          "description": "Sets the maximum visible height of the input, in lines."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "StaticMultiSelectElement",
+      "package": "element",
+      "goConstructor": "NewStaticMultiSelect",
+      "wireType": "multi_static_select",
+      "description": "A menu for selecting multiple options defined in the payload.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "options",
+          "goMethod": "Options",
+          "wire": "options",
+          "kind": "list",
+          "type": "Option",
+          "description": "Adds selectable options in display order.",
+          "limits": "select.options"
+        },
+        {
+          "method": "optionGroups",
+          "goMethod": "OptionGroups",
+          "wire": "option_groups",
+          "kind": "list",
+          "type": "OptionGroup",
+          "description": "Adds labelled groups of options in display order. Cannot be combined with ungrouped options.",
+          "limits": "select.option_groups"
+        },
+        {
+          "method": "initialOptions",
+          "goMethod": "InitialOptions",
+          "wire": "initial_options",
+          "kind": "list",
+          "type": "Option",
+          "description": "Adds options that are selected when the element loads. Each must match an option in the element."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "maxSelectedItems",
+          "goMethod": "MaxSelectedItems",
+          "wire": "max_selected_items",
+          "kind": "int",
+          "description": "Sets the maximum number of items a user can select."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "select.placeholder"
+        }
+      ],
+      "rules": [
+        "Use options or option groups, not both."
+      ]
+    },
+    {
+      "name": "StaticSelectElement",
+      "package": "element",
+      "goConstructor": "NewStaticSelect",
+      "wireType": "static_select",
+      "description": "A menu for selecting one option defined in the payload.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "options",
+          "goMethod": "Options",
+          "wire": "options",
+          "kind": "list",
+          "type": "Option",
+          "description": "Adds selectable options in display order.",
+          "limits": "select.options"
+        },
+        {
+          "method": "optionGroups",
+          "goMethod": "OptionGroups",
+          "wire": "option_groups",
+          "kind": "list",
+          "type": "OptionGroup",
+          "description": "Adds labelled groups of options in display order. Cannot be combined with ungrouped options.",
+          "limits": "select.option_groups"
+        },
+        {
+          "method": "initialOption",
+          "goMethod": "InitialOption",
+          "wire": "initial_option",
+          "kind": "object",
+          "type": "Option",
+          "description": "Sets the option selected when the element loads. It must match an option in the element."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "select.placeholder"
+        }
+      ],
+      "rules": [
+        "Use options or option groups, not both."
+      ]
+    },
+    {
+      "name": "TimePickerElement",
+      "package": "element",
+      "goConstructor": "NewTimePicker",
+      "wireType": "timepicker",
+      "description": "A time-of-day picker.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialTime",
+          "goMethod": "InitialTime",
+          "wire": "initial_time",
+          "kind": "string",
+          "description": "Sets the initially selected time, formatted as HH:mm in 24-hour time."
+        },
+        {
+          "method": "timezone",
+          "goMethod": "Timezone",
+          "wire": "timezone",
+          "kind": "string",
+          "description": "Sets the IANA time zone used to display the time, such as Australia/Brisbane."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "UrlInputElement",
+      "package": "element",
+      "goConstructor": "NewURLInput",
+      "wireType": "url_text_input",
+      "description": "A single-line input that accepts a URL.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/url-input-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialValue",
+          "goMethod": "InitialValue",
+          "wire": "initial_value",
+          "kind": "string",
+          "description": "Sets the value present when the input loads."
+        },
+        {
+          "method": "dispatchActionConfig",
+          "goMethod": "DispatchActionConfig",
+          "wire": "dispatch_action_config",
+          "kind": "object",
+          "type": "DispatchActionConfiguration",
+          "description": "Sets which user interactions send a block_actions payload."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "UserMultiSelectElement",
+      "package": "element",
+      "goConstructor": "NewUserMultiSelect",
+      "wireType": "multi_users_select",
+      "description": "A menu for selecting multiple workspace users.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialUsers",
+          "goMethod": "InitialUsers",
+          "wire": "initial_users",
+          "kind": "stringList",
+          "description": "Adds user IDs that are selected when the menu loads."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "maxSelectedItems",
+          "goMethod": "MaxSelectedItems",
+          "wire": "max_selected_items",
+          "kind": "int",
+          "description": "Sets the maximum number of items a user can select."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "select.placeholder"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "UserSelectElement",
+      "package": "element",
+      "goConstructor": "NewUserSelect",
+      "wireType": "users_select",
+      "description": "A menu for selecting one workspace user.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element",
+      "implements": [
+        "InputElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id",
+          "required": true
+        },
+        {
+          "method": "initialUser",
+          "goMethod": "InitialUser",
+          "wire": "initial_user",
+          "kind": "string",
+          "description": "Sets the user ID selected when the menu loads."
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "focusOnLoad",
+          "goMethod": "FocusOnLoad",
+          "wire": "focus_on_load",
+          "kind": "boolean",
+          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+        },
+        {
+          "method": "placeholder",
+          "goMethod": "Placeholder",
+          "wire": "placeholder",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "select.placeholder"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "WorkflowButtonElement",
+      "package": "element",
+      "goConstructor": "NewWorkflowButton",
+      "wireType": "workflow_button",
+      "description": "A button that starts a workflow through a link trigger.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the button label.",
+          "required": true
+        },
+        {
+          "method": "workflow",
+          "goMethod": "Workflow",
+          "wire": "workflow",
+          "kind": "object",
+          "type": "Workflow",
+          "description": "Sets the workflow started when the button is clicked.",
+          "required": true
+        },
+        {
+          "method": "actionId",
+          "goMethod": "ActionID",
+          "wire": "action_id",
+          "kind": "string",
+          "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
+          "limits": "action_id"
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "object",
+          "type": "Confirmation",
+          "description": "Sets a confirmation dialog shown before the action is sent."
+        },
+        {
+          "method": "style",
+          "goMethod": "Style",
+          "wire": "style",
+          "kind": "enum",
+          "type": "ButtonStyle",
+          "description": "Sets the button's emphasis. Omit it for the default neutral style."
+        },
+        {
+          "method": "accessibilityLabel",
+          "goMethod": "AccessibilityLabel",
+          "wire": "accessibility_label",
+          "kind": "string",
+          "description": "Sets the label read by screen readers in place of the visible text."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "AreaChart",
+      "package": "object",
+      "goConstructor": "NewAreaChart",
+      "wireType": "area",
+      "description": "An area chart for a data visualization block.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block",
+      "implements": [
+        "Chart"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "series",
+          "goMethod": "Series",
+          "wire": "series",
+          "kind": "list",
+          "type": "DataSeries",
+          "description": "Adds data series in display order. Series names must be unique.",
+          "limits": "data_visualization.series",
+          "required": true
+        },
+        {
+          "method": "axisConfig",
+          "goMethod": "AxisConfig",
+          "wire": "axis_config",
+          "kind": "object",
+          "type": "AxisConfig",
+          "description": "Sets the axis categories and labels. Every series needs exactly one point per category.",
+          "required": true
+        }
+      ],
+      "rules": [
+        "Every series needs exactly one data point for each axis category."
+      ]
+    },
+    {
+      "name": "AxisConfig",
+      "package": "object",
+      "goConstructor": "NewAxisConfig",
+      "wireType": "",
+      "description": "The categories and labels shared by bar, area, and line chart axes.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "categories",
+          "goMethod": "Categories",
+          "wire": "categories",
+          "kind": "stringList",
+          "description": "Adds axis categories in display order. Labels must be unique.",
+          "limits": "data_visualization.categories",
+          "required": true
+        },
+        {
+          "method": "xLabel",
+          "goMethod": "XLabel",
+          "wire": "x_label",
+          "kind": "string",
+          "description": "Sets the horizontal axis label.",
+          "limits": "data_visualization.axis_label"
+        },
+        {
+          "method": "yLabel",
+          "goMethod": "YLabel",
+          "wire": "y_label",
+          "kind": "string",
+          "description": "Sets the vertical axis label.",
+          "limits": "data_visualization.axis_label"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "BarChart",
+      "package": "object",
+      "goConstructor": "NewBarChart",
+      "wireType": "bar",
+      "description": "A bar chart for a data visualization block.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block",
+      "implements": [
+        "Chart"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "series",
+          "goMethod": "Series",
+          "wire": "series",
+          "kind": "list",
+          "type": "DataSeries",
+          "description": "Adds data series in display order. Series names must be unique.",
+          "limits": "data_visualization.series",
+          "required": true
+        },
+        {
+          "method": "axisConfig",
+          "goMethod": "AxisConfig",
+          "wire": "axis_config",
+          "kind": "object",
+          "type": "AxisConfig",
+          "description": "Sets the axis categories and labels. Every series needs exactly one point per category.",
+          "required": true
+        }
+      ],
+      "rules": [
+        "Every series needs exactly one data point for each axis category."
+      ]
+    },
+    {
+      "name": "ChartSegment",
+      "package": "object",
+      "goConstructor": "NewChartSegment",
+      "wireType": "",
+      "description": "One labelled segment of a pie chart.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "label",
+          "goMethod": "Label",
+          "wire": "label",
+          "kind": "string",
+          "description": "Sets the segment label.",
+          "limits": "data_visualization.segment.label",
+          "required": true
+        },
+        {
+          "method": "value",
+          "goMethod": "Value",
+          "wire": "value",
+          "kind": "number",
+          "description": "Sets the segment's size. Must be greater than zero.",
+          "required": true
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ColumnSettings",
+      "package": "object",
+      "goConstructor": "NewColumnSettings",
+      "wireType": "",
+      "description": "Alignment and wrapping settings for one table column.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/table-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "align",
+          "goMethod": "Align",
+          "wire": "align",
+          "kind": "enum",
+          "type": "ColumnAlign",
+          "description": "Sets how cell content in the column is aligned."
+        },
+        {
+          "method": "isWrapped",
+          "goMethod": "IsWrapped",
+          "wire": "is_wrapped",
+          "kind": "boolean",
+          "description": "Sets whether long cell content wraps instead of being truncated."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "Confirmation",
+      "package": "object",
+      "goConstructor": "NewConfirmation",
+      "wireType": "",
+      "description": "A dialog that asks users to confirm an action before it is sent.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/composition-objects/confirmation-dialog-object",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "title",
+          "goMethod": "Title",
+          "wire": "title",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the dialog title.",
+          "limits": "confirmation.title",
+          "required": true
+        },
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "text",
+          "type": "Text",
+          "coerce": "mrkdwn",
+          "description": "Sets the explanatory text in the dialog body.",
+          "limits": "confirmation.text",
+          "required": true
+        },
+        {
+          "method": "confirm",
+          "goMethod": "Confirm",
+          "wire": "confirm",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the label of the button that confirms the action.",
+          "limits": "confirmation.confirm",
+          "required": true
+        },
+        {
+          "method": "deny",
+          "goMethod": "Deny",
+          "wire": "deny",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the label of the button that cancels the action.",
+          "limits": "confirmation.deny",
+          "required": true
+        },
+        {
+          "method": "style",
+          "goMethod": "Style",
+          "wire": "style",
+          "kind": "enum",
+          "type": "ButtonStyle",
+          "description": "Sets the emphasis of the confirm button."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "ConversationFilter",
+      "package": "object",
+      "goConstructor": "NewConversationFilter",
+      "wireType": "",
+      "description": "Limits which conversations a conversation menu offers.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/composition-objects/conversation-filter-object",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "include",
+          "goMethod": "Include",
+          "wire": "include",
+          "kind": "stringList",
+          "description": "Adds conversation types to offer: im, mpim, private, or public."
+        },
+        {
+          "method": "excludeExternalSharedChannels",
+          "goMethod": "ExcludeExternalSharedChannels",
+          "wire": "exclude_external_shared_channels",
+          "kind": "boolean",
+          "description": "Sets whether externally shared channels are excluded."
+        },
+        {
+          "method": "excludeBotUsers",
+          "goMethod": "ExcludeBotUsers",
+          "wire": "exclude_bot_users",
+          "kind": "boolean",
+          "description": "Sets whether bot users are excluded."
+        }
+      ],
+      "rules": [
+        "Set at least one filter."
+      ]
+    },
+    {
+      "name": "DataPoint",
+      "package": "object",
+      "goConstructor": "NewDataPoint",
+      "wireType": "",
+      "description": "One value of a chart series, keyed by axis category.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "label",
+          "goMethod": "Label",
+          "wire": "label",
+          "kind": "string",
+          "description": "Sets the axis category this point belongs to.",
+          "limits": "data_visualization.point_label",
+          "required": true
+        },
+        {
+          "method": "value",
+          "goMethod": "Value",
+          "wire": "value",
+          "kind": "number",
+          "description": "Sets the point's value.",
+          "required": true
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "DataSeries",
+      "package": "object",
+      "goConstructor": "NewDataSeries",
+      "wireType": "",
+      "description": "A named series of chart data points.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "name",
+          "goMethod": "Name",
+          "wire": "name",
+          "kind": "string",
+          "description": "Sets the series name shown in the legend.",
+          "limits": "data_visualization.series_name",
+          "required": true
+        },
+        {
+          "method": "data",
+          "goMethod": "Data",
+          "wire": "data",
+          "kind": "list",
+          "type": "DataPoint",
+          "description": "Adds data points in axis-category order.",
+          "limits": "data_visualization.data",
+          "required": true
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "DispatchActionConfiguration",
+      "package": "object",
+      "goConstructor": "NewDispatchActionConfiguration",
+      "wireType": "",
+      "description": "Chooses which interactions with an input send a block_actions payload.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/composition-objects/dispatch-action-configuration-object",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "triggerActionsOn",
+          "goMethod": "TriggerActionsOn",
+          "wire": "trigger_actions_on",
+          "kind": "stringList",
+          "description": "Adds the interactions that send a payload: on_enter_pressed or on_character_entered."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "FeedbackButton",
+      "package": "object",
+      "goConstructor": "NewFeedbackButton",
+      "wireType": "",
+      "description": "One button of a feedback buttons element.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the button label.",
+          "limits": "feedback_button.text",
+          "required": true
+        },
+        {
+          "method": "value",
+          "goMethod": "Value",
+          "wire": "value",
+          "kind": "string",
+          "description": "Sets the application-defined value sent in interaction payloads.",
+          "limits": "feedback_button.value",
+          "required": true
+        },
+        {
+          "method": "accessibilityLabel",
+          "goMethod": "AccessibilityLabel",
+          "wire": "accessibility_label",
+          "kind": "string",
+          "description": "Sets the label read by screen readers in place of the visible text.",
+          "limits": "feedback_button.accessibility_label"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "InputParameter",
+      "package": "object",
+      "goConstructor": "NewInputParameter",
+      "wireType": "",
+      "description": "A named value passed to a workflow trigger.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "name",
+          "goMethod": "Name",
+          "wire": "name",
+          "kind": "string",
+          "description": "Sets the workflow input parameter name.",
+          "required": true
+        },
+        {
+          "method": "value",
+          "goMethod": "Value",
+          "wire": "value",
+          "kind": "string",
+          "description": "Sets the value passed to the workflow input.",
+          "required": true
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "LineChart",
+      "package": "object",
+      "goConstructor": "NewLineChart",
+      "wireType": "line",
+      "description": "A line chart for a data visualization block.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block",
+      "implements": [
+        "Chart"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "series",
+          "goMethod": "Series",
+          "wire": "series",
+          "kind": "list",
+          "type": "DataSeries",
+          "description": "Adds data series in display order. Series names must be unique.",
+          "limits": "data_visualization.series",
+          "required": true
+        },
+        {
+          "method": "axisConfig",
+          "goMethod": "AxisConfig",
+          "wire": "axis_config",
+          "kind": "object",
+          "type": "AxisConfig",
+          "description": "Sets the axis categories and labels. Every series needs exactly one point per category.",
+          "required": true
+        }
+      ],
+      "rules": [
+        "Every series needs exactly one data point for each axis category."
+      ]
+    },
+    {
+      "name": "MarkdownText",
+      "package": "object",
+      "goConstructor": "NewMarkdown",
+      "wireType": "mrkdwn",
+      "description": "A mrkdwn text composition object.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/composition-objects/text-object",
+      "implements": [
+        "Text",
+        "ContextElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "string",
+          "description": "Sets the mrkdwn-formatted text content.",
+          "required": true
+        },
+        {
+          "method": "verbatim",
+          "goMethod": "Verbatim",
+          "wire": "verbatim",
+          "kind": "boolean",
+          "description": "Sets whether Slack leaves URLs, mentions, and channel names unlinked."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "Option",
+      "package": "object",
+      "goConstructor": "NewOption",
+      "wireType": "",
+      "description": "A selectable option for menus, checkboxes, radio buttons, and overflow menus.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/composition-objects/option-object",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "text",
+          "type": "Text",
+          "coerce": "plain_text",
+          "description": "Sets the option label shown to users.",
+          "limits": "option.text",
+          "required": true
+        },
+        {
+          "method": "value",
+          "goMethod": "Value",
+          "wire": "value",
+          "kind": "string",
+          "description": "Sets the value sent in interaction payloads when this option is chosen.",
+          "limits": "option.value",
+          "required": true
+        },
+        {
+          "method": "description",
+          "goMethod": "Description",
+          "wire": "description",
+          "kind": "text",
+          "type": "Text",
+          "coerce": "plain_text",
+          "description": "Sets supporting text shown below the label. Only rendered by checkboxes and radio buttons.",
+          "limits": "option.description"
+        },
+        {
+          "method": "url",
+          "goMethod": "URL",
+          "wire": "url",
+          "kind": "string",
+          "description": "Sets a URL loaded in the user's browser when an overflow menu option is chosen.",
+          "limits": "option.url"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "OptionGroup",
+      "package": "object",
+      "goConstructor": "NewOptionGroup",
+      "wireType": "",
+      "description": "A labelled group of options in a static select menu.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/composition-objects/option-group-object",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "label",
+          "goMethod": "Label",
+          "wire": "label",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the group heading.",
+          "limits": "option_group.label",
+          "required": true
+        },
+        {
+          "method": "options",
+          "goMethod": "Options",
+          "wire": "options",
+          "kind": "list",
+          "type": "Option",
+          "description": "Adds selectable options in display order.",
+          "limits": "option_group.options",
+          "required": true
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "PieChart",
+      "package": "object",
+      "goConstructor": "NewPieChart",
+      "wireType": "pie",
+      "description": "A pie chart for a data visualization block.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block",
+      "implements": [
+        "Chart"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "segments",
+          "goMethod": "Segments",
+          "wire": "segments",
+          "kind": "list",
+          "type": "ChartSegment",
+          "description": "Adds pie segments in display order.",
+          "limits": "data_visualization.segments",
+          "required": true
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "PlainText",
+      "package": "object",
+      "goConstructor": "NewPlainText",
+      "wireType": "plain_text",
+      "description": "A plain-text composition object.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/composition-objects/text-object",
+      "implements": [
+        "Text",
+        "ContextElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "string",
+          "description": "Sets the text content.",
+          "required": true
+        },
+        {
+          "method": "emoji",
+          "goMethod": "Emoji",
+          "wire": "emoji",
+          "kind": "boolean",
+          "description": "Sets whether emoji shortcodes such as :tada: are rendered as emoji."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RawNumber",
+      "package": "object",
+      "goConstructor": "NewRawNumber",
+      "wireType": "raw_number",
+      "description": "A numeric data table cell with display text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-table-block",
+      "implements": [
+        "DataTableCell"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "value",
+          "goMethod": "Value",
+          "wire": "value",
+          "kind": "number",
+          "description": "Sets the numeric value used for sorting.",
+          "required": true
+        },
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "string",
+          "description": "Sets the formatted text displayed for the number, such as 1,234.5.",
+          "required": true
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RawText",
+      "package": "object",
+      "goConstructor": "NewRawText",
+      "wireType": "raw_text",
+      "description": "An unformatted table cell.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/table-block",
+      "implements": [
+        "TableCell",
+        "DataTableCell"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "string",
+          "description": "Sets the cell text.",
+          "required": true
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RichTextChannel",
+      "package": "object",
+      "goConstructor": "NewRichTextChannel",
+      "wireType": "channel",
+      "description": "A channel mention inside rich text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block",
+      "implements": [
+        "RichTextSectionElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "channelId",
+          "goMethod": "ChannelID",
+          "wire": "channel_id",
+          "kind": "string",
+          "description": "Sets the ID of the mentioned channel.",
+          "required": true
+        },
+        {
+          "method": "style",
+          "goMethod": "Style",
+          "wire": "style",
+          "kind": "style",
+          "flags": [
+            "bold",
+            "italic",
+            "strike",
+            "highlight",
+            "client_highlight",
+            "unlink"
+          ],
+          "description": "Sets the mention style."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RichTextCodeBlock",
+      "package": "object",
+      "goConstructor": "NewRichTextCodeBlock",
+      "wireType": "rich_text_preformatted",
+      "description": "A preformatted code block inside rich text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block",
+      "implements": [
+        "RichTextBlockElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "elements",
+          "goMethod": "Elements",
+          "wire": "elements",
+          "kind": "list",
+          "type": "RichTextSectionElement",
+          "description": "Adds inline rich text elements in display order.",
+          "required": true
+        },
+        {
+          "method": "border",
+          "goMethod": "Border",
+          "wire": "border",
+          "kind": "int",
+          "description": "Sets the width of the left border, in pixels."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RichTextEmoji",
+      "package": "object",
+      "goConstructor": "NewRichTextEmoji",
+      "wireType": "emoji",
+      "description": "An emoji inside rich text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block",
+      "implements": [
+        "RichTextSectionElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "name",
+          "goMethod": "Name",
+          "wire": "name",
+          "kind": "string",
+          "description": "Sets the emoji shortcode name, without colons.",
+          "required": true
+        },
+        {
+          "method": "skinTone",
+          "goMethod": "SkinTone",
+          "wire": "skin_tone",
+          "kind": "int",
+          "description": "Sets the emoji skin tone, from 1 to 6."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RichTextLink",
+      "package": "object",
+      "goConstructor": "NewRichTextLink",
+      "wireType": "link",
+      "description": "A hyperlink inside rich text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block",
+      "implements": [
+        "RichTextSectionElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "url",
+          "goMethod": "URL",
+          "wire": "url",
+          "kind": "string",
+          "description": "Sets the link target.",
+          "required": true
+        },
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "string",
+          "description": "Sets the visible link text. Slack shows the URL when omitted."
+        },
+        {
+          "method": "style",
+          "goMethod": "Style",
+          "wire": "style",
+          "kind": "style",
+          "flags": [
+            "bold",
+            "italic",
+            "strike",
+            "code"
+          ],
+          "description": "Sets the visual style."
+        },
+        {
+          "method": "unsafe",
+          "goMethod": null,
+          "wire": "unsafe",
+          "kind": "boolean",
+          "description": "Sets whether Slack treats the link as unsafe."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RichTextList",
+      "package": "object",
+      "goConstructor": "NewRichTextList",
+      "wireType": "rich_text_list",
+      "description": "A bulleted or numbered list inside rich text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block",
+      "implements": [
+        "RichTextBlockElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "style",
+          "goMethod": "Style",
+          "wire": "style",
+          "kind": "enum",
+          "type": "RichTextListStyle",
+          "description": "Sets whether the list is bulleted or numbered.",
+          "required": true
+        },
+        {
+          "method": "elements",
+          "goMethod": "Elements",
+          "wire": "elements",
+          "kind": "list",
+          "type": "RichTextSection",
+          "description": "Adds list items, one rich text section per item.",
+          "required": true
+        },
+        {
+          "method": "indent",
+          "goMethod": "Indent",
+          "wire": "indent",
+          "kind": "int",
+          "description": "Sets the list's indentation level."
+        },
+        {
+          "method": "offset",
+          "goMethod": "Offset",
+          "wire": "offset",
+          "kind": "int",
+          "description": "Sets the number of items to skip when numbering an ordered list."
+        },
+        {
+          "method": "border",
+          "goMethod": "Border",
+          "wire": "border",
+          "kind": "int",
+          "description": "Sets the width of the left border, in pixels."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RichTextQuote",
+      "package": "object",
+      "goConstructor": "NewRichTextQuote",
+      "wireType": "rich_text_quote",
+      "description": "A quotation inside rich text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block",
+      "implements": [
+        "RichTextBlockElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "elements",
+          "goMethod": "Elements",
+          "wire": "elements",
+          "kind": "list",
+          "type": "RichTextSectionElement",
+          "description": "Adds inline rich text elements in display order.",
+          "required": true
+        },
+        {
+          "method": "border",
+          "goMethod": "Border",
+          "wire": "border",
+          "kind": "int",
+          "description": "Sets the width of the left border, in pixels."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RichTextSection",
+      "package": "object",
+      "goConstructor": "NewRichTextSection",
+      "wireType": "rich_text_section",
+      "description": "A paragraph of inline rich text elements.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block",
+      "implements": [
+        "RichTextBlockElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "elements",
+          "goMethod": "Elements",
+          "wire": "elements",
+          "kind": "list",
+          "type": "RichTextSectionElement",
+          "description": "Adds inline rich text elements in display order.",
+          "required": true
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RichTextText",
+      "package": "object",
+      "goConstructor": "NewRichText",
+      "wireType": "text",
+      "description": "A run of optionally styled text inside rich text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block",
+      "implements": [
+        "RichTextSectionElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "string",
+          "description": "Sets the text content.",
+          "required": true
+        },
+        {
+          "method": "style",
+          "goMethod": "Style",
+          "wire": "style",
+          "kind": "style",
+          "flags": [
+            "bold",
+            "italic",
+            "strike",
+            "code"
+          ],
+          "description": "Sets the visual style."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RichTextUser",
+      "package": "object",
+      "goConstructor": "NewRichTextUser",
+      "wireType": "user",
+      "description": "A user mention inside rich text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block",
+      "implements": [
+        "RichTextSectionElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "userId",
+          "goMethod": "UserID",
+          "wire": "user_id",
+          "kind": "string",
+          "description": "Sets the ID of the mentioned user.",
+          "required": true
+        },
+        {
+          "method": "style",
+          "goMethod": "Style",
+          "wire": "style",
+          "kind": "style",
+          "flags": [
+            "bold",
+            "italic",
+            "strike",
+            "highlight",
+            "client_highlight",
+            "unlink"
+          ],
+          "description": "Sets the visual style."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "RichTextUserGroup",
+      "package": "object",
+      "goConstructor": "NewRichTextUserGroup",
+      "wireType": "usergroup",
+      "description": "A user group mention inside rich text.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block",
+      "implements": [
+        "RichTextSectionElement"
+      ],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "userGroupId",
+          "goMethod": "UserGroupID",
+          "wire": "usergroup_id",
+          "kind": "string",
+          "description": "Sets the ID of the mentioned user group.",
+          "required": true
+        },
+        {
+          "method": "style",
+          "goMethod": "Style",
+          "wire": "style",
+          "kind": "style",
+          "flags": [
+            "bold",
+            "italic",
+            "strike",
+            "highlight",
+            "client_highlight",
+            "unlink"
+          ],
+          "description": "Sets the visual style."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "SlackFile",
+      "package": "object",
+      "goConstructor": "NewSlackFile",
+      "wireType": "",
+      "description": "A reference to an image file hosted in Slack.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/composition-objects/slack-file-object",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "id",
+          "goMethod": "SlackFileID",
+          "wire": "id",
+          "kind": "string",
+          "description": "Sets the ID of a file previously uploaded to Slack. Cannot be combined with a URL."
+        },
+        {
+          "method": "url",
+          "goMethod": "SlackFileURL",
+          "wire": "url",
+          "kind": "string",
+          "description": "Sets the URL of a file hosted in Slack. Cannot be combined with an ID."
+        }
+      ],
+      "rules": [
+        "Provide exactly one of an ID or a URL."
+      ]
+    },
+    {
+      "name": "SlackIcon",
+      "package": "object",
+      "goConstructor": "NewSlackIcon",
+      "wireType": "icon",
+      "description": "A Slack-provided icon, referenced by name.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/card-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "name",
+          "goMethod": "Name",
+          "wire": "name",
+          "kind": "string",
+          "description": "Sets the name of the Slack-provided icon, such as rocket."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "Trigger",
+      "package": "object",
+      "goConstructor": "NewTrigger",
+      "wireType": "",
+      "description": "A link trigger that starts a workflow.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "url",
+          "goMethod": "URL",
+          "wire": "url",
+          "kind": "string",
+          "description": "Sets the link trigger URL.",
+          "required": true
+        },
+        {
+          "method": "customizableInputParameters",
+          "goMethod": "CustomizableInputParameters",
+          "wire": "customizable_input_parameters",
+          "kind": "list",
+          "type": "InputParameter",
+          "description": "Adds the input values passed to the workflow's trigger."
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "UrlSource",
+      "package": "object",
+      "goConstructor": "NewURLSource",
+      "wireType": "url",
+      "description": "A linked source cited by a task card.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/task-card-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "url",
+          "goMethod": "URL",
+          "wire": "url",
+          "kind": "string",
+          "description": "Sets the source URL.",
+          "limits": "url_source.url",
+          "required": true
+        },
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "string",
+          "description": "Sets the source link text.",
+          "required": true
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "Workflow",
+      "package": "object",
+      "goConstructor": "NewWorkflow",
+      "wireType": "",
+      "description": "The workflow started by a workflow button.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/composition-objects/workflow-object",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "trigger",
+          "goMethod": "Trigger",
+          "wire": "trigger",
+          "kind": "object",
+          "type": "Trigger",
+          "description": "Sets the link trigger that starts the workflow.",
+          "required": true
+        }
+      ],
+      "rules": []
+    },
+    {
+      "name": "Attachment",
+      "package": "payload",
+      "goConstructor": "NewAttachment",
+      "wireType": "",
+      "description": "A legacy message attachment containing blocks and an optional color bar.",
+      "docUrl": "https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "blocks",
+          "goMethod": "Blocks",
+          "wire": "blocks",
+          "kind": "list",
+          "type": "Block",
+          "description": "Adds the attachment's blocks in display order."
+        },
+        {
+          "method": "color",
+          "goMethod": "Color",
+          "wire": "color",
+          "kind": "string",
+          "description": "Sets the attachment's left border color: a six-digit hex color or good, warning, or danger."
+        },
+        {
+          "method": "fallback",
+          "goMethod": "Fallback",
+          "wire": "fallback",
+          "kind": "string",
+          "description": "Sets plain-text summary shown in clients that cannot display attachments."
+        }
+      ],
+      "rules": [
+        "Only blocks supported in messages are accepted."
+      ]
+    },
+    {
+      "name": "HomeTabView",
+      "package": "payload",
+      "goConstructor": "NewHomeTab",
+      "wireType": "home",
+      "description": "The payload for publishing an App Home tab with views.publish.",
+      "docUrl": "https://docs.slack.dev/surfaces/app-home",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "blocks",
+          "goMethod": "Blocks",
+          "wire": "blocks",
+          "kind": "list",
+          "type": "Block",
+          "description": "Adds the blocks shown on the App Home tab, in display order.",
+          "limits": "view.blocks",
+          "required": true
+        },
+        {
+          "method": "privateMetadata",
+          "goMethod": "PrivateMetadata",
+          "wire": "private_metadata",
+          "kind": "string",
+          "description": "Sets application-defined data returned in view payloads.",
+          "limits": "view.private_metadata"
+        },
+        {
+          "method": "callbackId",
+          "goMethod": "CallbackID",
+          "wire": "callback_id",
+          "kind": "string",
+          "description": "Sets an identifier returned in view payloads so your app can recognize the view.",
+          "limits": "view.callback_id"
+        },
+        {
+          "method": "externalId",
+          "goMethod": "ExternalID",
+          "wire": "external_id",
+          "kind": "string",
+          "description": "Sets a workspace-unique identifier you can use to update the view later."
+        }
+      ],
+      "rules": [
+        "Only blocks supported on the App Home tab are accepted."
+      ]
+    },
+    {
+      "name": "MessagePayload",
+      "package": "payload",
+      "goConstructor": "NewMessage",
+      "wireType": "",
+      "description": "A complete payload for chat.postMessage and related Web API methods.",
+      "docUrl": "https://docs.slack.dev/reference/methods/chat.postMessage",
+      "implements": [],
+      "defaults": {
+        "mrkdwn": true,
+        "text": ""
+      },
+      "fields": [
+        {
+          "method": "channel",
+          "goMethod": "Channel",
+          "wire": "channel",
+          "kind": "string",
+          "description": "Sets the ID of the channel, private group, or conversation that receives the message.",
+          "limits": "message.channel",
+          "required": true
+        },
+        {
+          "method": "blocks",
+          "goMethod": "Blocks",
+          "wire": "blocks",
+          "kind": "list",
+          "type": "Block",
+          "description": "Adds the message blocks in display order.",
+          "limits": "message.blocks"
+        },
+        {
+          "method": "attachments",
+          "goMethod": "Attachments",
+          "wire": "attachments",
+          "kind": "list",
+          "type": "Attachment",
+          "description": "Adds legacy attachments in display order.",
+          "limits": "message.attachments"
+        },
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "string",
+          "description": "Sets the fallback text used in notifications and by clients that cannot display blocks."
+        },
+        {
+          "method": "mrkdwn",
+          "goMethod": "Mrkdwn",
+          "wire": "mrkdwn",
+          "kind": "boolean",
+          "description": "Sets whether Slack formats the top-level text as mrkdwn."
+        },
+        {
+          "method": "unfurlLinks",
+          "goMethod": "UnfurlLinks",
+          "wire": "unfurl_links",
+          "kind": "boolean",
+          "description": "Sets whether Slack unfurls text-based links."
+        },
+        {
+          "method": "unfurlMedia",
+          "goMethod": "UnfurlMedia",
+          "wire": "unfurl_media",
+          "kind": "boolean",
+          "description": "Sets whether Slack unfurls media links."
+        },
+        {
+          "method": "metadata",
+          "goMethod": "Metadata",
+          "wire": "metadata",
+          "kind": "map",
+          "description": "Sets message metadata as a JSON-compatible map, such as event_type and event_payload."
+        }
+      ],
+      "rules": [
+        "Only blocks supported in messages are accepted."
+      ]
+    },
+    {
+      "name": "MessageResponse",
+      "package": "payload",
+      "goConstructor": "NewMessageResponse",
+      "wireType": "",
+      "description": "A response body for slash commands and interaction response URLs.",
+      "docUrl": "https://docs.slack.dev/interactivity/handling-user-interaction#message_responses",
+      "implements": [],
+      "defaults": {
+        "mrkdwn": true,
+        "text": "",
+        "replace_original": false,
+        "response_type": "in_channel"
+      },
+      "fields": [
+        {
+          "method": "blocks",
+          "goMethod": "Blocks",
+          "wire": "blocks",
+          "kind": "list",
+          "type": "Block",
+          "description": "Adds the response blocks in display order.",
+          "limits": "message.blocks"
+        },
+        {
+          "method": "attachments",
+          "goMethod": "Attachments",
+          "wire": "attachments",
+          "kind": "list",
+          "type": "Attachment",
+          "description": "Adds legacy attachments in display order.",
+          "limits": "message.attachments"
+        },
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "string",
+          "description": "Sets the fallback text used in notifications and by clients that cannot display blocks."
+        },
+        {
+          "method": "mrkdwn",
+          "goMethod": "Mrkdwn",
+          "wire": "mrkdwn",
+          "kind": "boolean",
+          "description": "Sets whether Slack formats the top-level text as mrkdwn."
+        },
+        {
+          "method": "replaceOriginal",
+          "goMethod": "ReplaceOriginal",
+          "wire": "replace_original",
+          "kind": "boolean",
+          "description": "Sets whether the response replaces the message that triggered it."
+        },
+        {
+          "method": "responseType",
+          "goMethod": "ResponseType",
+          "wire": "response_type",
+          "kind": "enum",
+          "type": "ResponseType",
+          "description": "Sets who can see the response."
+        }
+      ],
+      "rules": [
+        "Only blocks supported in messages are accepted."
+      ]
+    },
+    {
+      "name": "ModalView",
+      "package": "payload",
+      "goConstructor": "NewModal",
+      "wireType": "modal",
+      "description": "The view payload for views.open, views.push, and views.update.",
+      "docUrl": "https://docs.slack.dev/surfaces/modals",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "title",
+          "goMethod": "Title",
+          "wire": "title",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the title in the modal's top bar.",
+          "limits": "view.title",
+          "required": true
+        },
+        {
+          "method": "blocks",
+          "goMethod": "Blocks",
+          "wire": "blocks",
+          "kind": "list",
+          "type": "Block",
+          "description": "Adds the blocks shown in the modal, in display order.",
+          "limits": "view.blocks",
+          "required": true
+        },
+        {
+          "method": "close",
+          "goMethod": "Close",
+          "wire": "close",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the label of the button that closes the modal.",
+          "limits": "view.close"
+        },
+        {
+          "method": "submit",
+          "goMethod": "Submit",
+          "wire": "submit",
+          "kind": "text",
+          "type": "PlainText",
+          "coerce": "plain_text",
+          "description": "Sets the label of the button that submits the modal.",
+          "limits": "view.submit"
+        },
+        {
+          "method": "privateMetadata",
+          "goMethod": "PrivateMetadata",
+          "wire": "private_metadata",
+          "kind": "string",
+          "description": "Sets application-defined data returned in view payloads.",
+          "limits": "view.private_metadata"
+        },
+        {
+          "method": "callbackId",
+          "goMethod": "CallbackID",
+          "wire": "callback_id",
+          "kind": "string",
+          "description": "Sets an identifier returned in view payloads so your app can recognize the view.",
+          "limits": "view.callback_id"
+        },
+        {
+          "method": "clearOnClose",
+          "goMethod": "ClearOnClose",
+          "wire": "clear_on_close",
+          "kind": "boolean",
+          "description": "Sets whether closing this modal closes every view in its stack."
+        },
+        {
+          "method": "notifyOnClose",
+          "goMethod": "NotifyOnClose",
+          "wire": "notify_on_close",
+          "kind": "boolean",
+          "description": "Sets whether Slack sends a view_closed event when the user closes the modal."
+        },
+        {
+          "method": "externalId",
+          "goMethod": "ExternalID",
+          "wire": "external_id",
+          "kind": "string",
+          "description": "Sets a workspace-unique identifier you can use to update the view later."
+        },
+        {
+          "method": "submitDisabled",
+          "goMethod": "SubmitDisabled",
+          "wire": "submit_disabled",
+          "kind": "boolean",
+          "description": "Sets whether the submit button starts disabled. Only valid in workflow configuration modals."
+        }
+      ],
+      "rules": [
+        "Only blocks supported in modals are accepted.",
+        "A modal that contains an input block must have a submit label."
+      ]
+    },
+    {
+      "name": "WebhookMessage",
+      "package": "payload",
+      "goConstructor": "NewWebhookMessage",
+      "wireType": "",
+      "description": "A payload for incoming webhooks.",
+      "docUrl": "https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "blocks",
+          "goMethod": "Blocks",
+          "wire": "blocks",
+          "kind": "list",
+          "type": "Block",
+          "description": "Adds the message blocks in display order.",
+          "limits": "message.blocks"
+        },
+        {
+          "method": "attachments",
+          "goMethod": "Attachments",
+          "wire": "attachments",
+          "kind": "list",
+          "type": "Attachment",
+          "description": "Adds legacy attachments in display order.",
+          "limits": "message.attachments"
+        },
+        {
+          "method": "text",
+          "goMethod": "Text",
+          "wire": "text",
+          "kind": "string",
+          "description": "Sets the fallback text used in notifications and by clients that cannot display blocks."
+        },
+        {
+          "method": "responseType",
+          "goMethod": "ResponseType",
+          "wire": "response_type",
+          "kind": "enum",
+          "type": "ResponseType",
+          "description": "Sets who can see the response."
+        },
+        {
+          "method": "replaceOriginal",
+          "goMethod": "ReplaceOriginal",
+          "wire": "replace_original",
+          "kind": "boolean",
+          "description": "Sets whether the response replaces the message that triggered it."
+        },
+        {
+          "method": "deleteOriginal",
+          "goMethod": "DeleteOriginal",
+          "wire": "delete_original",
+          "kind": "boolean",
+          "description": "Sets whether the response deletes the message that triggered it."
+        },
+        {
+          "method": "unfurlLinks",
+          "goMethod": "UnfurlLinks",
+          "wire": "unfurl_links",
+          "kind": "boolean",
+          "description": "Sets whether Slack unfurls text-based links."
+        },
+        {
+          "method": "unfurlMedia",
+          "goMethod": "UnfurlMedia",
+          "wire": "unfurl_media",
+          "kind": "boolean",
+          "description": "Sets whether Slack unfurls media links."
+        },
+        {
+          "method": "metadata",
+          "goMethod": "Metadata",
+          "wire": "metadata",
+          "kind": "map",
+          "description": "Sets message metadata as a JSON-compatible map, such as event_type and event_payload."
+        }
+      ],
+      "rules": [
+        "Only blocks supported in messages are accepted."
+      ]
+    }
+  ]
+}

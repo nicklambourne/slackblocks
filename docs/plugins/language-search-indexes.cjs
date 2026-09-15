@@ -23,21 +23,27 @@ const DEFAULT_SEARCH_OPTIONS = {
 
 const LANGUAGE_INDEXES = {
   python: {
-    ignoredContent: '[data-language-content="typescript"], [data-language-content="go"]',
-    ignoredRoutes: [/^reference\/(?:typescript|go)(?:\/|$)/],
+    ignoredContent: '[data-language-content="typescript"], [data-language-content="go"], [data-language-content="java"]',
+    ignoredRoutes: [/^reference\/(?:typescript|go|java)(?:\/|$)/],
   },
   typescript: {
-    ignoredContent: '[data-language-content="python"], [data-language-content="go"]',
+    ignoredContent: '[data-language-content="python"], [data-language-content="go"], [data-language-content="java"]',
     ignoredRoutes: [
-      /^reference\/python(?:\/|$)/,
-      /^reference\/go(?:\/|$)/,
+      /^reference\/(?:python|go|java)(?:\/|$)/,
       /^usage\/(?:compatibility|migration)$/,
     ],
   },
   go: {
-    ignoredContent: '[data-language-content="python"], [data-language-content="typescript"]',
+    ignoredContent: '[data-language-content="python"], [data-language-content="typescript"], [data-language-content="java"]',
     ignoredRoutes: [
-      /^reference\/(?:python|typescript)(?:\/|$)/,
+      /^reference\/(?:python|typescript|java)(?:\/|$)/,
+      /^usage\/(?:compatibility|migration)$/,
+    ],
+  },
+  java: {
+    ignoredContent: '[data-language-content="python"], [data-language-content="typescript"], [data-language-content="go"]',
+    ignoredRoutes: [
+      /^reference\/(?:python|typescript|go)(?:\/|$)/,
       /^usage\/(?:compatibility|migration)$/,
     ],
   },

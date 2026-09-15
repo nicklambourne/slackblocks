@@ -1,4 +1,4 @@
-import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Recipe Book
 
@@ -144,6 +144,45 @@ func BuildStatusMessage(channel, project, branch, commit, author, duration strin
 ```
 
 </Go>
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.block.ContextBlock;
+import io.github.nicklambourne.slackblocks.block.DividerBlock;
+import io.github.nicklambourne.slackblocks.block.HeaderBlock;
+import io.github.nicklambourne.slackblocks.block.SectionBlock;
+import io.github.nicklambourne.slackblocks.object.MarkdownText;
+import io.github.nicklambourne.slackblocks.payload.MessagePayload;
+
+static MessagePayload buildStatusMessage(
+    String channel,
+    String project,
+    String branch,
+    String commit,
+    String author,
+    String duration,
+    boolean passed) {
+  String icon = passed ? ":white_check_mark:" : ":x:";
+  String status = passed ? "passed" : "failed";
+
+  return MessagePayload.builder()
+      .channel(channel)
+      .text("Build " + status + " for " + project + "@" + branch)
+      .blocks(
+          HeaderBlock.builder().text(icon + " " + project + " build " + status).build(),
+          SectionBlock.builder().markdownFields(
+              "*Branch*\n`" + branch + "`",
+              "*Commit*\n`" + commit.substring(0, Math.min(7, commit.length())) + "`",
+              "*Author*\n" + author,
+              "*Duration*\n" + duration).build(),
+          DividerBlock.builder().build(),
+          ContextBlock.builder().elements(
+              MarkdownText.of(":calendar: Triggered by push to `" + branch + "`")).build())
+      .build();
+}
+```
+
+</Java>
 </LanguageContent>
 
 ![A build status notification rendered in Slack](/img/usage/build_notification.png)

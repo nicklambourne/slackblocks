@@ -5,13 +5,16 @@
 ![Python Versions](https://img.shields.io/pypi/pyversions/slackblocks)
 [![PyPI](https://img.shields.io/pypi/v/slackblocks?color=yellow&label=PyPI&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/#history)
 [![npm](https://img.shields.io/npm/v/%40nicklambourne%2Fslackblocks?color=CB3837&label=npm&logo=npm)](https://www.npmjs.com/package/@nicklambourne/slackblocks)
+[![Go](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv2%2F%40latest&query=%24.Version&label=Go&color=00ADD8&logo=go&logoColor=white)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.nicklambourne/slackblocks?logo=apachemaven)](https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks)
 [![Downloads](https://static.pepy.tech/badge/slackblocks)](https://pepy.tech/project/slackblocks)
 [![Python CI](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
 [![TypeScript CI](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
 [![Go CI](https://github.com/nicklambourne/slackblocks/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
+[![Java CI](https://github.com/nicklambourne/slackblocks/actions/workflows/java.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/java.yml)
 [![Docs](https://img.shields.io/badge/Docs-8A2BE2.svg)](https://nicklambourne.github.io/slackblocks)
 
-> **Build Slack messages in Python, TypeScript, or Go — without writing JSON by hand.**
+> **Build Slack messages in Python, TypeScript, Go, or Java — without writing JSON by hand.**
 
 Anyone who has built a non-trivial Slack message knows the drill: a wall of nested
 [Block Kit](https://docs.slack.dev/block-kit/) JSON, five levels deep, where a typo'd
@@ -22,24 +25,24 @@ your tests, rather than in production.
 
 ## Why `slackblocks`?
 
-- **Concise** — `SectionBlock("Hello, *world*!")` / `SectionBlock().text("Hello, *world*!").build()`
+- **Concise** — `SectionBlock("Hello, *world*!")` / `SectionBlock.builder().markdownText("Hello, *world*!").build()`
   instead of a ten-line JSON object.
 - **Validated up front** — character limits, required fields, mutually-exclusive options,
   and element-type restrictions are enforced when you construct the block, so you find
   out *before* hitting Slack's API.
 - **Typed** — full type hints and `py.typed` in Python, strict types in TypeScript,
-  and compile-checked fluent methods in Go.
+  and compile-checked concrete fluent builders in Go and Java.
 - **Plays well with established Slack clients** — unpack a `Message` straight into
   `client.chat_postMessage(**message)` with [`slack-sdk`](https://pypi.org/project/slack-sdk/),
   pass a payload directly to [`@slack/web-api`](https://www.npmjs.com/package/@slack/web-api),
-  or pass Go block builders directly to [`slack-go/slack`](https://github.com/slack-go/slack).
-- **One library, three languages** — the same blocks, validation rules, and version
-  numbers in Python, TypeScript, and Go. A shared conformance corpus keeps all three
+  pass Go block builders directly to [`slack-go/slack`](https://github.com/slack-go/slack), or pass Java blocks directly to the [official Slack Java SDK](https://slack.dev/java-slack-sdk/).
+- **One library, four languages** — the same blocks, validation rules, and version
+  numbers in Python, TypeScript, Go, and Java. A shared conformance corpus keeps all four
   implementations emitting the same Slack JSON.
 - **Everything Block Kit ships today** — all current blocks and elements, rich text,
   modals and Home tabs, and the 2025 block families (tables, cards, carousels, charts).
 - **Light** — zero runtime dependencies in Python, a self-contained ESM module on npm,
-  and one direct Go dependency: `slack-go/slack`, used for delivery.
+  one direct Go dependency (`slack-go/slack`), and Java integration through the official Slack model interfaces.
 
 ## Installation
 
@@ -60,6 +63,16 @@ Go (1.22+):
 
 ```bash
 go get github.com/nicklambourne/slackblocks/go/v2
+```
+
+Java (17+):
+
+```xml
+<dependency>
+  <groupId>io.github.nicklambourne</groupId>
+  <artifactId>slackblocks</artifactId>
+  <version>2.3.0</version>
+</dependency>
 ```
 
 ## Quickstart
@@ -169,6 +182,22 @@ _, _, err := client.PostMessageContext(
 )
 ```
 
+
+And in Java:
+
+```java
+SectionBlock block = SectionBlock.builder()
+    .markdownText("Build #482 passed :white_check_mark:")
+    .build();
+
+var client = Slack.getInstance().methods(System.getenv("SLACK_API_TOKEN"));
+client.chatPostMessage(ChatPostMessageRequest.builder()
+    .channel("C0123456")
+    .text("Build #482 passed")
+    .blocks(List.of(block))
+    .build());
+```
+
 <p align="center">
   <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/usage/build_notification.png" alt="The build notification rendered in Slack" width="600px" />
 </p>
@@ -178,17 +207,18 @@ _, _, err := client.PostMessageContext(
 - **Full docs:** <https://nicklambourne.github.io/slackblocks/>
 - [Installation](https://nicklambourne.github.io/slackblocks/usage/installation)
 - [Using Blocks](https://nicklambourne.github.io/slackblocks/usage/using_blocks) — every
-  block type with code in all three languages, the JSON it produces, and screenshots.
+  block type with code in all four languages, the JSON it produces, and screenshots.
 - [Sending Messages](https://nicklambourne.github.io/slackblocks/usage/sending_messages)
 - [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end
   recipes for build notifications, approval requests, modals, and more.
 - [API Reference](https://nicklambourne.github.io/slackblocks/reference) —
   [Python](https://nicklambourne.github.io/slackblocks/reference/python) and
   [TypeScript](https://nicklambourne.github.io/slackblocks/reference/typescript), and
-  [Go](https://nicklambourne.github.io/slackblocks/reference/go).
+  [Go](https://nicklambourne.github.io/slackblocks/reference/go), and
+  [Java](https://nicklambourne.github.io/slackblocks/reference/java).
 - [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/usage/migration) ·
   [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/usage/troubleshooting)
-- Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md) · [Go](go/CHANGELOG.md)
+- Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md) · [Go](go/CHANGELOG.md) · [Java](java/CHANGELOG.md)
 - [Roadmap](ROADMAP.md) — including the TypeScript legacy API removal planned for v3.0.
 
 ## Repository layout
@@ -196,8 +226,9 @@ _, _, err := client.PostMessageContext(
 - [`python/`](python/) — the established Python package (`slackblocks` on PyPI).
 - [`typescript/`](typescript/) — the TypeScript package (`@nicklambourne/slackblocks` on npm).
 - [`go/`](go/) — the Go v2 module (`github.com/nicklambourne/slackblocks/go/v2`).
+- [`java/`](java/) — the Java artifact (`io.github.nicklambourne:slackblocks` on Maven Central).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
-  and capability coverage that all three implementations are tested against.
+  and capability coverage that all four implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.
 
 ## Licensing
@@ -225,6 +256,9 @@ pnpm --filter @nicklambourne/slackblocks test
 
 cd go
 go test -race -cover ./...
+
+cd ../java
+./mvnw clean verify
 ```
 
 For the full development guide — testing conventions, the conformance-fixture workflow,

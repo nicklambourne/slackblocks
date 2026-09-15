@@ -27,6 +27,8 @@ Each implementation keeps a `conformance/skiplist.txt`. In any released state bo
 
 ## Limits
 
+`vocabulary.json` is the normative registry for Slack vocabularies that validation checks by name: the Slack-provided icon names accepted by icon objects, and the block types each surface (`message`, `modal`, `home`) accepts. Java generates its tables from this file. Python, TypeScript, and Go keep native tables and each has a test that fails when its tables differ from this file, so a vocabulary change lands in every implementation at once.
+
 `limits.json` is the normative registry for stable scalar constraints. Changes to limits and fixtures must land atomically with implementation updates (or a temporary skip-list entry during a multi-PR transition).
 
 Every scalar leaf in `limits.json` must have a corresponding invalid case whose `constraint` is the leaf's dotted path, so both implementations demonstrably reject values beyond each limit. Structural rules that are not scalar limits may have additional invalid cases. Implementations may hardcode limit values internally; the shared invalid-case corpus is what pins cross-language agreement.
