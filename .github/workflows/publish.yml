@@ -25,20 +25,21 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Install uv and Python
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
           python-version: "3.14"
 
       - name: Install dependencies
         run: uv sync --frozen --group dev
 
-      - name: Verify Python and TypeScript versions match
+      - name: Verify coordinated package versions
         run: |
           set -euo pipefail
           python_version=$(uv run --frozen python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
           typescript_version=$(uv run --frozen python -c "import json; print(json.load(open('../typescript/package.json'))['version'])")
-          if [ "$python_version" != "$typescript_version" ]; then
-            echo "::error::Python version '$python_version' does not match TypeScript version '$typescript_version'. Releases are coordinated; bump both together."
+          java_version=$(uv run --frozen python -c "import xml.etree.ElementTree as ET; root = ET.parse('../java/pom.xml').getroot(); print(root.find('{http://maven.apache.org/POM/4.0.0}version').text)")
+          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ]; then
+            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version."
             exit 1
           fi
 
@@ -86,7 +87,7 @@ jobs:
           path: dist
 
       - name: Install uv
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
 
       - name: Publish with trusted publishing
         run: uv publish --check-url https://pypi.org/simple/slackblocks/ dist/*

@@ -24,20 +24,25 @@ final class FoundationTest {
   }
 
   @Test
+  void reportsTheMavenProjectVersion() {
+    assertEquals(System.getProperty("slackblocks.project.version"), Slackblocks.VERSION);
+  }
+
+  @Test
   void serializesAsSlackWireObjectRatherThanAnImplementationWrapper() {
-    BuilderState state = new BuilderState("Test", "section");
+    BuilderState state = new BuilderState("Test", "divider");
     state.set("block_id", "summary");
 
     TestValue value = state.build(TestValue::new);
 
-    assertEquals("{\"type\":\"section\",\"block_id\":\"summary\"}", value.toJson());
+    assertEquals("{\"type\":\"divider\",\"block_id\":\"summary\"}", value.toJson());
     assertEquals(
-        "[{\"type\":\"section\",\"block_id\":\"summary\"}]", SlackblocksJson.write(List.of(value)));
+        "[{\"type\":\"divider\",\"block_id\":\"summary\"}]", SlackblocksJson.write(List.of(value)));
   }
 
   @Test
   void builtValuesAreDefensiveSnapshots() {
-    BuilderState state = new BuilderState("Test", "section");
+    BuilderState state = new BuilderState("Test", "divider");
     state.set("block_id", "first");
     TestValue first = state.build(TestValue::new);
     state.set("block_id", "second");
@@ -47,20 +52,21 @@ final class FoundationTest {
 
   @Test
   void nestedBuildersAreMaterializedOnceAtBuildTime() {
-    BuilderState nestedState = new BuilderState("Nested", "button");
-    nestedState.set("action_id", "first");
-    BuilderState parent = new BuilderState("Test", "section");
-    parent.set("accessory", new TestBuilder(nestedState));
+    BuilderState nestedState = new BuilderState("Nested", "divider");
+    nestedState.set("block_id", "first");
+    BuilderState parent = new BuilderState("Test", "divider");
+    parent.set("nested", new TestBuilder(nestedState));
 
     TestValue value = parent.build(TestValue::new);
-    nestedState.set("action_id", "second");
+    nestedState.set("block_id", "x".repeat(300));
 
-    assertEquals(Map.of("type", "button", "action_id", "first"), value.toMap().get("accessory"));
+    assertEquals(Map.of("type", "divider", "block_id", "first"), value.toMap().get("nested"));
+    assertEquals(value.toJson(), value.toJson());
   }
 
   @Test
   void materializedValuesCannotBeModified() {
-    BuilderState state = new BuilderState("Test", "section");
+    BuilderState state = new BuilderState("Test", "divider");
     state.append("fields", Map.of("type", "mrkdwn", "text", "a"));
     Map<String, Object> wire = state.build(TestValue::new).toMap();
 
@@ -70,7 +76,7 @@ final class FoundationTest {
 
   @Test
   void appendingNothingLeavesTheFieldUnsetAndNullItemsAreRejected() {
-    BuilderState state = new BuilderState("Test", "section");
+    BuilderState state = new BuilderState("Test", "divider");
     state.append("fields");
 
     assertFalse(state.build(TestValue::new).toMap().containsKey("fields"));

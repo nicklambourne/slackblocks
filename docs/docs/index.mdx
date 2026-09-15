@@ -3,7 +3,7 @@ sidebar_label: Welcome
 sidebar_position: 1
 ---
 
-import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Welcome to `slackblocks`!
 
@@ -11,14 +11,14 @@ import LanguageContent, { Go, Python, TypeScript } from '@site/src/components/La
   <img width="30%" src="/slackblocks/img/sb.png" alt="slackblocks logo" />
 </p>
 
-`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, and Go — without writing JSON by hand.
+`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, and Java — without writing JSON by hand.
 
 It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control. `slackblocks` gives you:
 
-- **Typed, idiomatic APIs** for Python, TypeScript, and Go.
+- **Typed, idiomatic APIs** for Python, TypeScript, Go, and Java.
 - **Validation as you build** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
 - **Drop-in compatibility** with established Slack SDKs and clients and their plain JSON payloads.
-- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, and Go integrates with `slack-go/slack` for delivery.
+- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, and Java implements the official Slack SDK block interfaces.
 
 ## Quick Start
 
@@ -145,6 +145,35 @@ Every block uses the same `New<Kind>Block` naming pattern. Start with [`NewSecti
 [`ValidationError`](/reference/go/errors#validationerror) exposes stable error categories and field paths. [`Object`](/reference/go/core#object) is the JSON-compatible wire type returned by every completed builder.
 
 </Go>
+<Java>
+
+The Java artifact uses immutable values built with concrete, fluent builders. Every completed block implements the official Slack Java SDK's `LayoutBlock` interface, so no adapter or conversion layer is required.
+
+### Composition objects
+
+[`PlainText`](reference/java/objects#plaintext), [`MarkdownText`](reference/java/objects#markdowntext), and [`Option`](reference/java/objects#option) create the small values shared by blocks and elements.
+
+### Elements
+
+Interactive controls include [`ButtonElement`](reference/java/elements#buttonelement), [`CheckboxesElement`](reference/java/elements#checkboxeselement), [`StaticSelectElement`](reference/java/elements#staticselectelement), and [`DatePickerElement`](reference/java/elements#datepickerelement).
+
+### Blocks
+
+Every block is named `<Kind>Block` and starts with a static `builder()` method. Begin with [`SectionBlock`](reference/java/blocks#sectionblock), [`ActionsBlock`](reference/java/blocks#actionsblock), or [`HeaderBlock`](reference/java/blocks#headerblock), then explore cards, carousels, containers, tables, charts, plans, task cards, rich text, and the rest of the shared Block Kit surface.
+
+### Payloads and views
+
+[`MessagePayload`](reference/java/payloads#messagepayload), [`WebhookMessage`](reference/java/payloads#webhookmessage), and [`MessageResponse`](reference/java/payloads#messageresponse) build complete JSON payloads. [`ModalView`](reference/java/payloads#modalview) and [`HomeTabView`](reference/java/payloads#hometabview) build Slack view payloads.
+
+### Higher-level components
+
+[`Paginator`](reference/java/components#paginator) renders one page with previous and next controls. [`Accordion`](reference/java/components#accordion) expands concrete, Slack-native collapsible containers.
+
+### Validation and JSON
+
+[`ValidationException`](reference/java/errors#validationexception) exposes stable categories and field paths. [`SlackObject`](reference/java/core#slackobject) is the immutable JSON-compatible contract returned by every completed builder.
+
+</Java>
 </LanguageContent>
 
 ## Guides
@@ -179,4 +208,14 @@ Every block uses the same `New<Kind>Block` naming pattern. Start with [`NewSecti
 - [Contributing](contributing)
 
 </Go>
+<Java>
+
+- [Installation](usage/installation)
+- [Using Blocks](usage/using_blocks)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook)
+- [Troubleshooting & FAQ](usage/troubleshooting)
+- [Contributing](contributing)
+
+</Java>
 </LanguageContent>

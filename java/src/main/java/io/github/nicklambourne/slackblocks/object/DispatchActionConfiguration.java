@@ -8,6 +8,7 @@ import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
 import io.github.nicklambourne.slackblocks.internal.TypedFields;
+import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import java.util.List;
 import java.util.Map;
 
@@ -99,6 +100,27 @@ public final class DispatchActionConfiguration implements SlackObject {
      */
     public Builder triggerActionsOn(String... values) {
       state.append("trigger_actions_on", (Object[]) values);
+      return this;
+    }
+
+    /**
+     * Sets a Slack field that has no named method yet, such as a field Slack introduced after this
+     * release. Prefer the named methods, which are typed and documented.
+     *
+     * <p>The value is checked at build time like any other field. It must be a string, number,
+     * boolean, slackblocks value or builder, or a list or map containing only those.
+     *
+     * @param field Slack JSON field name
+     * @param value JSON-compatible value
+     * @return this builder
+     * @throws IllegalArgumentException if the field name is empty or the value cannot be written as
+     *     Slack JSON
+     */
+    public Builder wireField(String field, Object value) {
+      if (field.isEmpty()) {
+        throw new IllegalArgumentException("field must not be empty");
+      }
+      state.set(field, WireObjects.requireWireValue(field, value));
       return this;
     }
 

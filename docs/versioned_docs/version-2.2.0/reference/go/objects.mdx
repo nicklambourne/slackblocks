@@ -1,0 +1,1245 @@
+---
+sidebar_position: 3
+toc_max_heading_level: 2
+---
+
+# Composition Objects
+
+This page documents the public Go API for composition objects. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.
+
+## NewAreaChart
+
+NewAreaChart creates an area-chart object.
+
+```go
+func NewAreaChart() *AreaChartBuilder
+```
+
+### AreaChartBuilder
+
+AreaChartBuilder is the concrete fluent builder returned by NewAreaChart. Use NewAreaChart rather than constructing this type directly.
+
+```go
+type AreaChartBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### AreaChartBuilder.Series
+
+Series appends chart series.
+
+```go
+func (b *AreaChartBuilder) Series(values ...any) *AreaChartBuilder
+```
+
+#### AreaChartBuilder.AxisConfig
+
+AxisConfig sets chart-axis configuration.
+
+```go
+func (b *AreaChartBuilder) AxisConfig(value any) *AreaChartBuilder
+```
+
+Every `AreaChartBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewAxisConfig
+
+NewAxisConfig creates category and label settings for a chart axis.
+
+```go
+func NewAxisConfig() *AxisConfigBuilder
+```
+
+### AxisConfigBuilder
+
+AxisConfigBuilder is the concrete fluent builder returned by NewAxisConfig. Use NewAxisConfig rather than constructing this type directly.
+
+```go
+type AxisConfigBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### AxisConfigBuilder.Categories
+
+Categories appends chart axis categories.
+
+```go
+func (b *AxisConfigBuilder) Categories(values ...string) *AxisConfigBuilder
+```
+
+#### AxisConfigBuilder.XLabel
+
+XLabel sets a chart x-axis label.
+
+```go
+func (b *AxisConfigBuilder) XLabel(value string) *AxisConfigBuilder
+```
+
+#### AxisConfigBuilder.YLabel
+
+YLabel sets a chart y-axis label.
+
+```go
+func (b *AxisConfigBuilder) YLabel(value string) *AxisConfigBuilder
+```
+
+Every `AxisConfigBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewBarChart
+
+NewBarChart creates a bar-chart object.
+
+```go
+func NewBarChart() *BarChartBuilder
+```
+
+### BarChartBuilder
+
+BarChartBuilder is the concrete fluent builder returned by NewBarChart. Use NewBarChart rather than constructing this type directly.
+
+```go
+type BarChartBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### BarChartBuilder.Series
+
+Series appends chart series.
+
+```go
+func (b *BarChartBuilder) Series(values ...any) *BarChartBuilder
+```
+
+#### BarChartBuilder.AxisConfig
+
+AxisConfig sets chart-axis configuration.
+
+```go
+func (b *BarChartBuilder) AxisConfig(value any) *BarChartBuilder
+```
+
+Every `BarChartBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewChartSegment
+
+NewChartSegment creates a labelled pie-chart segment.
+
+```go
+func NewChartSegment() *ChartSegmentBuilder
+```
+
+### ChartSegmentBuilder
+
+ChartSegmentBuilder is the concrete fluent builder returned by NewChartSegment. Use NewChartSegment rather than constructing this type directly.
+
+```go
+type ChartSegmentBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ChartSegmentBuilder.Label
+
+Label sets a label field.
+
+```go
+func (b *ChartSegmentBuilder) Label(value any) *ChartSegmentBuilder
+```
+
+#### ChartSegmentBuilder.Value
+
+Value sets an application-defined value.
+
+```go
+func (b *ChartSegmentBuilder) Value(value any) *ChartSegmentBuilder
+```
+
+Every `ChartSegmentBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewColumnSettings
+
+NewColumnSettings creates table-column display settings.
+
+```go
+func NewColumnSettings() *ColumnSettingsBuilder
+```
+
+### ColumnSettingsBuilder
+
+ColumnSettingsBuilder is the concrete fluent builder returned by NewColumnSettings. Use NewColumnSettings rather than constructing this type directly.
+
+```go
+type ColumnSettingsBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ColumnSettingsBuilder.Align
+
+Align sets table-column alignment.
+
+```go
+func (b *ColumnSettingsBuilder) Align(value string) *ColumnSettingsBuilder
+```
+
+#### ColumnSettingsBuilder.IsWrapped
+
+IsWrapped controls table-column text wrapping.
+
+```go
+func (b *ColumnSettingsBuilder) IsWrapped(value bool) *ColumnSettingsBuilder
+```
+
+Every `ColumnSettingsBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewConfirmation
+
+NewConfirmation creates a confirmation-dialog composition object.
+
+```go
+func NewConfirmation() *ConfirmationBuilder
+```
+
+### ConfirmationBuilder
+
+ConfirmationBuilder is the concrete fluent builder returned by NewConfirmation. Use NewConfirmation rather than constructing this type directly.
+
+```go
+type ConfirmationBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ConfirmationBuilder.Title
+
+Title sets a title field.
+
+```go
+func (b *ConfirmationBuilder) Title(value any) *ConfirmationBuilder
+```
+
+#### ConfirmationBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *ConfirmationBuilder) Text(value any) *ConfirmationBuilder
+```
+
+#### ConfirmationBuilder.Confirm
+
+Confirm sets a confirmation object or its confirm-button label, according to
+the builder being configured.
+
+```go
+func (b *ConfirmationBuilder) Confirm(value any) *ConfirmationBuilder
+```
+
+#### ConfirmationBuilder.Deny
+
+Deny sets the denial-button label on a confirmation object.
+
+```go
+func (b *ConfirmationBuilder) Deny(value any) *ConfirmationBuilder
+```
+
+#### ConfirmationBuilder.Style
+
+Style sets a Slack-supported visual or layout style.
+
+```go
+func (b *ConfirmationBuilder) Style(value any) *ConfirmationBuilder
+```
+
+Every `ConfirmationBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewConversationFilter
+
+NewConversationFilter creates a conversation select-menu filter.
+
+```go
+func NewConversationFilter() *ConversationFilterBuilder
+```
+
+### ConversationFilterBuilder
+
+ConversationFilterBuilder is the concrete fluent builder returned by NewConversationFilter. Use NewConversationFilter rather than constructing this type directly.
+
+```go
+type ConversationFilterBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### ConversationFilterBuilder.Include
+
+Include appends conversation kinds to a conversation filter.
+
+```go
+func (b *ConversationFilterBuilder) Include(values ...string) *ConversationFilterBuilder
+```
+
+#### ConversationFilterBuilder.ExcludeExternalSharedChannels
+
+ExcludeExternalSharedChannels configures conversation filtering.
+
+```go
+func (b *ConversationFilterBuilder) ExcludeExternalSharedChannels(value bool) *ConversationFilterBuilder
+```
+
+#### ConversationFilterBuilder.ExcludeBotUsers
+
+ExcludeBotUsers configures conversation filtering.
+
+```go
+func (b *ConversationFilterBuilder) ExcludeBotUsers(value bool) *ConversationFilterBuilder
+```
+
+Every `ConversationFilterBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDataPoint
+
+NewDataPoint creates a labelled chart data point.
+
+```go
+func NewDataPoint() *DataPointBuilder
+```
+
+### DataPointBuilder
+
+DataPointBuilder is the concrete fluent builder returned by NewDataPoint. Use NewDataPoint rather than constructing this type directly.
+
+```go
+type DataPointBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### DataPointBuilder.Label
+
+Label sets a label field.
+
+```go
+func (b *DataPointBuilder) Label(value any) *DataPointBuilder
+```
+
+#### DataPointBuilder.Value
+
+Value sets an application-defined value.
+
+```go
+func (b *DataPointBuilder) Value(value any) *DataPointBuilder
+```
+
+Every `DataPointBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDataSeries
+
+NewDataSeries creates a named chart data series.
+
+```go
+func NewDataSeries() *DataSeriesBuilder
+```
+
+### DataSeriesBuilder
+
+DataSeriesBuilder is the concrete fluent builder returned by NewDataSeries. Use NewDataSeries rather than constructing this type directly.
+
+```go
+type DataSeriesBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### DataSeriesBuilder.Name
+
+Name sets a named Slack value.
+
+```go
+func (b *DataSeriesBuilder) Name(value string) *DataSeriesBuilder
+```
+
+#### DataSeriesBuilder.Data
+
+Data appends data points.
+
+```go
+func (b *DataSeriesBuilder) Data(values ...any) *DataSeriesBuilder
+```
+
+Every `DataSeriesBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDispatchActionConfiguration
+
+NewDispatchActionConfiguration creates an input dispatch configuration.
+
+```go
+func NewDispatchActionConfiguration() *DispatchActionConfigurationBuilder
+```
+
+### DispatchActionConfigurationBuilder
+
+DispatchActionConfigurationBuilder is the concrete fluent builder returned by NewDispatchActionConfiguration. Use NewDispatchActionConfiguration rather than constructing this type directly.
+
+```go
+type DispatchActionConfigurationBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### DispatchActionConfigurationBuilder.TriggerActionsOn
+
+TriggerActionsOn appends dispatch-action trigger names.
+
+```go
+func (b *DispatchActionConfigurationBuilder) TriggerActionsOn(values ...string) *DispatchActionConfigurationBuilder
+```
+
+Every `DispatchActionConfigurationBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewInputParameter
+
+NewInputParameter creates a customizable workflow input parameter.
+
+```go
+func NewInputParameter() *InputParameterBuilder
+```
+
+### InputParameterBuilder
+
+InputParameterBuilder is the concrete fluent builder returned by NewInputParameter. Use NewInputParameter rather than constructing this type directly.
+
+```go
+type InputParameterBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### InputParameterBuilder.Name
+
+Name sets a named Slack value.
+
+```go
+func (b *InputParameterBuilder) Name(value string) *InputParameterBuilder
+```
+
+#### InputParameterBuilder.Value
+
+Value sets an application-defined value.
+
+```go
+func (b *InputParameterBuilder) Value(value any) *InputParameterBuilder
+```
+
+Every `InputParameterBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewLineChart
+
+NewLineChart creates a line-chart object.
+
+```go
+func NewLineChart() *LineChartBuilder
+```
+
+### LineChartBuilder
+
+LineChartBuilder is the concrete fluent builder returned by NewLineChart. Use NewLineChart rather than constructing this type directly.
+
+```go
+type LineChartBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### LineChartBuilder.Series
+
+Series appends chart series.
+
+```go
+func (b *LineChartBuilder) Series(values ...any) *LineChartBuilder
+```
+
+#### LineChartBuilder.AxisConfig
+
+AxisConfig sets chart-axis configuration.
+
+```go
+func (b *LineChartBuilder) AxisConfig(value any) *LineChartBuilder
+```
+
+Every `LineChartBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewMarkdown
+
+NewMarkdown creates a Slack mrkdwn composition object.
+
+```go
+func NewMarkdown() *MarkdownBuilder
+```
+
+### MarkdownBuilder
+
+MarkdownBuilder is the concrete fluent builder returned by NewMarkdown. Use NewMarkdown rather than constructing this type directly.
+
+```go
+type MarkdownBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### MarkdownBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *MarkdownBuilder) Text(value any) *MarkdownBuilder
+```
+
+#### MarkdownBuilder.Verbatim
+
+Verbatim controls automatic Slack mrkdwn parsing.
+
+```go
+func (b *MarkdownBuilder) Verbatim(value bool) *MarkdownBuilder
+```
+
+Every `MarkdownBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewOption
+
+NewOption creates a selectable option composition object.
+
+```go
+func NewOption() *OptionBuilder
+```
+
+### OptionBuilder
+
+OptionBuilder is the concrete fluent builder returned by NewOption. Use NewOption rather than constructing this type directly.
+
+```go
+type OptionBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### OptionBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *OptionBuilder) Text(value any) *OptionBuilder
+```
+
+#### OptionBuilder.Value
+
+Value sets an application-defined value.
+
+```go
+func (b *OptionBuilder) Value(value any) *OptionBuilder
+```
+
+#### OptionBuilder.Description
+
+Description sets supporting descriptive text.
+
+```go
+func (b *OptionBuilder) Description(value any) *OptionBuilder
+```
+
+#### OptionBuilder.URL
+
+URL sets a URL field.
+
+```go
+func (b *OptionBuilder) URL(value string) *OptionBuilder
+```
+
+Every `OptionBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewOptionGroup
+
+NewOptionGroup creates a labelled group of selectable options.
+
+```go
+func NewOptionGroup() *OptionGroupBuilder
+```
+
+### OptionGroupBuilder
+
+OptionGroupBuilder is the concrete fluent builder returned by NewOptionGroup. Use NewOptionGroup rather than constructing this type directly.
+
+```go
+type OptionGroupBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### OptionGroupBuilder.Label
+
+Label sets a label field.
+
+```go
+func (b *OptionGroupBuilder) Label(value any) *OptionGroupBuilder
+```
+
+#### OptionGroupBuilder.Options
+
+Options appends selectable option objects.
+
+```go
+func (b *OptionGroupBuilder) Options(values ...any) *OptionGroupBuilder
+```
+
+Every `OptionGroupBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewPieChart
+
+NewPieChart creates a pie-chart object.
+
+```go
+func NewPieChart() *PieChartBuilder
+```
+
+### PieChartBuilder
+
+PieChartBuilder is the concrete fluent builder returned by NewPieChart. Use NewPieChart rather than constructing this type directly.
+
+```go
+type PieChartBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### PieChartBuilder.Segments
+
+Segments appends pie-chart segments.
+
+```go
+func (b *PieChartBuilder) Segments(values ...any) *PieChartBuilder
+```
+
+Every `PieChartBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewPlainText
+
+NewPlainText creates a plain-text composition object.
+
+```go
+func NewPlainText() *PlainTextBuilder
+```
+
+### PlainTextBuilder
+
+PlainTextBuilder is the concrete fluent builder returned by NewPlainText. Use NewPlainText rather than constructing this type directly.
+
+```go
+type PlainTextBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### PlainTextBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *PlainTextBuilder) Text(value any) *PlainTextBuilder
+```
+
+#### PlainTextBuilder.Emoji
+
+Emoji controls Slack emoji shortcode conversion for plain text.
+
+```go
+func (b *PlainTextBuilder) Emoji(value bool) *PlainTextBuilder
+```
+
+Every `PlainTextBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRawNumber
+
+NewRawNumber creates a numeric data-table cell.
+
+```go
+func NewRawNumber() *RawNumberBuilder
+```
+
+### RawNumberBuilder
+
+RawNumberBuilder is the concrete fluent builder returned by NewRawNumber. Use NewRawNumber rather than constructing this type directly.
+
+```go
+type RawNumberBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RawNumberBuilder.Value
+
+Value sets an application-defined value.
+
+```go
+func (b *RawNumberBuilder) Value(value any) *RawNumberBuilder
+```
+
+#### RawNumberBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *RawNumberBuilder) Text(value any) *RawNumberBuilder
+```
+
+Every `RawNumberBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRawText
+
+NewRawText creates an unformatted table cell.
+
+```go
+func NewRawText() *RawTextBuilder
+```
+
+### RawTextBuilder
+
+RawTextBuilder is the concrete fluent builder returned by NewRawText. Use NewRawText rather than constructing this type directly.
+
+```go
+type RawTextBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RawTextBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *RawTextBuilder) Text(value any) *RawTextBuilder
+```
+
+Every `RawTextBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichText
+
+NewRichText creates a rich-text text run.
+
+```go
+func NewRichText() *RichTextBuilder
+```
+
+### RichTextBuilder
+
+RichTextBuilder is the concrete fluent builder returned by NewRichText. Use NewRichText rather than constructing this type directly.
+
+```go
+type RichTextBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RichTextBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *RichTextBuilder) Text(value any) *RichTextBuilder
+```
+
+#### RichTextBuilder.Style
+
+Style sets a Slack-supported visual or layout style.
+
+```go
+func (b *RichTextBuilder) Style(value any) *RichTextBuilder
+```
+
+Every `RichTextBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextChannel
+
+NewRichTextChannel creates a rich-text channel mention.
+
+```go
+func NewRichTextChannel() *RichTextChannelBuilder
+```
+
+### RichTextChannelBuilder
+
+RichTextChannelBuilder is the concrete fluent builder returned by NewRichTextChannel. Use NewRichTextChannel rather than constructing this type directly.
+
+```go
+type RichTextChannelBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RichTextChannelBuilder.ChannelID
+
+ChannelID sets a Slack channel ID.
+
+```go
+func (b *RichTextChannelBuilder) ChannelID(value string) *RichTextChannelBuilder
+```
+
+#### RichTextChannelBuilder.Style
+
+Style sets a Slack-supported visual or layout style.
+
+```go
+func (b *RichTextChannelBuilder) Style(value any) *RichTextChannelBuilder
+```
+
+Every `RichTextChannelBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextCodeBlock
+
+NewRichTextCodeBlock creates a preformatted rich-text block.
+
+```go
+func NewRichTextCodeBlock() *RichTextCodeBlockBuilder
+```
+
+### RichTextCodeBlockBuilder
+
+RichTextCodeBlockBuilder is the concrete fluent builder returned by NewRichTextCodeBlock. Use NewRichTextCodeBlock rather than constructing this type directly.
+
+```go
+type RichTextCodeBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RichTextCodeBlockBuilder.Elements
+
+Elements appends Slack elements.
+
+```go
+func (b *RichTextCodeBlockBuilder) Elements(values ...any) *RichTextCodeBlockBuilder
+```
+
+#### RichTextCodeBlockBuilder.Border
+
+Border sets a rich-text border depth.
+
+```go
+func (b *RichTextCodeBlockBuilder) Border(value int) *RichTextCodeBlockBuilder
+```
+
+Every `RichTextCodeBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextEmoji
+
+NewRichTextEmoji creates a rich-text emoji run.
+
+```go
+func NewRichTextEmoji() *RichTextEmojiBuilder
+```
+
+### RichTextEmojiBuilder
+
+RichTextEmojiBuilder is the concrete fluent builder returned by NewRichTextEmoji. Use NewRichTextEmoji rather than constructing this type directly.
+
+```go
+type RichTextEmojiBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RichTextEmojiBuilder.Name
+
+Name sets a named Slack value.
+
+```go
+func (b *RichTextEmojiBuilder) Name(value string) *RichTextEmojiBuilder
+```
+
+#### RichTextEmojiBuilder.SkinTone
+
+SkinTone sets an emoji skin-tone index.
+
+```go
+func (b *RichTextEmojiBuilder) SkinTone(value int) *RichTextEmojiBuilder
+```
+
+Every `RichTextEmojiBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextLink
+
+NewRichTextLink creates a rich-text link run.
+
+```go
+func NewRichTextLink() *RichTextLinkBuilder
+```
+
+### RichTextLinkBuilder
+
+RichTextLinkBuilder is the concrete fluent builder returned by NewRichTextLink. Use NewRichTextLink rather than constructing this type directly.
+
+```go
+type RichTextLinkBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RichTextLinkBuilder.URL
+
+URL sets a URL field.
+
+```go
+func (b *RichTextLinkBuilder) URL(value string) *RichTextLinkBuilder
+```
+
+#### RichTextLinkBuilder.Text
+
+Text sets a text-bearing field. Constructors coerce strings to the Slack
+text-object form required by that field.
+
+```go
+func (b *RichTextLinkBuilder) Text(value any) *RichTextLinkBuilder
+```
+
+#### RichTextLinkBuilder.Style
+
+Style sets a Slack-supported visual or layout style.
+
+```go
+func (b *RichTextLinkBuilder) Style(value any) *RichTextLinkBuilder
+```
+
+Every `RichTextLinkBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextList
+
+NewRichTextList creates an ordered or bullet rich-text list.
+
+```go
+func NewRichTextList() *RichTextListBuilder
+```
+
+### RichTextListBuilder
+
+RichTextListBuilder is the concrete fluent builder returned by NewRichTextList. Use NewRichTextList rather than constructing this type directly.
+
+```go
+type RichTextListBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RichTextListBuilder.Style
+
+Style sets a Slack-supported visual or layout style.
+
+```go
+func (b *RichTextListBuilder) Style(value any) *RichTextListBuilder
+```
+
+#### RichTextListBuilder.Elements
+
+Elements appends Slack elements.
+
+```go
+func (b *RichTextListBuilder) Elements(values ...any) *RichTextListBuilder
+```
+
+#### RichTextListBuilder.Indent
+
+Indent sets a rich-text list indent level.
+
+```go
+func (b *RichTextListBuilder) Indent(value int) *RichTextListBuilder
+```
+
+#### RichTextListBuilder.Offset
+
+Offset sets a rich-text list nesting offset.
+
+```go
+func (b *RichTextListBuilder) Offset(value int) *RichTextListBuilder
+```
+
+#### RichTextListBuilder.Border
+
+Border sets a rich-text border depth.
+
+```go
+func (b *RichTextListBuilder) Border(value int) *RichTextListBuilder
+```
+
+Every `RichTextListBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextQuote
+
+NewRichTextQuote creates a quoted rich-text block.
+
+```go
+func NewRichTextQuote() *RichTextQuoteBuilder
+```
+
+### RichTextQuoteBuilder
+
+RichTextQuoteBuilder is the concrete fluent builder returned by NewRichTextQuote. Use NewRichTextQuote rather than constructing this type directly.
+
+```go
+type RichTextQuoteBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RichTextQuoteBuilder.Elements
+
+Elements appends Slack elements.
+
+```go
+func (b *RichTextQuoteBuilder) Elements(values ...any) *RichTextQuoteBuilder
+```
+
+#### RichTextQuoteBuilder.Border
+
+Border sets a rich-text border depth.
+
+```go
+func (b *RichTextQuoteBuilder) Border(value int) *RichTextQuoteBuilder
+```
+
+Every `RichTextQuoteBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextSection
+
+NewRichTextSection creates a rich-text inline section.
+
+```go
+func NewRichTextSection() *RichTextSectionBuilder
+```
+
+### RichTextSectionBuilder
+
+RichTextSectionBuilder is the concrete fluent builder returned by NewRichTextSection. Use NewRichTextSection rather than constructing this type directly.
+
+```go
+type RichTextSectionBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RichTextSectionBuilder.Elements
+
+Elements appends Slack elements.
+
+```go
+func (b *RichTextSectionBuilder) Elements(values ...any) *RichTextSectionBuilder
+```
+
+Every `RichTextSectionBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextUser
+
+NewRichTextUser creates a rich-text user mention.
+
+```go
+func NewRichTextUser() *RichTextUserBuilder
+```
+
+### RichTextUserBuilder
+
+RichTextUserBuilder is the concrete fluent builder returned by NewRichTextUser. Use NewRichTextUser rather than constructing this type directly.
+
+```go
+type RichTextUserBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RichTextUserBuilder.UserID
+
+UserID sets a Slack user ID.
+
+```go
+func (b *RichTextUserBuilder) UserID(value string) *RichTextUserBuilder
+```
+
+#### RichTextUserBuilder.Style
+
+Style sets a Slack-supported visual or layout style.
+
+```go
+func (b *RichTextUserBuilder) Style(value any) *RichTextUserBuilder
+```
+
+Every `RichTextUserBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextUserGroup
+
+NewRichTextUserGroup creates a rich-text user-group mention.
+
+```go
+func NewRichTextUserGroup() *RichTextUserGroupBuilder
+```
+
+### RichTextUserGroupBuilder
+
+RichTextUserGroupBuilder is the concrete fluent builder returned by NewRichTextUserGroup. Use NewRichTextUserGroup rather than constructing this type directly.
+
+```go
+type RichTextUserGroupBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### RichTextUserGroupBuilder.UserGroupID
+
+UserGroupID sets a Slack user-group ID.
+
+```go
+func (b *RichTextUserGroupBuilder) UserGroupID(value string) *RichTextUserGroupBuilder
+```
+
+#### RichTextUserGroupBuilder.Style
+
+Style sets a Slack-supported visual or layout style.
+
+```go
+func (b *RichTextUserGroupBuilder) Style(value any) *RichTextUserGroupBuilder
+```
+
+Every `RichTextUserGroupBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewSlackFile
+
+NewSlackFile creates a Slack-hosted file reference.
+
+```go
+func NewSlackFile() *SlackFileBuilder
+```
+
+### SlackFileBuilder
+
+SlackFileBuilder is the concrete fluent builder returned by NewSlackFile. Use NewSlackFile rather than constructing this type directly.
+
+```go
+type SlackFileBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### SlackFileBuilder.SlackFileID
+
+SlackFileID sets a Slack-hosted file identifier.
+
+```go
+func (b *SlackFileBuilder) SlackFileID(value string) *SlackFileBuilder
+```
+
+#### SlackFileBuilder.SlackFileURL
+
+SlackFileURL sets a Slack-hosted file URL.
+
+```go
+func (b *SlackFileBuilder) SlackFileURL(value string) *SlackFileBuilder
+```
+
+Every `SlackFileBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewSlackIcon
+
+NewSlackIcon creates a named Slack-rendered icon.
+
+```go
+func NewSlackIcon() *SlackIconBuilder
+```
+
+### SlackIconBuilder
+
+SlackIconBuilder is the concrete fluent builder returned by NewSlackIcon. Use NewSlackIcon rather than constructing this type directly.
+
+```go
+type SlackIconBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### SlackIconBuilder.Name
+
+Name sets a named Slack value.
+
+```go
+func (b *SlackIconBuilder) Name(value string) *SlackIconBuilder
+```
+
+Every `SlackIconBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewTrigger
+
+NewTrigger creates a workflow link trigger.
+
+```go
+func NewTrigger() *TriggerBuilder
+```
+
+### TriggerBuilder
+
+TriggerBuilder is the concrete fluent builder returned by NewTrigger. Use NewTrigger rather than constructing this type directly.
+
+```go
+type TriggerBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### TriggerBuilder.URL
+
+URL sets a URL field.
+
+```go
+func (b *TriggerBuilder) URL(value string) *TriggerBuilder
+```
+
+#### TriggerBuilder.CustomizableInputParameters
+
+CustomizableInputParameters appends workflow parameters.
+
+```go
+func (b *TriggerBuilder) CustomizableInputParameters(values ...any) *TriggerBuilder
+```
+
+Every `TriggerBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewWorkflow
+
+NewWorkflow creates a workflow composition object.
+
+```go
+func NewWorkflow() *WorkflowBuilder
+```
+
+### WorkflowBuilder
+
+WorkflowBuilder is the concrete fluent builder returned by NewWorkflow. Use NewWorkflow rather than constructing this type directly.
+
+```go
+type WorkflowBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time.
+
+#### WorkflowBuilder.Trigger
+
+Trigger sets a workflow trigger.
+
+```go
+func (b *WorkflowBuilder) Trigger(value any) *WorkflowBuilder
+```
+
+Every `WorkflowBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
