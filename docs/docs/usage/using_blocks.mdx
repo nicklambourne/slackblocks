@@ -92,7 +92,7 @@ block, err := slackblocks.NewSectionBlock().
             ActionID("checkboxes-action").
             Options(
                 slackblocks.NewOption().
-                    Text(slackblocks.NewMarkdown().Text("*Your Only Option*")).
+                    TextObject(slackblocks.NewMarkdown().Text("*Your Only Option*")).
                     Value("option_one"),
             ),
     ).
@@ -214,9 +214,9 @@ block, err := slackblocks.NewRichTextBlock().
     BlockID("fake_block_id").
     Elements(
         slackblocks.NewRichTextSection().Elements(
-            slackblocks.NewRichText().Text("You 'bout to witness hip-hop in its most purest\n").Style(slackblocks.Object{"bold": true}),
-            slackblocks.NewRichText().Text("Most rawest form, flow almost flawless\n").Style(slackblocks.Object{"strike": true}),
-            slackblocks.NewRichText().Text("Most hardest, most honest known artist\n").Style(slackblocks.Object{"italic": true}),
+            slackblocks.NewRichText().Text("You 'bout to witness hip-hop in its most purest\n").Style(slackblocks.RichTextStyle{"bold": true}),
+            slackblocks.NewRichText().Text("Most rawest form, flow almost flawless\n").Style(slackblocks.RichTextStyle{"strike": true}),
+            slackblocks.NewRichText().Text("Most hardest, most honest known artist\n").Style(slackblocks.RichTextStyle{"italic": true}),
         ),
     ).
     Build()
@@ -573,8 +573,8 @@ InputBlock()
 
 ```go
 block, err := slackblocks.NewInputBlock().
-    Label(slackblocks.NewPlainText().Text("Label").Emoji(true)).
-    Hint(slackblocks.NewPlainText().Text("Hint").Emoji(true)).
+    LabelObject(slackblocks.NewPlainText().Text("Label").Emoji(true)).
+    HintObject(slackblocks.NewPlainText().Text("Hint").Emoji(true)).
     Element(slackblocks.NewPlainTextInput().ActionID("action")).
     BlockID("fake_block_id").
     Optional(true).
@@ -904,9 +904,9 @@ block, err := slackblocks.NewActionsBlock().
         slackblocks.NewCheckboxes().
             ActionID("actionId-0").
             Options(
-                slackblocks.NewOption().Text(slackblocks.NewMarkdown().Text("*a*")).Value("a").Description("*a*"),
-                slackblocks.NewOption().Text(slackblocks.NewMarkdown().Text("*b*")).Value("b").Description("*b*"),
-                slackblocks.NewOption().Text(slackblocks.NewMarkdown().Text("*c*")).Value("c").Description("*c*"),
+                slackblocks.NewOption().TextObject(slackblocks.NewMarkdown().Text("*a*")).Value("a").Description("*a*"),
+                slackblocks.NewOption().TextObject(slackblocks.NewMarkdown().Text("*b*")).Value("b").Description("*b*"),
+                slackblocks.NewOption().TextObject(slackblocks.NewMarkdown().Text("*c*")).Value("c").Description("*c*"),
             ),
     ).
     Build()
@@ -1090,19 +1090,19 @@ block, err := slackblocks.NewTableBlock().
         slackblocks.NewColumnSettings().Align("left"),
     ).
     Rows(
-        []any{
+        []slackblocks.TableCell{
             slackblocks.NewRichTextBlock().Elements(
                 slackblocks.NewRichTextSection().Elements(
-                    slackblocks.NewRichText().Text("Header 1").Style(slackblocks.Object{"bold": true}),
+                    slackblocks.NewRichText().Text("Header 1").Style(slackblocks.RichTextStyle{"bold": true}),
                 ),
             ),
             slackblocks.NewRichTextBlock().Elements(
                 slackblocks.NewRichTextSection().Elements(
-                    slackblocks.NewRichText().Text("Header 2").Style(slackblocks.Object{"bold": true}),
+                    slackblocks.NewRichText().Text("Header 2").Style(slackblocks.RichTextStyle{"bold": true}),
                 ),
             ),
         },
-        []any{
+        []slackblocks.TableCell{
             slackblocks.NewRawText().Text("Datum 1"),
             slackblocks.NewRichTextBlock().Elements(
                 slackblocks.NewRichTextSection().Elements(
@@ -1890,8 +1890,8 @@ DataTableBlock()
 block, err := slackblocks.NewDataTableBlock().
     Caption("Team scores").
     Rows(
-        []any{slackblocks.NewRawText().Text("Name"), slackblocks.NewRawText().Text("Score")},
-        []any{slackblocks.NewRawText().Text("Alice"), slackblocks.NewRawNumber().Value(42).Text("42")},
+        []slackblocks.DataTableCell{slackblocks.NewRawText().Text("Name"), slackblocks.NewRawText().Text("Score")},
+        []slackblocks.DataTableCell{slackblocks.NewRawText().Text("Alice"), slackblocks.NewRawNumber().Value(42).Text("42")},
     ).
     BlockID("fake_block_id").
     Build()

@@ -2,40 +2,378 @@
 
 package slackblocks
 
+// Block is a layout block, or a component that expands to layout blocks, accepted by message,
+// modal, App Home, attachment, and container block collections.
+// Implemented by *AccordionBuilder, *AccordionSectionBuilder, *ActionsBlockBuilder,
+// *AlertBlockBuilder, *CardBlockBuilder, *CarouselBlockBuilder, *ContainerBlockBuilder,
+// *ContextActionsBlockBuilder, *ContextBlockBuilder, *DataTableBlockBuilder,
+// *DataVisualizationBlockBuilder, *DividerBlockBuilder, *FileBlockBuilder, *HeaderBlockBuilder,
+// *ImageBlockBuilder, *InputBlockBuilder, *MarkdownBlockBuilder, *PaginatorBuilder,
+// *PlanBlockBuilder, *RichTextBlockBuilder, *SectionBlockBuilder, *TableBlockBuilder,
+// *TaskCardBlockBuilder, and *VideoBlockBuilder.
+type Block interface {
+	slackblocksBlock()
+}
+
+func (*AccordionBuilder) slackblocksBlock()              {}
+func (*AccordionSectionBuilder) slackblocksBlock()       {}
+func (*ActionsBlockBuilder) slackblocksBlock()           {}
+func (*AlertBlockBuilder) slackblocksBlock()             {}
+func (*CardBlockBuilder) slackblocksBlock()              {}
+func (*CarouselBlockBuilder) slackblocksBlock()          {}
+func (*ContainerBlockBuilder) slackblocksBlock()         {}
+func (*ContextActionsBlockBuilder) slackblocksBlock()    {}
+func (*ContextBlockBuilder) slackblocksBlock()           {}
+func (*DataTableBlockBuilder) slackblocksBlock()         {}
+func (*DataVisualizationBlockBuilder) slackblocksBlock() {}
+func (*DividerBlockBuilder) slackblocksBlock()           {}
+func (*FileBlockBuilder) slackblocksBlock()              {}
+func (*HeaderBlockBuilder) slackblocksBlock()            {}
+func (*ImageBlockBuilder) slackblocksBlock()             {}
+func (*InputBlockBuilder) slackblocksBlock()             {}
+func (*MarkdownBlockBuilder) slackblocksBlock()          {}
+func (*PaginatorBuilder) slackblocksBlock()              {}
+func (*PlanBlockBuilder) slackblocksBlock()              {}
+func (*RichTextBlockBuilder) slackblocksBlock()          {}
+func (*SectionBlockBuilder) slackblocksBlock()           {}
+func (*TableBlockBuilder) slackblocksBlock()             {}
+func (*TaskCardBlockBuilder) slackblocksBlock()          {}
+func (*VideoBlockBuilder) slackblocksBlock()             {}
+
+// Chart is a pie, bar, area, or line chart that a data visualization block can display.
+// Implemented by *AreaChartBuilder, *BarChartBuilder, *LineChartBuilder, and *PieChartBuilder.
+type Chart interface {
+	slackblocksChart()
+}
+
+func (*AreaChartBuilder) slackblocksChart() {}
+func (*BarChartBuilder) slackblocksChart()  {}
+func (*LineChartBuilder) slackblocksChart() {}
+func (*PieChartBuilder) slackblocksChart()  {}
+
+// ContextActionsElement is feedback buttons or an icon button that can appear in a context
+// actions block.
+// Implemented by *FeedbackButtonsBuilder and *IconButtonBuilder.
+type ContextActionsElement interface {
+	slackblocksContextActionsElement()
+}
+
+func (*FeedbackButtonsBuilder) slackblocksContextActionsElement() {}
+func (*IconButtonBuilder) slackblocksContextActionsElement()      {}
+
+// ContextElement is an image element or text object that can appear in a context block.
+// Implemented by *ImageElementBuilder, *MarkdownBuilder, and *PlainTextBuilder.
+type ContextElement interface {
+	slackblocksContextElement()
+}
+
+func (*ImageElementBuilder) slackblocksContextElement() {}
+func (*MarkdownBuilder) slackblocksContextElement()     {}
+func (*PlainTextBuilder) slackblocksContextElement()    {}
+
+// DataTableCell is raw text, a raw number, or a rich text block that can appear as a data table
+// cell.
+// Implemented by *RawNumberBuilder, *RawTextBuilder, and *RichTextBlockBuilder.
+type DataTableCell interface {
+	slackblocksDataTableCell()
+}
+
+func (*RawNumberBuilder) slackblocksDataTableCell()     {}
+func (*RawTextBuilder) slackblocksDataTableCell()       {}
+func (*RichTextBlockBuilder) slackblocksDataTableCell() {}
+
+// Element is an interactive, visual, or input element that can appear in an actions block or as
+// a section accessory.
+// Implemented by *ButtonBuilder, *ChannelMultiSelectBuilder, *ChannelSelectBuilder,
+// *CheckboxesBuilder, *ConversationMultiSelectBuilder, *ConversationSelectBuilder,
+// *DatePickerBuilder, *DateTimePickerBuilder, *EmailInputBuilder, *ExternalMultiSelectBuilder,
+// *ExternalSelectBuilder, *FeedbackButtonsBuilder, *FileInputBuilder, *IconButtonBuilder,
+// *ImageElementBuilder, *NumberInputBuilder, *OverflowBuilder, *PlainTextInputBuilder,
+// *RadioButtonsBuilder, *RichTextInputBuilder, *StaticMultiSelectBuilder, *StaticSelectBuilder,
+// *TimePickerBuilder, *URLInputBuilder, *UserMultiSelectBuilder, *UserSelectBuilder, and
+// *WorkflowButtonBuilder.
+type Element interface {
+	slackblocksElement()
+}
+
+func (*ButtonBuilder) slackblocksElement()                  {}
+func (*ChannelMultiSelectBuilder) slackblocksElement()      {}
+func (*ChannelSelectBuilder) slackblocksElement()           {}
+func (*CheckboxesBuilder) slackblocksElement()              {}
+func (*ConversationMultiSelectBuilder) slackblocksElement() {}
+func (*ConversationSelectBuilder) slackblocksElement()      {}
+func (*DatePickerBuilder) slackblocksElement()              {}
+func (*DateTimePickerBuilder) slackblocksElement()          {}
+func (*EmailInputBuilder) slackblocksElement()              {}
+func (*ExternalMultiSelectBuilder) slackblocksElement()     {}
+func (*ExternalSelectBuilder) slackblocksElement()          {}
+func (*FeedbackButtonsBuilder) slackblocksElement()         {}
+func (*FileInputBuilder) slackblocksElement()               {}
+func (*IconButtonBuilder) slackblocksElement()              {}
+func (*ImageElementBuilder) slackblocksElement()            {}
+func (*NumberInputBuilder) slackblocksElement()             {}
+func (*OverflowBuilder) slackblocksElement()                {}
+func (*PlainTextInputBuilder) slackblocksElement()          {}
+func (*RadioButtonsBuilder) slackblocksElement()            {}
+func (*RichTextInputBuilder) slackblocksElement()           {}
+func (*StaticMultiSelectBuilder) slackblocksElement()       {}
+func (*StaticSelectBuilder) slackblocksElement()            {}
+func (*TimePickerBuilder) slackblocksElement()              {}
+func (*URLInputBuilder) slackblocksElement()                {}
+func (*UserMultiSelectBuilder) slackblocksElement()         {}
+func (*UserSelectBuilder) slackblocksElement()              {}
+func (*WorkflowButtonBuilder) slackblocksElement()          {}
+
+// InputElement is an element that can be placed in an input block.
+// Implemented by *ChannelMultiSelectBuilder, *ChannelSelectBuilder, *CheckboxesBuilder,
+// *ConversationMultiSelectBuilder, *ConversationSelectBuilder, *DatePickerBuilder,
+// *DateTimePickerBuilder, *EmailInputBuilder, *ExternalMultiSelectBuilder,
+// *ExternalSelectBuilder, *FileInputBuilder, *NumberInputBuilder, *PlainTextInputBuilder,
+// *RadioButtonsBuilder, *RichTextInputBuilder, *StaticMultiSelectBuilder, *StaticSelectBuilder,
+// *TimePickerBuilder, *URLInputBuilder, *UserMultiSelectBuilder, and *UserSelectBuilder.
+type InputElement interface {
+	Element
+	slackblocksInputElement()
+}
+
+func (*ChannelMultiSelectBuilder) slackblocksInputElement()      {}
+func (*ChannelSelectBuilder) slackblocksInputElement()           {}
+func (*CheckboxesBuilder) slackblocksInputElement()              {}
+func (*ConversationMultiSelectBuilder) slackblocksInputElement() {}
+func (*ConversationSelectBuilder) slackblocksInputElement()      {}
+func (*DatePickerBuilder) slackblocksInputElement()              {}
+func (*DateTimePickerBuilder) slackblocksInputElement()          {}
+func (*EmailInputBuilder) slackblocksInputElement()              {}
+func (*ExternalMultiSelectBuilder) slackblocksInputElement()     {}
+func (*ExternalSelectBuilder) slackblocksInputElement()          {}
+func (*FileInputBuilder) slackblocksInputElement()               {}
+func (*NumberInputBuilder) slackblocksInputElement()             {}
+func (*PlainTextInputBuilder) slackblocksInputElement()          {}
+func (*RadioButtonsBuilder) slackblocksInputElement()            {}
+func (*RichTextInputBuilder) slackblocksInputElement()           {}
+func (*StaticMultiSelectBuilder) slackblocksInputElement()       {}
+func (*StaticSelectBuilder) slackblocksInputElement()            {}
+func (*TimePickerBuilder) slackblocksInputElement()              {}
+func (*URLInputBuilder) slackblocksInputElement()                {}
+func (*UserMultiSelectBuilder) slackblocksInputElement()         {}
+func (*UserSelectBuilder) slackblocksInputElement()              {}
+
+// RichTextBlockElement is a section, list, preformatted block, or quote inside a rich text
+// block.
+// Implemented by *RichTextCodeBlockBuilder, *RichTextListBuilder, *RichTextQuoteBuilder, and
+// *RichTextSectionBuilder.
+type RichTextBlockElement interface {
+	slackblocksRichTextBlockElement()
+}
+
+func (*RichTextCodeBlockBuilder) slackblocksRichTextBlockElement() {}
+func (*RichTextListBuilder) slackblocksRichTextBlockElement()      {}
+func (*RichTextQuoteBuilder) slackblocksRichTextBlockElement()     {}
+func (*RichTextSectionBuilder) slackblocksRichTextBlockElement()   {}
+
+// RichTextSectionElement is inline rich text: text, a link, an emoji, or a channel, user, or
+// user group mention.
+// Implemented by *RichTextBuilder, *RichTextChannelBuilder, *RichTextEmojiBuilder,
+// *RichTextLinkBuilder, *RichTextUserBuilder, and *RichTextUserGroupBuilder.
+type RichTextSectionElement interface {
+	slackblocksRichTextSectionElement()
+}
+
+func (*RichTextBuilder) slackblocksRichTextSectionElement()          {}
+func (*RichTextChannelBuilder) slackblocksRichTextSectionElement()   {}
+func (*RichTextEmojiBuilder) slackblocksRichTextSectionElement()     {}
+func (*RichTextLinkBuilder) slackblocksRichTextSectionElement()      {}
+func (*RichTextUserBuilder) slackblocksRichTextSectionElement()      {}
+func (*RichTextUserGroupBuilder) slackblocksRichTextSectionElement() {}
+
+// TableCell is raw text or a rich text block that can appear as a table block cell.
+// Implemented by *RawTextBuilder and *RichTextBlockBuilder.
+type TableCell interface {
+	slackblocksTableCell()
+}
+
+func (*RawTextBuilder) slackblocksTableCell()       {}
+func (*RichTextBlockBuilder) slackblocksTableCell() {}
+
+// TextObject is a plain_text or mrkdwn text composition object.
+// Implemented by *MarkdownBuilder and *PlainTextBuilder.
+type TextObject interface {
+	slackblocksTextObject()
+}
+
+func (*MarkdownBuilder) slackblocksTextObject()  {}
+func (*PlainTextBuilder) slackblocksTextObject() {}
+
+// AlertLevel is a named Slack value. Severity levels supported by alert blocks. Untyped string
+// constants such as "default" also convert to it.
+type AlertLevel string
+
+const (
+	// Neutral styling.
+	AlertLevelDefault AlertLevel = "default"
+	// Informational styling.
+	AlertLevelInfo AlertLevel = "info"
+	// Warning styling.
+	AlertLevelWarning AlertLevel = "warning"
+	// Error styling.
+	AlertLevelError AlertLevel = "error"
+	// Success styling.
+	AlertLevelSuccess AlertLevel = "success"
+)
+
+// ContainerWidth is a named Slack value. Widths supported by Slack container blocks. Untyped
+// string constants such as "narrow" also convert to it.
+type ContainerWidth string
+
+const (
+	// A compact container.
+	ContainerWidthNarrow ContainerWidth = "narrow"
+	// Slack's standard container width.
+	ContainerWidthStandard ContainerWidth = "standard"
+	// A wide container.
+	ContainerWidthWide ContainerWidth = "wide"
+	// The full available width.
+	ContainerWidthFull ContainerWidth = "full"
+)
+
+// TaskStatus is a named Slack value. States supported by task card blocks. Untyped string
+// constants such as "pending" also convert to it.
+type TaskStatus string
+
+const (
+	// The task has not started.
+	TaskStatusPending TaskStatus = "pending"
+	// The task is running.
+	TaskStatusInProgress TaskStatus = "in_progress"
+	// The task finished successfully.
+	TaskStatusComplete TaskStatus = "complete"
+	// The task failed.
+	TaskStatusError TaskStatus = "error"
+)
+
+// ButtonStyle is a named Slack value. Visual emphasis for buttons and confirmation dialogs.
+// Untyped string constants such as "primary" also convert to it.
+type ButtonStyle string
+
+const (
+	// Green emphasis for the affirmative action.
+	ButtonStylePrimary ButtonStyle = "primary"
+	// Red emphasis for destructive actions.
+	ButtonStyleDanger ButtonStyle = "danger"
+)
+
+// IconButtonIcon is a named Slack value. Icons supported by icon buttons. Untyped string
+// constants such as "trash" also convert to it.
+type IconButtonIcon string
+
+const (
+	// A trash can, for delete actions.
+	IconButtonIconTrash IconButtonIcon = "trash"
+)
+
+// ColumnAlign is a named Slack value. Horizontal alignment for table columns. Untyped string
+// constants such as "left" also convert to it.
+type ColumnAlign string
+
+const (
+	// Align cell content to the left.
+	ColumnAlignLeft ColumnAlign = "left"
+	// Center cell content.
+	ColumnAlignCenter ColumnAlign = "center"
+	// Align cell content to the right.
+	ColumnAlignRight ColumnAlign = "right"
+)
+
+// RichTextListStyle is a named Slack value. Marker styles for rich text lists. Untyped string
+// constants such as "bullet" also convert to it.
+type RichTextListStyle string
+
+const (
+	// An unordered, bulleted list.
+	RichTextListStyleBullet RichTextListStyle = "bullet"
+	// A numbered list.
+	RichTextListStyleOrdered RichTextListStyle = "ordered"
+)
+
+// ResponseType is a named Slack value. Visibility of a slash-command or interaction response.
+// Untyped string constants such as "in_channel" also convert to it.
+type ResponseType string
+
+const (
+	// Visible to everyone in the channel.
+	ResponseTypeInChannel ResponseType = "in_channel"
+	// Visible only to the user who triggered the response.
+	ResponseTypeEphemeral ResponseType = "ephemeral"
+)
+
+// RichTextStyle sets formatting flags on inline rich text, such as
+// RichTextStyle{"bold": true, "italic": false}. Text and links support bold, italic, strike,
+// and code; mentions support bold, italic, strike, highlight, client_highlight, and unlink.
+type RichTextStyle map[string]bool
+
+func (style RichTextStyle) object() Object {
+	object := Object{}
+	for flag, enabled := range style {
+		object[flag] = enabled
+	}
+	return object
+}
+
 // AccordionSectionBuilder is the concrete fluent builder returned by NewAccordionSection.
+//
+// One independently collapsible section of an accordion, rendered as a Slack container block.
+//
+//   - Required: Title and Blocks.
 type AccordionSectionBuilder struct{ *concreteBuilder }
 
 func newAccordionSectionBuilder(core *builder) *AccordionSectionBuilder {
 	return &AccordionSectionBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Title sets a title field.
-func (b *AccordionSectionBuilder) Title(value any) *AccordionSectionBuilder {
+// Title sets the section heading. Required. The string is sent as a plain_text text object; use
+// TitleObject to pass a text object instead.
+func (b *AccordionSectionBuilder) Title(value string) *AccordionSectionBuilder {
 	b.core.Title(value)
 	return b
 }
 
-// Subtitle sets secondary heading copy.
-func (b *AccordionSectionBuilder) Subtitle(value any) *AccordionSectionBuilder {
+// TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *AccordionSectionBuilder) TitleObject(value *PlainTextBuilder) *AccordionSectionBuilder {
+	b.core.Title(value)
+	return b
+}
+
+// Subtitle sets supporting text shown below the heading. The string is sent as a mrkdwn text
+// object; use SubtitleObject to pass a text object instead.
+func (b *AccordionSectionBuilder) Subtitle(value string) *AccordionSectionBuilder {
 	b.core.Subtitle(value)
 	return b
 }
 
-// Blocks appends Block Kit blocks.
-func (b *AccordionSectionBuilder) Blocks(values ...any) *AccordionSectionBuilder {
-	b.core.Blocks(values...)
+// SubtitleObject is Subtitle for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *AccordionSectionBuilder) SubtitleObject(value TextObject) *AccordionSectionBuilder {
+	b.core.Subtitle(value)
 	return b
 }
 
-// Expanded controls whether an accordion section starts open. It stores a
-// private sentinel that the accordion-section transform converts to Slack's
-// inverse default_collapsed field during Build.
+// Blocks adds the blocks revealed when the section is expanded. Each call appends to any values
+// already added.
+func (b *AccordionSectionBuilder) Blocks(values ...Block) *AccordionSectionBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Blocks(items...)
+	return b
+}
+
+// Expanded sets whether the section starts expanded.
 func (b *AccordionSectionBuilder) Expanded(value bool) *AccordionSectionBuilder {
 	b.core.Expanded(value)
 	return b
 }
 
-// BlockID assigns an application-defined block identifier.
+// BlockID sets a unique identifier for this block.
 func (b *AccordionSectionBuilder) BlockID(value string) *AccordionSectionBuilder {
 	b.core.BlockID(value)
 	return b
@@ -56,8 +394,12 @@ func newActionsBlockBuilder(core *builder) *ActionsBlockBuilder {
 
 // Elements adds interactive elements in display order. Required. Slack allows at most 25 items.
 // Each call appends to any values already added.
-func (b *ActionsBlockBuilder) Elements(values ...any) *ActionsBlockBuilder {
-	b.core.Elements(values...)
+func (b *ActionsBlockBuilder) Elements(values ...Element) *ActionsBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Elements(items...)
 	return b
 }
 
@@ -82,17 +424,23 @@ func newAlertBlockBuilder(core *builder) *AlertBlockBuilder {
 	return &AlertBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Text sets the alert message. Required. Slack allows at most 200 characters. A string is sent
-// as a mrkdwn text object; pass a text object to choose the type.
-func (b *AlertBlockBuilder) Text(value any) *AlertBlockBuilder {
+// Text sets the alert message. Required. Slack allows at most 200 characters. The string is
+// sent as a mrkdwn text object; use TextObject to pass a text object instead.
+func (b *AlertBlockBuilder) Text(value string) *AlertBlockBuilder {
+	b.core.Text(value)
+	return b
+}
+
+// TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *AlertBlockBuilder) TextObject(value TextObject) *AlertBlockBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // Level sets the alert severity, which controls its color and icon. Accepted values: "default",
 // "info", "warning", "error", and "success".
-func (b *AlertBlockBuilder) Level(value string) *AlertBlockBuilder {
-	b.core.Level(value)
+func (b *AlertBlockBuilder) Level(value AlertLevel) *AlertBlockBuilder {
+	b.core.Level(string(value))
 	return b
 }
 
@@ -120,14 +468,18 @@ func newAreaChartBuilder(core *builder) *AreaChartBuilder {
 
 // Series adds data series in display order. Series names must be unique. Required. Must contain
 // between 1 and 12 items. Each call appends to any values already added.
-func (b *AreaChartBuilder) Series(values ...any) *AreaChartBuilder {
-	b.core.Series(values...)
+func (b *AreaChartBuilder) Series(values ...*DataSeriesBuilder) *AreaChartBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Series(items...)
 	return b
 }
 
 // AxisConfig sets the axis categories and labels. Every series needs exactly one point per
 // category. Required.
-func (b *AreaChartBuilder) AxisConfig(value any) *AreaChartBuilder {
+func (b *AreaChartBuilder) AxisConfig(value *AxisConfigBuilder) *AreaChartBuilder {
 	b.core.AxisConfig(value)
 	return b
 }
@@ -147,8 +499,12 @@ func newAttachmentBuilder(core *builder) *AttachmentBuilder {
 
 // Blocks adds the attachment's blocks in display order. Each call appends to any values already
 // added.
-func (b *AttachmentBuilder) Blocks(values ...any) *AttachmentBuilder {
-	b.core.Blocks(values...)
+func (b *AttachmentBuilder) Blocks(values ...Block) *AttachmentBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Blocks(items...)
 	return b
 }
 
@@ -213,14 +569,18 @@ func newBarChartBuilder(core *builder) *BarChartBuilder {
 
 // Series adds data series in display order. Series names must be unique. Required. Must contain
 // between 1 and 12 items. Each call appends to any values already added.
-func (b *BarChartBuilder) Series(values ...any) *BarChartBuilder {
-	b.core.Series(values...)
+func (b *BarChartBuilder) Series(values ...*DataSeriesBuilder) *BarChartBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Series(items...)
 	return b
 }
 
 // AxisConfig sets the axis categories and labels. Every series needs exactly one point per
 // category. Required.
-func (b *BarChartBuilder) AxisConfig(value any) *BarChartBuilder {
+func (b *BarChartBuilder) AxisConfig(value *AxisConfigBuilder) *BarChartBuilder {
 	b.core.AxisConfig(value)
 	return b
 }
@@ -238,9 +598,15 @@ func newButtonBuilder(core *builder) *ButtonBuilder {
 	return &ButtonBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets the button label. Required. Slack allows at most 75 characters. A string is sent as
-// a plain_text text object; pass a text object to choose the type.
-func (b *ButtonBuilder) Text(value any) *ButtonBuilder {
+// Text sets the button label. Required. Slack allows at most 75 characters. The string is sent
+// as a plain_text text object; use TextObject to pass a text object instead.
+func (b *ButtonBuilder) Text(value string) *ButtonBuilder {
+	b.core.Text(value)
+	return b
+}
+
+// TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *ButtonBuilder) TextObject(value *PlainTextBuilder) *ButtonBuilder {
 	b.core.Text(value)
 	return b
 }
@@ -262,20 +628,20 @@ func (b *ButtonBuilder) URL(value string) *ButtonBuilder {
 
 // Value sets the application-defined value sent in interaction payloads. Slack allows at most
 // 2000 characters.
-func (b *ButtonBuilder) Value(value any) *ButtonBuilder {
+func (b *ButtonBuilder) Value(value string) *ButtonBuilder {
 	b.core.Value(value)
 	return b
 }
 
 // Style sets the button's emphasis. Omit it for the default neutral style. Accepted values:
 // "primary" and "danger".
-func (b *ButtonBuilder) Style(value any) *ButtonBuilder {
-	b.core.Style(value)
+func (b *ButtonBuilder) Style(value ButtonStyle) *ButtonBuilder {
+	b.core.Style(string(value))
 	return b
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *ButtonBuilder) Confirm(value any) *ButtonBuilder {
+func (b *ButtonBuilder) Confirm(value *ConfirmationBuilder) *ButtonBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -302,55 +668,84 @@ func newCardBlockBuilder(core *builder) *CardBlockBuilder {
 }
 
 // HeroImage sets the image displayed prominently at the top of the card.
-func (b *CardBlockBuilder) HeroImage(value any) *CardBlockBuilder {
+func (b *CardBlockBuilder) HeroImage(value *ImageElementBuilder) *CardBlockBuilder {
 	b.core.HeroImage(value)
 	return b
 }
 
 // Icon sets the image displayed beside the title.
-func (b *CardBlockBuilder) Icon(value any) *CardBlockBuilder {
+func (b *CardBlockBuilder) Icon(value *ImageElementBuilder) *CardBlockBuilder {
 	b.core.Icon(value)
 	return b
 }
 
-// Title sets the card title. Slack allows at most 150 characters. A string is sent as a mrkdwn
-// text object; pass a text object to choose the type.
-func (b *CardBlockBuilder) Title(value any) *CardBlockBuilder {
+// Title sets the card title. Slack allows at most 150 characters. The string is sent as a
+// mrkdwn text object; use TitleObject to pass a text object instead.
+func (b *CardBlockBuilder) Title(value string) *CardBlockBuilder {
+	b.core.Title(value)
+	return b
+}
+
+// TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *CardBlockBuilder) TitleObject(value TextObject) *CardBlockBuilder {
 	b.core.Title(value)
 	return b
 }
 
 // Subtitle sets the supporting text shown below the title. Slack allows at most 150 characters.
-// A string is sent as a mrkdwn text object; pass a text object to choose the type.
-func (b *CardBlockBuilder) Subtitle(value any) *CardBlockBuilder {
+// The string is sent as a mrkdwn text object; use SubtitleObject to pass a text object instead.
+func (b *CardBlockBuilder) Subtitle(value string) *CardBlockBuilder {
 	b.core.Subtitle(value)
 	return b
 }
 
-// Body sets the main body text of the card. Slack allows at most 200 characters. A string is
-// sent as a mrkdwn text object; pass a text object to choose the type.
-func (b *CardBlockBuilder) Body(value any) *CardBlockBuilder {
+// SubtitleObject is Subtitle for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *CardBlockBuilder) SubtitleObject(value TextObject) *CardBlockBuilder {
+	b.core.Subtitle(value)
+	return b
+}
+
+// Body sets the main body text of the card. Slack allows at most 200 characters. The string is
+// sent as a mrkdwn text object; use BodyObject to pass a text object instead.
+func (b *CardBlockBuilder) Body(value string) *CardBlockBuilder {
+	b.core.Body(value)
+	return b
+}
+
+// BodyObject is Body for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *CardBlockBuilder) BodyObject(value TextObject) *CardBlockBuilder {
 	b.core.Body(value)
 	return b
 }
 
 // Actions adds buttons displayed at the bottom of the card, in display order. Slack allows at
 // most 3 items. Each call appends to any values already added.
-func (b *CardBlockBuilder) Actions(values ...any) *CardBlockBuilder {
-	b.core.Actions(values...)
+func (b *CardBlockBuilder) Actions(values ...*ButtonBuilder) *CardBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Actions(items...)
 	return b
 }
 
 // SlackIcon sets a Slack-provided icon displayed beside the title. Cannot be combined with an
 // image icon.
-func (b *CardBlockBuilder) SlackIcon(value any) *CardBlockBuilder {
+func (b *CardBlockBuilder) SlackIcon(value *SlackIconBuilder) *CardBlockBuilder {
 	b.core.SlackIcon(value)
 	return b
 }
 
 // Subtext sets the small print shown at the bottom of the card. Slack allows at most 200
-// characters. A string is sent as a mrkdwn text object; pass a text object to choose the type.
-func (b *CardBlockBuilder) Subtext(value any) *CardBlockBuilder {
+// characters. The string is sent as a mrkdwn text object; use SubtextObject to pass a text
+// object instead.
+func (b *CardBlockBuilder) Subtext(value string) *CardBlockBuilder {
+	b.core.Subtext(value)
+	return b
+}
+
+// SubtextObject is Subtext for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *CardBlockBuilder) SubtextObject(value TextObject) *CardBlockBuilder {
 	b.core.Subtext(value)
 	return b
 }
@@ -378,8 +773,12 @@ func newCarouselBlockBuilder(core *builder) *CarouselBlockBuilder {
 
 // Elements adds the cards in display order. Required. Must contain between 1 and 10 items. Each
 // call appends to any values already added.
-func (b *CarouselBlockBuilder) Elements(values ...any) *CarouselBlockBuilder {
-	b.core.Elements(values...)
+func (b *CarouselBlockBuilder) Elements(values ...*CardBlockBuilder) *CarouselBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Elements(items...)
 	return b
 }
 
@@ -420,7 +819,7 @@ func (b *ChannelMultiSelectBuilder) InitialChannels(values ...string) *ChannelMu
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *ChannelMultiSelectBuilder) Confirm(value any) *ChannelMultiSelectBuilder {
+func (b *ChannelMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *ChannelMultiSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -439,9 +838,16 @@ func (b *ChannelMultiSelectBuilder) FocusOnLoad(value bool) *ChannelMultiSelectB
 }
 
 // Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
-// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
-// the type.
-func (b *ChannelMultiSelectBuilder) Placeholder(value any) *ChannelMultiSelectBuilder {
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
+func (b *ChannelMultiSelectBuilder) Placeholder(value string) *ChannelMultiSelectBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *ChannelMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *ChannelMultiSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -481,7 +887,7 @@ func (b *ChannelSelectBuilder) ResponseURLEnabled(value bool) *ChannelSelectBuil
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *ChannelSelectBuilder) Confirm(value any) *ChannelSelectBuilder {
+func (b *ChannelSelectBuilder) Confirm(value *ConfirmationBuilder) *ChannelSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -494,9 +900,16 @@ func (b *ChannelSelectBuilder) FocusOnLoad(value bool) *ChannelSelectBuilder {
 }
 
 // Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
-// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
-// the type.
-func (b *ChannelSelectBuilder) Placeholder(value any) *ChannelSelectBuilder {
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
+func (b *ChannelSelectBuilder) Placeholder(value string) *ChannelSelectBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *ChannelSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *ChannelSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -515,13 +928,13 @@ func newChartSegmentBuilder(core *builder) *ChartSegmentBuilder {
 }
 
 // Label sets the segment label. Required. Slack allows at most 20 characters.
-func (b *ChartSegmentBuilder) Label(value any) *ChartSegmentBuilder {
+func (b *ChartSegmentBuilder) Label(value string) *ChartSegmentBuilder {
 	b.core.Label(value)
 	return b
 }
 
 // Value sets the segment's size. Must be greater than zero. Required.
-func (b *ChartSegmentBuilder) Value(value any) *ChartSegmentBuilder {
+func (b *ChartSegmentBuilder) Value(value float64) *ChartSegmentBuilder {
 	b.core.Value(value)
 	return b
 }
@@ -549,20 +962,28 @@ func (b *CheckboxesBuilder) ActionID(value string) *CheckboxesBuilder {
 
 // Options adds selectable options in display order. Required. Must contain between 1 and 10
 // items. Each call appends to any values already added.
-func (b *CheckboxesBuilder) Options(values ...any) *CheckboxesBuilder {
-	b.core.Options(values...)
+func (b *CheckboxesBuilder) Options(values ...*OptionBuilder) *CheckboxesBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Options(items...)
 	return b
 }
 
 // InitialOptions adds options that are selected when the element loads. Each must match an
 // option in the element. Each call appends to any values already added.
-func (b *CheckboxesBuilder) InitialOptions(values ...any) *CheckboxesBuilder {
-	b.core.InitialOptions(values...)
+func (b *CheckboxesBuilder) InitialOptions(values ...*OptionBuilder) *CheckboxesBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.InitialOptions(items...)
 	return b
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *CheckboxesBuilder) Confirm(value any) *CheckboxesBuilder {
+func (b *CheckboxesBuilder) Confirm(value *ConfirmationBuilder) *CheckboxesBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -587,8 +1008,8 @@ func newColumnSettingsBuilder(core *builder) *ColumnSettingsBuilder {
 
 // Align sets how cell content in the column is aligned. Accepted values: "left", "center", and
 // "right".
-func (b *ColumnSettingsBuilder) Align(value string) *ColumnSettingsBuilder {
-	b.core.Align(value)
+func (b *ColumnSettingsBuilder) Align(value ColumnAlign) *ColumnSettingsBuilder {
+	b.core.Align(string(value))
 	return b
 }
 
@@ -611,39 +1032,64 @@ func newConfirmationBuilder(core *builder) *ConfirmationBuilder {
 	return &ConfirmationBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Title sets the dialog title. Required. Slack allows at most 100 characters. A string is sent
-// as a plain_text text object; pass a text object to choose the type.
-func (b *ConfirmationBuilder) Title(value any) *ConfirmationBuilder {
+// Title sets the dialog title. Required. Slack allows at most 100 characters. The string is
+// sent as a plain_text text object; use TitleObject to pass a text object instead.
+func (b *ConfirmationBuilder) Title(value string) *ConfirmationBuilder {
+	b.core.Title(value)
+	return b
+}
+
+// TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *ConfirmationBuilder) TitleObject(value *PlainTextBuilder) *ConfirmationBuilder {
 	b.core.Title(value)
 	return b
 }
 
 // Text sets the explanatory text in the dialog body. Required. Slack allows at most 300
-// characters. A string is sent as a mrkdwn text object; pass a text object to choose the type.
-func (b *ConfirmationBuilder) Text(value any) *ConfirmationBuilder {
+// characters. The string is sent as a mrkdwn text object; use TextObject to pass a text object
+// instead.
+func (b *ConfirmationBuilder) Text(value string) *ConfirmationBuilder {
+	b.core.Text(value)
+	return b
+}
+
+// TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *ConfirmationBuilder) TextObject(value TextObject) *ConfirmationBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // Confirm sets the label of the button that confirms the action. Required. Slack allows at most
-// 30 characters. A string is sent as a plain_text text object; pass a text object to choose the
-// type.
-func (b *ConfirmationBuilder) Confirm(value any) *ConfirmationBuilder {
+// 30 characters. The string is sent as a plain_text text object; use ConfirmObject to pass a
+// text object instead.
+func (b *ConfirmationBuilder) Confirm(value string) *ConfirmationBuilder {
+	b.core.Confirm(value)
+	return b
+}
+
+// ConfirmObject is Confirm for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *ConfirmationBuilder) ConfirmObject(value *PlainTextBuilder) *ConfirmationBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
 // Deny sets the label of the button that cancels the action. Required. Slack allows at most 30
-// characters. A string is sent as a plain_text text object; pass a text object to choose the
-// type.
-func (b *ConfirmationBuilder) Deny(value any) *ConfirmationBuilder {
+// characters. The string is sent as a plain_text text object; use DenyObject to pass a text
+// object instead.
+func (b *ConfirmationBuilder) Deny(value string) *ConfirmationBuilder {
+	b.core.Deny(value)
+	return b
+}
+
+// DenyObject is Deny for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *ConfirmationBuilder) DenyObject(value *PlainTextBuilder) *ConfirmationBuilder {
 	b.core.Deny(value)
 	return b
 }
 
 // Style sets the emphasis of the confirm button. Accepted values: "primary" and "danger".
-func (b *ConfirmationBuilder) Style(value any) *ConfirmationBuilder {
-	b.core.Style(value)
+func (b *ConfirmationBuilder) Style(value ButtonStyle) *ConfirmationBuilder {
+	b.core.Style(string(value))
 	return b
 }
 
@@ -663,41 +1109,57 @@ func newContainerBlockBuilder(core *builder) *ContainerBlockBuilder {
 
 // ChildBlocks adds the blocks grouped inside the container, in display order. Required. Slack
 // allows at most 10 items. Each call appends to any values already added.
-func (b *ContainerBlockBuilder) ChildBlocks(values ...any) *ContainerBlockBuilder {
-	b.core.ChildBlocks(values...)
+func (b *ContainerBlockBuilder) ChildBlocks(values ...Block) *ContainerBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.ChildBlocks(items...)
 	return b
 }
 
 // Title sets the container title. Provide either a title or a rich text title. Slack allows at
-// most 150 characters. A string is sent as a plain_text text object; pass a text object to
-// choose the type.
-func (b *ContainerBlockBuilder) Title(value any) *ContainerBlockBuilder {
+// most 150 characters. The string is sent as a plain_text text object; use TitleObject to pass
+// a text object instead.
+func (b *ContainerBlockBuilder) Title(value string) *ContainerBlockBuilder {
+	b.core.Title(value)
+	return b
+}
+
+// TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *ContainerBlockBuilder) TitleObject(value *PlainTextBuilder) *ContainerBlockBuilder {
 	b.core.Title(value)
 	return b
 }
 
 // RichTextTitle sets a rich text block used as the title in place of a plain-text title.
-func (b *ContainerBlockBuilder) RichTextTitle(value any) *ContainerBlockBuilder {
+func (b *ContainerBlockBuilder) RichTextTitle(value *RichTextBlockBuilder) *ContainerBlockBuilder {
 	b.core.RichTextTitle(value)
 	return b
 }
 
 // Subtitle sets the supporting text shown below the title. Slack allows at most 150 characters.
-// A string is sent as a mrkdwn text object; pass a text object to choose the type.
-func (b *ContainerBlockBuilder) Subtitle(value any) *ContainerBlockBuilder {
+// The string is sent as a mrkdwn text object; use SubtitleObject to pass a text object instead.
+func (b *ContainerBlockBuilder) Subtitle(value string) *ContainerBlockBuilder {
+	b.core.Subtitle(value)
+	return b
+}
+
+// SubtitleObject is Subtitle for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *ContainerBlockBuilder) SubtitleObject(value TextObject) *ContainerBlockBuilder {
 	b.core.Subtitle(value)
 	return b
 }
 
 // Width sets the horizontal width of the container. Accepted values: "narrow", "standard",
 // "wide", and "full".
-func (b *ContainerBlockBuilder) Width(value string) *ContainerBlockBuilder {
-	b.core.Width(value)
+func (b *ContainerBlockBuilder) Width(value ContainerWidth) *ContainerBlockBuilder {
+	b.core.Width(string(value))
 	return b
 }
 
 // Icon sets the image displayed beside the title.
-func (b *ContainerBlockBuilder) Icon(value any) *ContainerBlockBuilder {
+func (b *ContainerBlockBuilder) Icon(value *ImageElementBuilder) *ContainerBlockBuilder {
 	b.core.Icon(value)
 	return b
 }
@@ -745,8 +1207,12 @@ func newContextActionsBlockBuilder(core *builder) *ContextActionsBlockBuilder {
 
 // Elements adds feedback buttons or icon buttons in display order. Required. Slack allows at
 // most 5 items. Each call appends to any values already added.
-func (b *ContextActionsBlockBuilder) Elements(values ...any) *ContextActionsBlockBuilder {
-	b.core.Elements(values...)
+func (b *ContextActionsBlockBuilder) Elements(values ...ContextActionsElement) *ContextActionsBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Elements(items...)
 	return b
 }
 
@@ -773,8 +1239,12 @@ func newContextBlockBuilder(core *builder) *ContextBlockBuilder {
 
 // Elements adds images and text in display order. Required. Slack allows at most 10 items. Each
 // call appends to any values already added.
-func (b *ContextBlockBuilder) Elements(values ...any) *ContextBlockBuilder {
-	b.core.Elements(values...)
+func (b *ContextBlockBuilder) Elements(values ...ContextElement) *ContextBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Elements(items...)
 	return b
 }
 
@@ -854,13 +1324,13 @@ func (b *ConversationMultiSelectBuilder) DefaultToCurrentConversation(value bool
 }
 
 // Filter sets which conversation types the menu offers.
-func (b *ConversationMultiSelectBuilder) Filter(value any) *ConversationMultiSelectBuilder {
+func (b *ConversationMultiSelectBuilder) Filter(value *ConversationFilterBuilder) *ConversationMultiSelectBuilder {
 	b.core.Filter(value)
 	return b
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *ConversationMultiSelectBuilder) Confirm(value any) *ConversationMultiSelectBuilder {
+func (b *ConversationMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *ConversationMultiSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -879,9 +1349,16 @@ func (b *ConversationMultiSelectBuilder) FocusOnLoad(value bool) *ConversationMu
 }
 
 // Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
-// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
-// the type.
-func (b *ConversationMultiSelectBuilder) Placeholder(value any) *ConversationMultiSelectBuilder {
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
+func (b *ConversationMultiSelectBuilder) Placeholder(value string) *ConversationMultiSelectBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *ConversationMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *ConversationMultiSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -921,7 +1398,7 @@ func (b *ConversationSelectBuilder) DefaultToCurrentConversation(value bool) *Co
 }
 
 // Filter sets which conversation types the menu offers.
-func (b *ConversationSelectBuilder) Filter(value any) *ConversationSelectBuilder {
+func (b *ConversationSelectBuilder) Filter(value *ConversationFilterBuilder) *ConversationSelectBuilder {
 	b.core.Filter(value)
 	return b
 }
@@ -934,7 +1411,7 @@ func (b *ConversationSelectBuilder) ResponseURLEnabled(value bool) *Conversation
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *ConversationSelectBuilder) Confirm(value any) *ConversationSelectBuilder {
+func (b *ConversationSelectBuilder) Confirm(value *ConfirmationBuilder) *ConversationSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -947,9 +1424,16 @@ func (b *ConversationSelectBuilder) FocusOnLoad(value bool) *ConversationSelectB
 }
 
 // Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
-// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
-// the type.
-func (b *ConversationSelectBuilder) Placeholder(value any) *ConversationSelectBuilder {
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
+func (b *ConversationSelectBuilder) Placeholder(value string) *ConversationSelectBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *ConversationSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *ConversationSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -969,13 +1453,13 @@ func newDataPointBuilder(core *builder) *DataPointBuilder {
 
 // Label sets the axis category this point belongs to. Required. Slack allows at most 20
 // characters.
-func (b *DataPointBuilder) Label(value any) *DataPointBuilder {
+func (b *DataPointBuilder) Label(value string) *DataPointBuilder {
 	b.core.Label(value)
 	return b
 }
 
 // Value sets the point's value. Required.
-func (b *DataPointBuilder) Value(value any) *DataPointBuilder {
+func (b *DataPointBuilder) Value(value float64) *DataPointBuilder {
 	b.core.Value(value)
 	return b
 }
@@ -1001,8 +1485,12 @@ func (b *DataSeriesBuilder) Name(value string) *DataSeriesBuilder {
 
 // Data adds data points in axis-category order. Required. Must contain between 1 and 20 items.
 // Each call appends to any values already added.
-func (b *DataSeriesBuilder) Data(values ...any) *DataSeriesBuilder {
-	b.core.Data(values...)
+func (b *DataSeriesBuilder) Data(values ...*DataPointBuilder) *DataSeriesBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Data(items...)
 	return b
 }
 
@@ -1024,8 +1512,14 @@ func newDataTableBlockBuilder(core *builder) *DataTableBlockBuilder {
 // Rows adds complete table rows in display order. Every row must have the same number of cells.
 // Required. Must contain between 2 and 201 items. Each call appends to any values already
 // added.
-func (b *DataTableBlockBuilder) Rows(values ...any) *DataTableBlockBuilder {
-	b.core.Rows(values...)
+func (b *DataTableBlockBuilder) Rows(rows ...[]DataTableCell) *DataTableBlockBuilder {
+	for _, row := range rows {
+		cells := make([]any, len(row))
+		for index, cell := range row {
+			cells[index] = cell
+		}
+		b.core.Rows(cells)
+	}
 	return b
 }
 
@@ -1069,13 +1563,13 @@ func newDataVisualizationBlockBuilder(core *builder) *DataVisualizationBlockBuil
 }
 
 // Title sets the chart title. Required. Slack allows at most 50 characters.
-func (b *DataVisualizationBlockBuilder) Title(value any) *DataVisualizationBlockBuilder {
+func (b *DataVisualizationBlockBuilder) Title(value string) *DataVisualizationBlockBuilder {
 	b.core.Title(value)
 	return b
 }
 
 // Chart sets the chart to display. Required.
-func (b *DataVisualizationBlockBuilder) Chart(value any) *DataVisualizationBlockBuilder {
+func (b *DataVisualizationBlockBuilder) Chart(value Chart) *DataVisualizationBlockBuilder {
 	b.core.Chart(value)
 	return b
 }
@@ -1116,7 +1610,7 @@ func (b *DatePickerBuilder) InitialDate(value string) *DatePickerBuilder {
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *DatePickerBuilder) Confirm(value any) *DatePickerBuilder {
+func (b *DatePickerBuilder) Confirm(value *ConfirmationBuilder) *DatePickerBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -1128,9 +1622,16 @@ func (b *DatePickerBuilder) FocusOnLoad(value bool) *DatePickerBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
-// plain_text text object; pass a text object to choose the type.
-func (b *DatePickerBuilder) Placeholder(value any) *DatePickerBuilder {
+// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+// plain_text text object; use PlaceholderObject to pass a text object instead.
+func (b *DatePickerBuilder) Placeholder(value string) *DatePickerBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *DatePickerBuilder) PlaceholderObject(value *PlainTextBuilder) *DatePickerBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -1163,7 +1664,7 @@ func (b *DateTimePickerBuilder) InitialDateTime(value int64) *DateTimePickerBuil
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *DateTimePickerBuilder) Confirm(value any) *DateTimePickerBuilder {
+func (b *DateTimePickerBuilder) Confirm(value *ConfirmationBuilder) *DateTimePickerBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -1234,13 +1735,13 @@ func (b *EmailInputBuilder) ActionID(value string) *EmailInputBuilder {
 }
 
 // InitialValue sets the value present when the input loads.
-func (b *EmailInputBuilder) InitialValue(value any) *EmailInputBuilder {
+func (b *EmailInputBuilder) InitialValue(value string) *EmailInputBuilder {
 	b.core.InitialValue(value)
 	return b
 }
 
 // DispatchActionConfig sets which user interactions send a block_actions payload.
-func (b *EmailInputBuilder) DispatchActionConfig(value any) *EmailInputBuilder {
+func (b *EmailInputBuilder) DispatchActionConfig(value *DispatchActionConfigurationBuilder) *EmailInputBuilder {
 	b.core.DispatchActionConfig(value)
 	return b
 }
@@ -1252,9 +1753,16 @@ func (b *EmailInputBuilder) FocusOnLoad(value bool) *EmailInputBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
-// plain_text text object; pass a text object to choose the type.
-func (b *EmailInputBuilder) Placeholder(value any) *EmailInputBuilder {
+// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+// plain_text text object; use PlaceholderObject to pass a text object instead.
+func (b *EmailInputBuilder) Placeholder(value string) *EmailInputBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *EmailInputBuilder) PlaceholderObject(value *PlainTextBuilder) *EmailInputBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -1289,13 +1797,17 @@ func (b *ExternalMultiSelectBuilder) MinQueryLength(value int) *ExternalMultiSel
 
 // InitialOptions adds options that are selected when the element loads. Each must match an
 // option in the element. Each call appends to any values already added.
-func (b *ExternalMultiSelectBuilder) InitialOptions(values ...any) *ExternalMultiSelectBuilder {
-	b.core.InitialOptions(values...)
+func (b *ExternalMultiSelectBuilder) InitialOptions(values ...*OptionBuilder) *ExternalMultiSelectBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.InitialOptions(items...)
 	return b
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *ExternalMultiSelectBuilder) Confirm(value any) *ExternalMultiSelectBuilder {
+func (b *ExternalMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *ExternalMultiSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -1314,9 +1826,16 @@ func (b *ExternalMultiSelectBuilder) FocusOnLoad(value bool) *ExternalMultiSelec
 }
 
 // Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
-// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
-// the type.
-func (b *ExternalMultiSelectBuilder) Placeholder(value any) *ExternalMultiSelectBuilder {
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
+func (b *ExternalMultiSelectBuilder) Placeholder(value string) *ExternalMultiSelectBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *ExternalMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *ExternalMultiSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -1351,13 +1870,13 @@ func (b *ExternalSelectBuilder) MinQueryLength(value int) *ExternalSelectBuilder
 
 // InitialOption sets the option selected when the element loads. It must match an option in the
 // element.
-func (b *ExternalSelectBuilder) InitialOption(value any) *ExternalSelectBuilder {
+func (b *ExternalSelectBuilder) InitialOption(value *OptionBuilder) *ExternalSelectBuilder {
 	b.core.InitialOption(value)
 	return b
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *ExternalSelectBuilder) Confirm(value any) *ExternalSelectBuilder {
+func (b *ExternalSelectBuilder) Confirm(value *ConfirmationBuilder) *ExternalSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -1370,9 +1889,16 @@ func (b *ExternalSelectBuilder) FocusOnLoad(value bool) *ExternalSelectBuilder {
 }
 
 // Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
-// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
-// the type.
-func (b *ExternalSelectBuilder) Placeholder(value any) *ExternalSelectBuilder {
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
+func (b *ExternalSelectBuilder) Placeholder(value string) *ExternalSelectBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *ExternalSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *ExternalSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -1390,16 +1916,22 @@ func newFeedbackButtonBuilder(core *builder) *FeedbackButtonBuilder {
 	return &FeedbackButtonBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets the button label. Required. Slack allows at most 75 characters. A string is sent as
-// a plain_text text object; pass a text object to choose the type.
-func (b *FeedbackButtonBuilder) Text(value any) *FeedbackButtonBuilder {
+// Text sets the button label. Required. Slack allows at most 75 characters. The string is sent
+// as a plain_text text object; use TextObject to pass a text object instead.
+func (b *FeedbackButtonBuilder) Text(value string) *FeedbackButtonBuilder {
+	b.core.Text(value)
+	return b
+}
+
+// TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *FeedbackButtonBuilder) TextObject(value *PlainTextBuilder) *FeedbackButtonBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // Value sets the application-defined value sent in interaction payloads. Required. Slack allows
 // at most 2000 characters.
-func (b *FeedbackButtonBuilder) Value(value any) *FeedbackButtonBuilder {
+func (b *FeedbackButtonBuilder) Value(value string) *FeedbackButtonBuilder {
 	b.core.Value(value)
 	return b
 }
@@ -1425,13 +1957,13 @@ func newFeedbackButtonsBuilder(core *builder) *FeedbackButtonsBuilder {
 }
 
 // PositiveButton sets the button for positive feedback. Required.
-func (b *FeedbackButtonsBuilder) PositiveButton(value any) *FeedbackButtonsBuilder {
+func (b *FeedbackButtonsBuilder) PositiveButton(value *FeedbackButtonBuilder) *FeedbackButtonsBuilder {
 	b.core.PositiveButton(value)
 	return b
 }
 
 // NegativeButton sets the button for negative feedback. Required.
-func (b *FeedbackButtonsBuilder) NegativeButton(value any) *FeedbackButtonsBuilder {
+func (b *FeedbackButtonsBuilder) NegativeButton(value *FeedbackButtonBuilder) *FeedbackButtonsBuilder {
 	b.core.NegativeButton(value)
 	return b
 }
@@ -1526,9 +2058,15 @@ func newHeaderBlockBuilder(core *builder) *HeaderBlockBuilder {
 }
 
 // Text sets the header text, shown in a larger bold font. Required. Slack allows at most 150
-// characters. A string is sent as a plain_text text object; pass a text object to choose the
-// type.
-func (b *HeaderBlockBuilder) Text(value any) *HeaderBlockBuilder {
+// characters. The string is sent as a plain_text text object; use TextObject to pass a text
+// object instead.
+func (b *HeaderBlockBuilder) Text(value string) *HeaderBlockBuilder {
+	b.core.Text(value)
+	return b
+}
+
+// TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *HeaderBlockBuilder) TextObject(value *PlainTextBuilder) *HeaderBlockBuilder {
 	b.core.Text(value)
 	return b
 }
@@ -1557,8 +2095,12 @@ func newHomeTabBuilder(core *builder) *HomeTabBuilder {
 
 // Blocks adds the blocks shown on the App Home tab, in display order. Required. Must contain
 // between 1 and 100 items. Each call appends to any values already added.
-func (b *HomeTabBuilder) Blocks(values ...any) *HomeTabBuilder {
-	b.core.Blocks(values...)
+func (b *HomeTabBuilder) Blocks(values ...Block) *HomeTabBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Blocks(items...)
 	return b
 }
 
@@ -1595,16 +2137,22 @@ func newIconButtonBuilder(core *builder) *IconButtonBuilder {
 	return &IconButtonBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets the text used as the button's accessible name. Required. A string is sent as a
-// plain_text text object; pass a text object to choose the type.
-func (b *IconButtonBuilder) Text(value any) *IconButtonBuilder {
+// Text sets the text used as the button's accessible name. Required. The string is sent as a
+// plain_text text object; use TextObject to pass a text object instead.
+func (b *IconButtonBuilder) Text(value string) *IconButtonBuilder {
+	b.core.Text(value)
+	return b
+}
+
+// TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *IconButtonBuilder) TextObject(value *PlainTextBuilder) *IconButtonBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // Icon sets the icon shown on the button. Accepted values: "trash".
-func (b *IconButtonBuilder) Icon(value any) *IconButtonBuilder {
-	b.core.Icon(value)
+func (b *IconButtonBuilder) Icon(value IconButtonIcon) *IconButtonBuilder {
+	b.core.Icon(string(value))
 	return b
 }
 
@@ -1617,13 +2165,13 @@ func (b *IconButtonBuilder) ActionID(value string) *IconButtonBuilder {
 }
 
 // Value sets the application-defined value sent in interaction payloads.
-func (b *IconButtonBuilder) Value(value any) *IconButtonBuilder {
+func (b *IconButtonBuilder) Value(value string) *IconButtonBuilder {
 	b.core.Value(value)
 	return b
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *IconButtonBuilder) Confirm(value any) *IconButtonBuilder {
+func (b *IconButtonBuilder) Confirm(value *ConfirmationBuilder) *IconButtonBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -1668,9 +2216,15 @@ func (b *ImageBlockBuilder) AltText(value string) *ImageBlockBuilder {
 	return b
 }
 
-// Title sets the title shown above the image. A string is sent as a plain_text text object;
-// pass a text object to choose the type.
-func (b *ImageBlockBuilder) Title(value any) *ImageBlockBuilder {
+// Title sets the title shown above the image. The string is sent as a plain_text text object;
+// use TitleObject to pass a text object instead.
+func (b *ImageBlockBuilder) Title(value string) *ImageBlockBuilder {
+	b.core.Title(value)
+	return b
+}
+
+// TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *ImageBlockBuilder) TitleObject(value *PlainTextBuilder) *ImageBlockBuilder {
 	b.core.Title(value)
 	return b
 }
@@ -1711,7 +2265,7 @@ func (b *ImageElementBuilder) ImageURL(value string) *ImageElementBuilder {
 
 // SlackFile sets a file hosted in Slack as the image source. Cannot be combined with an image
 // URL.
-func (b *ImageElementBuilder) SlackFile(value any) *ImageElementBuilder {
+func (b *ImageElementBuilder) SlackFile(value *SlackFileBuilder) *ImageElementBuilder {
 	b.core.SlackFile(value)
 	return b
 }
@@ -1729,15 +2283,22 @@ func newInputBlockBuilder(core *builder) *InputBlockBuilder {
 	return &InputBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Label sets the label shown above the input. Required. Slack allows at most 2000 characters. A
-// string is sent as a plain_text text object; pass a text object to choose the type.
-func (b *InputBlockBuilder) Label(value any) *InputBlockBuilder {
+// Label sets the label shown above the input. Required. Slack allows at most 2000 characters.
+// The string is sent as a plain_text text object; use LabelObject to pass a text object
+// instead.
+func (b *InputBlockBuilder) Label(value string) *InputBlockBuilder {
+	b.core.Label(value)
+	return b
+}
+
+// LabelObject is Label for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *InputBlockBuilder) LabelObject(value *PlainTextBuilder) *InputBlockBuilder {
 	b.core.Label(value)
 	return b
 }
 
 // Element sets the input element that collects the user's value. Required.
-func (b *InputBlockBuilder) Element(value any) *InputBlockBuilder {
+func (b *InputBlockBuilder) Element(value InputElement) *InputBlockBuilder {
 	b.core.Element(value)
 	return b
 }
@@ -1756,9 +2317,15 @@ func (b *InputBlockBuilder) BlockID(value string) *InputBlockBuilder {
 	return b
 }
 
-// Hint sets helper text shown below the input. Slack allows at most 2000 characters. A string
-// is sent as a plain_text text object; pass a text object to choose the type.
-func (b *InputBlockBuilder) Hint(value any) *InputBlockBuilder {
+// Hint sets helper text shown below the input. Slack allows at most 2000 characters. The string
+// is sent as a plain_text text object; use HintObject to pass a text object instead.
+func (b *InputBlockBuilder) Hint(value string) *InputBlockBuilder {
+	b.core.Hint(value)
+	return b
+}
+
+// HintObject is Hint for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *InputBlockBuilder) HintObject(value *PlainTextBuilder) *InputBlockBuilder {
 	b.core.Hint(value)
 	return b
 }
@@ -1789,7 +2356,7 @@ func (b *InputParameterBuilder) Name(value string) *InputParameterBuilder {
 }
 
 // Value sets the value passed to the workflow input. Required.
-func (b *InputParameterBuilder) Value(value any) *InputParameterBuilder {
+func (b *InputParameterBuilder) Value(value string) *InputParameterBuilder {
 	b.core.Value(value)
 	return b
 }
@@ -1810,14 +2377,18 @@ func newLineChartBuilder(core *builder) *LineChartBuilder {
 
 // Series adds data series in display order. Series names must be unique. Required. Must contain
 // between 1 and 12 items. Each call appends to any values already added.
-func (b *LineChartBuilder) Series(values ...any) *LineChartBuilder {
-	b.core.Series(values...)
+func (b *LineChartBuilder) Series(values ...*DataSeriesBuilder) *LineChartBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Series(items...)
 	return b
 }
 
 // AxisConfig sets the axis categories and labels. Every series needs exactly one point per
 // category. Required.
-func (b *LineChartBuilder) AxisConfig(value any) *LineChartBuilder {
+func (b *LineChartBuilder) AxisConfig(value *AxisConfigBuilder) *LineChartBuilder {
 	b.core.AxisConfig(value)
 	return b
 }
@@ -1836,7 +2407,7 @@ func newMarkdownBuilder(core *builder) *MarkdownBuilder {
 }
 
 // Text sets the mrkdwn-formatted text content. Required.
-func (b *MarkdownBuilder) Text(value any) *MarkdownBuilder {
+func (b *MarkdownBuilder) Text(value string) *MarkdownBuilder {
 	b.core.Text(value)
 	return b
 }
@@ -1862,7 +2433,7 @@ func newMarkdownBlockBuilder(core *builder) *MarkdownBlockBuilder {
 
 // Text sets standard markdown content, which Slack renders directly. Required. Must be between
 // 1 and 12000 characters.
-func (b *MarkdownBlockBuilder) Text(value any) *MarkdownBlockBuilder {
+func (b *MarkdownBlockBuilder) Text(value string) *MarkdownBlockBuilder {
 	b.core.Text(value)
 	return b
 }
@@ -1898,20 +2469,28 @@ func (b *MessageBuilder) Channel(value string) *MessageBuilder {
 
 // Blocks adds the message blocks in display order. Slack allows at most 50 items. Each call
 // appends to any values already added.
-func (b *MessageBuilder) Blocks(values ...any) *MessageBuilder {
-	b.core.Blocks(values...)
+func (b *MessageBuilder) Blocks(values ...Block) *MessageBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Blocks(items...)
 	return b
 }
 
 // Attachments adds legacy attachments in display order. Slack allows at most 100 items. Each
 // call appends to any values already added.
-func (b *MessageBuilder) Attachments(values ...any) *MessageBuilder {
-	b.core.Attachments(values...)
+func (b *MessageBuilder) Attachments(values ...*AttachmentBuilder) *MessageBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Attachments(items...)
 	return b
 }
 
 // Text sets the fallback text used in notifications and by clients that cannot display blocks.
-func (b *MessageBuilder) Text(value any) *MessageBuilder {
+func (b *MessageBuilder) Text(value string) *MessageBuilder {
 	b.core.Text(value)
 	return b
 }
@@ -1936,7 +2515,7 @@ func (b *MessageBuilder) UnfurlMedia(value bool) *MessageBuilder {
 
 // Metadata sets message metadata as a JSON-compatible map, such as event_type and
 // event_payload. Pass an Object or map of JSON-compatible values.
-func (b *MessageBuilder) Metadata(value any) *MessageBuilder {
+func (b *MessageBuilder) Metadata(value Object) *MessageBuilder {
 	b.core.Metadata(value)
 	return b
 }
@@ -1956,20 +2535,28 @@ func newMessageResponseBuilder(core *builder) *MessageResponseBuilder {
 
 // Blocks adds the response blocks in display order. Slack allows at most 50 items. Each call
 // appends to any values already added.
-func (b *MessageResponseBuilder) Blocks(values ...any) *MessageResponseBuilder {
-	b.core.Blocks(values...)
+func (b *MessageResponseBuilder) Blocks(values ...Block) *MessageResponseBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Blocks(items...)
 	return b
 }
 
 // Attachments adds legacy attachments in display order. Slack allows at most 100 items. Each
 // call appends to any values already added.
-func (b *MessageResponseBuilder) Attachments(values ...any) *MessageResponseBuilder {
-	b.core.Attachments(values...)
+func (b *MessageResponseBuilder) Attachments(values ...*AttachmentBuilder) *MessageResponseBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Attachments(items...)
 	return b
 }
 
 // Text sets the fallback text used in notifications and by clients that cannot display blocks.
-func (b *MessageResponseBuilder) Text(value any) *MessageResponseBuilder {
+func (b *MessageResponseBuilder) Text(value string) *MessageResponseBuilder {
 	b.core.Text(value)
 	return b
 }
@@ -1987,8 +2574,8 @@ func (b *MessageResponseBuilder) ReplaceOriginal(value bool) *MessageResponseBui
 }
 
 // ResponseType sets who can see the response. Accepted values: "in_channel" and "ephemeral".
-func (b *MessageResponseBuilder) ResponseType(value string) *MessageResponseBuilder {
-	b.core.ResponseType(value)
+func (b *MessageResponseBuilder) ResponseType(value ResponseType) *MessageResponseBuilder {
+	b.core.ResponseType(string(value))
 	return b
 }
 
@@ -2007,31 +2594,55 @@ func newModalBuilder(core *builder) *ModalBuilder {
 	return &ModalBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Title sets the title in the modal's top bar. Required. Slack allows at most 24 characters. A
-// string is sent as a plain_text text object; pass a text object to choose the type.
-func (b *ModalBuilder) Title(value any) *ModalBuilder {
+// Title sets the title in the modal's top bar. Required. Slack allows at most 24 characters.
+// The string is sent as a plain_text text object; use TitleObject to pass a text object
+// instead.
+func (b *ModalBuilder) Title(value string) *ModalBuilder {
+	b.core.Title(value)
+	return b
+}
+
+// TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *ModalBuilder) TitleObject(value *PlainTextBuilder) *ModalBuilder {
 	b.core.Title(value)
 	return b
 }
 
 // Blocks adds the blocks shown in the modal, in display order. Required. Must contain between 1
 // and 100 items. Each call appends to any values already added.
-func (b *ModalBuilder) Blocks(values ...any) *ModalBuilder {
-	b.core.Blocks(values...)
+func (b *ModalBuilder) Blocks(values ...Block) *ModalBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Blocks(items...)
 	return b
 }
 
 // Close sets the label of the button that closes the modal. Slack allows at most 24 characters.
-// A string is sent as a plain_text text object; pass a text object to choose the type.
-func (b *ModalBuilder) Close(value any) *ModalBuilder {
+// The string is sent as a plain_text text object; use CloseObject to pass a text object
+// instead.
+func (b *ModalBuilder) Close(value string) *ModalBuilder {
+	b.core.Close(value)
+	return b
+}
+
+// CloseObject is Close for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *ModalBuilder) CloseObject(value *PlainTextBuilder) *ModalBuilder {
 	b.core.Close(value)
 	return b
 }
 
 // Submit sets the label of the button that submits the modal. Slack allows at most 24
-// characters. A string is sent as a plain_text text object; pass a text object to choose the
-// type.
-func (b *ModalBuilder) Submit(value any) *ModalBuilder {
+// characters. The string is sent as a plain_text text object; use SubmitObject to pass a text
+// object instead.
+func (b *ModalBuilder) Submit(value string) *ModalBuilder {
+	b.core.Submit(value)
+	return b
+}
+
+// SubmitObject is Submit for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *ModalBuilder) SubmitObject(value *PlainTextBuilder) *ModalBuilder {
 	b.core.Submit(value)
 	return b
 }
@@ -2104,7 +2715,7 @@ func (b *NumberInputBuilder) IsDecimalAllowed(value bool) *NumberInputBuilder {
 }
 
 // InitialValue sets the number present when the input loads, as a string such as 42 or 3.5.
-func (b *NumberInputBuilder) InitialValue(value any) *NumberInputBuilder {
+func (b *NumberInputBuilder) InitialValue(value string) *NumberInputBuilder {
 	b.core.InitialValue(value)
 	return b
 }
@@ -2122,7 +2733,7 @@ func (b *NumberInputBuilder) MaxValue(value float64) *NumberInputBuilder {
 }
 
 // DispatchActionConfig sets which user interactions send a block_actions payload.
-func (b *NumberInputBuilder) DispatchActionConfig(value any) *NumberInputBuilder {
+func (b *NumberInputBuilder) DispatchActionConfig(value *DispatchActionConfigurationBuilder) *NumberInputBuilder {
 	b.core.DispatchActionConfig(value)
 	return b
 }
@@ -2134,9 +2745,16 @@ func (b *NumberInputBuilder) FocusOnLoad(value bool) *NumberInputBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
-// plain_text text object; pass a text object to choose the type.
-func (b *NumberInputBuilder) Placeholder(value any) *NumberInputBuilder {
+// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+// plain_text text object; use PlaceholderObject to pass a text object instead.
+func (b *NumberInputBuilder) Placeholder(value string) *NumberInputBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *NumberInputBuilder) PlaceholderObject(value *PlainTextBuilder) *NumberInputBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -2154,24 +2772,37 @@ func newOptionBuilder(core *builder) *OptionBuilder {
 	return &OptionBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets the option label shown to users. Required. Slack allows at most 75 characters. A
-// string is sent as a plain_text text object; pass a text object to choose the type.
-func (b *OptionBuilder) Text(value any) *OptionBuilder {
+// Text sets the option label shown to users. Required. Slack allows at most 75 characters. The
+// string is sent as a plain_text text object; use TextObject to pass a text object instead.
+func (b *OptionBuilder) Text(value string) *OptionBuilder {
+	b.core.Text(value)
+	return b
+}
+
+// TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *OptionBuilder) TextObject(value TextObject) *OptionBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // Value sets the value sent in interaction payloads when this option is chosen. Required. Slack
 // allows at most 150 characters.
-func (b *OptionBuilder) Value(value any) *OptionBuilder {
+func (b *OptionBuilder) Value(value string) *OptionBuilder {
 	b.core.Value(value)
 	return b
 }
 
 // Description sets supporting text shown below the label. Only rendered by checkboxes and radio
-// buttons. Slack allows at most 75 characters. A string is sent as a plain_text text object;
-// pass a text object to choose the type.
-func (b *OptionBuilder) Description(value any) *OptionBuilder {
+// buttons. Slack allows at most 75 characters. The string is sent as a plain_text text object;
+// use DescriptionObject to pass a text object instead.
+func (b *OptionBuilder) Description(value string) *OptionBuilder {
+	b.core.Description(value)
+	return b
+}
+
+// DescriptionObject is Description for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *OptionBuilder) DescriptionObject(value TextObject) *OptionBuilder {
 	b.core.Description(value)
 	return b
 }
@@ -2196,17 +2827,27 @@ func newOptionGroupBuilder(core *builder) *OptionGroupBuilder {
 	return &OptionGroupBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Label sets the group heading. Required. Slack allows at most 75 characters. A string is sent
-// as a plain_text text object; pass a text object to choose the type.
-func (b *OptionGroupBuilder) Label(value any) *OptionGroupBuilder {
+// Label sets the group heading. Required. Slack allows at most 75 characters. The string is
+// sent as a plain_text text object; use LabelObject to pass a text object instead.
+func (b *OptionGroupBuilder) Label(value string) *OptionGroupBuilder {
+	b.core.Label(value)
+	return b
+}
+
+// LabelObject is Label for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *OptionGroupBuilder) LabelObject(value *PlainTextBuilder) *OptionGroupBuilder {
 	b.core.Label(value)
 	return b
 }
 
 // Options adds selectable options in display order. Required. Must contain between 1 and 100
 // items. Each call appends to any values already added.
-func (b *OptionGroupBuilder) Options(values ...any) *OptionGroupBuilder {
-	b.core.Options(values...)
+func (b *OptionGroupBuilder) Options(values ...*OptionBuilder) *OptionGroupBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Options(items...)
 	return b
 }
 
@@ -2233,13 +2874,17 @@ func (b *OverflowBuilder) ActionID(value string) *OverflowBuilder {
 
 // Options adds selectable options in display order. Required. Must contain between 1 and 5
 // items. Each call appends to any values already added.
-func (b *OverflowBuilder) Options(values ...any) *OverflowBuilder {
-	b.core.Options(values...)
+func (b *OverflowBuilder) Options(values ...*OptionBuilder) *OverflowBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Options(items...)
 	return b
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *OverflowBuilder) Confirm(value any) *OverflowBuilder {
+func (b *OverflowBuilder) Confirm(value *ConfirmationBuilder) *OverflowBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -2259,8 +2904,12 @@ func newPieChartBuilder(core *builder) *PieChartBuilder {
 
 // Segments adds pie segments in display order. Required. Must contain between 1 and 12 items.
 // Each call appends to any values already added.
-func (b *PieChartBuilder) Segments(values ...any) *PieChartBuilder {
-	b.core.Segments(values...)
+func (b *PieChartBuilder) Segments(values ...*ChartSegmentBuilder) *PieChartBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Segments(items...)
 	return b
 }
 
@@ -2278,7 +2927,7 @@ func newPlainTextBuilder(core *builder) *PlainTextBuilder {
 }
 
 // Text sets the text content. Required.
-func (b *PlainTextBuilder) Text(value any) *PlainTextBuilder {
+func (b *PlainTextBuilder) Text(value string) *PlainTextBuilder {
 	b.core.Text(value)
 	return b
 }
@@ -2311,7 +2960,7 @@ func (b *PlainTextInputBuilder) ActionID(value string) *PlainTextInputBuilder {
 }
 
 // InitialValue sets the value present when the input loads.
-func (b *PlainTextInputBuilder) InitialValue(value any) *PlainTextInputBuilder {
+func (b *PlainTextInputBuilder) InitialValue(value string) *PlainTextInputBuilder {
 	b.core.InitialValue(value)
 	return b
 }
@@ -2335,7 +2984,7 @@ func (b *PlainTextInputBuilder) MaxLength(value int) *PlainTextInputBuilder {
 }
 
 // DispatchActionConfig sets which user interactions send a block_actions payload.
-func (b *PlainTextInputBuilder) DispatchActionConfig(value any) *PlainTextInputBuilder {
+func (b *PlainTextInputBuilder) DispatchActionConfig(value *DispatchActionConfigurationBuilder) *PlainTextInputBuilder {
 	b.core.DispatchActionConfig(value)
 	return b
 }
@@ -2347,9 +2996,16 @@ func (b *PlainTextInputBuilder) FocusOnLoad(value bool) *PlainTextInputBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
-// plain_text text object; pass a text object to choose the type.
-func (b *PlainTextInputBuilder) Placeholder(value any) *PlainTextInputBuilder {
+// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+// plain_text text object; use PlaceholderObject to pass a text object instead.
+func (b *PlainTextInputBuilder) Placeholder(value string) *PlainTextInputBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *PlainTextInputBuilder) PlaceholderObject(value *PlainTextBuilder) *PlainTextInputBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -2368,14 +3024,18 @@ func newPlanBlockBuilder(core *builder) *PlanBlockBuilder {
 }
 
 // Title sets the plan title. Required.
-func (b *PlanBlockBuilder) Title(value any) *PlanBlockBuilder {
+func (b *PlanBlockBuilder) Title(value string) *PlanBlockBuilder {
 	b.core.Title(value)
 	return b
 }
 
 // Tasks adds task cards in display order. Each call appends to any values already added.
-func (b *PlanBlockBuilder) Tasks(values ...any) *PlanBlockBuilder {
-	b.core.Tasks(values...)
+func (b *PlanBlockBuilder) Tasks(values ...*TaskCardBlockBuilder) *PlanBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Tasks(items...)
 	return b
 }
 
@@ -2410,20 +3070,24 @@ func (b *RadioButtonsBuilder) ActionID(value string) *RadioButtonsBuilder {
 
 // Options adds selectable options in display order. Required. Must contain between 1 and 10
 // items. Each call appends to any values already added.
-func (b *RadioButtonsBuilder) Options(values ...any) *RadioButtonsBuilder {
-	b.core.Options(values...)
+func (b *RadioButtonsBuilder) Options(values ...*OptionBuilder) *RadioButtonsBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Options(items...)
 	return b
 }
 
 // InitialOption sets the option selected when the element loads. It must match an option in the
 // element.
-func (b *RadioButtonsBuilder) InitialOption(value any) *RadioButtonsBuilder {
+func (b *RadioButtonsBuilder) InitialOption(value *OptionBuilder) *RadioButtonsBuilder {
 	b.core.InitialOption(value)
 	return b
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *RadioButtonsBuilder) Confirm(value any) *RadioButtonsBuilder {
+func (b *RadioButtonsBuilder) Confirm(value *ConfirmationBuilder) *RadioButtonsBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -2449,13 +3113,13 @@ func newRawNumberBuilder(core *builder) *RawNumberBuilder {
 }
 
 // Value sets the numeric value used for sorting. Required.
-func (b *RawNumberBuilder) Value(value any) *RawNumberBuilder {
+func (b *RawNumberBuilder) Value(value float64) *RawNumberBuilder {
 	b.core.Value(value)
 	return b
 }
 
 // Text sets the formatted text displayed for the number, such as 1,234.5. Required.
-func (b *RawNumberBuilder) Text(value any) *RawNumberBuilder {
+func (b *RawNumberBuilder) Text(value string) *RawNumberBuilder {
 	b.core.Text(value)
 	return b
 }
@@ -2474,7 +3138,7 @@ func newRawTextBuilder(core *builder) *RawTextBuilder {
 }
 
 // Text sets the cell text. Required.
-func (b *RawTextBuilder) Text(value any) *RawTextBuilder {
+func (b *RawTextBuilder) Text(value string) *RawTextBuilder {
 	b.core.Text(value)
 	return b
 }
@@ -2493,15 +3157,15 @@ func newRichTextBuilder(core *builder) *RichTextBuilder {
 }
 
 // Text sets the text content. Required.
-func (b *RichTextBuilder) Text(value any) *RichTextBuilder {
+func (b *RichTextBuilder) Text(value string) *RichTextBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // Style sets the visual style. Pass an Object of boolean flags, such as `Object{"bold": true}`.
 // Supported flags: "bold", "italic", "strike", and "code".
-func (b *RichTextBuilder) Style(value any) *RichTextBuilder {
-	b.core.Style(value)
+func (b *RichTextBuilder) Style(value RichTextStyle) *RichTextBuilder {
+	b.core.Style(value.object())
 	return b
 }
 
@@ -2520,8 +3184,12 @@ func newRichTextBlockBuilder(core *builder) *RichTextBlockBuilder {
 
 // Elements adds sections, lists, preformatted blocks, and quotes in display order. Required.
 // Each call appends to any values already added.
-func (b *RichTextBlockBuilder) Elements(values ...any) *RichTextBlockBuilder {
-	b.core.Elements(values...)
+func (b *RichTextBlockBuilder) Elements(values ...RichTextBlockElement) *RichTextBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Elements(items...)
 	return b
 }
 
@@ -2555,8 +3223,8 @@ func (b *RichTextChannelBuilder) ChannelID(value string) *RichTextChannelBuilder
 // Style sets the mention style. Pass an Object of boolean flags, such as `Object{"bold":
 // true}`. Supported flags: "bold", "italic", "strike", "highlight", "client_highlight", and
 // "unlink".
-func (b *RichTextChannelBuilder) Style(value any) *RichTextChannelBuilder {
-	b.core.Style(value)
+func (b *RichTextChannelBuilder) Style(value RichTextStyle) *RichTextChannelBuilder {
+	b.core.Style(value.object())
 	return b
 }
 
@@ -2575,8 +3243,12 @@ func newRichTextCodeBlockBuilder(core *builder) *RichTextCodeBlockBuilder {
 
 // Elements adds inline rich text elements in display order. Required. Each call appends to any
 // values already added.
-func (b *RichTextCodeBlockBuilder) Elements(values ...any) *RichTextCodeBlockBuilder {
-	b.core.Elements(values...)
+func (b *RichTextCodeBlockBuilder) Elements(values ...RichTextSectionElement) *RichTextCodeBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Elements(items...)
 	return b
 }
 
@@ -2633,13 +3305,13 @@ func (b *RichTextInputBuilder) ActionID(value string) *RichTextInputBuilder {
 }
 
 // InitialValue sets the rich text present when the input loads.
-func (b *RichTextInputBuilder) InitialValue(value any) *RichTextInputBuilder {
+func (b *RichTextInputBuilder) InitialValue(value *RichTextBuilder) *RichTextInputBuilder {
 	b.core.InitialValue(value)
 	return b
 }
 
 // DispatchActionConfig sets which user interactions send a block_actions payload.
-func (b *RichTextInputBuilder) DispatchActionConfig(value any) *RichTextInputBuilder {
+func (b *RichTextInputBuilder) DispatchActionConfig(value *DispatchActionConfigurationBuilder) *RichTextInputBuilder {
 	b.core.DispatchActionConfig(value)
 	return b
 }
@@ -2651,9 +3323,16 @@ func (b *RichTextInputBuilder) FocusOnLoad(value bool) *RichTextInputBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
-// plain_text text object; pass a text object to choose the type.
-func (b *RichTextInputBuilder) Placeholder(value any) *RichTextInputBuilder {
+// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+// plain_text text object; use PlaceholderObject to pass a text object instead.
+func (b *RichTextInputBuilder) Placeholder(value string) *RichTextInputBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *RichTextInputBuilder) PlaceholderObject(value *PlainTextBuilder) *RichTextInputBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -2690,15 +3369,15 @@ func (b *RichTextLinkBuilder) URL(value string) *RichTextLinkBuilder {
 }
 
 // Text sets the visible link text. Slack shows the URL when omitted.
-func (b *RichTextLinkBuilder) Text(value any) *RichTextLinkBuilder {
+func (b *RichTextLinkBuilder) Text(value string) *RichTextLinkBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // Style sets the visual style. Pass an Object of boolean flags, such as `Object{"bold": true}`.
 // Supported flags: "bold", "italic", "strike", and "code".
-func (b *RichTextLinkBuilder) Style(value any) *RichTextLinkBuilder {
-	b.core.Style(value)
+func (b *RichTextLinkBuilder) Style(value RichTextStyle) *RichTextLinkBuilder {
+	b.core.Style(value.object())
 	return b
 }
 
@@ -2717,15 +3396,19 @@ func newRichTextListBuilder(core *builder) *RichTextListBuilder {
 
 // Style sets whether the list is bulleted or numbered. Required. Accepted values: "bullet" and
 // "ordered".
-func (b *RichTextListBuilder) Style(value any) *RichTextListBuilder {
-	b.core.Style(value)
+func (b *RichTextListBuilder) Style(value RichTextListStyle) *RichTextListBuilder {
+	b.core.Style(string(value))
 	return b
 }
 
 // Elements adds list items, one rich text section per item. Required. Each call appends to any
 // values already added.
-func (b *RichTextListBuilder) Elements(values ...any) *RichTextListBuilder {
-	b.core.Elements(values...)
+func (b *RichTextListBuilder) Elements(values ...*RichTextSectionBuilder) *RichTextListBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Elements(items...)
 	return b
 }
 
@@ -2762,8 +3445,12 @@ func newRichTextQuoteBuilder(core *builder) *RichTextQuoteBuilder {
 
 // Elements adds inline rich text elements in display order. Required. Each call appends to any
 // values already added.
-func (b *RichTextQuoteBuilder) Elements(values ...any) *RichTextQuoteBuilder {
-	b.core.Elements(values...)
+func (b *RichTextQuoteBuilder) Elements(values ...RichTextSectionElement) *RichTextQuoteBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Elements(items...)
 	return b
 }
 
@@ -2788,8 +3475,12 @@ func newRichTextSectionBuilder(core *builder) *RichTextSectionBuilder {
 
 // Elements adds inline rich text elements in display order. Required. Each call appends to any
 // values already added.
-func (b *RichTextSectionBuilder) Elements(values ...any) *RichTextSectionBuilder {
-	b.core.Elements(values...)
+func (b *RichTextSectionBuilder) Elements(values ...RichTextSectionElement) *RichTextSectionBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Elements(items...)
 	return b
 }
 
@@ -2814,8 +3505,8 @@ func (b *RichTextUserBuilder) UserID(value string) *RichTextUserBuilder {
 
 // Style sets the visual style. Pass an Object of boolean flags, such as `Object{"bold": true}`.
 // Supported flags: "bold", "italic", "strike", "highlight", "client_highlight", and "unlink".
-func (b *RichTextUserBuilder) Style(value any) *RichTextUserBuilder {
-	b.core.Style(value)
+func (b *RichTextUserBuilder) Style(value RichTextStyle) *RichTextUserBuilder {
+	b.core.Style(value.object())
 	return b
 }
 
@@ -2840,8 +3531,8 @@ func (b *RichTextUserGroupBuilder) UserGroupID(value string) *RichTextUserGroupB
 
 // Style sets the visual style. Pass an Object of boolean flags, such as `Object{"bold": true}`.
 // Supported flags: "bold", "italic", "strike", "highlight", "client_highlight", and "unlink".
-func (b *RichTextUserGroupBuilder) Style(value any) *RichTextUserGroupBuilder {
-	b.core.Style(value)
+func (b *RichTextUserGroupBuilder) Style(value RichTextStyle) *RichTextUserGroupBuilder {
+	b.core.Style(value.object())
 	return b
 }
 
@@ -2858,23 +3549,41 @@ func newSectionBlockBuilder(core *builder) *SectionBlockBuilder {
 	return &SectionBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Text sets the main text of the section. Slack allows at most 3000 characters. A string is
-// sent as a mrkdwn text object; pass a text object to choose the type.
-func (b *SectionBlockBuilder) Text(value any) *SectionBlockBuilder {
+// Text sets the main text of the section. Slack allows at most 3000 characters. The string is
+// sent as a mrkdwn text object; use TextObject to pass a text object instead.
+func (b *SectionBlockBuilder) Text(value string) *SectionBlockBuilder {
+	b.core.Text(value)
+	return b
+}
+
+// TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *SectionBlockBuilder) TextObject(value TextObject) *SectionBlockBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // Fields adds section fields, shown in a two-column grid, in display order. Slack allows at
-// most 10 items, each at most 2000 characters. Strings are sent as mrkdwn text objects. Each
-// call appends to any values already added.
-func (b *SectionBlockBuilder) Fields(values ...any) *SectionBlockBuilder {
-	b.core.Fields(values...)
+// most 10 items, each at most 2000 characters. Strings are sent as mrkdwn text objects; use
+// FieldObjects to pass text objects. Each call appends to any values already added.
+func (b *SectionBlockBuilder) Fields(values ...string) *SectionBlockBuilder {
+	for _, value := range values {
+		b.core.Fields(value)
+	}
+	return b
+}
+
+// FieldObjects is Fields for text objects. Each call appends to any values already added.
+func (b *SectionBlockBuilder) FieldObjects(values ...TextObject) *SectionBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Fields(items...)
 	return b
 }
 
 // Accessory sets the element displayed beside the section text.
-func (b *SectionBlockBuilder) Accessory(value any) *SectionBlockBuilder {
+func (b *SectionBlockBuilder) Accessory(value Element) *SectionBlockBuilder {
 	b.core.Accessory(value)
 	return b
 }
@@ -2954,28 +3663,40 @@ func (b *StaticMultiSelectBuilder) ActionID(value string) *StaticMultiSelectBuil
 
 // Options adds selectable options in display order. Slack allows at most 100 items. Each call
 // appends to any values already added.
-func (b *StaticMultiSelectBuilder) Options(values ...any) *StaticMultiSelectBuilder {
-	b.core.Options(values...)
+func (b *StaticMultiSelectBuilder) Options(values ...*OptionBuilder) *StaticMultiSelectBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Options(items...)
 	return b
 }
 
 // OptionGroups adds labelled groups of options in display order. Cannot be combined with
 // ungrouped options. Slack allows at most 100 items. Each call appends to any values already
 // added.
-func (b *StaticMultiSelectBuilder) OptionGroups(values ...any) *StaticMultiSelectBuilder {
-	b.core.OptionGroups(values...)
+func (b *StaticMultiSelectBuilder) OptionGroups(values ...*OptionGroupBuilder) *StaticMultiSelectBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.OptionGroups(items...)
 	return b
 }
 
 // InitialOptions adds options that are selected when the element loads. Each must match an
 // option in the element. Each call appends to any values already added.
-func (b *StaticMultiSelectBuilder) InitialOptions(values ...any) *StaticMultiSelectBuilder {
-	b.core.InitialOptions(values...)
+func (b *StaticMultiSelectBuilder) InitialOptions(values ...*OptionBuilder) *StaticMultiSelectBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.InitialOptions(items...)
 	return b
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *StaticMultiSelectBuilder) Confirm(value any) *StaticMultiSelectBuilder {
+func (b *StaticMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *StaticMultiSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -2994,9 +3715,16 @@ func (b *StaticMultiSelectBuilder) FocusOnLoad(value bool) *StaticMultiSelectBui
 }
 
 // Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
-// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
-// the type.
-func (b *StaticMultiSelectBuilder) Placeholder(value any) *StaticMultiSelectBuilder {
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
+func (b *StaticMultiSelectBuilder) Placeholder(value string) *StaticMultiSelectBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *StaticMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *StaticMultiSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -3025,28 +3753,36 @@ func (b *StaticSelectBuilder) ActionID(value string) *StaticSelectBuilder {
 
 // Options adds selectable options in display order. Slack allows at most 100 items. Each call
 // appends to any values already added.
-func (b *StaticSelectBuilder) Options(values ...any) *StaticSelectBuilder {
-	b.core.Options(values...)
+func (b *StaticSelectBuilder) Options(values ...*OptionBuilder) *StaticSelectBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Options(items...)
 	return b
 }
 
 // OptionGroups adds labelled groups of options in display order. Cannot be combined with
 // ungrouped options. Slack allows at most 100 items. Each call appends to any values already
 // added.
-func (b *StaticSelectBuilder) OptionGroups(values ...any) *StaticSelectBuilder {
-	b.core.OptionGroups(values...)
+func (b *StaticSelectBuilder) OptionGroups(values ...*OptionGroupBuilder) *StaticSelectBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.OptionGroups(items...)
 	return b
 }
 
 // InitialOption sets the option selected when the element loads. It must match an option in the
 // element.
-func (b *StaticSelectBuilder) InitialOption(value any) *StaticSelectBuilder {
+func (b *StaticSelectBuilder) InitialOption(value *OptionBuilder) *StaticSelectBuilder {
 	b.core.InitialOption(value)
 	return b
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *StaticSelectBuilder) Confirm(value any) *StaticSelectBuilder {
+func (b *StaticSelectBuilder) Confirm(value *ConfirmationBuilder) *StaticSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -3059,9 +3795,16 @@ func (b *StaticSelectBuilder) FocusOnLoad(value bool) *StaticSelectBuilder {
 }
 
 // Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
-// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
-// the type.
-func (b *StaticSelectBuilder) Placeholder(value any) *StaticSelectBuilder {
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
+func (b *StaticSelectBuilder) Placeholder(value string) *StaticSelectBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *StaticSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *StaticSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -3083,15 +3826,25 @@ func newTableBlockBuilder(core *builder) *TableBlockBuilder {
 
 // Rows adds complete table rows in display order. Every row must have the same number of cells.
 // Required. Each call appends to any values already added.
-func (b *TableBlockBuilder) Rows(values ...any) *TableBlockBuilder {
-	b.core.Rows(values...)
+func (b *TableBlockBuilder) Rows(rows ...[]TableCell) *TableBlockBuilder {
+	for _, row := range rows {
+		cells := make([]any, len(row))
+		for index, cell := range row {
+			cells[index] = cell
+		}
+		b.core.Rows(cells)
+	}
 	return b
 }
 
 // ColumnSettings adds per-column settings in column order. Provide one entry for every column.
 // Each call appends to any values already added.
-func (b *TableBlockBuilder) ColumnSettings(values ...any) *TableBlockBuilder {
-	b.core.ColumnSettings(values...)
+func (b *TableBlockBuilder) ColumnSettings(values ...*ColumnSettingsBuilder) *TableBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.ColumnSettings(items...)
 	return b
 }
 
@@ -3123,34 +3876,38 @@ func (b *TaskCardBlockBuilder) TaskID(value string) *TaskCardBlockBuilder {
 }
 
 // Title sets the task title. Required.
-func (b *TaskCardBlockBuilder) Title(value any) *TaskCardBlockBuilder {
+func (b *TaskCardBlockBuilder) Title(value string) *TaskCardBlockBuilder {
 	b.core.Title(value)
 	return b
 }
 
 // Details sets a rich text description of the task.
-func (b *TaskCardBlockBuilder) Details(value any) *TaskCardBlockBuilder {
+func (b *TaskCardBlockBuilder) Details(value *RichTextBlockBuilder) *TaskCardBlockBuilder {
 	b.core.Details(value)
 	return b
 }
 
 // Output sets rich text describing the task's output.
-func (b *TaskCardBlockBuilder) Output(value any) *TaskCardBlockBuilder {
+func (b *TaskCardBlockBuilder) Output(value *RichTextBlockBuilder) *TaskCardBlockBuilder {
 	b.core.Output(value)
 	return b
 }
 
 // Sources adds links to the sources the task used, in display order. Each call appends to any
 // values already added.
-func (b *TaskCardBlockBuilder) Sources(values ...any) *TaskCardBlockBuilder {
-	b.core.Sources(values...)
+func (b *TaskCardBlockBuilder) Sources(values ...*URLSourceBuilder) *TaskCardBlockBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Sources(items...)
 	return b
 }
 
 // Status sets the task's current state. Accepted values: "pending", "in_progress", "complete",
 // and "error".
-func (b *TaskCardBlockBuilder) Status(value string) *TaskCardBlockBuilder {
-	b.core.Status(value)
+func (b *TaskCardBlockBuilder) Status(value TaskStatus) *TaskCardBlockBuilder {
+	b.core.Status(string(value))
 	return b
 }
 
@@ -3196,7 +3953,7 @@ func (b *TimePickerBuilder) Timezone(value string) *TimePickerBuilder {
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *TimePickerBuilder) Confirm(value any) *TimePickerBuilder {
+func (b *TimePickerBuilder) Confirm(value *ConfirmationBuilder) *TimePickerBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -3208,9 +3965,16 @@ func (b *TimePickerBuilder) FocusOnLoad(value bool) *TimePickerBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
-// plain_text text object; pass a text object to choose the type.
-func (b *TimePickerBuilder) Placeholder(value any) *TimePickerBuilder {
+// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+// plain_text text object; use PlaceholderObject to pass a text object instead.
+func (b *TimePickerBuilder) Placeholder(value string) *TimePickerBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *TimePickerBuilder) PlaceholderObject(value *PlainTextBuilder) *TimePickerBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -3236,8 +4000,12 @@ func (b *TriggerBuilder) URL(value string) *TriggerBuilder {
 
 // CustomizableInputParameters adds the input values passed to the workflow's trigger. Each call
 // appends to any values already added.
-func (b *TriggerBuilder) CustomizableInputParameters(values ...any) *TriggerBuilder {
-	b.core.CustomizableInputParameters(values...)
+func (b *TriggerBuilder) CustomizableInputParameters(values ...*InputParameterBuilder) *TriggerBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.CustomizableInputParameters(items...)
 	return b
 }
 
@@ -3263,13 +4031,13 @@ func (b *URLInputBuilder) ActionID(value string) *URLInputBuilder {
 }
 
 // InitialValue sets the value present when the input loads.
-func (b *URLInputBuilder) InitialValue(value any) *URLInputBuilder {
+func (b *URLInputBuilder) InitialValue(value string) *URLInputBuilder {
 	b.core.InitialValue(value)
 	return b
 }
 
 // DispatchActionConfig sets which user interactions send a block_actions payload.
-func (b *URLInputBuilder) DispatchActionConfig(value any) *URLInputBuilder {
+func (b *URLInputBuilder) DispatchActionConfig(value *DispatchActionConfigurationBuilder) *URLInputBuilder {
 	b.core.DispatchActionConfig(value)
 	return b
 }
@@ -3281,9 +4049,16 @@ func (b *URLInputBuilder) FocusOnLoad(value bool) *URLInputBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. A string is sent as a
-// plain_text text object; pass a text object to choose the type.
-func (b *URLInputBuilder) Placeholder(value any) *URLInputBuilder {
+// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+// plain_text text object; use PlaceholderObject to pass a text object instead.
+func (b *URLInputBuilder) Placeholder(value string) *URLInputBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *URLInputBuilder) PlaceholderObject(value *PlainTextBuilder) *URLInputBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -3308,7 +4083,7 @@ func (b *URLSourceBuilder) URL(value string) *URLSourceBuilder {
 }
 
 // Text sets the source link text. Required.
-func (b *URLSourceBuilder) Text(value any) *URLSourceBuilder {
+func (b *URLSourceBuilder) Text(value string) *URLSourceBuilder {
 	b.core.Text(value)
 	return b
 }
@@ -3342,7 +4117,7 @@ func (b *UserMultiSelectBuilder) InitialUsers(values ...string) *UserMultiSelect
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *UserMultiSelectBuilder) Confirm(value any) *UserMultiSelectBuilder {
+func (b *UserMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *UserMultiSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -3361,9 +4136,16 @@ func (b *UserMultiSelectBuilder) FocusOnLoad(value bool) *UserMultiSelectBuilder
 }
 
 // Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
-// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
-// the type.
-func (b *UserMultiSelectBuilder) Placeholder(value any) *UserMultiSelectBuilder {
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
+func (b *UserMultiSelectBuilder) Placeholder(value string) *UserMultiSelectBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *UserMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *UserMultiSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -3396,7 +4178,7 @@ func (b *UserSelectBuilder) InitialUser(value string) *UserSelectBuilder {
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *UserSelectBuilder) Confirm(value any) *UserSelectBuilder {
+func (b *UserSelectBuilder) Confirm(value *ConfirmationBuilder) *UserSelectBuilder {
 	b.core.Confirm(value)
 	return b
 }
@@ -3409,9 +4191,16 @@ func (b *UserSelectBuilder) FocusOnLoad(value bool) *UserSelectBuilder {
 }
 
 // Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
-// 150 characters. A string is sent as a plain_text text object; pass a text object to choose
-// the type.
-func (b *UserSelectBuilder) Placeholder(value any) *UserSelectBuilder {
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
+func (b *UserSelectBuilder) Placeholder(value string) *UserSelectBuilder {
+	b.core.Placeholder(value)
+	return b
+}
+
+// PlaceholderObject is Placeholder for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *UserSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *UserSelectBuilder {
 	b.core.Placeholder(value)
 	return b
 }
@@ -3442,9 +4231,15 @@ func (b *VideoBlockBuilder) ThumbnailURL(value string) *VideoBlockBuilder {
 	return b
 }
 
-// Title sets the video title. Required. Slack allows at most 200 characters. A string is sent
-// as a plain_text text object; pass a text object to choose the type.
-func (b *VideoBlockBuilder) Title(value any) *VideoBlockBuilder {
+// Title sets the video title. Required. Slack allows at most 200 characters. The string is sent
+// as a plain_text text object; use TitleObject to pass a text object instead.
+func (b *VideoBlockBuilder) Title(value string) *VideoBlockBuilder {
+	b.core.Title(value)
+	return b
+}
+
+// TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *VideoBlockBuilder) TitleObject(value *PlainTextBuilder) *VideoBlockBuilder {
 	b.core.Title(value)
 	return b
 }
@@ -3470,9 +4265,16 @@ func (b *VideoBlockBuilder) AuthorName(value string) *VideoBlockBuilder {
 	return b
 }
 
-// Description sets the video description. Slack allows at most 200 characters. A string is sent
-// as a plain_text text object; pass a text object to choose the type.
-func (b *VideoBlockBuilder) Description(value any) *VideoBlockBuilder {
+// Description sets the video description. Slack allows at most 200 characters. The string is
+// sent as a plain_text text object; use DescriptionObject to pass a text object instead.
+func (b *VideoBlockBuilder) Description(value string) *VideoBlockBuilder {
+	b.core.Description(value)
+	return b
+}
+
+// DescriptionObject is Description for a text object, such as
+// NewPlainText().Text("...").Emoji(true).
+func (b *VideoBlockBuilder) DescriptionObject(value *PlainTextBuilder) *VideoBlockBuilder {
 	b.core.Description(value)
 	return b
 }
@@ -3511,27 +4313,35 @@ func newWebhookMessageBuilder(core *builder) *WebhookMessageBuilder {
 
 // Blocks adds the message blocks in display order. Slack allows at most 50 items. Each call
 // appends to any values already added.
-func (b *WebhookMessageBuilder) Blocks(values ...any) *WebhookMessageBuilder {
-	b.core.Blocks(values...)
+func (b *WebhookMessageBuilder) Blocks(values ...Block) *WebhookMessageBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Blocks(items...)
 	return b
 }
 
 // Attachments adds legacy attachments in display order. Slack allows at most 100 items. Each
 // call appends to any values already added.
-func (b *WebhookMessageBuilder) Attachments(values ...any) *WebhookMessageBuilder {
-	b.core.Attachments(values...)
+func (b *WebhookMessageBuilder) Attachments(values ...*AttachmentBuilder) *WebhookMessageBuilder {
+	items := make([]any, len(values))
+	for index, value := range values {
+		items[index] = value
+	}
+	b.core.Attachments(items...)
 	return b
 }
 
 // Text sets the fallback text used in notifications and by clients that cannot display blocks.
-func (b *WebhookMessageBuilder) Text(value any) *WebhookMessageBuilder {
+func (b *WebhookMessageBuilder) Text(value string) *WebhookMessageBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // ResponseType sets who can see the response. Accepted values: "in_channel" and "ephemeral".
-func (b *WebhookMessageBuilder) ResponseType(value string) *WebhookMessageBuilder {
-	b.core.ResponseType(value)
+func (b *WebhookMessageBuilder) ResponseType(value ResponseType) *WebhookMessageBuilder {
+	b.core.ResponseType(string(value))
 	return b
 }
 
@@ -3561,7 +4371,7 @@ func (b *WebhookMessageBuilder) UnfurlMedia(value bool) *WebhookMessageBuilder {
 
 // Metadata sets message metadata as a JSON-compatible map, such as event_type and
 // event_payload. Pass an Object or map of JSON-compatible values.
-func (b *WebhookMessageBuilder) Metadata(value any) *WebhookMessageBuilder {
+func (b *WebhookMessageBuilder) Metadata(value Object) *WebhookMessageBuilder {
 	b.core.Metadata(value)
 	return b
 }
@@ -3580,7 +4390,7 @@ func newWorkflowBuilder(core *builder) *WorkflowBuilder {
 }
 
 // Trigger sets the link trigger that starts the workflow. Required.
-func (b *WorkflowBuilder) Trigger(value any) *WorkflowBuilder {
+func (b *WorkflowBuilder) Trigger(value *TriggerBuilder) *WorkflowBuilder {
 	b.core.Trigger(value)
 	return b
 }
@@ -3598,15 +4408,21 @@ func newWorkflowButtonBuilder(core *builder) *WorkflowButtonBuilder {
 	return &WorkflowButtonBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets the button label. Required. A string is sent as a plain_text text object; pass a
-// text object to choose the type.
-func (b *WorkflowButtonBuilder) Text(value any) *WorkflowButtonBuilder {
+// Text sets the button label. Required. The string is sent as a plain_text text object; use
+// TextObject to pass a text object instead.
+func (b *WorkflowButtonBuilder) Text(value string) *WorkflowButtonBuilder {
+	b.core.Text(value)
+	return b
+}
+
+// TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+func (b *WorkflowButtonBuilder) TextObject(value *PlainTextBuilder) *WorkflowButtonBuilder {
 	b.core.Text(value)
 	return b
 }
 
 // Workflow sets the workflow started when the button is clicked. Required.
-func (b *WorkflowButtonBuilder) Workflow(value any) *WorkflowButtonBuilder {
+func (b *WorkflowButtonBuilder) Workflow(value *WorkflowBuilder) *WorkflowButtonBuilder {
 	b.core.Workflow(value)
 	return b
 }
@@ -3620,15 +4436,15 @@ func (b *WorkflowButtonBuilder) ActionID(value string) *WorkflowButtonBuilder {
 }
 
 // Confirm sets a confirmation dialog shown before the action is sent.
-func (b *WorkflowButtonBuilder) Confirm(value any) *WorkflowButtonBuilder {
+func (b *WorkflowButtonBuilder) Confirm(value *ConfirmationBuilder) *WorkflowButtonBuilder {
 	b.core.Confirm(value)
 	return b
 }
 
 // Style sets the button's emphasis. Omit it for the default neutral style. Accepted values:
 // "primary" and "danger".
-func (b *WorkflowButtonBuilder) Style(value any) *WorkflowButtonBuilder {
-	b.core.Style(value)
+func (b *WorkflowButtonBuilder) Style(value ButtonStyle) *WorkflowButtonBuilder {
+	b.core.Style(string(value))
 	return b
 }
 

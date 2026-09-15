@@ -76,6 +76,24 @@ assert.match(
 assert.equal(pages.has("slack-go"), false, "obsolete adapter page must not exist");
 assert.match(
   pages.get("blocks"),
+  /^func \(b \*SectionBlockBuilder\) Accessory\(value Element\) \*SectionBlockBuilder$/m,
+  "Builder signatures must use marker interfaces instead of any",
+);
+assert.match(
+  pages.get("blocks"),
+  /^#### SectionBlockBuilder\.TextObject$/m,
+  "Text-object companion methods must be documented",
+);
+assert.match(pages.get("types"), /^## ContextElement$/m, "Marker interfaces must be documented");
+assert.match(pages.get("types"), /^## ButtonStylePrimary$/m, "Enum constants must be documented");
+assert.match(pages.get("types"), /^## RichTextStyle$/m, "RichTextStyle must be documented");
+assert.doesNotMatch(
+  rendered,
+  /^func \(b \*\w+Builder\) \w+\((?:value any|values \.\.\.any)\)/m,
+  "Generated builder methods must not take any",
+);
+assert.match(
+  pages.get("blocks"),
   /Slack allows at most 3000 characters\./,
   "Builder method docs must state the shared Slack limits",
 );

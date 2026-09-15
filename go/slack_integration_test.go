@@ -68,8 +68,8 @@ func TestBlockBuilderSendsDirectlyThroughSlackGo(t *testing.T) {
 		Text("Hello, world!").
 		BlockID("greeting")
 	table := slackblocks.NewTableBlock().Rows(
-		[]any{slackblocks.NewRawText().Text("Name")},
-		[]any{slackblocks.NewRawText().Text("Ada")},
+		[]slackblocks.TableCell{slackblocks.NewRawText().Text("Name")},
+		[]slackblocks.TableCell{slackblocks.NewRawText().Text("Ada")},
 	)
 
 	var received url.Values
