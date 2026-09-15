@@ -5,6 +5,7 @@
 ![Python Versions](https://img.shields.io/pypi/pyversions/slackblocks)
 [![PyPI](https://img.shields.io/pypi/v/slackblocks?color=yellow&label=PyPI&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/#history)
 [![npm](https://img.shields.io/npm/v/%40nicklambourne%2Fslackblocks?color=CB3837&label=npm&logo=npm)](https://www.npmjs.com/package/@nicklambourne/slackblocks)
+[![Go](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv2%2F%40latest&query=%24.Version&label=Go&color=00ADD8&logo=go&logoColor=white)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.nicklambourne/slackblocks?logo=apachemaven)](https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks)
 [![Downloads](https://static.pepy.tech/badge/slackblocks)](https://pepy.tech/project/slackblocks)
 [![Python CI](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
@@ -70,7 +71,7 @@ Java (17+):
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>2.2.0</version>
+  <version>2.3.0</version>
 </dependency>
 ```
 

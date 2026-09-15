@@ -62,9 +62,11 @@ type AccordionBuilder struct {
 // NewAccordion creates a Slack-native accordion component.
 func NewAccordion() *AccordionBuilder { return &AccordionBuilder{} }
 
-// Sections appends accordion sections in display order.
-func (b *AccordionBuilder) Sections(values ...any) *AccordionBuilder {
-	b.sections = append(b.sections, values...)
+// Sections appends accordion sections, created with NewAccordionSection, in display order.
+func (b *AccordionBuilder) Sections(values ...*AccordionSectionBuilder) *AccordionBuilder {
+	for _, value := range values {
+		b.sections = append(b.sections, value)
+	}
 	return b
 }
 
@@ -122,8 +124,10 @@ func NewPaginator() *PaginatorBuilder {
 }
 
 // Blocks appends source blocks in display order.
-func (b *PaginatorBuilder) Blocks(values ...any) *PaginatorBuilder {
-	b.blocks = append(b.blocks, values...)
+func (b *PaginatorBuilder) Blocks(values ...Block) *PaginatorBuilder {
+	for _, value := range values {
+		b.blocks = append(b.blocks, value)
+	}
 	return b
 }
 
@@ -202,7 +206,7 @@ func (b *PaginatorBuilder) BuildMany() ([]Object, error) {
 		return result, nil
 	}
 
-	controls := []any{}
+	controls := []Element{}
 	if b.page > 1 {
 		controls = append(controls, NewButton().Text(b.previousText).ActionID(b.actionIDPrefix+".previous").Value(fmt.Sprint(b.page-1)))
 	}

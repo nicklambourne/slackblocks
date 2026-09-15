@@ -71,7 +71,7 @@ python3 java/generator/generate_models.py --check-go
 (cd java && ./mvnw spotless:apply)
 ```
 
-`--check-go` fails if the Java model and the Go builder registry expose different fields.
+`--check-go` fails if the Java model and the Go builder registry expose different fields. The Go generator (`go generate ./...` in `go/`) reads the same `model.json` and `spec/limits.json` to write the doc comments on every generated builder method, so a description, limit, or Slack link edited there reaches the Go and Java references together.
 
 All four conformance suites exercise every ID in `spec/manifest.json`. A checked-in `conformance/skiplist.txt` may document an intentional language gap, but unknown failures and stale skips fail the suite.
 
