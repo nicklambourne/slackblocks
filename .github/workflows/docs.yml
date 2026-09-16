@@ -18,20 +18,6 @@ on:
       - "pnpm-workspace.yaml"
       - ".github/workflows/docs.yml"
   pull_request:
-    paths:
-      - "docs/**"
-      - "python/**"
-      - "typescript/src/**"
-      - "typescript/package.json"
-      - "typescript/tsconfig.json"
-      - "typescript/tsconfig.typedoc.json"
-      - "go/**"
-      - "java/**"
-      - "spec/**"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - "pnpm-workspace.yaml"
-      - ".github/workflows/docs.yml"
   workflow_dispatch:
 
 permissions:
@@ -42,7 +28,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: Detect relevant changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Compare changed files against this workflow's scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ]; then
+            # Fail open: if the file list cannot be read, run the real checks.
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if grep -qE '^(docs/|python/|typescript/src/|typescript/package\.json$|typescript/tsconfig\.json$|typescript/tsconfig\.typedoc\.json$|go/|java/|spec/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/docs\.yml$)' <<<"$files"; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
+
   build:
+    needs: changes
+    if: needs.changes.outputs.relevant == 'true'
     name: Build Docusaurus site
     runs-on: ubuntu-latest
     steps:
@@ -118,7 +133,7 @@ jobs:
     if: >-
       github.ref == 'refs/heads/master' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-    needs: build
+    needs: [changes, build]
     runs-on: ubuntu-latest
     permissions:
       contents: read
