@@ -51,20 +51,22 @@ jobs:
 
   quality:
     needs: changes
-    if: needs.changes.outputs.relevant == 'true'
     name: TypeScript quality and package checks
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
+        if: needs.changes.outputs.relevant == 'true'
         uses: actions/checkout@v7
 
       - name: Install pnpm
+        if: needs.changes.outputs.relevant == 'true'
         uses: pnpm/action-setup@v6
         with:
           version: 11.16.0
           run_install: false
 
       - name: Install Node.js
+        if: needs.changes.outputs.relevant == 'true'
         uses: actions/setup-node@v7
         with:
           node-version: "22"
@@ -72,23 +74,29 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
+        if: needs.changes.outputs.relevant == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Type check
+        if: needs.changes.outputs.relevant == 'true'
         run: pnpm --filter @nicklambourne/slackblocks typecheck
 
       - name: Run unit, conformance, and docs-example tests
+        if: needs.changes.outputs.relevant == 'true'
         run: pnpm --filter @nicklambourne/slackblocks test
 
       - name: Validate package
+        if: needs.changes.outputs.relevant == 'true'
         run: pnpm --filter @nicklambourne/slackblocks check:package
 
       - name: Pack package
+        if: needs.changes.outputs.relevant == 'true'
         run: |
           mkdir -p artifacts
           pnpm --dir typescript pack --pack-destination ../artifacts
 
       - name: Upload package
+        if: needs.changes.outputs.relevant == 'true'
         uses: actions/upload-artifact@v7.0.1
         with:
           name: slackblocks-package
@@ -96,7 +104,6 @@ jobs:
           if-no-files-found: error
 
   runtime-smoke:
-    if: needs.changes.outputs.relevant == 'true'
     name: Runtime smoke (Node ${{ matrix.node-version }})
     needs: [changes, quality]
     runs-on: ubuntu-latest
@@ -106,26 +113,31 @@ jobs:
         node-version: ["20.19.0", "22", "24"]
     steps:
       - name: Install Node.js ${{ matrix.node-version }}
+        if: needs.changes.outputs.relevant == 'true'
         uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Download package
+        if: needs.changes.outputs.relevant == 'true'
         uses: actions/download-artifact@v8.0.1
         with:
           name: slackblocks-package
           path: package
 
       - name: Install package
+        if: needs.changes.outputs.relevant == 'true'
         run: npm install --ignore-scripts ./package/nicklambourne-slackblocks-*.tgz
 
       - name: Import from ESM
+        if: needs.changes.outputs.relevant == 'true'
         run: >-
           node --input-type=module -e
           'import("@nicklambourne/slackblocks").then(({sectionBlock}) =>
           console.log(JSON.stringify(sectionBlock({text:"smoke"}))))'
 
       - name: Require ESM from CommonJS
+        if: needs.changes.outputs.relevant == 'true'
         run: >-
           node -e
           'const { sectionBlock } = require("@nicklambourne/slackblocks");
