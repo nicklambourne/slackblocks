@@ -101,8 +101,8 @@ These must be in place before the workflows can publish:
 
    The Java publisher signs the POM and all three JARs, uploads the bundle, and
    waits until Central has **validated** it. `java/pom.xml` sets
-   `autoPublish` to `false` for the first Java release, so 2.3.0 stays in the
-   portal until a maintainer publishes it (see the procedure below). Java CI's
+   `autoPublish` to `true`, so a validated bundle publishes without further
+   action; the first Java release, 2.3.0, was published by hand. Java CI's
    **Signed Maven Central bundle** job signs a dry-run bundle with a throwaway
    key on every relevant pull request, so signing problems surface before a
    release.
@@ -168,15 +168,13 @@ missing from `docs/versions.json` (or the legacy manifest).
    publishers.
    Each publisher creates its own GitHub Release after its registry step
    succeeds.
-8. **Java only, while `autoPublish` is `false`:** when the Java publisher
-   finishes, open **Deployments** in the Central Portal. Check that the
-   `io.github.nicklambourne:slackblocks:X.Y.Z` deployment is validated and
-   contains the binary, sources, and Javadoc JARs, the POM, and a `.asc`
-   signature for each, then select **Publish**. Do this promptly: the Java
-   GitHub Release already exists. If the bundle is wrong, select **Drop**
-   instead, fix the problem, and release a new patch version of every package.
-   After the first Java release, set `autoPublish` to `true` in `java/pom.xml`
-   so later releases publish without this step.
+8. **Java only:** the publisher uploads the bundle and waits for Central to
+   validate it, and `autoPublish` then publishes it. Central can take around
+   30 minutes to serve a newly published version. Confirm it arrives at
+   `https://repo1.maven.org/maven2/io/github/nicklambourne/slackblocks/X.Y.Z/`
+   with the binary, sources, and Javadoc JARs, the POM, and a `.asc` signature
+   for each. A published version can never be replaced, so fix any problem by
+   releasing a new patch version of every package.
 
 If the coordinator is unavailable, the direct tag triggers remain as a manual
 fallback. Create all four signed tags at the same commit and push them
