@@ -295,10 +295,10 @@
             <extensions>true</extensions>
             <configuration>
               <publishingServerId>central</publishingServerId>
-              <!-- The first Java release is inspected in the Central Portal before it is
-                   published by hand; set autoPublish to true from 2.3.1 onwards. Waiting only
-                   for validation keeps the job from blocking on Central's asynchronous publish. -->
-              <autoPublish>false</autoPublish>
+              <!-- 2.3.0 was inspected in the Central Portal and published by hand; later
+                   releases publish automatically. Waiting only for validation keeps the job
+                   from blocking on Central's asynchronous publish. -->
+              <autoPublish>true</autoPublish>
               <waitUntil>validated</waitUntil>
             </configuration>
           </plugin>
