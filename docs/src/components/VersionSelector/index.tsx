@@ -34,6 +34,19 @@ const HISTORICAL_REFERENCE_PAGES = new Set([
   "views",
 ]);
 
+// Languages a version documents. Pre-monorepo versions declare theirs in the legacy manifest.
+// Every later snapshot keeps one reference section per language, such as
+// reference/typescript/blocks, so its languages are read from the docs it contains and a new
+// snapshot needs no registration here.
+function versionLanguages(version: GlobalVersion): ReadonlySet<string> {
+  const legacyLanguages = LEGACY_VERSION_LANGUAGES.get(version.name);
+  if (legacyLanguages) return legacyLanguages;
+
+  return new Set(
+    version.docs.flatMap(({ id }) => id.match(/^reference\/([a-z]+)\//)?.[1] ?? []),
+  );
+}
+
 function versionMainDoc(version: GlobalVersion): GlobalDoc | undefined {
   return version.docs.find(({ id }) => id === version.mainDocId);
 }
@@ -127,7 +140,7 @@ export default function VersionSelector({ mobile = false }: Props) {
   const availableVersions = versions.filter(
     (version) =>
       version.name === CURRENT_VERSION ||
-      LEGACY_VERSION_LANGUAGES.get(version.name)?.has(language),
+      versionLanguages(version).has(language),
   );
   const activeVersion = versionCandidates[0] ?? versions[0];
   const displayedVersion =
