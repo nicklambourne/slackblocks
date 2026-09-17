@@ -3,7 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Slackblocks</RootNamespace>
     <AssemblyName>Slackblocks</AssemblyName>
-    <Version>2.3.0</Version>
+    <Version>2.4.0</Version>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <PackageId>Slackblocks</PackageId>
