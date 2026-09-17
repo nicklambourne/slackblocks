@@ -3,6 +3,20 @@
 All notable changes to the Go module are documented here. Go releases use the
 same version number as the Python, TypeScript, and Java packages.
 
+## [2.4.0] — 2026-09-17
+
+This coordinated release introduces the C# package, published to NuGet as
+`Slackblocks`, and moves all five packages onto one shared release number. The
+Go public API and wire format are unchanged.
+
+### Changed
+
+- Coordinated release validation now requires the Python, TypeScript, Java, and
+  C# package manifests and all five language changelogs to agree before any
+  tags are created.
+- Project documentation now includes the C# implementation alongside the
+  existing Python, TypeScript, Go, and Java variants.
+
 ## [2.3.0] — 2026-09-16
 
 This coordinated release introduces the Java package and replaces the `any`

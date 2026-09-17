@@ -22,6 +22,16 @@ major release.
 - Add Java-specific guides and generated API reference documentation to the
   language-aware documentation site.
 
+## 2.4
+
+- Add a .NET 8+ implementation with immutable values constructed from named
+  arguments, validated in their constructors, and generated from the same model
+  as the Java package.
+- Publish C# to NuGet and release it in lockstep with the other four packages
+  from the coordinated workflow.
+- Add C#-specific guides and generated API reference documentation to the
+  language-aware documentation site.
+
 ## 3.0
 
 - Remove every deprecated lowercase TypeScript factory and its root-package re-export.

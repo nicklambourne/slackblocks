@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Sending Messages
 
@@ -441,4 +441,108 @@ Use the Slack Java SDK for the request and view envelope, and slackblocks for it
 When an application intentionally does not use the Slack Java SDK client, serialize a completed [`MessagePayload`](../reference/java/payloads#messagepayload) with `SlackblocksJson.write(...)` and send the resulting JSON through its existing HTTP stack.
 
 </Java>
+<CSharp>
+
+## With the Slack Web API
+
+slackblocks builds and validates the payload; `HttpClient` sends it. Put the channel, fallback text, blocks, and other delivery options on a `MessagePayload`, then post its JSON to `chat.postMessage` with a bot token:
+
+```csharp
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json.Nodes;
+using Slackblocks.Blocks;
+using Slackblocks.Payloads;
+
+var message = new MessagePayload(
+    "C0123456",
+    text: "Hello from slackblocks!",
+    blocks: [new SectionBlock(text: "Hello, world!")]);
+
+using var http = new HttpClient();
+using var request = new HttpRequestMessage(HttpMethod.Post, "https://slack.com/api/chat.postMessage")
+{
+    Content = new StringContent(message.ToJson(), Encoding.UTF8, "application/json"),
+};
+request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("SLACK_BOT_TOKEN"));
+using var response = await http.SendAsync(request);
+var result = JsonNode.Parse(await response.Content.ReadAsStringAsync())!;
+if (result["ok"]?.GetValue<bool>() != true)
+{
+    throw new InvalidOperationException($"Slack rejected the message: {result["error"]}");
+}
+```
+
+Validation runs in each constructor, before the request exists. Use a channel ID where possible and always supply a short `text` fallback for notifications and accessibility.
+
+Higher-level components return ordinary blocks, so their results spread straight into the `blocks` collection:
+
+```csharp
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Payloads;
+
+var results = Paginator.Create(
+    "search-results",
+    [new SectionBlock(text: "Result one"), new SectionBlock(text: "Result two")],
+    pageSize: 1);
+
+var message = new MessagePayload("C0123456", text: "Search results", blocks: [.. results]);
+```
+
+## Incoming webhooks
+
+Post a `WebhookMessage` to the webhook URL. Keep that URL secret, because anyone holding it can post to the channel:
+
+```csharp
+using System.Text;
+using Slackblocks.Blocks;
+using Slackblocks.Payloads;
+
+var payload = new WebhookMessage(
+    text: "Build complete",
+    blocks: [new SectionBlock(text: "Build complete :white_check_mark:")]);
+
+using var http = new HttpClient();
+using var content = new StringContent(payload.ToJson(), Encoding.UTF8, "application/json");
+using var response = await http.PostAsync(Environment.GetEnvironmentVariable("SLACK_WEBHOOK_URL"), content);
+response.EnsureSuccessStatusCode();
+```
+
+## Slash-command and interaction responses
+
+`MessageResponse` builds the JSON body your web framework returns:
+
+```csharp
+using Slackblocks.Blocks;
+using Slackblocks.Payloads;
+
+string responseBody = new MessageResponse(
+    blocks: [new SectionBlock(text: "Got it! Working on that now...")],
+    responseType: ResponseType.Ephemeral).ToJson();
+```
+
+## Modals and App Home
+
+[`ModalView`](../reference/csharp/payloads#modalview) and [`HomeTabView`](../reference/csharp/payloads#hometabview) build the `view` object for `views.open`, `views.update`, `views.push`, and `views.publish`. Serialize the view into the request body alongside its trigger ID or user ID:
+
+```csharp
+using System.Text.Json;
+using Slackblocks.Blocks;
+using Slackblocks.Payloads;
+
+var view = new ModalView(
+    "Deploy",
+    blocks: [new SectionBlock(text: "Deploy *482* to production?")],
+    submit: "Deploy",
+    close: "Cancel");
+
+string body = JsonSerializer.Serialize(new { trigger_id = "12345.98765.abcd2358fdea", view });
+```
+
+## With a Slack client library
+
+When your application already uses a .NET Slack client such as SlackNet, pass slackblocks JSON through that library's raw request support, and keep its delivery, retries, and rate-limit handling. Alias one namespace if a file imports both libraries, because several type names overlap.
+
+</CSharp>
 </LanguageContent>

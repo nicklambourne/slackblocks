@@ -2,14 +2,15 @@
 
 The Python (`slackblocks` on PyPI), TypeScript
 (`@nicklambourne/slackblocks` on npm), Go
-(`github.com/nicklambourne/slackblocks/go/v2`), and Java
-(`io.github.nicklambourne:slackblocks` on Maven Central) packages are released
-together and always carry the same version number.
+(`github.com/nicklambourne/slackblocks/go/v2`), Java
+(`io.github.nicklambourne:slackblocks` on Maven Central), and C# (`Slackblocks`
+on NuGet) packages are released together and always carry the same version
+number.
 
 The recommended entry point is the **Coordinated Release** workflow in GitHub
 Actions. Run it from `master` with one `X.Y.Z` input; it validates the shared
-version and changelogs, creates all four annotated tags in one atomic push,
-dispatches each publisher at its tag, and waits for all four runs.
+version and changelogs, creates all five annotated tags in one atomic push,
+dispatches each publisher at its tag, and waits for all five runs.
 
 ## Tag scheme
 
@@ -21,24 +22,26 @@ Releases are triggered by pushing tags:
 | `ts/vX.Y.Z` | [`.github/workflows/publish-npm.yml`](.github/workflows/publish-npm.yml) | `@nicklambourne/slackblocks` to npm |
 | `go/vX.Y.Z` | [`.github/workflows/publish-go.yml`](.github/workflows/publish-go.yml) | `github.com/nicklambourne/slackblocks/go/v2` to the Go module ecosystem |
 | `java/vX.Y.Z` | [`.github/workflows/publish-java.yml`](.github/workflows/publish-java.yml) | `io.github.nicklambourne:slackblocks` to Maven Central |
+| `csharp/vX.Y.Z` | [`.github/workflows/publish-nuget.yml`](.github/workflows/publish-nuget.yml) | `Slackblocks` to NuGet |
 
 Plain `v*` tags (used by the pre-monorepo 1.x/2.0 releases) no longer trigger
 anything.
 
-The four publisher workflows also accept a manual dispatch at an existing,
+The five publisher workflows also accept a manual dispatch at an existing,
 matching language tag. The coordinator uses those entry points so each job
 retains its registry-specific publisher workflow identity.
 
-The Python, TypeScript, and Java workflows fail fast if the tag does not match
-their package manifest. Every workflow also verifies that
-`python/pyproject.toml`, `typescript/package.json`, and `java/pom.xml` agree;
-the Go workflow requires its tag to match that coordinated version.
+The Python, TypeScript, Java, and C# workflows fail fast if the tag does not
+match their package manifest. Every workflow also verifies that
+`python/pyproject.toml`, `typescript/package.json`, `java/pom.xml`, and
+`csharp/src/Slackblocks/Slackblocks.csproj` agree; the Go workflow requires its
+tag to match that coordinated version.
 
 ## One-time setup
 
 These must be in place before the workflows can publish:
 
-1. **GitHub environments** — create `pypi`, `npm`, and `maven-central`
+1. **GitHub environments** — create `pypi`, `npm`, `maven-central`, and `nuget`
    environments in the repository settings (Settings → Environments). The
    publish jobs run inside them; add required reviewers there if you want
    manual approval before publishing.
@@ -106,6 +109,26 @@ These must be in place before the workflows can publish:
    **Signed Maven Central bundle** job signs a dry-run bundle with a throwaway
    key on every relevant pull request, so signing problems surface before a
    release.
+6. **NuGet account and trusted publishing**
+   1. Sign in to [nuget.org](https://www.nuget.org) as `nicklambourne` with
+      two-factor authentication enabled.
+   2. Under **Trusted Publishing**, add a policy for repository owner
+      `nicklambourne`, repository `slackblocks`, workflow file
+      `publish-nuget.yml`, and environment `nuget`.
+   3. Set the repository (or `nuget` environment) variable `NUGET_USER` to the
+      nuget.org username. `NuGet/login` exchanges the workflow's OIDC token for
+      a short-lived API key for that user, so no long-lived key is stored.
+   4. If nuget.org refuses the first push of the new `Slackblocks` package ID
+      through trusted publishing, bootstrap it the way npm needed: create an API
+      key scoped to push new packages matching `Slackblocks`, store it as the
+      `nuget` environment secret `NUGET_API_KEY`, and run the release. The
+      publisher uses the key while the secret exists and trusted publishing
+      otherwise, so **delete `NUGET_API_KEY`** once the package exists.
+
+   The C# publisher runs the full test suite, packs with package validation, and
+   pushes the package and its symbols with `--skip-duplicate`. .NET CI's
+   **NuGet package** job packs and pushes to a local feed on every relevant pull
+   request, so packaging problems surface before a release.
 
 ## Coordinated release procedure
 
@@ -131,13 +154,20 @@ missing from `docs/versions.json` (or the legacy manifest).
    `docs/versioned_docs/version-<outgoing>` and prepends `<outgoing>` to
    `docs/versions.json`. (The very first monorepo release is the exception: its
    outgoing `2.0.0` is a legacy version already frozen in the manifest.)
-2. Bump the version in every package manifest and the Java version constant
-   on the same branch:
-   - `python/pyproject.toml` (`project.version`)
+2. Bump the version in every package manifest and the Java and C# version
+   constants on the same branch:
+   - `python/pyproject.toml` (`project.version`), and the `slackblocks` entry in
+     `python/uv.lock`
    - `typescript/package.json` (`version`)
    - `java/pom.xml` (`project.version`)
    - `java/src/main/java/io/github/nicklambourne/slackblocks/Slackblocks.java`
      (`VERSION`; Java CI verifies that it matches the POM)
+   - `csharp/src/Slackblocks/Slackblocks.csproj` (`Version`)
+   - `csharp/src/Slackblocks/SlackblocksInfo.cs` (`Version`; the C# tests verify
+     that it matches the project)
+   - the pinned versions in the installation examples of `README.md`,
+     `java/README.md`, `docs/docs/quick-start.mdx`, and
+     `docs/docs/usage/installation.mdx`
 
    For a new major release, also change the Go semantic import path in
    `go/go.mod` from `/v2` to `/vN`, update every Go import in code and docs,
@@ -145,7 +175,8 @@ missing from `docs/versions.json` (or the legacy manifest).
    3.0.0 release therefore requires a Go `/v3` module; the
    existing `/v2` path cannot publish `go/v3.0.0`.
 3. Add a `## [X.Y.Z] — YYYY-MM-DD` section to `python/CHANGELOG.md`,
-   `typescript/CHANGELOG.md`, `go/CHANGELOG.md`, and `java/CHANGELOG.md`. The
+   `typescript/CHANGELOG.md`, `go/CHANGELOG.md`, `java/CHANGELOG.md`, and
+   `csharp/CHANGELOG.md`. The
    publish workflows extract the matching section for their GitHub Release
    notes. Pull requests may use `Unreleased` while the release is prepared, but
    replace it with the release date before dispatching: the coordinator rejects
@@ -164,8 +195,8 @@ missing from `docs/versions.json` (or the legacy manifest).
    ```
 
 7. The coordinator atomically pushes `python/vX.Y.Z`, `ts/vX.Y.Z`,
-   `go/vX.Y.Z`, and `java/vX.Y.Z`, then dispatches and monitors all four
-   publishers.
+   `go/vX.Y.Z`, `java/vX.Y.Z`, and `csharp/vX.Y.Z`, then dispatches and
+   monitors all five publishers.
    Each publisher creates its own GitHub Release after its registry step
    succeeds.
 8. **Java only:** the publisher uploads the bundle and waits for Central to
@@ -175,9 +206,13 @@ missing from `docs/versions.json` (or the legacy manifest).
    with the binary, sources, and Javadoc JARs, the POM, and a `.asc` signature
    for each. A published version can never be replaced, so fix any problem by
    releasing a new patch version of every package.
+9. **C# only:** approve the `nuget` environment deployment if it has required
+   reviewers. NuGet indexes a new version within minutes; confirm
+   `https://www.nuget.org/packages/Slackblocks/X.Y.Z` lists it. NuGet versions
+   cannot be deleted or re-uploaded, only unlisted.
 
 If the coordinator is unavailable, the direct tag triggers remain as a manual
-fallback. Create all four signed tags at the same commit and push them
+fallback. Create all five signed tags at the same commit and push them
 atomically:
 
 ```sh
@@ -185,7 +220,8 @@ git tag -s python/vX.Y.Z -m "slackblocks X.Y.Z (Python)"
 git tag -s ts/vX.Y.Z -m "@nicklambourne/slackblocks X.Y.Z (TypeScript)"
 git tag -s go/vX.Y.Z -m "slackblocks X.Y.Z (Go)"
 git tag -s java/vX.Y.Z -m "slackblocks X.Y.Z (Java)"
-git push --atomic origin python/vX.Y.Z ts/vX.Y.Z go/vX.Y.Z java/vX.Y.Z
+git tag -s csharp/vX.Y.Z -m "Slackblocks X.Y.Z (C#)"
+git push --atomic origin python/vX.Y.Z ts/vX.Y.Z go/vX.Y.Z java/vX.Y.Z csharp/vX.Y.Z
 ```
 
 Tags created by the coordinator are annotated as `github-actions[bot]` but
@@ -194,12 +230,12 @@ store that private key.
 
 ## Partial-failure recovery
 
-The four tags are created atomically, but four external registries cannot be
+The five tags are created atomically, but five external registries cannot be
 updated as one transaction. If one publisher fails after another succeeds,
 re-run the failed publisher from its existing workflow run; never move the
 tags or republish an already released version.
 
-All four workflows are safe to re-run from the Actions UI:
+All five workflows are safe to re-run from the Actions UI:
 
 - **PyPI** — `uv publish` runs with
   `--check-url https://pypi.org/simple/slackblocks/`, so files already
@@ -216,6 +252,9 @@ All four workflows are safe to re-run from the Actions UI:
   the same version is rejected. Re-run the workflow only if no deployment for
   the version exists, or after dropping a failed one. If Central already lists
   the version, treat the registry step as complete.
+- **NuGet** — the push uses `--skip-duplicate`, so a version NuGet already holds
+  is skipped rather than failing, and re-running completes whatever is missing,
+  such as the symbols package or the GitHub Release.
 - **GitHub Releases** — the release step skips itself if a release for the
   tag already exists.
 
@@ -229,8 +268,9 @@ After a failure, check:
   new module version.
 - Maven Central: https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks
   lists the new artifact version with binary, source, and Javadoc JARs.
-- GitHub: a Release exists for each of the four tags with the changelog notes.
+- NuGet: https://www.nuget.org/packages/Slackblocks lists the new version.
+- GitHub: a Release exists for each of the five tags with the changelog notes.
 
 If a bad artifact was published, do not delete and re-upload: registries
-reject reused file names and versions. Yank/deprecate the broken version and
-release a new coordinated patch version of **all four** packages.
+reject reused file names and versions. Yank, deprecate, or unlist the broken
+version and release a new coordinated patch version of **all five** packages.

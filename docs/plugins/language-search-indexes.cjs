@@ -23,27 +23,34 @@ const DEFAULT_SEARCH_OPTIONS = {
 
 const LANGUAGE_INDEXES = {
   python: {
-    ignoredContent: '[data-language-content="typescript"], [data-language-content="go"], [data-language-content="java"]',
-    ignoredRoutes: [/^reference\/(?:typescript|go|java)(?:\/|$)/],
+    ignoredContent: '[data-language-content="typescript"], [data-language-content="go"], [data-language-content="java"], [data-language-content="csharp"]',
+    ignoredRoutes: [/^reference\/(?:typescript|go|java|csharp)(?:\/|$)/],
   },
   typescript: {
-    ignoredContent: '[data-language-content="python"], [data-language-content="go"], [data-language-content="java"]',
+    ignoredContent: '[data-language-content="python"], [data-language-content="go"], [data-language-content="java"], [data-language-content="csharp"]',
     ignoredRoutes: [
-      /^reference\/(?:python|go|java)(?:\/|$)/,
+      /^reference\/(?:python|go|java|csharp)(?:\/|$)/,
       /^usage\/(?:compatibility|migration)$/,
     ],
   },
   go: {
-    ignoredContent: '[data-language-content="python"], [data-language-content="typescript"], [data-language-content="java"]',
+    ignoredContent: '[data-language-content="python"], [data-language-content="typescript"], [data-language-content="java"], [data-language-content="csharp"]',
     ignoredRoutes: [
-      /^reference\/(?:python|typescript|java)(?:\/|$)/,
+      /^reference\/(?:python|typescript|java|csharp)(?:\/|$)/,
       /^usage\/(?:compatibility|migration)$/,
     ],
   },
   java: {
-    ignoredContent: '[data-language-content="python"], [data-language-content="typescript"], [data-language-content="go"]',
+    ignoredContent: '[data-language-content="python"], [data-language-content="typescript"], [data-language-content="go"], [data-language-content="csharp"]',
     ignoredRoutes: [
-      /^reference\/(?:python|typescript|go)(?:\/|$)/,
+      /^reference\/(?:python|typescript|go|csharp)(?:\/|$)/,
+      /^usage\/(?:compatibility|migration)$/,
+    ],
+  },
+  csharp: {
+    ignoredContent: '[data-language-content="python"], [data-language-content="typescript"], [data-language-content="go"], [data-language-content="java"]',
+    ignoredRoutes: [
+      /^reference\/(?:python|typescript|go|java)(?:\/|$)/,
       /^usage\/(?:compatibility|migration)$/,
     ],
   },
