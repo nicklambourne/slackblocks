@@ -3,7 +3,7 @@
 All notable changes to the Go module are documented here. Go releases use the
 same version number as the Python, TypeScript, and Java packages.
 
-## [2.4.0] — Unreleased
+## [2.4.0] — 2026-09-17
 
 This coordinated release introduces the C# package, published to NuGet as
 `Slackblocks`, and moves all five packages onto one shared release number. The

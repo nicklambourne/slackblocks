@@ -3,7 +3,7 @@
 All notable changes to the Java package are documented here. Java versions move
 in lockstep with the Python, TypeScript, and Go packages.
 
-## [2.4.0] — Unreleased
+## [2.4.0] — 2026-09-17
 
 This coordinated release introduces the C# package, published to NuGet as
 `Slackblocks`, and moves all five packages onto one shared release number. The
