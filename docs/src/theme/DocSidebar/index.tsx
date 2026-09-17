@@ -183,7 +183,8 @@ function filterReference(
       !isLanguageReference(child, "python") &&
       !isLanguageReference(child, "typescript") &&
       !isLanguageReference(child, "go") &&
-      !isLanguageReference(child, "java"),
+      !isLanguageReference(child, "java") &&
+      !isLanguageReference(child, "csharp"),
   );
 
   return {

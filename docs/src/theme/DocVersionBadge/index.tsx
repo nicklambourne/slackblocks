@@ -9,6 +9,7 @@ const languageLabels: Record<Language, string> = {
   typescript: "TypeScript",
   go: "Go",
   java: "Java",
+  csharp: "C#",
 };
 
 export default function DocVersionBadge({ className }: Props): ReactNode {

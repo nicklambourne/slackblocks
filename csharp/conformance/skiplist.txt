@@ -1,0 +1,1 @@
+# Released C# versions must run every shared fixture.

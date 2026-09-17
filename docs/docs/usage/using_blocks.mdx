@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Using Blocks
 
@@ -34,6 +34,11 @@ For fluent constructors, JSON types, and validation errors, see the [Go API refe
 For concrete fluent builders, immutable values, and validation errors, see the [Java API reference](../reference/java). Interactive controls such as buttons, menus, and date pickers are grouped under [Elements](../reference/java/elements).
 
 </Java>
+<CSharp>
+
+For constructors, typed properties, and validation errors, see the [C# API reference](../reference/csharp). Interactive controls such as buttons, menus, and date pickers are grouped under [Elements](../reference/csharp/elements).
+
+</CSharp>
 </LanguageContent>
 
 ## Section Block
@@ -120,6 +125,18 @@ SectionBlock block = SectionBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new SectionBlock(
+    text: "This is a section block with a checkbox accessory.",
+    accessory: new CheckboxesElement(
+        "checkboxes-action",
+        options: [new Option(new MarkdownText("*Your Only Option*"), "option_one")]),
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -248,6 +265,28 @@ RichTextBlock block = RichTextBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new RichTextBlock(
+    elements: [
+        new RichTextSection(
+            elements: [
+                new RichTextText(
+                    "You 'bout to witness hip-hop in its most purest\n",
+                    style: new RichTextStyle(bold: true)),
+                new RichTextText(
+                    "Most rawest form, flow almost flawless\n",
+                    style: new RichTextStyle(strike: true)),
+                new RichTextText(
+                    "Most hardest, most honest known artist\n",
+                    style: new RichTextStyle(italic: true)),
+            ]),
+    ],
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -349,6 +388,13 @@ HeaderBlock block = HeaderBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new HeaderBlock("This is a header block", blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -430,6 +476,15 @@ MarkdownBlock block = MarkdownBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new MarkdownBlock(
+    "**Hello!** Markdown blocks support _GitHub-flavored_ syntax.",
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -517,6 +572,17 @@ ImageBlock block = ImageBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new ImageBlock(
+    "https://api.slack.com/img/blocks/bkb_template_images/beagle.png",
+    "a beagle",
+    title: "dog",
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -611,6 +677,18 @@ InputBlock block = InputBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new InputBlock(
+    new PlainText("Label", emoji: true),
+    element: new PlainTextInputElement("action"),
+    hint: new PlainText("Hint", emoji: true),
+    optional: true,
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -690,6 +768,13 @@ DividerBlock block = DividerBlock.builder().blockId("fake_block_id").build();
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new DividerBlock(blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -763,6 +848,13 @@ FileBlock block = FileBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new FileBlock("external_id", blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -844,6 +936,13 @@ ContextBlock block = ContextBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new ContextBlock(elements: [new MarkdownText("Hello, world!")], blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -958,6 +1057,23 @@ ActionsBlock block = ActionsBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new ActionsBlock(
+    elements: [
+        new CheckboxesElement(
+            "actionId-0",
+            options: [
+                new Option(new MarkdownText("*a*"), "a", description: "*a*"),
+                new Option(new MarkdownText("*b*"), "b", description: "*b*"),
+                new Option(new MarkdownText("*c*"), "c", description: "*c*"),
+            ]),
+    ],
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -1173,6 +1289,48 @@ TableBlock block = TableBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new TableBlock(
+    rows: [
+        [
+            new RichTextBlock(
+                elements: [
+                    new RichTextSection(
+                        elements: [
+                            new RichTextText(
+                                "Header 1",
+                                style: new RichTextStyle(bold: true)),
+                        ]),
+                ]),
+            new RichTextBlock(
+                elements: [
+                    new RichTextSection(
+                        elements: [
+                            new RichTextText(
+                                "Header 2",
+                                style: new RichTextStyle(bold: true)),
+                        ]),
+                ]),
+        ],
+        [
+            new RawText("Datum 1"),
+            new RichTextBlock(
+                elements: [
+                    new RichTextSection(
+                        elements: [new RichTextLink("https://slack.com", text: "Datum 2")]),
+                ]),
+        ],
+    ],
+    columnSettings: [
+        new ColumnSettings(align: ColumnAlign.Right, isWrapped: true),
+        new ColumnSettings(align: ColumnAlign.Left),
+    ],
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -1338,6 +1496,20 @@ VideoBlock block = VideoBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new VideoBlock(
+    altText: "Use the Events API to create a dynamic App Home",
+    thumbnailUrl: "https://i.ytimg.com/vi/8876OZV_Yy0/hqdefault.jpg",
+    title: "Use the Events API to create a dynamic App Home",
+    videoUrl: "https://www.youtube.com/embed/8876OZV_Yy0?feature=oembed&autoplay=1",
+    description: "Slack sure is nifty!",
+    titleUrl: "https://www.youtube.com/watch?v=8876OZV_Yy0",
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -1431,6 +1603,16 @@ AlertBlock block = AlertBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new AlertBlock(
+    "The deployment needs attention.",
+    level: AlertLevel.Warning,
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -1522,6 +1704,18 @@ CardBlock block = CardBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new CardBlock(
+    title: "Build complete",
+    body: "Version 2.1.0 is ready to deploy.",
+    actions: [new ButtonElement("Open build", "open_build")],
+    slackIcon: new SlackIcon(name: "rocket"),
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -1626,6 +1820,18 @@ CarouselBlock block = CarouselBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new CarouselBlock(
+    elements: [
+        new CardBlock(title: "First result", blockId: "card_1"),
+        new CardBlock(title: "Second result", blockId: "card_2"),
+    ],
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -1740,6 +1946,20 @@ ContainerBlock block = ContainerBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new ContainerBlock(
+    childBlocks: [new SectionBlock(text: "All systems operational.", blockId: "child_1")],
+    title: "Deployment summary",
+    width: ContainerWidth.Standard,
+    isCollapsible: false,
+    defaultCollapsed: false,
+    hasHeaderDivider: true,
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -1849,6 +2069,20 @@ ContextActionsBlock block = ContextActionsBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new ContextActionsBlock(
+    elements: [
+        new FeedbackButtonsElement(
+            positiveButton: new FeedbackButton("Good", "positive"),
+            negativeButton: new FeedbackButton("Bad", "negative"),
+            actionId: "response_feedback"),
+    ],
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -1957,6 +2191,19 @@ DataTableBlock block = DataTableBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new DataTableBlock(
+    rows: [
+        [new RawText("Name"), new RawText("Score")],
+        [new RawText("Alice"), new RawNumber(42, "42")],
+    ],
+    caption: "Team scores",
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -2078,6 +2325,16 @@ DataVisualizationBlock block = DataVisualizationBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new DataVisualizationBlock(
+    "Incidents by severity",
+    chart: new PieChart(segments: [new ChartSegment("High", 3), new ChartSegment("Low", 12)]),
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -2178,6 +2435,18 @@ TaskCardBlock block = TaskCardBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new TaskCardBlock(
+    "weather_1",
+    "Fetch weather data",
+    sources: [new UrlSource("https://weather.com/", "weather.com")],
+    status: TaskCardStatus.Complete,
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -2277,6 +2546,19 @@ PlanBlock block = PlanBlock.builder()
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+var block = new PlanBlock(
+    "Release plan",
+    tasks: [
+        new TaskCardBlock("test", "Run the test suite", status: TaskCardStatus.Complete),
+        new TaskCardBlock("deploy", "Deploy the release", status: TaskCardStatus.Pending),
+    ],
+    blockId: "fake_block_id");
+```
+
+</CSharp>
 </LanguageContent>
 
 </TabItem>
@@ -2491,4 +2773,42 @@ ChatPostMessageRequest request = ChatPostMessageRequest.builder()
 Accordion sections use Slack-native collapsible containers and need no application-side expansion handler. See [Components](../reference/java/components) for the complete API.
 
 </Java>
+<CSharp>
+
+## Higher-Level Components
+
+Components return ordinary `IBlock` values. Spread them into any block collection, just like a single block.
+
+### Paginator
+
+```csharp
+var blocks = Paginator.Create(
+    "search-results",
+    [
+        new SectionBlock(text: "Result one"),
+        new SectionBlock(text: "Result two"),
+        new SectionBlock(text: "Result three"),
+    ],
+    page: 1,
+    pageSize: 2);
+
+var message = new MessagePayload("C01234567", text: "Search results", blocks: [.. blocks]);
+```
+
+The previous and next button values contain the one-based page for your action handler to render.
+
+### Accordion
+
+```csharp
+var blocks = Accordion.Create([
+    AccordionSection.Create("Summary", [new SectionBlock(text: "Version 2.2.0 is ready.")], expanded: true),
+    AccordionSection.Create("Checks", [new SectionBlock(text: "All required checks passed.")]),
+]);
+
+var message = new MessagePayload("C01234567", text: "Deployment details", blocks: [.. blocks]);
+```
+
+Accordion sections use Slack-native collapsible containers and need no application-side expansion handler. See [Components](../reference/csharp/components) for the complete API.
+
+</CSharp>
 </LanguageContent>
