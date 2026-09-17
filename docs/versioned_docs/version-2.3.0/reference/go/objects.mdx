@@ -1,0 +1,1594 @@
+---
+sidebar_position: 3
+toc_max_heading_level: 2
+---
+
+# Composition Objects
+
+This page documents the public Go API for composition objects. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.
+
+## NewAreaChart
+
+NewAreaChart creates an area-chart object.
+
+```go
+func NewAreaChart() *AreaChartBuilder
+```
+
+### AreaChartBuilder
+
+AreaChartBuilder is the concrete fluent builder returned by NewAreaChart.
+
+An area chart for a data visualization block.
+
+- Required: Series and AxisConfig.
+- Every series needs exactly one data point for each axis category.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Use NewAreaChart rather than constructing this type directly.
+
+```go
+type AreaChartBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### AreaChartBuilder.Series
+
+Series adds data series in display order. Series names must be unique. Required. Must contain
+between 1 and 12 items. Each call appends to any values already added.
+
+```go
+func (b *AreaChartBuilder) Series(values ...*DataSeriesBuilder) *AreaChartBuilder
+```
+
+#### AreaChartBuilder.AxisConfig
+
+AxisConfig sets the axis categories and labels. Every series needs exactly one point per
+category. Required.
+
+```go
+func (b *AreaChartBuilder) AxisConfig(value *AxisConfigBuilder) *AreaChartBuilder
+```
+
+Every `AreaChartBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewAxisConfig
+
+NewAxisConfig creates category and label settings for a chart axis.
+
+```go
+func NewAxisConfig() *AxisConfigBuilder
+```
+
+### AxisConfigBuilder
+
+AxisConfigBuilder is the concrete fluent builder returned by NewAxisConfig.
+
+The categories and labels shared by bar, area, and line chart axes.
+
+- Required: Categories.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Use NewAxisConfig rather than constructing this type directly.
+
+```go
+type AxisConfigBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### AxisConfigBuilder.Categories
+
+Categories adds axis categories in display order. Labels must be unique. Required. Must
+contain between 1 and 20 items. Each call appends to any values already added.
+
+```go
+func (b *AxisConfigBuilder) Categories(values ...string) *AxisConfigBuilder
+```
+
+#### AxisConfigBuilder.XLabel
+
+XLabel sets the horizontal axis label. Slack allows at most 50 characters.
+
+```go
+func (b *AxisConfigBuilder) XLabel(value string) *AxisConfigBuilder
+```
+
+#### AxisConfigBuilder.YLabel
+
+YLabel sets the vertical axis label. Slack allows at most 50 characters.
+
+```go
+func (b *AxisConfigBuilder) YLabel(value string) *AxisConfigBuilder
+```
+
+Every `AxisConfigBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewBarChart
+
+NewBarChart creates a bar-chart object.
+
+```go
+func NewBarChart() *BarChartBuilder
+```
+
+### BarChartBuilder
+
+BarChartBuilder is the concrete fluent builder returned by NewBarChart.
+
+A bar chart for a data visualization block.
+
+- Required: Series and AxisConfig.
+- Every series needs exactly one data point for each axis category.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Use NewBarChart rather than constructing this type directly.
+
+```go
+type BarChartBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### BarChartBuilder.Series
+
+Series adds data series in display order. Series names must be unique. Required. Must contain
+between 1 and 12 items. Each call appends to any values already added.
+
+```go
+func (b *BarChartBuilder) Series(values ...*DataSeriesBuilder) *BarChartBuilder
+```
+
+#### BarChartBuilder.AxisConfig
+
+AxisConfig sets the axis categories and labels. Every series needs exactly one point per
+category. Required.
+
+```go
+func (b *BarChartBuilder) AxisConfig(value *AxisConfigBuilder) *BarChartBuilder
+```
+
+Every `BarChartBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewChartSegment
+
+NewChartSegment creates a labelled pie-chart segment.
+
+```go
+func NewChartSegment() *ChartSegmentBuilder
+```
+
+### ChartSegmentBuilder
+
+ChartSegmentBuilder is the concrete fluent builder returned by NewChartSegment.
+
+One labelled segment of a pie chart.
+
+- Required: Label and Value.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Use NewChartSegment rather than constructing this type directly.
+
+```go
+type ChartSegmentBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ChartSegmentBuilder.Label
+
+Label sets the segment label. Required. Slack allows at most 20 characters.
+
+```go
+func (b *ChartSegmentBuilder) Label(value string) *ChartSegmentBuilder
+```
+
+#### ChartSegmentBuilder.Value
+
+Value sets the segment's size. Must be greater than zero. Required.
+
+```go
+func (b *ChartSegmentBuilder) Value(value float64) *ChartSegmentBuilder
+```
+
+Every `ChartSegmentBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewColumnSettings
+
+NewColumnSettings creates table-column display settings.
+
+```go
+func NewColumnSettings() *ColumnSettingsBuilder
+```
+
+### ColumnSettingsBuilder
+
+ColumnSettingsBuilder is the concrete fluent builder returned by NewColumnSettings.
+
+Alignment and wrapping settings for one table column.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+Use NewColumnSettings rather than constructing this type directly.
+
+```go
+type ColumnSettingsBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ColumnSettingsBuilder.Align
+
+Align sets how cell content in the column is aligned. Accepted values: "left", "center", and
+"right".
+
+```go
+func (b *ColumnSettingsBuilder) Align(value ColumnAlign) *ColumnSettingsBuilder
+```
+
+#### ColumnSettingsBuilder.IsWrapped
+
+IsWrapped sets whether long cell content wraps instead of being truncated.
+
+```go
+func (b *ColumnSettingsBuilder) IsWrapped(value bool) *ColumnSettingsBuilder
+```
+
+Every `ColumnSettingsBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewConfirmation
+
+NewConfirmation creates a confirmation-dialog composition object.
+
+```go
+func NewConfirmation() *ConfirmationBuilder
+```
+
+### ConfirmationBuilder
+
+ConfirmationBuilder is the concrete fluent builder returned by NewConfirmation.
+
+A dialog that asks users to confirm an action before it is sent.
+
+- Required: Title, Text, Confirm, and Deny.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/confirmation-dialog-object).
+
+Use NewConfirmation rather than constructing this type directly.
+
+```go
+type ConfirmationBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ConfirmationBuilder.Title
+
+Title sets the dialog title. Required. Slack allows at most 100 characters. The string is
+sent as a plain_text text object; use TitleObject to pass a text object instead.
+
+```go
+func (b *ConfirmationBuilder) Title(value string) *ConfirmationBuilder
+```
+
+#### ConfirmationBuilder.TitleObject
+
+TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ConfirmationBuilder) TitleObject(value *PlainTextBuilder) *ConfirmationBuilder
+```
+
+#### ConfirmationBuilder.Text
+
+Text sets the explanatory text in the dialog body. Required. Slack allows at most 300
+characters. The string is sent as a mrkdwn text object; use TextObject to pass a text object
+instead.
+
+```go
+func (b *ConfirmationBuilder) Text(value string) *ConfirmationBuilder
+```
+
+#### ConfirmationBuilder.TextObject
+
+TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ConfirmationBuilder) TextObject(value TextObject) *ConfirmationBuilder
+```
+
+#### ConfirmationBuilder.Confirm
+
+Confirm sets the label of the button that confirms the action. Required. Slack allows at most
+30 characters. The string is sent as a plain_text text object; use ConfirmObject to pass a
+text object instead.
+
+```go
+func (b *ConfirmationBuilder) Confirm(value string) *ConfirmationBuilder
+```
+
+#### ConfirmationBuilder.ConfirmObject
+
+ConfirmObject is Confirm for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ConfirmationBuilder) ConfirmObject(value *PlainTextBuilder) *ConfirmationBuilder
+```
+
+#### ConfirmationBuilder.Deny
+
+Deny sets the label of the button that cancels the action. Required. Slack allows at most 30
+characters. The string is sent as a plain_text text object; use DenyObject to pass a text
+object instead.
+
+```go
+func (b *ConfirmationBuilder) Deny(value string) *ConfirmationBuilder
+```
+
+#### ConfirmationBuilder.DenyObject
+
+DenyObject is Deny for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ConfirmationBuilder) DenyObject(value *PlainTextBuilder) *ConfirmationBuilder
+```
+
+#### ConfirmationBuilder.Style
+
+Style sets the emphasis of the confirm button. Accepted values: "primary" and "danger".
+
+```go
+func (b *ConfirmationBuilder) Style(value ButtonStyle) *ConfirmationBuilder
+```
+
+Every `ConfirmationBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewConversationFilter
+
+NewConversationFilter creates a conversation select-menu filter.
+
+```go
+func NewConversationFilter() *ConversationFilterBuilder
+```
+
+### ConversationFilterBuilder
+
+ConversationFilterBuilder is the concrete fluent builder returned by NewConversationFilter.
+
+Limits which conversations a conversation menu offers.
+
+- Set at least one filter.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/conversation-filter-object).
+
+Use NewConversationFilter rather than constructing this type directly.
+
+```go
+type ConversationFilterBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ConversationFilterBuilder.Include
+
+Include adds conversation types to offer: im, mpim, private, or public. Each call appends to
+any values already added.
+
+```go
+func (b *ConversationFilterBuilder) Include(values ...string) *ConversationFilterBuilder
+```
+
+#### ConversationFilterBuilder.ExcludeExternalSharedChannels
+
+ExcludeExternalSharedChannels sets whether externally shared channels are excluded.
+
+```go
+func (b *ConversationFilterBuilder) ExcludeExternalSharedChannels(value bool) *ConversationFilterBuilder
+```
+
+#### ConversationFilterBuilder.ExcludeBotUsers
+
+ExcludeBotUsers sets whether bot users are excluded.
+
+```go
+func (b *ConversationFilterBuilder) ExcludeBotUsers(value bool) *ConversationFilterBuilder
+```
+
+Every `ConversationFilterBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDataPoint
+
+NewDataPoint creates a labelled chart data point.
+
+```go
+func NewDataPoint() *DataPointBuilder
+```
+
+### DataPointBuilder
+
+DataPointBuilder is the concrete fluent builder returned by NewDataPoint.
+
+One value of a chart series, keyed by axis category.
+
+- Required: Label and Value.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Use NewDataPoint rather than constructing this type directly.
+
+```go
+type DataPointBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### DataPointBuilder.Label
+
+Label sets the axis category this point belongs to. Required. Slack allows at most 20
+characters.
+
+```go
+func (b *DataPointBuilder) Label(value string) *DataPointBuilder
+```
+
+#### DataPointBuilder.Value
+
+Value sets the point's value. Required.
+
+```go
+func (b *DataPointBuilder) Value(value float64) *DataPointBuilder
+```
+
+Every `DataPointBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDataSeries
+
+NewDataSeries creates a named chart data series.
+
+```go
+func NewDataSeries() *DataSeriesBuilder
+```
+
+### DataSeriesBuilder
+
+DataSeriesBuilder is the concrete fluent builder returned by NewDataSeries.
+
+A named series of chart data points.
+
+- Required: Name and Data.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Use NewDataSeries rather than constructing this type directly.
+
+```go
+type DataSeriesBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### DataSeriesBuilder.Name
+
+Name sets the series name shown in the legend. Required. Slack allows at most 20 characters.
+
+```go
+func (b *DataSeriesBuilder) Name(value string) *DataSeriesBuilder
+```
+
+#### DataSeriesBuilder.Data
+
+Data adds data points in axis-category order. Required. Must contain between 1 and 20 items.
+Each call appends to any values already added.
+
+```go
+func (b *DataSeriesBuilder) Data(values ...*DataPointBuilder) *DataSeriesBuilder
+```
+
+Every `DataSeriesBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDispatchActionConfiguration
+
+NewDispatchActionConfiguration creates an input dispatch configuration.
+
+```go
+func NewDispatchActionConfiguration() *DispatchActionConfigurationBuilder
+```
+
+### DispatchActionConfigurationBuilder
+
+DispatchActionConfigurationBuilder is the concrete fluent builder returned by NewDispatchActionConfiguration.
+
+Chooses which interactions with an input send a block_actions payload.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/dispatch-action-configuration-object).
+
+Use NewDispatchActionConfiguration rather than constructing this type directly.
+
+```go
+type DispatchActionConfigurationBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### DispatchActionConfigurationBuilder.TriggerActionsOn
+
+TriggerActionsOn adds the interactions that send a payload: on_enter_pressed or
+on_character_entered. Each call appends to any values already added.
+
+```go
+func (b *DispatchActionConfigurationBuilder) TriggerActionsOn(values ...string) *DispatchActionConfigurationBuilder
+```
+
+Every `DispatchActionConfigurationBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewInputParameter
+
+NewInputParameter creates a customizable workflow input parameter.
+
+```go
+func NewInputParameter() *InputParameterBuilder
+```
+
+### InputParameterBuilder
+
+InputParameterBuilder is the concrete fluent builder returned by NewInputParameter.
+
+A named value passed to a workflow trigger.
+
+- Required: Name and Value.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object).
+
+Use NewInputParameter rather than constructing this type directly.
+
+```go
+type InputParameterBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### InputParameterBuilder.Name
+
+Name sets the workflow input parameter name. Required.
+
+```go
+func (b *InputParameterBuilder) Name(value string) *InputParameterBuilder
+```
+
+#### InputParameterBuilder.Value
+
+Value sets the value passed to the workflow input. Required.
+
+```go
+func (b *InputParameterBuilder) Value(value string) *InputParameterBuilder
+```
+
+Every `InputParameterBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewLineChart
+
+NewLineChart creates a line-chart object.
+
+```go
+func NewLineChart() *LineChartBuilder
+```
+
+### LineChartBuilder
+
+LineChartBuilder is the concrete fluent builder returned by NewLineChart.
+
+A line chart for a data visualization block.
+
+- Required: Series and AxisConfig.
+- Every series needs exactly one data point for each axis category.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Use NewLineChart rather than constructing this type directly.
+
+```go
+type LineChartBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### LineChartBuilder.Series
+
+Series adds data series in display order. Series names must be unique. Required. Must contain
+between 1 and 12 items. Each call appends to any values already added.
+
+```go
+func (b *LineChartBuilder) Series(values ...*DataSeriesBuilder) *LineChartBuilder
+```
+
+#### LineChartBuilder.AxisConfig
+
+AxisConfig sets the axis categories and labels. Every series needs exactly one point per
+category. Required.
+
+```go
+func (b *LineChartBuilder) AxisConfig(value *AxisConfigBuilder) *LineChartBuilder
+```
+
+Every `LineChartBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewMarkdown
+
+NewMarkdown creates a Slack mrkdwn composition object.
+
+```go
+func NewMarkdown() *MarkdownBuilder
+```
+
+### MarkdownBuilder
+
+MarkdownBuilder is the concrete fluent builder returned by NewMarkdown.
+
+A mrkdwn text composition object.
+
+- Required: Text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/text-object).
+
+Use NewMarkdown rather than constructing this type directly.
+
+```go
+type MarkdownBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### MarkdownBuilder.Text
+
+Text sets the mrkdwn-formatted text content. Required.
+
+```go
+func (b *MarkdownBuilder) Text(value string) *MarkdownBuilder
+```
+
+#### MarkdownBuilder.Verbatim
+
+Verbatim sets whether Slack leaves URLs, mentions, and channel names unlinked.
+
+```go
+func (b *MarkdownBuilder) Verbatim(value bool) *MarkdownBuilder
+```
+
+Every `MarkdownBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewOption
+
+NewOption creates a selectable option composition object.
+
+```go
+func NewOption() *OptionBuilder
+```
+
+### OptionBuilder
+
+OptionBuilder is the concrete fluent builder returned by NewOption.
+
+A selectable option for menus, checkboxes, radio buttons, and overflow menus.
+
+- Required: Text and Value.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/option-object).
+
+Use NewOption rather than constructing this type directly.
+
+```go
+type OptionBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### OptionBuilder.Text
+
+Text sets the option label shown to users. Required. Slack allows at most 75 characters. The
+string is sent as a plain_text text object; use TextObject to pass a text object instead.
+
+```go
+func (b *OptionBuilder) Text(value string) *OptionBuilder
+```
+
+#### OptionBuilder.TextObject
+
+TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *OptionBuilder) TextObject(value TextObject) *OptionBuilder
+```
+
+#### OptionBuilder.Value
+
+Value sets the value sent in interaction payloads when this option is chosen. Required. Slack
+allows at most 150 characters.
+
+```go
+func (b *OptionBuilder) Value(value string) *OptionBuilder
+```
+
+#### OptionBuilder.Description
+
+Description sets supporting text shown below the label. Only rendered by checkboxes and radio
+buttons. Slack allows at most 75 characters. The string is sent as a plain_text text object;
+use DescriptionObject to pass a text object instead.
+
+```go
+func (b *OptionBuilder) Description(value string) *OptionBuilder
+```
+
+#### OptionBuilder.DescriptionObject
+
+DescriptionObject is Description for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *OptionBuilder) DescriptionObject(value TextObject) *OptionBuilder
+```
+
+#### OptionBuilder.URL
+
+URL sets a URL loaded in the user's browser when an overflow menu option is chosen. Slack
+allows at most 3000 characters.
+
+```go
+func (b *OptionBuilder) URL(value string) *OptionBuilder
+```
+
+Every `OptionBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewOptionGroup
+
+NewOptionGroup creates a labelled group of selectable options.
+
+```go
+func NewOptionGroup() *OptionGroupBuilder
+```
+
+### OptionGroupBuilder
+
+OptionGroupBuilder is the concrete fluent builder returned by NewOptionGroup.
+
+A labelled group of options in a static select menu.
+
+- Required: Label and Options.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/option-group-object).
+
+Use NewOptionGroup rather than constructing this type directly.
+
+```go
+type OptionGroupBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### OptionGroupBuilder.Label
+
+Label sets the group heading. Required. Slack allows at most 75 characters. The string is
+sent as a plain_text text object; use LabelObject to pass a text object instead.
+
+```go
+func (b *OptionGroupBuilder) Label(value string) *OptionGroupBuilder
+```
+
+#### OptionGroupBuilder.LabelObject
+
+LabelObject is Label for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *OptionGroupBuilder) LabelObject(value *PlainTextBuilder) *OptionGroupBuilder
+```
+
+#### OptionGroupBuilder.Options
+
+Options adds selectable options in display order. Required. Must contain between 1 and 100
+items. Each call appends to any values already added.
+
+```go
+func (b *OptionGroupBuilder) Options(values ...*OptionBuilder) *OptionGroupBuilder
+```
+
+Every `OptionGroupBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewPieChart
+
+NewPieChart creates a pie-chart object.
+
+```go
+func NewPieChart() *PieChartBuilder
+```
+
+### PieChartBuilder
+
+PieChartBuilder is the concrete fluent builder returned by NewPieChart.
+
+A pie chart for a data visualization block.
+
+- Required: Segments.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Use NewPieChart rather than constructing this type directly.
+
+```go
+type PieChartBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### PieChartBuilder.Segments
+
+Segments adds pie segments in display order. Required. Must contain between 1 and 12 items.
+Each call appends to any values already added.
+
+```go
+func (b *PieChartBuilder) Segments(values ...*ChartSegmentBuilder) *PieChartBuilder
+```
+
+Every `PieChartBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewPlainText
+
+NewPlainText creates a plain-text composition object.
+
+```go
+func NewPlainText() *PlainTextBuilder
+```
+
+### PlainTextBuilder
+
+PlainTextBuilder is the concrete fluent builder returned by NewPlainText.
+
+A plain-text composition object.
+
+- Required: Text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/text-object).
+
+Use NewPlainText rather than constructing this type directly.
+
+```go
+type PlainTextBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### PlainTextBuilder.Text
+
+Text sets the text content. Required.
+
+```go
+func (b *PlainTextBuilder) Text(value string) *PlainTextBuilder
+```
+
+#### PlainTextBuilder.Emoji
+
+Emoji sets whether emoji shortcodes such as :tada: are rendered as emoji.
+
+```go
+func (b *PlainTextBuilder) Emoji(value bool) *PlainTextBuilder
+```
+
+Every `PlainTextBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRawNumber
+
+NewRawNumber creates a numeric data-table cell.
+
+```go
+func NewRawNumber() *RawNumberBuilder
+```
+
+### RawNumberBuilder
+
+RawNumberBuilder is the concrete fluent builder returned by NewRawNumber.
+
+A numeric data table cell with display text.
+
+- Required: Value and Text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+
+Use NewRawNumber rather than constructing this type directly.
+
+```go
+type RawNumberBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RawNumberBuilder.Value
+
+Value sets the numeric value used for sorting. Required.
+
+```go
+func (b *RawNumberBuilder) Value(value float64) *RawNumberBuilder
+```
+
+#### RawNumberBuilder.Text
+
+Text sets the formatted text displayed for the number, such as 1,234.5. Required.
+
+```go
+func (b *RawNumberBuilder) Text(value string) *RawNumberBuilder
+```
+
+Every `RawNumberBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRawText
+
+NewRawText creates an unformatted table cell.
+
+```go
+func NewRawText() *RawTextBuilder
+```
+
+### RawTextBuilder
+
+RawTextBuilder is the concrete fluent builder returned by NewRawText.
+
+An unformatted table cell.
+
+- Required: Text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+Use NewRawText rather than constructing this type directly.
+
+```go
+type RawTextBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RawTextBuilder.Text
+
+Text sets the cell text. Required.
+
+```go
+func (b *RawTextBuilder) Text(value string) *RawTextBuilder
+```
+
+Every `RawTextBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichText
+
+NewRichText creates a rich-text text run.
+
+```go
+func NewRichText() *RichTextBuilder
+```
+
+### RichTextBuilder
+
+RichTextBuilder is the concrete fluent builder returned by NewRichText.
+
+A run of optionally styled text inside rich text.
+
+- Required: Text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Use NewRichText rather than constructing this type directly.
+
+```go
+type RichTextBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RichTextBuilder.Text
+
+Text sets the text content. Required.
+
+```go
+func (b *RichTextBuilder) Text(value string) *RichTextBuilder
+```
+
+#### RichTextBuilder.Style
+
+Style sets the visual style. Pass an Object of boolean flags, such as `Object{"bold": true}`.
+Supported flags: "bold", "italic", "strike", and "code".
+
+```go
+func (b *RichTextBuilder) Style(value RichTextStyle) *RichTextBuilder
+```
+
+Every `RichTextBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextChannel
+
+NewRichTextChannel creates a rich-text channel mention.
+
+```go
+func NewRichTextChannel() *RichTextChannelBuilder
+```
+
+### RichTextChannelBuilder
+
+RichTextChannelBuilder is the concrete fluent builder returned by NewRichTextChannel.
+
+A channel mention inside rich text.
+
+- Required: ChannelID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Use NewRichTextChannel rather than constructing this type directly.
+
+```go
+type RichTextChannelBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RichTextChannelBuilder.ChannelID
+
+ChannelID sets the ID of the mentioned channel. Required.
+
+```go
+func (b *RichTextChannelBuilder) ChannelID(value string) *RichTextChannelBuilder
+```
+
+#### RichTextChannelBuilder.Style
+
+Style sets the mention style. Pass an Object of boolean flags, such as `Object{"bold":
+true}`. Supported flags: "bold", "italic", "strike", "highlight", "client_highlight", and
+"unlink".
+
+```go
+func (b *RichTextChannelBuilder) Style(value RichTextStyle) *RichTextChannelBuilder
+```
+
+Every `RichTextChannelBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextCodeBlock
+
+NewRichTextCodeBlock creates a preformatted rich-text block.
+
+```go
+func NewRichTextCodeBlock() *RichTextCodeBlockBuilder
+```
+
+### RichTextCodeBlockBuilder
+
+RichTextCodeBlockBuilder is the concrete fluent builder returned by NewRichTextCodeBlock.
+
+A preformatted code block inside rich text.
+
+- Required: Elements.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Use NewRichTextCodeBlock rather than constructing this type directly.
+
+```go
+type RichTextCodeBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RichTextCodeBlockBuilder.Elements
+
+Elements adds inline rich text elements in display order. Required. Each call appends to any
+values already added.
+
+```go
+func (b *RichTextCodeBlockBuilder) Elements(values ...RichTextSectionElement) *RichTextCodeBlockBuilder
+```
+
+#### RichTextCodeBlockBuilder.Border
+
+Border sets the width of the left border, in pixels.
+
+```go
+func (b *RichTextCodeBlockBuilder) Border(value int) *RichTextCodeBlockBuilder
+```
+
+Every `RichTextCodeBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextEmoji
+
+NewRichTextEmoji creates a rich-text emoji run.
+
+```go
+func NewRichTextEmoji() *RichTextEmojiBuilder
+```
+
+### RichTextEmojiBuilder
+
+RichTextEmojiBuilder is the concrete fluent builder returned by NewRichTextEmoji.
+
+An emoji inside rich text.
+
+- Required: Name.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Use NewRichTextEmoji rather than constructing this type directly.
+
+```go
+type RichTextEmojiBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RichTextEmojiBuilder.Name
+
+Name sets the emoji shortcode name, without colons. Required.
+
+```go
+func (b *RichTextEmojiBuilder) Name(value string) *RichTextEmojiBuilder
+```
+
+#### RichTextEmojiBuilder.SkinTone
+
+SkinTone sets the emoji skin tone, from 1 to 6.
+
+```go
+func (b *RichTextEmojiBuilder) SkinTone(value int) *RichTextEmojiBuilder
+```
+
+Every `RichTextEmojiBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextLink
+
+NewRichTextLink creates a rich-text link run.
+
+```go
+func NewRichTextLink() *RichTextLinkBuilder
+```
+
+### RichTextLinkBuilder
+
+RichTextLinkBuilder is the concrete fluent builder returned by NewRichTextLink.
+
+A hyperlink inside rich text.
+
+- Required: URL.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Use NewRichTextLink rather than constructing this type directly.
+
+```go
+type RichTextLinkBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RichTextLinkBuilder.URL
+
+URL sets the link target. Required.
+
+```go
+func (b *RichTextLinkBuilder) URL(value string) *RichTextLinkBuilder
+```
+
+#### RichTextLinkBuilder.Text
+
+Text sets the visible link text. Slack shows the URL when omitted.
+
+```go
+func (b *RichTextLinkBuilder) Text(value string) *RichTextLinkBuilder
+```
+
+#### RichTextLinkBuilder.Style
+
+Style sets the visual style. Pass an Object of boolean flags, such as `Object{"bold": true}`.
+Supported flags: "bold", "italic", "strike", and "code".
+
+```go
+func (b *RichTextLinkBuilder) Style(value RichTextStyle) *RichTextLinkBuilder
+```
+
+Every `RichTextLinkBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextList
+
+NewRichTextList creates an ordered or bullet rich-text list.
+
+```go
+func NewRichTextList() *RichTextListBuilder
+```
+
+### RichTextListBuilder
+
+RichTextListBuilder is the concrete fluent builder returned by NewRichTextList.
+
+A bulleted or numbered list inside rich text.
+
+- Required: Style and Elements.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Use NewRichTextList rather than constructing this type directly.
+
+```go
+type RichTextListBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RichTextListBuilder.Style
+
+Style sets whether the list is bulleted or numbered. Required. Accepted values: "bullet" and
+"ordered".
+
+```go
+func (b *RichTextListBuilder) Style(value RichTextListStyle) *RichTextListBuilder
+```
+
+#### RichTextListBuilder.Elements
+
+Elements adds list items, one rich text section per item. Required. Each call appends to any
+values already added.
+
+```go
+func (b *RichTextListBuilder) Elements(values ...*RichTextSectionBuilder) *RichTextListBuilder
+```
+
+#### RichTextListBuilder.Indent
+
+Indent sets the list's indentation level.
+
+```go
+func (b *RichTextListBuilder) Indent(value int) *RichTextListBuilder
+```
+
+#### RichTextListBuilder.Offset
+
+Offset sets the number of items to skip when numbering an ordered list.
+
+```go
+func (b *RichTextListBuilder) Offset(value int) *RichTextListBuilder
+```
+
+#### RichTextListBuilder.Border
+
+Border sets the width of the left border, in pixels.
+
+```go
+func (b *RichTextListBuilder) Border(value int) *RichTextListBuilder
+```
+
+Every `RichTextListBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextQuote
+
+NewRichTextQuote creates a quoted rich-text block.
+
+```go
+func NewRichTextQuote() *RichTextQuoteBuilder
+```
+
+### RichTextQuoteBuilder
+
+RichTextQuoteBuilder is the concrete fluent builder returned by NewRichTextQuote.
+
+A quotation inside rich text.
+
+- Required: Elements.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Use NewRichTextQuote rather than constructing this type directly.
+
+```go
+type RichTextQuoteBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RichTextQuoteBuilder.Elements
+
+Elements adds inline rich text elements in display order. Required. Each call appends to any
+values already added.
+
+```go
+func (b *RichTextQuoteBuilder) Elements(values ...RichTextSectionElement) *RichTextQuoteBuilder
+```
+
+#### RichTextQuoteBuilder.Border
+
+Border sets the width of the left border, in pixels.
+
+```go
+func (b *RichTextQuoteBuilder) Border(value int) *RichTextQuoteBuilder
+```
+
+Every `RichTextQuoteBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextSection
+
+NewRichTextSection creates a rich-text inline section.
+
+```go
+func NewRichTextSection() *RichTextSectionBuilder
+```
+
+### RichTextSectionBuilder
+
+RichTextSectionBuilder is the concrete fluent builder returned by NewRichTextSection.
+
+A paragraph of inline rich text elements.
+
+- Required: Elements.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Use NewRichTextSection rather than constructing this type directly.
+
+```go
+type RichTextSectionBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RichTextSectionBuilder.Elements
+
+Elements adds inline rich text elements in display order. Required. Each call appends to any
+values already added.
+
+```go
+func (b *RichTextSectionBuilder) Elements(values ...RichTextSectionElement) *RichTextSectionBuilder
+```
+
+Every `RichTextSectionBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextUser
+
+NewRichTextUser creates a rich-text user mention.
+
+```go
+func NewRichTextUser() *RichTextUserBuilder
+```
+
+### RichTextUserBuilder
+
+RichTextUserBuilder is the concrete fluent builder returned by NewRichTextUser.
+
+A user mention inside rich text.
+
+- Required: UserID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Use NewRichTextUser rather than constructing this type directly.
+
+```go
+type RichTextUserBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RichTextUserBuilder.UserID
+
+UserID sets the ID of the mentioned user. Required.
+
+```go
+func (b *RichTextUserBuilder) UserID(value string) *RichTextUserBuilder
+```
+
+#### RichTextUserBuilder.Style
+
+Style sets the visual style. Pass an Object of boolean flags, such as `Object{"bold": true}`.
+Supported flags: "bold", "italic", "strike", "highlight", "client_highlight", and "unlink".
+
+```go
+func (b *RichTextUserBuilder) Style(value RichTextStyle) *RichTextUserBuilder
+```
+
+Every `RichTextUserBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextUserGroup
+
+NewRichTextUserGroup creates a rich-text user-group mention.
+
+```go
+func NewRichTextUserGroup() *RichTextUserGroupBuilder
+```
+
+### RichTextUserGroupBuilder
+
+RichTextUserGroupBuilder is the concrete fluent builder returned by NewRichTextUserGroup.
+
+A user group mention inside rich text.
+
+- Required: UserGroupID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Use NewRichTextUserGroup rather than constructing this type directly.
+
+```go
+type RichTextUserGroupBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RichTextUserGroupBuilder.UserGroupID
+
+UserGroupID sets the ID of the mentioned user group. Required.
+
+```go
+func (b *RichTextUserGroupBuilder) UserGroupID(value string) *RichTextUserGroupBuilder
+```
+
+#### RichTextUserGroupBuilder.Style
+
+Style sets the visual style. Pass an Object of boolean flags, such as `Object{"bold": true}`.
+Supported flags: "bold", "italic", "strike", "highlight", "client_highlight", and "unlink".
+
+```go
+func (b *RichTextUserGroupBuilder) Style(value RichTextStyle) *RichTextUserGroupBuilder
+```
+
+Every `RichTextUserGroupBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewSlackFile
+
+NewSlackFile creates a Slack-hosted file reference.
+
+```go
+func NewSlackFile() *SlackFileBuilder
+```
+
+### SlackFileBuilder
+
+SlackFileBuilder is the concrete fluent builder returned by NewSlackFile.
+
+A reference to an image file hosted in Slack.
+
+- Provide exactly one of an ID or a URL.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/slack-file-object).
+
+Use NewSlackFile rather than constructing this type directly.
+
+```go
+type SlackFileBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### SlackFileBuilder.SlackFileID
+
+SlackFileID sets the ID of a file previously uploaded to Slack. Cannot be combined with a
+URL.
+
+```go
+func (b *SlackFileBuilder) SlackFileID(value string) *SlackFileBuilder
+```
+
+#### SlackFileBuilder.SlackFileURL
+
+SlackFileURL sets the URL of a file hosted in Slack. Cannot be combined with an ID.
+
+```go
+func (b *SlackFileBuilder) SlackFileURL(value string) *SlackFileBuilder
+```
+
+Every `SlackFileBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewSlackIcon
+
+NewSlackIcon creates a named Slack-rendered icon.
+
+```go
+func NewSlackIcon() *SlackIconBuilder
+```
+
+### SlackIconBuilder
+
+SlackIconBuilder is the concrete fluent builder returned by NewSlackIcon.
+
+A Slack-provided icon, referenced by name.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+
+Use NewSlackIcon rather than constructing this type directly.
+
+```go
+type SlackIconBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### SlackIconBuilder.Name
+
+Name sets the name of the Slack-provided icon, such as rocket.
+
+```go
+func (b *SlackIconBuilder) Name(value string) *SlackIconBuilder
+```
+
+Every `SlackIconBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewTrigger
+
+NewTrigger creates a workflow link trigger.
+
+```go
+func NewTrigger() *TriggerBuilder
+```
+
+### TriggerBuilder
+
+TriggerBuilder is the concrete fluent builder returned by NewTrigger.
+
+A link trigger that starts a workflow.
+
+- Required: URL.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object).
+
+Use NewTrigger rather than constructing this type directly.
+
+```go
+type TriggerBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### TriggerBuilder.URL
+
+URL sets the link trigger URL. Required.
+
+```go
+func (b *TriggerBuilder) URL(value string) *TriggerBuilder
+```
+
+#### TriggerBuilder.CustomizableInputParameters
+
+CustomizableInputParameters adds the input values passed to the workflow's trigger. Each call
+appends to any values already added.
+
+```go
+func (b *TriggerBuilder) CustomizableInputParameters(values ...*InputParameterBuilder) *TriggerBuilder
+```
+
+Every `TriggerBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewWorkflow
+
+NewWorkflow creates a workflow composition object.
+
+```go
+func NewWorkflow() *WorkflowBuilder
+```
+
+### WorkflowBuilder
+
+WorkflowBuilder is the concrete fluent builder returned by NewWorkflow.
+
+The workflow started by a workflow button.
+
+- Required: Trigger.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/workflow-object).
+
+Use NewWorkflow rather than constructing this type directly.
+
+```go
+type WorkflowBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### WorkflowBuilder.Trigger
+
+Trigger sets the link trigger that starts the workflow. Required.
+
+```go
+func (b *WorkflowBuilder) Trigger(value *TriggerBuilder) *WorkflowBuilder
+```
+
+Every `WorkflowBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.

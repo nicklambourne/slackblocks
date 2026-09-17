@@ -3,7 +3,7 @@ sidebar_label: Welcome
 sidebar_position: 1
 ---
 
-import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Welcome to `slackblocks`!
 
@@ -11,14 +11,14 @@ import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/compone
   <img width="30%" src="/slackblocks/img/sb.png" alt="slackblocks logo" />
 </p>
 
-`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, and Java — without writing JSON by hand.
+`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, and C# — without writing JSON by hand.
 
 It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control. `slackblocks` gives you:
 
-- **Typed, idiomatic APIs** for Python, TypeScript, Go, and Java.
+- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, and C#.
 - **Validation as you build** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
 - **Drop-in compatibility** with established Slack SDKs and clients and their plain JSON payloads.
-- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, and Java implements the official Slack SDK block interfaces.
+- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, and C# depends on nothing beyond .NET.
 
 ## Quick Start
 
@@ -174,6 +174,35 @@ Every block is named `<Kind>Block` and starts with a static `builder()` method. 
 [`ValidationException`](reference/java/errors#validationexception) exposes stable categories and field paths. [`SlackObject`](reference/java/core#slackobject) is the immutable JSON-compatible contract returned by every completed builder.
 
 </Java>
+<CSharp>
+
+The .NET package uses immutable values constructed with named arguments. Each constructor validates its arguments against Slack's documented rules, and every value writes compact Slack JSON, so no adapter or conversion layer sits between slackblocks and your HTTP client or Slack library.
+
+### Composition objects
+
+[`PlainText`](reference/csharp/objects#plaintext), [`MarkdownText`](reference/csharp/objects#markdowntext), and [`Option`](reference/csharp/objects#option) create the small values shared by blocks and elements. A string converts to the text object a field expects, so most code passes strings directly.
+
+### Elements
+
+Interactive controls include [`ButtonElement`](reference/csharp/elements#buttonelement), [`CheckboxesElement`](reference/csharp/elements#checkboxeselement), [`StaticSelectElement`](reference/csharp/elements#staticselectelement), and [`DatePickerElement`](reference/csharp/elements#datepickerelement).
+
+### Blocks
+
+Every block is named `<Kind>Block` and implements [`IBlock`](reference/csharp/blocks#iblock). Begin with [`SectionBlock`](reference/csharp/blocks#sectionblock), [`ActionsBlock`](reference/csharp/blocks#actionsblock), or [`HeaderBlock`](reference/csharp/blocks#headerblock), then explore cards, carousels, containers, tables, charts, plans, task cards, rich text, and the rest of the shared Block Kit surface.
+
+### Payloads and views
+
+[`MessagePayload`](reference/csharp/payloads#messagepayload), [`WebhookMessage`](reference/csharp/payloads#webhookmessage), and [`MessageResponse`](reference/csharp/payloads#messageresponse) build complete JSON payloads. [`ModalView`](reference/csharp/payloads#modalview) and [`HomeTabView`](reference/csharp/payloads#hometabview) build Slack view payloads.
+
+### Higher-level components
+
+[`Paginator`](reference/csharp/components#paginator) renders one page with previous and next controls. [`Accordion`](reference/csharp/components#accordion) combines Slack-native collapsible containers created by [`AccordionSection`](reference/csharp/components#accordionsection).
+
+### Validation and JSON
+
+[`ValidationException`](reference/csharp/errors#validationexception) exposes stable categories and field paths. [`SlackObject`](reference/csharp/core#slackobject) is the immutable base of every value, with `ToJson()` for compact JSON and `ToJsonNode()` for a mutable copy.
+
+</CSharp>
 </LanguageContent>
 
 ## Guides
@@ -218,4 +247,14 @@ Every block is named `<Kind>Block` and starts with a static `builder()` method. 
 - [Contributing](contributing)
 
 </Java>
+<CSharp>
+
+- [Installation](usage/installation)
+- [Using Blocks](usage/using_blocks)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook)
+- [Troubleshooting & FAQ](usage/troubleshooting)
+- [Contributing](contributing)
+
+</CSharp>
 </LanguageContent>

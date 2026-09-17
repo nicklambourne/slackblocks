@@ -52,7 +52,7 @@ function versionMainDoc(version: GlobalVersion): GlobalDoc | undefined {
 }
 
 function historicalReferenceId(currentId: string): string | null {
-  const match = currentId.match(/^reference\/(python|typescript|java)(?:\/(.+))?$/);
+  const match = currentId.match(/^reference\/(python|typescript|java|csharp)(?:\/(.+))?$/);
   if (!match) return null;
 
   const [, language, currentPage = ""] = match;

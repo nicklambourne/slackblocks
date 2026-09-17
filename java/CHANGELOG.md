@@ -3,6 +3,24 @@
 All notable changes to the Java package are documented here. Java versions move
 in lockstep with the Python, TypeScript, and Go packages.
 
+## [2.4.0] — 2026-09-17
+
+This coordinated release introduces the C# package, published to NuGet as
+`Slackblocks`, and moves all five packages onto one shared release number. The
+Java public API and wire format are unchanged.
+
+### Changed
+
+- Update the Gson runtime dependency to 2.14.0 and JSpecify to 1.0.1. Both
+  still target Java 8 bytecode, so the Java 17 minimum is unchanged.
+- Maven Central releases publish automatically once Central validates the
+  bundle.
+- Coordinated release validation now requires the Python, TypeScript, Java, and
+  C# package manifests and all five language changelogs to agree before any
+  tags are created.
+- The C# package is generated from the same `java/generator/model.json` as the
+  Java builders, so field documentation and limits stay consistent across both.
+
 ## [2.3.0] — 2026-09-16
 
 The first public Java release of slackblocks, versioned in step with the Python,

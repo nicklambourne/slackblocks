@@ -1,0 +1,548 @@
+---
+sidebar_position: 4
+toc_max_heading_level: 2
+---
+
+# Payloads And Views
+
+This page documents the public Go API for payloads and views. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.
+
+## NewAttachment
+
+NewAttachment creates a legacy secondary message attachment.
+
+```go
+func NewAttachment() *AttachmentBuilder
+```
+
+### AttachmentBuilder
+
+AttachmentBuilder is the concrete fluent builder returned by NewAttachment.
+
+A legacy message attachment containing blocks and an optional color bar.
+
+- Only blocks supported in messages are accepted.
+
+See the [Slack reference](https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments).
+
+Use NewAttachment rather than constructing this type directly.
+
+```go
+type AttachmentBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### AttachmentBuilder.Blocks
+
+Blocks adds the attachment's blocks in display order. Each call appends to any values already
+added.
+
+```go
+func (b *AttachmentBuilder) Blocks(values ...Block) *AttachmentBuilder
+```
+
+#### AttachmentBuilder.Color
+
+Color sets the attachment's left border color: a six-digit hex color or good, warning, or
+danger.
+
+```go
+func (b *AttachmentBuilder) Color(value string) *AttachmentBuilder
+```
+
+#### AttachmentBuilder.Fallback
+
+Fallback sets plain-text summary shown in clients that cannot display attachments.
+
+```go
+func (b *AttachmentBuilder) Fallback(value string) *AttachmentBuilder
+```
+
+Every `AttachmentBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewHomeTab
+
+NewHomeTab creates an App Home tab view payload.
+
+```go
+func NewHomeTab() *HomeTabBuilder
+```
+
+### HomeTabBuilder
+
+HomeTabBuilder is the concrete fluent builder returned by NewHomeTab.
+
+The payload for publishing an App Home tab with views.publish.
+
+- Required: Blocks.
+- Only blocks supported on the App Home tab are accepted.
+
+See the [Slack reference](https://docs.slack.dev/surfaces/app-home).
+
+Use NewHomeTab rather than constructing this type directly.
+
+```go
+type HomeTabBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### HomeTabBuilder.Blocks
+
+Blocks adds the blocks shown on the App Home tab, in display order. Required. Must contain
+between 1 and 100 items. Each call appends to any values already added.
+
+```go
+func (b *HomeTabBuilder) Blocks(values ...Block) *HomeTabBuilder
+```
+
+#### HomeTabBuilder.PrivateMetadata
+
+PrivateMetadata sets application-defined data returned in view payloads. Slack allows at most
+3000 characters.
+
+```go
+func (b *HomeTabBuilder) PrivateMetadata(value string) *HomeTabBuilder
+```
+
+#### HomeTabBuilder.CallbackID
+
+CallbackID sets an identifier returned in view payloads so your app can recognize the view.
+Slack allows at most 255 characters.
+
+```go
+func (b *HomeTabBuilder) CallbackID(value string) *HomeTabBuilder
+```
+
+#### HomeTabBuilder.ExternalID
+
+ExternalID sets a workspace-unique identifier you can use to update the view later.
+
+```go
+func (b *HomeTabBuilder) ExternalID(value string) *HomeTabBuilder
+```
+
+Every `HomeTabBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewMessage
+
+NewMessage creates a payload for chat.postMessage and related Web API methods.
+
+```go
+func NewMessage() *MessageBuilder
+```
+
+### MessageBuilder
+
+MessageBuilder is the concrete fluent builder returned by NewMessage.
+
+A complete payload for chat.postMessage and related Web API methods.
+
+- Required: Channel.
+- Only blocks supported in messages are accepted.
+
+See the [Slack reference](https://docs.slack.dev/reference/methods/chat.postMessage).
+
+Use NewMessage rather than constructing this type directly.
+
+```go
+type MessageBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### MessageBuilder.Channel
+
+Channel sets the ID of the channel, private group, or conversation that receives the message.
+Required. Must not be empty.
+
+```go
+func (b *MessageBuilder) Channel(value string) *MessageBuilder
+```
+
+#### MessageBuilder.Blocks
+
+Blocks adds the message blocks in display order. Slack allows at most 50 items. Each call
+appends to any values already added.
+
+```go
+func (b *MessageBuilder) Blocks(values ...Block) *MessageBuilder
+```
+
+#### MessageBuilder.Attachments
+
+Attachments adds legacy attachments in display order. Slack allows at most 100 items. Each
+call appends to any values already added.
+
+```go
+func (b *MessageBuilder) Attachments(values ...*AttachmentBuilder) *MessageBuilder
+```
+
+#### MessageBuilder.Text
+
+Text sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```go
+func (b *MessageBuilder) Text(value string) *MessageBuilder
+```
+
+#### MessageBuilder.Mrkdwn
+
+Mrkdwn sets whether Slack formats the top-level text as mrkdwn.
+
+```go
+func (b *MessageBuilder) Mrkdwn(value bool) *MessageBuilder
+```
+
+#### MessageBuilder.UnfurlLinks
+
+UnfurlLinks sets whether Slack unfurls text-based links.
+
+```go
+func (b *MessageBuilder) UnfurlLinks(value bool) *MessageBuilder
+```
+
+#### MessageBuilder.UnfurlMedia
+
+UnfurlMedia sets whether Slack unfurls media links.
+
+```go
+func (b *MessageBuilder) UnfurlMedia(value bool) *MessageBuilder
+```
+
+#### MessageBuilder.Metadata
+
+Metadata sets message metadata as a JSON-compatible map, such as event_type and
+event_payload. Pass an Object or map of JSON-compatible values.
+
+```go
+func (b *MessageBuilder) Metadata(value Object) *MessageBuilder
+```
+
+Every `MessageBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewMessageResponse
+
+NewMessageResponse creates an immediate interaction-response payload.
+
+```go
+func NewMessageResponse() *MessageResponseBuilder
+```
+
+### MessageResponseBuilder
+
+MessageResponseBuilder is the concrete fluent builder returned by NewMessageResponse.
+
+A response body for slash commands and interaction response URLs.
+
+- Only blocks supported in messages are accepted.
+
+See the [Slack reference](https://docs.slack.dev/interactivity/handling-user-interaction#message_responses).
+
+Use NewMessageResponse rather than constructing this type directly.
+
+```go
+type MessageResponseBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### MessageResponseBuilder.Blocks
+
+Blocks adds the response blocks in display order. Slack allows at most 50 items. Each call
+appends to any values already added.
+
+```go
+func (b *MessageResponseBuilder) Blocks(values ...Block) *MessageResponseBuilder
+```
+
+#### MessageResponseBuilder.Attachments
+
+Attachments adds legacy attachments in display order. Slack allows at most 100 items. Each
+call appends to any values already added.
+
+```go
+func (b *MessageResponseBuilder) Attachments(values ...*AttachmentBuilder) *MessageResponseBuilder
+```
+
+#### MessageResponseBuilder.Text
+
+Text sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```go
+func (b *MessageResponseBuilder) Text(value string) *MessageResponseBuilder
+```
+
+#### MessageResponseBuilder.Mrkdwn
+
+Mrkdwn sets whether Slack formats the top-level text as mrkdwn.
+
+```go
+func (b *MessageResponseBuilder) Mrkdwn(value bool) *MessageResponseBuilder
+```
+
+#### MessageResponseBuilder.ReplaceOriginal
+
+ReplaceOriginal sets whether the response replaces the message that triggered it.
+
+```go
+func (b *MessageResponseBuilder) ReplaceOriginal(value bool) *MessageResponseBuilder
+```
+
+#### MessageResponseBuilder.ResponseType
+
+ResponseType sets who can see the response. Accepted values: "in_channel" and "ephemeral".
+
+```go
+func (b *MessageResponseBuilder) ResponseType(value ResponseType) *MessageResponseBuilder
+```
+
+Every `MessageResponseBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewModal
+
+NewModal creates a modal view payload.
+
+```go
+func NewModal() *ModalBuilder
+```
+
+### ModalBuilder
+
+ModalBuilder is the concrete fluent builder returned by NewModal.
+
+The view payload for views.open, views.push, and views.update.
+
+- Required: Title and Blocks.
+- Only blocks supported in modals are accepted.
+- A modal that contains an input block must have a submit label.
+
+See the [Slack reference](https://docs.slack.dev/surfaces/modals).
+
+Use NewModal rather than constructing this type directly.
+
+```go
+type ModalBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ModalBuilder.Title
+
+Title sets the title in the modal's top bar. Required. Slack allows at most 24 characters.
+The string is sent as a plain_text text object; use TitleObject to pass a text object
+instead.
+
+```go
+func (b *ModalBuilder) Title(value string) *ModalBuilder
+```
+
+#### ModalBuilder.TitleObject
+
+TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ModalBuilder) TitleObject(value *PlainTextBuilder) *ModalBuilder
+```
+
+#### ModalBuilder.Blocks
+
+Blocks adds the blocks shown in the modal, in display order. Required. Must contain between 1
+and 100 items. Each call appends to any values already added.
+
+```go
+func (b *ModalBuilder) Blocks(values ...Block) *ModalBuilder
+```
+
+#### ModalBuilder.Close
+
+Close sets the label of the button that closes the modal. Slack allows at most 24 characters.
+The string is sent as a plain_text text object; use CloseObject to pass a text object
+instead.
+
+```go
+func (b *ModalBuilder) Close(value string) *ModalBuilder
+```
+
+#### ModalBuilder.CloseObject
+
+CloseObject is Close for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ModalBuilder) CloseObject(value *PlainTextBuilder) *ModalBuilder
+```
+
+#### ModalBuilder.Submit
+
+Submit sets the label of the button that submits the modal. Slack allows at most 24
+characters. The string is sent as a plain_text text object; use SubmitObject to pass a text
+object instead.
+
+```go
+func (b *ModalBuilder) Submit(value string) *ModalBuilder
+```
+
+#### ModalBuilder.SubmitObject
+
+SubmitObject is Submit for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ModalBuilder) SubmitObject(value *PlainTextBuilder) *ModalBuilder
+```
+
+#### ModalBuilder.PrivateMetadata
+
+PrivateMetadata sets application-defined data returned in view payloads. Slack allows at most
+3000 characters.
+
+```go
+func (b *ModalBuilder) PrivateMetadata(value string) *ModalBuilder
+```
+
+#### ModalBuilder.CallbackID
+
+CallbackID sets an identifier returned in view payloads so your app can recognize the view.
+Slack allows at most 255 characters.
+
+```go
+func (b *ModalBuilder) CallbackID(value string) *ModalBuilder
+```
+
+#### ModalBuilder.ClearOnClose
+
+ClearOnClose sets whether closing this modal closes every view in its stack.
+
+```go
+func (b *ModalBuilder) ClearOnClose(value bool) *ModalBuilder
+```
+
+#### ModalBuilder.NotifyOnClose
+
+NotifyOnClose sets whether Slack sends a view_closed event when the user closes the modal.
+
+```go
+func (b *ModalBuilder) NotifyOnClose(value bool) *ModalBuilder
+```
+
+#### ModalBuilder.ExternalID
+
+ExternalID sets a workspace-unique identifier you can use to update the view later.
+
+```go
+func (b *ModalBuilder) ExternalID(value string) *ModalBuilder
+```
+
+#### ModalBuilder.SubmitDisabled
+
+SubmitDisabled sets whether the submit button starts disabled. Only valid in workflow
+configuration modals.
+
+```go
+func (b *ModalBuilder) SubmitDisabled(value bool) *ModalBuilder
+```
+
+Every `ModalBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewWebhookMessage
+
+NewWebhookMessage creates an incoming-webhook or response-URL payload.
+
+```go
+func NewWebhookMessage() *WebhookMessageBuilder
+```
+
+### WebhookMessageBuilder
+
+WebhookMessageBuilder is the concrete fluent builder returned by NewWebhookMessage.
+
+A payload for incoming webhooks.
+
+- Only blocks supported in messages are accepted.
+
+See the [Slack reference](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks).
+
+Use NewWebhookMessage rather than constructing this type directly.
+
+```go
+type WebhookMessageBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### WebhookMessageBuilder.Blocks
+
+Blocks adds the message blocks in display order. Slack allows at most 50 items. Each call
+appends to any values already added.
+
+```go
+func (b *WebhookMessageBuilder) Blocks(values ...Block) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.Attachments
+
+Attachments adds legacy attachments in display order. Slack allows at most 100 items. Each
+call appends to any values already added.
+
+```go
+func (b *WebhookMessageBuilder) Attachments(values ...*AttachmentBuilder) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.Text
+
+Text sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```go
+func (b *WebhookMessageBuilder) Text(value string) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.ResponseType
+
+ResponseType sets who can see the response. Accepted values: "in_channel" and "ephemeral".
+
+```go
+func (b *WebhookMessageBuilder) ResponseType(value ResponseType) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.ReplaceOriginal
+
+ReplaceOriginal sets whether the response replaces the message that triggered it.
+
+```go
+func (b *WebhookMessageBuilder) ReplaceOriginal(value bool) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.DeleteOriginal
+
+DeleteOriginal sets whether the response deletes the message that triggered it.
+
+```go
+func (b *WebhookMessageBuilder) DeleteOriginal(value bool) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.UnfurlLinks
+
+UnfurlLinks sets whether Slack unfurls text-based links.
+
+```go
+func (b *WebhookMessageBuilder) UnfurlLinks(value bool) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.UnfurlMedia
+
+UnfurlMedia sets whether Slack unfurls media links.
+
+```go
+func (b *WebhookMessageBuilder) UnfurlMedia(value bool) *WebhookMessageBuilder
+```
+
+#### WebhookMessageBuilder.Metadata
+
+Metadata sets message metadata as a JSON-compatible map, such as event_type and
+event_payload. Pass an Object or map of JSON-compatible values.
+
+```go
+func (b *WebhookMessageBuilder) Metadata(value Object) *WebhookMessageBuilder
+```
+
+Every `WebhookMessageBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.

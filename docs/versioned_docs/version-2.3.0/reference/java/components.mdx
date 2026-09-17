@@ -1,0 +1,381 @@
+---
+sidebar_position: 5
+toc_max_heading_level: 3
+---
+
+# Components
+
+This page documents the public Java API for components, generated from the Javadoc by the javadoc tool. Values are immutable, builders are concrete and fluent, validation runs when you call `.build()`, and typed getters read built values back.
+
+Components expand to ordinary `List<Block>` values. The application remains responsible for channel selection, delivery options, and interaction handling through slack-java-sdk.
+
+## Accordion
+
+Assembles independently collapsible sections. Slack handles expanding and collapsing, so no interaction handler is needed. Pass the result to the Slack SDK with `List.copyOf`, which widens it to `List<LayoutBlock>`.
+
+### Builder
+
+Starts a concrete fluent accordion builder.
+
+```java
+public static Accordion.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`Accordion`](/reference/java/components#accordion)
+
+### Sections
+
+Appends built accordion sections in display order.
+
+```java
+public Accordion.Builder sections(ContainerBlock... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | sections created with [`AccordionSection`](/reference/java/components#accordionsection) |
+
+**Returns:** this builder
+
+**Related types:** [`Accordion`](/reference/java/components#accordion), [`ContainerBlock`](/reference/java/blocks#containerblock)
+
+### Build
+
+Builds ordinary Slack container blocks ready for an SDK request.
+
+```java
+public List<Block> build()
+```
+
+**Returns:** immutable list of container blocks
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if there are no sections or a section is not collapsible |
+
+**Related types:** [`Block`](/reference/java/blocks#block)
+
+## AccordionSection
+
+Builds one independently collapsible, Slack-native accordion section.
+
+### Builder
+
+Starts a section with its required heading.
+
+```java
+public static AccordionSection.Builder builder(String title)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | plain-text heading |
+
+**Returns:** a new builder
+
+**Related types:** [`AccordionSection`](/reference/java/components#accordionsection)
+
+### Blocks
+
+Appends blocks revealed when this section is expanded.
+
+```java
+public AccordionSection.Builder blocks(Block... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | blocks in display order |
+
+**Returns:** this builder
+
+**Related types:** [`AccordionSection`](/reference/java/components#accordionsection), [`Block`](/reference/java/blocks#block)
+
+### Subtitle — `String`
+
+Sets supporting Slack Markdown copy.
+
+```java
+public AccordionSection.Builder subtitle(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Markdown text |
+
+**Returns:** this builder
+
+**Related types:** [`AccordionSection`](/reference/java/components#accordionsection)
+
+### Subtitle — `Text`
+
+Sets a typed supporting text value.
+
+```java
+public AccordionSection.Builder subtitle(Text value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Slack text object |
+
+**Returns:** this builder
+
+**Related types:** [`AccordionSection`](/reference/java/components#accordionsection), [`Text`](/reference/java/objects#text)
+
+### Icon
+
+Sets the section header icon.
+
+```java
+public AccordionSection.Builder icon(ImageElement value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | image element |
+
+**Returns:** this builder
+
+**Related types:** [`AccordionSection`](/reference/java/components#accordionsection), [`ImageElement`](/reference/java/elements#imageelement)
+
+### Expanded
+
+Controls whether the section starts expanded.
+
+```java
+public AccordionSection.Builder expanded(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | initial expanded state |
+
+**Returns:** this builder
+
+**Related types:** [`AccordionSection`](/reference/java/components#accordionsection)
+
+### Width
+
+Sets the Slack-native container width.
+
+```java
+public AccordionSection.Builder width(ContainerWidth value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | container width |
+
+**Returns:** this builder
+
+**Related types:** [`AccordionSection`](/reference/java/components#accordionsection), [`ContainerWidth`](/reference/java/blocks#containerwidth)
+
+### HasHeaderDivider
+
+Controls the divider below the section header.
+
+```java
+public AccordionSection.Builder hasHeaderDivider(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to show the divider |
+
+**Returns:** this builder
+
+**Related types:** [`AccordionSection`](/reference/java/components#accordionsection)
+
+### BlockId
+
+Sets a deterministic block identifier.
+
+```java
+public AccordionSection.Builder blockId(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | block identifier |
+
+**Returns:** this builder
+
+**Related types:** [`AccordionSection`](/reference/java/components#accordionsection)
+
+### Build
+
+Builds this section as an ordinary, collapsible Slack container block.
+
+```java
+public ContainerBlock build()
+```
+
+**Returns:** validated container block
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the section breaks a container block rule, such as having no blocks or more than ten |
+
+**Related types:** [`ContainerBlock`](/reference/java/blocks#containerblock)
+
+## Paginator
+
+Renders one page of blocks plus previous and next buttons.
+
+The buttons' action IDs are `<prefix>.previous` and `<prefix>.next`, and their values hold the one-based page to show next, so an action handler can rebuild the message for that page. Pass the result to the Slack SDK with `List.copyOf`, which widens it to `List<LayoutBlock>`:
+
+```java
+List<Block> page = Paginator.builder("results").blocks(results).page(2).build();
+client.chatPostMessage(ChatPostMessageRequest.builder()
+    .channel("C0123456")
+    .text("Search results")
+    .blocks(List.copyOf(page))
+    .build());
+```
+
+### Builder
+
+Starts a paginator with the prefix used for generated action identifiers.
+
+```java
+public static Paginator.Builder builder(String actionIdPrefix)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionIdPrefix` | prefix for previous and next action IDs |
+
+**Returns:** a new builder
+
+**Related types:** [`Paginator`](/reference/java/components#paginator)
+
+### Blocks
+
+Appends source blocks in display order.
+
+```java
+public Paginator.Builder blocks(Block... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | source blocks |
+
+**Returns:** this builder
+
+**Related types:** [`Block`](/reference/java/blocks#block), [`Paginator`](/reference/java/components#paginator)
+
+### Page
+
+Selects the one-based page to render.
+
+```java
+public Paginator.Builder page(int value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | one-based page number |
+
+**Returns:** this builder
+
+**Related types:** [`Paginator`](/reference/java/components#paginator)
+
+### PageSize
+
+Sets the number of source blocks displayed per page.
+
+```java
+public Paginator.Builder pageSize(int value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | positive page size |
+
+**Returns:** this builder
+
+**Related types:** [`Paginator`](/reference/java/components#paginator)
+
+### PreviousText
+
+Sets the previous-page button label.
+
+```java
+public Paginator.Builder previousText(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | button label |
+
+**Returns:** this builder
+
+**Related types:** [`Paginator`](/reference/java/components#paginator)
+
+### NextText
+
+Sets the next-page button label.
+
+```java
+public Paginator.Builder nextText(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | button label |
+
+**Returns:** this builder
+
+**Related types:** [`Paginator`](/reference/java/components#paginator)
+
+### ShowPageIndicator
+
+Controls whether a “Page n of m” context block is rendered.
+
+```java
+public Paginator.Builder showPageIndicator(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to show the indicator |
+
+**Returns:** this builder
+
+**Related types:** [`Paginator`](/reference/java/components#paginator)
+
+### BlockId
+
+Sets the identifier of the generated actions block. It is not used when every block fits on one page, because no controls are rendered.
+
+```java
+public Paginator.Builder blockId(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | block identifier |
+
+**Returns:** this builder
+
+**Related types:** [`Paginator`](/reference/java/components#paginator)
+
+### Build
+
+Builds the selected page followed, when there is more than one page, by a "Page n of m" context block and the navigation buttons.
+
+```java
+public List<Block> build()
+```
+
+**Returns:** immutable list of ordinary blocks
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if there are no blocks, the prefix is empty, or the page or page size is out of range |
+
+**Related types:** [`Block`](/reference/java/blocks#block)

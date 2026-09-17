@@ -6,9 +6,10 @@
 // resolves the library's compile classpath through the checked-in wrapper.
 
 import { execFileSync } from "node:child_process";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { writeReferencePages } from "./reference_pages.mjs";
 
 const scriptsDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repository = path.resolve(scriptsDirectory, "../..");
@@ -66,101 +67,20 @@ async function javadocJson() {
   return JSON.parse(await readFile(output, "utf8"));
 }
 
-function anchor(name) {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, "");
-}
-
 function domainFor(type) {
   const relative = type.package === basePackage ? "" : type.package.slice(basePackage.length + 1);
   return domains.find((domain) => domain.packages.includes(relative) && (!domain.names || domain.names.includes(type.name)));
 }
 
-function resolveLinks(markdown, typeLinks) {
-  return markdown.replace(/\]\(javadoc:(\w+)\)/g, (_, name) => (typeLinks.has(name) ? `](${typeLinks.get(name)})` : "]()"))
-    .replace(/\[(`[^`]*`)\]\(\)/g, "$1");
-}
-
-function heading(member, overloaded) {
-  const base = member.name.replace(/^[a-z]/, (letter) => letter.toUpperCase());
-  if (!overloaded) return base;
-  return `${base} — ${member.parameterTypes ? `\`${member.parameterTypes}\`` : "no arguments"}`;
-}
-
-function relatedTypes(signature, typeLinks) {
-  return [...typeLinks.keys()]
-    .filter((name) => new RegExp(`\\b${name}\\b`).test(signature))
-    .sort();
-}
-
-function memberSection(member, typeLinks, overloaded) {
-  let output = `### ${heading(member, overloaded)}\n\n`;
-  if (member.doc) output += `${resolveLinks(member.doc, typeLinks)}\n\n`;
-  output += `\`\`\`java\n${member.signature}\n\`\`\`\n\n`;
-  if (member.params.length) {
-    output += "| Parameter | Description |\n| --- | --- |\n";
-    for (const parameter of member.params) {
-      output += `| \`${parameter.name}\` | ${resolveLinks(parameter.doc, typeLinks).replace(/\n+/g, " ")} |\n`;
-    }
-    output += "\n";
-  }
-  if (member.returns) output += `**Returns:** ${resolveLinks(member.returns, typeLinks)}\n\n`;
-  if (member.throws.length) {
-    output += "| Throws | When |\n| --- | --- |\n";
-    for (const thrown of member.throws) {
-      const type = typeLinks.has(thrown.type) ? `[\`${thrown.type}\`](${typeLinks.get(thrown.type)})` : `\`${thrown.type}\``;
-      output += `| ${type} | ${resolveLinks(thrown.doc, typeLinks).replace(/\n+/g, " ")} |\n`;
-    }
-    output += "\n";
-  }
-  const related = relatedTypes(member.signature, typeLinks);
-  if (related.length) {
-    output += `**Related types:** ${related.map((name) => `[\`${name}\`](${typeLinks.get(name)})`).join(", ")}\n\n`;
-  }
-  return output;
-}
-
-const reference = await javadocJson();
-const byDomain = new Map(domains.map((domain) => [domain.slug, []]));
-for (const type of reference.types) {
-  const domain = domainFor(type);
-  if (domain) byDomain.get(domain.slug).push(type);
-}
-const typeLinks = new Map();
-for (const domain of domains) {
-  for (const type of byDomain.get(domain.slug)) {
-    typeLinks.set(type.name, `/reference/java/${domain.slug}#${anchor(type.name)}`);
-  }
-}
-
-await rm(outputRoot, { recursive: true, force: true });
-await mkdir(outputRoot, { recursive: true });
-
-for (const domain of domains) {
-  const types = byDomain.get(domain.slug).sort((a, b) => a.name.localeCompare(b.name));
-  let output = `---\nsidebar_position: ${domain.position}\ntoc_max_heading_level: 3\n---\n\n# ${domain.title}\n\n`;
-  output += `This page documents the public Java API for ${domain.title.toLowerCase()}, generated from the Javadoc by the javadoc tool. Values are immutable, builders are concrete and fluent, validation runs when you call \`.build()\`, and typed getters read built values back.\n\n`;
+function introduction(domain) {
+  let text = `This page documents the public Java API for ${domain.title.toLowerCase()}, generated from the Javadoc by the javadoc tool. Values are immutable, builders are concrete and fluent, validation runs when you call \`.build()\`, and typed getters read built values back.\n\n`;
   if (domain.slug === "blocks") {
-    output += "Built block values implement Slack's official `LayoutBlock` interface, so they can be passed directly to `ChatPostMessageRequest.blocks(...)` and other slack-java-sdk request builders.\n\n";
+    text += "Built block values implement Slack's official `LayoutBlock` interface, so they can be passed directly to `ChatPostMessageRequest.blocks(...)` and other slack-java-sdk request builders.\n\n";
   }
   if (domain.slug === "components") {
-    output += "Components expand to ordinary `List<Block>` values. The application remains responsible for channel selection, delivery options, and interaction handling through slack-java-sdk.\n\n";
+    text += "Components expand to ordinary `List<Block>` values. The application remains responsible for channel selection, delivery options, and interaction handling through slack-java-sdk.\n\n";
   }
-  for (const type of types) {
-    output += `## ${type.name}\n\n`;
-    output += `${resolveLinks(type.doc || `Public ${type.name} API.`, typeLinks)}\n\n`;
-    for (const see of type.see) output += `See the [${see.label}](${see.url}).\n\n`;
-    if (type.constants.length) {
-      output += "| Constant | Slack value | Meaning |\n| --- | --- | --- |\n";
-      for (const constant of type.constants) {
-        output += `| \`${constant.name}\` | \`${constant.wire}\` | ${resolveLinks(constant.doc, typeLinks)} |\n`;
-      }
-      output += "\n";
-    }
-    const counts = new Map();
-    for (const member of type.members) counts.set(member.name, (counts.get(member.name) ?? 0) + 1);
-    for (const member of type.members) output += memberSection(member, typeLinks, counts.get(member.name) > 1);
-  }
-  await writeFile(path.join(outputRoot, `${domain.slug}.mdx`), output.trimEnd() + "\n");
+  return text;
 }
 
 const index = `---
@@ -181,5 +101,15 @@ Build a block with a concrete builder, call \`.build()\`, then pass the resultin
 - [Core Types](/reference/java/core)
 - [Validation And Errors](/reference/java/errors)
 `;
-await writeFile(path.join(outputRoot, "index.mdx"), index);
-console.log(`Generated ${typeLinks.size} Java API types with javadoc.`);
+
+const count = await writeReferencePages({
+  reference: await javadocJson(),
+  domains,
+  domainFor,
+  language: "java",
+  fence: "java",
+  outputRoot,
+  introduction,
+  index,
+});
+console.log(`Generated ${count} Java API types with javadoc.`);

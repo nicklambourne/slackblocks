@@ -3,7 +3,7 @@ sidebar_label: Quick Start
 sidebar_position: 2
 ---
 
-import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Quick Start
 
@@ -120,7 +120,7 @@ Java 17 or newer is required. Add slackblocks and the official Slack Java SDK cl
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>2.3.0</version>
+  <version>2.4.0</version>
 </dependency>
 <dependency>
   <groupId>com.slack.api</groupId>
@@ -151,6 +151,42 @@ client.chatPostMessage(ChatPostMessageRequest.builder()
 `build()` validates the completed value and returns an immutable object. Blocks implement the Slack SDK's `LayoutBlock` directly, so the channel, fallback text, threading, and other delivery options remain on the SDK request where Java developers expect them.
 
 </Java>
+<CSharp>
+
+## Install the package
+
+.NET 8 or newer is required. Add slackblocks to your project:
+
+```bash
+dotnet add package Slackblocks
+```
+
+## Build and send a message
+
+```csharp
+using System.Net.Http.Headers;
+using System.Text;
+using Slackblocks.Blocks;
+using Slackblocks.Payloads;
+
+var message = new MessagePayload(
+    "C0123456",
+    text: "Hello from slackblocks!",
+    blocks: [new SectionBlock(text: "Hello, world!")]);
+
+using var http = new HttpClient();
+using var request = new HttpRequestMessage(HttpMethod.Post, "https://slack.com/api/chat.postMessage")
+{
+    Content = new StringContent(message.ToJson(), Encoding.UTF8, "application/json"),
+};
+request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("SLACK_BOT_TOKEN"));
+using var response = await http.SendAsync(request);
+response.EnsureSuccessStatusCode();
+```
+
+Each constructor validates its arguments and returns an immutable value. `MessagePayload` also checks the message as a whole, including the 50-block limit and which blocks messages accept, before any request is made. Slack reports Web API errors in the response body's `ok` and `error` fields, so check those as well as the HTTP status.
+
+</CSharp>
 </LanguageContent>
 
 ## Where to go next

@@ -12,6 +12,7 @@ on:
       - "typescript/tsconfig.typedoc.json"
       - "go/**"
       - "java/**"
+      - "csharp/**"
       - "spec/**"
       - "package.json"
       - "pnpm-lock.yaml"
@@ -49,7 +50,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(docs/|python/|typescript/src/|typescript/package\.json$|typescript/tsconfig\.json$|typescript/tsconfig\.typedoc\.json$|go/|java/|spec/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/docs\.yml$)' <<<"$files"; then
+          if grep -qE '^(docs/|python/|typescript/src/|typescript/package\.json$|typescript/tsconfig\.json$|typescript/tsconfig\.typedoc\.json$|go/|java/|csharp/|spec/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/docs\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -99,6 +100,11 @@ jobs:
           java-version: "21"
           cache: maven
           cache-dependency-path: java/pom.xml
+
+      - name: Install .NET for the C# API reference
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
 
       - name: Install JavaScript dependencies
         run: pnpm install --frozen-lockfile
