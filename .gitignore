@@ -114,3 +114,6 @@ node_modules/
 /docs/docs/reference/typescript/
 /docs/docs/reference/go/
 /docs/docs/reference/java/
+/docs/docs/reference/csharp/
+/docs/scripts/csharp-reference/bin/
+/docs/scripts/csharp-reference/obj/

@@ -1,0 +1,168 @@
+name: .NET CI
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "csharp/**"
+      - "spec/**"
+      - "java/generator/model.json"
+      - "docs/docs/**"
+      - "docs/examples/csharp/**"
+      - "docs/examples/section_hello.json"
+      - "README.md"
+      - ".github/workflows/dotnet.yml"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dotnet-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+
+jobs:
+  changes:
+    name: Detect relevant changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Compare changed files against this workflow's scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ]; then
+            # Fail open: if the file list cannot be read, run the real checks.
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if grep -qE '^(csharp/|spec/|java/generator/model\.json$|docs/docs/|docs/examples/csharp/|docs/examples/section_hello\.json$|README\.md$|\.github/workflows/dotnet\.yml$)' <<<"$files"; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  test:
+    needs: changes
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # The oldest supported SDK builds and tests net8.0 only.
+          - name: .NET 8 SDK
+            os: ubuntu-latest
+            sdk: "8.0.x"
+            pin: true
+          # The current SDK also runs the suite on the .NET 10 runtime, and owns the
+          # formatting and generated-source checks.
+          - name: .NET 10 SDK
+            os: ubuntu-latest
+            sdk: |
+              8.0.x
+              10.0.x
+            pin: false
+            checks: true
+          - name: .NET 10 SDK on Windows
+            os: windows-latest
+            sdk: |
+              8.0.x
+              10.0.x
+            pin: false
+    # Every step is gated, not the job: a skipped matrix job reports one check under its
+    # unexpanded name, which would leave the required checks pending.
+    steps:
+      - name: Check out repository
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/checkout@v7
+
+      - name: Install .NET
+        if: needs.changes.outputs.relevant == 'true'
+        id: dotnet
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: ${{ matrix.sdk }}
+
+      - name: Pin the SDK under test
+        if: needs.changes.outputs.relevant == 'true' && matrix.pin
+        working-directory: csharp
+        run: dotnet new globaljson --sdk-version "${{ steps.dotnet.outputs.dotnet-version }}" --roll-forward latestPatch --force
+
+      - name: Verify generated model sources are current
+        if: needs.changes.outputs.relevant == 'true' && matrix.checks
+        run: |
+          python3 csharp/generator/generate_models.py
+          git diff --exit-code -- csharp/src/Slackblocks/Generated
+
+      - name: Check formatting
+        if: needs.changes.outputs.relevant == 'true' && matrix.checks
+        working-directory: csharp
+        run: dotnet format Slackblocks.sln --verify-no-changes
+
+      - name: Build and test
+        if: needs.changes.outputs.relevant == 'true'
+        working-directory: csharp
+        run: dotnet test Slackblocks.sln --configuration Release --collect "XPlat Code Coverage" --results-directory artifacts/coverage
+
+  package:
+    needs: changes
+    name: NuGet package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/checkout@v7
+
+      - name: Install .NET
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Pack with package validation
+        if: needs.changes.outputs.relevant == 'true'
+        working-directory: csharp
+        run: dotnet pack src/Slackblocks/Slackblocks.csproj --configuration Release --output artifacts/package
+
+      - name: Verify package contents
+        if: needs.changes.outputs.relevant == 'true'
+        working-directory: csharp/artifacts/package
+        run: |
+          set -euo pipefail
+          version=$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' ../../src/Slackblocks/Slackblocks.csproj)
+          package="Slackblocks.$version.nupkg"
+          test -f "$package"
+          test -f "Slackblocks.$version.snupkg"
+          contents=$(unzip -Z1 "$package")
+          for expected in README.md LICENSE LICENSE.BSD-3-Clause lib/net8.0/Slackblocks.dll lib/net8.0/Slackblocks.xml; do
+            grep -qx "$expected" <<<"$contents" || { echo "::error::$package is missing $expected"; exit 1; }
+          done
+
+      - name: Push to a local feed without publishing
+        if: needs.changes.outputs.relevant == 'true'
+        working-directory: csharp/artifacts
+        run: |
+          mkdir -p local-feed
+          dotnet nuget push "package/*.nupkg" --source "$PWD/local-feed"
+          test -n "$(find local-feed -name '*.nupkg' -print -quit)"
+
+      - name: Upload package
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: nuget-package
+          path: csharp/artifacts/package/*
+          if-no-files-found: error

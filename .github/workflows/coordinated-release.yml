@@ -8,6 +8,7 @@ on:
       - ".github/workflows/publish-npm.yml"
       - ".github/workflows/publish-go.yml"
       - ".github/workflows/publish-java.yml"
+      - ".github/workflows/publish-nuget.yml"
       - "python/pyproject.toml"
       - "typescript/package.json"
       - "python/CHANGELOG.md"
@@ -15,6 +16,8 @@ on:
       - "go/CHANGELOG.md"
       - "java/pom.xml"
       - "java/CHANGELOG.md"
+      - "csharp/src/Slackblocks/Slackblocks.csproj"
+      - "csharp/CHANGELOG.md"
   workflow_dispatch:
     inputs:
       version:
@@ -53,14 +56,15 @@ jobs:
           typescript_version=$(node -p "require('./typescript/package.json').version")
           python_version=$(node -e "const text = require('fs').readFileSync('python/pyproject.toml', 'utf8'); const match = text.match(/^version = \"([^\"]+)\"$/m); if (!match) process.exit(1); process.stdout.write(match[1]);")
           java_version=$(node -e "const text = require('fs').readFileSync('java/pom.xml', 'utf8'); const match = text.match(/<artifactId>slackblocks<\/artifactId>\s*<version>([^<]+)<\/version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
+          csharp_version=$(node -e "const text = require('fs').readFileSync('csharp/src/Slackblocks/Slackblocks.csproj', 'utf8'); const match = text.match(/<Version>([^<]+)<\/Version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
           version="${REQUESTED_VERSION:-$typescript_version}"
 
           if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "::error::Version '$version' must use the stable X.Y.Z format."
             exit 1
           fi
-          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ]; then
-            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version."
+          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ] || [ "$python_version" != "$csharp_version" ]; then
+            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version, C#=$csharp_version."
             exit 1
           fi
           if [ "$version" != "$python_version" ]; then
@@ -73,7 +77,7 @@ jobs:
           fi
 
           release_date=""
-          for changelog in python/CHANGELOG.md typescript/CHANGELOG.md go/CHANGELOG.md java/CHANGELOG.md; do
+          for changelog in python/CHANGELOG.md typescript/CHANGELOG.md go/CHANGELOG.md java/CHANGELOG.md csharp/CHANGELOG.md; do
             heading=$(grep -F "## [$version]" "$changelog" | head -n 1 || true)
             if [ -z "$heading" ]; then
               echo "::error file=$changelog::Missing release notes for version $version."
@@ -128,7 +132,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          tags=("python/v$VERSION" "ts/v$VERSION" "go/v$VERSION" "java/v$VERSION")
+          tags=("python/v$VERSION" "ts/v$VERSION" "go/v$VERSION" "java/v$VERSION" "csharp/v$VERSION")
           existing=0
 
           for tag in "${tags[@]}"; do
@@ -142,12 +146,12 @@ jobs:
             fi
           done
 
-          if [ "$existing" -eq 4 ]; then
+          if [ "$existing" -eq "${#tags[@]}" ]; then
             echo "All coordinated tags already point to $GITHUB_SHA; reusing them."
             exit 0
           fi
           if [ "$existing" -ne 0 ]; then
-            echo "::error::Only $existing of the four release tags already exist. Resolve the partial release before retrying."
+            echo "::error::Only $existing of the ${#tags[@]} release tags already exist. Resolve the partial release before retrying."
             exit 1
           fi
 
@@ -157,6 +161,7 @@ jobs:
           git tag --annotate "ts/v$VERSION" --message "@nicklambourne/slackblocks $VERSION (TypeScript)"
           git tag --annotate "go/v$VERSION" --message "slackblocks $VERSION (Go)"
           git tag --annotate "java/v$VERSION" --message "slackblocks $VERSION (Java)"
+          git tag --annotate "csharp/v$VERSION" --message "Slackblocks $VERSION (C#)"
           git push --atomic origin "${tags[@]}"
 
   publish:
@@ -185,6 +190,9 @@ jobs:
           - language: Java
             workflow: publish-java.yml
             tag_prefix: java/v
+          - language: C#
+            workflow: publish-nuget.yml
+            tag_prefix: csharp/v
     steps:
       - name: Dispatch and monitor publisher
         env:

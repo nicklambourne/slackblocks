@@ -30,6 +30,15 @@ updates:
       java-development:
         dependency-type: development
 
+  - package-ecosystem: nuget
+    directory: /csharp
+    schedule:
+      interval: weekly
+    groups:
+      dotnet-development:
+        # The library has no package dependencies; every NuGet reference is a test or tooling package.
+        patterns: ["*"]
+
   - package-ecosystem: github-actions
     directory: /
     schedule:

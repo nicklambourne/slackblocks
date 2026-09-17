@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Contributing
 
-`slackblocks` is a monorepo containing four language-native implementations and one shared conformance contract. A feature is complete when its wire output and validation category agree in Python, TypeScript, Go, and Java.
+`slackblocks` is a monorepo containing five language-native implementations and one shared conformance contract. A feature is complete when its wire output and validation category agree in Python, TypeScript, Go, Java, and C#.
 
 ## Repository layout
 
@@ -13,6 +13,7 @@ sidebar_position: 5
 - `typescript/` contains the ESM TypeScript package and its tests.
 - `go/` contains the Go v2 module, its direct `slack-go/slack` block integration, and its tests.
 - `java/` contains the Java 17 Maven artifact, concrete fluent builders, direct Slack Java SDK model integration, and its tests.
+- `csharp/` contains the .NET 8 NuGet package, its generated immutable value types, and its tests.
 - `docs/` contains this Docusaurus site and executable examples.
 
 ## Set up the workspace
@@ -73,7 +74,20 @@ python3 java/generator/generate_models.py --check-go
 
 `--check-go` fails if the Java model and the Go builder registry expose different fields. The Go generator (`go generate ./...` in `go/`) reads the same `model.json` and `spec/limits.json` to write the doc comments on every generated builder method, so a description, limit, or Slack link edited there reaches the Go and Java references together.
 
-All four conformance suites exercise every ID in `spec/manifest.json`. A checked-in `conformance/skiplist.txt` may document an intentional language gap, but unknown failures and stale skips fail the suite.
+From `csharp/`, with the .NET 8 SDK or newer:
+
+```bash
+dotnet test
+dotnet format --verify-no-changes
+```
+
+The build treats warnings as errors with the .NET analyzers enabled, and the tests compile and run every C# documentation snippet. The C# value types are generated from the same `java/generator/model.json`. After changing it, regenerate them from the repository root; CI fails when the checked-in output differs:
+
+```bash
+python3 csharp/generator/generate_models.py
+```
+
+All five conformance suites exercise every ID in `spec/manifest.json`. A checked-in `conformance/skiplist.txt` may document an intentional language gap, but unknown failures and stale skips fail the suite.
 
 ## Add or change a Block Kit feature
 
@@ -81,7 +95,7 @@ All four conformance suites exercise every ID in `spec/manifest.json`. A checked
 2. Map every new JSON-producing capability to at least one valid fixture in `spec/coverage.json`.
 3. Add invalid behavior to `spec/fixtures/invalid/manifest.json` when the feature introduces a validation rule. New Slack icon names and surface block types go in `spec/vocabulary.json`. Every scalar leaf in `spec/limits.json` must have a matching invalid case.
 4. Update `spec/limits.json` for shared scalar constraints.
-5. Implement the feature idiomatically in all four packages, or record a reason in the affected skip list.
+5. Implement the feature idiomatically in all five packages, or record a reason in the affected skip list.
 6. Add language-native tests and update the relevant guide or executable example.
 
 When introducing a cross-language API, serialized JSON and validation outcomes are shared; public naming and construction style are language-native.
@@ -94,9 +108,9 @@ Run the local site from the repository root:
 pnpm --filter @slackblocks/docs start
 ```
 
-Narrative pages live in `docs/docs/`. Python, TypeScript, Go, and Java API pages are generated during every docs build. The Java pages come from the javadoc tool, through `docs/scripts/java-reference/ReferenceDoclet.java`, so building the site needs a JDK 17 or newer on `PATH` or in `JAVA_HOME`. Reusable examples live under the matching directory in `docs/examples/`; tests execute them and compare their output with `docs/examples/section_hello.json`.
+Narrative pages live in `docs/docs/`. Python, TypeScript, Go, Java, and C# API pages are generated during every docs build. The Java pages come from the javadoc tool, through `docs/scripts/java-reference/ReferenceDoclet.java`, so building the site needs a JDK 17 or newer on `PATH` or in `JAVA_HOME`. The C# pages come from the compiled library's XML documentation, through `docs/scripts/csharp-reference/`, so building the site also needs the .NET 8 SDK or newer. Both render through `docs/scripts/reference_pages.mjs`. Reusable examples live under the matching directory in `docs/examples/`; tests execute them and compare their output with `docs/examples/section_hello.json`.
 
-Use `LanguageContent` with `Python`, `TypeScript`, `Go`, and `Java` children for language-specific prose or examples. The site-level selector controls which child is shown.
+Use `LanguageContent` with `Python`, `TypeScript`, `Go`, `Java`, and `CSharp` children for language-specific prose or examples. The site-level selector controls which child is shown.
 
 ## Pull requests
 

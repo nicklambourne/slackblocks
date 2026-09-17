@@ -3,7 +3,7 @@
 All notable changes to the C# package are documented here. C# versions move in
 lockstep with the Python, TypeScript, Go, and Java packages.
 
-## [2.4.0] — Unreleased
+## [2.4.0] — 2026-09-17
 
 The first public .NET release of slackblocks, published to NuGet as
 `Slackblocks` and versioned in step with the other packages. The package

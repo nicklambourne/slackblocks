@@ -1,0 +1,5634 @@
+---
+sidebar_position: 3
+toc_max_heading_level: 3
+---
+
+# Composition Objects
+
+This page documents the public Java API for composition objects, generated from the Javadoc by the javadoc tool. Values are immutable, builders are concrete and fluent, validation runs when you call `.build()`, and typed getters read built values back.
+
+## AreaChart
+
+An area chart for a data visualization block.
+
+Start with [`builder()`](/reference/java/objects#areachart), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#areachart) to validate and create an immutable value.
+
+- Required: `series`, `axisConfig`.
+
+- Every series needs exactly one data point for each axis category.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static AreaChart.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`AreaChart`](/reference/java/objects#areachart)
+
+### GetSeries
+
+Returns data series in display order. Series names must be unique.
+
+```java
+public List<DataSeries> getSeries()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`DataSeries`](/reference/java/objects#dataseries)
+
+### GetAxisConfig
+
+Returns the axis categories and labels. Every series needs exactly one point per category.
+
+```java
+public AxisConfig getAxisConfig()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`AxisConfig`](/reference/java/objects#axisconfig)
+
+### Series
+
+Adds data series in display order. Series names must be unique.
+
+Required. Must contain between 1 and 12 items. Each call appends to any values already added.
+
+```java
+public AreaChart.Builder series(DataSeries... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`DataSeries`](/reference/java/objects#dataseries) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`AreaChart`](/reference/java/objects#areachart), [`DataSeries`](/reference/java/objects#dataseries)
+
+### AxisConfig
+
+Sets the axis categories and labels. Every series needs exactly one point per category.
+
+Required.
+
+```java
+public AreaChart.Builder axisConfig(AxisConfig value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | nested [`AxisConfig`](/reference/java/objects#axisconfig) |
+
+**Returns:** this builder
+
+**Related types:** [`AreaChart`](/reference/java/objects#areachart), [`AxisConfig`](/reference/java/objects#axisconfig)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public AreaChart.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`AreaChart`](/reference/java/objects#areachart)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public AreaChart build()
+```
+
+**Returns:** an immutable [`AreaChart`](/reference/java/objects#areachart)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`AreaChart`](/reference/java/objects#areachart)
+
+## AxisConfig
+
+The categories and labels shared by bar, area, and line chart axes.
+
+Start with [`builder()`](/reference/java/objects#axisconfig), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#axisconfig) to validate and create an immutable value.
+
+- Required: `categories`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static AxisConfig.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`AxisConfig`](/reference/java/objects#axisconfig)
+
+### GetCategories
+
+Returns axis categories in display order. Labels must be unique.
+
+```java
+public List<String> getCategories()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetXLabel
+
+Returns the horizontal axis label.
+
+```java
+public Optional<String> getXLabel()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetYLabel
+
+Returns the vertical axis label.
+
+```java
+public Optional<String> getYLabel()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Categories
+
+Adds axis categories in display order. Labels must be unique.
+
+Required. Must contain between 1 and 20 items. Each call appends to any values already added.
+
+```java
+public AxisConfig.Builder categories(String... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`AxisConfig`](/reference/java/objects#axisconfig)
+
+### XLabel
+
+Sets the horizontal axis label.
+
+Slack allows at most 50 characters.
+
+```java
+public AxisConfig.Builder xLabel(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `x_label` field |
+
+**Returns:** this builder
+
+**Related types:** [`AxisConfig`](/reference/java/objects#axisconfig)
+
+### YLabel
+
+Sets the vertical axis label.
+
+Slack allows at most 50 characters.
+
+```java
+public AxisConfig.Builder yLabel(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `y_label` field |
+
+**Returns:** this builder
+
+**Related types:** [`AxisConfig`](/reference/java/objects#axisconfig)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public AxisConfig.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`AxisConfig`](/reference/java/objects#axisconfig)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public AxisConfig build()
+```
+
+**Returns:** an immutable [`AxisConfig`](/reference/java/objects#axisconfig)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`AxisConfig`](/reference/java/objects#axisconfig)
+
+## BarChart
+
+A bar chart for a data visualization block.
+
+Start with [`builder()`](/reference/java/objects#barchart), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#barchart) to validate and create an immutable value.
+
+- Required: `series`, `axisConfig`.
+
+- Every series needs exactly one data point for each axis category.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static BarChart.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`BarChart`](/reference/java/objects#barchart)
+
+### GetSeries
+
+Returns data series in display order. Series names must be unique.
+
+```java
+public List<DataSeries> getSeries()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`DataSeries`](/reference/java/objects#dataseries)
+
+### GetAxisConfig
+
+Returns the axis categories and labels. Every series needs exactly one point per category.
+
+```java
+public AxisConfig getAxisConfig()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`AxisConfig`](/reference/java/objects#axisconfig)
+
+### Series
+
+Adds data series in display order. Series names must be unique.
+
+Required. Must contain between 1 and 12 items. Each call appends to any values already added.
+
+```java
+public BarChart.Builder series(DataSeries... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`DataSeries`](/reference/java/objects#dataseries) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`BarChart`](/reference/java/objects#barchart), [`DataSeries`](/reference/java/objects#dataseries)
+
+### AxisConfig
+
+Sets the axis categories and labels. Every series needs exactly one point per category.
+
+Required.
+
+```java
+public BarChart.Builder axisConfig(AxisConfig value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | nested [`AxisConfig`](/reference/java/objects#axisconfig) |
+
+**Returns:** this builder
+
+**Related types:** [`AxisConfig`](/reference/java/objects#axisconfig), [`BarChart`](/reference/java/objects#barchart)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public BarChart.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`BarChart`](/reference/java/objects#barchart)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public BarChart build()
+```
+
+**Returns:** an immutable [`BarChart`](/reference/java/objects#barchart)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`BarChart`](/reference/java/objects#barchart)
+
+## Chart
+
+A chart that can be displayed by a data visualization block.
+
+Implemented by [`AreaChart`](/reference/java/objects#areachart), [`BarChart`](/reference/java/objects#barchart), [`LineChart`](/reference/java/objects#linechart), [`PieChart`](/reference/java/objects#piechart).
+
+## ChartSegment
+
+One labelled segment of a pie chart.
+
+Start with [`builder()`](/reference/java/objects#chartsegment), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#chartsegment) to validate and create an immutable value.
+
+- Required: `label`, `value`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static ChartSegment.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`ChartSegment`](/reference/java/objects#chartsegment)
+
+### GetLabel
+
+Returns the segment label.
+
+```java
+public String getLabel()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetValue
+
+Returns the segment's size. Must be greater than zero.
+
+```java
+public Number getValue()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Label
+
+Sets the segment label.
+
+Required. Slack allows at most 20 characters.
+
+```java
+public ChartSegment.Builder label(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `label` field |
+
+**Returns:** this builder
+
+**Related types:** [`ChartSegment`](/reference/java/objects#chartsegment)
+
+### Value — `long`
+
+Sets the segment's size. Must be greater than zero.
+
+Required. Whole numbers are sent without a decimal point.
+
+```java
+public ChartSegment.Builder value(long value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whole-number value |
+
+**Returns:** this builder
+
+**Related types:** [`ChartSegment`](/reference/java/objects#chartsegment)
+
+### Value — `double`
+
+Sets the segment's size. Must be greater than zero.
+
+Required. Prefer [`value(long)`](/reference/java/objects#chartsegment) for whole numbers.
+
+```java
+public ChartSegment.Builder value(double value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | decimal value |
+
+**Returns:** this builder
+
+**Related types:** [`ChartSegment`](/reference/java/objects#chartsegment)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public ChartSegment.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`ChartSegment`](/reference/java/objects#chartsegment)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public ChartSegment build()
+```
+
+**Returns:** an immutable [`ChartSegment`](/reference/java/objects#chartsegment)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`ChartSegment`](/reference/java/objects#chartsegment)
+
+## ColumnAlign
+
+Horizontal alignment for table columns.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `LEFT` | `left` | Align cell content to the left. |
+| `CENTER` | `center` | Center cell content. |
+| `RIGHT` | `right` | Align cell content to the right. |
+
+### WireValue
+
+Returns the value Slack expects in JSON.
+
+```java
+public String wireValue()
+```
+
+**Returns:** the wire value
+
+### FromWireValue
+
+Finds the constant for a Slack JSON value.
+
+```java
+public static Optional<ColumnAlign> fromWireValue(String wireValue)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `wireValue` | the value Slack uses in JSON |
+
+**Returns:** the matching constant, or an empty optional for an unknown value
+
+**Related types:** [`ColumnAlign`](/reference/java/objects#columnalign)
+
+## ColumnSettings
+
+Alignment and wrapping settings for one table column.
+
+Start with [`builder()`](/reference/java/objects#columnsettings), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#columnsettings) to validate and create an immutable value.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static ColumnSettings.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`ColumnSettings`](/reference/java/objects#columnsettings)
+
+### GetAlign
+
+Returns how cell content in the column is aligned.
+
+```java
+public Optional<ColumnAlign> getAlign()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`ColumnAlign`](/reference/java/objects#columnalign)
+
+### GetWrapped
+
+Returns whether long cell content wraps instead of being truncated.
+
+```java
+public Optional<Boolean> getWrapped()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Align
+
+Sets how cell content in the column is aligned.
+
+```java
+public ColumnSettings.Builder align(ColumnAlign value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `align` field |
+
+**Returns:** this builder
+
+**Related types:** [`ColumnAlign`](/reference/java/objects#columnalign), [`ColumnSettings`](/reference/java/objects#columnsettings)
+
+### IsWrapped
+
+Sets whether long cell content wraps instead of being truncated.
+
+```java
+public ColumnSettings.Builder isWrapped(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `is_wrapped` field |
+
+**Returns:** this builder
+
+**Related types:** [`ColumnSettings`](/reference/java/objects#columnsettings)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public ColumnSettings.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`ColumnSettings`](/reference/java/objects#columnsettings)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public ColumnSettings build()
+```
+
+**Returns:** an immutable [`ColumnSettings`](/reference/java/objects#columnsettings)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`ColumnSettings`](/reference/java/objects#columnsettings)
+
+## Confirmation
+
+A dialog that asks users to confirm an action before it is sent.
+
+Start with [`builder()`](/reference/java/objects#confirmation), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#confirmation) to validate and create an immutable value.
+
+- Required: `title`, `text`, `confirm`, `deny`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/confirmation-dialog-object).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static Confirmation.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`Confirmation`](/reference/java/objects#confirmation)
+
+### GetTitle
+
+Returns the dialog title.
+
+```java
+public PlainText getTitle()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### GetText
+
+Returns the explanatory text in the dialog body.
+
+```java
+public Text getText()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Text`](/reference/java/objects#text)
+
+### GetConfirm
+
+Returns the label of the button that confirms the action.
+
+```java
+public PlainText getConfirm()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### GetDeny
+
+Returns the label of the button that cancels the action.
+
+```java
+public PlainText getDeny()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### GetStyle
+
+Returns the emphasis of the confirm button.
+
+```java
+public Optional<ButtonStyle> getStyle()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`ButtonStyle`](/reference/java/elements#buttonstyle)
+
+### Title — `String`
+
+Sets the dialog title.
+
+Required. Slack allows at most 100 characters. The string is sent as a `plain_text` text object.
+
+```java
+public Confirmation.Builder title(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`Confirmation`](/reference/java/objects#confirmation)
+
+### Title — `PlainText`
+
+Sets the dialog title.
+
+Required. Slack allows at most 100 characters.
+
+```java
+public Confirmation.Builder title(PlainText value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | a [`PlainText`](/reference/java/objects#plaintext) object |
+
+**Returns:** this builder
+
+**Related types:** [`Confirmation`](/reference/java/objects#confirmation), [`PlainText`](/reference/java/objects#plaintext)
+
+### Text — `String`
+
+Sets the explanatory text in the dialog body.
+
+Required. Slack allows at most 300 characters. The string is sent as a `mrkdwn` text object.
+
+```java
+public Confirmation.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`Confirmation`](/reference/java/objects#confirmation)
+
+### Text — `Text`
+
+Sets the explanatory text in the dialog body.
+
+Required. Slack allows at most 300 characters.
+
+```java
+public Confirmation.Builder text(Text value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | a [`Text`](/reference/java/objects#text) object |
+
+**Returns:** this builder
+
+**Related types:** [`Confirmation`](/reference/java/objects#confirmation), [`Text`](/reference/java/objects#text)
+
+### MarkdownText
+
+Sets the explanatory text in the dialog body.
+
+Required. Slack allows at most 300 characters. Equivalent to [`text(String)`](/reference/java/objects#confirmation).
+
+```java
+public Confirmation.Builder markdownText(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`Confirmation`](/reference/java/objects#confirmation)
+
+### Confirm — `String`
+
+Sets the label of the button that confirms the action.
+
+Required. Slack allows at most 30 characters. The string is sent as a `plain_text` text object.
+
+```java
+public Confirmation.Builder confirm(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`Confirmation`](/reference/java/objects#confirmation)
+
+### Confirm — `PlainText`
+
+Sets the label of the button that confirms the action.
+
+Required. Slack allows at most 30 characters.
+
+```java
+public Confirmation.Builder confirm(PlainText value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | a [`PlainText`](/reference/java/objects#plaintext) object |
+
+**Returns:** this builder
+
+**Related types:** [`Confirmation`](/reference/java/objects#confirmation), [`PlainText`](/reference/java/objects#plaintext)
+
+### Deny — `String`
+
+Sets the label of the button that cancels the action.
+
+Required. Slack allows at most 30 characters. The string is sent as a `plain_text` text object.
+
+```java
+public Confirmation.Builder deny(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`Confirmation`](/reference/java/objects#confirmation)
+
+### Deny — `PlainText`
+
+Sets the label of the button that cancels the action.
+
+Required. Slack allows at most 30 characters.
+
+```java
+public Confirmation.Builder deny(PlainText value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | a [`PlainText`](/reference/java/objects#plaintext) object |
+
+**Returns:** this builder
+
+**Related types:** [`Confirmation`](/reference/java/objects#confirmation), [`PlainText`](/reference/java/objects#plaintext)
+
+### Style
+
+Sets the emphasis of the confirm button.
+
+```java
+public Confirmation.Builder style(ButtonStyle value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `style` field |
+
+**Returns:** this builder
+
+**Related types:** [`ButtonStyle`](/reference/java/elements#buttonstyle), [`Confirmation`](/reference/java/objects#confirmation)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public Confirmation.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`Confirmation`](/reference/java/objects#confirmation)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public Confirmation build()
+```
+
+**Returns:** an immutable [`Confirmation`](/reference/java/objects#confirmation)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`Confirmation`](/reference/java/objects#confirmation)
+
+## ConversationFilter
+
+Limits which conversations a conversation menu offers.
+
+Start with [`builder()`](/reference/java/objects#conversationfilter), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#conversationfilter) to validate and create an immutable value.
+
+- Set at least one filter.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/conversation-filter-object).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static ConversationFilter.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`ConversationFilter`](/reference/java/objects#conversationfilter)
+
+### GetInclude
+
+Returns conversation types to offer: im, mpim, private, or public.
+
+```java
+public List<String> getInclude()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetExcludeExternalSharedChannels
+
+Returns whether externally shared channels are excluded.
+
+```java
+public Optional<Boolean> getExcludeExternalSharedChannels()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetExcludeBotUsers
+
+Returns whether bot users are excluded.
+
+```java
+public Optional<Boolean> getExcludeBotUsers()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Include
+
+Adds conversation types to offer: im, mpim, private, or public.
+
+Each call appends to any values already added.
+
+```java
+public ConversationFilter.Builder include(String... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`ConversationFilter`](/reference/java/objects#conversationfilter)
+
+### ExcludeExternalSharedChannels
+
+Sets whether externally shared channels are excluded.
+
+```java
+public ConversationFilter.Builder excludeExternalSharedChannels(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `exclude_external_shared_channels` field |
+
+**Returns:** this builder
+
+**Related types:** [`ConversationFilter`](/reference/java/objects#conversationfilter)
+
+### ExcludeBotUsers
+
+Sets whether bot users are excluded.
+
+```java
+public ConversationFilter.Builder excludeBotUsers(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `exclude_bot_users` field |
+
+**Returns:** this builder
+
+**Related types:** [`ConversationFilter`](/reference/java/objects#conversationfilter)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public ConversationFilter.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`ConversationFilter`](/reference/java/objects#conversationfilter)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public ConversationFilter build()
+```
+
+**Returns:** an immutable [`ConversationFilter`](/reference/java/objects#conversationfilter)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`ConversationFilter`](/reference/java/objects#conversationfilter)
+
+## DataPoint
+
+One value of a chart series, keyed by axis category.
+
+Start with [`builder()`](/reference/java/objects#datapoint), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#datapoint) to validate and create an immutable value.
+
+- Required: `label`, `value`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static DataPoint.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`DataPoint`](/reference/java/objects#datapoint)
+
+### GetLabel
+
+Returns the axis category this point belongs to.
+
+```java
+public String getLabel()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetValue
+
+Returns the point's value.
+
+```java
+public Number getValue()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Label
+
+Sets the axis category this point belongs to.
+
+Required. Slack allows at most 20 characters.
+
+```java
+public DataPoint.Builder label(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `label` field |
+
+**Returns:** this builder
+
+**Related types:** [`DataPoint`](/reference/java/objects#datapoint)
+
+### Value — `long`
+
+Sets the point's value.
+
+Required. Whole numbers are sent without a decimal point.
+
+```java
+public DataPoint.Builder value(long value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whole-number value |
+
+**Returns:** this builder
+
+**Related types:** [`DataPoint`](/reference/java/objects#datapoint)
+
+### Value — `double`
+
+Sets the point's value.
+
+Required. Prefer [`value(long)`](/reference/java/objects#datapoint) for whole numbers.
+
+```java
+public DataPoint.Builder value(double value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | decimal value |
+
+**Returns:** this builder
+
+**Related types:** [`DataPoint`](/reference/java/objects#datapoint)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public DataPoint.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`DataPoint`](/reference/java/objects#datapoint)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public DataPoint build()
+```
+
+**Returns:** an immutable [`DataPoint`](/reference/java/objects#datapoint)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`DataPoint`](/reference/java/objects#datapoint)
+
+## DataSeries
+
+A named series of chart data points.
+
+Start with [`builder()`](/reference/java/objects#dataseries), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#dataseries) to validate and create an immutable value.
+
+- Required: `name`, `data`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static DataSeries.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`DataSeries`](/reference/java/objects#dataseries)
+
+### GetName
+
+Returns the series name shown in the legend.
+
+```java
+public String getName()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetData
+
+Returns data points in axis-category order.
+
+```java
+public List<DataPoint> getData()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`DataPoint`](/reference/java/objects#datapoint)
+
+### Name
+
+Sets the series name shown in the legend.
+
+Required. Slack allows at most 20 characters.
+
+```java
+public DataSeries.Builder name(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `name` field |
+
+**Returns:** this builder
+
+**Related types:** [`DataSeries`](/reference/java/objects#dataseries)
+
+### Data
+
+Adds data points in axis-category order.
+
+Required. Must contain between 1 and 20 items. Each call appends to any values already added.
+
+```java
+public DataSeries.Builder data(DataPoint... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`DataPoint`](/reference/java/objects#datapoint) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`DataPoint`](/reference/java/objects#datapoint), [`DataSeries`](/reference/java/objects#dataseries)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public DataSeries.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`DataSeries`](/reference/java/objects#dataseries)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public DataSeries build()
+```
+
+**Returns:** an immutable [`DataSeries`](/reference/java/objects#dataseries)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`DataSeries`](/reference/java/objects#dataseries)
+
+## DispatchActionConfiguration
+
+Chooses which interactions with an input send a block_actions payload.
+
+Start with [`builder()`](/reference/java/objects#dispatchactionconfiguration), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#dispatchactionconfiguration) to validate and create an immutable value.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/dispatch-action-configuration-object).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static DispatchActionConfiguration.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`DispatchActionConfiguration`](/reference/java/objects#dispatchactionconfiguration)
+
+### GetTriggerActionsOn
+
+Returns the interactions that send a payload: on_enter_pressed or on_character_entered.
+
+```java
+public List<String> getTriggerActionsOn()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### TriggerActionsOn
+
+Adds the interactions that send a payload: on_enter_pressed or on_character_entered.
+
+Each call appends to any values already added.
+
+```java
+public DispatchActionConfiguration.Builder triggerActionsOn(String... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`DispatchActionConfiguration`](/reference/java/objects#dispatchactionconfiguration)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public DispatchActionConfiguration.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/java/objects#dispatchactionconfiguration)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public DispatchActionConfiguration build()
+```
+
+**Returns:** an immutable [`DispatchActionConfiguration`](/reference/java/objects#dispatchactionconfiguration)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/java/objects#dispatchactionconfiguration)
+
+## FeedbackButton
+
+One button of a feedback buttons element.
+
+Start with [`builder()`](/reference/java/objects#feedbackbutton), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#feedbackbutton) to validate and create an immutable value.
+
+- Required: `text`, `value`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static FeedbackButton.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`FeedbackButton`](/reference/java/objects#feedbackbutton)
+
+### GetText
+
+Returns the button label.
+
+```java
+public PlainText getText()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### GetValue
+
+Returns the application-defined value sent in interaction payloads.
+
+```java
+public String getValue()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetAccessibilityLabel
+
+Returns the label read by screen readers in place of the visible text.
+
+```java
+public Optional<String> getAccessibilityLabel()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Text — `String`
+
+Sets the button label.
+
+Required. Slack allows at most 75 characters. The string is sent as a `plain_text` text object.
+
+```java
+public FeedbackButton.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`FeedbackButton`](/reference/java/objects#feedbackbutton)
+
+### Text — `PlainText`
+
+Sets the button label.
+
+Required. Slack allows at most 75 characters.
+
+```java
+public FeedbackButton.Builder text(PlainText value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | a [`PlainText`](/reference/java/objects#plaintext) object |
+
+**Returns:** this builder
+
+**Related types:** [`FeedbackButton`](/reference/java/objects#feedbackbutton), [`PlainText`](/reference/java/objects#plaintext)
+
+### PlainText
+
+Sets the button label.
+
+Required. Slack allows at most 75 characters. Equivalent to [`text(String)`](/reference/java/objects#feedbackbutton).
+
+```java
+public FeedbackButton.Builder plainText(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`FeedbackButton`](/reference/java/objects#feedbackbutton)
+
+### Value
+
+Sets the application-defined value sent in interaction payloads.
+
+Required. Slack allows at most 2000 characters.
+
+```java
+public FeedbackButton.Builder value(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `value` field |
+
+**Returns:** this builder
+
+**Related types:** [`FeedbackButton`](/reference/java/objects#feedbackbutton)
+
+### AccessibilityLabel
+
+Sets the label read by screen readers in place of the visible text.
+
+Slack allows at most 75 characters.
+
+```java
+public FeedbackButton.Builder accessibilityLabel(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `accessibility_label` field |
+
+**Returns:** this builder
+
+**Related types:** [`FeedbackButton`](/reference/java/objects#feedbackbutton)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public FeedbackButton.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`FeedbackButton`](/reference/java/objects#feedbackbutton)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public FeedbackButton build()
+```
+
+**Returns:** an immutable [`FeedbackButton`](/reference/java/objects#feedbackbutton)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`FeedbackButton`](/reference/java/objects#feedbackbutton)
+
+## InputParameter
+
+A named value passed to a workflow trigger.
+
+Start with [`builder()`](/reference/java/objects#inputparameter), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#inputparameter) to validate and create an immutable value.
+
+- Required: `name`, `value`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static InputParameter.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`InputParameter`](/reference/java/objects#inputparameter)
+
+### GetName
+
+Returns the workflow input parameter name.
+
+```java
+public String getName()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetValue
+
+Returns the value passed to the workflow input.
+
+```java
+public String getValue()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Name
+
+Sets the workflow input parameter name.
+
+Required.
+
+```java
+public InputParameter.Builder name(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `name` field |
+
+**Returns:** this builder
+
+**Related types:** [`InputParameter`](/reference/java/objects#inputparameter)
+
+### Value
+
+Sets the value passed to the workflow input.
+
+Required.
+
+```java
+public InputParameter.Builder value(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `value` field |
+
+**Returns:** this builder
+
+**Related types:** [`InputParameter`](/reference/java/objects#inputparameter)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public InputParameter.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`InputParameter`](/reference/java/objects#inputparameter)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public InputParameter build()
+```
+
+**Returns:** an immutable [`InputParameter`](/reference/java/objects#inputparameter)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`InputParameter`](/reference/java/objects#inputparameter)
+
+## LineChart
+
+A line chart for a data visualization block.
+
+Start with [`builder()`](/reference/java/objects#linechart), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#linechart) to validate and create an immutable value.
+
+- Required: `series`, `axisConfig`.
+
+- Every series needs exactly one data point for each axis category.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static LineChart.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`LineChart`](/reference/java/objects#linechart)
+
+### GetSeries
+
+Returns data series in display order. Series names must be unique.
+
+```java
+public List<DataSeries> getSeries()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`DataSeries`](/reference/java/objects#dataseries)
+
+### GetAxisConfig
+
+Returns the axis categories and labels. Every series needs exactly one point per category.
+
+```java
+public AxisConfig getAxisConfig()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`AxisConfig`](/reference/java/objects#axisconfig)
+
+### Series
+
+Adds data series in display order. Series names must be unique.
+
+Required. Must contain between 1 and 12 items. Each call appends to any values already added.
+
+```java
+public LineChart.Builder series(DataSeries... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`DataSeries`](/reference/java/objects#dataseries) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`DataSeries`](/reference/java/objects#dataseries), [`LineChart`](/reference/java/objects#linechart)
+
+### AxisConfig
+
+Sets the axis categories and labels. Every series needs exactly one point per category.
+
+Required.
+
+```java
+public LineChart.Builder axisConfig(AxisConfig value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | nested [`AxisConfig`](/reference/java/objects#axisconfig) |
+
+**Returns:** this builder
+
+**Related types:** [`AxisConfig`](/reference/java/objects#axisconfig), [`LineChart`](/reference/java/objects#linechart)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public LineChart.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`LineChart`](/reference/java/objects#linechart)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public LineChart build()
+```
+
+**Returns:** an immutable [`LineChart`](/reference/java/objects#linechart)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`LineChart`](/reference/java/objects#linechart)
+
+## MarkdownText
+
+A mrkdwn text composition object.
+
+Start with [`builder()`](/reference/java/objects#markdowntext), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#markdowntext) to validate and create an immutable value.
+
+- Required: `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/text-object).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static MarkdownText.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`MarkdownText`](/reference/java/objects#markdowntext)
+
+### Of
+
+Creates and validates mrkdwn text in one call.
+
+```java
+public static MarkdownText of(String text)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | mrkdwn content |
+
+**Returns:** an immutable MarkdownText
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule |
+
+**Related types:** [`MarkdownText`](/reference/java/objects#markdowntext)
+
+### GetVerbatim
+
+Returns whether Slack leaves URLs, mentions, and channel names unlinked.
+
+```java
+public Optional<Boolean> getVerbatim()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetType
+
+Returns the Slack text representation type.
+
+```java
+public String getType()
+```
+
+**Returns:** Slack wire type
+
+### GetText
+
+Returns the text content.
+
+```java
+public String getText()
+```
+
+**Returns:** text content
+
+### Text
+
+Sets the mrkdwn-formatted text content.
+
+Required.
+
+```java
+public MarkdownText.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `text` field |
+
+**Returns:** this builder
+
+**Related types:** [`MarkdownText`](/reference/java/objects#markdowntext)
+
+### Verbatim
+
+Sets whether Slack leaves URLs, mentions, and channel names unlinked.
+
+```java
+public MarkdownText.Builder verbatim(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `verbatim` field |
+
+**Returns:** this builder
+
+**Related types:** [`MarkdownText`](/reference/java/objects#markdowntext)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public MarkdownText.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`MarkdownText`](/reference/java/objects#markdowntext)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public MarkdownText build()
+```
+
+**Returns:** an immutable [`MarkdownText`](/reference/java/objects#markdowntext)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`MarkdownText`](/reference/java/objects#markdowntext)
+
+## Option
+
+A selectable option for menus, checkboxes, radio buttons, and overflow menus.
+
+Start with [`builder()`](/reference/java/objects#option), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#option) to validate and create an immutable value.
+
+- Required: `text`, `value`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/option-object).
+
+### Builder — no arguments
+
+Starts a new builder.
+
+```java
+public static Option.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`Option`](/reference/java/objects#option)
+
+### Builder — `String, String`
+
+Starts an option builder with its required label and value.
+
+```java
+public static Option.Builder builder(String text, String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | visible option label |
+| `value` | application-defined value |
+
+**Returns:** a new builder
+
+**Related types:** [`Option`](/reference/java/objects#option)
+
+### GetText
+
+Returns the option label shown to users.
+
+```java
+public Text getText()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Text`](/reference/java/objects#text)
+
+### GetValue
+
+Returns the value sent in interaction payloads when this option is chosen.
+
+```java
+public String getValue()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetDescription
+
+Returns supporting text shown below the label. Only rendered by checkboxes and radio buttons.
+
+```java
+public Optional<Text> getDescription()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Text`](/reference/java/objects#text)
+
+### GetUrl
+
+Returns a URL loaded in the user's browser when an overflow menu option is chosen.
+
+```java
+public Optional<String> getUrl()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Text — `String`
+
+Sets the option label shown to users.
+
+Required. Slack allows at most 75 characters. The string is sent as a `plain_text` text object.
+
+```java
+public Option.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`Option`](/reference/java/objects#option)
+
+### Text — `Text`
+
+Sets the option label shown to users.
+
+Required. Slack allows at most 75 characters.
+
+```java
+public Option.Builder text(Text value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | a [`Text`](/reference/java/objects#text) object |
+
+**Returns:** this builder
+
+**Related types:** [`Option`](/reference/java/objects#option), [`Text`](/reference/java/objects#text)
+
+### PlainText
+
+Sets the option label shown to users.
+
+Required. Slack allows at most 75 characters. Equivalent to [`text(String)`](/reference/java/objects#option).
+
+```java
+public Option.Builder plainText(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`Option`](/reference/java/objects#option)
+
+### Value
+
+Sets the value sent in interaction payloads when this option is chosen.
+
+Required. Slack allows at most 150 characters.
+
+```java
+public Option.Builder value(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `value` field |
+
+**Returns:** this builder
+
+**Related types:** [`Option`](/reference/java/objects#option)
+
+### Description — `String`
+
+Sets supporting text shown below the label. Only rendered by checkboxes and radio buttons.
+
+Slack allows at most 75 characters. The string is sent as a `plain_text` text object.
+
+```java
+public Option.Builder description(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`Option`](/reference/java/objects#option)
+
+### Description — `Text`
+
+Sets supporting text shown below the label. Only rendered by checkboxes and radio buttons.
+
+Slack allows at most 75 characters.
+
+```java
+public Option.Builder description(Text value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | a [`Text`](/reference/java/objects#text) object |
+
+**Returns:** this builder
+
+**Related types:** [`Option`](/reference/java/objects#option), [`Text`](/reference/java/objects#text)
+
+### Url
+
+Sets a URL loaded in the user's browser when an overflow menu option is chosen.
+
+Slack allows at most 3000 characters.
+
+```java
+public Option.Builder url(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `url` field |
+
+**Returns:** this builder
+
+**Related types:** [`Option`](/reference/java/objects#option)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public Option.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`Option`](/reference/java/objects#option)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public Option build()
+```
+
+**Returns:** an immutable [`Option`](/reference/java/objects#option)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`Option`](/reference/java/objects#option)
+
+## OptionGroup
+
+A labelled group of options in a static select menu.
+
+Start with [`builder()`](/reference/java/objects#optiongroup), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#optiongroup) to validate and create an immutable value.
+
+- Required: `label`, `options`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/option-group-object).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static OptionGroup.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`OptionGroup`](/reference/java/objects#optiongroup)
+
+### GetLabel
+
+Returns the group heading.
+
+```java
+public PlainText getLabel()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### GetOptions
+
+Returns selectable options in display order.
+
+```java
+public List<Option> getOptions()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Option`](/reference/java/objects#option)
+
+### Label — `String`
+
+Sets the group heading.
+
+Required. Slack allows at most 75 characters. The string is sent as a `plain_text` text object.
+
+```java
+public OptionGroup.Builder label(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`OptionGroup`](/reference/java/objects#optiongroup)
+
+### Label — `PlainText`
+
+Sets the group heading.
+
+Required. Slack allows at most 75 characters.
+
+```java
+public OptionGroup.Builder label(PlainText value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | a [`PlainText`](/reference/java/objects#plaintext) object |
+
+**Returns:** this builder
+
+**Related types:** [`OptionGroup`](/reference/java/objects#optiongroup), [`PlainText`](/reference/java/objects#plaintext)
+
+### Options
+
+Adds selectable options in display order.
+
+Required. Must contain between 1 and 100 items. Each call appends to any values already added.
+
+```java
+public OptionGroup.Builder options(Option... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`Option`](/reference/java/objects#option) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`Option`](/reference/java/objects#option), [`OptionGroup`](/reference/java/objects#optiongroup)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public OptionGroup.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`OptionGroup`](/reference/java/objects#optiongroup)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public OptionGroup build()
+```
+
+**Returns:** an immutable [`OptionGroup`](/reference/java/objects#optiongroup)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`OptionGroup`](/reference/java/objects#optiongroup)
+
+## PieChart
+
+A pie chart for a data visualization block.
+
+Start with [`builder()`](/reference/java/objects#piechart), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#piechart) to validate and create an immutable value.
+
+- Required: `segments`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static PieChart.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`PieChart`](/reference/java/objects#piechart)
+
+### GetSegments
+
+Returns pie segments in display order.
+
+```java
+public List<ChartSegment> getSegments()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`ChartSegment`](/reference/java/objects#chartsegment)
+
+### Segments
+
+Adds pie segments in display order.
+
+Required. Must contain between 1 and 12 items. Each call appends to any values already added.
+
+```java
+public PieChart.Builder segments(ChartSegment... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`ChartSegment`](/reference/java/objects#chartsegment) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`ChartSegment`](/reference/java/objects#chartsegment), [`PieChart`](/reference/java/objects#piechart)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public PieChart.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`PieChart`](/reference/java/objects#piechart)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public PieChart build()
+```
+
+**Returns:** an immutable [`PieChart`](/reference/java/objects#piechart)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`PieChart`](/reference/java/objects#piechart)
+
+## PlainText
+
+A plain-text composition object.
+
+Start with [`builder()`](/reference/java/objects#plaintext), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#plaintext) to validate and create an immutable value.
+
+- Required: `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/text-object).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static PlainText.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### Of
+
+Creates and validates plain text in one call.
+
+```java
+public static PlainText of(String text)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | text content |
+
+**Returns:** an immutable PlainText
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule |
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### GetEmoji
+
+Returns whether emoji shortcodes such as :tada: are rendered as emoji.
+
+```java
+public Optional<Boolean> getEmoji()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetType
+
+Returns the Slack text representation type.
+
+```java
+public String getType()
+```
+
+**Returns:** Slack wire type
+
+### GetText
+
+Returns the text content.
+
+```java
+public String getText()
+```
+
+**Returns:** text content
+
+### Text
+
+Sets the text content.
+
+Required.
+
+```java
+public PlainText.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `text` field |
+
+**Returns:** this builder
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### Emoji
+
+Sets whether emoji shortcodes such as :tada: are rendered as emoji.
+
+```java
+public PlainText.Builder emoji(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `emoji` field |
+
+**Returns:** this builder
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public PlainText.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public PlainText build()
+```
+
+**Returns:** an immutable [`PlainText`](/reference/java/objects#plaintext)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+## RawNumber
+
+A numeric data table cell with display text.
+
+Start with [`builder()`](/reference/java/objects#rawnumber), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#rawnumber) to validate and create an immutable value.
+
+- Required: `value`, `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RawNumber.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RawNumber`](/reference/java/objects#rawnumber)
+
+### GetValue
+
+Returns the numeric value used for sorting.
+
+```java
+public Number getValue()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetText
+
+Returns the formatted text displayed for the number, such as 1,234.5.
+
+```java
+public String getText()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Value — `long`
+
+Sets the numeric value used for sorting.
+
+Required. Whole numbers are sent without a decimal point.
+
+```java
+public RawNumber.Builder value(long value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whole-number value |
+
+**Returns:** this builder
+
+**Related types:** [`RawNumber`](/reference/java/objects#rawnumber)
+
+### Value — `double`
+
+Sets the numeric value used for sorting.
+
+Required. Prefer [`value(long)`](/reference/java/objects#rawnumber) for whole numbers.
+
+```java
+public RawNumber.Builder value(double value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | decimal value |
+
+**Returns:** this builder
+
+**Related types:** [`RawNumber`](/reference/java/objects#rawnumber)
+
+### Text
+
+Sets the formatted text displayed for the number, such as 1,234.5.
+
+Required.
+
+```java
+public RawNumber.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `text` field |
+
+**Returns:** this builder
+
+**Related types:** [`RawNumber`](/reference/java/objects#rawnumber)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public RawNumber.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`RawNumber`](/reference/java/objects#rawnumber)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public RawNumber build()
+```
+
+**Returns:** an immutable [`RawNumber`](/reference/java/objects#rawnumber)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`RawNumber`](/reference/java/objects#rawnumber)
+
+## RawText
+
+An unformatted table cell.
+
+Start with [`builder()`](/reference/java/objects#rawtext), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#rawtext) to validate and create an immutable value.
+
+- Required: `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RawText.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RawText`](/reference/java/objects#rawtext)
+
+### Of
+
+Creates and validates a raw text cell in one call.
+
+```java
+public static RawText of(String text)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | cell text |
+
+**Returns:** an immutable RawText
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule |
+
+**Related types:** [`RawText`](/reference/java/objects#rawtext)
+
+### GetText
+
+Returns the cell text.
+
+```java
+public String getText()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Text
+
+Sets the cell text.
+
+Required.
+
+```java
+public RawText.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `text` field |
+
+**Returns:** this builder
+
+**Related types:** [`RawText`](/reference/java/objects#rawtext)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public RawText.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`RawText`](/reference/java/objects#rawtext)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public RawText build()
+```
+
+**Returns:** an immutable [`RawText`](/reference/java/objects#rawtext)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`RawText`](/reference/java/objects#rawtext)
+
+## RichTextBlockElement
+
+A top-level element of a rich text block: a section, list, preformatted block, or quote.
+
+Implemented by [`RichTextCodeBlock`](/reference/java/objects#richtextcodeblock), [`RichTextList`](/reference/java/objects#richtextlist), [`RichTextQuote`](/reference/java/objects#richtextquote), [`RichTextSection`](/reference/java/objects#richtextsection).
+
+## RichTextChannel
+
+A channel mention inside rich text.
+
+Start with [`builder()`](/reference/java/objects#richtextchannel), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#richtextchannel) to validate and create an immutable value.
+
+- Required: `channelId`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RichTextChannel.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RichTextChannel`](/reference/java/objects#richtextchannel)
+
+### GetChannelId
+
+Returns the ID of the mentioned channel.
+
+```java
+public String getChannelId()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetStyle
+
+Returns the mention style.
+
+```java
+public Optional<RichTextStyle> getStyle()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### ChannelId
+
+Sets the ID of the mentioned channel.
+
+Required.
+
+```java
+public RichTextChannel.Builder channelId(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `channel_id` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextChannel`](/reference/java/objects#richtextchannel)
+
+### Style
+
+Sets the mention style.
+
+Replaces any style flags already set.
+
+```java
+public RichTextChannel.Builder style(RichTextStyle value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | the complete text style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextChannel`](/reference/java/objects#richtextchannel), [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### Bold
+
+Sets whether the `bold` style is applied.
+
+```java
+public RichTextChannel.Builder bold(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextChannel`](/reference/java/objects#richtextchannel)
+
+### Italic
+
+Sets whether the `italic` style is applied.
+
+```java
+public RichTextChannel.Builder italic(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextChannel`](/reference/java/objects#richtextchannel)
+
+### Strike
+
+Sets whether the `strike` style is applied.
+
+```java
+public RichTextChannel.Builder strike(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextChannel`](/reference/java/objects#richtextchannel)
+
+### Highlight
+
+Sets whether the `highlight` style is applied.
+
+```java
+public RichTextChannel.Builder highlight(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextChannel`](/reference/java/objects#richtextchannel)
+
+### ClientHighlight
+
+Sets whether the `client_highlight` style is applied.
+
+```java
+public RichTextChannel.Builder clientHighlight(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextChannel`](/reference/java/objects#richtextchannel)
+
+### Unlink
+
+Sets whether the `unlink` style is applied.
+
+```java
+public RichTextChannel.Builder unlink(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextChannel`](/reference/java/objects#richtextchannel)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public RichTextChannel.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`RichTextChannel`](/reference/java/objects#richtextchannel)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public RichTextChannel build()
+```
+
+**Returns:** an immutable [`RichTextChannel`](/reference/java/objects#richtextchannel)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`RichTextChannel`](/reference/java/objects#richtextchannel)
+
+## RichTextCodeBlock
+
+A preformatted code block inside rich text.
+
+Start with [`builder()`](/reference/java/objects#richtextcodeblock), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#richtextcodeblock) to validate and create an immutable value.
+
+- Required: `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RichTextCodeBlock.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RichTextCodeBlock`](/reference/java/objects#richtextcodeblock)
+
+### GetElements
+
+Returns inline rich text elements in display order.
+
+```java
+public List<RichTextSectionElement> getElements()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`RichTextSectionElement`](/reference/java/objects#richtextsectionelement)
+
+### GetBorder
+
+Returns the width of the left border, in pixels.
+
+```java
+public OptionalInt getBorder()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Elements
+
+Adds inline rich text elements in display order.
+
+Required. Each call appends to any values already added.
+
+```java
+public RichTextCodeBlock.Builder elements(RichTextSectionElement... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`RichTextSectionElement`](/reference/java/objects#richtextsectionelement) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextCodeBlock`](/reference/java/objects#richtextcodeblock), [`RichTextSectionElement`](/reference/java/objects#richtextsectionelement)
+
+### Border
+
+Sets the width of the left border, in pixels.
+
+```java
+public RichTextCodeBlock.Builder border(int value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `border` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextCodeBlock`](/reference/java/objects#richtextcodeblock)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public RichTextCodeBlock.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`RichTextCodeBlock`](/reference/java/objects#richtextcodeblock)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public RichTextCodeBlock build()
+```
+
+**Returns:** an immutable [`RichTextCodeBlock`](/reference/java/objects#richtextcodeblock)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`RichTextCodeBlock`](/reference/java/objects#richtextcodeblock)
+
+## RichTextEmoji
+
+An emoji inside rich text.
+
+Start with [`builder()`](/reference/java/objects#richtextemoji), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#richtextemoji) to validate and create an immutable value.
+
+- Required: `name`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RichTextEmoji.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RichTextEmoji`](/reference/java/objects#richtextemoji)
+
+### GetName
+
+Returns the emoji shortcode name, without colons.
+
+```java
+public String getName()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetSkinTone
+
+Returns the emoji skin tone, from 1 to 6.
+
+```java
+public OptionalInt getSkinTone()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Name
+
+Sets the emoji shortcode name, without colons.
+
+Required.
+
+```java
+public RichTextEmoji.Builder name(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `name` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextEmoji`](/reference/java/objects#richtextemoji)
+
+### SkinTone
+
+Sets the emoji skin tone, from 1 to 6.
+
+```java
+public RichTextEmoji.Builder skinTone(int value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `skin_tone` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextEmoji`](/reference/java/objects#richtextemoji)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public RichTextEmoji.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`RichTextEmoji`](/reference/java/objects#richtextemoji)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public RichTextEmoji build()
+```
+
+**Returns:** an immutable [`RichTextEmoji`](/reference/java/objects#richtextemoji)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`RichTextEmoji`](/reference/java/objects#richtextemoji)
+
+## RichTextLink
+
+A hyperlink inside rich text.
+
+Start with [`builder()`](/reference/java/objects#richtextlink), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#richtextlink) to validate and create an immutable value.
+
+- Required: `url`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RichTextLink.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RichTextLink`](/reference/java/objects#richtextlink)
+
+### GetUrl
+
+Returns the link target.
+
+```java
+public String getUrl()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetText
+
+Returns the visible link text. Slack shows the URL when omitted.
+
+```java
+public Optional<String> getText()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetStyle
+
+Returns the visual style.
+
+```java
+public Optional<RichTextStyle> getStyle()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### GetUnsafe
+
+Returns whether Slack treats the link as unsafe.
+
+```java
+public Optional<Boolean> getUnsafe()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Url
+
+Sets the link target.
+
+Required.
+
+```java
+public RichTextLink.Builder url(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `url` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextLink`](/reference/java/objects#richtextlink)
+
+### Text
+
+Sets the visible link text. Slack shows the URL when omitted.
+
+```java
+public RichTextLink.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `text` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextLink`](/reference/java/objects#richtextlink)
+
+### Style
+
+Sets the visual style.
+
+Replaces any style flags already set.
+
+```java
+public RichTextLink.Builder style(RichTextStyle value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | the complete text style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextLink`](/reference/java/objects#richtextlink), [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### Bold
+
+Sets whether the `bold` style is applied.
+
+```java
+public RichTextLink.Builder bold(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextLink`](/reference/java/objects#richtextlink)
+
+### Italic
+
+Sets whether the `italic` style is applied.
+
+```java
+public RichTextLink.Builder italic(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextLink`](/reference/java/objects#richtextlink)
+
+### Strike
+
+Sets whether the `strike` style is applied.
+
+```java
+public RichTextLink.Builder strike(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextLink`](/reference/java/objects#richtextlink)
+
+### Code
+
+Sets whether the `code` style is applied.
+
+```java
+public RichTextLink.Builder code(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextLink`](/reference/java/objects#richtextlink)
+
+### Unsafe
+
+Sets whether Slack treats the link as unsafe.
+
+```java
+public RichTextLink.Builder unsafe(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `unsafe` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextLink`](/reference/java/objects#richtextlink)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public RichTextLink.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`RichTextLink`](/reference/java/objects#richtextlink)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public RichTextLink build()
+```
+
+**Returns:** an immutable [`RichTextLink`](/reference/java/objects#richtextlink)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`RichTextLink`](/reference/java/objects#richtextlink)
+
+## RichTextList
+
+A bulleted or numbered list inside rich text.
+
+Start with [`builder()`](/reference/java/objects#richtextlist), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#richtextlist) to validate and create an immutable value.
+
+- Required: `style`, `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RichTextList.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RichTextList`](/reference/java/objects#richtextlist)
+
+### GetStyle
+
+Returns whether the list is bulleted or numbered.
+
+```java
+public RichTextListStyle getStyle()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`RichTextListStyle`](/reference/java/objects#richtextliststyle)
+
+### GetElements
+
+Returns list items, one rich text section per item.
+
+```java
+public List<RichTextSection> getElements()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`RichTextSection`](/reference/java/objects#richtextsection)
+
+### GetIndent
+
+Returns the list's indentation level.
+
+```java
+public OptionalInt getIndent()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetOffset
+
+Returns the number of items to skip when numbering an ordered list.
+
+```java
+public OptionalInt getOffset()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetBorder
+
+Returns the width of the left border, in pixels.
+
+```java
+public OptionalInt getBorder()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Style
+
+Sets whether the list is bulleted or numbered.
+
+Required.
+
+```java
+public RichTextList.Builder style(RichTextListStyle value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `style` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextList`](/reference/java/objects#richtextlist), [`RichTextListStyle`](/reference/java/objects#richtextliststyle)
+
+### Elements
+
+Adds list items, one rich text section per item.
+
+Required. Each call appends to any values already added.
+
+```java
+public RichTextList.Builder elements(RichTextSection... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`RichTextSection`](/reference/java/objects#richtextsection) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextList`](/reference/java/objects#richtextlist), [`RichTextSection`](/reference/java/objects#richtextsection)
+
+### Indent
+
+Sets the list's indentation level.
+
+```java
+public RichTextList.Builder indent(int value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `indent` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextList`](/reference/java/objects#richtextlist)
+
+### Offset
+
+Sets the number of items to skip when numbering an ordered list.
+
+```java
+public RichTextList.Builder offset(int value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `offset` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextList`](/reference/java/objects#richtextlist)
+
+### Border
+
+Sets the width of the left border, in pixels.
+
+```java
+public RichTextList.Builder border(int value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `border` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextList`](/reference/java/objects#richtextlist)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public RichTextList.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`RichTextList`](/reference/java/objects#richtextlist)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public RichTextList build()
+```
+
+**Returns:** an immutable [`RichTextList`](/reference/java/objects#richtextlist)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`RichTextList`](/reference/java/objects#richtextlist)
+
+## RichTextListStyle
+
+Marker styles for rich text lists.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `BULLET` | `bullet` | An unordered, bulleted list. |
+| `ORDERED` | `ordered` | A numbered list. |
+
+### WireValue
+
+Returns the value Slack expects in JSON.
+
+```java
+public String wireValue()
+```
+
+**Returns:** the wire value
+
+### FromWireValue
+
+Finds the constant for a Slack JSON value.
+
+```java
+public static Optional<RichTextListStyle> fromWireValue(String wireValue)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `wireValue` | the value Slack uses in JSON |
+
+**Returns:** the matching constant, or an empty optional for an unknown value
+
+**Related types:** [`RichTextListStyle`](/reference/java/objects#richtextliststyle)
+
+## RichTextQuote
+
+A quotation inside rich text.
+
+Start with [`builder()`](/reference/java/objects#richtextquote), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#richtextquote) to validate and create an immutable value.
+
+- Required: `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RichTextQuote.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RichTextQuote`](/reference/java/objects#richtextquote)
+
+### GetElements
+
+Returns inline rich text elements in display order.
+
+```java
+public List<RichTextSectionElement> getElements()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`RichTextSectionElement`](/reference/java/objects#richtextsectionelement)
+
+### GetBorder
+
+Returns the width of the left border, in pixels.
+
+```java
+public OptionalInt getBorder()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Elements
+
+Adds inline rich text elements in display order.
+
+Required. Each call appends to any values already added.
+
+```java
+public RichTextQuote.Builder elements(RichTextSectionElement... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`RichTextSectionElement`](/reference/java/objects#richtextsectionelement) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextQuote`](/reference/java/objects#richtextquote), [`RichTextSectionElement`](/reference/java/objects#richtextsectionelement)
+
+### Border
+
+Sets the width of the left border, in pixels.
+
+```java
+public RichTextQuote.Builder border(int value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `border` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextQuote`](/reference/java/objects#richtextquote)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public RichTextQuote.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`RichTextQuote`](/reference/java/objects#richtextquote)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public RichTextQuote build()
+```
+
+**Returns:** an immutable [`RichTextQuote`](/reference/java/objects#richtextquote)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`RichTextQuote`](/reference/java/objects#richtextquote)
+
+## RichTextSection
+
+A paragraph of inline rich text elements.
+
+Start with [`builder()`](/reference/java/objects#richtextsection), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#richtextsection) to validate and create an immutable value.
+
+- Required: `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RichTextSection.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RichTextSection`](/reference/java/objects#richtextsection)
+
+### GetElements
+
+Returns inline rich text elements in display order.
+
+```java
+public List<RichTextSectionElement> getElements()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`RichTextSectionElement`](/reference/java/objects#richtextsectionelement)
+
+### Elements
+
+Adds inline rich text elements in display order.
+
+Required. Each call appends to any values already added.
+
+```java
+public RichTextSection.Builder elements(RichTextSectionElement... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`RichTextSectionElement`](/reference/java/objects#richtextsectionelement) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextSection`](/reference/java/objects#richtextsection), [`RichTextSectionElement`](/reference/java/objects#richtextsectionelement)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public RichTextSection.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`RichTextSection`](/reference/java/objects#richtextsection)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public RichTextSection build()
+```
+
+**Returns:** an immutable [`RichTextSection`](/reference/java/objects#richtextsection)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`RichTextSection`](/reference/java/objects#richtextsection)
+
+## RichTextSectionElement
+
+An inline rich text element: text, a link, an emoji, or a channel, user, or user group mention.
+
+Implemented by [`RichTextChannel`](/reference/java/objects#richtextchannel), [`RichTextEmoji`](/reference/java/objects#richtextemoji), [`RichTextLink`](/reference/java/objects#richtextlink), [`RichTextText`](/reference/java/objects#richtexttext), [`RichTextUser`](/reference/java/objects#richtextuser), [`RichTextUserGroup`](/reference/java/objects#richtextusergroup).
+
+## RichTextStyle
+
+Formatting flags for inline rich text elements, reusable across elements.
+
+Text and links support bold, italic, strike, and code. Channel, user, and user group mentions support bold, italic, strike, highlight, client highlight, and unlink. Each rich text builder also offers the individual flag methods it supports.
+
+```java
+RichTextStyle emphasis = RichTextStyle.builder().bold(true).italic(true).build();
+RichTextText.builder().text("Deploy now").style(emphasis).build();
+```
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RichTextStyle.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### Bold
+
+Sets whether text is bold.
+
+```java
+public RichTextStyle.Builder bold(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### Italic
+
+Sets whether text is italic.
+
+```java
+public RichTextStyle.Builder italic(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### Strike
+
+Sets whether text is struck through.
+
+```java
+public RichTextStyle.Builder strike(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### Code
+
+Sets whether text or a link is shown as inline code.
+
+```java
+public RichTextStyle.Builder code(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### Highlight
+
+Sets whether a mention is highlighted.
+
+```java
+public RichTextStyle.Builder highlight(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### ClientHighlight
+
+Sets whether a mention uses the client's highlight color.
+
+```java
+public RichTextStyle.Builder clientHighlight(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### Unlink
+
+Sets whether a mention is shown without a link.
+
+```java
+public RichTextStyle.Builder unlink(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### Build
+
+Creates an immutable style. A style with no flags serializes as an empty object.
+
+```java
+public RichTextStyle build()
+```
+
+**Returns:** an immutable style
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+## RichTextText
+
+A run of optionally styled text inside rich text.
+
+Start with [`builder()`](/reference/java/objects#richtexttext), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#richtexttext) to validate and create an immutable value.
+
+- Required: `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RichTextText.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RichTextText`](/reference/java/objects#richtexttext)
+
+### GetText
+
+Returns the text content.
+
+```java
+public String getText()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetStyle
+
+Returns the visual style.
+
+```java
+public Optional<RichTextStyle> getStyle()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### Text
+
+Sets the text content.
+
+Required.
+
+```java
+public RichTextText.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `text` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextText`](/reference/java/objects#richtexttext)
+
+### Style
+
+Sets the visual style.
+
+Replaces any style flags already set.
+
+```java
+public RichTextText.Builder style(RichTextStyle value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | the complete text style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle), [`RichTextText`](/reference/java/objects#richtexttext)
+
+### Bold
+
+Sets whether the `bold` style is applied.
+
+```java
+public RichTextText.Builder bold(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextText`](/reference/java/objects#richtexttext)
+
+### Italic
+
+Sets whether the `italic` style is applied.
+
+```java
+public RichTextText.Builder italic(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextText`](/reference/java/objects#richtexttext)
+
+### Strike
+
+Sets whether the `strike` style is applied.
+
+```java
+public RichTextText.Builder strike(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextText`](/reference/java/objects#richtexttext)
+
+### Code
+
+Sets whether the `code` style is applied.
+
+```java
+public RichTextText.Builder code(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextText`](/reference/java/objects#richtexttext)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public RichTextText.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`RichTextText`](/reference/java/objects#richtexttext)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public RichTextText build()
+```
+
+**Returns:** an immutable [`RichTextText`](/reference/java/objects#richtexttext)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`RichTextText`](/reference/java/objects#richtexttext)
+
+## RichTextUser
+
+A user mention inside rich text.
+
+Start with [`builder()`](/reference/java/objects#richtextuser), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#richtextuser) to validate and create an immutable value.
+
+- Required: `userId`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RichTextUser.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RichTextUser`](/reference/java/objects#richtextuser)
+
+### GetUserId
+
+Returns the ID of the mentioned user.
+
+```java
+public String getUserId()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetStyle
+
+Returns the visual style.
+
+```java
+public Optional<RichTextStyle> getStyle()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### UserId
+
+Sets the ID of the mentioned user.
+
+Required.
+
+```java
+public RichTextUser.Builder userId(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `user_id` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUser`](/reference/java/objects#richtextuser)
+
+### Style
+
+Sets the visual style.
+
+Replaces any style flags already set.
+
+```java
+public RichTextUser.Builder style(RichTextStyle value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | the complete text style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle), [`RichTextUser`](/reference/java/objects#richtextuser)
+
+### Bold
+
+Sets whether the `bold` style is applied.
+
+```java
+public RichTextUser.Builder bold(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUser`](/reference/java/objects#richtextuser)
+
+### Italic
+
+Sets whether the `italic` style is applied.
+
+```java
+public RichTextUser.Builder italic(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUser`](/reference/java/objects#richtextuser)
+
+### Strike
+
+Sets whether the `strike` style is applied.
+
+```java
+public RichTextUser.Builder strike(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUser`](/reference/java/objects#richtextuser)
+
+### Highlight
+
+Sets whether the `highlight` style is applied.
+
+```java
+public RichTextUser.Builder highlight(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUser`](/reference/java/objects#richtextuser)
+
+### ClientHighlight
+
+Sets whether the `client_highlight` style is applied.
+
+```java
+public RichTextUser.Builder clientHighlight(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUser`](/reference/java/objects#richtextuser)
+
+### Unlink
+
+Sets whether the `unlink` style is applied.
+
+```java
+public RichTextUser.Builder unlink(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUser`](/reference/java/objects#richtextuser)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public RichTextUser.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`RichTextUser`](/reference/java/objects#richtextuser)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public RichTextUser build()
+```
+
+**Returns:** an immutable [`RichTextUser`](/reference/java/objects#richtextuser)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`RichTextUser`](/reference/java/objects#richtextuser)
+
+## RichTextUserGroup
+
+A user group mention inside rich text.
+
+Start with [`builder()`](/reference/java/objects#richtextusergroup), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#richtextusergroup) to validate and create an immutable value.
+
+- Required: `userGroupId`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static RichTextUserGroup.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`RichTextUserGroup`](/reference/java/objects#richtextusergroup)
+
+### GetUserGroupId
+
+Returns the ID of the mentioned user group.
+
+```java
+public String getUserGroupId()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetStyle
+
+Returns the visual style.
+
+```java
+public Optional<RichTextStyle> getStyle()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle)
+
+### UserGroupId
+
+Sets the ID of the mentioned user group.
+
+Required.
+
+```java
+public RichTextUserGroup.Builder userGroupId(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `usergroup_id` field |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUserGroup`](/reference/java/objects#richtextusergroup)
+
+### Style
+
+Sets the visual style.
+
+Replaces any style flags already set.
+
+```java
+public RichTextUserGroup.Builder style(RichTextStyle value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | the complete text style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextStyle`](/reference/java/objects#richtextstyle), [`RichTextUserGroup`](/reference/java/objects#richtextusergroup)
+
+### Bold
+
+Sets whether the `bold` style is applied.
+
+```java
+public RichTextUserGroup.Builder bold(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUserGroup`](/reference/java/objects#richtextusergroup)
+
+### Italic
+
+Sets whether the `italic` style is applied.
+
+```java
+public RichTextUserGroup.Builder italic(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUserGroup`](/reference/java/objects#richtextusergroup)
+
+### Strike
+
+Sets whether the `strike` style is applied.
+
+```java
+public RichTextUserGroup.Builder strike(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUserGroup`](/reference/java/objects#richtextusergroup)
+
+### Highlight
+
+Sets whether the `highlight` style is applied.
+
+```java
+public RichTextUserGroup.Builder highlight(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUserGroup`](/reference/java/objects#richtextusergroup)
+
+### ClientHighlight
+
+Sets whether the `client_highlight` style is applied.
+
+```java
+public RichTextUserGroup.Builder clientHighlight(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUserGroup`](/reference/java/objects#richtextusergroup)
+
+### Unlink
+
+Sets whether the `unlink` style is applied.
+
+```java
+public RichTextUserGroup.Builder unlink(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | whether to apply the style |
+
+**Returns:** this builder
+
+**Related types:** [`RichTextUserGroup`](/reference/java/objects#richtextusergroup)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public RichTextUserGroup.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`RichTextUserGroup`](/reference/java/objects#richtextusergroup)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public RichTextUserGroup build()
+```
+
+**Returns:** an immutable [`RichTextUserGroup`](/reference/java/objects#richtextusergroup)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`RichTextUserGroup`](/reference/java/objects#richtextusergroup)
+
+## SlackFile
+
+A reference to an image file hosted in Slack.
+
+Start with [`builder()`](/reference/java/objects#slackfile), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#slackfile) to validate and create an immutable value.
+
+- Provide exactly one of an ID or a URL.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/slack-file-object).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static SlackFile.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`SlackFile`](/reference/java/objects#slackfile)
+
+### GetId
+
+Returns the ID of a file previously uploaded to Slack. Cannot be combined with a URL.
+
+```java
+public Optional<String> getId()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetUrl
+
+Returns the URL of a file hosted in Slack. Cannot be combined with an ID.
+
+```java
+public Optional<String> getUrl()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Id
+
+Sets the ID of a file previously uploaded to Slack. Cannot be combined with a URL.
+
+```java
+public SlackFile.Builder id(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `id` field |
+
+**Returns:** this builder
+
+**Related types:** [`SlackFile`](/reference/java/objects#slackfile)
+
+### Url
+
+Sets the URL of a file hosted in Slack. Cannot be combined with an ID.
+
+```java
+public SlackFile.Builder url(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `url` field |
+
+**Returns:** this builder
+
+**Related types:** [`SlackFile`](/reference/java/objects#slackfile)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public SlackFile.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`SlackFile`](/reference/java/objects#slackfile)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public SlackFile build()
+```
+
+**Returns:** an immutable [`SlackFile`](/reference/java/objects#slackfile)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`SlackFile`](/reference/java/objects#slackfile)
+
+## SlackIcon
+
+A Slack-provided icon, referenced by name.
+
+Start with [`builder()`](/reference/java/objects#slackicon), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#slackicon) to validate and create an immutable value.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static SlackIcon.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`SlackIcon`](/reference/java/objects#slackicon)
+
+### GetName
+
+Returns the name of the Slack-provided icon, such as rocket.
+
+```java
+public Optional<String> getName()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Name
+
+Sets the name of the Slack-provided icon, such as rocket.
+
+```java
+public SlackIcon.Builder name(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `name` field |
+
+**Returns:** this builder
+
+**Related types:** [`SlackIcon`](/reference/java/objects#slackicon)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public SlackIcon.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`SlackIcon`](/reference/java/objects#slackicon)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public SlackIcon build()
+```
+
+**Returns:** an immutable [`SlackIcon`](/reference/java/objects#slackicon)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`SlackIcon`](/reference/java/objects#slackicon)
+
+## Text
+
+A Slack text composition object: plain text or mrkdwn.
+
+Implemented by [`MarkdownText`](/reference/java/objects#markdowntext), [`PlainText`](/reference/java/objects#plaintext).
+
+## Trigger
+
+A link trigger that starts a workflow.
+
+Start with [`builder()`](/reference/java/objects#trigger), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#trigger) to validate and create an immutable value.
+
+- Required: `url`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static Trigger.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`Trigger`](/reference/java/objects#trigger)
+
+### GetUrl
+
+Returns the link trigger URL.
+
+```java
+public String getUrl()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetCustomizableInputParameters
+
+Returns the input values passed to the workflow's trigger.
+
+```java
+public List<InputParameter> getCustomizableInputParameters()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`InputParameter`](/reference/java/objects#inputparameter)
+
+### Url
+
+Sets the link trigger URL.
+
+Required.
+
+```java
+public Trigger.Builder url(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `url` field |
+
+**Returns:** this builder
+
+**Related types:** [`Trigger`](/reference/java/objects#trigger)
+
+### CustomizableInputParameters
+
+Adds the input values passed to the workflow's trigger.
+
+Each call appends to any values already added.
+
+```java
+public Trigger.Builder customizableInputParameters(InputParameter... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`InputParameter`](/reference/java/objects#inputparameter) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`InputParameter`](/reference/java/objects#inputparameter), [`Trigger`](/reference/java/objects#trigger)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public Trigger.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`Trigger`](/reference/java/objects#trigger)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public Trigger build()
+```
+
+**Returns:** an immutable [`Trigger`](/reference/java/objects#trigger)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`Trigger`](/reference/java/objects#trigger)
+
+## UrlSource
+
+A linked source cited by a task card.
+
+Start with [`builder()`](/reference/java/objects#urlsource), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#urlsource) to validate and create an immutable value.
+
+- Required: `url`, `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static UrlSource.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`UrlSource`](/reference/java/objects#urlsource)
+
+### GetUrl
+
+Returns the source URL.
+
+```java
+public String getUrl()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetText
+
+Returns the source link text.
+
+```java
+public String getText()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Url
+
+Sets the source URL.
+
+Required. Must be between 1 and 3000 characters.
+
+```java
+public UrlSource.Builder url(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `url` field |
+
+**Returns:** this builder
+
+**Related types:** [`UrlSource`](/reference/java/objects#urlsource)
+
+### Text
+
+Sets the source link text.
+
+Required.
+
+```java
+public UrlSource.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `text` field |
+
+**Returns:** this builder
+
+**Related types:** [`UrlSource`](/reference/java/objects#urlsource)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public UrlSource.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`UrlSource`](/reference/java/objects#urlsource)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public UrlSource build()
+```
+
+**Returns:** an immutable [`UrlSource`](/reference/java/objects#urlsource)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`UrlSource`](/reference/java/objects#urlsource)
+
+## Workflow
+
+The workflow started by a workflow button.
+
+Start with [`builder()`](/reference/java/objects#workflow), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/objects#workflow) to validate and create an immutable value.
+
+- Required: `trigger`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/workflow-object).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static Workflow.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`Workflow`](/reference/java/objects#workflow)
+
+### GetTrigger
+
+Returns the link trigger that starts the workflow.
+
+```java
+public Trigger getTrigger()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Trigger`](/reference/java/objects#trigger)
+
+### Trigger
+
+Sets the link trigger that starts the workflow.
+
+Required.
+
+```java
+public Workflow.Builder trigger(Trigger value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | nested [`Trigger`](/reference/java/objects#trigger) |
+
+**Returns:** this builder
+
+**Related types:** [`Trigger`](/reference/java/objects#trigger), [`Workflow`](/reference/java/objects#workflow)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public Workflow.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`Workflow`](/reference/java/objects#workflow)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public Workflow build()
+```
+
+**Returns:** an immutable [`Workflow`](/reference/java/objects#workflow)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`Workflow`](/reference/java/objects#workflow)

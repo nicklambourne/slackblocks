@@ -1,0 +1,221 @@
+---
+sidebar_label: Welcome
+sidebar_position: 1
+---
+
+import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+
+# Welcome to `slackblocks`!
+
+<p align="center">
+  <img width="30%" src="/slackblocks/img/sb.png" alt="slackblocks logo" />
+</p>
+
+`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, and Java — without writing JSON by hand.
+
+It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control. `slackblocks` gives you:
+
+- **Typed, idiomatic APIs** for Python, TypeScript, Go, and Java.
+- **Validation as you build** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
+- **Drop-in compatibility** with established Slack SDKs and clients and their plain JSON payloads.
+- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, and Java implements the official Slack SDK block interfaces.
+
+## Quick Start
+
+Ready to build your first message? The [Quick Start guide](quick-start) takes you from installation to a validated Slack payload using the language selected in the top navigation.
+
+## Components
+
+The [Slack Block Kit API](https://api.slack.com/block-kit) defines several resource types (all defined in JSON) that work together to build block-based messages.
+
+<LanguageContent>
+<Python>
+
+The Python package mirrors that hierarchy with classes.
+
+### Objects
+
+[Objects](reference/python/objects) (e.g. [`Text`](reference/python/objects#text), [`Option`](reference/python/objects#option), [`Confirm`](reference/python/objects#confirm)) are the lowest-level primitives — small composable pieces that populate [Elements](reference/python/elements) and [Blocks](reference/python/blocks).
+
+For convenience, [`PlainText`](reference/python/objects#plaintext) and [`Markdown`](reference/python/objects#markdown) are thin subclasses of `Text` that you can use anywhere a `Text` is expected — `PlainText("Hi", emoji=True)` reads more naturally than `Text("Hi", type_=TextType.PLAINTEXT, emoji=True)`.
+
+### Elements
+
+[Elements](reference/python/elements) are typically interactive UI controls that go *inside* blocks. The [`CheckboxGroup`](reference/python/elements#checkboxgroup) element, for instance, takes one or more [`Option`](reference/python/objects#option) items and presents a checkbox menu.
+
+### Blocks
+
+[Blocks](reference/python/blocks) are the core visual unit of a message. Different block classes produce different UI:
+
+- [`SectionBlock`](reference/python/blocks#sectionblock) — a chunk of markdown text, optionally with an accessory element.
+- [`HeaderBlock`](reference/python/blocks#headerblock) — a large bold title.
+- [`DividerBlock`](reference/python/blocks#dividerblock) — a visual separator (like an HTML `<hr>`).
+- [`MarkdownBlock`](reference/python/blocks#markdownblock) — GitHub-flavored Markdown (Slack 2024+; richer formatting than `mrkdwn`).
+- [`RichTextBlock`](reference/python/blocks#richtextblock) — formatted text with inline styling, lists, code blocks, and quotes.
+- [`ActionsBlock`](reference/python/blocks#actionsblock) — a row of interactive elements like buttons or menus.
+- [`AlertBlock`](reference/python/blocks#alertblock) — a severity-labelled notice for a modal.
+- [`CardBlock`](reference/python/blocks#cardblock) and [`CarouselBlock`](reference/python/blocks#carouselblock) — compact linked content, individually or in a scrolling collection.
+- [`ContainerBlock`](reference/python/blocks#containerblock) — a titled group of related child blocks.
+- [`ContextActionsBlock`](reference/python/blocks#contextactionsblock) — feedback and icon controls beside contextual content.
+- [`DataTableBlock`](reference/python/blocks#datatableblock) and [`DataVisualizationBlock`](reference/python/blocks#datavisualizationblock) — structured data as a table or chart.
+- [`PlanBlock`](reference/python/blocks#planblock) and [`TaskCardBlock`](reference/python/blocks#taskcardblock) — plans, task state, rich output, and sources.
+- [`VideoBlock`](reference/python/blocks#videoblock) — embed a video from a Slack-supported provider.
+- [`ImageBlock`](reference/python/blocks#imageblock), [`ContextBlock`](reference/python/blocks#contextblock), [`InputBlock`](reference/python/blocks#inputblock), [`FileBlock`](reference/python/blocks#fileblock), [`TableBlock`](reference/python/blocks#tableblock).
+
+See [Using Blocks](usage/using_blocks) for examples of all block types side-by-side with their JSON output and Slack rendering.
+
+### Messages
+
+[Messages](reference/python/messages) are a convenience wrapper around blocks that can be unpacked directly into the Slack SDK's `chat_postMessage` (and friends).
+
+- [`Message`](reference/python/messages#message) — a normal channel message.
+- [`WebhookMessage`](reference/python/messages#webhookmessage) — for incoming webhooks.
+- [`MessageResponse`](reference/python/messages#messageresponse) — replies to slash commands and interactions.
+
+### Views
+
+[Views](reference/python/views) are an alternative usage of blocks that build custom UI surfaces in Slack — modal dialogs and the App Home tab — typically used by interactive Slack apps.
+
+### Utilities
+
+- [`block_kit_builder_url(payload, team_id=None)`](reference/python/builder#block_kit_builder_url) — turn any block, list of blocks, message, or view into a [Block Kit Builder](https://app.slack.com/block-kit-builder) URL for browser-based preview.
+- [`Block.from_dict(data)`](reference/python/blocks#block) — parse a Slack-shaped block payload back into a `slackblocks` object. Per-class `from_dict` parsers are also available on every composition object.
+
+</Python>
+<TypeScript>
+
+The TypeScript package exposes chainable PascalCase builders that produce typed,
+Slack-shaped objects when `.build()` is called.
+
+### Composition objects
+
+Builders such as [`PlainText`](reference/typescript/objects#plaintext), [`Markdown`](reference/typescript/objects#markdown), and [`Option`](reference/typescript/objects#option) create the small values used throughout Block Kit payloads.
+
+### Elements
+
+Interactive controls are built with [`Button`](reference/typescript/elements#button), [`Checkboxes`](reference/typescript/elements#checkboxes), [`StaticSelect`](reference/typescript/elements#staticselect), and [`DatePicker`](reference/typescript/elements#datepicker).
+
+### Blocks
+
+Every block builder follows the same `<Kind>Block` naming pattern. Alongside [`SectionBlock`](reference/typescript/blocks#sectionblock), [`ActionsBlock`](reference/typescript/blocks#actionsblock), and [`VideoBlock`](reference/typescript/blocks#videoblock), the API includes [`AlertBlock`](reference/typescript/blocks#alertblock), [`CardBlock`](reference/typescript/blocks#cardblock), [`CarouselBlock`](reference/typescript/blocks#carouselblock), [`ContainerBlock`](reference/typescript/blocks#containerblock), [`ContextActionsBlock`](reference/typescript/blocks#contextactionsblock), [`DataTableBlock`](reference/typescript/blocks#datatableblock), [`DataVisualizationBlock`](reference/typescript/blocks#datavisualizationblock), [`PlanBlock`](reference/typescript/blocks#planblock), and [`TaskCardBlock`](reference/typescript/blocks#taskcardblock).
+
+### Payloads
+
+Use [`Message`](reference/typescript/payloads#message), [`WebhookMessage`](reference/typescript/payloads#webhookmessage), and [`MessageResponse`](reference/typescript/payloads#messageresponse) for message payloads. Use [`Modal`](reference/typescript/payloads#modal) and [`HomeTab`](reference/typescript/payloads#hometab) for Slack views.
+
+### Higher-level components
+
+[`Paginator`](reference/typescript/components#paginator) renders a selected page
+with previous and next controls. [`Accordion`](reference/typescript/components#accordion)
+groups Slack-native collapsible sections. Both expand directly inside `.blocks()`.
+
+### Utilities
+
+- [`blockKitBuilderUrl`](reference/typescript/utilities#blockkitbuilderurl) creates a browser preview URL.
+- [`validate`](reference/typescript/utilities#validate) and [`assertValid`](reference/typescript/utilities#assertvalid) validate existing Slack-shaped data.
+
+</TypeScript>
+<Go>
+
+The Go module exposes `New…` constructors whose fluent methods materialise ordinary
+`map[string]any`-compatible Slack objects at `Build()` time.
+
+### Composition objects
+
+[`NewPlainText`](/reference/go/objects#newplaintext), [`NewMarkdown`](/reference/go/objects#newmarkdown), and [`NewOption`](/reference/go/objects#newoption) create the small values shared by blocks and elements.
+
+### Elements
+
+Interactive controls include [`NewButton`](/reference/go/elements#newbutton), [`NewCheckboxes`](/reference/go/elements#newcheckboxes), [`NewStaticSelect`](/reference/go/elements#newstaticselect), and [`NewDatePicker`](/reference/go/elements#newdatepicker).
+
+### Blocks
+
+Every block uses the same `New<Kind>Block` naming pattern. Start with [`NewSectionBlock`](/reference/go/blocks#newsectionblock), [`NewActionsBlock`](/reference/go/blocks#newactionsblock), or [`NewHeaderBlock`](/reference/go/blocks#newheaderblock), then explore cards, carousels, containers, tables, charts, plans, task cards, rich text, and every other shared block capability.
+
+### Payloads and views
+
+[`NewMessage`](/reference/go/payloads#newmessage), [`NewWebhookMessage`](/reference/go/payloads#newwebhookmessage), and [`NewMessageResponse`](/reference/go/payloads#newmessageresponse) build messages. [`NewModal`](/reference/go/payloads#newmodal) and [`NewHomeTab`](/reference/go/payloads#newhometab) build Slack views.
+
+### Higher-level components
+
+[`NewPaginator`](/reference/go/components#newpaginator) renders one page plus navigation controls. [`NewAccordion`](/reference/go/components#newaccordion) expands collapsible sections directly inside `Blocks(...)`.
+
+### Validation and JSON
+
+[`ValidationError`](/reference/go/errors#validationerror) exposes stable error categories and field paths. [`Object`](/reference/go/core#object) is the JSON-compatible wire type returned by every completed builder.
+
+</Go>
+<Java>
+
+The Java artifact uses immutable values built with concrete, fluent builders. Every completed block implements the official Slack Java SDK's `LayoutBlock` interface, so no adapter or conversion layer is required.
+
+### Composition objects
+
+[`PlainText`](reference/java/objects#plaintext), [`MarkdownText`](reference/java/objects#markdowntext), and [`Option`](reference/java/objects#option) create the small values shared by blocks and elements.
+
+### Elements
+
+Interactive controls include [`ButtonElement`](reference/java/elements#buttonelement), [`CheckboxesElement`](reference/java/elements#checkboxeselement), [`StaticSelectElement`](reference/java/elements#staticselectelement), and [`DatePickerElement`](reference/java/elements#datepickerelement).
+
+### Blocks
+
+Every block is named `<Kind>Block` and starts with a static `builder()` method. Begin with [`SectionBlock`](reference/java/blocks#sectionblock), [`ActionsBlock`](reference/java/blocks#actionsblock), or [`HeaderBlock`](reference/java/blocks#headerblock), then explore cards, carousels, containers, tables, charts, plans, task cards, rich text, and the rest of the shared Block Kit surface.
+
+### Payloads and views
+
+[`MessagePayload`](reference/java/payloads#messagepayload), [`WebhookMessage`](reference/java/payloads#webhookmessage), and [`MessageResponse`](reference/java/payloads#messageresponse) build complete JSON payloads. [`ModalView`](reference/java/payloads#modalview) and [`HomeTabView`](reference/java/payloads#hometabview) build Slack view payloads.
+
+### Higher-level components
+
+[`Paginator`](reference/java/components#paginator) renders one page with previous and next controls. [`Accordion`](reference/java/components#accordion) expands concrete, Slack-native collapsible containers.
+
+### Validation and JSON
+
+[`ValidationException`](reference/java/errors#validationexception) exposes stable categories and field paths. [`SlackObject`](reference/java/core#slackobject) is the immutable JSON-compatible contract returned by every completed builder.
+
+</Java>
+</LanguageContent>
+
+## Guides
+
+<LanguageContent>
+<Python>
+
+- [Installation](usage/installation)
+- [Using Blocks](usage/using_blocks)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook) — complete end-to-end recipes for common message patterns.
+- [Troubleshooting & FAQ](usage/troubleshooting)
+- [Migrating from 1.x to 2.x](usage/migration) — upgrade guide for `1.x` users.
+- [Contributing](contributing) — developing and contributing to `slackblocks` itself.
+
+</Python>
+<TypeScript>
+
+- [Installation](usage/installation)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook) — complete end-to-end recipes for common message patterns.
+- [Contributing](contributing) — developing and contributing to `slackblocks` itself.
+
+</TypeScript>
+<Go>
+
+- [Installation](usage/installation)
+- [Using Blocks](usage/using_blocks)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook)
+- [Troubleshooting & FAQ](usage/troubleshooting)
+- [Contributing](contributing)
+
+</Go>
+<Java>
+
+- [Installation](usage/installation)
+- [Using Blocks](usage/using_blocks)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook)
+- [Troubleshooting & FAQ](usage/troubleshooting)
+- [Contributing](contributing)
+
+</Java>
+</LanguageContent>
