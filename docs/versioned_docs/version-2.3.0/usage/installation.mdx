@@ -1,0 +1,195 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+
+# Installation
+
+Choose Python, TypeScript, Go, or Java from the site navigation. The selection applies across the documentation and is preserved as you move between pages.
+
+<LanguageContent>
+<Python>
+
+Install the Python package from [PyPI](https://pypi.org/project/slackblocks/):
+
+<Tabs>
+<TabItem value="pip" label="pip">
+
+```bash
+pip install slackblocks
+```
+
+</TabItem>
+<TabItem value="poetry" label="Poetry">
+
+```bash
+poetry add slackblocks
+```
+
+</TabItem>
+<TabItem value="pipenv" label="Pipenv">
+
+```bash
+pipenv install slackblocks
+```
+
+</TabItem>
+<TabItem value="uv" label="uv">
+
+```bash
+uv add slackblocks
+```
+
+</TabItem>
+</Tabs>
+
+Python 2.x requires Python 3.10 or newer and has no runtime dependencies. See [Compatibility](compatibility) for the support matrix and 1.x migration guidance.
+
+Verify the installation:
+
+```python
+from slackblocks import Message, SectionBlock
+
+print(Message(channel="#general", blocks=SectionBlock("Hello, world!")).json())
+```
+
+Pin the current major release with `slackblocks~=2.0`, and uninstall with `pip uninstall slackblocks` (or the equivalent command for your package manager).
+
+</Python>
+<TypeScript>
+
+Install the ESM package from npm:
+
+<Tabs>
+<TabItem value="pnpm" label="pnpm">
+
+```bash
+pnpm add @nicklambourne/slackblocks
+```
+
+</TabItem>
+<TabItem value="npm" label="npm">
+
+```bash
+npm install @nicklambourne/slackblocks
+```
+
+</TabItem>
+<TabItem value="yarn" label="Yarn">
+
+```bash
+yarn add @nicklambourne/slackblocks
+```
+
+</TabItem>
+</Tabs>
+
+The package requires Node 20.19 or newer, is ESM-only, and emits no runtime imports beyond your own code.
+
+Verify the installation in `hello.mjs`:
+
+```ts
+import { Message, SectionBlock } from "@nicklambourne/slackblocks";
+
+console.log(
+  Message()
+    .channel("C0123456")
+    .blocks(SectionBlock().text("Hello, world!"))
+    .build(),
+);
+```
+
+Run it with `node hello.mjs`. Stay on the 2.x release line with `@nicklambourne/slackblocks@^2.1.0`, and uninstall with `pnpm remove @nicklambourne/slackblocks` (or your package manager's equivalent).
+
+</TypeScript>
+<Go>
+
+From an existing Go module, install the v2 Go module directly from GitHub:
+
+```bash
+go get github.com/nicklambourne/slackblocks/go/v2
+```
+
+Go 1.22 or newer is required. Block builders implement `slack.Block` directly using the Go 1.22-compatible `github.com/slack-go/slack` release; `go get` installs that dependency automatically.
+
+Verify the installation in `main.go`:
+
+```go
+package main
+
+import (
+    "fmt"
+
+    slackblocks "github.com/nicklambourne/slackblocks/go/v2"
+)
+
+func main() {
+    payload, err := slackblocks.NewMessage().
+        Channel("C0123456").
+        Blocks(slackblocks.NewSectionBlock().Text("Hello, world!")).
+        Build()
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(payload)
+}
+```
+
+Run it with `go run .`. The `/v2` suffix is part of the module path under Go's semantic import versioning; update within the current major line with `go get -u github.com/nicklambourne/slackblocks/go/v2`.
+
+</Go>
+<Java>
+
+Install the Java artifact from Maven Central. Java 17 or newer is required.
+
+<Tabs>
+<TabItem value="maven" label="Maven">
+
+```xml
+<dependency>
+  <groupId>io.github.nicklambourne</groupId>
+  <artifactId>slackblocks</artifactId>
+  <version>2.3.0</version>
+</dependency>
+```
+
+</TabItem>
+<TabItem value="gradle-kotlin" label="Gradle (Kotlin)">
+
+```kotlin
+implementation("io.github.nicklambourne:slackblocks:2.3.0")
+```
+
+</TabItem>
+<TabItem value="gradle-groovy" label="Gradle (Groovy)">
+
+```groovy
+implementation 'io.github.nicklambourne:slackblocks:2.3.0'
+```
+
+</TabItem>
+</Tabs>
+
+The core artifact includes the official Slack Block Kit model interfaces so completed blocks can be passed directly to the Slack Java SDK. Add `com.slack.api:slack-api-client` separately when your application sends messages; keeping the transport client optional avoids pulling HTTP dependencies into applications that only construct payloads.
+
+Verify the installation:
+
+```java
+import io.github.nicklambourne.slackblocks.SlackblocksJson;
+import io.github.nicklambourne.slackblocks.block.SectionBlock;
+
+public final class HelloSlackblocks {
+  public static void main(String[] args) {
+    var block = SectionBlock.builder().markdownText("Hello, world!").build();
+    System.out.println(SlackblocksJson.write(block));
+  }
+}
+```
+
+### Import slackblocks types by name
+
+Several slackblocks class names, such as `SectionBlock`, `HeaderBlock`, and `ButtonElement`, also exist in the Slack SDK's `com.slack.api.model.block` packages. Import slackblocks classes individually, as the examples on this site do. A file that combines `import com.slack.api.model.block.*;` with a slackblocks wildcard import fails to compile with a "reference to SectionBlock is ambiguous" error.
+
+Pin compatible 2.x updates with Maven's dependency-management facilities or your usual version catalog. slackblocks' Java artifact uses the same release number as the Python, TypeScript, and Go packages.
+
+</Java>
+</LanguageContent>

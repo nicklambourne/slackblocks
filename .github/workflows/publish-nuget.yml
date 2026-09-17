@@ -1,0 +1,121 @@
+name: Publish C# Package
+
+on:
+  push:
+    tags:
+      - "csharp/v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+
+jobs:
+  publish:
+    name: Build, verify, and publish to NuGet
+    runs-on: ubuntu-latest
+    environment:
+      name: nuget
+      url: https://www.nuget.org/packages/Slackblocks
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Verify coordinated version and release tag
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME#csharp/v}"
+          python_version=$(node -e "const text = require('fs').readFileSync('python/pyproject.toml', 'utf8'); const match = text.match(/^version = \"([^\"]+)\"$/m); if (!match) process.exit(1); process.stdout.write(match[1]);")
+          typescript_version=$(node -p "require('./typescript/package.json').version")
+          java_version=$(node -e "const text = require('fs').readFileSync('java/pom.xml', 'utf8'); const match = text.match(/<artifactId>slackblocks<\/artifactId>\s*<version>([^<]+)<\/version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
+          csharp_version=$(node -e "const text = require('fs').readFileSync('csharp/src/Slackblocks/Slackblocks.csproj', 'utf8'); const match = text.match(/<Version>([^<]+)<\/Version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
+          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ] || [ "$python_version" != "$csharp_version" ]; then
+            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version, C#=$csharp_version."
+            exit 1
+          fi
+          if [ "$tag" != "$csharp_version" ]; then
+            echo "::error::C# tag '$tag' does not match coordinated package version '$csharp_version'."
+            exit 1
+          fi
+
+      - name: Run checks
+        working-directory: csharp
+        run: dotnet test Slackblocks.sln --configuration Release
+
+      - name: Pack with package validation
+        working-directory: csharp
+        run: dotnet pack src/Slackblocks/Slackblocks.csproj --configuration Release --output artifacts/package
+
+      - name: Log in with trusted publishing
+        if: env.NUGET_API_KEY == ''
+        id: login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        with:
+          user: ${{ vars.NUGET_USER }}
+
+      # --skip-duplicate makes a re-run after a partial failure safe: a version NuGet already
+      # holds is skipped instead of failing the job. The symbols package beside the .nupkg is
+      # pushed with it.
+      - name: Publish to NuGet
+        working-directory: csharp/artifacts/package
+        env:
+          API_KEY: ${{ env.NUGET_API_KEY != '' && env.NUGET_API_KEY || steps.login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push "*.nupkg" --api-key "$API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: nuget-package
+          path: csharp/artifacts/package/*
+          if-no-files-found: error
+
+  github-release:
+    name: Create GitHub Release
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Create release from changelog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release for $GITHUB_REF_NAME already exists; skipping."
+            exit 0
+          fi
+          version="${GITHUB_REF_NAME#csharp/v}"
+          awk -v version="$version" '
+            $0 ~ "^## \\[" version "\\]" { capture = 1; next }
+            capture && /^## \[/ { exit }
+            capture { print }
+          ' csharp/CHANGELOG.md > release-notes.md
+          if [ -s release-notes.md ]; then
+            gh release create "$GITHUB_REF_NAME" --title "C# v$version" --notes-file release-notes.md
+          else
+            echo "::warning::Could not extract changelog section for $version; using generated notes."
+            gh release create "$GITHUB_REF_NAME" --title "C# v$version" --generate-notes
+          fi

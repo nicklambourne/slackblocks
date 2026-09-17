@@ -38,8 +38,9 @@ jobs:
           python_version=$(uv run --frozen python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
           typescript_version=$(uv run --frozen python -c "import json; print(json.load(open('../typescript/package.json'))['version'])")
           java_version=$(uv run --frozen python -c "import xml.etree.ElementTree as ET; root = ET.parse('../java/pom.xml').getroot(); print(root.find('{http://maven.apache.org/POM/4.0.0}version').text)")
-          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ]; then
-            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version."
+          csharp_version=$(uv run --frozen python -c "import xml.etree.ElementTree as ET; print(ET.parse('../csharp/src/Slackblocks/Slackblocks.csproj').getroot().find('./PropertyGroup/Version').text)")
+          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ] || [ "$python_version" != "$csharp_version" ]; then
+            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version, C#=$csharp_version."
             exit 1
           fi
 
