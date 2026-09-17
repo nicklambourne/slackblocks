@@ -1,4 +1,4 @@
-import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Recipe Book
 
@@ -183,6 +183,45 @@ static MessagePayload buildStatusMessage(
 ```
 
 </Java>
+<CSharp>
+
+```csharp
+using Slackblocks.Blocks;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+static MessagePayload BuildStatusMessage(
+    string channel,
+    string project,
+    string branch,
+    string commit,
+    string author,
+    string duration,
+    bool passed)
+{
+    var icon = passed ? ":white_check_mark:" : ":x:";
+    var status = passed ? "passed" : "failed";
+
+    return new MessagePayload(
+        channel,
+        text: $"Build {status} for {project}@{branch}",
+        blocks:
+        [
+            new HeaderBlock($"{icon} {project} build {status}"),
+            new SectionBlock(fields:
+            [
+                $"*Branch*\n`{branch}`",
+                $"*Commit*\n`{commit[..Math.Min(7, commit.Length)]}`",
+                $"*Author*\n{author}",
+                $"*Duration*\n{duration}",
+            ]),
+            new DividerBlock(),
+            new ContextBlock([new MarkdownText($":calendar: Triggered by push to `{branch}`")]),
+        ]);
+}
+```
+
+</CSharp>
 </LanguageContent>
 
 ![A build status notification rendered in Slack](/img/usage/build_notification.png)

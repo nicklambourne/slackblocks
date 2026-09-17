@@ -15,6 +15,7 @@ const languageLabels: Record<Language, string> = {
   typescript: "TypeScript",
   go: "Go",
   java: "Java",
+  csharp: "C#",
 };
 
 function LanguageLogo({ language }: { language: Language }) {
@@ -69,6 +70,30 @@ function LanguageLogo({ language }: { language: Language }) {
       <path d="M25 34c-5-8 12-9 8-17-2-4-5-6 1-12" fill="none" stroke="#e76f00" strokeLinecap="round" strokeWidth="4" />
       <path d="M33 36c-2-5 9-6 8-12" fill="none" stroke="#e76f00" strokeLinecap="round" strokeWidth="3" />
       <path d="M18 56c9 4 29 4 37-2" fill="none" stroke="#5382a1" strokeLinecap="round" strokeWidth="4" />
+    </svg>
+  );
+
+  if (language === "csharp") return (
+    <svg
+      aria-hidden="true"
+      className="language-selector__logo"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M12 1.5 21.1 6.75v10.5L12 22.5l-9.1-5.25V6.75Z"
+        fill="#512bd4"
+      />
+      <text
+        fill="#fff"
+        fontFamily="Arial, sans-serif"
+        fontSize="8.5"
+        fontWeight="700"
+        textAnchor="middle"
+        x="12"
+        y="15"
+      >
+        C#
+      </text>
     </svg>
   );
 

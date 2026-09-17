@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
 
 # Installation
 
@@ -192,4 +192,49 @@ Several slackblocks class names, such as `SectionBlock`, `HeaderBlock`, and `But
 Pin compatible 2.x updates with Maven's dependency-management facilities or your usual version catalog. slackblocks' Java artifact uses the same release number as the Python, TypeScript, and Go packages.
 
 </Java>
+<CSharp>
+
+Install the NuGet package. .NET 8 or newer is required.
+
+<Tabs>
+<TabItem value="dotnet-cli" label=".NET CLI">
+
+```bash
+dotnet add package Slackblocks
+```
+
+</TabItem>
+<TabItem value="package-reference" label="PackageReference">
+
+```xml
+<PackageReference Include="Slackblocks" Version="2.4.0" />
+```
+
+</TabItem>
+</Tabs>
+
+The package depends on nothing beyond .NET itself. It builds and validates payloads and leaves delivery to `HttpClient` or the Slack client library you already use.
+
+Verify the installation:
+
+```csharp
+using Slackblocks.Blocks;
+
+var block = new SectionBlock(text: "Hello, world!");
+Console.WriteLine(block.ToJson());
+```
+
+### Alias a namespace when combining Slack libraries
+
+Some slackblocks type names, such as `SectionBlock` and `ButtonElement`, also exist in .NET Slack client libraries such as SlackNet. A file that imports both namespaces fails to compile with an ambiguous reference error. Import only the namespaces a file needs, or alias one of them:
+
+```csharp
+using Blocks = Slackblocks.Blocks;
+
+var block = new Blocks.SectionBlock(text: "Hello, world!");
+```
+
+The NuGet package version moves in lockstep with the Python, TypeScript, Go, and Java packages. A floating version such as `2.*` accepts compatible 2.x updates.
+
+</CSharp>
 </LanguageContent>
