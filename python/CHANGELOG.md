@@ -5,6 +5,20 @@ All notable changes to `slackblocks` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] — Unreleased
+
+This coordinated release introduces the C# package, published to NuGet as
+`Slackblocks`, and moves all five packages onto one shared release number. The
+Python public API and wire format are unchanged.
+
+### Changed
+
+- Coordinated release validation now requires the Python, TypeScript, Java, and
+  C# package manifests and all five language changelogs to agree before any
+  tags are created.
+- Project documentation now includes the C# implementation alongside the
+  existing Python, TypeScript, Go, and Java variants.
+
 ## [2.3.0] — 2026-09-16
 
 This coordinated release introduces the Java package while moving Python,
