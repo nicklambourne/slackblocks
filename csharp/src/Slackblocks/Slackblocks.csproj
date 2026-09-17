@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Slackblocks</RootNamespace>
+    <AssemblyName>Slackblocks</AssemblyName>
+    <Version>2.3.0</Version>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <PackageId>Slackblocks</PackageId>
+    <Authors>Nicholas Lambourne</Authors>
+    <Description>Validated, immutable Slack Block Kit construction for .NET. Blocks, elements, composition objects, rich text, messages, modals, and App Home views, checked against Slack's documented limits at construction time.</Description>
+    <PackageTags>slack;block-kit;blockkit;slack-api;slack-bot;chatops</PackageTags>
+    <PackageProjectUrl>https://nicklambourne.github.io/slackblocks/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/nicklambourne/slackblocks</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT OR BSD-3-Clause</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>https://github.com/nicklambourne/slackblocks/blob/master/csharp/CHANGELOG.md</PackageReleaseNotes>
+    <Copyright>Copyright (c) 2018-2026 Nicholas Lambourne</Copyright>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EnablePackageValidation>true</EnablePackageValidation>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <None Include="../../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="../../LICENSE.BSD-3-Clause" Pack="true" PackagePath="/" />
+    <InternalsVisibleTo Include="Slackblocks.Tests" />
+  </ItemGroup>
+</Project>
