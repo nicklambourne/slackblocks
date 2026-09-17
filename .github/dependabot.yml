@@ -38,6 +38,13 @@ updates:
       dotnet-development:
         # The library has no package dependencies; every NuGet reference is a test or tooling package.
         patterns: ["*"]
+    ignore:
+      # Roslyn 5 ships analyzers that need a newer compiler than the .NET 8 SDK has, so the
+      # test project stops building on the oldest supported SDK (CS9057). The tests only use
+      # Roslyn to compile C# 12 documentation snippets, which 4.x does. Revisit when .NET 8
+      # support is dropped.
+      - dependency-name: Microsoft.CodeAnalysis.CSharp
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
