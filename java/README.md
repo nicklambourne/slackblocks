@@ -101,7 +101,7 @@ Use `MessagePayload`, `WebhookMessage`, `MessageResponse`, `ModalView`, and `Hom
 - Java 17 or newer.
 - Versioned in lockstep with every supported slackblocks language.
 - All shared valid fixtures and invalid-case categories are mandatory; the Java skip list is empty.
-- Public builders are generated from `java/generator/model.json`, which records every field's Java type, limits, and documentation and is checked against the Go builder registry in CI.
+- Public builders are generated from the shared `spec/model.json`, which records every field's Java type, limits, and documentation and is checked against the Go builder registry in CI.
 
 ## Development
 
@@ -112,7 +112,7 @@ cd java
 
 The build compiles with `-Xlint:all -Werror`, runs the complete conformance suite and every documentation snippet, applies Javadoc doclint, and creates the binary, source, and Javadoc JARs required by Maven Central. On JDK 21 or newer it also enforces google-java-format, Error Prone, and NullAway.
 
-The Block Kit model is generated. Edit `generator/model.json`, then run:
+The Block Kit model is generated. Edit `../spec/model.json`, then run:
 
 ```bash
 python3 generator/generate_models.py --check-go

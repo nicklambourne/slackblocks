@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Builds Slack JSON through the public, typed fluent API described by java/generator/model.json.
+ * Builds Slack JSON through the public, typed fluent API described by spec/model.json.
  *
  * <p>Every JSON field is set with its named builder method. A field is only set with {@code
  * wireField} when no named method can accept the value; those fallbacks are recorded so the valid
@@ -25,7 +25,7 @@ import java.util.TreeMap;
  */
 final class FluentDriver {
   private static final String BASE = "io.github.nicklambourne.slackblocks.";
-  private static final Path MODEL = Path.of("generator", "model.json");
+  private static final Path MODEL = Path.of("..", "spec", "model.json");
 
   private final Map<String, JsonObject> types = new LinkedHashMap<>();
   private final Map<String, String> packages = new LinkedHashMap<>();

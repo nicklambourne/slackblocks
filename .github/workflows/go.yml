@@ -8,7 +8,6 @@ on:
       - "spec/**"
       - "docs/examples/go/**"
       - "docs/docs/usage/using_blocks.mdx"
-      - "java/generator/model.json"
       - ".github/scripts/extract-go-release-notes.awk"
       - ".github/workflows/go.yml"
   pull_request:
@@ -42,7 +41,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(go/|spec/|docs/examples/go/|docs/docs/usage/using_blocks\.mdx$|java/generator/model\.json$|\.github/scripts/extract-go-release-notes\.awk$|\.github/workflows/go\.yml$)' <<<"$files"; then
+          if grep -qE '^(go/|spec/|docs/examples/go/|docs/docs/usage/using_blocks\.mdx$|\.github/scripts/extract-go-release-notes\.awk$|\.github/workflows/go\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"

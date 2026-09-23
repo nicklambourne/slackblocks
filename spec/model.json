@@ -1,5 +1,5 @@
 {
-  "$comment": "Source of truth for the generated Java Block Kit model. Edit this file, then run java/generator/generate_models.py and ./mvnw spotless:apply.",
+  "$comment": "Source of truth for the generated Java and C# Block Kit models and the Go builder documentation. After editing, run java/generator/generate_models.py --check-go, csharp/generator/generate_models.py, and go generate ./... in go/; see spec/SPEC.md.",
   "interfaces": [
     {
       "package": "block",

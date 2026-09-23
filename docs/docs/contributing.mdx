@@ -65,14 +65,14 @@ From `java/`:
 ./mvnw clean verify
 ```
 
-On JDK 21 or newer the Java build also runs google-java-format, Error Prone, and NullAway; on JDK 17 it compiles and tests only. The generated Java model comes from `java/generator/model.json`. After changing that file or `spec/limits.json`, regenerate and format the sources from the repository root:
+On JDK 21 or newer the Java build also runs google-java-format, Error Prone, and NullAway; on JDK 17 it compiles and tests only. The generated Java model comes from `spec/model.json`, the language-neutral model shared with the C# and Go generators. After changing that file or `spec/limits.json`, regenerate and format the sources from the repository root:
 
 ```bash
 python3 java/generator/generate_models.py --check-go
 (cd java && ./mvnw spotless:apply)
 ```
 
-`--check-go` fails if the Java model and the Go builder registry expose different fields. The Go generator (`go generate ./...` in `go/`) reads the same `model.json` and `spec/limits.json` to write the doc comments on every generated builder method, so a description, limit, or Slack link edited there reaches the Go and Java references together.
+`--check-go` fails if the Java model and the Go builder registry expose different fields. The Go generator (`go generate ./...` in `go/`) reads the same `spec/model.json` and `spec/limits.json` to write the doc comments on every generated builder method, so a description, limit, or Slack link edited there reaches the Go and Java references together.
 
 From `csharp/`, with the .NET 8 SDK or newer:
 
@@ -81,7 +81,7 @@ dotnet test
 dotnet format --verify-no-changes
 ```
 
-The build treats warnings as errors with the .NET analyzers enabled, and the tests compile and run every C# documentation snippet. The C# value types are generated from the same `java/generator/model.json`. After changing it, regenerate them from the repository root; CI fails when the checked-in output differs:
+The build treats warnings as errors with the .NET analyzers enabled, and the tests compile and run every C# documentation snippet. The C# value types are generated from the same `spec/model.json`. After changing it, regenerate them from the repository root; CI fails when the checked-in output differs:
 
 ```bash
 python3 csharp/generator/generate_models.py

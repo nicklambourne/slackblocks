@@ -149,7 +149,7 @@ final class BuilderMethodsTest {
   @TestFactory
   Stream<DynamicTest> everyNamedBuilderMethodSetsItsWireField() throws Exception {
     JsonObject model =
-        JsonParser.parseString(Files.readString(Path.of("generator", "model.json")))
+        JsonParser.parseString(Files.readString(Path.of("..", "spec", "model.json")))
             .getAsJsonObject();
     Map<String, String> packages = new LinkedHashMap<>();
     for (String group : List.of("interfaces", "enums", "types")) {

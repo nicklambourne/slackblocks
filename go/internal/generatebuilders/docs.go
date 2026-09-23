@@ -9,9 +9,9 @@ import (
 )
 
 // The shared Block Kit model describes every builder's fields, their limits, required fields,
-// validation rules, and Slack documentation links. It is maintained alongside the Java generator
-// and cross-checked against builder_methods.json by java/generator/generate_models.py --check-go.
-const modelFile = "java/generator/model.json"
+// validation rules, and Slack documentation links. The Java and C# generators read it too, and it is
+// cross-checked against builder_methods.json by java/generator/generate_models.py --check-go.
+const modelFile = "spec/model.json"
 
 // The shared limits registry supplies the documented Slack limits referenced by the model.
 const limitsFile = "spec/limits.json"

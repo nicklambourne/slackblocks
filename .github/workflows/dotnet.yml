@@ -6,7 +6,6 @@ on:
     paths:
       - "csharp/**"
       - "spec/**"
-      - "java/generator/model.json"
       - "docs/docs/**"
       - "docs/examples/csharp/**"
       - "docs/examples/section_hello.json"
@@ -48,7 +47,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(csharp/|spec/|java/generator/model\.json$|docs/docs/|docs/examples/csharp/|docs/examples/section_hello\.json$|README\.md$|\.github/workflows/dotnet\.yml$)' <<<"$files"; then
+          if grep -qE '^(csharp/|spec/|docs/docs/|docs/examples/csharp/|docs/examples/section_hello\.json$|README\.md$|\.github/workflows/dotnet\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
