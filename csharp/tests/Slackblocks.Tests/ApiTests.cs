@@ -250,7 +250,7 @@ public sealed class ApiTests
     [Fact]
     public void EnumWireValuesMatchTheSharedModel()
     {
-        var model = JsonNode.Parse(System.IO.File.ReadAllText(Repository.PathTo("java", "generator", "model.json")))!;
+        var model = JsonNode.Parse(System.IO.File.ReadAllText(Repository.PathTo("spec", "model.json")))!;
         var renames = new Dictionary<string, string> { ["TaskStatus"] = "TaskCardStatus" };
         foreach (var spec in model["enums"]!.AsArray())
         {

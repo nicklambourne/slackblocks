@@ -117,7 +117,7 @@ var page = new MessagePayload(
 - .NET 8 and newer, with no dependencies beyond the framework.
 - Versioned in lockstep with every supported slackblocks language.
 - All shared valid fixtures and invalid-case categories are mandatory; the C# skip list is empty.
-- Value types are generated from `java/generator/model.json`, the model the Java package is generated from, so both expose the same fields, limits, and documentation.
+- Value types are generated from `spec/model.json`, the model the Java package is also generated from, so both expose the same fields, limits, and documentation.
 
 ## Development
 
@@ -129,7 +129,7 @@ dotnet format --verify-no-changes
 
 The build treats warnings as errors with the .NET analyzers enabled. The tests run every shared conformance fixture and every C# documentation snippet.
 
-The Block Kit model is generated. Edit `java/generator/model.json`, regenerate the Java package as its README describes, then run:
+The Block Kit model is generated. Edit `spec/model.json`, regenerate the Java package as its README describes, then run:
 
 ```bash
 python3 csharp/generator/generate_models.py

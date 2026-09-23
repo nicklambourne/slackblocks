@@ -27,7 +27,7 @@ internal sealed class FixtureDriver
 
     public FixtureDriver()
     {
-        var model = JsonNode.Parse(File.ReadAllText(Repository.PathTo("java", "generator", "model.json")))!.AsObject();
+        var model = JsonNode.Parse(File.ReadAllText(Repository.PathTo("spec", "model.json")))!.AsObject();
         foreach (var item in model["types"]!.AsArray())
         {
             types[item!["name"]!.GetValue<string>()] = item.AsObject();

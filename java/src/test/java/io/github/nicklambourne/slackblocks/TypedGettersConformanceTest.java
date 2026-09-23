@@ -40,7 +40,7 @@ final class TypedGettersConformanceTest {
     FluentDriver driver = new FluentDriver();
     Map<String, JsonObject> types = new LinkedHashMap<>();
     JsonObject model =
-        JsonParser.parseString(Files.readString(Path.of("generator", "model.json")))
+        JsonParser.parseString(Files.readString(Path.of("..", "spec", "model.json")))
             .getAsJsonObject();
     for (JsonElement type : model.getAsJsonArray("types")) {
       types.put(type.getAsJsonObject().get("name").getAsString(), type.getAsJsonObject());
