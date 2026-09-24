@@ -35,6 +35,8 @@
   "url_source": { "url": { "min_length": 1, "max_length": 3000 } },
   "file_input": { "max_files": { "min": 1, "max": 10 } },
   "plain_text_input": { "max_length": { "max": 3000 } },
+  "input_element": { "placeholder": { "max_length": 150 } },
+  "dispatch_action_configuration": { "trigger_actions_on": { "min_items": 1, "max_items": 2 } },
   "actions": { "elements": { "max_items": 25 } },
   "alert": { "text": { "max_length": 200 } },
   "card": {
@@ -57,7 +59,19 @@
     "value": { "max_length": 2000 },
     "accessibility_label": { "max_length": 75 }
   },
-  "icon_button": { "visible_to_user_ids": { "max_items": 10 } },
+  "icon_button": {
+    "value": { "max_length": 2000 },
+    "accessibility_label": { "max_length": 75 },
+    "visible_to_user_ids": { "max_items": 10 }
+  },
+  "workflow_button": {
+    "text": { "max_length": 75 },
+    "accessibility_label": { "max_length": 75 }
+  },
+  "table": {
+    "rows": { "max_items": 100 },
+    "columns": { "max_items": 20 }
+  },
   "data_table": {
     "rows": { "min_items": 2, "max_items": 201 },
     "columns": { "min_items": 1, "max_items": 20 },

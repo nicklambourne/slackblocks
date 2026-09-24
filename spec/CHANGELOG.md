@@ -8,6 +8,25 @@
   tables all four implementations already enforced.
 - Add shared invalid cases for empty section fields and duplicate chart-series
   category labels. These close conformance gaps in the existing 1.1.0 contract.
+- Register limits that Slack documents and that the implementations enforced
+  without a `limits.json` leaf, each with invalid cases:
+  - `table.rows.max_items` (100; its existing invalid case now has a leaf) and
+    `table.columns.max_items` (20 cells per row);
+  - `icon_button.value.max_length` (2000) and
+    `icon_button.accessibility_label.max_length` (75);
+  - `workflow_button.text.max_length` (75) and
+    `workflow_button.accessibility_label.max_length` (75);
+  - `input_element.placeholder.max_length` (150) for the plain-text, email,
+    URL, number, date picker, time picker, and rich text inputs, with one
+    invalid case per element;
+  - `dispatch_action_configuration.trigger_actions_on` (one or both triggers,
+    1 to 2 items).
+
+  Minimums that Slack documents only as "required", such as non-empty titles
+  and element lists, stay as implementation checks rather than registered
+  limits, as in 1.0.1. The table's 20-item `column_settings` maximum is not
+  registered because it cannot be exceeded without breaching
+  `table.columns.max_items` first.
 
 ## 1.1.0 - 2026-08-28
 
