@@ -12,6 +12,36 @@ from json import dumps
 from typing import Any, Literal, TypeAlias, cast, overload
 
 from slackblocks._core import RenderableMixin, omit_none, resolve
+from slackblocks._limits import (
+    CONFIRMATION_CONFIRM_MAX_LENGTH,
+    CONFIRMATION_DENY_MAX_LENGTH,
+    CONFIRMATION_TEXT_MAX_LENGTH,
+    CONFIRMATION_TITLE_MAX_LENGTH,
+    DATA_TABLE_CELL_TEXT_MIN_LENGTH,
+    DATA_VISUALIZATION_AXIS_LABEL_MAX_LENGTH,
+    DATA_VISUALIZATION_CATEGORIES_MAX_ITEMS,
+    DATA_VISUALIZATION_CATEGORIES_MIN_ITEMS,
+    DATA_VISUALIZATION_CATEGORY_LABEL_MAX_LENGTH,
+    DATA_VISUALIZATION_DATA_MAX_ITEMS,
+    DATA_VISUALIZATION_DATA_MIN_ITEMS,
+    DATA_VISUALIZATION_POINT_LABEL_MAX_LENGTH,
+    DATA_VISUALIZATION_SEGMENT_LABEL_MAX_LENGTH,
+    DATA_VISUALIZATION_SEGMENT_VALUE_EXCLUSIVE_MIN,
+    DATA_VISUALIZATION_SEGMENTS_MAX_ITEMS,
+    DATA_VISUALIZATION_SEGMENTS_MIN_ITEMS,
+    DATA_VISUALIZATION_SERIES_MAX_ITEMS,
+    DATA_VISUALIZATION_SERIES_MIN_ITEMS,
+    DATA_VISUALIZATION_SERIES_NAME_MAX_LENGTH,
+    OPTION_DESCRIPTION_MAX_LENGTH,
+    OPTION_GROUP_LABEL_MAX_LENGTH,
+    OPTION_GROUP_OPTIONS_MAX_ITEMS,
+    OPTION_GROUP_OPTIONS_MIN_ITEMS,
+    OPTION_TEXT_MAX_LENGTH,
+    OPTION_URL_MAX_LENGTH,
+    OPTION_VALUE_MAX_LENGTH,
+    TEXT_MAX_LENGTH,
+    TEXT_MIN_LENGTH,
+)
 from slackblocks.errors import (
     InvalidUsageError,
     LengthError,
@@ -108,7 +138,9 @@ class Text(CompositionObject):
     ) -> None:
         super().__init__(type_=CompositionObjectType.TEXT)
         self.text_type = type_
-        self.text = validate_string_nonnull(text, field_name="text", min_length=1, max_length=3000)
+        self.text = validate_string_nonnull(
+            text, field_name="text", min_length=TEXT_MIN_LENGTH, max_length=TEXT_MAX_LENGTH
+        )
         if self.text_type == TextType.MARKDOWN:
             self.verbatim = verbatim
             self.emoji = False
@@ -347,10 +379,16 @@ class ConfirmationDialogue(CompositionObject):
         deny: TextLike,
     ) -> None:
         super().__init__(type_=CompositionObjectType.CONFIRM)
-        self.title = Text.to_text_nonnull(title, max_length=100, force_plaintext=True)
-        self.text = Text.to_text_nonnull(text, max_length=300)
-        self.confirm = Text.to_text_nonnull(confirm, max_length=30, force_plaintext=True)
-        self.deny = Text.to_text_nonnull(deny, max_length=30, force_plaintext=True)
+        self.title = Text.to_text_nonnull(
+            title, max_length=CONFIRMATION_TITLE_MAX_LENGTH, force_plaintext=True
+        )
+        self.text = Text.to_text_nonnull(text, max_length=CONFIRMATION_TEXT_MAX_LENGTH)
+        self.confirm = Text.to_text_nonnull(
+            confirm, max_length=CONFIRMATION_CONFIRM_MAX_LENGTH, force_plaintext=True
+        )
+        self.deny = Text.to_text_nonnull(
+            deny, max_length=CONFIRMATION_DENY_MAX_LENGTH, force_plaintext=True
+        )
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(
@@ -421,12 +459,17 @@ class Option(CompositionObject):
         url: str | None = None,
     ) -> None:
         super().__init__(type_=CompositionObjectType.OPTION)
-        self.text = Text.to_text_nonnull(text, max_length=75)
-        self.value = validate_string_nonnull(value, field_name="value", max_length=150)
-        self.description = Text.to_text(
-            description, max_length=75, force_plaintext=True, allow_none=True
+        self.text = Text.to_text_nonnull(text, max_length=OPTION_TEXT_MAX_LENGTH)
+        self.value = validate_string_nonnull(
+            value, field_name="value", max_length=OPTION_VALUE_MAX_LENGTH
         )
-        if url and len(url) > 3000:
+        self.description = Text.to_text(
+            description,
+            max_length=OPTION_DESCRIPTION_MAX_LENGTH,
+            force_plaintext=True,
+            allow_none=True,
+        )
+        if url and len(url) > OPTION_URL_MAX_LENGTH:
             raise LengthError("Option URLs must be less than 3000 characters")
         self.url = url
 
@@ -485,12 +528,14 @@ class OptionGroup(CompositionObject):
 
     def __init__(self, label: TextLike, options: list[Option]) -> None:
         super().__init__(type_=CompositionObjectType.OPTION_GROUP)
-        self.label = Text.to_text(label, max_length=75, force_plaintext=True)
+        self.label = Text.to_text(
+            label, max_length=OPTION_GROUP_LABEL_MAX_LENGTH, force_plaintext=True
+        )
         self.options: list[Option] = coerce_to_list_nonnull(
             options,
             class_=Option,
-            min_size=1,
-            max_size=100,
+            min_size=OPTION_GROUP_OPTIONS_MIN_ITEMS,
+            max_size=OPTION_GROUP_OPTIONS_MAX_ITEMS,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -865,7 +910,9 @@ class RawNumber(RenderableMixin):
             raise TypeMismatchError("`value` must be a number.")
         self.type = "raw_number"
         self.value = value
-        self.text = validate_string_nonnull(text, field_name="text", min_length=1)
+        self.text = validate_string_nonnull(
+            text, field_name="text", min_length=DATA_TABLE_CELL_TEXT_MIN_LENGTH
+        )
 
     def _resolve(self) -> dict[str, Any]:
         return {"type": self.type, "value": self.value, "text": self.text}
@@ -1027,10 +1074,12 @@ class ChartSegment(RenderableMixin):
     """
 
     def __init__(self, label: str, value: int | float) -> None:
-        self.label = validate_string_nonnull(label, "label", min_length=1, max_length=20)
+        self.label = validate_string_nonnull(
+            label, "label", min_length=1, max_length=DATA_VISUALIZATION_SEGMENT_LABEL_MAX_LENGTH
+        )
         if isinstance(value, bool) or not isinstance(value, int | float):
             raise TypeMismatchError("`value` must be a number.")
-        if value <= 0:
+        if value <= DATA_VISUALIZATION_SEGMENT_VALUE_EXCLUSIVE_MIN:
             raise RangeError("`value` must be greater than 0.")
         self.value = value
 
@@ -1057,7 +1106,9 @@ class DataPoint(RenderableMixin):
     """
 
     def __init__(self, label: str, value: int | float) -> None:
-        self.label = validate_string_nonnull(label, "label", min_length=1, max_length=20)
+        self.label = validate_string_nonnull(
+            label, "label", min_length=1, max_length=DATA_VISUALIZATION_POINT_LABEL_MAX_LENGTH
+        )
         if isinstance(value, bool) or not isinstance(value, int | float):
             raise TypeMismatchError("`value` must be a number.")
         self.value = value
@@ -1083,9 +1134,14 @@ class DataSeries(RenderableMixin):
     """
 
     def __init__(self, name: str, data: list[DataPoint]) -> None:
-        self.name = validate_string_nonnull(name, "name", min_length=1, max_length=20)
+        self.name = validate_string_nonnull(
+            name, "name", min_length=1, max_length=DATA_VISUALIZATION_SERIES_NAME_MAX_LENGTH
+        )
         self.data: list[DataPoint] = coerce_to_list_nonnull(
-            data, DataPoint, min_size=1, max_size=20
+            data,
+            DataPoint,
+            min_size=DATA_VISUALIZATION_DATA_MIN_ITEMS,
+            max_size=DATA_VISUALIZATION_DATA_MAX_ITEMS,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -1115,16 +1171,28 @@ class AxisConfig(RenderableMixin):
         y_label: str | None = None,
     ) -> None:
         self.categories: list[str] = coerce_to_list_nonnull(
-            categories, str, min_size=1, max_size=20
+            categories,
+            str,
+            min_size=DATA_VISUALIZATION_CATEGORIES_MIN_ITEMS,
+            max_size=DATA_VISUALIZATION_CATEGORIES_MAX_ITEMS,
         )
         self.categories = [
-            validate_string_nonnull(category, "category", min_length=1, max_length=20)
+            validate_string_nonnull(
+                category,
+                "category",
+                min_length=1,
+                max_length=DATA_VISUALIZATION_CATEGORY_LABEL_MAX_LENGTH,
+            )
             for category in self.categories
         ]
         if len(set(self.categories)) != len(self.categories):
             raise InvalidUsageError("`categories` must contain unique labels.")
-        self.x_label = validate_string(x_label, "x_label", max_length=50, allow_none=True)
-        self.y_label = validate_string(y_label, "y_label", max_length=50, allow_none=True)
+        self.x_label = validate_string(
+            x_label, "x_label", max_length=DATA_VISUALIZATION_AXIS_LABEL_MAX_LENGTH, allow_none=True
+        )
+        self.y_label = validate_string(
+            y_label, "y_label", max_length=DATA_VISUALIZATION_AXIS_LABEL_MAX_LENGTH, allow_none=True
+        )
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(
@@ -1153,7 +1221,10 @@ class PieChart(RenderableMixin):
     def __init__(self, segments: list[ChartSegment]) -> None:
         self.type = "pie"
         self.segments: list[ChartSegment] = coerce_to_list_nonnull(
-            segments, ChartSegment, min_size=1, max_size=12
+            segments,
+            ChartSegment,
+            min_size=DATA_VISUALIZATION_SEGMENTS_MIN_ITEMS,
+            max_size=DATA_VISUALIZATION_SEGMENTS_MAX_ITEMS,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -1164,7 +1235,10 @@ class _AxisChart(RenderableMixin):
     def __init__(self, type_: str, series: list[DataSeries], axis_config: AxisConfig) -> None:
         self.type = type_
         self.series: list[DataSeries] = coerce_to_list_nonnull(
-            series, DataSeries, min_size=1, max_size=12
+            series,
+            DataSeries,
+            min_size=DATA_VISUALIZATION_SERIES_MIN_ITEMS,
+            max_size=DATA_VISUALIZATION_SERIES_MAX_ITEMS,
         )
         self.axis_config = validate_type(axis_config, AxisConfig, "axis_config")
         if len({item.name for item in self.series}) != len(self.series):

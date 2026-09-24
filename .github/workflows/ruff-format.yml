@@ -67,4 +67,4 @@ jobs:
         run: uv sync --frozen --group dev
 
       - name: Check formatting
-        run: uv run --frozen ruff format --check slackblocks test ../docs/scripts
+        run: uv run --frozen ruff format --check slackblocks test generator ../docs/scripts
