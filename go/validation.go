@@ -90,10 +90,15 @@ var confirmTypes = stringSet(
 	"users_select", "workflow_button",
 )
 
-var placeholderInputTypes = stringSet(
-	"plain_text_input", "email_text_input", "url_text_input", "number_input", "datepicker",
-	"timepicker", "rich_text_input",
-)
+var inputPlaceholderMaxLengths = map[string]int{
+	"plain_text_input": limitPlainTextInputPlaceholderMaxLength,
+	"email_text_input": limitEmailInputPlaceholderMaxLength,
+	"url_text_input":   limitURLInputPlaceholderMaxLength,
+	"number_input":     limitNumberInputPlaceholderMaxLength,
+	"datepicker":       limitDatePickerPlaceholderMaxLength,
+	"timepicker":       limitTimePickerPlaceholderMaxLength,
+	"rich_text_input":  limitRichTextInputPlaceholderMaxLength,
+}
 
 var attachmentColorPattern = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
 
@@ -187,14 +192,13 @@ func validateBuilder(name string, object Object) error {
 			return validationError(MissingRequired, name, "expected trigger")
 		}
 	case "DispatchActionConfiguration":
-		triggers := []any{}
 		if raw, ok := object["trigger_actions_on"]; ok {
-			var err error
-			if triggers, err = sliceAt(raw, child(name, "trigger_actions_on")); err != nil {
+			triggers, err := sliceAt(raw, child(name, "trigger_actions_on"))
+			if err != nil {
 				return err
 			}
+			return sliceLength(triggers, child(name, "trigger_actions_on"), limitDispatchActionConfigurationTriggerActionsOnMinItems, limitDispatchActionConfigurationTriggerActionsOnMaxItems)
 		}
-		return sliceLength(triggers, child(name, "trigger_actions_on"), limitDispatchActionConfigurationTriggerActionsOnMinItems, limitDispatchActionConfigurationTriggerActionsOnMaxItems)
 	case "SlackFile":
 		_, hasID := object["id"]
 		_, hasURL := object["url"]
@@ -318,9 +322,9 @@ func validateObject(object Object, path string) error {
 			}
 		}
 	}
-	if placeholderInputTypes[typeName] {
+	if maximum, ok := inputPlaceholderMaxLengths[typeName]; ok {
 		if placeholder, ok := object["placeholder"]; ok {
-			if err := textLength(placeholder, child(path, "placeholder.text"), 0, limitInputElementPlaceholderMaxLength); err != nil {
+			if err := textLength(placeholder, child(path, "placeholder.text"), 0, maximum); err != nil {
 				return err
 			}
 		}

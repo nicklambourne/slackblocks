@@ -53,8 +53,10 @@ const (
 	limitDataVisualizationSeriesMinItems                     = 1     // data_visualization.series.min_items
 	limitDataVisualizationSeriesNameMaxLength                = 20    // data_visualization.series_name.max_length
 	limitDataVisualizationTitleMaxLength                     = 50    // data_visualization.title.max_length
+	limitDatePickerPlaceholderMaxLength                      = 150   // date_picker.placeholder.max_length
 	limitDispatchActionConfigurationTriggerActionsOnMaxItems = 2     // dispatch_action_configuration.trigger_actions_on.max_items
 	limitDispatchActionConfigurationTriggerActionsOnMinItems = 1     // dispatch_action_configuration.trigger_actions_on.min_items
+	limitEmailInputPlaceholderMaxLength                      = 150   // email_input.placeholder.max_length
 	limitFeedbackButtonAccessibilityLabelMaxLength           = 75    // feedback_button.accessibility_label.max_length
 	limitFeedbackButtonTextMaxLength                         = 75    // feedback_button.text.max_length
 	limitFeedbackButtonValueMaxLength                        = 2000  // feedback_button.value.max_length
@@ -68,12 +70,12 @@ const (
 	limitImageImageURLMaxLength                              = 3000  // image.image_url.max_length
 	limitInputHintMaxLength                                  = 2000  // input.hint.max_length
 	limitInputLabelMaxLength                                 = 2000  // input.label.max_length
-	limitInputElementPlaceholderMaxLength                    = 150   // input_element.placeholder.max_length
 	limitMarkdownTextMaxLength                               = 12000 // markdown.text.max_length
 	limitMarkdownTextMinLength                               = 1     // markdown.text.min_length
 	limitMessageAttachmentsMaxItems                          = 100   // message.attachments.max_items
 	limitMessageBlocksMaxItems                               = 50    // message.blocks.max_items
 	limitMessageChannelMinLength                             = 1     // message.channel.min_length
+	limitNumberInputPlaceholderMaxLength                     = 150   // number_input.placeholder.max_length
 	limitOptionDescriptionMaxLength                          = 75    // option.description.max_length
 	limitOptionTextMaxLength                                 = 75    // option.text.max_length
 	limitOptionURLMaxLength                                  = 3000  // option.url.max_length
@@ -84,8 +86,10 @@ const (
 	limitOverflowOptionsMaxItems                             = 5     // overflow.options.max_items
 	limitOverflowOptionsMinItems                             = 1     // overflow.options.min_items
 	limitPlainTextInputMaxLengthMax                          = 3000  // plain_text_input.max_length.max
+	limitPlainTextInputPlaceholderMaxLength                  = 150   // plain_text_input.placeholder.max_length
 	limitRadioButtonsOptionsMaxItems                         = 10    // radio_buttons.options.max_items
 	limitRadioButtonsOptionsMinItems                         = 1     // radio_buttons.options.min_items
+	limitRichTextInputPlaceholderMaxLength                   = 150   // rich_text_input.placeholder.max_length
 	limitSectionFieldsItemMaxLength                          = 2000  // section.fields.item_max_length
 	limitSectionFieldsMaxItems                               = 10    // section.fields.max_items
 	limitSectionTextMaxLength                                = 3000  // section.text.max_length
@@ -96,6 +100,8 @@ const (
 	limitTableRowsMaxItems                                   = 100   // table.rows.max_items
 	limitTextMaxLength                                       = 3000  // text.max_length
 	limitTextMinLength                                       = 1     // text.min_length
+	limitTimePickerPlaceholderMaxLength                      = 150   // time_picker.placeholder.max_length
+	limitURLInputPlaceholderMaxLength                        = 150   // url_input.placeholder.max_length
 	limitURLSourceURLMaxLength                               = 3000  // url_source.url.max_length
 	limitURLSourceURLMinLength                               = 1     // url_source.url.min_length
 	limitVideoAltTextMaxLength                               = 200   // video.alt_text.max_length
