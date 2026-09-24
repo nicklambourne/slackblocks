@@ -373,7 +373,6 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "section-field-too-long": lambda: SectionBlock(
         fields=["x" * (LIMITS["section"]["fields"]["item_max_length"] + 1)]
     ),
-    "video-alt-text-empty": lambda: video(alt_text=""),
     "video-alt-text-too-long": lambda: video(
         alt_text="x" * (LIMITS["video"]["alt_text"]["max_length"] + 1)
     ),

@@ -51,7 +51,6 @@ from slackblocks._limits import (
     TABLE_COLUMNS_MAX_ITEMS,
     TABLE_ROWS_MAX_ITEMS,
     VIDEO_ALT_TEXT_MAX_LENGTH,
-    VIDEO_ALT_TEXT_MIN_LENGTH,
     VIDEO_AUTHOR_NAME_MAX_LENGTH,
     VIDEO_DESCRIPTION_MAX_LENGTH,
     VIDEO_PROVIDER_NAME_MAX_LENGTH,
@@ -887,7 +886,7 @@ class VideoBlock(Block):
 
     Args:
         alt_text: a plain-text summary of the video, used for accessibility
-            and notifications (max 200 chars).
+            and notifications (max 2000 chars; may be empty).
         thumbnail_url: a URL pointing to the preview image shown before
             playback. Must be HTTPS in production usage.
         title: the title shown above the video player (plain text, max 200
@@ -925,7 +924,6 @@ class VideoBlock(Block):
         self.alt_text = validate_string_nonnull(
             alt_text,
             field_name="alt_text",
-            min_length=VIDEO_ALT_TEXT_MIN_LENGTH,
             max_length=VIDEO_ALT_TEXT_MAX_LENGTH,
         )
         self.thumbnail_url = validate_string_nonnull(
