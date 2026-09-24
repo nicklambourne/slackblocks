@@ -84,7 +84,7 @@ jobs:
         if: needs.changes.outputs.relevant == 'true'
         run: |
           go generate ./...
-          git diff --exit-code -- concrete_builders_gen.go
+          git diff --exit-code -- concrete_builders_gen.go limits_gen.go
 
       - name: Verify release-note extraction
         if: needs.changes.outputs.relevant == 'true'

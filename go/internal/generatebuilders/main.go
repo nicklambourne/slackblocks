@@ -80,6 +80,8 @@ func main() {
 	formatted, err := format.Source(output.Bytes())
 	must(err)
 	must(os.WriteFile(filepath.Join(root, generatedFile), formatted, 0o644))
+
+	writeLimits(root)
 }
 
 func loadConstructors(path string) map[string]bool {
