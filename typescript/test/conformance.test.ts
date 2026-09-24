@@ -431,7 +431,6 @@ const validSeries = (name = "Series") =>
   dataSeries({ name, data: [dataPoint({ label: "A", value: 1 })] });
 const validWorkflow = () =>
   workflow({ trigger: trigger({ url: "https://slack.com/shortcuts/Ft0/abc" }) });
-const tooLongPlaceholder = () => "x".repeat(limits.input_element.placeholder.max_length + 1);
 
 const invalidCases: Record<string, () => unknown> = {
   "text-empty": () => plainText(""),
@@ -504,19 +503,41 @@ const invalidCases: Record<string, () => unknown> = {
       placeholder: "x".repeat(limits.select.placeholder.max_length + 1),
     }),
   "plain-text-input-placeholder-too-long": () =>
-    plainTextInput({ actionId: "a", placeholder: tooLongPlaceholder() }),
+    plainTextInput({
+      actionId: "a",
+      placeholder: "x".repeat(limits.plain_text_input.placeholder.max_length + 1),
+    }),
   "email-input-placeholder-too-long": () =>
-    emailInput({ actionId: "a", placeholder: tooLongPlaceholder() }),
+    emailInput({
+      actionId: "a",
+      placeholder: "x".repeat(limits.email_input.placeholder.max_length + 1),
+    }),
   "url-input-placeholder-too-long": () =>
-    urlInput({ actionId: "a", placeholder: tooLongPlaceholder() }),
+    urlInput({
+      actionId: "a",
+      placeholder: "x".repeat(limits.url_input.placeholder.max_length + 1),
+    }),
   "number-input-placeholder-too-long": () =>
-    numberInput({ actionId: "a", isDecimalAllowed: false, placeholder: tooLongPlaceholder() }),
+    numberInput({
+      actionId: "a",
+      isDecimalAllowed: false,
+      placeholder: "x".repeat(limits.number_input.placeholder.max_length + 1),
+    }),
   "date-picker-placeholder-too-long": () =>
-    datePicker({ actionId: "a", placeholder: tooLongPlaceholder() }),
+    datePicker({
+      actionId: "a",
+      placeholder: "x".repeat(limits.date_picker.placeholder.max_length + 1),
+    }),
   "time-picker-placeholder-too-long": () =>
-    timePicker({ actionId: "a", placeholder: tooLongPlaceholder() }),
+    timePicker({
+      actionId: "a",
+      placeholder: "x".repeat(limits.time_picker.placeholder.max_length + 1),
+    }),
   "rich-text-input-placeholder-too-long": () =>
-    richTextInput({ actionId: "a", placeholder: tooLongPlaceholder() }),
+    richTextInput({
+      actionId: "a",
+      placeholder: "x".repeat(limits.rich_text_input.placeholder.max_length + 1),
+    }),
   "select-too-many-options": () =>
     staticSelect({
       actionId: "a",
@@ -1090,10 +1111,11 @@ describe("invalid conformance corpus", () => {
     expect(scalarPaths(limits).filter((path) => !covered.has(path))).toEqual([]);
   });
 
-  // A constraint may have several cases, such as one per input element for a
-  // shared placeholder limit.
-  it("contains unique case IDs", () => {
+  it("contains unique case IDs and constraints", () => {
     expect(new Set(invalidManifest.cases.map(({ id }) => id)).size).toBe(
+      invalidManifest.cases.length,
+    );
+    expect(new Set(invalidManifest.cases.map(({ constraint }) => constraint)).size).toBe(
       invalidManifest.cases.length,
     );
   });

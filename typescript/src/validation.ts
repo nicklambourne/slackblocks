@@ -313,15 +313,15 @@ const CONFIRM_SUPPORTING_TYPES = new Set([
 
 const OPTION_URL_MAX_LENGTH = 3000;
 
-const PLACEHOLDER_INPUT_TYPES = new Set([
-  "plain_text_input",
-  "email_text_input",
-  "url_text_input",
-  "number_input",
-  "datepicker",
-  "timepicker",
-  "rich_text_input",
-]);
+const INPUT_PLACEHOLDER_MAX_LENGTHS: Record<string, number> = {
+  plain_text_input: limits.plain_text_input.placeholder.max_length,
+  email_text_input: limits.email_input.placeholder.max_length,
+  url_text_input: limits.url_input.placeholder.max_length,
+  number_input: limits.number_input.placeholder.max_length,
+  datepicker: limits.date_picker.placeholder.max_length,
+  timepicker: limits.time_picker.placeholder.max_length,
+  rich_text_input: limits.rich_text_input.placeholder.max_length,
+};
 
 function validateOptionEntry(value: JsonValue, path: string): void {
   const option = objectAt(value, path);
@@ -422,12 +422,13 @@ function validateKnownObject(object: JsonObject, path: string): void {
     if (CONFIRM_SUPPORTING_TYPES.has(type) && object.confirm !== undefined) {
       validateConfirmObject(object.confirm, child(path, "confirm"));
     }
-    if (PLACEHOLDER_INPUT_TYPES.has(type) && object.placeholder !== undefined) {
+    const placeholderMaximum = INPUT_PLACEHOLDER_MAX_LENGTHS[type];
+    if (placeholderMaximum !== undefined && object.placeholder !== undefined) {
       length(
         textValue(object.placeholder),
         child(path, "placeholder.text"),
         undefined,
-        limits.input_element.placeholder.max_length,
+        placeholderMaximum,
       );
     }
   }

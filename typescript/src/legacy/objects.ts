@@ -275,15 +275,15 @@ export function conversationFilter(
 export function dispatchActionConfiguration(
   input: {
     /** One or two events such as `on_enter_pressed` or `on_character_entered`. */
-    triggerActionsOn: string[];
+    triggerActionsOn?: string[];
   },
   settings: FactorySettings = {},
 ): JsonObject {
   const { min_items: minimum, max_items: maximum } =
     limits.dispatch_action_configuration.trigger_actions_on;
-  // The fluent builder passes no array when no trigger was added.
-  const count = input.triggerActionsOn?.length ?? 0;
-  if (count < minimum || count > maximum) {
+  // Slack marks the list optional, so only a supplied list is checked.
+  const count = input.triggerActionsOn?.length;
+  if (count !== undefined && (count < minimum || count > maximum)) {
     throw new LengthError(
       "dispatchActionConfiguration.triggerActionsOn",
       `expected between ${minimum} and ${maximum} triggers, received ${count}`,
