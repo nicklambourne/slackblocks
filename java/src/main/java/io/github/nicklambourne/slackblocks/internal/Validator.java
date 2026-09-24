@@ -177,8 +177,12 @@ public final class Validator {
           fail(ErrorCategory.MUTUALLY_EXCLUSIVE, name, "expected exactly one of id or url");
         }
       }
-      case "ChartSegment" -> validateLabelValue(value, name, 20, true);
-      case "DataPoint" -> validateLabelValue(value, name, 20, false);
+      case "ChartSegment" ->
+          validateLabelValue(
+              value, name, SlackLimits.DATA_VISUALIZATION_SEGMENT_LABEL_MAX_LENGTH, true);
+      case "DataPoint" ->
+          validateLabelValue(
+              value, name, SlackLimits.DATA_VISUALIZATION_POINT_LABEL_MAX_LENGTH, false);
       case "DataSeries" -> validateDataSeries(value, name);
       case "AxisConfig" -> validateAxisConfig(value, name);
       case "FeedbackButton" -> validateFeedbackButton(value, name);
@@ -200,7 +204,7 @@ public final class Validator {
         if (!(raw instanceof String channel)) {
           fail(ErrorCategory.TYPE_MISMATCH, child(name, "channel"), "expected a string");
         } else {
-          stringLength(channel, child(name, "channel"), 1, 0);
+          stringLength(channel, child(name, "channel"), SlackLimits.MESSAGE_CHANNEL_MIN_LENGTH, 0);
         }
         validateMessageCollections(value, name);
       }
@@ -217,10 +221,10 @@ public final class Validator {
       require(value, field, path);
     }
     if (value.get("block_id") instanceof String blockId) {
-      stringLength(blockId, child(path, "block_id"), 0, 255);
+      stringLength(blockId, child(path, "block_id"), 0, SlackLimits.BLOCK_ID_MAX_LENGTH);
     }
     if (value.get("action_id") instanceof String actionId) {
-      stringLength(actionId, child(path, "action_id"), 0, 255);
+      stringLength(actionId, child(path, "action_id"), 0, SlackLimits.ACTION_ID_MAX_LENGTH);
     }
     if (CONFIRM_TYPES.contains(type) && value.containsKey("confirm")) {
       validateConfirmation(
@@ -233,7 +237,9 @@ public final class Validator {
     }
 
     switch (type) {
-      case "plain_text", "mrkdwn" -> textLength(value, child(path, "text"), 1, 3000);
+      case "plain_text", "mrkdwn" ->
+          textLength(
+              value, child(path, "text"), SlackLimits.TEXT_MIN_LENGTH, SlackLimits.TEXT_MAX_LENGTH);
       case "icon" -> {
         if (!(value.get("name") instanceof String name)
             || !SlackVocabulary.SLACK_ICON_NAMES.contains(name)) {
@@ -241,7 +247,9 @@ public final class Validator {
         }
       }
       case "section" -> validateSection(value, path);
-      case "header" -> textLength(value.get("text"), child(path, "text.text"), 0, 150);
+      case "header" ->
+          textLength(
+              value.get("text"), child(path, "text.text"), 0, SlackLimits.HEADER_TEXT_MAX_LENGTH);
       case "button" -> validateButton(value, path);
       case "workflow_button" -> validateWorkflowButton(value, path);
       case "icon_button" -> validateIconButton(value, path);
@@ -253,17 +261,25 @@ public final class Validator {
       }
       case "file_input" -> {
         Double number = number(value.get("max_files"));
-        if (number != null && (number < 1 || number > 10)) {
+        if (number != null
+            && (number < SlackLimits.FILE_INPUT_MAX_FILES_MIN
+                || number > SlackLimits.FILE_INPUT_MAX_FILES_MAX)) {
           fail(
               ErrorCategory.OUT_OF_RANGE,
               child(path, "max_files"),
-              "expected a value between 1 and 10");
+              "expected a value between "
+                  + SlackLimits.FILE_INPUT_MAX_FILES_MIN
+                  + " and "
+                  + SlackLimits.FILE_INPUT_MAX_FILES_MAX);
         }
       }
       case "plain_text_input" -> {
         Double number = number(value.get("max_length"));
-        if (number != null && number > 3000) {
-          fail(ErrorCategory.OUT_OF_RANGE, child(path, "max_length"), "exceeds maximum 3000");
+        if (number != null && number > SlackLimits.PLAIN_TEXT_INPUT_MAX_LENGTH_MAX) {
+          fail(
+              ErrorCategory.OUT_OF_RANGE,
+              child(path, "max_length"),
+              "exceeds maximum " + SlackLimits.PLAIN_TEXT_INPUT_MAX_LENGTH_MAX);
         }
         if (value.containsKey("placeholder")) {
           textLength(
@@ -290,11 +306,27 @@ public final class Validator {
               value, "placeholder", path, SlackLimits.RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH);
       case "overflow", "checkboxes", "radio_buttons" -> {
         List<?> options = listAt(value.get("options"), child(path, "options"));
-        sliceLength(options, child(path, "options"), 1, type.equals("overflow") ? 5 : 10);
+        sliceLength(
+            options,
+            child(path, "options"),
+            switch (type) {
+              case "overflow" -> SlackLimits.OVERFLOW_OPTIONS_MIN_ITEMS;
+              case "checkboxes" -> SlackLimits.CHECKBOXES_OPTIONS_MIN_ITEMS;
+              default -> SlackLimits.RADIO_BUTTONS_OPTIONS_MIN_ITEMS;
+            },
+            switch (type) {
+              case "overflow" -> SlackLimits.OVERFLOW_OPTIONS_MAX_ITEMS;
+              case "checkboxes" -> SlackLimits.CHECKBOXES_OPTIONS_MAX_ITEMS;
+              default -> SlackLimits.RADIO_BUTTONS_OPTIONS_MAX_ITEMS;
+            });
         validateOptions(options, child(path, "options"));
       }
       case "url" ->
-          stringLength(stringAt(value.get("url"), child(path, "url")), child(path, "url"), 1, 3000);
+          stringLength(
+              stringAt(value.get("url"), child(path, "url")),
+              child(path, "url"),
+              SlackLimits.URL_SOURCE_URL_MIN_LENGTH,
+              SlackLimits.URL_SOURCE_URL_MAX_LENGTH);
       case "static_select", "multi_static_select" -> validateStaticSelect(value, path);
       case "number_input" -> {
         Double minimum = number(value.get("min_value"));
@@ -312,9 +344,10 @@ public final class Validator {
               listAt(value.get("elements"), child(path, "elements")),
               child(path, "elements"),
               0,
-              25);
+              SlackLimits.ACTIONS_ELEMENTS_MAX_ITEMS);
       case "alert" -> {
-        textLength(value.get("text"), child(path, "text.text"), 0, 200);
+        textLength(
+            value.get("text"), child(path, "text.text"), 0, SlackLimits.ALERT_TEXT_MAX_LENGTH);
         if (value.get("level") instanceof String level && !ALERT_LEVELS.contains(level)) {
           fail(ErrorCategory.TYPE_MISMATCH, child(path, "level"), "unknown alert level");
         }
@@ -327,12 +360,13 @@ public final class Validator {
               listAt(value.get("elements"), child(path, "elements")),
               child(path, "elements"),
               1,
-              5);
+              SlackLimits.CONTEXT_ACTIONS_ELEMENTS_MAX_ITEMS);
       case "data_table" -> validateTable(value, path, true);
       case "table" -> validateTable(value, path, false);
       case "data_visualization" -> {
         if (value.get("title") instanceof String title) {
-          stringLength(title, child(path, "title"), 0, 50);
+          stringLength(
+              title, child(path, "title"), 0, SlackLimits.DATA_VISUALIZATION_TITLE_MAX_LENGTH);
         }
         objectAt(value.get("chart"), child(path, "chart"));
       }
@@ -346,7 +380,10 @@ public final class Validator {
       case "input" -> validateInput(value, path);
       case "markdown" ->
           stringLength(
-              stringAt(value.get("text"), child(path, "text")), child(path, "text"), 1, 12000);
+              stringAt(value.get("text"), child(path, "text")),
+              child(path, "text"),
+              SlackLimits.MARKDOWN_TEXT_MIN_LENGTH,
+              SlackLimits.MARKDOWN_TEXT_MAX_LENGTH);
       case "video" -> validateVideo(value, path);
       case "modal", "home" -> validateView(value, path, type);
       default -> {
@@ -371,21 +408,27 @@ public final class Validator {
       fail(ErrorCategory.MISSING_REQUIRED, path, "expected text, fields, or both");
     }
     if (hasText) {
-      textLength(value.get("text"), child(path, "text.text"), 0, 3000);
+      textLength(
+          value.get("text"), child(path, "text.text"), 0, SlackLimits.SECTION_TEXT_MAX_LENGTH);
     }
     if (value.containsKey("fields")) {
-      sliceLength(fields, child(path, "fields"), 0, 10);
+      sliceLength(fields, child(path, "fields"), 0, SlackLimits.SECTION_FIELDS_MAX_ITEMS);
       for (int index = 0; index < fields.size(); index++) {
-        textLength(fields.get(index), child(path, "fields") + "[" + index + "].text", 0, 2000);
+        textLength(
+            fields.get(index),
+            child(path, "fields") + "[" + index + "].text",
+            0,
+            SlackLimits.SECTION_FIELDS_ITEM_MAX_LENGTH);
       }
     }
   }
 
   private static void validateButton(Map<String, Object> value, String path) {
-    textLength(value.get("text"), child(path, "text.text"), 0, 75);
-    checkOptionalString(value, "url", path, 3000);
-    checkOptionalString(value, "value", path, 2000);
-    checkOptionalString(value, "accessibility_label", path, 75);
+    textLength(value.get("text"), child(path, "text.text"), 0, SlackLimits.BUTTON_TEXT_MAX_LENGTH);
+    checkOptionalString(value, "url", path, SlackLimits.BUTTON_URL_MAX_LENGTH);
+    checkOptionalString(value, "value", path, SlackLimits.BUTTON_VALUE_MAX_LENGTH);
+    checkOptionalString(
+        value, "accessibility_label", path, SlackLimits.BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH);
   }
 
   private static void validateWorkflowButton(Map<String, Object> value, String path) {
@@ -409,7 +452,11 @@ public final class Validator {
     checkOptionalString(
         value, "accessibility_label", path, SlackLimits.ICON_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH);
     if (value.get("visible_to_user_ids") instanceof List<?> users) {
-      sliceLength(users, child(path, "visible_to_user_ids"), 0, 10);
+      sliceLength(
+          users,
+          child(path, "visible_to_user_ids"),
+          0,
+          SlackLimits.ICON_BUTTON_VISIBLE_TO_USER_IDS_MAX_ITEMS);
     }
   }
 
@@ -424,12 +471,13 @@ public final class Validator {
     }
     if (hasOptions) {
       List<?> options = listAt(value.get("options"), child(path, "options"));
-      sliceLength(options, child(path, "options"), 0, 100);
+      sliceLength(options, child(path, "options"), 0, SlackLimits.SELECT_OPTIONS_MAX_ITEMS);
       validateOptions(options, child(path, "options"));
     }
     if (hasGroups) {
       List<?> groups = listAt(value.get("option_groups"), child(path, "option_groups"));
-      sliceLength(groups, child(path, "option_groups"), 0, 100);
+      sliceLength(
+          groups, child(path, "option_groups"), 0, SlackLimits.SELECT_OPTION_GROUPS_MAX_ITEMS);
       for (int index = 0; index < groups.size(); index++) {
         validateOptionGroup(
             objectAt(groups.get(index), child(path, "option_groups") + "[" + index + "]"),
@@ -437,7 +485,11 @@ public final class Validator {
       }
     }
     if (value.containsKey("placeholder")) {
-      textLength(value.get("placeholder"), child(path, "placeholder.text"), 0, 150);
+      textLength(
+          value.get("placeholder"),
+          child(path, "placeholder.text"),
+          0,
+          SlackLimits.SELECT_PLACEHOLDER_MAX_LENGTH);
     }
   }
 
@@ -453,13 +505,13 @@ public final class Validator {
           path,
           "image_url and slack_file cannot be provided together");
     }
-    checkOptionalString(value, "image_url", path, 3000);
-    checkOptionalString(value, "alt_text", path, 2000);
+    checkOptionalString(value, "image_url", path, SlackLimits.IMAGE_IMAGE_URL_MAX_LENGTH);
+    checkOptionalString(value, "alt_text", path, SlackLimits.IMAGE_ALT_TEXT_MAX_LENGTH);
   }
 
   private static void validateContext(Map<String, Object> value, String path) {
     List<?> elements = listAt(value.get("elements"), child(path, "elements"));
-    sliceLength(elements, child(path, "elements"), 0, 10);
+    sliceLength(elements, child(path, "elements"), 0, SlackLimits.CONTEXT_ELEMENTS_MAX_ITEMS);
     for (int index = 0; index < elements.size(); index++) {
       String elementPath = child(path, "elements") + "[" + index + "]";
       if (!CONTEXT_ELEMENT_TYPES.contains(objectType(objectAt(elements.get(index), elementPath)))) {
@@ -481,18 +533,22 @@ public final class Validator {
           path,
           "icon and slack_icon cannot be provided together");
     }
-    checkOptionalText(value, "title", path, 150);
-    checkOptionalText(value, "subtitle", path, 150);
-    checkOptionalText(value, "body", path, 200);
-    checkOptionalText(value, "subtext", path, 200);
+    checkOptionalText(value, "title", path, SlackLimits.CARD_TITLE_MAX_LENGTH);
+    checkOptionalText(value, "subtitle", path, SlackLimits.CARD_SUBTITLE_MAX_LENGTH);
+    checkOptionalText(value, "body", path, SlackLimits.CARD_BODY_MAX_LENGTH);
+    checkOptionalText(value, "subtext", path, SlackLimits.CARD_SUBTEXT_MAX_LENGTH);
     if (value.get("actions") instanceof List<?> actions) {
-      sliceLength(actions, child(path, "actions"), 0, 3);
+      sliceLength(actions, child(path, "actions"), 0, SlackLimits.CARD_ACTIONS_MAX_ITEMS);
     }
   }
 
   private static void validateCarousel(Map<String, Object> value, String path) {
     List<?> cards = listAt(value.get("elements"), child(path, "elements"));
-    sliceLength(cards, child(path, "elements"), 1, 10);
+    sliceLength(
+        cards,
+        child(path, "elements"),
+        SlackLimits.CAROUSEL_ELEMENTS_MIN_ITEMS,
+        SlackLimits.CAROUSEL_ELEMENTS_MAX_ITEMS);
     for (int index = 0; index < cards.size(); index++) {
       String cardPath = child(path, "elements") + "[" + index + "]";
       if (!"card".equals(objectType(objectAt(cards.get(index), cardPath)))) {
@@ -505,10 +561,11 @@ public final class Validator {
     if (!value.containsKey("title") && !value.containsKey("rich_text_title")) {
       fail(ErrorCategory.MISSING_REQUIRED, path, "expected title or rich_text_title");
     }
-    checkOptionalText(value, "title", path, 150);
-    checkOptionalText(value, "subtitle", path, 150);
+    checkOptionalText(value, "title", path, SlackLimits.CONTAINER_TITLE_MAX_LENGTH);
+    checkOptionalText(value, "subtitle", path, SlackLimits.CONTAINER_SUBTITLE_MAX_LENGTH);
     List<?> blocks = listAt(value.get("child_blocks"), child(path, "child_blocks"));
-    sliceLength(blocks, child(path, "child_blocks"), 1, 10);
+    sliceLength(
+        blocks, child(path, "child_blocks"), 1, SlackLimits.CONTAINER_CHILD_BLOCKS_MAX_ITEMS);
     if (value.get("width") instanceof String width && !CONTAINER_WIDTHS.contains(width)) {
       fail(ErrorCategory.TYPE_MISMATCH, child(path, "width"), "unknown container width");
     }
@@ -528,17 +585,26 @@ public final class Validator {
 
   private static void validatePie(Map<String, Object> value, String path) {
     List<?> segments = listAt(value.get("segments"), child(path, "segments"));
-    sliceLength(segments, child(path, "segments"), 1, 12);
+    sliceLength(
+        segments,
+        child(path, "segments"),
+        SlackLimits.DATA_VISUALIZATION_SEGMENTS_MIN_ITEMS,
+        SlackLimits.DATA_VISUALIZATION_SEGMENTS_MAX_ITEMS);
     for (int index = 0; index < segments.size(); index++) {
       String segmentPath = child(path, "segments") + "[" + index + "]";
-      validateLabelValue(objectAt(segments.get(index), segmentPath), segmentPath, 20, true);
+      validateLabelValue(
+          objectAt(segments.get(index), segmentPath),
+          segmentPath,
+          SlackLimits.DATA_VISUALIZATION_SEGMENT_LABEL_MAX_LENGTH,
+          true);
     }
   }
 
   private static void validateInput(Map<String, Object> value, String path) {
-    textLength(value.get("label"), child(path, "label.text"), 0, 2000);
+    textLength(
+        value.get("label"), child(path, "label.text"), 0, SlackLimits.INPUT_LABEL_MAX_LENGTH);
     if (value.containsKey("hint")) {
-      textLength(value.get("hint"), child(path, "hint.text"), 0, 2000);
+      textLength(value.get("hint"), child(path, "hint.text"), 0, SlackLimits.INPUT_HINT_MAX_LENGTH);
     }
     Map<String, Object> element = objectAt(value.get("element"), child(path, "element"));
     if (!INPUT_ELEMENT_TYPES.contains(objectType(element))) {
@@ -551,20 +617,30 @@ public final class Validator {
 
   private static void validateVideo(Map<String, Object> value, String path) {
     if (value.get("alt_text") instanceof String altText) {
-      stringLength(altText, child(path, "alt_text"), 1, 200);
+      stringLength(
+          altText,
+          child(path, "alt_text"),
+          SlackLimits.VIDEO_ALT_TEXT_MIN_LENGTH,
+          SlackLimits.VIDEO_ALT_TEXT_MAX_LENGTH);
     }
-    textLength(value.get("title"), child(path, "title.text"), 0, 200);
-    checkOptionalString(value, "author_name", path, 50);
-    checkOptionalString(value, "provider_name", path, 50);
-    checkOptionalText(value, "description", path, 200);
+    textLength(
+        value.get("title"), child(path, "title.text"), 0, SlackLimits.VIDEO_TITLE_MAX_LENGTH);
+    checkOptionalString(value, "author_name", path, SlackLimits.VIDEO_AUTHOR_NAME_MAX_LENGTH);
+    checkOptionalString(value, "provider_name", path, SlackLimits.VIDEO_PROVIDER_NAME_MAX_LENGTH);
+    checkOptionalText(value, "description", path, SlackLimits.VIDEO_DESCRIPTION_MAX_LENGTH);
   }
 
   private static void validateView(Map<String, Object> value, String path, String type) {
     List<?> blocks = listAt(value.get("blocks"), child(path, "blocks"));
-    sliceLength(blocks, child(path, "blocks"), 1, 100);
+    sliceLength(
+        blocks,
+        child(path, "blocks"),
+        SlackLimits.VIEW_BLOCKS_MIN_ITEMS,
+        SlackLimits.VIEW_BLOCKS_MAX_ITEMS);
     validateSurface(blocks, type, child(path, "blocks"));
-    checkOptionalString(value, "private_metadata", path, 3000);
-    checkOptionalString(value, "callback_id", path, 255);
+    checkOptionalString(
+        value, "private_metadata", path, SlackLimits.VIEW_PRIVATE_METADATA_MAX_LENGTH);
+    checkOptionalString(value, "callback_id", path, SlackLimits.VIEW_CALLBACK_ID_MAX_LENGTH);
     if (type.equals("modal")) {
       if (!value.containsKey("submit")) {
         for (int index = 0; index < blocks.size(); index++) {
@@ -577,26 +653,42 @@ public final class Validator {
           }
         }
       }
-      checkOptionalText(value, "title", path, 24);
-      checkOptionalText(value, "close", path, 24);
-      checkOptionalText(value, "submit", path, 24);
+      checkOptionalText(value, "title", path, SlackLimits.VIEW_TITLE_MAX_LENGTH);
+      checkOptionalText(value, "close", path, SlackLimits.VIEW_CLOSE_MAX_LENGTH);
+      checkOptionalText(value, "submit", path, SlackLimits.VIEW_SUBMIT_MAX_LENGTH);
     }
   }
 
   private static void validateOptionGroup(Map<String, Object> value, String path) {
     require(value, "label", path);
-    textLength(value.get("label"), child(path, "label.text"), 0, 75);
+    textLength(
+        value.get("label"),
+        child(path, "label.text"),
+        0,
+        SlackLimits.OPTION_GROUP_LABEL_MAX_LENGTH);
     List<?> options = listAt(value.get("options"), child(path, "options"));
-    sliceLength(options, child(path, "options"), 1, 100);
+    sliceLength(
+        options,
+        child(path, "options"),
+        SlackLimits.OPTION_GROUP_OPTIONS_MIN_ITEMS,
+        SlackLimits.OPTION_GROUP_OPTIONS_MAX_ITEMS);
     validateOptions(options, child(path, "options"));
   }
 
   private static void validateFeedbackButton(Map<String, Object> value, String path) {
     require(value, "text", path);
     require(value, "value", path);
-    textLength(value.get("text"), child(path, "text.text"), 0, 75);
-    checkOptionalString(value, "value", path, 2000);
-    checkOptionalString(value, "accessibility_label", path, 75);
+    textLength(
+        value.get("text"),
+        child(path, "text.text"),
+        0,
+        SlackLimits.FEEDBACK_BUTTON_TEXT_MAX_LENGTH);
+    checkOptionalString(value, "value", path, SlackLimits.FEEDBACK_BUTTON_VALUE_MAX_LENGTH);
+    checkOptionalString(
+        value,
+        "accessibility_label",
+        path,
+        SlackLimits.FEEDBACK_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH);
   }
 
   private static void validateDispatchActionConfiguration(Map<String, Object> value, String path) {
@@ -611,29 +703,49 @@ public final class Validator {
 
   private static void validateDataSeries(Map<String, Object> value, String path) {
     String name = stringAt(value.get("name"), child(path, "name"));
-    stringLength(name, child(path, "name"), 0, 20);
+    stringLength(
+        name, child(path, "name"), 0, SlackLimits.DATA_VISUALIZATION_SERIES_NAME_MAX_LENGTH);
     List<?> data = listAt(value.get("data"), child(path, "data"));
-    sliceLength(data, child(path, "data"), 1, 20);
+    sliceLength(
+        data,
+        child(path, "data"),
+        SlackLimits.DATA_VISUALIZATION_DATA_MIN_ITEMS,
+        SlackLimits.DATA_VISUALIZATION_DATA_MAX_ITEMS);
   }
 
   private static void validateAxisConfig(Map<String, Object> value, String path) {
     List<?> categories = listAt(value.get("categories"), child(path, "categories"));
-    sliceLength(categories, child(path, "categories"), 1, 20);
+    sliceLength(
+        categories,
+        child(path, "categories"),
+        SlackLimits.DATA_VISUALIZATION_CATEGORIES_MIN_ITEMS,
+        SlackLimits.DATA_VISUALIZATION_CATEGORIES_MAX_ITEMS);
     Set<String> seen = new java.util.HashSet<>();
     for (int index = 0; index < categories.size(); index++) {
       String itemPath = child(path, "categories") + "[" + index + "]";
       String category = stringAt(categories.get(index), itemPath);
-      stringLength(category, itemPath, 0, 20);
+      stringLength(category, itemPath, 0, SlackLimits.DATA_VISUALIZATION_CATEGORY_LABEL_MAX_LENGTH);
       if (!seen.add(category)) {
         fail(ErrorCategory.INVALID_USAGE, child(path, "categories"), "expected unique labels");
       }
     }
-    checkOptionalString(value, "x_label", path, 50);
-    checkOptionalString(value, "y_label", path, 50);
+    checkOptionalString(
+        value, "x_label", path, SlackLimits.DATA_VISUALIZATION_AXIS_LABEL_MAX_LENGTH);
+    checkOptionalString(
+        value, "y_label", path, SlackLimits.DATA_VISUALIZATION_AXIS_LABEL_MAX_LENGTH);
   }
 
   private static void validateConfirmation(Map<String, Object> value, String path) {
-    Map<String, Integer> limits = Map.of("title", 100, "text", 300, "confirm", 30, "deny", 30);
+    Map<String, Integer> limits =
+        Map.of(
+            "title",
+            SlackLimits.CONFIRMATION_TITLE_MAX_LENGTH,
+            "text",
+            SlackLimits.CONFIRMATION_TEXT_MAX_LENGTH,
+            "confirm",
+            SlackLimits.CONFIRMATION_CONFIRM_MAX_LENGTH,
+            "deny",
+            SlackLimits.CONFIRMATION_DENY_MAX_LENGTH);
     for (Map.Entry<String, Integer> field : limits.entrySet()) {
       require(value, field.getKey(), path);
       textLength(
@@ -644,10 +756,10 @@ public final class Validator {
   private static void validateOption(Map<String, Object> value, String path) {
     require(value, "text", path);
     require(value, "value", path);
-    textLength(value.get("text"), child(path, "text.text"), 0, 75);
-    checkOptionalString(value, "value", path, 150);
-    checkOptionalText(value, "description", path, 75);
-    checkOptionalString(value, "url", path, 3000);
+    textLength(value.get("text"), child(path, "text.text"), 0, SlackLimits.OPTION_TEXT_MAX_LENGTH);
+    checkOptionalString(value, "value", path, SlackLimits.OPTION_VALUE_MAX_LENGTH);
+    checkOptionalText(value, "description", path, SlackLimits.OPTION_DESCRIPTION_MAX_LENGTH);
+    checkOptionalString(value, "url", path, SlackLimits.OPTION_URL_MAX_LENGTH);
   }
 
   private static void validateOptions(List<?> values, String path) {
@@ -659,10 +771,12 @@ public final class Validator {
 
   private static void validateTable(Map<String, Object> value, String path, boolean dataTable) {
     List<?> rows = listAt(value.get("rows"), child(path, "rows"));
-    int minimumRows = dataTable ? 2 : 1;
-    int maximumRows = dataTable ? 201 : SlackLimits.TABLE_ROWS_MAX_ITEMS;
-    int minimumColumns = dataTable ? 1 : 0;
-    int maximumColumns = dataTable ? 20 : SlackLimits.TABLE_COLUMNS_MAX_ITEMS;
+    int minimumRows = dataTable ? SlackLimits.DATA_TABLE_ROWS_MIN_ITEMS : 1;
+    int maximumRows =
+        dataTable ? SlackLimits.DATA_TABLE_ROWS_MAX_ITEMS : SlackLimits.TABLE_ROWS_MAX_ITEMS;
+    int minimumColumns = dataTable ? SlackLimits.DATA_TABLE_COLUMNS_MIN_ITEMS : 0;
+    int maximumColumns =
+        dataTable ? SlackLimits.DATA_TABLE_COLUMNS_MAX_ITEMS : SlackLimits.TABLE_COLUMNS_MAX_ITEMS;
     sliceLength(rows, child(path, "rows"), minimumRows, maximumRows);
     int columns = -1;
     int contentLength = 0;
@@ -688,7 +802,10 @@ public final class Validator {
         contentLength += textCharacterCount(cell);
         if (dataTable && Set.of("raw_text", "raw_number").contains(objectType(cell))) {
           stringLength(
-              stringAt(cell.get("text"), child(cellPath, "text")), child(cellPath, "text"), 1, 0);
+              stringAt(cell.get("text"), child(cellPath, "text")),
+              child(cellPath, "text"),
+              SlackLimits.DATA_TABLE_CELL_TEXT_MIN_LENGTH,
+              0);
         }
       }
     }
@@ -704,23 +821,35 @@ public final class Validator {
     }
     if (dataTable) {
       Double pageSize = number(value.get("page_size"));
-      if (pageSize != null && (pageSize < 1 || pageSize > 100)) {
+      if (pageSize != null
+          && (pageSize < SlackLimits.DATA_TABLE_PAGE_SIZE_MIN
+              || pageSize > SlackLimits.DATA_TABLE_PAGE_SIZE_MAX)) {
         fail(
             ErrorCategory.OUT_OF_RANGE,
             child(path, "page_size"),
-            "expected a value between 1 and 100");
+            "expected a value between "
+                + SlackLimits.DATA_TABLE_PAGE_SIZE_MIN
+                + " and "
+                + SlackLimits.DATA_TABLE_PAGE_SIZE_MAX);
       }
       String caption = stringAt(value.get("caption"), child(path, "caption"));
       stringLength(caption, child(path, "caption"), 1, 0);
-      if (contentLength > 20000) {
-        fail(ErrorCategory.LENGTH_EXCEEDED, child(path, "rows"), "content exceeds maximum 20000");
+      if (contentLength > SlackLimits.DATA_TABLE_CONTENT_MAX_LENGTH) {
+        fail(
+            ErrorCategory.LENGTH_EXCEEDED,
+            child(path, "rows"),
+            "content exceeds maximum " + SlackLimits.DATA_TABLE_CONTENT_MAX_LENGTH);
       }
     }
   }
 
   private static void validateSeriesChart(Map<String, Object> value, String path) {
     List<?> series = listAt(value.get("series"), child(path, "series"));
-    sliceLength(series, child(path, "series"), 1, 12);
+    sliceLength(
+        series,
+        child(path, "series"),
+        SlackLimits.DATA_VISUALIZATION_SERIES_MIN_ITEMS,
+        SlackLimits.DATA_VISUALIZATION_SERIES_MAX_ITEMS);
     Map<String, Object> axis = objectAt(value.get("axis_config"), child(path, "axis_config"));
     validateAxisConfig(axis, child(path, "axis_config"));
     List<?> categories = listAt(axis.get("categories"), child(path, "axis_config.categories"));
@@ -742,7 +871,8 @@ public final class Validator {
       for (int pointIndex = 0; pointIndex < points.size(); pointIndex++) {
         String pointPath = child(itemPath, "data") + "[" + pointIndex + "]";
         Map<String, Object> point = objectAt(points.get(pointIndex), pointPath);
-        validateLabelValue(point, pointPath, 20, false);
+        validateLabelValue(
+            point, pointPath, SlackLimits.DATA_VISUALIZATION_POINT_LABEL_MAX_LENGTH, false);
         seen.add(stringAt(point.get("label"), child(pointPath, "label")));
       }
       if (points.size() != categorySet.size() || !seen.equals(categorySet)) {
@@ -764,15 +894,19 @@ public final class Validator {
       fail(ErrorCategory.TYPE_MISMATCH, child(path, "value"), "expected a finite number");
       return;
     }
-    if (positive && number <= 0) {
-      fail(ErrorCategory.OUT_OF_RANGE, child(path, "value"), "expected a value greater than 0");
+    if (positive && number <= SlackLimits.DATA_VISUALIZATION_SEGMENT_VALUE_EXCLUSIVE_MIN) {
+      fail(
+          ErrorCategory.OUT_OF_RANGE,
+          child(path, "value"),
+          "expected a value greater than "
+              + SlackLimits.DATA_VISUALIZATION_SEGMENT_VALUE_EXCLUSIVE_MIN);
     }
   }
 
   private static void validateMessageCollections(Map<String, Object> value, String path) {
     if (value.containsKey("blocks")) {
       List<?> blocks = listAt(value.get("blocks"), child(path, "blocks"));
-      sliceLength(blocks, child(path, "blocks"), 0, 50);
+      sliceLength(blocks, child(path, "blocks"), 0, SlackLimits.MESSAGE_BLOCKS_MAX_ITEMS);
       validateSurface(blocks, "message", child(path, "blocks"));
     }
     if (value.containsKey("attachments")) {
@@ -780,7 +914,7 @@ public final class Validator {
           listAt(value.get("attachments"), child(path, "attachments")),
           child(path, "attachments"),
           0,
-          100);
+          SlackLimits.MESSAGE_ATTACHMENTS_MAX_ITEMS);
     }
   }
 
