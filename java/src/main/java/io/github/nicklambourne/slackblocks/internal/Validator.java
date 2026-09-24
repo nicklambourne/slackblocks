@@ -600,13 +600,12 @@ public final class Validator {
   }
 
   private static void validateDispatchActionConfiguration(Map<String, Object> value, String path) {
-    if (value.containsKey("trigger_actions_on")) {
-      sliceLength(
-          listAt(value.get("trigger_actions_on"), child(path, "trigger_actions_on")),
-          child(path, "trigger_actions_on"),
-          SlackLimits.DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MIN_ITEMS,
-          SlackLimits.DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MAX_ITEMS);
-    }
+    require(value, "trigger_actions_on", path);
+    sliceLength(
+        listAt(value.get("trigger_actions_on"), child(path, "trigger_actions_on")),
+        child(path, "trigger_actions_on"),
+        SlackLimits.DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MIN_ITEMS,
+        SlackLimits.DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MAX_ITEMS);
   }
 
   private static void validateDataSeries(Map<String, Object> value, String path) {

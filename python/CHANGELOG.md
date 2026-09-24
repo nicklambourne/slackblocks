@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `WorkflowButton` now rejects an `accessibility_label` longer than 75 characters,
   matching Slack's limit and the shared conformance contract.
+- `DispatchActionConfiguration` without `trigger_actions_on` now raises
+  `MissingRequiredError` instead of `LengthError`.
 
 ## [2.4.0] — 2026-09-17
 

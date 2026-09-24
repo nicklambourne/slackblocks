@@ -3,6 +3,14 @@
 All notable changes to the C# package are documented here. C# versions move in
 lockstep with the Python, TypeScript, Go, and Java packages.
 
+## [Unreleased]
+
+### Changed
+
+- A raw `dispatch_action_config` passed through `additionalFields` without
+  `trigger_actions_on` is now rejected as missing-required, matching Slack's
+  `blocks.validate`.
+
 ## [2.4.0] — 2026-09-17
 
 The first public .NET release of slackblocks, published to NuGet as

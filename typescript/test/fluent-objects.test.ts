@@ -5,7 +5,9 @@ import {
   BarChart,
   DataPoint,
   DataSeries,
+  DispatchActionConfiguration,
   Markdown,
+  MissingRequiredError,
   Option,
   OptionGroup,
   PlainText,
@@ -73,6 +75,10 @@ describe("fluent composition objects", () => {
   it("validates only when the complete object is built", () => {
     const incomplete = Option().text("Missing a value");
     expect(() => incomplete.build()).toThrow(/value/);
+  });
+
+  it("requires dispatch-action triggers", () => {
+    expect(() => DispatchActionConfiguration().build()).toThrowError(MissingRequiredError);
   });
 
   it("lets the last singular setter win", () => {

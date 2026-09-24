@@ -270,20 +270,27 @@ export function conversationFilter(
  * @param input - Interaction events that should dispatch immediately.
  * @param settings - Per-call validation settings.
  * @returns A Slack dispatch-action configuration object.
+ * @throws MissingRequiredError when no trigger list is supplied.
  * @throws InvalidUsageError when the trigger count violates Slack's limits.
  */
 export function dispatchActionConfiguration(
   input: {
     /** One or two events such as `on_enter_pressed` or `on_character_entered`. */
-    triggerActionsOn?: string[];
+    triggerActionsOn: string[];
   },
   settings: FactorySettings = {},
 ): JsonObject {
   const { min_items: minimum, max_items: maximum } =
     limits.dispatch_action_configuration.trigger_actions_on;
-  // Slack marks the list optional, so only a supplied list is checked.
-  const count = input.triggerActionsOn?.length;
-  if (count !== undefined && (count < minimum || count > maximum)) {
+  // Slack's docs mark the list optional, but its validator requires it.
+  if (input.triggerActionsOn === undefined) {
+    throw new MissingRequiredError(
+      "dispatchActionConfiguration.triggerActionsOn",
+      "expected at least one trigger",
+    );
+  }
+  const count = input.triggerActionsOn.length;
+  if (count < minimum || count > maximum) {
     throw new LengthError(
       "dispatchActionConfiguration.triggerActionsOn",
       `expected between ${minimum} and ${maximum} triggers, received ${count}`,

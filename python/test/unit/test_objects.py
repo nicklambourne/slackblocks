@@ -4,7 +4,12 @@ import json
 
 import pytest
 
-from slackblocks.errors import InvalidUsageError, TypeMismatchError
+from slackblocks.errors import (
+    InvalidUsageError,
+    LengthError,
+    MissingRequiredError,
+    TypeMismatchError,
+)
 from slackblocks.objects import (
     AreaChart,
     AxisConfig,
@@ -146,6 +151,15 @@ def test_dispatch_action_config_has_type_attribute() -> None:
     )
     assert hasattr(dispatch_action_config, "type")
     assert dispatch_action_config.type.value == "dispatch"
+
+
+def test_dispatch_action_config_requires_triggers() -> None:
+    with pytest.raises(MissingRequiredError):
+        DispatchActionConfiguration()
+    with pytest.raises(MissingRequiredError):
+        DispatchActionConfiguration.from_dict({})
+    with pytest.raises(LengthError):
+        DispatchActionConfiguration([])
 
 
 def test_input_parameter_basic() -> None:

@@ -715,14 +715,12 @@ internal static partial class Validator
 
     private static void ValidateDispatchActionConfiguration(JsonObject value, string path)
     {
-        if (value.ContainsKey("trigger_actions_on"))
-        {
-            SliceLength(
-                ListAt(value["trigger_actions_on"], Child(path, "trigger_actions_on")),
-                Child(path, "trigger_actions_on"),
-                SlackLimits.DispatchActionConfigurationTriggerActionsOnMinItems,
-                SlackLimits.DispatchActionConfigurationTriggerActionsOnMaxItems);
-        }
+        Require(value, "trigger_actions_on", path);
+        SliceLength(
+            ListAt(value["trigger_actions_on"], Child(path, "trigger_actions_on")),
+            Child(path, "trigger_actions_on"),
+            SlackLimits.DispatchActionConfigurationTriggerActionsOnMinItems,
+            SlackLimits.DispatchActionConfigurationTriggerActionsOnMaxItems);
     }
 
     private static void ValidateDataSeries(JsonObject value, string path)

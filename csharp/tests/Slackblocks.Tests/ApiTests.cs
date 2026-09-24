@@ -181,6 +181,18 @@ public sealed class ApiTests
     }
 
     [Fact]
+    public void RawDispatchActionConfigRequiresTriggers()
+    {
+        var error = Assert.Throws<ValidationException>(() => new PlainTextInputElement("a", additionalFields: new Dictionary<string, object?>
+        {
+            ["dispatch_action_config"] = new Dictionary<string, object?>(),
+        }));
+
+        Assert.Equal(ErrorCategory.MissingRequired, error.Category);
+        Assert.Equal("PlainTextInputElement.dispatch_action_config", error.Path);
+    }
+
+    [Fact]
     public void AdditionalFieldsCannotRepeatANamedParameter()
     {
         var error = Assert.Throws<ArgumentException>(() => new DividerBlock(
