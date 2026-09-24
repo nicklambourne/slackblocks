@@ -270,14 +270,25 @@ export function conversationFilter(
  * @param input - Interaction events that should dispatch immediately.
  * @param settings - Per-call validation settings.
  * @returns A Slack dispatch-action configuration object.
+ * @throws InvalidUsageError when the trigger count violates Slack's limits.
  */
 export function dispatchActionConfiguration(
   input: {
-    /** Events such as `on_enter_pressed` or `on_character_entered`. */
+    /** One or two events such as `on_enter_pressed` or `on_character_entered`. */
     triggerActionsOn: string[];
   },
   settings: FactorySettings = {},
 ): JsonObject {
+  const { min_items: minimum, max_items: maximum } =
+    limits.dispatch_action_configuration.trigger_actions_on;
+  // The fluent builder passes no array when no trigger was added.
+  const count = input.triggerActionsOn?.length ?? 0;
+  if (count < minimum || count > maximum) {
+    throw new LengthError(
+      "dispatchActionConfiguration.triggerActionsOn",
+      `expected between ${minimum} and ${maximum} triggers, received ${count}`,
+    );
+  }
   return createObject({ ...input }, settings);
 }
 
