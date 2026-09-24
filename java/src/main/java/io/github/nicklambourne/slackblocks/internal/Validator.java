@@ -182,6 +182,7 @@ public final class Validator {
       case "DataSeries" -> validateDataSeries(value, name);
       case "AxisConfig" -> validateAxisConfig(value, name);
       case "FeedbackButton" -> validateFeedbackButton(value, name);
+      case "DispatchActionConfiguration" -> validateDispatchActionConfiguration(value, name);
       case "Attachment" -> {
         Object raw = value.get("color");
         if (raw instanceof String color
@@ -225,6 +226,11 @@ public final class Validator {
       validateConfirmation(
           objectAt(value.get("confirm"), child(path, "confirm")), child(path, "confirm"));
     }
+    if (value.containsKey("dispatch_action_config")) {
+      validateDispatchActionConfiguration(
+          objectAt(value.get("dispatch_action_config"), child(path, "dispatch_action_config")),
+          child(path, "dispatch_action_config"));
+    }
 
     switch (type) {
       case "plain_text", "mrkdwn" -> textLength(value, child(path, "text"), 1, 3000);
@@ -236,7 +242,8 @@ public final class Validator {
       }
       case "section" -> validateSection(value, path);
       case "header" -> textLength(value.get("text"), child(path, "text.text"), 0, 150);
-      case "button", "workflow_button" -> validateButton(value, path);
+      case "button" -> validateButton(value, path);
+      case "workflow_button" -> validateWorkflowButton(value, path);
       case "icon_button" -> validateIconButton(value, path);
       case "feedback_buttons" -> {
         for (String field : List.of("positive_button", "negative_button")) {
@@ -259,9 +266,28 @@ public final class Validator {
           fail(ErrorCategory.OUT_OF_RANGE, child(path, "max_length"), "exceeds maximum 3000");
         }
         if (value.containsKey("placeholder")) {
-          textLength(value.get("placeholder"), child(path, "placeholder.text"), 0, 150);
+          textLength(
+              value.get("placeholder"),
+              child(path, "placeholder.text"),
+              0,
+              SlackLimits.PLAIN_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH);
         }
       }
+      case "email_text_input" ->
+          checkOptionalText(
+              value, "placeholder", path, SlackLimits.EMAIL_INPUT_PLACEHOLDER_MAX_LENGTH);
+      case "url_text_input" ->
+          checkOptionalText(
+              value, "placeholder", path, SlackLimits.URL_INPUT_PLACEHOLDER_MAX_LENGTH);
+      case "datepicker" ->
+          checkOptionalText(
+              value, "placeholder", path, SlackLimits.DATE_PICKER_PLACEHOLDER_MAX_LENGTH);
+      case "timepicker" ->
+          checkOptionalText(
+              value, "placeholder", path, SlackLimits.TIME_PICKER_PLACEHOLDER_MAX_LENGTH);
+      case "rich_text_input" ->
+          checkOptionalText(
+              value, "placeholder", path, SlackLimits.RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH);
       case "overflow", "checkboxes", "radio_buttons" -> {
         List<?> options = listAt(value.get("options"), child(path, "options"));
         sliceLength(options, child(path, "options"), 1, type.equals("overflow") ? 5 : 10);
@@ -276,6 +302,8 @@ public final class Validator {
         if (minimum != null && maximum != null && minimum > maximum) {
           fail(ErrorCategory.OUT_OF_RANGE, path, "min_value cannot exceed max_value");
         }
+        checkOptionalText(
+            value, "placeholder", path, SlackLimits.NUMBER_INPUT_PLACEHOLDER_MAX_LENGTH);
       }
       case "image" -> validateImage(value, path);
       case "context" -> validateContext(value, path);
@@ -360,12 +388,26 @@ public final class Validator {
     checkOptionalString(value, "accessibility_label", path, 75);
   }
 
+  private static void validateWorkflowButton(Map<String, Object> value, String path) {
+    textLength(
+        value.get("text"),
+        child(path, "text.text"),
+        0,
+        SlackLimits.WORKFLOW_BUTTON_TEXT_MAX_LENGTH);
+    checkOptionalString(
+        value,
+        "accessibility_label",
+        path,
+        SlackLimits.WORKFLOW_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH);
+  }
+
   private static void validateIconButton(Map<String, Object> value, String path) {
     if (!"trash".equals(value.get("icon"))) {
       fail(ErrorCategory.TYPE_MISMATCH, child(path, "icon"), "expected trash");
     }
-    checkOptionalString(value, "value", path, 2000);
-    checkOptionalString(value, "accessibility_label", path, 75);
+    checkOptionalString(value, "value", path, SlackLimits.ICON_BUTTON_VALUE_MAX_LENGTH);
+    checkOptionalString(
+        value, "accessibility_label", path, SlackLimits.ICON_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH);
     if (value.get("visible_to_user_ids") instanceof List<?> users) {
       sliceLength(users, child(path, "visible_to_user_ids"), 0, 10);
     }
@@ -557,6 +599,16 @@ public final class Validator {
     checkOptionalString(value, "accessibility_label", path, 75);
   }
 
+  private static void validateDispatchActionConfiguration(Map<String, Object> value, String path) {
+    if (value.containsKey("trigger_actions_on")) {
+      sliceLength(
+          listAt(value.get("trigger_actions_on"), child(path, "trigger_actions_on")),
+          child(path, "trigger_actions_on"),
+          SlackLimits.DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MIN_ITEMS,
+          SlackLimits.DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MAX_ITEMS);
+    }
+  }
+
   private static void validateDataSeries(Map<String, Object> value, String path) {
     String name = stringAt(value.get("name"), child(path, "name"));
     stringLength(name, child(path, "name"), 0, 20);
@@ -608,15 +660,16 @@ public final class Validator {
   private static void validateTable(Map<String, Object> value, String path, boolean dataTable) {
     List<?> rows = listAt(value.get("rows"), child(path, "rows"));
     int minimumRows = dataTable ? 2 : 1;
-    int maximumRows = dataTable ? 201 : 100;
+    int maximumRows = dataTable ? 201 : SlackLimits.TABLE_ROWS_MAX_ITEMS;
     int minimumColumns = dataTable ? 1 : 0;
+    int maximumColumns = dataTable ? 20 : SlackLimits.TABLE_COLUMNS_MAX_ITEMS;
     sliceLength(rows, child(path, "rows"), minimumRows, maximumRows);
     int columns = -1;
     int contentLength = 0;
     for (int rowIndex = 0; rowIndex < rows.size(); rowIndex++) {
       String rowPath = child(path, "rows") + "[" + rowIndex + "]";
       List<?> row = listAt(rows.get(rowIndex), rowPath);
-      sliceLength(row, rowPath, minimumColumns, 20);
+      sliceLength(row, rowPath, minimumColumns, maximumColumns);
       if (columns < 0) {
         columns = row.size();
       } else if (row.size() != columns) {

@@ -2,7 +2,8 @@
 """Generate the Java Block Kit model from spec/model.json.
 
 spec/vocabulary.json supplies the Slack icon names and per-surface block types used by
-validation, as internal/SlackVocabulary.java.
+validation, as internal/SlackVocabulary.java, and spec/limits.json the limits validation
+enforces, as internal/SlackLimits.java.
 
 model.json is the language-neutral description of every generated value type: its Slack
 wire type, the Java type of every field, required fields, validation rules, descriptions,
@@ -747,6 +748,37 @@ public final class SlackVocabulary {{
 """
 
 
+def limit_leaves(limits: dict, prefix: str = "") -> list[tuple[str, int]]:
+    """Flattens spec/limits.json into sorted (dotted path, value) pairs."""
+    leaves = []
+    for key, value in limits.items():
+        path = f"{prefix}.{key}" if prefix else key
+        if isinstance(value, dict):
+            leaves.extend(limit_leaves(value, path))
+        elif isinstance(value, int) and not isinstance(value, bool):
+            leaves.append((path, value))
+        else:
+            raise ValueError(f"Unsupported limit at {path}: {value}")
+    return sorted(leaves)
+
+
+def limits_source(limits: dict) -> str:
+    constants = "\n\n".join(
+        f"  /** {{@code {path}}} */\n  public static final int {path.replace('.', '_').upper()} = {value};"
+        for path, value in limit_leaves(limits)
+    )
+    return f"""{MARKER}
+package {BASE_PACKAGE}.internal;
+
+/** Slack limits from spec/limits.json, one constant per dotted path. */
+public final class SlackLimits {{
+{constants}
+
+  private SlackLimits() {{}}
+}}
+"""
+
+
 def check_go(model: Model) -> list[str]:
     registry = json.loads((ROOT / "go/internal/builder_methods.json").read_text())
     problems = []
@@ -795,6 +827,7 @@ def main() -> None:
     for spec in model.data["types"]:
         write(spec["package"], spec["name"], class_source(model, spec))
     write("internal", "SlackVocabulary", vocabulary_source(json.loads(VOCABULARY.read_text())))
+    write("internal", "SlackLimits", limits_source(model.limits))
     for package in PACKAGES:
         for path in (OUTPUT / package).glob("*.java"):
             if path not in written and path.read_text().startswith(MARKER):

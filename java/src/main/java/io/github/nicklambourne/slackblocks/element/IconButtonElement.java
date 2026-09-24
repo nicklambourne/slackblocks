@@ -232,6 +232,8 @@ public final class IconButtonElement extends BlockElement
     /**
      * Sets the application-defined value sent in interaction payloads.
      *
+     * <p>Slack allows at most 2000 characters.
+     *
      * @param value value for Slack's {@code value} field
      * @return this builder
      */
@@ -253,6 +255,8 @@ public final class IconButtonElement extends BlockElement
 
     /**
      * Sets the label read by screen readers in place of the visible text.
+     *
+     * <p>Slack allows at most 75 characters.
      *
      * @param value value for Slack's {@code accessibility_label} field
      * @return this builder
