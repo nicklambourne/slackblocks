@@ -3,6 +3,16 @@
 All notable changes to the C# package are documented here. C# versions move in
 lockstep with the Python, TypeScript, Go, and Java packages.
 
+## [Unreleased]
+
+### Changed
+
+- `VideoBlock` `altText` now accepts up to 2000 characters, including an empty
+  string, matching Slack's validator (previously 1 to 200 characters).
+- `DataTableBlock` now rejects `column_settings` supplied through
+  `additionalFields` or raw JSON with `ErrorCategory.InvalidUsage`; Slack
+  supports `column_settings` only on the plain `table` block.
+
 ## [2.4.0] — 2026-09-17
 
 The first public .NET release of slackblocks, published to NuGet as

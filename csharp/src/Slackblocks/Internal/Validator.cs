@@ -656,7 +656,7 @@ internal static partial class Validator
     {
         if (JsonValues.IsString(value["alt_text"], out var altText))
         {
-            StringLength(altText, Child(path, "alt_text"), 1, 200);
+            StringLength(altText, Child(path, "alt_text"), 0, SlackLimits.VideoAltTextMaxLength);
         }
 
         TextLength(value["title"], Child(path, "title.text"), 0, 200);
@@ -827,6 +827,11 @@ internal static partial class Validator
 
         if (value.ContainsKey("column_settings"))
         {
+            if (dataTable)
+            {
+                Fail(ErrorCategory.InvalidUsage, Child(path, "column_settings"), "data tables do not support column_settings");
+            }
+
             var settings = ListAt(value["column_settings"], Child(path, "column_settings"));
             SliceLength(settings, Child(path, "column_settings"), 0, 20);
             if (settings.Count != columns)
