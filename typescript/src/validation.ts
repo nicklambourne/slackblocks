@@ -853,6 +853,9 @@ function validateKnownObject(object: JsonObject, path: string): void {
           }
         });
       });
+      if (object.column_settings !== undefined) {
+        throw new InvalidUsageError(child(path, "column_settings"), "data tables do not support column_settings");
+      }
       range(
         typeof object.page_size === "number" ? object.page_size : undefined,
         child(path, "page_size"),
@@ -1010,7 +1013,7 @@ function validateKnownObject(object: JsonObject, path: string): void {
       length(
         typeof object.alt_text === "string" ? object.alt_text : undefined,
         child(path, "alt_text"),
-        limits.video.alt_text.min_length,
+        undefined,
         limits.video.alt_text.max_length,
       );
       length(

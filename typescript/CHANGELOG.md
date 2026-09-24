@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Validation now rejects email, URL, number, date picker, time picker, and rich text
   input placeholders over 150 characters, and dispatch-action configurations whose
   `trigger_actions_on` list is empty or has more than two triggers.
+- Video block `alt_text` now accepts up to 2000 characters, including an empty
+  string, matching Slack's validator (previously 1 to 200 characters).
+- Raw JSON validation now rejects `column_settings` on a `data_table` block with
+  `InvalidUsageError`; Slack supports `column_settings` only on the plain `table`
+  block.
 
 ## [2.4.0] — 2026-09-17
 
