@@ -1061,6 +1061,7 @@
           "kind": "rows",
           "type": "TableCell",
           "description": "Adds complete table rows in display order. Every row must have the same number of cells.",
+          "limits": "table.rows",
           "required": true
         },
         {
@@ -1713,7 +1714,8 @@
           "kind": "text",
           "type": "PlainText",
           "coerce": "plain_text",
-          "description": "Sets the placeholder text shown before a value is chosen."
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "date_picker.placeholder"
         }
       ],
       "rules": []
@@ -1814,7 +1816,8 @@
           "kind": "text",
           "type": "PlainText",
           "coerce": "plain_text",
-          "description": "Sets the placeholder text shown before a value is chosen."
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "email_input.placeholder"
         }
       ],
       "rules": []
@@ -2079,7 +2082,8 @@
           "goMethod": "Value",
           "wire": "value",
           "kind": "string",
-          "description": "Sets the application-defined value sent in interaction payloads."
+          "description": "Sets the application-defined value sent in interaction payloads.",
+          "limits": "icon_button.value"
         },
         {
           "method": "confirm",
@@ -2094,7 +2098,8 @@
           "goMethod": "AccessibilityLabel",
           "wire": "accessibility_label",
           "kind": "string",
-          "description": "Sets the label read by screen readers in place of the visible text."
+          "description": "Sets the label read by screen readers in place of the visible text.",
+          "limits": "icon_button.accessibility_label"
         },
         {
           "method": "visibleToUserIds",
@@ -2218,7 +2223,8 @@
           "kind": "text",
           "type": "PlainText",
           "coerce": "plain_text",
-          "description": "Sets the placeholder text shown before a value is chosen."
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "number_input.placeholder"
         }
       ],
       "rules": [
@@ -2337,7 +2343,8 @@
           "kind": "text",
           "type": "PlainText",
           "coerce": "plain_text",
-          "description": "Sets the placeholder text shown before a value is chosen."
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "plain_text_input.placeholder"
         }
       ],
       "rules": []
@@ -2450,7 +2457,8 @@
           "kind": "text",
           "type": "PlainText",
           "coerce": "plain_text",
-          "description": "Sets the placeholder text shown before a value is chosen."
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "rich_text_input.placeholder"
         },
         {
           "method": "minLines",
@@ -2687,7 +2695,8 @@
           "kind": "text",
           "type": "PlainText",
           "coerce": "plain_text",
-          "description": "Sets the placeholder text shown before a value is chosen."
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "time_picker.placeholder"
         }
       ],
       "rules": []
@@ -2742,7 +2751,8 @@
           "kind": "text",
           "type": "PlainText",
           "coerce": "plain_text",
-          "description": "Sets the placeholder text shown before a value is chosen."
+          "description": "Sets the placeholder text shown before a value is chosen.",
+          "limits": "url_input.placeholder"
         }
       ],
       "rules": []
@@ -2884,6 +2894,7 @@
           "type": "PlainText",
           "coerce": "plain_text",
           "description": "Sets the button label.",
+          "limits": "workflow_button.text",
           "required": true
         },
         {
@@ -2924,7 +2935,8 @@
           "goMethod": "AccessibilityLabel",
           "wire": "accessibility_label",
           "kind": "string",
-          "description": "Sets the label read by screen readers in place of the visible text."
+          "description": "Sets the label read by screen readers in place of the visible text.",
+          "limits": "workflow_button.accessibility_label"
         }
       ],
       "rules": []
@@ -3275,7 +3287,8 @@
           "goMethod": "TriggerActionsOn",
           "wire": "trigger_actions_on",
           "kind": "stringList",
-          "description": "Adds the interactions that send a payload: on_enter_pressed or on_character_entered."
+          "description": "Adds the interactions that send a payload: on_enter_pressed or on_character_entered.",
+          "limits": "dispatch_action_configuration.trigger_actions_on"
         }
       ],
       "rules": []

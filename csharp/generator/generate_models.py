@@ -3,8 +3,9 @@
 
 model.json is the language-neutral description of every generated value type shared with the
 Java generator: Slack wire types, field kinds, required fields, validation rules, descriptions,
-and Slack documentation links. spec/limits.json supplies the documented limits and
-spec/vocabulary.json the Slack icon names and per-surface block types.
+and Slack documentation links. spec/limits.json supplies the documented limits, also written
+as Internal/SlackLimits.g.cs for validation, and spec/vocabulary.json the Slack icon names and
+per-surface block types.
 
 Every value type becomes an immutable, sealed C# class whose constructor takes named
 arguments, validates them, and exposes typed read-only properties.
@@ -440,6 +441,22 @@ internal static class SlackVocabulary
 """
 
 
+def limits_source(limits: dict) -> str:
+    constants = "\n\n".join(
+        f"    /// <summary><c>{path}</c></summary>\n"
+        f"    public const int {''.join(part.capitalize() for part in path.replace('.', '_').split('_'))} = {value};"
+        for path, value in JAVA.limit_leaves(limits)
+    )
+    return f"""{HEADER}namespace Slackblocks.Internal;
+
+/// <summary>Slack limits from spec/limits.json, one constant per dotted path.</summary>
+internal static class SlackLimits
+{{
+{constants}
+}}
+"""
+
+
 def main() -> None:
     data = json.loads(MODEL.read_text())
     model = JAVA.Model(data, json.loads(LIMITS.read_text()))
@@ -463,6 +480,7 @@ def main() -> None:
     for spec in data["types"]:
         write(spec["package"], names.simple(spec["name"]), class_source(model, names, spec))
     write("Internal", "SlackVocabulary", vocabulary_source(json.loads(VOCABULARY.read_text())))
+    write("Internal", "SlackLimits", limits_source(model.limits))
 
     for path in OUTPUT.rglob("*.g.cs"):
         if path not in written:

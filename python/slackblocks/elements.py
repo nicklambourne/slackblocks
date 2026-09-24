@@ -13,6 +13,41 @@ from itertools import chain
 from typing import TYPE_CHECKING, Any, Literal, TypeAlias
 
 from ._core import RenderableMixin, resolve
+from ._limits import (
+    BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
+    BUTTON_TEXT_MAX_LENGTH,
+    BUTTON_URL_MAX_LENGTH,
+    BUTTON_VALUE_MAX_LENGTH,
+    CHECKBOXES_OPTIONS_MAX_ITEMS,
+    CHECKBOXES_OPTIONS_MIN_ITEMS,
+    DATE_PICKER_PLACEHOLDER_MAX_LENGTH,
+    EMAIL_INPUT_PLACEHOLDER_MAX_LENGTH,
+    FEEDBACK_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
+    FEEDBACK_BUTTON_TEXT_MAX_LENGTH,
+    FEEDBACK_BUTTON_VALUE_MAX_LENGTH,
+    FILE_INPUT_MAX_FILES_MAX,
+    FILE_INPUT_MAX_FILES_MIN,
+    ICON_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
+    ICON_BUTTON_VALUE_MAX_LENGTH,
+    ICON_BUTTON_VISIBLE_TO_USER_IDS_MAX_ITEMS,
+    NUMBER_INPUT_PLACEHOLDER_MAX_LENGTH,
+    OVERFLOW_OPTIONS_MAX_ITEMS,
+    OVERFLOW_OPTIONS_MIN_ITEMS,
+    PLAIN_TEXT_INPUT_MAX_LENGTH_MAX,
+    PLAIN_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
+    RADIO_BUTTONS_OPTIONS_MAX_ITEMS,
+    RADIO_BUTTONS_OPTIONS_MIN_ITEMS,
+    RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
+    SELECT_OPTION_GROUPS_MAX_ITEMS,
+    SELECT_OPTIONS_MAX_ITEMS,
+    SELECT_PLACEHOLDER_MAX_LENGTH,
+    TIME_PICKER_PLACEHOLDER_MAX_LENGTH,
+    URL_INPUT_PLACEHOLDER_MAX_LENGTH,
+    URL_SOURCE_URL_MAX_LENGTH,
+    URL_SOURCE_URL_MIN_LENGTH,
+    WORKFLOW_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
+    WORKFLOW_BUTTON_TEXT_MAX_LENGTH,
+)
 from .errors import (
     LengthError,
     MissingRequiredError,
@@ -140,13 +175,15 @@ class Button(Element):
         accessibility_label: str | None = None,
     ) -> None:
         super().__init__(type_=ElementType.BUTTON)
-        self.text = Text.to_text(text, max_length=75, force_plaintext=True)
+        self.text = Text.to_text(text, max_length=BUTTON_TEXT_MAX_LENGTH, force_plaintext=True)
         self.action_id = validate_action_id(action_id)
-        self.url = validate_string(url, field_name="url", max_length=3000, allow_none=True)
+        self.url = validate_string(
+            url, field_name="url", max_length=BUTTON_URL_MAX_LENGTH, allow_none=True
+        )
         self.value = validate_string(
             value,
             field_name="value",
-            max_length=2000,
+            max_length=BUTTON_VALUE_MAX_LENGTH,
             allow_none=True,
         )
         self.style: str | None = None
@@ -160,7 +197,7 @@ class Button(Element):
         self.accessibility_label = validate_string(
             accessibility_label,
             "accessibility_label",
-            max_length=75,
+            max_length=BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
             allow_none=True,
         )
 
@@ -203,12 +240,14 @@ class FeedbackButton(RenderableMixin):
         value: str,
         accessibility_label: str | None = None,
     ) -> None:
-        self.text = Text.to_text(text, force_plaintext=True, max_length=75)
-        self.value = validate_string(value, "value", max_length=2000)
+        self.text = Text.to_text(
+            text, force_plaintext=True, max_length=FEEDBACK_BUTTON_TEXT_MAX_LENGTH
+        )
+        self.value = validate_string(value, "value", max_length=FEEDBACK_BUTTON_VALUE_MAX_LENGTH)
         self.accessibility_label = validate_string(
             accessibility_label,
             "accessibility_label",
-            max_length=75,
+            max_length=FEEDBACK_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
             allow_none=True,
         )
 
@@ -303,16 +342,21 @@ class IconButton(Element):
         self.icon = icon
         self.text = Text.to_text(text, force_plaintext=True)
         self.action_id = validate_action_id(action_id, allow_none=True)
-        self.value = validate_string(value, "value", max_length=2000, allow_none=True)
+        self.value = validate_string(
+            value, "value", max_length=ICON_BUTTON_VALUE_MAX_LENGTH, allow_none=True
+        )
         self.confirm = validate_type(confirm, ConfirmationDialogue, "confirm", allow_none=True)
         self.accessibility_label = validate_string(
             accessibility_label,
             "accessibility_label",
-            max_length=75,
+            max_length=ICON_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
             allow_none=True,
         )
         self.visible_to_user_ids: list[str] | None = coerce_to_list(
-            visible_to_user_ids, str, allow_none=True, max_size=10
+            visible_to_user_ids,
+            str,
+            allow_none=True,
+            max_size=ICON_BUTTON_VISIBLE_TO_USER_IDS_MAX_ITEMS,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -347,7 +391,9 @@ class URLSource(Element):
 
     def __init__(self, url: str, text: str) -> None:
         super().__init__(ElementType.URL_SOURCE)
-        self.url = validate_string(url, "url", min_length=1, max_length=3000)
+        self.url = validate_string(
+            url, "url", min_length=URL_SOURCE_URL_MIN_LENGTH, max_length=URL_SOURCE_URL_MAX_LENGTH
+        )
         self.text = validate_string(text, "text")
 
     def _resolve(self) -> dict[str, Any]:
@@ -388,7 +434,12 @@ class CheckboxGroup(Element):
     ) -> None:
         super().__init__(type_=ElementType.CHECKBOXES)
         self.action_id = validate_action_id(action_id)
-        self.options = coerce_to_list(options, Option, min_size=1, max_size=10)
+        self.options = coerce_to_list(
+            options,
+            Option,
+            min_size=CHECKBOXES_OPTIONS_MIN_ITEMS,
+            max_size=CHECKBOXES_OPTIONS_MAX_ITEMS,
+        )
         self.initial_options = coerce_to_list(initial_options, Option, allow_none=True)
         self.confirm = confirm
         self.focus_on_load = focus_on_load
@@ -443,7 +494,10 @@ class DatePicker(Element):
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, force_plaintext=True, max_length=150, allow_none=True
+            placeholder,
+            force_plaintext=True,
+            max_length=DATE_PICKER_PLACEHOLDER_MAX_LENGTH,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -539,7 +593,10 @@ class EmailInput(Element):
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True, allow_none=True
+            placeholder,
+            max_length=EMAIL_INPUT_PLACEHOLDER_MAX_LENGTH,
+            force_plaintext=True,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -585,7 +642,12 @@ class FileInput(Element):
             (str),
             allow_none=True,
         )
-        self.max_files = validate_int(max_files, min_value=1, max_value=10, allow_none=True)
+        self.max_files = validate_int(
+            max_files,
+            min_value=FILE_INPUT_MAX_FILES_MIN,
+            max_value=FILE_INPUT_MAX_FILES_MAX,
+            allow_none=True,
+        )
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(
@@ -693,9 +755,14 @@ class StaticMultiSelectMenu(Element):
             raise MutualExclusivityError(
                 "Cannot set both `options` and `option_groups` parameters."
             )
-        self.options = coerce_to_list(options, class_=Option, allow_none=True, max_size=100)
+        self.options = coerce_to_list(
+            options, class_=Option, allow_none=True, max_size=SELECT_OPTIONS_MAX_ITEMS
+        )
         self.option_groups = coerce_to_list(
-            option_groups, class_=OptionGroup, allow_none=True, max_size=100
+            option_groups,
+            class_=OptionGroup,
+            allow_none=True,
+            max_size=SELECT_OPTION_GROUPS_MAX_ITEMS,
         )
         self.initial_options = coerce_to_list(
             initial_options,  # type: ignore
@@ -740,7 +807,10 @@ class StaticMultiSelectMenu(Element):
         self.max_selected_items = max_selected_items
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, force_plaintext=True, max_length=150, allow_none=True
+            placeholder,
+            force_plaintext=True,
+            max_length=SELECT_PLACEHOLDER_MAX_LENGTH,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -808,7 +878,10 @@ class ExternalMultiSelectMenu(Element):
         self.max_selected_items = max_selected_items
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, force_plaintext=True, max_length=150, allow_none=True
+            placeholder,
+            force_plaintext=True,
+            max_length=SELECT_PLACEHOLDER_MAX_LENGTH,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -866,7 +939,10 @@ class UserMultiSelectMenu(Element):
         self.max_selected_items = max_selected_items
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, force_plaintext=True, max_length=150, allow_none=True
+            placeholder,
+            force_plaintext=True,
+            max_length=SELECT_PLACEHOLDER_MAX_LENGTH,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -935,7 +1011,10 @@ class ConversationMultiSelectMenu(Element):
         self.filter = filter
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, force_plaintext=True, max_length=150, allow_none=True
+            placeholder,
+            force_plaintext=True,
+            max_length=SELECT_PLACEHOLDER_MAX_LENGTH,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -1000,7 +1079,10 @@ class ChannelMultiSelectMenu(Element):
         self.max_selected_items = max_selected_items
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, force_plaintext=True, max_length=150, allow_none=True
+            placeholder,
+            force_plaintext=True,
+            max_length=SELECT_PLACEHOLDER_MAX_LENGTH,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -1074,7 +1156,10 @@ class NumberInput(Element):
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True, allow_none=True
+            placeholder,
+            max_length=NUMBER_INPUT_PLACEHOLDER_MAX_LENGTH,
+            force_plaintext=True,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -1119,7 +1204,12 @@ class OverflowMenu(Element):
     ) -> None:
         super().__init__(type_=ElementType.OVERFLOW_MENU)
         self.action_id = validate_action_id(action_id)
-        self.options = coerce_to_list(options, Option, min_size=1, max_size=5)
+        self.options = coerce_to_list(
+            options,
+            Option,
+            min_size=OVERFLOW_OPTIONS_MIN_ITEMS,
+            max_size=OVERFLOW_OPTIONS_MAX_ITEMS,
+        )
         self.confirm = confirm
 
     def _resolve(self) -> dict[str, Any]:
@@ -1177,13 +1267,16 @@ class PlainTextInput(Element):
         self.multiline = multiline
         self.initial_value = initial_value
         self.min_length = min_length
-        if max_length and max_length > 3000:
+        if max_length and max_length > PLAIN_TEXT_INPUT_MAX_LENGTH_MAX:
             raise RangeError("`max_length` value cannot exceed 3000 characters")
         self.max_length = max_length
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True, allow_none=True
+            placeholder,
+            max_length=PLAIN_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
+            force_plaintext=True,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -1235,7 +1328,10 @@ class RadioButtonGroup(Element):
     ) -> None:
         super().__init__(type_=ElementType.RADIO_BUTTON_GROUP)
         self.action_id = validate_action_id(action_id)
-        if len(options) < 1 or len(options) > 10:
+        if (
+            len(options) < RADIO_BUTTONS_OPTIONS_MIN_ITEMS
+            or len(options) > RADIO_BUTTONS_OPTIONS_MAX_ITEMS
+        ):
             raise LengthError(
                 "Number of options to RadioButtonGroup must be between 1 and 10 (inclusive)."
             )
@@ -1306,10 +1402,13 @@ class StaticSelectMenu(Element):
                 "Cannot set both `options` and `option_groups` parameters."
             )
         self.options: list[Option] | None = coerce_to_list(
-            options, class_=Option, allow_none=True, max_size=100
+            options, class_=Option, allow_none=True, max_size=SELECT_OPTIONS_MAX_ITEMS
         )
         self.option_groups: list[OptionGroup] | None = coerce_to_list(
-            option_groups, class_=OptionGroup, allow_none=True, max_size=100
+            option_groups,
+            class_=OptionGroup,
+            allow_none=True,
+            max_size=SELECT_OPTION_GROUPS_MAX_ITEMS,
         )
         if options and initial_option and not isinstance(initial_option, Option):
             raise TypeMismatchError(
@@ -1340,7 +1439,10 @@ class StaticSelectMenu(Element):
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True, allow_none=True
+            placeholder,
+            max_length=SELECT_PLACEHOLDER_MAX_LENGTH,
+            force_plaintext=True,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -1400,7 +1502,7 @@ class ExternalSelectMenu(Element):
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
-            max_length=150,
+            max_length=SELECT_PLACEHOLDER_MAX_LENGTH,
             force_plaintext=True,
             allow_none=True,
         )
@@ -1455,7 +1557,10 @@ class UserSelectMenu(Element):
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True, allow_none=True
+            placeholder,
+            max_length=SELECT_PLACEHOLDER_MAX_LENGTH,
+            force_plaintext=True,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -1523,7 +1628,7 @@ class ConversationSelectMenu(Element):
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
-            max_length=150,
+            max_length=SELECT_PLACEHOLDER_MAX_LENGTH,
             force_plaintext=True,
             allow_none=True,
         )
@@ -1592,7 +1697,7 @@ class ChannelSelectMenu(Element):
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
-            max_length=150,
+            max_length=SELECT_PLACEHOLDER_MAX_LENGTH,
             force_plaintext=True,
             allow_none=True,
         )
@@ -1650,7 +1755,7 @@ class TimePicker(Element):
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
-            max_length=150,
+            max_length=TIME_PICKER_PLACEHOLDER_MAX_LENGTH,
             force_plaintext=True,
             allow_none=True,
         )
@@ -1708,7 +1813,7 @@ class URLInput(Element):
         self.placeholder = Text.to_text(
             placeholder,
             force_plaintext=True,
-            max_length=150,
+            max_length=URL_INPUT_PLACEHOLDER_MAX_LENGTH,
             allow_none=True,
         )
 
@@ -1783,10 +1888,17 @@ class WorkflowButton(Element):
         accessibility_label: str | None = None,
     ) -> None:
         super().__init__(type_=ElementType.WORKFLOW_BUTTON)
-        self.text = Text.to_text(text, force_plaintext=True, max_length=75)
+        self.text = Text.to_text(
+            text, force_plaintext=True, max_length=WORKFLOW_BUTTON_TEXT_MAX_LENGTH
+        )
         self.workflow = workflow
         self.style = ButtonStyle.to_button_style(style).value
-        self.accessibility_label = accessibility_label
+        self.accessibility_label = validate_string(
+            accessibility_label,
+            "accessibility_label",
+            max_length=WORKFLOW_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
+            allow_none=True,
+        )
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(
@@ -1840,7 +1952,7 @@ class RichTextInput(Element):
         self.placeholder = Text.to_text(
             placeholder,
             force_plaintext=True,
-            max_length=150,
+            max_length=RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
             allow_none=True,
         )
 

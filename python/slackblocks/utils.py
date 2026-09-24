@@ -8,6 +8,7 @@ from __future__ import annotations
 from string import hexdigits
 from typing import Any, Literal, TypeVar, overload
 
+from slackblocks._limits import ACTION_ID_MAX_LENGTH
 from slackblocks.errors import (
     LengthError,
     MissingRequiredError,
@@ -203,7 +204,7 @@ def validate_action_id(action_id: str | None, allow_none: bool = False) -> str |
         length = len(action_id)
         if length < 1:
             raise LengthError("`action_id` cannot be empty.")
-        if length > 255:
+        if length > ACTION_ID_MAX_LENGTH:
             raise LengthError(
                 f"`action_id` length ({length}) exceeds limit of 255 characters (id: {action_id})."
             )

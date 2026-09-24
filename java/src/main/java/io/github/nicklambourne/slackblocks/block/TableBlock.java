@@ -103,7 +103,7 @@ public final class TableBlock implements Block {
     /**
      * Adds complete table rows in display order. Every row must have the same number of cells.
      *
-     * <p>Required. Each call appends to any rows already added.
+     * <p>Required. Slack allows at most 100 items. Each call appends to any rows already added.
      *
      * @param rows rows of {@link TableCell} values, in display order
      * @return this builder

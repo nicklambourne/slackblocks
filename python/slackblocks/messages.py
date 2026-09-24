@@ -12,6 +12,11 @@ from json import dumps
 from typing import Any
 
 from slackblocks._core import resolve
+from slackblocks._limits import (
+    MESSAGE_ATTACHMENTS_MAX_ITEMS,
+    MESSAGE_BLOCKS_MAX_ITEMS,
+    MESSAGE_CHANNEL_MIN_LENGTH,
+)
 from slackblocks._surfaces import validate_surface_blocks
 from slackblocks.utils import coerce_to_list, validate_string_nonnull
 
@@ -80,11 +85,13 @@ class BaseMessage(_MessagePayloadMixin):
         thread_ts: str | None = None,
         mrkdwn: bool = True,
     ) -> None:
-        self.blocks = coerce_to_list(blocks, class_=Block, allow_none=True, max_size=50)
+        self.blocks = coerce_to_list(
+            blocks, class_=Block, allow_none=True, max_size=MESSAGE_BLOCKS_MAX_ITEMS
+        )
         self.channel = channel
         self.text = text
         self.attachments = coerce_to_list(
-            attachments, class_=Attachment, allow_none=True, max_size=100
+            attachments, class_=Attachment, allow_none=True, max_size=MESSAGE_ATTACHMENTS_MAX_ITEMS
         )
         self.thread_ts = thread_ts
         self.mrkdwn = mrkdwn
@@ -146,7 +153,9 @@ class Message(BaseMessage):
         unfurl_links: bool | None = None,
         unfurl_media: bool | None = None,
     ) -> None:
-        channel = validate_string_nonnull(channel, field_name="channel", min_length=1)
+        channel = validate_string_nonnull(
+            channel, field_name="channel", min_length=MESSAGE_CHANNEL_MIN_LENGTH
+        )
         super().__init__(channel, text, blocks, attachments, thread_ts, mrkdwn)
         self.unfurl_links = unfurl_links
         self.unfurl_media = unfurl_media
@@ -245,10 +254,10 @@ class WebhookMessage(_MessagePayloadMixin):
     ) -> None:
         self.text = text
         self.attachments: list[Attachment] | None = coerce_to_list(
-            attachments, Attachment, allow_none=True, max_size=100
+            attachments, Attachment, allow_none=True, max_size=MESSAGE_ATTACHMENTS_MAX_ITEMS
         )
         self.blocks: list[Block] | None = coerce_to_list(
-            blocks, Block, allow_none=True, max_size=50
+            blocks, Block, allow_none=True, max_size=MESSAGE_BLOCKS_MAX_ITEMS
         )
         if self.blocks is not None:
             validate_surface_blocks(self.blocks, "message")

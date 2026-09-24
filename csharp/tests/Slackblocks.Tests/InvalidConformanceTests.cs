@@ -83,6 +83,13 @@ public sealed class InvalidConformanceTests
             "option-group-empty" => OptionGroup("Group", Items()),
             "option-group-too-many-options" => OptionGroup("Group", Copies(101, index => Option("A", "a"))),
             "select-placeholder-too-long" => Typed("StaticSelect", "static_select", "action_id", "a", "options", Items(Option("A", "a")), "placeholder", Plain(Repeated("x", 151))),
+            "plain-text-input-placeholder-too-long" => Typed("PlainTextInput", "plain_text_input", "action_id", "a", "placeholder", Plain(Repeated("x", 151))),
+            "email-input-placeholder-too-long" => Typed("EmailInputElement", "email_text_input", "action_id", "a", "placeholder", Plain(Repeated("x", 151))),
+            "url-input-placeholder-too-long" => Typed("UrlInputElement", "url_text_input", "action_id", "a", "placeholder", Plain(Repeated("x", 151))),
+            "number-input-placeholder-too-long" => Typed("NumberInput", "number_input", "action_id", "a", "is_decimal_allowed", false, "placeholder", Plain(Repeated("x", 151))),
+            "date-picker-placeholder-too-long" => Typed("DatePickerElement", "datepicker", "action_id", "a", "placeholder", Plain(Repeated("x", 151))),
+            "time-picker-placeholder-too-long" => Typed("TimePickerElement", "timepicker", "action_id", "a", "placeholder", Plain(Repeated("x", 151))),
+            "rich-text-input-placeholder-too-long" => Typed("RichTextInputElement", "rich_text_input", "action_id", "a", "placeholder", Plain(Repeated("x", 151))),
             "select-too-many-options" => Typed("StaticSelect", "static_select", "action_id", "a", "options", Copies(101, index => Option("A", "a"))),
             "select-too-many-option-groups" => Typed("StaticSelect", "static_select", "action_id", "a", "option_groups", Copies(101, index => Map("label", Plain("Group"), "options", Items(Option("A", "a"))))),
             "overflow-empty" => Typed("Overflow", "overflow", "action_id", "a", "options", Items()),
@@ -94,10 +101,13 @@ public sealed class InvalidConformanceTests
             "url-source-url-empty" => Typed("URLSource", "url", "url", "", "text", "text"),
             "url-source-url-too-long" => Typed("URLSource", "url", "url", Repeated("x", 3001), "text", "text"),
             "table-too-many-rows" => Typed("TableBlock", "table", "rows", Copies(101, index => Items(RawText("A")))),
+            "table-too-many-columns" => Typed("TableBlock", "table", "rows", Items(Copies(21, index => RawText("A")))),
             "table-ragged-rows" => Typed("TableBlock", "table", "rows", Items(Items(RawText("A"), RawText("B")), Items(RawText("C")))),
             "table-column-settings-mismatch" => Typed("TableBlock", "table", "rows", Items(Items(RawText("A"), RawText("B"))), "column_settings", Items(Map("is_wrapped", true))),
             "file-input-max-files-too-small" => Typed("FileInput", "file_input", "action_id", "a", "max_files", 0),
             "file-input-max-files-too-large" => Typed("FileInput", "file_input", "action_id", "a", "max_files", 11),
+            "dispatch-action-no-triggers" => Case("DispatchActionConfiguration", Map("trigger_actions_on", Items())),
+            "dispatch-action-too-many-triggers" => Case("DispatchActionConfiguration", Map("trigger_actions_on", Items("on_enter_pressed", "on_character_entered", "on_enter_pressed"))),
             "plain-text-input-max-length-too-large" => Typed("PlainTextInput", "plain_text_input", "action_id", "a", "max_length", 3001),
             "actions-too-many-elements" => Typed("ActionsBlock", "actions", "elements", Copies(26, index => Button())),
             "context-too-many-elements" => Typed("ContextBlock", "context", "elements", Copies(11, index => Mrkdwn("A"))),
@@ -140,6 +150,8 @@ public sealed class InvalidConformanceTests
             "input-invalid-element" => Typed("InputBlock", "input", "label", Plain("Label"), "element", Button()),
             "block-id-too-long" => Typed("DividerBlock", "divider", "block_id", Repeated("x", 256)),
             "button-accessibility-label-too-long" => Typed("Button", "button", "text", Plain("A"), "action_id", "a", "accessibility_label", Repeated("x", 76)),
+            "workflow-button-text-too-long" => Typed("WorkflowButtonElement", "workflow_button", "text", Plain(Repeated("x", 76)), "workflow", Workflow()),
+            "workflow-button-accessibility-label-too-long" => Typed("WorkflowButtonElement", "workflow_button", "text", Plain("Run"), "workflow", Workflow(), "accessibility_label", Repeated("x", 76)),
             "alert-text-too-long" => Typed("AlertBlock", "alert", "text", Plain(Repeated("x", 201))),
             "card-title-too-long" => Typed("CardBlock", "card", "title", Plain(Repeated("x", 151))),
             "card-subtitle-too-long" => Typed("CardBlock", "card", "title", Plain("Card"), "subtitle", Plain(Repeated("x", 151))),
@@ -156,6 +168,8 @@ public sealed class InvalidConformanceTests
             "feedback-button-value-too-long" => Typed("FeedbackButtons", "feedback_buttons", "positive_button", Feedback("Good", Repeated("x", 2001)), "negative_button", Feedback("Bad", "bad")),
             "feedback-button-accessibility-label-too-long" => Typed("FeedbackButtons", "feedback_buttons", "positive_button", Map("text", Plain("Good"), "value", "good", "accessibility_label", Repeated("x", 76)), "negative_button", Feedback("Bad", "bad")),
             "icon-button-too-many-visible-users" => Typed("IconButton", "icon_button", "text", Plain("Delete"), "icon", "trash", "visible_to_user_ids", Copies(11, index => "U" + index)),
+            "icon-button-value-too-long" => Typed("IconButton", "icon_button", "text", Plain("Delete"), "icon", "trash", "value", Repeated("x", 2001)),
+            "icon-button-accessibility-label-too-long" => Typed("IconButton", "icon_button", "text", Plain("Delete"), "icon", "trash", "accessibility_label", Repeated("x", 76)),
             "data-table-too-few-rows" => DataTable(Items(Items(RawText("Name"))), "Names"),
             "data-table-too-many-rows" => DataTable(Copies(202, index => Items(RawText("A"))), "Names"),
             "data-table-too-few-columns" => DataTable(Items(Items(), Items()), "Empty"),
@@ -229,6 +243,8 @@ public sealed class InvalidConformanceTests
     private static Dictionary<string, object?> Button() => Obj("button", "text", Plain("A"), "action_id", "a");
 
     private static Dictionary<string, object?> IconButton() => Obj("icon_button", "text", Plain("Delete"), "icon", "trash");
+
+    private static Dictionary<string, object?> Workflow() => Map("trigger", Map("url", "https://slack.com/shortcuts/Ft0/abc"));
 
     private static Dictionary<string, object?> InputElement() => Obj("plain_text_input", "action_id", "a");
 

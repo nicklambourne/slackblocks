@@ -429,6 +429,8 @@ const validTableRows = () => [
 const validAxis = () => axisConfig({ categories: ["A"] });
 const validSeries = (name = "Series") =>
   dataSeries({ name, data: [dataPoint({ label: "A", value: 1 })] });
+const validWorkflow = () =>
+  workflow({ trigger: trigger({ url: "https://slack.com/shortcuts/Ft0/abc" }) });
 
 const invalidCases: Record<string, () => unknown> = {
   "text-empty": () => plainText(""),
@@ -500,6 +502,42 @@ const invalidCases: Record<string, () => unknown> = {
       options: [choice()],
       placeholder: "x".repeat(limits.select.placeholder.max_length + 1),
     }),
+  "plain-text-input-placeholder-too-long": () =>
+    plainTextInput({
+      actionId: "a",
+      placeholder: "x".repeat(limits.plain_text_input.placeholder.max_length + 1),
+    }),
+  "email-input-placeholder-too-long": () =>
+    emailInput({
+      actionId: "a",
+      placeholder: "x".repeat(limits.email_input.placeholder.max_length + 1),
+    }),
+  "url-input-placeholder-too-long": () =>
+    urlInput({
+      actionId: "a",
+      placeholder: "x".repeat(limits.url_input.placeholder.max_length + 1),
+    }),
+  "number-input-placeholder-too-long": () =>
+    numberInput({
+      actionId: "a",
+      isDecimalAllowed: false,
+      placeholder: "x".repeat(limits.number_input.placeholder.max_length + 1),
+    }),
+  "date-picker-placeholder-too-long": () =>
+    datePicker({
+      actionId: "a",
+      placeholder: "x".repeat(limits.date_picker.placeholder.max_length + 1),
+    }),
+  "time-picker-placeholder-too-long": () =>
+    timePicker({
+      actionId: "a",
+      placeholder: "x".repeat(limits.time_picker.placeholder.max_length + 1),
+    }),
+  "rich-text-input-placeholder-too-long": () =>
+    richTextInput({
+      actionId: "a",
+      placeholder: "x".repeat(limits.rich_text_input.placeholder.max_length + 1),
+    }),
   "select-too-many-options": () =>
     staticSelect({
       actionId: "a",
@@ -541,9 +579,14 @@ const invalidCases: Record<string, () => unknown> = {
   "url-source-url-empty": () => urlSource({ url: "", text: "text" }),
   "url-source-url-too-long": () =>
     urlSource({ url: "x".repeat(limits.url_source.url.max_length + 1), text: "text" }),
-  // Both implementations pin the table block to at most 100 rows.
   "table-too-many-rows": () =>
-    tableBlock({ rows: Array.from({ length: 101 }, () => [rawText("A")]) }),
+    tableBlock({
+      rows: Array.from({ length: limits.table.rows.max_items + 1 }, () => [rawText("A")]),
+    }),
+  "table-too-many-columns": () =>
+    tableBlock({
+      rows: [Array.from({ length: limits.table.columns.max_items + 1 }, () => rawText("A"))],
+    }),
   "table-ragged-rows": () =>
     tableBlock({ rows: [[rawText("A"), rawText("B")], [rawText("C")]] }),
   "table-column-settings-mismatch": () =>
@@ -555,6 +598,11 @@ const invalidCases: Record<string, () => unknown> = {
     fileInput({ actionId: "a", maxFiles: limits.file_input.max_files.min - 1 }),
   "file-input-max-files-too-large": () =>
     fileInput({ actionId: "a", maxFiles: limits.file_input.max_files.max + 1 }),
+  "dispatch-action-no-triggers": () => dispatchActionConfiguration({ triggerActionsOn: [] }),
+  "dispatch-action-too-many-triggers": () =>
+    dispatchActionConfiguration({
+      triggerActionsOn: ["on_enter_pressed", "on_character_entered", "on_enter_pressed"],
+    }),
   "plain-text-input-max-length-too-large": () =>
     plainTextInput({
       actionId: "a",
@@ -701,6 +749,17 @@ const invalidCases: Record<string, () => unknown> = {
       actionId: "a",
       accessibilityLabel: "x".repeat(limits.button.accessibility_label.max_length + 1),
     }),
+  "workflow-button-text-too-long": () =>
+    workflowButton({
+      text: "x".repeat(limits.workflow_button.text.max_length + 1),
+      workflow: validWorkflow(),
+    }),
+  "workflow-button-accessibility-label-too-long": () =>
+    workflowButton({
+      text: "Run",
+      workflow: validWorkflow(),
+      accessibilityLabel: "x".repeat(limits.workflow_button.accessibility_label.max_length + 1),
+    }),
   "alert-text-too-long": () =>
     alertBlock({ text: "x".repeat(limits.alert.text.max_length + 1) }),
   "card-title-too-long": () =>
@@ -782,6 +841,16 @@ const invalidCases: Record<string, () => unknown> = {
         { length: limits.icon_button.visible_to_user_ids.max_items + 1 },
         (_, index) => `U${index}`,
       ),
+    }),
+  "icon-button-value-too-long": () =>
+    iconButton({
+      text: "Delete",
+      value: "x".repeat(limits.icon_button.value.max_length + 1),
+    }),
+  "icon-button-accessibility-label-too-long": () =>
+    iconButton({
+      text: "Delete",
+      accessibilityLabel: "x".repeat(limits.icon_button.accessibility_label.max_length + 1),
     }),
   "data-table-too-few-rows": () =>
     dataTableBlock({ rows: [[rawText("Name")]], caption: "Names" }),

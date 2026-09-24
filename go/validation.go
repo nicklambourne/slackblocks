@@ -90,6 +90,16 @@ var confirmTypes = stringSet(
 	"users_select", "workflow_button",
 )
 
+var inputPlaceholderMaxLengths = map[string]int{
+	"plain_text_input": limitPlainTextInputPlaceholderMaxLength,
+	"email_text_input": limitEmailInputPlaceholderMaxLength,
+	"url_text_input":   limitURLInputPlaceholderMaxLength,
+	"number_input":     limitNumberInputPlaceholderMaxLength,
+	"datepicker":       limitDatePickerPlaceholderMaxLength,
+	"timepicker":       limitTimePickerPlaceholderMaxLength,
+	"rich_text_input":  limitRichTextInputPlaceholderMaxLength,
+}
+
 var attachmentColorPattern = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
 
 var slackIconNames = stringSet(
@@ -139,14 +149,14 @@ func validateBuilder(name string, object Object) error {
 		if !ok {
 			return validationError(MissingRequired, name, "expected label")
 		}
-		if err := textLength(label, child(name, "label.text"), 0, 75); err != nil {
+		if err := textLength(label, child(name, "label.text"), 0, limitOptionGroupLabelMaxLength); err != nil {
 			return err
 		}
 		options, err := sliceAt(object["options"], child(name, "options"))
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(options, child(name, "options"), 1, 100); err != nil {
+		if err := sliceLength(options, child(name, "options"), limitOptionGroupOptionsMinItems, limitOptionGroupOptionsMaxItems); err != nil {
 			return err
 		}
 		for index, value := range options {
@@ -181,6 +191,14 @@ func validateBuilder(name string, object Object) error {
 		if _, ok := object["trigger"]; !ok {
 			return validationError(MissingRequired, name, "expected trigger")
 		}
+	case "DispatchActionConfiguration":
+		if raw, ok := object["trigger_actions_on"]; ok {
+			triggers, err := sliceAt(raw, child(name, "trigger_actions_on"))
+			if err != nil {
+				return err
+			}
+			return sliceLength(triggers, child(name, "trigger_actions_on"), limitDispatchActionConfigurationTriggerActionsOnMinItems, limitDispatchActionConfigurationTriggerActionsOnMaxItems)
+		}
 	case "SlackFile":
 		_, hasID := object["id"]
 		_, hasURL := object["url"]
@@ -188,28 +206,28 @@ func validateBuilder(name string, object Object) error {
 			return validationError(MutuallyExclusive, name, "expected exactly one of id or url")
 		}
 	case "ChartSegment":
-		return validateLabelValue(object, name, 20, true)
+		return validateLabelValue(object, name, limitDataVisualizationSegmentLabelMaxLength, true)
 	case "DataPoint":
-		return validateLabelValue(object, name, 20, false)
+		return validateLabelValue(object, name, limitDataVisualizationPointLabelMaxLength, false)
 	case "DataSeries":
 		nameValue, ok := object["name"].(string)
 		if !ok {
 			return validationError(MissingRequired, name, "expected name")
 		}
-		if err := stringLength(nameValue, child(name, "name"), 0, 20); err != nil {
+		if err := stringLength(nameValue, child(name, "name"), 0, limitDataVisualizationSeriesNameMaxLength); err != nil {
 			return err
 		}
 		data, err := sliceAt(object["data"], child(name, "data"))
 		if err != nil {
 			return err
 		}
-		return sliceLength(data, child(name, "data"), 1, 20)
+		return sliceLength(data, child(name, "data"), limitDataVisualizationDataMinItems, limitDataVisualizationDataMaxItems)
 	case "AxisConfig":
 		categories, err := sliceAt(object["categories"], child(name, "categories"))
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(categories, child(name, "categories"), 1, 20); err != nil {
+		if err := sliceLength(categories, child(name, "categories"), limitDataVisualizationCategoriesMinItems, limitDataVisualizationCategoriesMaxItems); err != nil {
 			return err
 		}
 		seen := map[string]bool{}
@@ -218,7 +236,7 @@ func validateBuilder(name string, object Object) error {
 			if !ok {
 				return validationError(TypeMismatch, fmt.Sprintf("%s[%d]", child(name, "categories"), index), "expected a string")
 			}
-			if err := stringLength(category, fmt.Sprintf("%s[%d]", child(name, "categories"), index), 0, 20); err != nil {
+			if err := stringLength(category, fmt.Sprintf("%s[%d]", child(name, "categories"), index), 0, limitDataVisualizationCategoryLabelMaxLength); err != nil {
 				return err
 			}
 			if seen[category] {
@@ -228,7 +246,7 @@ func validateBuilder(name string, object Object) error {
 		}
 		for _, field := range []string{"x_label", "y_label"} {
 			if value, ok := object[field].(string); ok {
-				if err := stringLength(value, child(name, field), 0, 50); err != nil {
+				if err := stringLength(value, child(name, field), 0, limitDataVisualizationAxisLabelMaxLength); err != nil {
 					return err
 				}
 			}
@@ -240,16 +258,16 @@ func validateBuilder(name string, object Object) error {
 		if _, ok := object["value"]; !ok {
 			return validationError(MissingRequired, name, "expected value")
 		}
-		if err := textLength(object["text"], child(name, "text.text"), 0, 75); err != nil {
+		if err := textLength(object["text"], child(name, "text.text"), 0, limitFeedbackButtonTextMaxLength); err != nil {
 			return err
 		}
 		if value, ok := object["value"].(string); ok {
-			if err := stringLength(value, child(name, "value"), 0, 2000); err != nil {
+			if err := stringLength(value, child(name, "value"), 0, limitFeedbackButtonValueMaxLength); err != nil {
 				return err
 			}
 		}
 		if label, ok := object["accessibility_label"].(string); ok {
-			if err := stringLength(label, child(name, "accessibility_label"), 0, 75); err != nil {
+			if err := stringLength(label, child(name, "accessibility_label"), 0, limitFeedbackButtonAccessibilityLabelMaxLength); err != nil {
 				return err
 			}
 		}
@@ -266,7 +284,7 @@ func validateBuilder(name string, object Object) error {
 		if !ok {
 			return validationError(TypeMismatch, child(name, "channel"), "expected a string")
 		}
-		if err := stringLength(channel, child(name, "channel"), 1, 0); err != nil {
+		if err := stringLength(channel, child(name, "channel"), limitMessageChannelMinLength, 0); err != nil {
 			return err
 		}
 		return validateMessageCollections(object, name)
@@ -284,12 +302,12 @@ func validateObject(object Object, path string) error {
 		}
 	}
 	if blockID, ok := object["block_id"].(string); ok {
-		if err := stringLength(blockID, child(path, "block_id"), 0, 255); err != nil {
+		if err := stringLength(blockID, child(path, "block_id"), 0, limitBlockIDMaxLength); err != nil {
 			return err
 		}
 	}
 	if actionID, ok := object["action_id"].(string); ok {
-		if err := stringLength(actionID, child(path, "action_id"), 0, 255); err != nil {
+		if err := stringLength(actionID, child(path, "action_id"), 0, limitActionIDMaxLength); err != nil {
 			return err
 		}
 	}
@@ -304,10 +322,26 @@ func validateObject(object Object, path string) error {
 			}
 		}
 	}
+	if maximum, ok := inputPlaceholderMaxLengths[typeName]; ok {
+		if placeholder, ok := object["placeholder"]; ok {
+			if err := textLength(placeholder, child(path, "placeholder.text"), 0, maximum); err != nil {
+				return err
+			}
+		}
+	}
+	if config, ok := object["dispatch_action_config"]; ok {
+		value, err := objectAt(config, child(path, "dispatch_action_config"))
+		if err != nil {
+			return err
+		}
+		if err := validateBuilder("DispatchActionConfiguration", value); err != nil {
+			return err
+		}
+	}
 
 	switch typeName {
 	case "plain_text", "mrkdwn":
-		return textLength(object, child(path, "text"), 1, 3000)
+		return textLength(object, child(path, "text"), limitTextMinLength, limitTextMaxLength)
 	case "icon":
 		name, ok := object["name"].(string)
 		if !ok || !slackIconNames[name] {
@@ -328,27 +362,31 @@ func validateObject(object Object, path string) error {
 			return validationError(MissingRequired, path, "expected text, fields, or both")
 		}
 		if hasText {
-			if err := textLength(object["text"], child(path, "text.text"), 0, 3000); err != nil {
+			if err := textLength(object["text"], child(path, "text.text"), 0, limitSectionTextMaxLength); err != nil {
 				return err
 			}
 		}
 		if hasFields {
-			if err := sliceLength(fields, child(path, "fields"), 0, 10); err != nil {
+			if err := sliceLength(fields, child(path, "fields"), 0, limitSectionFieldsMaxItems); err != nil {
 				return err
 			}
 			for index, field := range fields {
-				if err := textLength(field, fmt.Sprintf("%s[%d].text", child(path, "fields"), index), 0, 2000); err != nil {
+				if err := textLength(field, fmt.Sprintf("%s[%d].text", child(path, "fields"), index), 0, limitSectionFieldsItemMaxLength); err != nil {
 					return err
 				}
 			}
 		}
 	case "header":
-		return textLength(object["text"], child(path, "text.text"), 0, 150)
+		return textLength(object["text"], child(path, "text.text"), 0, limitHeaderTextMaxLength)
 	case "button", "workflow_button":
-		if err := textLength(object["text"], child(path, "text.text"), 0, 75); err != nil {
+		textMaximum, labelMaximum := limitButtonTextMaxLength, limitButtonAccessibilityLabelMaxLength
+		if typeName == "workflow_button" {
+			textMaximum, labelMaximum = limitWorkflowButtonTextMaxLength, limitWorkflowButtonAccessibilityLabelMaxLength
+		}
+		if err := textLength(object["text"], child(path, "text.text"), 0, textMaximum); err != nil {
 			return err
 		}
-		for field, maximum := range map[string]int{"url": 3000, "value": 2000, "accessibility_label": 75} {
+		for field, maximum := range map[string]int{"url": limitButtonURLMaxLength, "value": limitButtonValueMaxLength, "accessibility_label": labelMaximum} {
 			if value, ok := object[field].(string); ok {
 				if err := stringLength(value, child(path, field), 0, maximum); err != nil {
 					return err
@@ -360,17 +398,17 @@ func validateObject(object Object, path string) error {
 			return validationError(TypeMismatch, child(path, "icon"), "expected trash")
 		}
 		if value, ok := object["value"].(string); ok {
-			if err := stringLength(value, child(path, "value"), 0, 2000); err != nil {
+			if err := stringLength(value, child(path, "value"), 0, limitIconButtonValueMaxLength); err != nil {
 				return err
 			}
 		}
 		if label, ok := object["accessibility_label"].(string); ok {
-			if err := stringLength(label, child(path, "accessibility_label"), 0, 75); err != nil {
+			if err := stringLength(label, child(path, "accessibility_label"), 0, limitIconButtonAccessibilityLabelMaxLength); err != nil {
 				return err
 			}
 		}
 		if users, ok := object["visible_to_user_ids"].([]any); ok {
-			if err := sliceLength(users, child(path, "visible_to_user_ids"), 0, 10); err != nil {
+			if err := sliceLength(users, child(path, "visible_to_user_ids"), 0, limitIconButtonVisibleToUserIDsMaxItems); err != nil {
 				return err
 			}
 		}
@@ -385,28 +423,26 @@ func validateObject(object Object, path string) error {
 			}
 		}
 	case "file_input":
-		if value, ok := number(object["max_files"]); ok && (value < 1 || value > 10) {
-			return validationError(OutOfRange, child(path, "max_files"), "expected a value between 1 and 10")
+		if value, ok := number(object["max_files"]); ok && (value < limitFileInputMaxFilesMin || value > limitFileInputMaxFilesMax) {
+			return validationError(OutOfRange, child(path, "max_files"), "expected a value between %d and %d", limitFileInputMaxFilesMin, limitFileInputMaxFilesMax)
 		}
 	case "plain_text_input":
-		if value, ok := number(object["max_length"]); ok && value > 3000 {
-			return validationError(OutOfRange, child(path, "max_length"), "exceeds maximum 3000")
-		}
-		if placeholder, ok := object["placeholder"]; ok {
-			if err := textLength(placeholder, child(path, "placeholder.text"), 0, 150); err != nil {
-				return err
-			}
+		if value, ok := number(object["max_length"]); ok && value > limitPlainTextInputMaxLengthMax {
+			return validationError(OutOfRange, child(path, "max_length"), "exceeds maximum %d", limitPlainTextInputMaxLengthMax)
 		}
 	case "overflow", "checkboxes", "radio_buttons":
 		options, err := sliceAt(object["options"], child(path, "options"))
 		if err != nil {
 			return err
 		}
-		maximumOptions := 10
-		if typeName == "overflow" {
-			maximumOptions = 5
+		minimumOptions, maximumOptions := limitCheckboxesOptionsMinItems, limitCheckboxesOptionsMaxItems
+		switch typeName {
+		case "overflow":
+			minimumOptions, maximumOptions = limitOverflowOptionsMinItems, limitOverflowOptionsMaxItems
+		case "radio_buttons":
+			minimumOptions, maximumOptions = limitRadioButtonsOptionsMinItems, limitRadioButtonsOptionsMaxItems
 		}
-		if err := sliceLength(options, child(path, "options"), 1, maximumOptions); err != nil {
+		if err := sliceLength(options, child(path, "options"), minimumOptions, maximumOptions); err != nil {
 			return err
 		}
 		if err := validateOptions(options, child(path, "options")); err != nil {
@@ -414,7 +450,7 @@ func validateObject(object Object, path string) error {
 		}
 	case "url":
 		value, _ := object["url"].(string)
-		return stringLength(value, child(path, "url"), 1, 3000)
+		return stringLength(value, child(path, "url"), limitURLSourceURLMinLength, limitURLSourceURLMaxLength)
 	case "static_select", "multi_static_select":
 		_, hasOptions := object["options"]
 		_, hasGroups := object["option_groups"]
@@ -426,7 +462,7 @@ func validateObject(object Object, path string) error {
 			if err != nil {
 				return err
 			}
-			if err := sliceLength(options, child(path, "options"), 0, 100); err != nil {
+			if err := sliceLength(options, child(path, "options"), 0, limitSelectOptionsMaxItems); err != nil {
 				return err
 			}
 			if err := validateOptions(options, child(path, "options")); err != nil {
@@ -438,7 +474,7 @@ func validateObject(object Object, path string) error {
 			if err != nil {
 				return err
 			}
-			if err := sliceLength(groups, child(path, "option_groups"), 0, 100); err != nil {
+			if err := sliceLength(groups, child(path, "option_groups"), 0, limitSelectOptionGroupsMaxItems); err != nil {
 				return err
 			}
 			for index, raw := range groups {
@@ -452,7 +488,7 @@ func validateObject(object Object, path string) error {
 			}
 		}
 		if placeholder, ok := object["placeholder"]; ok {
-			if err := textLength(placeholder, child(path, "placeholder.text"), 0, 150); err != nil {
+			if err := textLength(placeholder, child(path, "placeholder.text"), 0, limitSelectPlaceholderMaxLength); err != nil {
 				return err
 			}
 		}
@@ -472,12 +508,12 @@ func validateObject(object Object, path string) error {
 			return validationError(MutuallyExclusive, path, "image_url and slack_file cannot be provided together")
 		}
 		if value, ok := object["image_url"].(string); ok {
-			if err := stringLength(value, child(path, "image_url"), 0, 3000); err != nil {
+			if err := stringLength(value, child(path, "image_url"), 0, limitImageImageURLMaxLength); err != nil {
 				return err
 			}
 		}
 		if value, ok := object["alt_text"].(string); ok {
-			if err := stringLength(value, child(path, "alt_text"), 0, 2000); err != nil {
+			if err := stringLength(value, child(path, "alt_text"), 0, limitImageAltTextMaxLength); err != nil {
 				return err
 			}
 		}
@@ -486,7 +522,7 @@ func validateObject(object Object, path string) error {
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(elements, child(path, "elements"), 0, 10); err != nil {
+		if err := sliceLength(elements, child(path, "elements"), 0, limitContextElementsMaxItems); err != nil {
 			return err
 		}
 		for index, raw := range elements {
@@ -503,9 +539,9 @@ func validateObject(object Object, path string) error {
 		if err != nil {
 			return err
 		}
-		return sliceLength(elements, child(path, "elements"), 0, 25)
+		return sliceLength(elements, child(path, "elements"), 0, limitActionsElementsMaxItems)
 	case "alert":
-		if err := textLength(object["text"], child(path, "text.text"), 0, 200); err != nil {
+		if err := textLength(object["text"], child(path, "text.text"), 0, limitAlertTextMaxLength); err != nil {
 			return err
 		}
 		if level, ok := object["level"].(string); ok && !alertLevels[level] {
@@ -524,7 +560,7 @@ func validateObject(object Object, path string) error {
 				return validationError(MutuallyExclusive, path, "icon and slack_icon cannot be provided together")
 			}
 		}
-		for field, maximum := range map[string]int{"title": 150, "subtitle": 150, "body": 200, "subtext": 200} {
+		for field, maximum := range map[string]int{"title": limitCardTitleMaxLength, "subtitle": limitCardSubtitleMaxLength, "body": limitCardBodyMaxLength, "subtext": limitCardSubtextMaxLength} {
 			if value, ok := object[field]; ok {
 				if err := textLength(value, child(path, field+".text"), 0, maximum); err != nil {
 					return err
@@ -532,7 +568,7 @@ func validateObject(object Object, path string) error {
 			}
 		}
 		if values, ok := object["actions"].([]any); ok {
-			if err := sliceLength(values, child(path, "actions"), 0, 3); err != nil {
+			if err := sliceLength(values, child(path, "actions"), 0, limitCardActionsMaxItems); err != nil {
 				return err
 			}
 		}
@@ -541,7 +577,7 @@ func validateObject(object Object, path string) error {
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(values, child(path, "elements"), 1, 10); err != nil {
+		if err := sliceLength(values, child(path, "elements"), limitCarouselElementsMinItems, limitCarouselElementsMaxItems); err != nil {
 			return err
 		}
 		for index, raw := range values {
@@ -560,12 +596,12 @@ func validateObject(object Object, path string) error {
 			return validationError(MissingRequired, path, "expected title or rich_text_title")
 		}
 		if title {
-			if err := textLength(object["title"], child(path, "title.text"), 0, 150); err != nil {
+			if err := textLength(object["title"], child(path, "title.text"), 0, limitContainerTitleMaxLength); err != nil {
 				return err
 			}
 		}
 		if value, ok := object["subtitle"]; ok {
-			if err := textLength(value, child(path, "subtitle.text"), 0, 150); err != nil {
+			if err := textLength(value, child(path, "subtitle.text"), 0, limitContainerSubtitleMaxLength); err != nil {
 				return err
 			}
 		}
@@ -573,7 +609,7 @@ func validateObject(object Object, path string) error {
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(blocks, child(path, "child_blocks"), 1, 10); err != nil {
+		if err := sliceLength(blocks, child(path, "child_blocks"), 1, limitContainerChildBlocksMaxItems); err != nil {
 			return err
 		}
 		if width, ok := object["width"].(string); ok && !containerWidths[width] {
@@ -590,7 +626,7 @@ func validateObject(object Object, path string) error {
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(values, child(path, "elements"), 1, 5); err != nil {
+		if err := sliceLength(values, child(path, "elements"), 1, limitContextActionsElementsMaxItems); err != nil {
 			return err
 		}
 	case "data_table":
@@ -603,7 +639,7 @@ func validateObject(object Object, path string) error {
 		}
 	case "data_visualization":
 		if title, ok := object["title"].(string); ok {
-			if err := stringLength(title, child(path, "title"), 0, 50); err != nil {
+			if err := stringLength(title, child(path, "title"), 0, limitDataVisualizationTitleMaxLength); err != nil {
 				return err
 			}
 		}
@@ -615,7 +651,7 @@ func validateObject(object Object, path string) error {
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(segments, child(path, "segments"), 1, 12); err != nil {
+		if err := sliceLength(segments, child(path, "segments"), limitDataVisualizationSegmentsMinItems, limitDataVisualizationSegmentsMaxItems); err != nil {
 			return err
 		}
 		for index, raw := range segments {
@@ -623,7 +659,7 @@ func validateObject(object Object, path string) error {
 			if err != nil {
 				return err
 			}
-			if err := validateLabelValue(segment, fmt.Sprintf("%s[%d]", child(path, "segments"), index), 20, true); err != nil {
+			if err := validateLabelValue(segment, fmt.Sprintf("%s[%d]", child(path, "segments"), index), limitDataVisualizationSegmentLabelMaxLength, true); err != nil {
 				return err
 			}
 		}
@@ -636,11 +672,11 @@ func validateObject(object Object, path string) error {
 			return validationError(TypeMismatch, child(path, "status"), "unknown task status")
 		}
 	case "input":
-		if err := textLength(object["label"], child(path, "label.text"), 0, 2000); err != nil {
+		if err := textLength(object["label"], child(path, "label.text"), 0, limitInputLabelMaxLength); err != nil {
 			return err
 		}
 		if value, ok := object["hint"]; ok {
-			if err := textLength(value, child(path, "hint.text"), 0, 2000); err != nil {
+			if err := textLength(value, child(path, "hint.text"), 0, limitInputHintMaxLength); err != nil {
 				return err
 			}
 		}
@@ -653,17 +689,17 @@ func validateObject(object Object, path string) error {
 		}
 	case "markdown":
 		value, _ := object["text"].(string)
-		return stringLength(value, child(path, "text"), 1, 12000)
+		return stringLength(value, child(path, "text"), limitMarkdownTextMinLength, limitMarkdownTextMaxLength)
 	case "video":
 		if value, ok := object["alt_text"].(string); ok {
-			if err := stringLength(value, child(path, "alt_text"), 1, 200); err != nil {
+			if err := stringLength(value, child(path, "alt_text"), limitVideoAltTextMinLength, limitVideoAltTextMaxLength); err != nil {
 				return err
 			}
 		}
-		if err := textLength(object["title"], child(path, "title.text"), 0, 200); err != nil {
+		if err := textLength(object["title"], child(path, "title.text"), 0, limitVideoTitleMaxLength); err != nil {
 			return err
 		}
-		for field, maximum := range map[string]int{"author_name": 50, "provider_name": 50} {
+		for field, maximum := range map[string]int{"author_name": limitVideoAuthorNameMaxLength, "provider_name": limitVideoProviderNameMaxLength} {
 			if value, ok := object[field].(string); ok {
 				if err := stringLength(value, child(path, field), 0, maximum); err != nil {
 					return err
@@ -671,7 +707,7 @@ func validateObject(object Object, path string) error {
 			}
 		}
 		if value, ok := object["description"]; ok {
-			if err := textLength(value, child(path, "description.text"), 0, 200); err != nil {
+			if err := textLength(value, child(path, "description.text"), 0, limitVideoDescriptionMaxLength); err != nil {
 				return err
 			}
 		}
@@ -680,19 +716,19 @@ func validateObject(object Object, path string) error {
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(blocks, child(path, "blocks"), 1, 100); err != nil {
+		if err := sliceLength(blocks, child(path, "blocks"), limitViewBlocksMinItems, limitViewBlocksMaxItems); err != nil {
 			return err
 		}
 		if err := validateSurface(blocks, typeName, child(path, "blocks")); err != nil {
 			return err
 		}
 		if value, ok := object["private_metadata"].(string); ok {
-			if err := stringLength(value, child(path, "private_metadata"), 0, 3000); err != nil {
+			if err := stringLength(value, child(path, "private_metadata"), 0, limitViewPrivateMetadataMaxLength); err != nil {
 				return err
 			}
 		}
 		if value, ok := object["callback_id"].(string); ok {
-			if err := stringLength(value, child(path, "callback_id"), 0, 255); err != nil {
+			if err := stringLength(value, child(path, "callback_id"), 0, limitViewCallbackIDMaxLength); err != nil {
 				return err
 			}
 		}
@@ -704,7 +740,7 @@ func validateObject(object Object, path string) error {
 					}
 				}
 			}
-			for field, maximum := range map[string]int{"title": 24, "close": 24, "submit": 24} {
+			for field, maximum := range map[string]int{"title": limitViewTitleMaxLength, "close": limitViewCloseMaxLength, "submit": limitViewSubmitMaxLength} {
 				if value, ok := object[field]; ok {
 					if err := textLength(value, child(path, field+".text"), 0, maximum); err != nil {
 						return err
@@ -750,7 +786,7 @@ func validateNested(value any, path string) error {
 }
 
 func validateConfirmation(object Object, path string) error {
-	for field, maximum := range map[string]int{"title": 100, "text": 300, "confirm": 30, "deny": 30} {
+	for field, maximum := range map[string]int{"title": limitConfirmationTitleMaxLength, "text": limitConfirmationTextMaxLength, "confirm": limitConfirmationConfirmMaxLength, "deny": limitConfirmationDenyMaxLength} {
 		value, ok := object[field]
 		if !ok {
 			return validationError(MissingRequired, path, "expected %s", field)
@@ -768,21 +804,21 @@ func validateOption(object Object, path string) error {
 			return validationError(MissingRequired, path, "expected %s", field)
 		}
 	}
-	if err := textLength(object["text"], child(path, "text.text"), 0, 75); err != nil {
+	if err := textLength(object["text"], child(path, "text.text"), 0, limitOptionTextMaxLength); err != nil {
 		return err
 	}
 	if value, ok := object["value"].(string); ok {
-		if err := stringLength(value, child(path, "value"), 0, 150); err != nil {
+		if err := stringLength(value, child(path, "value"), 0, limitOptionValueMaxLength); err != nil {
 			return err
 		}
 	}
 	if value, ok := object["description"]; ok {
-		if err := textLength(value, child(path, "description.text"), 0, 75); err != nil {
+		if err := textLength(value, child(path, "description.text"), 0, limitOptionDescriptionMaxLength); err != nil {
 			return err
 		}
 	}
 	if value, ok := object["url"].(string); ok {
-		if err := stringLength(value, child(path, "url"), 0, 3000); err != nil {
+		if err := stringLength(value, child(path, "url"), 0, limitOptionURLMaxLength); err != nil {
 			return err
 		}
 	}
@@ -807,9 +843,9 @@ func validateTable(object Object, path string, dataTable bool) error {
 	if err != nil {
 		return err
 	}
-	minRows, maxRows, minColumns := 1, 100, 0
+	minRows, maxRows, minColumns, maxColumns := 1, limitTableRowsMaxItems, 0, limitTableColumnsMaxItems
 	if dataTable {
-		minRows, maxRows, minColumns = 2, 201, 1
+		minRows, maxRows, minColumns, maxColumns = limitDataTableRowsMinItems, limitDataTableRowsMaxItems, limitDataTableColumnsMinItems, limitDataTableColumnsMaxItems
 	}
 	if err := sliceLength(rows, child(path, "rows"), minRows, maxRows); err != nil {
 		return err
@@ -821,7 +857,7 @@ func validateTable(object Object, path string, dataTable bool) error {
 		if !ok {
 			return validationError(TypeMismatch, fmt.Sprintf("%s[%d]", child(path, "rows"), rowIndex), "expected an array")
 		}
-		if err := sliceLength(row, fmt.Sprintf("%s[%d]", child(path, "rows"), rowIndex), minColumns, 20); err != nil {
+		if err := sliceLength(row, fmt.Sprintf("%s[%d]", child(path, "rows"), rowIndex), minColumns, maxColumns); err != nil {
 			return err
 		}
 		if columns < 0 {
@@ -848,7 +884,7 @@ func validateTable(object Object, path string, dataTable bool) error {
 			contentLength += textCharacterCount(cell)
 			if dataTable && (objectType(cell) == "raw_text" || objectType(cell) == "raw_number") {
 				if text, ok := cell["text"].(string); ok {
-					if err := stringLength(text, child(cellPath, "text"), 1, 0); err != nil {
+					if err := stringLength(text, child(cellPath, "text"), limitDataTableCellTextMinLength, 0); err != nil {
 						return err
 					}
 				}
@@ -868,8 +904,8 @@ func validateTable(object Object, path string, dataTable bool) error {
 		}
 	}
 	if dataTable {
-		if pageSize, ok := number(object["page_size"]); ok && (pageSize < 1 || pageSize > 100) {
-			return validationError(OutOfRange, child(path, "page_size"), "expected a value between 1 and 100")
+		if pageSize, ok := number(object["page_size"]); ok && (pageSize < limitDataTablePageSizeMin || pageSize > limitDataTablePageSizeMax) {
+			return validationError(OutOfRange, child(path, "page_size"), "expected a value between %d and %d", limitDataTablePageSizeMin, limitDataTablePageSizeMax)
 		}
 		caption, ok := object["caption"].(string)
 		if !ok {
@@ -878,8 +914,8 @@ func validateTable(object Object, path string, dataTable bool) error {
 		if err := stringLength(caption, child(path, "caption"), 1, 0); err != nil {
 			return err
 		}
-		if contentLength > 20000 {
-			return validationError(LengthExceeded, child(path, "rows"), "content exceeds maximum 20000")
+		if contentLength > limitDataTableContentMaxLength {
+			return validationError(LengthExceeded, child(path, "rows"), "content exceeds maximum %d", limitDataTableContentMaxLength)
 		}
 	}
 	return nil
@@ -890,7 +926,7 @@ func validateSeriesChart(object Object, path string) error {
 	if err != nil {
 		return err
 	}
-	if err := sliceLength(series, child(path, "series"), 1, 12); err != nil {
+	if err := sliceLength(series, child(path, "series"), limitDataVisualizationSeriesMinItems, limitDataVisualizationSeriesMaxItems); err != nil {
 		return err
 	}
 	axis, err := objectAt(object["axis_config"], child(path, "axis_config"))
@@ -929,7 +965,7 @@ func validateSeriesChart(object Object, path string) error {
 			if err != nil {
 				return err
 			}
-			if err := validateLabelValue(point, fmt.Sprintf("%s.data[%d]", itemPath, pointIndex), 20, false); err != nil {
+			if err := validateLabelValue(point, fmt.Sprintf("%s.data[%d]", itemPath, pointIndex), limitDataVisualizationPointLabelMaxLength, false); err != nil {
 				return err
 			}
 			label, _ := point["label"].(string)
@@ -959,8 +995,8 @@ func validateLabelValue(object Object, path string, labelMax int, positive bool)
 	if !ok || math.IsNaN(value) || math.IsInf(value, 0) {
 		return validationError(TypeMismatch, child(path, "value"), "expected a finite number")
 	}
-	if positive && value <= 0 {
-		return validationError(OutOfRange, child(path, "value"), "expected a value greater than 0")
+	if positive && value <= limitDataVisualizationSegmentValueExclusiveMin {
+		return validationError(OutOfRange, child(path, "value"), "expected a value greater than %d", limitDataVisualizationSegmentValueExclusiveMin)
 	}
 	return nil
 }
@@ -971,7 +1007,7 @@ func validateMessageCollections(object Object, path string) error {
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(blocks, child(path, "blocks"), 0, 50); err != nil {
+		if err := sliceLength(blocks, child(path, "blocks"), 0, limitMessageBlocksMaxItems); err != nil {
 			return err
 		}
 		if err := validateSurface(blocks, "message", child(path, "blocks")); err != nil {
@@ -983,7 +1019,7 @@ func validateMessageCollections(object Object, path string) error {
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(attachments, child(path, "attachments"), 0, 100); err != nil {
+		if err := sliceLength(attachments, child(path, "attachments"), 0, limitMessageAttachmentsMaxItems); err != nil {
 			return err
 		}
 	}

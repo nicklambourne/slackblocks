@@ -38,6 +38,22 @@ func TestNestedValidationUsesDeterministicFieldOrder(t *testing.T) {
 	}
 }
 
+func TestDispatchActionConfigurationWithoutTriggersIsValid(t *testing.T) {
+	if _, err := slackblocks.NewPlainTextInput().ActionID("a").DispatchActionConfig(slackblocks.NewDispatchActionConfiguration()).Build(); err != nil {
+		t.Fatal(err)
+	}
+	input := slackblocks.Object{"type": "plain_text_input", "action_id": "a", "dispatch_action_config": slackblocks.Object{}}
+	if err := slackblocks.Validate(input); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestDispatchActionConfigurationRejectsEmptyTriggers(t *testing.T) {
+	input := slackblocks.Object{"type": "plain_text_input", "action_id": "a", "dispatch_action_config": slackblocks.Object{"trigger_actions_on": []any{}}}
+	err := slackblocks.Validate(input)
+	assertValidationError(t, err, slackblocks.LengthExceeded, "DispatchActionConfiguration.trigger_actions_on")
+}
+
 func assertValidationError(
 	t *testing.T,
 	err error,

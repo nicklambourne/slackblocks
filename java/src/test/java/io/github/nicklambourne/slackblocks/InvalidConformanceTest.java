@@ -119,6 +119,64 @@ final class InvalidConformanceTest {
               List.of(option("A", "a")),
               "placeholder",
               plain(repeated("x", 151)));
+      case "plain-text-input-placeholder-too-long" ->
+          typed(
+              "PlainTextInput",
+              "plain_text_input",
+              "action_id",
+              "a",
+              "placeholder",
+              plain(repeated("x", 151)));
+      case "email-input-placeholder-too-long" ->
+          typed(
+              "EmailInputElement",
+              "email_text_input",
+              "action_id",
+              "a",
+              "placeholder",
+              plain(repeated("x", 151)));
+      case "url-input-placeholder-too-long" ->
+          typed(
+              "UrlInputElement",
+              "url_text_input",
+              "action_id",
+              "a",
+              "placeholder",
+              plain(repeated("x", 151)));
+      case "number-input-placeholder-too-long" ->
+          typed(
+              "NumberInput",
+              "number_input",
+              "action_id",
+              "a",
+              "is_decimal_allowed",
+              false,
+              "placeholder",
+              plain(repeated("x", 151)));
+      case "date-picker-placeholder-too-long" ->
+          typed(
+              "DatePickerElement",
+              "datepicker",
+              "action_id",
+              "a",
+              "placeholder",
+              plain(repeated("x", 151)));
+      case "time-picker-placeholder-too-long" ->
+          typed(
+              "TimePickerElement",
+              "timepicker",
+              "action_id",
+              "a",
+              "placeholder",
+              plain(repeated("x", 151)));
+      case "rich-text-input-placeholder-too-long" ->
+          typed(
+              "RichTextInputElement",
+              "rich_text_input",
+              "action_id",
+              "a",
+              "placeholder",
+              plain(repeated("x", 151)));
       case "select-too-many-options" ->
           typed(
               "StaticSelect",
@@ -172,6 +230,8 @@ final class InvalidConformanceTest {
           typed("URLSource", "url", "url", repeated("x", 3001), "text", "text");
       case "table-too-many-rows" ->
           typed("TableBlock", "table", "rows", copies(101, index -> List.of(rawText("A"))));
+      case "table-too-many-columns" ->
+          typed("TableBlock", "table", "rows", List.of(copies(21, index -> rawText("A"))));
       case "table-ragged-rows" ->
           typed(
               "TableBlock",
@@ -190,6 +250,14 @@ final class InvalidConformanceTest {
           typed("FileInput", "file_input", "action_id", "a", "max_files", 0);
       case "file-input-max-files-too-large" ->
           typed("FileInput", "file_input", "action_id", "a", "max_files", 11);
+      case "dispatch-action-no-triggers" ->
+          invalid("DispatchActionConfiguration", map("trigger_actions_on", List.of()));
+      case "dispatch-action-too-many-triggers" ->
+          invalid(
+              "DispatchActionConfiguration",
+              map(
+                  "trigger_actions_on",
+                  List.of("on_enter_pressed", "on_character_entered", "on_enter_pressed")));
       case "plain-text-input-max-length-too-large" ->
           typed("PlainTextInput", "plain_text_input", "action_id", "a", "max_length", 3001);
       case "actions-too-many-elements" ->
@@ -352,6 +420,24 @@ final class InvalidConformanceTest {
               "a",
               "accessibility_label",
               repeated("x", 76));
+      case "workflow-button-text-too-long" ->
+          typed(
+              "WorkflowButtonElement",
+              "workflow_button",
+              "text",
+              plain(repeated("x", 76)),
+              "workflow",
+              workflow());
+      case "workflow-button-accessibility-label-too-long" ->
+          typed(
+              "WorkflowButtonElement",
+              "workflow_button",
+              "text",
+              plain("Run"),
+              "workflow",
+              workflow(),
+              "accessibility_label",
+              repeated("x", 76));
       case "alert-text-too-long" -> typed("AlertBlock", "alert", "text", plain(repeated("x", 201)));
       case "card-title-too-long" -> typed("CardBlock", "card", "title", plain(repeated("x", 151)));
       case "card-subtitle-too-long" ->
@@ -431,6 +517,26 @@ final class InvalidConformanceTest {
               "trash",
               "visible_to_user_ids",
               copies(11, index -> "U" + index));
+      case "icon-button-value-too-long" ->
+          typed(
+              "IconButton",
+              "icon_button",
+              "text",
+              plain("Delete"),
+              "icon",
+              "trash",
+              "value",
+              repeated("x", 2001));
+      case "icon-button-accessibility-label-too-long" ->
+          typed(
+              "IconButton",
+              "icon_button",
+              "text",
+              plain("Delete"),
+              "icon",
+              "trash",
+              "accessibility_label",
+              repeated("x", 76));
       case "data-table-too-few-rows" -> dataTable(List.of(List.of(rawText("Name"))), "Names");
       case "data-table-too-many-rows" ->
           dataTable(copies(202, index -> List.of(rawText("A"))), "Names");
@@ -560,6 +666,10 @@ final class InvalidConformanceTest {
 
   private static Map<String, Object> iconButton() {
     return obj("icon_button", "text", plain("Delete"), "icon", "trash");
+  }
+
+  private static Map<String, Object> workflow() {
+    return map("trigger", map("url", "https://slack.com/shortcuts/Ft0/abc"));
   }
 
   private static Map<String, Object> inputElement() {
