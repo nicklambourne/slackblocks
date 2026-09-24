@@ -32,6 +32,8 @@ from slackblocks._limits import (
     DATA_VISUALIZATION_SERIES_MAX_ITEMS,
     DATA_VISUALIZATION_SERIES_MIN_ITEMS,
     DATA_VISUALIZATION_SERIES_NAME_MAX_LENGTH,
+    DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MAX_ITEMS,
+    DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MIN_ITEMS,
     OPTION_DESCRIPTION_MAX_LENGTH,
     OPTION_GROUP_LABEL_MAX_LENGTH,
     OPTION_GROUP_OPTIONS_MAX_ITEMS,
@@ -580,7 +582,14 @@ class DispatchActionConfiguration(CompositionObject):
         super().__init__(type_=CompositionObjectType.DISPATCH)
         trigger_actions_on = trigger_actions_on or []
         self.trigger_actions_on = list(
-            set(coerce_to_list_nonnull(trigger_actions_on, str, min_size=1, max_size=2))
+            set(
+                coerce_to_list_nonnull(
+                    trigger_actions_on,
+                    str,
+                    min_size=DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MIN_ITEMS,
+                    max_size=DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MAX_ITEMS,
+                )
+            )
         )
         for trigger in self.trigger_actions_on:
             if trigger not in ALLOWABLE_TRIGGERS:

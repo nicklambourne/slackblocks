@@ -14,7 +14,7 @@ namespace Slackblocks.Objects;
 public sealed partial class DispatchActionConfiguration : global::Slackblocks.SlackObject
 {
     /// <summary>Creates and validates a <see cref="DispatchActionConfiguration"/>.</summary>
-    /// <param name="triggerActionsOn">The interactions that send a payload: on_enter_pressed or on_character_entered.</param>
+    /// <param name="triggerActionsOn">The interactions that send a payload: on_enter_pressed or on_character_entered. Must contain between 1 and 2 items.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>

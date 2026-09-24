@@ -211,7 +211,8 @@ public final class TimePickerElement extends BlockElement implements InputElemen
     /**
      * Sets the placeholder text shown before a value is chosen.
      *
-     * <p>The string is sent as a {@code plain_text} text object.
+     * <p>Slack allows at most 150 characters. The string is sent as a {@code plain_text} text
+     * object.
      *
      * @param value text content
      * @return this builder
@@ -225,6 +226,8 @@ public final class TimePickerElement extends BlockElement implements InputElemen
 
     /**
      * Sets the placeholder text shown before a value is chosen.
+     *
+     * <p>Slack allows at most 150 characters.
      *
      * @param value a {@link PlainText} object
      * @return this builder

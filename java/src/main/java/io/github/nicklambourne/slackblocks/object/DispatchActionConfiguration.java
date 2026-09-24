@@ -93,7 +93,7 @@ public final class DispatchActionConfiguration implements SlackObject {
     /**
      * Adds the interactions that send a payload: on_enter_pressed or on_character_entered.
      *
-     * <p>Each call appends to any values already added.
+     * <p>Must contain between 1 and 2 items. Each call appends to any values already added.
      *
      * @param values values appended in order
      * @return this builder

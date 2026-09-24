@@ -205,6 +205,9 @@ internal static partial class Validator
             case "FeedbackButton":
                 ValidateFeedbackButton(value, name);
                 break;
+            case "DispatchActionConfiguration":
+                ValidateDispatchActionConfiguration(value, name);
+                break;
             case "Attachment":
                 if (JsonValues.IsString(value["color"], out var color)
                     && !AttachmentColorAliases.Contains(color)
@@ -257,6 +260,13 @@ internal static partial class Validator
             ValidateConfirmation(ObjectAt(value["confirm"], Child(path, "confirm")), Child(path, "confirm"));
         }
 
+        if (value.ContainsKey("dispatch_action_config"))
+        {
+            ValidateDispatchActionConfiguration(
+                ObjectAt(value["dispatch_action_config"], Child(path, "dispatch_action_config")),
+                Child(path, "dispatch_action_config"));
+        }
+
         switch (type)
         {
             case "plain_text":
@@ -277,8 +287,10 @@ internal static partial class Validator
                 TextLength(value["text"], Child(path, "text.text"), 0, 150);
                 break;
             case "button":
-            case "workflow_button":
                 ValidateButton(value, path);
+                break;
+            case "workflow_button":
+                ValidateWorkflowButton(value, path);
                 break;
             case "icon_button":
                 ValidateIconButton(value, path);
@@ -305,9 +317,24 @@ internal static partial class Validator
 
                 if (value.ContainsKey("placeholder"))
                 {
-                    TextLength(value["placeholder"], Child(path, "placeholder.text"), 0, 150);
+                    TextLength(value["placeholder"], Child(path, "placeholder.text"), 0, SlackLimits.PlainTextInputPlaceholderMaxLength);
                 }
 
+                break;
+            case "email_text_input":
+                CheckOptionalText(value, "placeholder", path, SlackLimits.EmailInputPlaceholderMaxLength);
+                break;
+            case "url_text_input":
+                CheckOptionalText(value, "placeholder", path, SlackLimits.UrlInputPlaceholderMaxLength);
+                break;
+            case "datepicker":
+                CheckOptionalText(value, "placeholder", path, SlackLimits.DatePickerPlaceholderMaxLength);
+                break;
+            case "timepicker":
+                CheckOptionalText(value, "placeholder", path, SlackLimits.TimePickerPlaceholderMaxLength);
+                break;
+            case "rich_text_input":
+                CheckOptionalText(value, "placeholder", path, SlackLimits.RichTextInputPlaceholderMaxLength);
                 break;
             case "overflow":
             case "checkboxes":
@@ -331,6 +358,7 @@ internal static partial class Validator
                     Fail(ErrorCategory.OutOfRange, path, "min_value cannot exceed max_value");
                 }
 
+                CheckOptionalText(value, "placeholder", path, SlackLimits.NumberInputPlaceholderMaxLength);
                 break;
             case "image":
                 ValidateImage(value, path);
@@ -446,6 +474,12 @@ internal static partial class Validator
         CheckOptionalString(value, "accessibility_label", path, 75);
     }
 
+    private static void ValidateWorkflowButton(JsonObject value, string path)
+    {
+        TextLength(value["text"], Child(path, "text.text"), 0, SlackLimits.WorkflowButtonTextMaxLength);
+        CheckOptionalString(value, "accessibility_label", path, SlackLimits.WorkflowButtonAccessibilityLabelMaxLength);
+    }
+
     private static void ValidateIconButton(JsonObject value, string path)
     {
         if (!JsonValues.IsString(value["icon"], out var icon) || icon != "trash")
@@ -453,8 +487,8 @@ internal static partial class Validator
             Fail(ErrorCategory.TypeMismatch, Child(path, "icon"), "expected trash");
         }
 
-        CheckOptionalString(value, "value", path, 2000);
-        CheckOptionalString(value, "accessibility_label", path, 75);
+        CheckOptionalString(value, "value", path, SlackLimits.IconButtonValueMaxLength);
+        CheckOptionalString(value, "accessibility_label", path, SlackLimits.IconButtonAccessibilityLabelMaxLength);
         if (value["visible_to_user_ids"] is JsonArray users)
         {
             SliceLength(users, Child(path, "visible_to_user_ids"), 0, 10);
@@ -679,6 +713,18 @@ internal static partial class Validator
         CheckOptionalString(value, "accessibility_label", path, 75);
     }
 
+    private static void ValidateDispatchActionConfiguration(JsonObject value, string path)
+    {
+        if (value.ContainsKey("trigger_actions_on"))
+        {
+            SliceLength(
+                ListAt(value["trigger_actions_on"], Child(path, "trigger_actions_on")),
+                Child(path, "trigger_actions_on"),
+                SlackLimits.DispatchActionConfigurationTriggerActionsOnMinItems,
+                SlackLimits.DispatchActionConfigurationTriggerActionsOnMaxItems);
+        }
+    }
+
     private static void ValidateDataSeries(JsonObject value, string path)
     {
         var name = StringAt(value["name"], Child(path, "name"));
@@ -738,7 +784,7 @@ internal static partial class Validator
     private static void ValidateTable(JsonObject value, string path, bool dataTable)
     {
         var rows = ListAt(value["rows"], Child(path, "rows"));
-        SliceLength(rows, Child(path, "rows"), dataTable ? 2 : 1, dataTable ? 201 : 100);
+        SliceLength(rows, Child(path, "rows"), dataTable ? 2 : 1, dataTable ? 201 : SlackLimits.TableRowsMaxItems);
         var columns = -1;
         var contentLength = 0;
         var allowed = dataTable ? DataTableCellTypes : TableCellTypes;
@@ -746,7 +792,7 @@ internal static partial class Validator
         {
             var rowPath = $"{Child(path, "rows")}[{rowIndex}]";
             var row = ListAt(rows[rowIndex], rowPath);
-            SliceLength(row, rowPath, dataTable ? 1 : 0, 20);
+            SliceLength(row, rowPath, dataTable ? 1 : 0, dataTable ? 20 : SlackLimits.TableColumnsMaxItems);
             if (columns < 0)
             {
                 columns = row.Count;

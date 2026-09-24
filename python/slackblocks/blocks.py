@@ -48,6 +48,8 @@ from slackblocks._limits import (
     SECTION_FIELDS_ITEM_MAX_LENGTH,
     SECTION_FIELDS_MAX_ITEMS,
     SECTION_TEXT_MAX_LENGTH,
+    TABLE_COLUMNS_MAX_ITEMS,
+    TABLE_ROWS_MAX_ITEMS,
     VIDEO_ALT_TEXT_MAX_LENGTH,
     VIDEO_ALT_TEXT_MIN_LENGTH,
     VIDEO_AUTHOR_NAME_MAX_LENGTH,
@@ -814,10 +816,10 @@ class TableBlock(Block):
                 f"Number of column_settings ({len(column_settings)}) must"
                 f"match number of columns in each row ({num_columns})."
             )
-        if len(rows) > 100:
+        if len(rows) > TABLE_ROWS_MAX_ITEMS:
             raise LengthError("`rows` can have a maximum of 100 items.")
         for row in rows:
-            if len(row) > 20:
+            if len(row) > TABLE_COLUMNS_MAX_ITEMS:
                 raise LengthError("Each row can have a maximum of 20 cells.")
         # Validate each cell is an allowed type
         self.rows = []

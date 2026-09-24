@@ -110,6 +110,48 @@
       "description": "A select placeholder longer than 150 characters must be rejected"
     },
     {
+      "id": "plain-text-input-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "plain_text_input.placeholder.max_length",
+      "description": "A plain-text input placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "email-input-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "email_input.placeholder.max_length",
+      "description": "A email input placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "url-input-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "url_input.placeholder.max_length",
+      "description": "A URL input placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "number-input-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "number_input.placeholder.max_length",
+      "description": "A number input placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "date-picker-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "date_picker.placeholder.max_length",
+      "description": "A date picker placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "time-picker-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "time_picker.placeholder.max_length",
+      "description": "A time picker placeholder longer than 150 characters must be rejected"
+    },
+    {
+      "id": "rich-text-input-placeholder-too-long",
+      "category": "length-exceeded",
+      "constraint": "rich_text_input.placeholder.max_length",
+      "description": "A rich text input placeholder longer than 150 characters must be rejected"
+    },
+    {
       "id": "select-too-many-options",
       "category": "length-exceeded",
       "constraint": "select.options.max_items",
@@ -176,6 +218,12 @@
       "description": "A table with more than 100 rows must be rejected"
     },
     {
+      "id": "table-too-many-columns",
+      "category": "length-exceeded",
+      "constraint": "table.columns.max_items",
+      "description": "A table row with more than 20 cells must be rejected"
+    },
+    {
       "id": "table-ragged-rows",
       "category": "invalid-usage",
       "constraint": "table.row_shape",
@@ -198,6 +246,18 @@
       "category": "out-of-range",
       "constraint": "file_input.max_files.max",
       "description": "File input max files above 10 must be rejected"
+    },
+    {
+      "id": "dispatch-action-no-triggers",
+      "category": "length-exceeded",
+      "constraint": "dispatch_action_configuration.trigger_actions_on.min_items",
+      "description": "A dispatch action configuration with no triggers must be rejected"
+    },
+    {
+      "id": "dispatch-action-too-many-triggers",
+      "category": "length-exceeded",
+      "constraint": "dispatch_action_configuration.trigger_actions_on.max_items",
+      "description": "A dispatch action configuration with more than two triggers must be rejected"
     },
     {
       "id": "plain-text-input-max-length-too-large",
@@ -452,6 +512,18 @@
       "description": "A button accessibility label longer than 75 characters must be rejected"
     },
     {
+      "id": "workflow-button-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "workflow_button.text.max_length",
+      "description": "A workflow button with text longer than 75 characters must be rejected"
+    },
+    {
+      "id": "workflow-button-accessibility-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "workflow_button.accessibility_label.max_length",
+      "description": "A workflow button accessibility label longer than 75 characters must be rejected"
+    },
+    {
       "id": "alert-text-too-long",
       "category": "length-exceeded",
       "constraint": "alert.text.max_length",
@@ -546,6 +618,18 @@
       "category": "length-exceeded",
       "constraint": "icon_button.visible_to_user_ids.max_items",
       "description": "An icon button visible to more than ten users must be rejected"
+    },
+    {
+      "id": "icon-button-value-too-long",
+      "category": "length-exceeded",
+      "constraint": "icon_button.value.max_length",
+      "description": "An icon button value longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "icon-button-accessibility-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "icon_button.accessibility_label.max_length",
+      "description": "An icon button accessibility label longer than 75 characters must be rejected"
     },
     {
       "id": "data-table-too-few-rows",

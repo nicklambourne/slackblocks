@@ -21,7 +21,7 @@ public sealed partial class RichTextInputElement : global::Slackblocks.SlackObje
     /// <param name="initialValue">The rich text present when the input loads.</param>
     /// <param name="dispatchActionConfig">Which user interactions send a block_actions payload.</param>
     /// <param name="focusOnLoad">Whether the element receives focus when the view opens. Only one element per view may do so.</param>
-    /// <param name="placeholder">The placeholder text shown before a value is chosen. A string is sent as a <c>plain_text</c> text object.</param>
+    /// <param name="placeholder">The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a <c>plain_text</c> text object.</param>
     /// <param name="minLines">The minimum visible height of the input, in lines.</param>
     /// <param name="maxLines">The maximum visible height of the input, in lines.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>

@@ -90,6 +90,16 @@ var confirmTypes = stringSet(
 	"users_select", "workflow_button",
 )
 
+var inputPlaceholderMaxLengths = map[string]int{
+	"plain_text_input": limitPlainTextInputPlaceholderMaxLength,
+	"email_text_input": limitEmailInputPlaceholderMaxLength,
+	"url_text_input":   limitURLInputPlaceholderMaxLength,
+	"number_input":     limitNumberInputPlaceholderMaxLength,
+	"datepicker":       limitDatePickerPlaceholderMaxLength,
+	"timepicker":       limitTimePickerPlaceholderMaxLength,
+	"rich_text_input":  limitRichTextInputPlaceholderMaxLength,
+}
+
 var attachmentColorPattern = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
 
 var slackIconNames = stringSet(
@@ -180,6 +190,14 @@ func validateBuilder(name string, object Object) error {
 	case "Workflow":
 		if _, ok := object["trigger"]; !ok {
 			return validationError(MissingRequired, name, "expected trigger")
+		}
+	case "DispatchActionConfiguration":
+		if raw, ok := object["trigger_actions_on"]; ok {
+			triggers, err := sliceAt(raw, child(name, "trigger_actions_on"))
+			if err != nil {
+				return err
+			}
+			return sliceLength(triggers, child(name, "trigger_actions_on"), limitDispatchActionConfigurationTriggerActionsOnMinItems, limitDispatchActionConfigurationTriggerActionsOnMaxItems)
 		}
 	case "SlackFile":
 		_, hasID := object["id"]
@@ -304,6 +322,22 @@ func validateObject(object Object, path string) error {
 			}
 		}
 	}
+	if maximum, ok := inputPlaceholderMaxLengths[typeName]; ok {
+		if placeholder, ok := object["placeholder"]; ok {
+			if err := textLength(placeholder, child(path, "placeholder.text"), 0, maximum); err != nil {
+				return err
+			}
+		}
+	}
+	if config, ok := object["dispatch_action_config"]; ok {
+		value, err := objectAt(config, child(path, "dispatch_action_config"))
+		if err != nil {
+			return err
+		}
+		if err := validateBuilder("DispatchActionConfiguration", value); err != nil {
+			return err
+		}
+	}
 
 	switch typeName {
 	case "plain_text", "mrkdwn":
@@ -345,10 +379,14 @@ func validateObject(object Object, path string) error {
 	case "header":
 		return textLength(object["text"], child(path, "text.text"), 0, limitHeaderTextMaxLength)
 	case "button", "workflow_button":
-		if err := textLength(object["text"], child(path, "text.text"), 0, limitButtonTextMaxLength); err != nil {
+		textMaximum, labelMaximum := limitButtonTextMaxLength, limitButtonAccessibilityLabelMaxLength
+		if typeName == "workflow_button" {
+			textMaximum, labelMaximum = limitWorkflowButtonTextMaxLength, limitWorkflowButtonAccessibilityLabelMaxLength
+		}
+		if err := textLength(object["text"], child(path, "text.text"), 0, textMaximum); err != nil {
 			return err
 		}
-		for field, maximum := range map[string]int{"url": limitButtonURLMaxLength, "value": limitButtonValueMaxLength, "accessibility_label": limitButtonAccessibilityLabelMaxLength} {
+		for field, maximum := range map[string]int{"url": limitButtonURLMaxLength, "value": limitButtonValueMaxLength, "accessibility_label": labelMaximum} {
 			if value, ok := object[field].(string); ok {
 				if err := stringLength(value, child(path, field), 0, maximum); err != nil {
 					return err
@@ -360,12 +398,12 @@ func validateObject(object Object, path string) error {
 			return validationError(TypeMismatch, child(path, "icon"), "expected trash")
 		}
 		if value, ok := object["value"].(string); ok {
-			if err := stringLength(value, child(path, "value"), 0, 2000); err != nil {
+			if err := stringLength(value, child(path, "value"), 0, limitIconButtonValueMaxLength); err != nil {
 				return err
 			}
 		}
 		if label, ok := object["accessibility_label"].(string); ok {
-			if err := stringLength(label, child(path, "accessibility_label"), 0, 75); err != nil {
+			if err := stringLength(label, child(path, "accessibility_label"), 0, limitIconButtonAccessibilityLabelMaxLength); err != nil {
 				return err
 			}
 		}
@@ -391,11 +429,6 @@ func validateObject(object Object, path string) error {
 	case "plain_text_input":
 		if value, ok := number(object["max_length"]); ok && value > limitPlainTextInputMaxLengthMax {
 			return validationError(OutOfRange, child(path, "max_length"), "exceeds maximum %d", limitPlainTextInputMaxLengthMax)
-		}
-		if placeholder, ok := object["placeholder"]; ok {
-			if err := textLength(placeholder, child(path, "placeholder.text"), 0, 150); err != nil {
-				return err
-			}
 		}
 	case "overflow", "checkboxes", "radio_buttons":
 		options, err := sliceAt(object["options"], child(path, "options"))
@@ -810,7 +843,7 @@ func validateTable(object Object, path string, dataTable bool) error {
 	if err != nil {
 		return err
 	}
-	minRows, maxRows, minColumns, maxColumns := 1, 100, 0, 20
+	minRows, maxRows, minColumns, maxColumns := 1, limitTableRowsMaxItems, 0, limitTableColumnsMaxItems
 	if dataTable {
 		minRows, maxRows, minColumns, maxColumns = limitDataTableRowsMinItems, limitDataTableRowsMaxItems, limitDataTableColumnsMinItems, limitDataTableColumnsMaxItems
 	}
