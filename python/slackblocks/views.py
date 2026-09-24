@@ -11,6 +11,15 @@ from json import dumps
 from typing import Any
 
 from slackblocks._core import resolve
+from slackblocks._limits import (
+    VIEW_BLOCKS_MAX_ITEMS,
+    VIEW_BLOCKS_MIN_ITEMS,
+    VIEW_CALLBACK_ID_MAX_LENGTH,
+    VIEW_CLOSE_MAX_LENGTH,
+    VIEW_PRIVATE_METADATA_MAX_LENGTH,
+    VIEW_SUBMIT_MAX_LENGTH,
+    VIEW_TITLE_MAX_LENGTH,
+)
 from slackblocks._surfaces import block_type, validate_surface_blocks
 from slackblocks.blocks import Block
 from slackblocks.errors import MissingRequiredError
@@ -61,18 +70,23 @@ class View:
         external_id: str | None = None,
     ) -> None:
         self.type_ = type.value
-        blocks_list = coerce_to_list(blocks, class_=Block, min_size=1, max_size=100)
+        blocks_list = coerce_to_list(
+            blocks, class_=Block, min_size=VIEW_BLOCKS_MIN_ITEMS, max_size=VIEW_BLOCKS_MAX_ITEMS
+        )
         assert blocks_list is not None
         self.blocks = blocks_list
         validate_surface_blocks(self.blocks, type.value)
         self.private_metadata = validate_string(
             private_metadata,
             field_name="private_metadata",
-            max_length=3000,
+            max_length=VIEW_PRIVATE_METADATA_MAX_LENGTH,
             allow_none=True,
         )
         self.callback_id = validate_string(
-            callback_id, field_name="callback_id", max_length=255, allow_none=True
+            callback_id,
+            field_name="callback_id",
+            max_length=VIEW_CALLBACK_ID_MAX_LENGTH,
+            allow_none=True,
         )
         self.external_id = external_id
 
@@ -142,9 +156,15 @@ class ModalView(View):
             callback_id=callback_id,
             external_id=external_id,
         )
-        self.title = Text.to_text_nonnull(title, force_plaintext=True, max_length=24)
-        self.close = Text.to_text(close, force_plaintext=True, max_length=24, allow_none=True)
-        self.submit = Text.to_text(submit, force_plaintext=True, max_length=24, allow_none=True)
+        self.title = Text.to_text_nonnull(
+            title, force_plaintext=True, max_length=VIEW_TITLE_MAX_LENGTH
+        )
+        self.close = Text.to_text(
+            close, force_plaintext=True, max_length=VIEW_CLOSE_MAX_LENGTH, allow_none=True
+        )
+        self.submit = Text.to_text(
+            submit, force_plaintext=True, max_length=VIEW_SUBMIT_MAX_LENGTH, allow_none=True
+        )
         if self.submit is None and any(block_type(block) == "input" for block in self.blocks):
             raise MissingRequiredError("submit is required when a modal contains an input block")
         self.clear_on_close = clear_on_close
