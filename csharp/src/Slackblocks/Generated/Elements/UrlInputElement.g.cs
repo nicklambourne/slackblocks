@@ -21,7 +21,7 @@ public sealed partial class UrlInputElement : global::Slackblocks.SlackObject, g
     /// <param name="initialValue">The value present when the input loads.</param>
     /// <param name="dispatchActionConfig">Which user interactions send a block_actions payload.</param>
     /// <param name="focusOnLoad">Whether the element receives focus when the view opens. Only one element per view may do so.</param>
-    /// <param name="placeholder">The placeholder text shown before a value is chosen. A string is sent as a <c>plain_text</c> text object.</param>
+    /// <param name="placeholder">The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a <c>plain_text</c> text object.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>

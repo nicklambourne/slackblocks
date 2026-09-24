@@ -17,12 +17,12 @@ namespace Slackblocks.Elements;
 public sealed partial class WorkflowButtonElement : global::Slackblocks.SlackObject, global::Slackblocks.Elements.IElement
 {
     /// <summary>Creates and validates a <see cref="WorkflowButtonElement"/>.</summary>
-    /// <param name="text">The button label. Required. A string is sent as a <c>plain_text</c> text object.</param>
+    /// <param name="text">The button label. Required. Slack allows at most 75 characters. A string is sent as a <c>plain_text</c> text object.</param>
     /// <param name="workflow">The workflow started when the button is clicked. Required.</param>
     /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
     /// <param name="style">The button's emphasis. Omit it for the default neutral style.</param>
-    /// <param name="accessibilityLabel">The label read by screen readers in place of the visible text.</param>
+    /// <param name="accessibilityLabel">The label read by screen readers in place of the visible text. Slack allows at most 75 characters.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
