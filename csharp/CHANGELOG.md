@@ -3,6 +3,15 @@
 All notable changes to the C# package are documented here. C# versions move in
 lockstep with the Python, TypeScript, Go, and Java packages.
 
+## [Unreleased]
+
+### Changed
+
+- Validation now rejects plain-text, email, URL, number, date picker, time picker, and
+  rich text input placeholders over 150 characters (only the plain-text input was
+  checked before), and dispatch-action configurations whose `trigger_actions_on` list
+  is empty or has more than two triggers.
+
 ## [2.4.0] — 2026-09-17
 
 The first public .NET release of slackblocks, published to NuGet as

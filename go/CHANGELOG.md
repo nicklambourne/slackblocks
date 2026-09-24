@@ -3,6 +3,15 @@
 All notable changes to the Go module are documented here. Go releases use the
 same version number as the Python, TypeScript, and Java packages.
 
+## [Unreleased]
+
+### Changed
+
+- Validation now rejects email, URL, number, date picker, time picker, and rich text
+  input placeholders over 150 characters, and dispatch-action configurations whose
+  `trigger_actions_on` list is empty or has more than two triggers. Plain-text input
+  placeholders were already limited to 150 characters.
+
 ## [2.4.0] — 2026-09-17
 
 This coordinated release introduces the C# package, published to NuGet as

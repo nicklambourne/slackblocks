@@ -3,6 +3,15 @@
 All notable changes to the Java package are documented here. Java versions move
 in lockstep with the Python, TypeScript, and Go packages.
 
+## [Unreleased]
+
+### Changed
+
+- Validation now rejects plain-text, email, URL, number, date picker, time picker, and
+  rich text input placeholders over 150 characters (only the plain-text input was
+  checked before), and dispatch-action configurations whose `trigger_actions_on` list
+  is empty or has more than two triggers.
+
 ## [2.4.0] — 2026-09-17
 
 This coordinated release introduces the C# package, published to NuGet as
