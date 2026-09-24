@@ -34,8 +34,16 @@
   "radio_buttons": { "options": { "min_items": 1, "max_items": 10 } },
   "url_source": { "url": { "min_length": 1, "max_length": 3000 } },
   "file_input": { "max_files": { "min": 1, "max": 10 } },
-  "plain_text_input": { "max_length": { "max": 3000 } },
-  "input_element": { "placeholder": { "max_length": 150 } },
+  "plain_text_input": {
+    "max_length": { "max": 3000 },
+    "placeholder": { "max_length": 150 }
+  },
+  "email_input": { "placeholder": { "max_length": 150 } },
+  "url_input": { "placeholder": { "max_length": 150 } },
+  "number_input": { "placeholder": { "max_length": 150 } },
+  "date_picker": { "placeholder": { "max_length": 150 } },
+  "time_picker": { "placeholder": { "max_length": 150 } },
+  "rich_text_input": { "placeholder": { "max_length": 150 } },
   "dispatch_action_configuration": { "trigger_actions_on": { "min_items": 1, "max_items": 2 } },
   "actions": { "elements": { "max_items": 25 } },
   "alert": { "text": { "max_length": 200 } },

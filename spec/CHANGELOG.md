@@ -16,9 +16,10 @@
     `icon_button.accessibility_label.max_length` (75);
   - `workflow_button.text.max_length` (75) and
     `workflow_button.accessibility_label.max_length` (75);
-  - `input_element.placeholder.max_length` (150) for the plain-text, email,
-    URL, number, date picker, time picker, and rich text inputs, with one
-    invalid case per element;
+  - `placeholder.max_length` (150) on each input element that has one:
+    `plain_text_input`, `email_input`, `url_input`, `number_input`,
+    `date_picker`, `time_picker`, and `rich_text_input`, each with its own
+    leaf and invalid case, as Slack documents each separately;
   - `dispatch_action_configuration.trigger_actions_on` (one or both triggers,
     1 to 2 items).
 

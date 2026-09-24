@@ -112,43 +112,43 @@
     {
       "id": "plain-text-input-placeholder-too-long",
       "category": "length-exceeded",
-      "constraint": "input_element.placeholder.max_length",
+      "constraint": "plain_text_input.placeholder.max_length",
       "description": "A plain-text input placeholder longer than 150 characters must be rejected"
     },
     {
       "id": "email-input-placeholder-too-long",
       "category": "length-exceeded",
-      "constraint": "input_element.placeholder.max_length",
+      "constraint": "email_input.placeholder.max_length",
       "description": "A email input placeholder longer than 150 characters must be rejected"
     },
     {
       "id": "url-input-placeholder-too-long",
       "category": "length-exceeded",
-      "constraint": "input_element.placeholder.max_length",
+      "constraint": "url_input.placeholder.max_length",
       "description": "A URL input placeholder longer than 150 characters must be rejected"
     },
     {
       "id": "number-input-placeholder-too-long",
       "category": "length-exceeded",
-      "constraint": "input_element.placeholder.max_length",
+      "constraint": "number_input.placeholder.max_length",
       "description": "A number input placeholder longer than 150 characters must be rejected"
     },
     {
       "id": "date-picker-placeholder-too-long",
       "category": "length-exceeded",
-      "constraint": "input_element.placeholder.max_length",
+      "constraint": "date_picker.placeholder.max_length",
       "description": "A date picker placeholder longer than 150 characters must be rejected"
     },
     {
       "id": "time-picker-placeholder-too-long",
       "category": "length-exceeded",
-      "constraint": "input_element.placeholder.max_length",
+      "constraint": "time_picker.placeholder.max_length",
       "description": "A time picker placeholder longer than 150 characters must be rejected"
     },
     {
       "id": "rich-text-input-placeholder-too-long",
       "category": "length-exceeded",
-      "constraint": "input_element.placeholder.max_length",
+      "constraint": "rich_text_input.placeholder.max_length",
       "description": "A rich text input placeholder longer than 150 characters must be rejected"
     },
     {
