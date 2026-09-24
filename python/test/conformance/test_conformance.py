@@ -26,7 +26,10 @@ from slackblocks import (
     DataSeries,
     DataTableBlock,
     DataVisualizationBlock,
+    DatePicker,
+    DispatchActionConfiguration,
     DividerBlock,
+    EmailInput,
     FeedbackButton,
     FeedbackButtons,
     FileInput,
@@ -53,14 +56,18 @@ from slackblocks import (
     RadioButtonGroup,
     RangeError,
     RawText,
+    RichTextInput,
     SectionBlock,
     SlackFile,
     StaticSelectMenu,
     TableBlock,
     Text,
+    TimePicker,
     TypeMismatchError,
+    URLInput,
     URLSource,
     VideoBlock,
+    WorkflowButton,
 )
 from slackblocks.errors import InvalidUsageError
 
@@ -234,6 +241,29 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         options=[option()],
         placeholder="x" * (LIMITS["select"]["placeholder"]["max_length"] + 1),
     ),
+    "plain-text-input-placeholder-too-long": lambda: PlainTextInput(
+        action_id="a", placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1)
+    ),
+    "email-input-placeholder-too-long": lambda: EmailInput(
+        action_id="a", placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1)
+    ),
+    "url-input-placeholder-too-long": lambda: URLInput(
+        action_id="a", placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1)
+    ),
+    "number-input-placeholder-too-long": lambda: NumberInput(
+        is_decimal_allowed=False,
+        action_id="a",
+        placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1),
+    ),
+    "date-picker-placeholder-too-long": lambda: DatePicker(
+        action_id="a", placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1)
+    ),
+    "time-picker-placeholder-too-long": lambda: TimePicker(
+        action_id="a", placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1)
+    ),
+    "rich-text-input-placeholder-too-long": lambda: RichTextInput(
+        action_id="a", placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1)
+    ),
     "select-too-many-options": lambda: StaticSelectMenu(
         action_id="a",
         options=[
@@ -277,8 +307,12 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "url-source-url-too-long": lambda: URLSource(
         "x" * (LIMITS["url_source"]["url"]["max_length"] + 1), "text"
     ),
-    # Both implementations pin the table block to at most 100 rows.
-    "table-too-many-rows": lambda: TableBlock([[RawText("A")] for _ in range(101)]),
+    "table-too-many-rows": lambda: TableBlock(
+        [[RawText("A")] for _ in range(LIMITS["table"]["rows"]["max_items"] + 1)]
+    ),
+    "table-too-many-columns": lambda: TableBlock(
+        [[RawText("A") for _ in range(LIMITS["table"]["columns"]["max_items"] + 1)]]
+    ),
     "table-ragged-rows": lambda: TableBlock([[RawText("A"), RawText("B")], [RawText("C")]]),
     "table-column-settings-mismatch": lambda: TableBlock(
         rows=[[RawText("A"), RawText("B")]],
@@ -289,6 +323,10 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     ),
     "file-input-max-files-too-large": lambda: FileInput(
         action_id="a", max_files=LIMITS["file_input"]["max_files"]["max"] + 1
+    ),
+    "dispatch-action-no-triggers": lambda: DispatchActionConfiguration([]),
+    "dispatch-action-too-many-triggers": lambda: DispatchActionConfiguration(
+        ["on_enter_pressed", "on_character_entered", "on_enter_pressed"]
     ),
     "plain-text-input-max-length-too-large": lambda: PlainTextInput(
         action_id="a", max_length=LIMITS["plain_text_input"]["max_length"]["max"] + 1
@@ -419,6 +457,14 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         action_id="a",
         accessibility_label="x" * (LIMITS["button"]["accessibility_label"]["max_length"] + 1),
     ),
+    "workflow-button-text-too-long": lambda: WorkflowButton(
+        "x" * (LIMITS["workflow_button"]["text"]["max_length"] + 1)
+    ),
+    "workflow-button-accessibility-label-too-long": lambda: WorkflowButton(
+        "Run",
+        accessibility_label="x"
+        * (LIMITS["workflow_button"]["accessibility_label"]["max_length"] + 1),
+    ),
     "alert-text-too-long": lambda: AlertBlock("x" * (LIMITS["alert"]["text"]["max_length"] + 1)),
     "card-title-too-long": lambda: CardBlock(
         title="x" * (LIMITS["card"]["title"]["max_length"] + 1)
@@ -488,6 +534,13 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
             f"U{index}"
             for index in range(LIMITS["icon_button"]["visible_to_user_ids"]["max_items"] + 1)
         ],
+    ),
+    "icon-button-value-too-long": lambda: IconButton(
+        "Delete", value="x" * (LIMITS["icon_button"]["value"]["max_length"] + 1)
+    ),
+    "icon-button-accessibility-label-too-long": lambda: IconButton(
+        "Delete",
+        accessibility_label="x" * (LIMITS["icon_button"]["accessibility_label"]["max_length"] + 1),
     ),
     "data-table-too-few-rows": lambda: DataTableBlock([[RawText("Name")]], caption="Names"),
     "data-table-too-many-rows": lambda: DataTableBlock(
@@ -620,10 +673,10 @@ def test_invalid_manifest_covers_every_scalar_limit() -> None:
     assert scalar_paths(LIMITS) <= covered
 
 
-def test_invalid_manifest_has_unique_case_ids_and_constraints() -> None:
+def test_invalid_manifest_has_unique_case_ids() -> None:
+    # Constraints may repeat: input_element.placeholder.max_length has one case per element.
     cases = load_json(SPEC_ROOT / "fixtures" / "invalid" / "manifest.json")["cases"]
     assert len({case["id"] for case in cases}) == len(cases)
-    assert len({case["constraint"] for case in cases}) == len(cases)
 
 
 def test_every_invalid_case_has_a_python_construction() -> None:

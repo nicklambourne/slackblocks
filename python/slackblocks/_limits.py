@@ -67,6 +67,12 @@ FILE_INPUT_MAX_FILES_MIN = 1
 FILE_INPUT_MAX_FILES_MAX = 10
 # plain_text_input.max_length.max
 PLAIN_TEXT_INPUT_MAX_LENGTH_MAX = 3000
+# input_element.placeholder.max_length
+INPUT_ELEMENT_PLACEHOLDER_MAX_LENGTH = 150
+# dispatch_action_configuration.trigger_actions_on.min_items
+DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MIN_ITEMS = 1
+# dispatch_action_configuration.trigger_actions_on.max_items
+DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MAX_ITEMS = 2
 # actions.elements.max_items
 ACTIONS_ELEMENTS_MAX_ITEMS = 25
 # alert.text.max_length
@@ -101,8 +107,20 @@ FEEDBACK_BUTTON_TEXT_MAX_LENGTH = 75
 FEEDBACK_BUTTON_VALUE_MAX_LENGTH = 2000
 # feedback_button.accessibility_label.max_length
 FEEDBACK_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH = 75
+# icon_button.value.max_length
+ICON_BUTTON_VALUE_MAX_LENGTH = 2000
+# icon_button.accessibility_label.max_length
+ICON_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH = 75
 # icon_button.visible_to_user_ids.max_items
 ICON_BUTTON_VISIBLE_TO_USER_IDS_MAX_ITEMS = 10
+# workflow_button.text.max_length
+WORKFLOW_BUTTON_TEXT_MAX_LENGTH = 75
+# workflow_button.accessibility_label.max_length
+WORKFLOW_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH = 75
+# table.rows.max_items
+TABLE_ROWS_MAX_ITEMS = 100
+# table.columns.max_items
+TABLE_COLUMNS_MAX_ITEMS = 20
 # data_table.rows.min_items
 DATA_TABLE_ROWS_MIN_ITEMS = 2
 # data_table.rows.max_items
