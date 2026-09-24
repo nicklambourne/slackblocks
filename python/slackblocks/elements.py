@@ -20,22 +20,33 @@ from ._limits import (
     BUTTON_VALUE_MAX_LENGTH,
     CHECKBOXES_OPTIONS_MAX_ITEMS,
     CHECKBOXES_OPTIONS_MIN_ITEMS,
+    DATE_PICKER_PLACEHOLDER_MAX_LENGTH,
+    EMAIL_INPUT_PLACEHOLDER_MAX_LENGTH,
     FEEDBACK_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
     FEEDBACK_BUTTON_TEXT_MAX_LENGTH,
     FEEDBACK_BUTTON_VALUE_MAX_LENGTH,
     FILE_INPUT_MAX_FILES_MAX,
     FILE_INPUT_MAX_FILES_MIN,
+    ICON_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
+    ICON_BUTTON_VALUE_MAX_LENGTH,
     ICON_BUTTON_VISIBLE_TO_USER_IDS_MAX_ITEMS,
+    NUMBER_INPUT_PLACEHOLDER_MAX_LENGTH,
     OVERFLOW_OPTIONS_MAX_ITEMS,
     OVERFLOW_OPTIONS_MIN_ITEMS,
     PLAIN_TEXT_INPUT_MAX_LENGTH_MAX,
+    PLAIN_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
     RADIO_BUTTONS_OPTIONS_MAX_ITEMS,
     RADIO_BUTTONS_OPTIONS_MIN_ITEMS,
+    RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
     SELECT_OPTION_GROUPS_MAX_ITEMS,
     SELECT_OPTIONS_MAX_ITEMS,
     SELECT_PLACEHOLDER_MAX_LENGTH,
+    TIME_PICKER_PLACEHOLDER_MAX_LENGTH,
+    URL_INPUT_PLACEHOLDER_MAX_LENGTH,
     URL_SOURCE_URL_MAX_LENGTH,
     URL_SOURCE_URL_MIN_LENGTH,
+    WORKFLOW_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
+    WORKFLOW_BUTTON_TEXT_MAX_LENGTH,
 )
 from .errors import (
     LengthError,
@@ -332,13 +343,13 @@ class IconButton(Element):
         self.text = Text.to_text(text, force_plaintext=True)
         self.action_id = validate_action_id(action_id, allow_none=True)
         self.value = validate_string(
-            value, "value", max_length=BUTTON_VALUE_MAX_LENGTH, allow_none=True
+            value, "value", max_length=ICON_BUTTON_VALUE_MAX_LENGTH, allow_none=True
         )
         self.confirm = validate_type(confirm, ConfirmationDialogue, "confirm", allow_none=True)
         self.accessibility_label = validate_string(
             accessibility_label,
             "accessibility_label",
-            max_length=BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
+            max_length=ICON_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
             allow_none=True,
         )
         self.visible_to_user_ids: list[str] | None = coerce_to_list(
@@ -483,7 +494,10 @@ class DatePicker(Element):
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, force_plaintext=True, max_length=150, allow_none=True
+            placeholder,
+            force_plaintext=True,
+            max_length=DATE_PICKER_PLACEHOLDER_MAX_LENGTH,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -579,7 +593,10 @@ class EmailInput(Element):
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True, allow_none=True
+            placeholder,
+            max_length=EMAIL_INPUT_PLACEHOLDER_MAX_LENGTH,
+            force_plaintext=True,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -1139,7 +1156,10 @@ class NumberInput(Element):
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True, allow_none=True
+            placeholder,
+            max_length=NUMBER_INPUT_PLACEHOLDER_MAX_LENGTH,
+            force_plaintext=True,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -1253,7 +1273,10 @@ class PlainTextInput(Element):
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
-            placeholder, max_length=150, force_plaintext=True, allow_none=True
+            placeholder,
+            max_length=PLAIN_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
+            force_plaintext=True,
+            allow_none=True,
         )
 
     def _resolve(self) -> dict[str, Any]:
@@ -1732,7 +1755,7 @@ class TimePicker(Element):
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
-            max_length=150,
+            max_length=TIME_PICKER_PLACEHOLDER_MAX_LENGTH,
             force_plaintext=True,
             allow_none=True,
         )
@@ -1790,7 +1813,7 @@ class URLInput(Element):
         self.placeholder = Text.to_text(
             placeholder,
             force_plaintext=True,
-            max_length=150,
+            max_length=URL_INPUT_PLACEHOLDER_MAX_LENGTH,
             allow_none=True,
         )
 
@@ -1865,10 +1888,17 @@ class WorkflowButton(Element):
         accessibility_label: str | None = None,
     ) -> None:
         super().__init__(type_=ElementType.WORKFLOW_BUTTON)
-        self.text = Text.to_text(text, force_plaintext=True, max_length=75)
+        self.text = Text.to_text(
+            text, force_plaintext=True, max_length=WORKFLOW_BUTTON_TEXT_MAX_LENGTH
+        )
         self.workflow = workflow
         self.style = ButtonStyle.to_button_style(style).value
-        self.accessibility_label = accessibility_label
+        self.accessibility_label = validate_string(
+            accessibility_label,
+            "accessibility_label",
+            max_length=WORKFLOW_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
+            allow_none=True,
+        )
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(
@@ -1922,7 +1952,7 @@ class RichTextInput(Element):
         self.placeholder = Text.to_text(
             placeholder,
             force_plaintext=True,
-            max_length=150,
+            max_length=RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
             allow_none=True,
         )
 
