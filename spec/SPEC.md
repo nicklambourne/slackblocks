@@ -35,6 +35,6 @@ Each implementation keeps a `conformance/skiplist.txt`. In any released state ev
 
 `limits.json` is the normative registry for stable scalar constraints. Changes to limits and fixtures must land atomically with implementation updates (or a temporary skip-list entry during a multi-PR transition).
 
-Every scalar leaf in `limits.json` must have a corresponding invalid case whose `constraint` is the leaf's dotted path, so every implementation demonstrably rejects values beyond each limit. Structural rules that are not scalar limits may have additional invalid cases. Implementations may hardcode limit values internally; the shared invalid-case corpus is what pins cross-language agreement.
+Every scalar leaf in `limits.json` must have a corresponding invalid case whose `constraint` is the leaf's dotted path, so every implementation demonstrably rejects values beyond each limit. Structural rules that are not scalar limits may have additional invalid cases. Implementations take their limit values from this file, by direct import or as checked-in generated constants that CI regenerates and diffs (see ADR 0002); the shared invalid-case corpus is what pins cross-language agreement.
 
 Character limits count Unicode code points in every implementation; the corpus includes astral-plane fixtures that pin this.
