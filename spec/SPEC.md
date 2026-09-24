@@ -4,7 +4,7 @@ Version 1.1.0 defines the language-neutral contract for slackblocks implementati
 
 ## Valid fixtures
 
-`fixtures/valid/` contains canonical Slack Block Kit JSON. Every entry in `manifest.json` must be constructed through an implementation's public API and compared as parsed JSON. Both harnesses enforce this generatively: each maps every manifest fixture ID to a construction through its public API and fails for unregistered IDs and for constructions whose rendered JSON differs from the fixture. Object key order and whitespace are not significant; array order and values are significant.
+`fixtures/valid/` contains canonical Slack Block Kit JSON. Every entry in `manifest.json` must be constructed through an implementation's public API and compared as parsed JSON. Every harness enforces this generatively: each maps every manifest fixture ID to a construction through its public API and fails for unregistered IDs and for constructions whose rendered JSON differs from the fixture. Object key order and whitespace are not significant; array order and values are significant.
 
 ## Invalid cases
 
@@ -23,7 +23,7 @@ The normative categories are `length-exceeded`, `out-of-range`, `mutually-exclus
 
 ## Skip lists
 
-Each implementation keeps a `conformance/skiplist.txt`. In any released state both files must be empty, and both harnesses hard-assert emptiness. Entries are permitted only as a temporary escape hatch while a spec change and its implementation updates land across multiple pull requests, and must be removed before release.
+Each implementation keeps a `conformance/skiplist.txt`. In any released state every skip list must be empty, and every harness hard-asserts emptiness. Entries are permitted only as a temporary escape hatch while a spec change and its implementation updates land across multiple pull requests, and must be removed before release.
 
 ## Model
 
@@ -35,6 +35,6 @@ Each implementation keeps a `conformance/skiplist.txt`. In any released state bo
 
 `limits.json` is the normative registry for stable scalar constraints. Changes to limits and fixtures must land atomically with implementation updates (or a temporary skip-list entry during a multi-PR transition).
 
-Every scalar leaf in `limits.json` must have a corresponding invalid case whose `constraint` is the leaf's dotted path, so both implementations demonstrably reject values beyond each limit. Structural rules that are not scalar limits may have additional invalid cases. Implementations may hardcode limit values internally; the shared invalid-case corpus is what pins cross-language agreement.
+Every scalar leaf in `limits.json` must have a corresponding invalid case whose `constraint` is the leaf's dotted path, so every implementation demonstrably rejects values beyond each limit. Structural rules that are not scalar limits may have additional invalid cases. Implementations may hardcode limit values internally; the shared invalid-case corpus is what pins cross-language agreement.
 
-Character limits count Unicode code points in both implementations; the corpus includes astral-plane fixtures that pin this.
+Character limits count Unicode code points in every implementation; the corpus includes astral-plane fixtures that pin this.
