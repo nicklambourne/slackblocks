@@ -191,10 +191,10 @@ internal static partial class Validator
 
                 break;
             case "ChartSegment":
-                ValidateLabelValue(value, name, 20, positive: true);
+                ValidateLabelValue(value, name, SlackLimits.DataVisualizationSegmentLabelMaxLength, positive: true);
                 break;
             case "DataPoint":
-                ValidateLabelValue(value, name, 20, positive: false);
+                ValidateLabelValue(value, name, SlackLimits.DataVisualizationPointLabelMaxLength, positive: false);
                 break;
             case "DataSeries":
                 ValidateDataSeries(value, name);
@@ -224,7 +224,7 @@ internal static partial class Validator
                     Fail(ErrorCategory.TypeMismatch, Child(name, "channel"), "expected a string");
                 }
 
-                StringLength(channel, Child(name, "channel"), 1, 0);
+                StringLength(channel, Child(name, "channel"), SlackLimits.MessageChannelMinLength, 0);
                 ValidateMessageCollections(value, name);
                 break;
             case "MessageResponse":
@@ -247,12 +247,12 @@ internal static partial class Validator
 
         if (JsonValues.IsString(value["block_id"], out var blockId))
         {
-            StringLength(blockId, Child(path, "block_id"), 0, 255);
+            StringLength(blockId, Child(path, "block_id"), 0, SlackLimits.BlockIdMaxLength);
         }
 
         if (JsonValues.IsString(value["action_id"], out var actionId))
         {
-            StringLength(actionId, Child(path, "action_id"), 0, 255);
+            StringLength(actionId, Child(path, "action_id"), 0, SlackLimits.ActionIdMaxLength);
         }
 
         if (ConfirmTypes.Contains(type) && value.ContainsKey("confirm"))
@@ -271,7 +271,7 @@ internal static partial class Validator
         {
             case "plain_text":
             case "mrkdwn":
-                TextLength(value, Child(path, "text"), 1, 3000);
+                TextLength(value, Child(path, "text"), SlackLimits.TextMinLength, SlackLimits.TextMaxLength);
                 break;
             case "icon":
                 if (!JsonValues.IsString(value["name"], out var iconName) || !SlackVocabulary.SlackIconNames.Contains(iconName))
@@ -284,7 +284,7 @@ internal static partial class Validator
                 ValidateSection(value, path);
                 break;
             case "header":
-                TextLength(value["text"], Child(path, "text.text"), 0, 150);
+                TextLength(value["text"], Child(path, "text.text"), 0, SlackLimits.HeaderTextMaxLength);
                 break;
             case "button":
                 ValidateButton(value, path);
@@ -303,16 +303,20 @@ internal static partial class Validator
 
                 break;
             case "file_input":
-                if (JsonValues.Number(value["max_files"]) is double maxFiles && (maxFiles < 1 || maxFiles > 10))
+                if (JsonValues.Number(value["max_files"]) is double maxFiles
+                    && (maxFiles < SlackLimits.FileInputMaxFilesMin || maxFiles > SlackLimits.FileInputMaxFilesMax))
                 {
-                    Fail(ErrorCategory.OutOfRange, Child(path, "max_files"), "expected a value between 1 and 10");
+                    Fail(
+                        ErrorCategory.OutOfRange,
+                        Child(path, "max_files"),
+                        $"expected a value between {SlackLimits.FileInputMaxFilesMin} and {SlackLimits.FileInputMaxFilesMax}");
                 }
 
                 break;
             case "plain_text_input":
-                if (JsonValues.Number(value["max_length"]) is double maxLength && maxLength > 3000)
+                if (JsonValues.Number(value["max_length"]) is double maxLength && maxLength > SlackLimits.PlainTextInputMaxLengthMax)
                 {
-                    Fail(ErrorCategory.OutOfRange, Child(path, "max_length"), "exceeds maximum 3000");
+                    Fail(ErrorCategory.OutOfRange, Child(path, "max_length"), $"exceeds maximum {SlackLimits.PlainTextInputMaxLengthMax}");
                 }
 
                 if (value.ContainsKey("placeholder"))
@@ -340,11 +344,25 @@ internal static partial class Validator
             case "checkboxes":
             case "radio_buttons":
                 var options = ListAt(value["options"], Child(path, "options"));
-                SliceLength(options, Child(path, "options"), 1, type == "overflow" ? 5 : 10);
+                SliceLength(
+                    options,
+                    Child(path, "options"),
+                    type switch
+                    {
+                        "overflow" => SlackLimits.OverflowOptionsMinItems,
+                        "checkboxes" => SlackLimits.CheckboxesOptionsMinItems,
+                        _ => SlackLimits.RadioButtonsOptionsMinItems,
+                    },
+                    type switch
+                    {
+                        "overflow" => SlackLimits.OverflowOptionsMaxItems,
+                        "checkboxes" => SlackLimits.CheckboxesOptionsMaxItems,
+                        _ => SlackLimits.RadioButtonsOptionsMaxItems,
+                    });
                 ValidateOptions(options, Child(path, "options"));
                 break;
             case "url":
-                StringLength(StringAt(value["url"], Child(path, "url")), Child(path, "url"), 1, 3000);
+                StringLength(StringAt(value["url"], Child(path, "url")), Child(path, "url"), SlackLimits.UrlSourceUrlMinLength, SlackLimits.UrlSourceUrlMaxLength);
                 break;
             case "static_select":
             case "multi_static_select":
@@ -367,10 +385,10 @@ internal static partial class Validator
                 ValidateContext(value, path);
                 break;
             case "actions":
-                SliceLength(ListAt(value["elements"], Child(path, "elements")), Child(path, "elements"), 0, 25);
+                SliceLength(ListAt(value["elements"], Child(path, "elements")), Child(path, "elements"), 0, SlackLimits.ActionsElementsMaxItems);
                 break;
             case "alert":
-                TextLength(value["text"], Child(path, "text.text"), 0, 200);
+                TextLength(value["text"], Child(path, "text.text"), 0, SlackLimits.AlertTextMaxLength);
                 if (JsonValues.IsString(value["level"], out var level) && !AlertLevels.Contains(level))
                 {
                     Fail(ErrorCategory.TypeMismatch, Child(path, "level"), "unknown alert level");
@@ -387,7 +405,7 @@ internal static partial class Validator
                 ValidateContainer(value, path);
                 break;
             case "context_actions":
-                SliceLength(ListAt(value["elements"], Child(path, "elements")), Child(path, "elements"), 1, 5);
+                SliceLength(ListAt(value["elements"], Child(path, "elements")), Child(path, "elements"), 1, SlackLimits.ContextActionsElementsMaxItems);
                 break;
             case "data_table":
                 ValidateTable(value, path, dataTable: true);
@@ -398,7 +416,7 @@ internal static partial class Validator
             case "data_visualization":
                 if (JsonValues.IsString(value["title"], out var title))
                 {
-                    StringLength(title, Child(path, "title"), 0, 50);
+                    StringLength(title, Child(path, "title"), 0, SlackLimits.DataVisualizationTitleMaxLength);
                 }
 
                 ObjectAt(value["chart"], Child(path, "chart"));
@@ -422,7 +440,7 @@ internal static partial class Validator
                 ValidateInput(value, path);
                 break;
             case "markdown":
-                StringLength(StringAt(value["text"], Child(path, "text")), Child(path, "text"), 1, 12000);
+                StringLength(StringAt(value["text"], Child(path, "text")), Child(path, "text"), SlackLimits.MarkdownTextMinLength, SlackLimits.MarkdownTextMaxLength);
                 break;
             case "video":
                 ValidateVideo(value, path);
@@ -453,25 +471,25 @@ internal static partial class Validator
 
         if (hasText)
         {
-            TextLength(value["text"], Child(path, "text.text"), 0, 3000);
+            TextLength(value["text"], Child(path, "text.text"), 0, SlackLimits.SectionTextMaxLength);
         }
 
         if (value.ContainsKey("fields"))
         {
-            SliceLength(fields, Child(path, "fields"), 0, 10);
+            SliceLength(fields, Child(path, "fields"), 0, SlackLimits.SectionFieldsMaxItems);
             for (var index = 0; index < fields.Count; index++)
             {
-                TextLength(fields[index], $"{Child(path, "fields")}[{index}].text", 0, 2000);
+                TextLength(fields[index], $"{Child(path, "fields")}[{index}].text", 0, SlackLimits.SectionFieldsItemMaxLength);
             }
         }
     }
 
     private static void ValidateButton(JsonObject value, string path)
     {
-        TextLength(value["text"], Child(path, "text.text"), 0, 75);
-        CheckOptionalString(value, "url", path, 3000);
-        CheckOptionalString(value, "value", path, 2000);
-        CheckOptionalString(value, "accessibility_label", path, 75);
+        TextLength(value["text"], Child(path, "text.text"), 0, SlackLimits.ButtonTextMaxLength);
+        CheckOptionalString(value, "url", path, SlackLimits.ButtonUrlMaxLength);
+        CheckOptionalString(value, "value", path, SlackLimits.ButtonValueMaxLength);
+        CheckOptionalString(value, "accessibility_label", path, SlackLimits.ButtonAccessibilityLabelMaxLength);
     }
 
     private static void ValidateWorkflowButton(JsonObject value, string path)
@@ -491,7 +509,7 @@ internal static partial class Validator
         CheckOptionalString(value, "accessibility_label", path, SlackLimits.IconButtonAccessibilityLabelMaxLength);
         if (value["visible_to_user_ids"] is JsonArray users)
         {
-            SliceLength(users, Child(path, "visible_to_user_ids"), 0, 10);
+            SliceLength(users, Child(path, "visible_to_user_ids"), 0, SlackLimits.IconButtonVisibleToUserIdsMaxItems);
         }
     }
 
@@ -507,14 +525,14 @@ internal static partial class Validator
         if (hasOptions)
         {
             var options = ListAt(value["options"], Child(path, "options"));
-            SliceLength(options, Child(path, "options"), 0, 100);
+            SliceLength(options, Child(path, "options"), 0, SlackLimits.SelectOptionsMaxItems);
             ValidateOptions(options, Child(path, "options"));
         }
 
         if (hasGroups)
         {
             var groups = ListAt(value["option_groups"], Child(path, "option_groups"));
-            SliceLength(groups, Child(path, "option_groups"), 0, 100);
+            SliceLength(groups, Child(path, "option_groups"), 0, SlackLimits.SelectOptionGroupsMaxItems);
             for (var index = 0; index < groups.Count; index++)
             {
                 var groupPath = $"{Child(path, "option_groups")}[{index}]";
@@ -524,7 +542,7 @@ internal static partial class Validator
 
         if (value.ContainsKey("placeholder"))
         {
-            TextLength(value["placeholder"], Child(path, "placeholder.text"), 0, 150);
+            TextLength(value["placeholder"], Child(path, "placeholder.text"), 0, SlackLimits.SelectPlaceholderMaxLength);
         }
     }
 
@@ -542,14 +560,14 @@ internal static partial class Validator
             Fail(ErrorCategory.MutuallyExclusive, path, "image_url and slack_file cannot be provided together");
         }
 
-        CheckOptionalString(value, "image_url", path, 3000);
-        CheckOptionalString(value, "alt_text", path, 2000);
+        CheckOptionalString(value, "image_url", path, SlackLimits.ImageImageUrlMaxLength);
+        CheckOptionalString(value, "alt_text", path, SlackLimits.ImageAltTextMaxLength);
     }
 
     private static void ValidateContext(JsonObject value, string path)
     {
         var elements = ListAt(value["elements"], Child(path, "elements"));
-        SliceLength(elements, Child(path, "elements"), 0, 10);
+        SliceLength(elements, Child(path, "elements"), 0, SlackLimits.ContextElementsMaxItems);
         for (var index = 0; index < elements.Count; index++)
         {
             var elementPath = $"{Child(path, "elements")}[{index}]";
@@ -575,20 +593,20 @@ internal static partial class Validator
             Fail(ErrorCategory.MutuallyExclusive, path, "icon and slack_icon cannot be provided together");
         }
 
-        CheckOptionalText(value, "title", path, 150);
-        CheckOptionalText(value, "subtitle", path, 150);
-        CheckOptionalText(value, "body", path, 200);
-        CheckOptionalText(value, "subtext", path, 200);
+        CheckOptionalText(value, "title", path, SlackLimits.CardTitleMaxLength);
+        CheckOptionalText(value, "subtitle", path, SlackLimits.CardSubtitleMaxLength);
+        CheckOptionalText(value, "body", path, SlackLimits.CardBodyMaxLength);
+        CheckOptionalText(value, "subtext", path, SlackLimits.CardSubtextMaxLength);
         if (value["actions"] is JsonArray actions)
         {
-            SliceLength(actions, Child(path, "actions"), 0, 3);
+            SliceLength(actions, Child(path, "actions"), 0, SlackLimits.CardActionsMaxItems);
         }
     }
 
     private static void ValidateCarousel(JsonObject value, string path)
     {
         var cards = ListAt(value["elements"], Child(path, "elements"));
-        SliceLength(cards, Child(path, "elements"), 1, 10);
+        SliceLength(cards, Child(path, "elements"), SlackLimits.CarouselElementsMinItems, SlackLimits.CarouselElementsMaxItems);
         for (var index = 0; index < cards.Count; index++)
         {
             var cardPath = $"{Child(path, "elements")}[{index}]";
@@ -606,10 +624,10 @@ internal static partial class Validator
             Fail(ErrorCategory.MissingRequired, path, "expected title or rich_text_title");
         }
 
-        CheckOptionalText(value, "title", path, 150);
-        CheckOptionalText(value, "subtitle", path, 150);
+        CheckOptionalText(value, "title", path, SlackLimits.ContainerTitleMaxLength);
+        CheckOptionalText(value, "subtitle", path, SlackLimits.ContainerSubtitleMaxLength);
         var blocks = ListAt(value["child_blocks"], Child(path, "child_blocks"));
-        SliceLength(blocks, Child(path, "child_blocks"), 1, 10);
+        SliceLength(blocks, Child(path, "child_blocks"), 1, SlackLimits.ContainerChildBlocksMaxItems);
         if (JsonValues.IsString(value["width"], out var width) && !ContainerWidths.Contains(width))
         {
             Fail(ErrorCategory.TypeMismatch, Child(path, "width"), "unknown container width");
@@ -629,20 +647,24 @@ internal static partial class Validator
     private static void ValidatePie(JsonObject value, string path)
     {
         var segments = ListAt(value["segments"], Child(path, "segments"));
-        SliceLength(segments, Child(path, "segments"), 1, 12);
+        SliceLength(segments, Child(path, "segments"), SlackLimits.DataVisualizationSegmentsMinItems, SlackLimits.DataVisualizationSegmentsMaxItems);
         for (var index = 0; index < segments.Count; index++)
         {
             var segmentPath = $"{Child(path, "segments")}[{index}]";
-            ValidateLabelValue(ObjectAt(segments[index], segmentPath), segmentPath, 20, positive: true);
+            ValidateLabelValue(
+                ObjectAt(segments[index], segmentPath),
+                segmentPath,
+                SlackLimits.DataVisualizationSegmentLabelMaxLength,
+                positive: true);
         }
     }
 
     private static void ValidateInput(JsonObject value, string path)
     {
-        TextLength(value["label"], Child(path, "label.text"), 0, 2000);
+        TextLength(value["label"], Child(path, "label.text"), 0, SlackLimits.InputLabelMaxLength);
         if (value.ContainsKey("hint"))
         {
-            TextLength(value["hint"], Child(path, "hint.text"), 0, 2000);
+            TextLength(value["hint"], Child(path, "hint.text"), 0, SlackLimits.InputHintMaxLength);
         }
 
         var element = ObjectAt(value["element"], Child(path, "element"));
@@ -656,22 +678,22 @@ internal static partial class Validator
     {
         if (JsonValues.IsString(value["alt_text"], out var altText))
         {
-            StringLength(altText, Child(path, "alt_text"), 1, 200);
+            StringLength(altText, Child(path, "alt_text"), SlackLimits.VideoAltTextMinLength, SlackLimits.VideoAltTextMaxLength);
         }
 
-        TextLength(value["title"], Child(path, "title.text"), 0, 200);
-        CheckOptionalString(value, "author_name", path, 50);
-        CheckOptionalString(value, "provider_name", path, 50);
-        CheckOptionalText(value, "description", path, 200);
+        TextLength(value["title"], Child(path, "title.text"), 0, SlackLimits.VideoTitleMaxLength);
+        CheckOptionalString(value, "author_name", path, SlackLimits.VideoAuthorNameMaxLength);
+        CheckOptionalString(value, "provider_name", path, SlackLimits.VideoProviderNameMaxLength);
+        CheckOptionalText(value, "description", path, SlackLimits.VideoDescriptionMaxLength);
     }
 
     private static void ValidateView(JsonObject value, string path, string type)
     {
         var blocks = ListAt(value["blocks"], Child(path, "blocks"));
-        SliceLength(blocks, Child(path, "blocks"), 1, 100);
+        SliceLength(blocks, Child(path, "blocks"), SlackLimits.ViewBlocksMinItems, SlackLimits.ViewBlocksMaxItems);
         ValidateSurface(blocks, type, Child(path, "blocks"));
-        CheckOptionalString(value, "private_metadata", path, 3000);
-        CheckOptionalString(value, "callback_id", path, 255);
+        CheckOptionalString(value, "private_metadata", path, SlackLimits.ViewPrivateMetadataMaxLength);
+        CheckOptionalString(value, "callback_id", path, SlackLimits.ViewCallbackIdMaxLength);
         if (type == "modal")
         {
             if (!value.ContainsKey("submit"))
@@ -689,18 +711,18 @@ internal static partial class Validator
                 }
             }
 
-            CheckOptionalText(value, "title", path, 24);
-            CheckOptionalText(value, "close", path, 24);
-            CheckOptionalText(value, "submit", path, 24);
+            CheckOptionalText(value, "title", path, SlackLimits.ViewTitleMaxLength);
+            CheckOptionalText(value, "close", path, SlackLimits.ViewCloseMaxLength);
+            CheckOptionalText(value, "submit", path, SlackLimits.ViewSubmitMaxLength);
         }
     }
 
     private static void ValidateOptionGroup(JsonObject value, string path)
     {
         Require(value, "label", path);
-        TextLength(value["label"], Child(path, "label.text"), 0, 75);
+        TextLength(value["label"], Child(path, "label.text"), 0, SlackLimits.OptionGroupLabelMaxLength);
         var options = ListAt(value["options"], Child(path, "options"));
-        SliceLength(options, Child(path, "options"), 1, 100);
+        SliceLength(options, Child(path, "options"), SlackLimits.OptionGroupOptionsMinItems, SlackLimits.OptionGroupOptionsMaxItems);
         ValidateOptions(options, Child(path, "options"));
     }
 
@@ -708,9 +730,9 @@ internal static partial class Validator
     {
         Require(value, "text", path);
         Require(value, "value", path);
-        TextLength(value["text"], Child(path, "text.text"), 0, 75);
-        CheckOptionalString(value, "value", path, 2000);
-        CheckOptionalString(value, "accessibility_label", path, 75);
+        TextLength(value["text"], Child(path, "text.text"), 0, SlackLimits.FeedbackButtonTextMaxLength);
+        CheckOptionalString(value, "value", path, SlackLimits.FeedbackButtonValueMaxLength);
+        CheckOptionalString(value, "accessibility_label", path, SlackLimits.FeedbackButtonAccessibilityLabelMaxLength);
     }
 
     private static void ValidateDispatchActionConfiguration(JsonObject value, string path)
@@ -728,34 +750,44 @@ internal static partial class Validator
     private static void ValidateDataSeries(JsonObject value, string path)
     {
         var name = StringAt(value["name"], Child(path, "name"));
-        StringLength(name, Child(path, "name"), 0, 20);
+        StringLength(name, Child(path, "name"), 0, SlackLimits.DataVisualizationSeriesNameMaxLength);
         var data = ListAt(value["data"], Child(path, "data"));
-        SliceLength(data, Child(path, "data"), 1, 20);
+        SliceLength(data, Child(path, "data"), SlackLimits.DataVisualizationDataMinItems, SlackLimits.DataVisualizationDataMaxItems);
     }
 
     private static void ValidateAxisConfig(JsonObject value, string path)
     {
         var categories = ListAt(value["categories"], Child(path, "categories"));
-        SliceLength(categories, Child(path, "categories"), 1, 20);
+        SliceLength(
+            categories,
+            Child(path, "categories"),
+            SlackLimits.DataVisualizationCategoriesMinItems,
+            SlackLimits.DataVisualizationCategoriesMaxItems);
         var seen = new HashSet<string>(StringComparer.Ordinal);
         for (var index = 0; index < categories.Count; index++)
         {
             var itemPath = $"{Child(path, "categories")}[{index}]";
             var category = StringAt(categories[index], itemPath);
-            StringLength(category, itemPath, 0, 20);
+            StringLength(category, itemPath, 0, SlackLimits.DataVisualizationCategoryLabelMaxLength);
             if (!seen.Add(category))
             {
                 Fail(ErrorCategory.InvalidUsage, Child(path, "categories"), "expected unique labels");
             }
         }
 
-        CheckOptionalString(value, "x_label", path, 50);
-        CheckOptionalString(value, "y_label", path, 50);
+        CheckOptionalString(value, "x_label", path, SlackLimits.DataVisualizationAxisLabelMaxLength);
+        CheckOptionalString(value, "y_label", path, SlackLimits.DataVisualizationAxisLabelMaxLength);
     }
 
     private static void ValidateConfirmation(JsonObject value, string path)
     {
-        foreach (var (field, maximum) in new[] { ("title", 100), ("text", 300), ("confirm", 30), ("deny", 30) })
+        foreach (var (field, maximum) in new[]
+        {
+            ("title", SlackLimits.ConfirmationTitleMaxLength),
+            ("text", SlackLimits.ConfirmationTextMaxLength),
+            ("confirm", SlackLimits.ConfirmationConfirmMaxLength),
+            ("deny", SlackLimits.ConfirmationDenyMaxLength)
+        })
         {
             Require(value, field, path);
             TextLength(value[field], Child(path, field + ".text"), 0, maximum);
@@ -766,10 +798,10 @@ internal static partial class Validator
     {
         Require(value, "text", path);
         Require(value, "value", path);
-        TextLength(value["text"], Child(path, "text.text"), 0, 75);
-        CheckOptionalString(value, "value", path, 150);
-        CheckOptionalText(value, "description", path, 75);
-        CheckOptionalString(value, "url", path, 3000);
+        TextLength(value["text"], Child(path, "text.text"), 0, SlackLimits.OptionTextMaxLength);
+        CheckOptionalString(value, "value", path, SlackLimits.OptionValueMaxLength);
+        CheckOptionalText(value, "description", path, SlackLimits.OptionDescriptionMaxLength);
+        CheckOptionalString(value, "url", path, SlackLimits.OptionUrlMaxLength);
     }
 
     private static void ValidateOptions(JsonArray values, string path)
@@ -784,7 +816,11 @@ internal static partial class Validator
     private static void ValidateTable(JsonObject value, string path, bool dataTable)
     {
         var rows = ListAt(value["rows"], Child(path, "rows"));
-        SliceLength(rows, Child(path, "rows"), dataTable ? 2 : 1, dataTable ? 201 : SlackLimits.TableRowsMaxItems);
+        SliceLength(
+            rows,
+            Child(path, "rows"),
+            dataTable ? SlackLimits.DataTableRowsMinItems : 1,
+            dataTable ? SlackLimits.DataTableRowsMaxItems : SlackLimits.TableRowsMaxItems);
         var columns = -1;
         var contentLength = 0;
         var allowed = dataTable ? DataTableCellTypes : TableCellTypes;
@@ -792,7 +828,11 @@ internal static partial class Validator
         {
             var rowPath = $"{Child(path, "rows")}[{rowIndex}]";
             var row = ListAt(rows[rowIndex], rowPath);
-            SliceLength(row, rowPath, dataTable ? 1 : 0, dataTable ? 20 : SlackLimits.TableColumnsMaxItems);
+            SliceLength(
+                row,
+                rowPath,
+                dataTable ? SlackLimits.DataTableColumnsMinItems : 0,
+                dataTable ? SlackLimits.DataTableColumnsMaxItems : SlackLimits.TableColumnsMaxItems);
             if (columns < 0)
             {
                 columns = row.Count;
@@ -820,7 +860,7 @@ internal static partial class Validator
                 contentLength += TextCharacterCount(cell);
                 if (dataTable && cellType is "raw_text" or "raw_number")
                 {
-                    StringLength(StringAt(cell["text"], Child(cellPath, "text")), Child(cellPath, "text"), 1, 0);
+                    StringLength(StringAt(cell["text"], Child(cellPath, "text")), Child(cellPath, "text"), SlackLimits.DataTableCellTextMinLength, 0);
                 }
             }
         }
@@ -837,16 +877,20 @@ internal static partial class Validator
 
         if (dataTable)
         {
-            if (JsonValues.Number(value["page_size"]) is double pageSize && (pageSize < 1 || pageSize > 100))
+            if (JsonValues.Number(value["page_size"]) is double pageSize
+                && (pageSize < SlackLimits.DataTablePageSizeMin || pageSize > SlackLimits.DataTablePageSizeMax))
             {
-                Fail(ErrorCategory.OutOfRange, Child(path, "page_size"), "expected a value between 1 and 100");
+                Fail(
+                    ErrorCategory.OutOfRange,
+                    Child(path, "page_size"),
+                    $"expected a value between {SlackLimits.DataTablePageSizeMin} and {SlackLimits.DataTablePageSizeMax}");
             }
 
             var caption = StringAt(value["caption"], Child(path, "caption"));
             StringLength(caption, Child(path, "caption"), 1, 0);
-            if (contentLength > 20000)
+            if (contentLength > SlackLimits.DataTableContentMaxLength)
             {
-                Fail(ErrorCategory.LengthExceeded, Child(path, "rows"), "content exceeds maximum 20000");
+                Fail(ErrorCategory.LengthExceeded, Child(path, "rows"), $"content exceeds maximum {SlackLimits.DataTableContentMaxLength}");
             }
         }
     }
@@ -854,7 +898,7 @@ internal static partial class Validator
     private static void ValidateSeriesChart(JsonObject value, string path)
     {
         var series = ListAt(value["series"], Child(path, "series"));
-        SliceLength(series, Child(path, "series"), 1, 12);
+        SliceLength(series, Child(path, "series"), SlackLimits.DataVisualizationSeriesMinItems, SlackLimits.DataVisualizationSeriesMaxItems);
         var axis = ObjectAt(value["axis_config"], Child(path, "axis_config"));
         ValidateAxisConfig(axis, Child(path, "axis_config"));
         var categories = ListAt(axis["categories"], Child(path, "axis_config.categories"));
@@ -882,7 +926,7 @@ internal static partial class Validator
             {
                 var pointPath = $"{Child(itemPath, "data")}[{pointIndex}]";
                 var point = ObjectAt(points[pointIndex], pointPath);
-                ValidateLabelValue(point, pointPath, 20, positive: false);
+                ValidateLabelValue(point, pointPath, SlackLimits.DataVisualizationPointLabelMaxLength, positive: false);
                 seen.Add(StringAt(point["label"], Child(pointPath, "label")));
             }
 
@@ -904,9 +948,9 @@ internal static partial class Validator
             return;
         }
 
-        if (positive && number <= 0)
+        if (positive && number <= SlackLimits.DataVisualizationSegmentValueExclusiveMin)
         {
-            Fail(ErrorCategory.OutOfRange, Child(path, "value"), "expected a value greater than 0");
+            Fail(ErrorCategory.OutOfRange, Child(path, "value"), $"expected a value greater than {SlackLimits.DataVisualizationSegmentValueExclusiveMin}");
         }
     }
 
@@ -915,13 +959,13 @@ internal static partial class Validator
         if (value.ContainsKey("blocks"))
         {
             var blocks = ListAt(value["blocks"], Child(path, "blocks"));
-            SliceLength(blocks, Child(path, "blocks"), 0, 50);
+            SliceLength(blocks, Child(path, "blocks"), 0, SlackLimits.MessageBlocksMaxItems);
             ValidateSurface(blocks, "message", Child(path, "blocks"));
         }
 
         if (value.ContainsKey("attachments"))
         {
-            SliceLength(ListAt(value["attachments"], Child(path, "attachments")), Child(path, "attachments"), 0, 100);
+            SliceLength(ListAt(value["attachments"], Child(path, "attachments")), Child(path, "attachments"), 0, SlackLimits.MessageAttachmentsMaxItems);
         }
     }
 
