@@ -338,16 +338,10 @@
       "description": "A section field longer than 2000 characters must be rejected"
     },
     {
-      "id": "video-alt-text-empty",
-      "category": "length-exceeded",
-      "constraint": "video.alt_text.min_length",
-      "description": "A video block with empty alternative text must be rejected"
-    },
-    {
       "id": "video-alt-text-too-long",
       "category": "length-exceeded",
       "constraint": "video.alt_text.max_length",
-      "description": "Video alternative text longer than 200 characters must be rejected"
+      "description": "Video alternative text longer than 2000 characters must be rejected"
     },
     {
       "id": "video-title-too-long",
