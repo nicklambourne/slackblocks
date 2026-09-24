@@ -242,27 +242,29 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         placeholder="x" * (LIMITS["select"]["placeholder"]["max_length"] + 1),
     ),
     "plain-text-input-placeholder-too-long": lambda: PlainTextInput(
-        action_id="a", placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1)
+        action_id="a",
+        placeholder="x" * (LIMITS["plain_text_input"]["placeholder"]["max_length"] + 1),
     ),
     "email-input-placeholder-too-long": lambda: EmailInput(
-        action_id="a", placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1)
+        action_id="a", placeholder="x" * (LIMITS["email_input"]["placeholder"]["max_length"] + 1)
     ),
     "url-input-placeholder-too-long": lambda: URLInput(
-        action_id="a", placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1)
+        action_id="a", placeholder="x" * (LIMITS["url_input"]["placeholder"]["max_length"] + 1)
     ),
     "number-input-placeholder-too-long": lambda: NumberInput(
         is_decimal_allowed=False,
         action_id="a",
-        placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1),
+        placeholder="x" * (LIMITS["number_input"]["placeholder"]["max_length"] + 1),
     ),
     "date-picker-placeholder-too-long": lambda: DatePicker(
-        action_id="a", placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1)
+        action_id="a", placeholder="x" * (LIMITS["date_picker"]["placeholder"]["max_length"] + 1)
     ),
     "time-picker-placeholder-too-long": lambda: TimePicker(
-        action_id="a", placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1)
+        action_id="a", placeholder="x" * (LIMITS["time_picker"]["placeholder"]["max_length"] + 1)
     ),
     "rich-text-input-placeholder-too-long": lambda: RichTextInput(
-        action_id="a", placeholder="x" * (LIMITS["input_element"]["placeholder"]["max_length"] + 1)
+        action_id="a",
+        placeholder="x" * (LIMITS["rich_text_input"]["placeholder"]["max_length"] + 1),
     ),
     "select-too-many-options": lambda: StaticSelectMenu(
         action_id="a",
@@ -673,10 +675,10 @@ def test_invalid_manifest_covers_every_scalar_limit() -> None:
     assert scalar_paths(LIMITS) <= covered
 
 
-def test_invalid_manifest_has_unique_case_ids() -> None:
-    # Constraints may repeat: input_element.placeholder.max_length has one case per element.
+def test_invalid_manifest_has_unique_case_ids_and_constraints() -> None:
     cases = load_json(SPEC_ROOT / "fixtures" / "invalid" / "manifest.json")["cases"]
     assert len({case["id"] for case in cases}) == len(cases)
+    assert len({case["constraint"] for case in cases}) == len(cases)
 
 
 def test_every_invalid_case_has_a_python_construction() -> None:

@@ -20,6 +20,8 @@ from ._limits import (
     BUTTON_VALUE_MAX_LENGTH,
     CHECKBOXES_OPTIONS_MAX_ITEMS,
     CHECKBOXES_OPTIONS_MIN_ITEMS,
+    DATE_PICKER_PLACEHOLDER_MAX_LENGTH,
+    EMAIL_INPUT_PLACEHOLDER_MAX_LENGTH,
     FEEDBACK_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
     FEEDBACK_BUTTON_TEXT_MAX_LENGTH,
     FEEDBACK_BUTTON_VALUE_MAX_LENGTH,
@@ -28,15 +30,19 @@ from ._limits import (
     ICON_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
     ICON_BUTTON_VALUE_MAX_LENGTH,
     ICON_BUTTON_VISIBLE_TO_USER_IDS_MAX_ITEMS,
-    INPUT_ELEMENT_PLACEHOLDER_MAX_LENGTH,
+    NUMBER_INPUT_PLACEHOLDER_MAX_LENGTH,
     OVERFLOW_OPTIONS_MAX_ITEMS,
     OVERFLOW_OPTIONS_MIN_ITEMS,
     PLAIN_TEXT_INPUT_MAX_LENGTH_MAX,
+    PLAIN_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
     RADIO_BUTTONS_OPTIONS_MAX_ITEMS,
     RADIO_BUTTONS_OPTIONS_MIN_ITEMS,
+    RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
     SELECT_OPTION_GROUPS_MAX_ITEMS,
     SELECT_OPTIONS_MAX_ITEMS,
     SELECT_PLACEHOLDER_MAX_LENGTH,
+    TIME_PICKER_PLACEHOLDER_MAX_LENGTH,
+    URL_INPUT_PLACEHOLDER_MAX_LENGTH,
     URL_SOURCE_URL_MAX_LENGTH,
     URL_SOURCE_URL_MIN_LENGTH,
     WORKFLOW_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
@@ -490,7 +496,7 @@ class DatePicker(Element):
         self.placeholder = Text.to_text(
             placeholder,
             force_plaintext=True,
-            max_length=INPUT_ELEMENT_PLACEHOLDER_MAX_LENGTH,
+            max_length=DATE_PICKER_PLACEHOLDER_MAX_LENGTH,
             allow_none=True,
         )
 
@@ -588,7 +594,7 @@ class EmailInput(Element):
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
-            max_length=INPUT_ELEMENT_PLACEHOLDER_MAX_LENGTH,
+            max_length=EMAIL_INPUT_PLACEHOLDER_MAX_LENGTH,
             force_plaintext=True,
             allow_none=True,
         )
@@ -1151,7 +1157,7 @@ class NumberInput(Element):
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
-            max_length=INPUT_ELEMENT_PLACEHOLDER_MAX_LENGTH,
+            max_length=NUMBER_INPUT_PLACEHOLDER_MAX_LENGTH,
             force_plaintext=True,
             allow_none=True,
         )
@@ -1268,7 +1274,7 @@ class PlainTextInput(Element):
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
-            max_length=INPUT_ELEMENT_PLACEHOLDER_MAX_LENGTH,
+            max_length=PLAIN_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
             force_plaintext=True,
             allow_none=True,
         )
@@ -1749,7 +1755,7 @@ class TimePicker(Element):
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
-            max_length=INPUT_ELEMENT_PLACEHOLDER_MAX_LENGTH,
+            max_length=TIME_PICKER_PLACEHOLDER_MAX_LENGTH,
             force_plaintext=True,
             allow_none=True,
         )
@@ -1807,7 +1813,7 @@ class URLInput(Element):
         self.placeholder = Text.to_text(
             placeholder,
             force_plaintext=True,
-            max_length=INPUT_ELEMENT_PLACEHOLDER_MAX_LENGTH,
+            max_length=URL_INPUT_PLACEHOLDER_MAX_LENGTH,
             allow_none=True,
         )
 
@@ -1946,7 +1952,7 @@ class RichTextInput(Element):
         self.placeholder = Text.to_text(
             placeholder,
             force_plaintext=True,
-            max_length=INPUT_ELEMENT_PLACEHOLDER_MAX_LENGTH,
+            max_length=RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
             allow_none=True,
         )
 

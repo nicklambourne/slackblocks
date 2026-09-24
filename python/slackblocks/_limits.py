@@ -67,8 +67,20 @@ FILE_INPUT_MAX_FILES_MIN = 1
 FILE_INPUT_MAX_FILES_MAX = 10
 # plain_text_input.max_length.max
 PLAIN_TEXT_INPUT_MAX_LENGTH_MAX = 3000
-# input_element.placeholder.max_length
-INPUT_ELEMENT_PLACEHOLDER_MAX_LENGTH = 150
+# plain_text_input.placeholder.max_length
+PLAIN_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH = 150
+# email_input.placeholder.max_length
+EMAIL_INPUT_PLACEHOLDER_MAX_LENGTH = 150
+# url_input.placeholder.max_length
+URL_INPUT_PLACEHOLDER_MAX_LENGTH = 150
+# number_input.placeholder.max_length
+NUMBER_INPUT_PLACEHOLDER_MAX_LENGTH = 150
+# date_picker.placeholder.max_length
+DATE_PICKER_PLACEHOLDER_MAX_LENGTH = 150
+# time_picker.placeholder.max_length
+TIME_PICKER_PLACEHOLDER_MAX_LENGTH = 150
+# rich_text_input.placeholder.max_length
+RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH = 150
 # dispatch_action_configuration.trigger_actions_on.min_items
 DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MIN_ITEMS = 1
 # dispatch_action_configuration.trigger_actions_on.max_items
