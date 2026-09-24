@@ -76,6 +76,12 @@ jobs:
         if: needs.changes.outputs.relevant == 'true'
         run: uv sync --frozen --group dev
 
+      - name: Verify generated limits are current
+        if: needs.changes.outputs.relevant == 'true' && matrix.os == 'ubuntu-latest'
+        run: |
+          uv run --frozen python generator/generate_limits.py
+          git diff --exit-code -- slackblocks/_limits.py
+
       - name: Run unit, conformance, and docs-example tests
         if: needs.changes.outputs.relevant == 'true'
         run: uv run --frozen pytest test/unit test/conformance test/docs
