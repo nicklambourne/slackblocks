@@ -551,7 +551,7 @@ public final class Validator {
 
   private static void validateVideo(Map<String, Object> value, String path) {
     if (value.get("alt_text") instanceof String altText) {
-      stringLength(altText, child(path, "alt_text"), 1, 200);
+      stringLength(altText, child(path, "alt_text"), 0, SlackLimits.VIDEO_ALT_TEXT_MAX_LENGTH);
     }
     textLength(value.get("title"), child(path, "title.text"), 0, 200);
     checkOptionalString(value, "author_name", path, 50);
@@ -693,6 +693,12 @@ public final class Validator {
       }
     }
     if (value.containsKey("column_settings")) {
+      if (dataTable) {
+        fail(
+            ErrorCategory.INVALID_USAGE,
+            child(path, "column_settings"),
+            "data tables do not support column_settings");
+      }
       List<?> settings = listAt(value.get("column_settings"), child(path, "column_settings"));
       sliceLength(settings, child(path, "column_settings"), 0, 20);
       if (settings.size() != columns) {

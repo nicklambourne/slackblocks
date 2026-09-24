@@ -3,6 +3,16 @@
 All notable changes to the Java package are documented here. Java versions move
 in lockstep with the Python, TypeScript, and Go packages.
 
+## [Unreleased]
+
+### Changed
+
+- `VideoBlock` `alt_text` now accepts up to 2000 characters, including an empty
+  string, matching Slack's validator (previously 1 to 200 characters).
+- `DataTableBlock` now rejects `column_settings` supplied through `wireField` or
+  raw JSON with `INVALID_USAGE`; Slack supports `column_settings` only on the
+  plain `table` block.
+
 ## [2.4.0] — 2026-09-17
 
 This coordinated release introduces the C# package, published to NuGet as

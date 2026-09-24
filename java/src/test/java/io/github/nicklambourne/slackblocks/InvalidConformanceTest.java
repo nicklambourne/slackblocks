@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.github.nicklambourne.slackblocks.internal.SlackLimits;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -302,8 +303,8 @@ final class InvalidConformanceTest {
           typed("SectionBlock", "section", "fields", copies(11, index -> mrkdwn("x")));
       case "section-field-too-long" ->
           typed("SectionBlock", "section", "fields", List.of(mrkdwn(repeated("x", 2001))));
-      case "video-alt-text-empty" -> invalidVideo("alt_text", "");
-      case "video-alt-text-too-long" -> invalidVideo("alt_text", repeated("x", 201));
+      case "video-alt-text-too-long" ->
+          invalidVideo("alt_text", repeated("x", SlackLimits.VIDEO_ALT_TEXT_MAX_LENGTH + 1));
       case "video-title-too-long" -> invalidVideo("title", plain(repeated("x", 201)));
       case "video-author-name-too-long" -> invalidVideo("author_name", repeated("x", 51));
       case "video-description-too-long" -> invalidVideo("description", plain(repeated("x", 201)));

@@ -304,10 +304,7 @@ public final class SlackLimits {
   public static final int URL_SOURCE_URL_MIN_LENGTH = 1;
 
   /** {@code video.alt_text.max_length} */
-  public static final int VIDEO_ALT_TEXT_MAX_LENGTH = 200;
-
-  /** {@code video.alt_text.min_length} */
-  public static final int VIDEO_ALT_TEXT_MIN_LENGTH = 1;
+  public static final int VIDEO_ALT_TEXT_MAX_LENGTH = 2000;
 
   /** {@code video.author_name.max_length} */
   public static final int VIDEO_AUTHOR_NAME_MAX_LENGTH = 50;

@@ -3,12 +3,16 @@ package io.github.nicklambourne.slackblocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import io.github.nicklambourne.slackblocks.block.DataTableBlock;
 import io.github.nicklambourne.slackblocks.block.DividerBlock;
 import io.github.nicklambourne.slackblocks.block.InputBlock;
 import io.github.nicklambourne.slackblocks.block.SectionBlock;
+import io.github.nicklambourne.slackblocks.block.VideoBlock;
 import io.github.nicklambourne.slackblocks.element.ImageElement;
 import io.github.nicklambourne.slackblocks.element.PlainTextInputElement;
+import io.github.nicklambourne.slackblocks.internal.SlackLimits;
 import io.github.nicklambourne.slackblocks.object.Option;
+import io.github.nicklambourne.slackblocks.object.RawText;
 import io.github.nicklambourne.slackblocks.object.SlackFile;
 import io.github.nicklambourne.slackblocks.payload.ModalView;
 import io.github.nicklambourne.slackblocks.payload.WebhookMessage;
@@ -102,5 +106,36 @@ final class ValidationContractTest {
             () -> SectionBlock.builder().wireField("fields", List.of()).build());
 
     assertEquals(ErrorCategory.MISSING_REQUIRED, error.getCategory());
+  }
+
+  @Test
+  void dataTablesRejectColumnSettings() {
+    ValidationException error =
+        assertThrows(
+            ValidationException.class,
+            () ->
+                DataTableBlock.builder()
+                    .caption("People")
+                    .rows(List.of(RawText.of("Name")))
+                    .rows(List.of(RawText.of("Ada")))
+                    .wireField("column_settings", List.of(Map.of("align", "left")))
+                    .build());
+
+    assertEquals(ErrorCategory.INVALID_USAGE, error.getCategory());
+    assertEquals("DataTableBlock.column_settings", error.getPath());
+  }
+
+  @Test
+  void videoAltTextAcceptsEmptyAndMaximumLength() {
+    for (String altText : List.of("", "x".repeat(SlackLimits.VIDEO_ALT_TEXT_MAX_LENGTH))) {
+      VideoBlock video =
+          VideoBlock.builder()
+              .altText(altText)
+              .thumbnailUrl("https://example.com/thumbnail.png")
+              .title("Title")
+              .videoUrl("https://example.com/video.mp4")
+              .build();
+      assertEquals(altText, video.toMap().get("alt_text"));
+    }
   }
 }
