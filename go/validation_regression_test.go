@@ -2,6 +2,7 @@ package slackblocks_test
 
 import (
 	"errors"
+	"strings"
 	"testing"
 
 	slackblocks "github.com/nicklambourne/slackblocks/go/v2"
@@ -70,5 +71,31 @@ func assertValidationError(
 	}
 	if validation.Category != category || validation.Path != path {
 		t.Fatalf("validation error = (%s, %q), want (%s, %q): %v", validation.Category, validation.Path, category, path, err)
+	}
+}
+
+func TestDataTableRejectsColumnSettings(t *testing.T) {
+	rows := []any{
+		[]any{slackblocks.Object{"type": "raw_text", "text": "Name"}},
+		[]any{slackblocks.Object{"type": "raw_text", "text": "Ada"}},
+	}
+	dataTable := slackblocks.Object{"type": "data_table", "caption": "People", "rows": rows}
+	if err := slackblocks.Validate(dataTable); err != nil {
+		t.Fatal(err)
+	}
+	dataTable["column_settings"] = []any{slackblocks.Object{"align": "left"}}
+	assertValidationError(t, slackblocks.Validate(dataTable), slackblocks.InvalidUsage, "column_settings")
+
+	table := slackblocks.Object{"type": "table", "rows": rows, "column_settings": []any{slackblocks.Object{"align": "left"}}}
+	if err := slackblocks.Validate(table); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestVideoAltTextAcceptsEmptyAndMaximumLength(t *testing.T) {
+	for _, altText := range []string{"", strings.Repeat("x", slackblocks.LimitVideoAltTextMaxLength)} {
+		if _, err := validVideo().AltText(altText).Build(); err != nil {
+			t.Fatalf("alt text of %d characters: %v", len(altText), err)
+		}
 	}
 }

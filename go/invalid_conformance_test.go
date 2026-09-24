@@ -31,8 +31,8 @@ func TestSharedInvalidFixtures(t *testing.T) {
 	if manifest.SpecVersion != slackblocks.SpecVersion {
 		t.Fatalf("spec version = %q, want %q", slackblocks.SpecVersion, manifest.SpecVersion)
 	}
-	if len(manifest.Cases) != 129 {
-		t.Fatalf("expected 129 invalid cases, got %d", len(manifest.Cases))
+	if len(manifest.Cases) != 128 {
+		t.Fatalf("expected 128 invalid cases, got %d", len(manifest.Cases))
 	}
 
 	for _, testCase := range manifest.Cases {
@@ -198,10 +198,8 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewSectionBlock().Fields(copies(11, func(int) string { return "x" })...))
 	case "section-field-too-long":
 		return buildError(slackblocks.NewSectionBlock().Fields(repeated("x", 2001)))
-	case "video-alt-text-empty":
-		return buildError(validVideo().AltText(""))
 	case "video-alt-text-too-long":
-		return buildError(validVideo().AltText(repeated("x", 201)))
+		return buildError(validVideo().AltText(repeated("x", slackblocks.LimitVideoAltTextMaxLength+1)))
 	case "video-title-too-long":
 		return buildError(validVideo().Title(repeated("x", 201)))
 	case "video-author-name-too-long":

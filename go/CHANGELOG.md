@@ -3,6 +3,16 @@
 All notable changes to the Go module are documented here. Go releases use the
 same version number as the Python, TypeScript, and Java packages.
 
+## [Unreleased]
+
+### Changed
+
+- Video block `alt_text` now accepts up to 2000 characters, including an empty
+  string, matching Slack's validator (previously 1 to 200 characters).
+- `Validate` now rejects `column_settings` on a `data_table` block with
+  `InvalidUsage`; Slack supports `column_settings` only on the plain `table`
+  block.
+
 ## [2.4.0] — 2026-09-17
 
 This coordinated release introduces the C# package, published to NuGet as
