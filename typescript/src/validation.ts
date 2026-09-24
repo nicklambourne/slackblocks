@@ -313,8 +313,15 @@ const CONFIRM_SUPPORTING_TYPES = new Set([
 
 const OPTION_URL_MAX_LENGTH = 3000;
 
-const TABLE_MAX_ROWS = 100;
-const TABLE_MAX_COLUMNS = 20;
+const INPUT_PLACEHOLDER_MAX_LENGTHS: Record<string, number> = {
+  plain_text_input: limits.plain_text_input.placeholder.max_length,
+  email_text_input: limits.email_input.placeholder.max_length,
+  url_text_input: limits.url_input.placeholder.max_length,
+  number_input: limits.number_input.placeholder.max_length,
+  datepicker: limits.date_picker.placeholder.max_length,
+  timepicker: limits.time_picker.placeholder.max_length,
+  rich_text_input: limits.rich_text_input.placeholder.max_length,
+};
 
 function validateOptionEntry(value: JsonValue, path: string): void {
   const option = objectAt(value, path);
@@ -415,6 +422,27 @@ function validateKnownObject(object: JsonObject, path: string): void {
     if (CONFIRM_SUPPORTING_TYPES.has(type) && object.confirm !== undefined) {
       validateConfirmObject(object.confirm, child(path, "confirm"));
     }
+    const placeholderMaximum = INPUT_PLACEHOLDER_MAX_LENGTHS[type];
+    if (placeholderMaximum !== undefined && object.placeholder !== undefined) {
+      length(
+        textValue(object.placeholder),
+        child(path, "placeholder.text"),
+        undefined,
+        placeholderMaximum,
+      );
+    }
+  }
+  if (object.dispatch_action_config !== undefined) {
+    const configPath = child(path, "dispatch_action_config");
+    const config = objectAt(object.dispatch_action_config, configPath);
+    if (Array.isArray(config.trigger_actions_on)) {
+      length(
+        config.trigger_actions_on,
+        child(configPath, "trigger_actions_on"),
+        limits.dispatch_action_configuration.trigger_actions_on.min_items,
+        limits.dispatch_action_configuration.trigger_actions_on.max_items,
+      );
+    }
   }
 
   switch (type) {
@@ -458,12 +486,13 @@ function validateKnownObject(object: JsonObject, path: string): void {
       );
       break;
     case "button":
-    case "workflow_button":
+    case "workflow_button": {
+      const labelLimits = type === "workflow_button" ? limits.workflow_button : limits.button;
       length(
         textValue(object.text),
         child(path, "text.text"),
         undefined,
-        limits.button.text.max_length,
+        labelLimits.text.max_length,
       );
       if (typeof object.url === "string") {
         length(object.url, child(path, "url"), undefined, limits.button.url.max_length);
@@ -476,23 +505,24 @@ function validateKnownObject(object: JsonObject, path: string): void {
           object.accessibility_label,
           child(path, "accessibility_label"),
           undefined,
-          limits.button.accessibility_label.max_length,
+          labelLimits.accessibility_label.max_length,
         );
       }
       break;
+    }
     case "icon_button":
       if (object.icon !== "trash") {
         throw new TypeMismatchError(child(path, "icon"), "expected trash");
       }
       if (typeof object.value === "string") {
-        length(object.value, child(path, "value"), undefined, limits.button.value.max_length);
+        length(object.value, child(path, "value"), undefined, limits.icon_button.value.max_length);
       }
       if (typeof object.accessibility_label === "string") {
         length(
           object.accessibility_label,
           child(path, "accessibility_label"),
           undefined,
-          limits.button.accessibility_label.max_length,
+          limits.icon_button.accessibility_label.max_length,
         );
       }
       if (Array.isArray(object.visible_to_user_ids)) {
@@ -546,14 +576,6 @@ function validateKnownObject(object: JsonObject, path: string): void {
         undefined,
         limits.plain_text_input.max_length.max,
       );
-      if (object.placeholder !== undefined) {
-        length(
-          textValue(object.placeholder),
-          child(path, "placeholder.text"),
-          undefined,
-          limits.select.placeholder.max_length,
-        );
-      }
       break;
     case "overflow":
       if (Array.isArray(object.options)) {
@@ -854,14 +876,14 @@ function validateKnownObject(object: JsonObject, path: string): void {
       if (!Array.isArray(object.rows)) {
         throw new TypeMismatchError(child(path, "rows"), "expected an array");
       }
-      length(object.rows, child(path, "rows"), 1, TABLE_MAX_ROWS);
+      length(object.rows, child(path, "rows"), 1, limits.table.rows.max_items);
       let columns: number | undefined;
       object.rows.forEach((rawRow, rowIndex) => {
         const rowPath = `${child(path, "rows")}[${rowIndex}]`;
         if (!Array.isArray(rawRow)) {
           throw new TypeMismatchError(rowPath, "expected an array");
         }
-        length(rawRow, rowPath, undefined, TABLE_MAX_COLUMNS);
+        length(rawRow, rowPath, undefined, limits.table.columns.max_items);
         columns ??= rawRow.length;
         if (rawRow.length !== columns) {
           throw new InvalidUsageError(rowPath, "column count differs");
@@ -882,7 +904,7 @@ function validateKnownObject(object: JsonObject, path: string): void {
           object.column_settings,
           child(path, "column_settings"),
           undefined,
-          TABLE_MAX_COLUMNS,
+          limits.table.columns.max_items,
         );
         if (object.column_settings.length !== columns) {
           throw new InvalidUsageError(
