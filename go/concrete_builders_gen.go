@@ -1622,8 +1622,9 @@ func (b *DatePickerBuilder) FocusOnLoad(value bool) *DatePickerBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
-// plain_text text object; use PlaceholderObject to pass a text object instead.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
 func (b *DatePickerBuilder) Placeholder(value string) *DatePickerBuilder {
 	b.core.Placeholder(value)
 	return b
@@ -1688,7 +1689,8 @@ func newDispatchActionConfigurationBuilder(core *builder) *DispatchActionConfigu
 }
 
 // TriggerActionsOn adds the interactions that send a payload: on_enter_pressed or
-// on_character_entered. Each call appends to any values already added.
+// on_character_entered. Must contain between 1 and 2 items. Each call appends to any values
+// already added.
 func (b *DispatchActionConfigurationBuilder) TriggerActionsOn(values ...string) *DispatchActionConfigurationBuilder {
 	b.core.TriggerActionsOn(values...)
 	return b
@@ -1753,8 +1755,9 @@ func (b *EmailInputBuilder) FocusOnLoad(value bool) *EmailInputBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
-// plain_text text object; use PlaceholderObject to pass a text object instead.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
 func (b *EmailInputBuilder) Placeholder(value string) *EmailInputBuilder {
 	b.core.Placeholder(value)
 	return b
@@ -2164,7 +2167,8 @@ func (b *IconButtonBuilder) ActionID(value string) *IconButtonBuilder {
 	return b
 }
 
-// Value sets the application-defined value sent in interaction payloads.
+// Value sets the application-defined value sent in interaction payloads. Slack allows at most
+// 2000 characters.
 func (b *IconButtonBuilder) Value(value string) *IconButtonBuilder {
 	b.core.Value(value)
 	return b
@@ -2176,7 +2180,8 @@ func (b *IconButtonBuilder) Confirm(value *ConfirmationBuilder) *IconButtonBuild
 	return b
 }
 
-// AccessibilityLabel sets the label read by screen readers in place of the visible text.
+// AccessibilityLabel sets the label read by screen readers in place of the visible text. Slack
+// allows at most 75 characters.
 func (b *IconButtonBuilder) AccessibilityLabel(value string) *IconButtonBuilder {
 	b.core.AccessibilityLabel(value)
 	return b
@@ -2745,8 +2750,9 @@ func (b *NumberInputBuilder) FocusOnLoad(value bool) *NumberInputBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
-// plain_text text object; use PlaceholderObject to pass a text object instead.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
 func (b *NumberInputBuilder) Placeholder(value string) *NumberInputBuilder {
 	b.core.Placeholder(value)
 	return b
@@ -2996,8 +3002,9 @@ func (b *PlainTextInputBuilder) FocusOnLoad(value bool) *PlainTextInputBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
-// plain_text text object; use PlaceholderObject to pass a text object instead.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
 func (b *PlainTextInputBuilder) Placeholder(value string) *PlainTextInputBuilder {
 	b.core.Placeholder(value)
 	return b
@@ -3323,8 +3330,9 @@ func (b *RichTextInputBuilder) FocusOnLoad(value bool) *RichTextInputBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
-// plain_text text object; use PlaceholderObject to pass a text object instead.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
 func (b *RichTextInputBuilder) Placeholder(value string) *RichTextInputBuilder {
 	b.core.Placeholder(value)
 	return b
@@ -3825,7 +3833,7 @@ func newTableBlockBuilder(core *builder) *TableBlockBuilder {
 }
 
 // Rows adds complete table rows in display order. Every row must have the same number of cells.
-// Required. Each call appends to any values already added.
+// Required. Slack allows at most 100 items. Each call appends to any values already added.
 func (b *TableBlockBuilder) Rows(rows ...[]TableCell) *TableBlockBuilder {
 	for _, row := range rows {
 		cells := make([]any, len(row))
@@ -3965,8 +3973,9 @@ func (b *TimePickerBuilder) FocusOnLoad(value bool) *TimePickerBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
-// plain_text text object; use PlaceholderObject to pass a text object instead.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
 func (b *TimePickerBuilder) Placeholder(value string) *TimePickerBuilder {
 	b.core.Placeholder(value)
 	return b
@@ -4049,8 +4058,9 @@ func (b *URLInputBuilder) FocusOnLoad(value bool) *URLInputBuilder {
 	return b
 }
 
-// Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
-// plain_text text object; use PlaceholderObject to pass a text object instead.
+// Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+// 150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+// a text object instead.
 func (b *URLInputBuilder) Placeholder(value string) *URLInputBuilder {
 	b.core.Placeholder(value)
 	return b
@@ -4408,8 +4418,8 @@ func newWorkflowButtonBuilder(core *builder) *WorkflowButtonBuilder {
 	return &WorkflowButtonBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Text sets the button label. Required. The string is sent as a plain_text text object; use
-// TextObject to pass a text object instead.
+// Text sets the button label. Required. Slack allows at most 75 characters. The string is sent
+// as a plain_text text object; use TextObject to pass a text object instead.
 func (b *WorkflowButtonBuilder) Text(value string) *WorkflowButtonBuilder {
 	b.core.Text(value)
 	return b
@@ -4448,7 +4458,8 @@ func (b *WorkflowButtonBuilder) Style(value ButtonStyle) *WorkflowButtonBuilder 
 	return b
 }
 
-// AccessibilityLabel sets the label read by screen readers in place of the visible text.
+// AccessibilityLabel sets the label read by screen readers in place of the visible text. Slack
+// allows at most 75 characters.
 func (b *WorkflowButtonBuilder) AccessibilityLabel(value string) *WorkflowButtonBuilder {
 	b.core.AccessibilityLabel(value)
 	return b

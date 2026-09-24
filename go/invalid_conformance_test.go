@@ -31,8 +31,8 @@ func TestSharedInvalidFixtures(t *testing.T) {
 	if manifest.SpecVersion != slackblocks.SpecVersion {
 		t.Fatalf("spec version = %q, want %q", slackblocks.SpecVersion, manifest.SpecVersion)
 	}
-	if len(manifest.Cases) != 115 {
-		t.Fatalf("expected 115 invalid cases, got %d", len(manifest.Cases))
+	if len(manifest.Cases) != 129 {
+		t.Fatalf("expected 129 invalid cases, got %d", len(manifest.Cases))
 	}
 
 	for _, testCase := range manifest.Cases {
@@ -70,6 +70,9 @@ func validSeries(name string) *slackblocks.DataSeriesBuilder {
 }
 func validVideo() *slackblocks.VideoBlockBuilder {
 	return slackblocks.NewVideoBlock().AltText("Video").ThumbnailURL("https://example.com/thumbnail.png").Title("Title").VideoURL("https://example.com/video.mp4")
+}
+func validWorkflow() *slackblocks.WorkflowBuilder {
+	return slackblocks.NewWorkflow().Trigger(slackblocks.NewTrigger().URL("https://slack.com/shortcuts/Ft0123/abc"))
 }
 func copies[T any](count int, factory func(int) T) []T {
 	values := make([]T, count)
@@ -117,6 +120,20 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewOptionGroup().Label("Group").Options(copies(101, func(int) *slackblocks.OptionBuilder { return choice() })...))
 	case "select-placeholder-too-long":
 		return buildError(slackblocks.NewStaticSelect().ActionID("a").Options(choice()).Placeholder(repeated("x", 151)))
+	case "plain-text-input-placeholder-too-long":
+		return buildError(slackblocks.NewPlainTextInput().ActionID("a").Placeholder(repeated("x", 151)))
+	case "email-input-placeholder-too-long":
+		return buildError(slackblocks.NewEmailInput().ActionID("a").Placeholder(repeated("x", 151)))
+	case "url-input-placeholder-too-long":
+		return buildError(slackblocks.NewURLInput().ActionID("a").Placeholder(repeated("x", 151)))
+	case "number-input-placeholder-too-long":
+		return buildError(slackblocks.NewNumberInput().ActionID("a").Placeholder(repeated("x", 151)))
+	case "date-picker-placeholder-too-long":
+		return buildError(slackblocks.NewDatePicker().ActionID("a").Placeholder(repeated("x", 151)))
+	case "time-picker-placeholder-too-long":
+		return buildError(slackblocks.NewTimePicker().ActionID("a").Placeholder(repeated("x", 151)))
+	case "rich-text-input-placeholder-too-long":
+		return buildError(slackblocks.NewRichTextInput().ActionID("a").Placeholder(repeated("x", 151)))
 	case "select-too-many-options":
 		return buildError(slackblocks.NewStaticSelect().ActionID("a").Options(copies(101, func(int) *slackblocks.OptionBuilder { return choice() })...))
 	case "select-too-many-option-groups":
@@ -141,6 +158,8 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewURLSource().URL(repeated("x", 3001)).Text("text"))
 	case "table-too-many-rows":
 		return buildError(slackblocks.NewTableBlock().Rows(copies(101, func(int) []slackblocks.TableCell { return []slackblocks.TableCell{rawText("A")} })...))
+	case "table-too-many-columns":
+		return buildError(slackblocks.NewTableBlock().Rows(copies(21, func(int) slackblocks.TableCell { return rawText("A") })))
 	case "table-ragged-rows":
 		return buildError(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText("A"), rawText("B")}, []slackblocks.TableCell{rawText("C")}))
 	case "table-column-settings-mismatch":
@@ -149,6 +168,10 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewFileInput().ActionID("a").MaxFiles(0))
 	case "file-input-max-files-too-large":
 		return buildError(slackblocks.NewFileInput().ActionID("a").MaxFiles(11))
+	case "dispatch-action-no-triggers":
+		return buildError(slackblocks.NewDispatchActionConfiguration().Set("trigger_actions_on", []any{}))
+	case "dispatch-action-too-many-triggers":
+		return buildError(slackblocks.NewDispatchActionConfiguration().TriggerActionsOn("on_enter_pressed", "on_character_entered", "on_enter_pressed"))
 	case "plain-text-input-max-length-too-large":
 		return buildError(slackblocks.NewPlainTextInput().ActionID("a").MaxLength(3001))
 	case "actions-too-many-elements":
@@ -237,6 +260,10 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewDividerBlock().BlockID(repeated("x", 256)))
 	case "button-accessibility-label-too-long":
 		return buildError(slackblocks.NewButton().Text("A").ActionID("a").AccessibilityLabel(repeated("x", 76)))
+	case "workflow-button-text-too-long":
+		return buildError(slackblocks.NewWorkflowButton().Text(repeated("x", 76)).Workflow(validWorkflow()))
+	case "workflow-button-accessibility-label-too-long":
+		return buildError(slackblocks.NewWorkflowButton().Text("Run").Workflow(validWorkflow()).AccessibilityLabel(repeated("x", 76)))
 	case "alert-text-too-long":
 		return buildError(slackblocks.NewAlertBlock().Text(repeated("x", 201)))
 	case "card-title-too-long":
@@ -269,6 +296,10 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewFeedbackButtons().PositiveButton(slackblocks.NewFeedbackButton().Text("Good").Value("good").AccessibilityLabel(repeated("x", 76))).NegativeButton(feedbackChoice()))
 	case "icon-button-too-many-visible-users":
 		return buildError(slackblocks.NewIconButton().Text("Delete").VisibleToUserIDs(copiesStrings(11)...))
+	case "icon-button-value-too-long":
+		return buildError(slackblocks.NewIconButton().Text("Delete").Value(repeated("x", 2001)))
+	case "icon-button-accessibility-label-too-long":
+		return buildError(slackblocks.NewIconButton().Text("Delete").AccessibilityLabel(repeated("x", 76)))
 	case "data-table-too-few-rows":
 		return buildError(slackblocks.NewDataTableBlock().Rows([]slackblocks.DataTableCell{rawText("Name")}).Caption("Names"))
 	case "data-table-too-many-rows":
