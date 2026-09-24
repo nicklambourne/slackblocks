@@ -19,7 +19,7 @@ namespace Slackblocks.Blocks;
 public sealed partial class TableBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock
 {
     /// <summary>Creates and validates a <see cref="TableBlock"/>.</summary>
-    /// <param name="rows">Complete table rows in display order. Every row must have the same number of cells. Required.</param>
+    /// <param name="rows">Complete table rows in display order. Every row must have the same number of cells. Required. Slack allows at most 100 items.</param>
     /// <param name="columnSettings">Per-column settings in column order. Provide one entry for every column.</param>
     /// <param name="blockId">A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>

@@ -155,7 +155,8 @@ public final class WorkflowButtonElement extends BlockElement implements Element
     /**
      * Sets the button label.
      *
-     * <p>Required. The string is sent as a {@code plain_text} text object.
+     * <p>Required. Slack allows at most 75 characters. The string is sent as a {@code plain_text}
+     * text object.
      *
      * @param value text content
      * @return this builder
@@ -168,7 +169,7 @@ public final class WorkflowButtonElement extends BlockElement implements Element
     /**
      * Sets the button label.
      *
-     * <p>Required.
+     * <p>Required. Slack allows at most 75 characters.
      *
      * @param value a {@link PlainText} object
      * @return this builder
@@ -181,7 +182,7 @@ public final class WorkflowButtonElement extends BlockElement implements Element
     /**
      * Sets the button label.
      *
-     * <p>Required. Equivalent to {@link #text(String)}.
+     * <p>Required. Slack allows at most 75 characters. Equivalent to {@link #text(String)}.
      *
      * @param value text content
      * @return this builder
@@ -242,6 +243,8 @@ public final class WorkflowButtonElement extends BlockElement implements Element
 
     /**
      * Sets the label read by screen readers in place of the visible text.
+     *
+     * <p>Slack allows at most 75 characters.
      *
      * @param value value for Slack's {@code accessibility_label} field
      * @return this builder
