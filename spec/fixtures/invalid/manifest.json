@@ -254,6 +254,12 @@
       "description": "A dispatch action configuration with no triggers must be rejected"
     },
     {
+      "id": "dispatch-action-missing-triggers",
+      "category": "missing-required",
+      "constraint": "dispatch_action_configuration.trigger_actions_on.required",
+      "description": "A dispatch action configuration without trigger_actions_on must be rejected"
+    },
+    {
       "id": "dispatch-action-too-many-triggers",
       "category": "length-exceeded",
       "constraint": "dispatch_action_configuration.trigger_actions_on.max_items",

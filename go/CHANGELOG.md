@@ -3,6 +3,13 @@
 All notable changes to the Go module are documented here. Go releases use the
 same version number as the Python, TypeScript, and Java packages.
 
+## [Unreleased]
+
+### Changed
+
+- A dispatch-action configuration without `trigger_actions_on` is now rejected with
+  `MissingRequired`, matching Slack's `blocks.validate`.
+
 ## [2.4.0] — 2026-09-17
 
 This coordinated release introduces the C# package, published to NuGet as

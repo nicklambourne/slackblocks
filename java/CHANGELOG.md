@@ -3,6 +3,14 @@
 All notable changes to the Java package are documented here. Java versions move
 in lockstep with the Python, TypeScript, and Go packages.
 
+## [Unreleased]
+
+### Changed
+
+- A raw `dispatch_action_config` set through `wireField` without
+  `trigger_actions_on` is now rejected as missing-required, matching Slack's
+  `blocks.validate`.
+
 ## [2.4.0] — 2026-09-17
 
 This coordinated release introduces the C# package, published to NuGet as

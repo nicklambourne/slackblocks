@@ -435,6 +435,12 @@ function validateKnownObject(object: JsonObject, path: string): void {
   if (object.dispatch_action_config !== undefined) {
     const configPath = child(path, "dispatch_action_config");
     const config = objectAt(object.dispatch_action_config, configPath);
+    if (config.trigger_actions_on === undefined) {
+      throw new MissingRequiredError(
+        child(configPath, "trigger_actions_on"),
+        "expected trigger_actions_on",
+      );
+    }
     if (Array.isArray(config.trigger_actions_on)) {
       length(
         config.trigger_actions_on,

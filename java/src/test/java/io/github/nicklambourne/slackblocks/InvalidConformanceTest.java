@@ -252,6 +252,7 @@ final class InvalidConformanceTest {
           typed("FileInput", "file_input", "action_id", "a", "max_files", 11);
       case "dispatch-action-no-triggers" ->
           invalid("DispatchActionConfiguration", map("trigger_actions_on", List.of()));
+      case "dispatch-action-missing-triggers" -> invalid("DispatchActionConfiguration", map());
       case "dispatch-action-too-many-triggers" ->
           invalid(
               "DispatchActionConfiguration",
