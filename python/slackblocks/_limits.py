@@ -199,10 +199,8 @@ SECTION_TEXT_MAX_LENGTH = 3000
 SECTION_FIELDS_MAX_ITEMS = 10
 # section.fields.item_max_length
 SECTION_FIELDS_ITEM_MAX_LENGTH = 2000
-# video.alt_text.min_length
-VIDEO_ALT_TEXT_MIN_LENGTH = 1
 # video.alt_text.max_length
-VIDEO_ALT_TEXT_MAX_LENGTH = 200
+VIDEO_ALT_TEXT_MAX_LENGTH = 2000
 # video.title.max_length
 VIDEO_TITLE_MAX_LENGTH = 200
 # video.author_name.max_length

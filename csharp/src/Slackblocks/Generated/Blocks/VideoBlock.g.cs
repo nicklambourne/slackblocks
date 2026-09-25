@@ -17,7 +17,7 @@ namespace Slackblocks.Blocks;
 public sealed partial class VideoBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock
 {
     /// <summary>Creates and validates a <see cref="VideoBlock"/>.</summary>
-    /// <param name="altText">A plain-text summary of the image or video for assistive technology. Required. Must be between 1 and 200 characters.</param>
+    /// <param name="altText">A plain-text summary of the image or video for assistive technology. Required. Slack allows at most 2000 characters.</param>
     /// <param name="thumbnailUrl">The URL of the image shown before the video plays. Required.</param>
     /// <param name="title">The video title. Required. Slack allows at most 200 characters. A string is sent as a <c>plain_text</c> text object.</param>
     /// <param name="videoUrl">The embeddable URL of the video. The domain must be listed in the app's unfurl domains. Required.</param>

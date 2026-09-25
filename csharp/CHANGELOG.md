@@ -10,6 +10,11 @@ lockstep with the Python, TypeScript, Go, and Java packages.
 - A raw `dispatch_action_config` passed through `additionalFields` without
   `trigger_actions_on` is now rejected as missing-required, matching Slack's
   `blocks.validate`.
+- `VideoBlock` `altText` now accepts up to 2000 characters, including an empty
+  string, matching Slack's validator (previously 1 to 200 characters).
+- `DataTableBlock` now rejects `column_settings` supplied through
+  `additionalFields` or raw JSON with `ErrorCategory.InvalidUsage`; Slack
+  supports `column_settings` only on the plain `table` block.
 
 ## [2.4.0] — 2026-09-17
 

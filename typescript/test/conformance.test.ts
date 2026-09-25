@@ -651,7 +651,6 @@ const invalidCases: Record<string, () => unknown> = {
     sectionBlock({ fields: Array(limits.section.fields.max_items + 1).fill("x") }),
   "section-field-too-long": () =>
     sectionBlock({ fields: ["x".repeat(limits.section.fields.item_max_length + 1)] }),
-  "video-alt-text-empty": () => video({ altText: "" }),
   "video-alt-text-too-long": () =>
     video({ altText: "x".repeat(limits.video.alt_text.max_length + 1) }),
   "video-title-too-long": () =>

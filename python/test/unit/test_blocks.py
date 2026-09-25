@@ -56,6 +56,7 @@ from slackblocks import (
     URLSource,
     VideoBlock,
 )
+from slackblocks._limits import VIDEO_ALT_TEXT_MAX_LENGTH
 from slackblocks.rich_text import RichTextLink
 
 from .utils import fetch_sample
@@ -382,10 +383,21 @@ def test_video_block_block_id_is_optional() -> None:
     assert resolved["block_id"] is not None and len(resolved["block_id"]) > 0
 
 
+@pytest.mark.parametrize("alt_text", ["", "x" * VIDEO_ALT_TEXT_MAX_LENGTH])
+def test_video_block_alt_text_accepts_empty_and_maximum_length(alt_text: str) -> None:
+    block = VideoBlock(
+        alt_text=alt_text,
+        thumbnail_url="https://example.com/t.png",
+        title="Title",
+        video_url="https://example.com/v.mp4",
+    )
+    assert block._resolve()["alt_text"] == alt_text
+
+
 def test_video_block_alt_text_too_long_raises_length_error() -> None:
     with pytest.raises(LengthError):
         VideoBlock(
-            alt_text="x" * 201,
+            alt_text="x" * (VIDEO_ALT_TEXT_MAX_LENGTH + 1),
             thumbnail_url="https://example.com/t.png",
             title="Title",
             video_url="https://example.com/v.mp4",

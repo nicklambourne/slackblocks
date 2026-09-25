@@ -141,6 +141,32 @@ public sealed class ApiTests
     }
 
     [Fact]
+    public void DataTablesRejectColumnSettings()
+    {
+        var error = Assert.Throws<ValidationException>(() => new DataTableBlock(
+            [[new RawText("Name")], [new RawText("Ada")]],
+            "People",
+            additionalFields: new Dictionary<string, object?>
+            {
+                ["column_settings"] = new[] { new Dictionary<string, object?> { ["align"] = "left" } },
+            }));
+
+        Assert.Equal(ErrorCategory.InvalidUsage, error.Category);
+        Assert.Equal("DataTableBlock.column_settings", error.Path);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(Internal.SlackLimits.VideoAltTextMaxLength)]
+    public void VideoAltTextAcceptsEmptyAndMaximumLength(int length)
+    {
+        var altText = new string('x', length);
+        var video = new VideoBlock(altText, "https://example.com/thumbnail.png", "Title", "https://example.com/video.mp4");
+
+        Assert.Equal(altText, video.AltText);
+    }
+
+    [Fact]
     public void LimitsCountUnicodeCodePoints()
     {
         _ = new HeaderBlock(string.Concat(Enumerable.Repeat("🙂", 150)));

@@ -10,6 +10,11 @@ in lockstep with the Python, TypeScript, and Go packages.
 - A raw `dispatch_action_config` set through `wireField` without
   `trigger_actions_on` is now rejected as missing-required, matching Slack's
   `blocks.validate`.
+- `VideoBlock` `alt_text` now accepts up to 2000 characters, including an empty
+  string, matching Slack's validator (previously 1 to 200 characters).
+- `DataTableBlock` now rejects `column_settings` supplied through `wireField` or
+  raw JSON with `INVALID_USAGE`; Slack supports `column_settings` only on the
+  plain `table` block.
 
 ## [2.4.0] — 2026-09-17
 

@@ -694,7 +694,7 @@ func validateObject(object Object, path string) error {
 		return stringLength(value, child(path, "text"), limitMarkdownTextMinLength, limitMarkdownTextMaxLength)
 	case "video":
 		if value, ok := object["alt_text"].(string); ok {
-			if err := stringLength(value, child(path, "alt_text"), limitVideoAltTextMinLength, limitVideoAltTextMaxLength); err != nil {
+			if err := stringLength(value, child(path, "alt_text"), 0, limitVideoAltTextMaxLength); err != nil {
 				return err
 			}
 		}
@@ -894,6 +894,9 @@ func validateTable(object Object, path string, dataTable bool) error {
 		}
 	}
 	if settings, ok := object["column_settings"]; ok {
+		if dataTable {
+			return validationError(InvalidUsage, child(path, "column_settings"), "data tables do not support column_settings")
+		}
 		values, err := sliceAt(settings, child(path, "column_settings"))
 		if err != nil {
 			return err

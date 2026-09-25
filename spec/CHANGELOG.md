@@ -29,6 +29,14 @@
   limits, as in 1.0.1. The table's 20-item `column_settings` maximum is not
   registered because it cannot be exceeded without breaching
   `table.columns.max_items` first.
+- Correct `video.alt_text` from 1-200 characters to a 2000-character maximum
+  with no minimum, to match Slack's validator. The video block documentation
+  states no length for `alt_text`
+  (<https://docs.slack.dev/reference/block-kit/blocks/video-block>), and
+  `blocks.validate` accepts 2000 characters and an empty string and rejects
+  2001 characters ("max_length expected 2000"). The
+  `video-alt-text-empty` invalid case is removed and `video-alt-text-too-long`
+  now exceeds 2000 characters.
 
 ## 1.1.0 - 2026-08-28
 

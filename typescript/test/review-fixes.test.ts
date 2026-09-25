@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import limits from "../../spec/limits.json" with { type: "json" };
 import * as slackblocks from "../src/index.js";
 import {
   assertValid,
@@ -188,6 +189,36 @@ describe("table blocks", () => {
 
   it("rejects unsupported cell types", () => {
     expect(() => tableBlock({ rows: [[dividerBlock()]] })).toThrowError(TypeMismatchError);
+  });
+});
+
+describe("data table blocks", () => {
+  it("rejects column settings in raw JSON", () => {
+    const table = {
+      type: "data_table",
+      caption: "People",
+      rows: [[{ type: "raw_text", text: "Name" }], [{ type: "raw_text", text: "Ada" }]],
+    };
+    expect(validate(table)).toBe(true);
+    expect(() => assertValid({ ...table, column_settings: [{ align: "left" }] })).toThrowError(
+      InvalidUsageError,
+    );
+  });
+});
+
+describe("video blocks", () => {
+  it("accepts empty alt text and alt text at the maximum length", () => {
+    for (const altText of ["", "x".repeat(limits.video.alt_text.max_length)]) {
+      expect(
+        validate({
+          type: "video",
+          alt_text: altText,
+          thumbnail_url: "https://example.com/thumbnail.png",
+          title: { type: "plain_text", text: "Title" },
+          video_url: "https://example.com/video.mp4",
+        }),
+      ).toBe(true);
+    }
   });
 });
 
