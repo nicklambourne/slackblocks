@@ -117,7 +117,7 @@
     "fields": { "max_items": 10, "item_max_length": 2000 }
   },
   "video": {
-    "alt_text": { "min_length": 1, "max_length": 200 },
+    "alt_text": { "max_length": 2000 },
     "title": { "max_length": 200 },
     "author_name": { "max_length": 50 },
     "description": { "max_length": 200 },

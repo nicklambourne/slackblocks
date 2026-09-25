@@ -2,6 +2,7 @@ package slackblocks_test
 
 import (
 	"errors"
+	"strings"
 	"testing"
 
 	slackblocks "github.com/nicklambourne/slackblocks/go/v2"
@@ -38,14 +39,12 @@ func TestNestedValidationUsesDeterministicFieldOrder(t *testing.T) {
 	}
 }
 
-func TestDispatchActionConfigurationWithoutTriggersIsValid(t *testing.T) {
-	if _, err := slackblocks.NewPlainTextInput().ActionID("a").DispatchActionConfig(slackblocks.NewDispatchActionConfiguration()).Build(); err != nil {
-		t.Fatal(err)
-	}
+func TestDispatchActionConfigurationRequiresTriggers(t *testing.T) {
+	_, err := slackblocks.NewPlainTextInput().ActionID("a").DispatchActionConfig(slackblocks.NewDispatchActionConfiguration()).Build()
+	assertValidationError(t, err, slackblocks.MissingRequired, "DispatchActionConfiguration.trigger_actions_on")
 	input := slackblocks.Object{"type": "plain_text_input", "action_id": "a", "dispatch_action_config": slackblocks.Object{}}
-	if err := slackblocks.Validate(input); err != nil {
-		t.Fatal(err)
-	}
+	err = slackblocks.Validate(input)
+	assertValidationError(t, err, slackblocks.MissingRequired, "DispatchActionConfiguration.trigger_actions_on")
 }
 
 func TestDispatchActionConfigurationRejectsEmptyTriggers(t *testing.T) {
@@ -70,5 +69,31 @@ func assertValidationError(
 	}
 	if validation.Category != category || validation.Path != path {
 		t.Fatalf("validation error = (%s, %q), want (%s, %q): %v", validation.Category, validation.Path, category, path, err)
+	}
+}
+
+func TestDataTableRejectsColumnSettings(t *testing.T) {
+	rows := []any{
+		[]any{slackblocks.Object{"type": "raw_text", "text": "Name"}},
+		[]any{slackblocks.Object{"type": "raw_text", "text": "Ada"}},
+	}
+	dataTable := slackblocks.Object{"type": "data_table", "caption": "People", "rows": rows}
+	if err := slackblocks.Validate(dataTable); err != nil {
+		t.Fatal(err)
+	}
+	dataTable["column_settings"] = []any{slackblocks.Object{"align": "left"}}
+	assertValidationError(t, slackblocks.Validate(dataTable), slackblocks.InvalidUsage, "column_settings")
+
+	table := slackblocks.Object{"type": "table", "rows": rows, "column_settings": []any{slackblocks.Object{"align": "left"}}}
+	if err := slackblocks.Validate(table); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestVideoAltTextAcceptsEmptyAndMaximumLength(t *testing.T) {
+	for _, altText := range []string{"", strings.Repeat("x", slackblocks.LimitVideoAltTextMaxLength)} {
+		if _, err := validVideo().AltText(altText).Build(); err != nil {
+			t.Fatalf("alt text of %d characters: %v", len(altText), err)
+		}
 	}
 }

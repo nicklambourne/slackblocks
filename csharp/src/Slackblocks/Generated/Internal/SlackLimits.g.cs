@@ -309,10 +309,7 @@ internal static class SlackLimits
     public const int UrlSourceUrlMinLength = 1;
 
     /// <summary><c>video.alt_text.max_length</c></summary>
-    public const int VideoAltTextMaxLength = 200;
-
-    /// <summary><c>video.alt_text.min_length</c></summary>
-    public const int VideoAltTextMinLength = 1;
+    public const int VideoAltTextMaxLength = 2000;
 
     /// <summary><c>video.author_name.max_length</c></summary>
     public const int VideoAuthorNameMaxLength = 50;

@@ -768,7 +768,6 @@ class StaticMultiSelectMenu(Element):
             initial_options,  # type: ignore
             class_=(Option, OptionGroup),
             allow_none=True,
-            max_size=100,
         )
         if (
             options
@@ -872,7 +871,6 @@ class ExternalMultiSelectMenu(Element):
             initial_options,  # type: ignore
             class_=(Option, OptionGroup),
             allow_none=True,
-            max_size=100,
         )
         self.confirm = confirm
         self.max_selected_items = max_selected_items

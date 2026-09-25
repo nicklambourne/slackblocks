@@ -170,6 +170,8 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewFileInput().ActionID("a").MaxFiles(11))
 	case "dispatch-action-no-triggers":
 		return buildError(slackblocks.NewDispatchActionConfiguration().Set("trigger_actions_on", []any{}))
+	case "dispatch-action-missing-triggers":
+		return buildError(slackblocks.NewDispatchActionConfiguration())
 	case "dispatch-action-too-many-triggers":
 		return buildError(slackblocks.NewDispatchActionConfiguration().TriggerActionsOn("on_enter_pressed", "on_character_entered", "on_enter_pressed"))
 	case "plain-text-input-max-length-too-large":
@@ -198,10 +200,8 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewSectionBlock().Fields(copies(11, func(int) string { return "x" })...))
 	case "section-field-too-long":
 		return buildError(slackblocks.NewSectionBlock().Fields(repeated("x", 2001)))
-	case "video-alt-text-empty":
-		return buildError(validVideo().AltText(""))
 	case "video-alt-text-too-long":
-		return buildError(validVideo().AltText(repeated("x", 201)))
+		return buildError(validVideo().AltText(repeated("x", slackblocks.LimitVideoAltTextMaxLength+1)))
 	case "video-title-too-long":
 		return buildError(validVideo().Title(repeated("x", 201)))
 	case "video-author-name-too-long":

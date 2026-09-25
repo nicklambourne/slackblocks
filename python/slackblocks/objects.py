@@ -574,12 +574,15 @@ class DispatchActionConfiguration(CompositionObject):
             a `block_actions` payload. One or both of `on_enter_pressed`, `on_character_entered`.
 
     Throws:
+        MissingRequiredError: if `trigger_actions_on` is not provided.
         InvalidUsageError: if an invalid value is provided amongst the options for
             `trigger_actions_on`.
     """
 
     def __init__(self, trigger_actions_on: str | list[str] | None = None) -> None:
         super().__init__(type_=CompositionObjectType.DISPATCH)
+        if trigger_actions_on is None:
+            raise MissingRequiredError("`trigger_actions_on` is required")
         trigger_actions_on = trigger_actions_on or []
         self.trigger_actions_on = list(
             set(

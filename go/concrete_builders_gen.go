@@ -4229,7 +4229,7 @@ func newVideoBlockBuilder(core *builder) *VideoBlockBuilder {
 }
 
 // AltText sets a plain-text summary of the image or video for assistive technology. Required.
-// Must be between 1 and 200 characters.
+// Slack allows at most 2000 characters.
 func (b *VideoBlockBuilder) AltText(value string) *VideoBlockBuilder {
 	b.core.AltText(value)
 	return b

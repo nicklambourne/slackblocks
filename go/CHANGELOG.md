@@ -11,6 +11,13 @@ same version number as the Python, TypeScript, and Java packages.
   input placeholders over 150 characters, and dispatch-action configurations whose
   `trigger_actions_on` list is empty or has more than two triggers. Plain-text input
   placeholders were already limited to 150 characters.
+- A dispatch-action configuration without `trigger_actions_on` is now rejected with
+  `MissingRequired`, matching Slack's `blocks.validate`.
+- Video block `alt_text` now accepts up to 2000 characters, including an empty
+  string, matching Slack's validator (previously 1 to 200 characters).
+- `Validate` now rejects `column_settings` on a `data_table` block with
+  `InvalidUsage`; Slack supports `column_settings` only on the plain `table`
+  block.
 
 ## [2.4.0] — 2026-09-17
 

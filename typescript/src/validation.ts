@@ -435,6 +435,12 @@ function validateKnownObject(object: JsonObject, path: string): void {
   if (object.dispatch_action_config !== undefined) {
     const configPath = child(path, "dispatch_action_config");
     const config = objectAt(object.dispatch_action_config, configPath);
+    if (config.trigger_actions_on === undefined) {
+      throw new MissingRequiredError(
+        child(configPath, "trigger_actions_on"),
+        "expected trigger_actions_on",
+      );
+    }
     if (Array.isArray(config.trigger_actions_on)) {
       length(
         config.trigger_actions_on,
@@ -853,6 +859,9 @@ function validateKnownObject(object: JsonObject, path: string): void {
           }
         });
       });
+      if (object.column_settings !== undefined) {
+        throw new InvalidUsageError(child(path, "column_settings"), "data tables do not support column_settings");
+      }
       range(
         typeof object.page_size === "number" ? object.page_size : undefined,
         child(path, "page_size"),
@@ -1010,7 +1019,7 @@ function validateKnownObject(object: JsonObject, path: string): void {
       length(
         typeof object.alt_text === "string" ? object.alt_text : undefined,
         child(path, "alt_text"),
-        limits.video.alt_text.min_length,
+        undefined,
         limits.video.alt_text.max_length,
       );
       length(

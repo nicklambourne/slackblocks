@@ -141,6 +141,32 @@ public sealed class ApiTests
     }
 
     [Fact]
+    public void DataTablesRejectColumnSettings()
+    {
+        var error = Assert.Throws<ValidationException>(() => new DataTableBlock(
+            [[new RawText("Name")], [new RawText("Ada")]],
+            "People",
+            additionalFields: new Dictionary<string, object?>
+            {
+                ["column_settings"] = new[] { new Dictionary<string, object?> { ["align"] = "left" } },
+            }));
+
+        Assert.Equal(ErrorCategory.InvalidUsage, error.Category);
+        Assert.Equal("DataTableBlock.column_settings", error.Path);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(Internal.SlackLimits.VideoAltTextMaxLength)]
+    public void VideoAltTextAcceptsEmptyAndMaximumLength(int length)
+    {
+        var altText = new string('x', length);
+        var video = new VideoBlock(altText, "https://example.com/thumbnail.png", "Title", "https://example.com/video.mp4");
+
+        Assert.Equal(altText, video.AltText);
+    }
+
+    [Fact]
     public void LimitsCountUnicodeCodePoints()
     {
         _ = new HeaderBlock(string.Concat(Enumerable.Repeat("🙂", 150)));
@@ -178,6 +204,18 @@ public sealed class ApiTests
         {
             ["block_id"] = new string('x', 256),
         }));
+    }
+
+    [Fact]
+    public void RawDispatchActionConfigRequiresTriggers()
+    {
+        var error = Assert.Throws<ValidationException>(() => new PlainTextInputElement("a", additionalFields: new Dictionary<string, object?>
+        {
+            ["dispatch_action_config"] = new Dictionary<string, object?>(),
+        }));
+
+        Assert.Equal(ErrorCategory.MissingRequired, error.Category);
+        Assert.Equal("PlainTextInputElement.dispatch_action_config", error.Path);
     }
 
     [Fact]

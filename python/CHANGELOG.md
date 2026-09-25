@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `WorkflowButton` now rejects an `accessibility_label` longer than 75 characters,
   matching Slack's limit and the shared conformance contract.
+- `DispatchActionConfiguration` without `trigger_actions_on` now raises
+  `MissingRequiredError` instead of `LengthError`.
+- `VideoBlock` now accepts `alt_text` of up to 2000 characters, including an
+  empty string, matching Slack's validator (previously 1 to 200 characters).
+- `StaticMultiSelectMenu` and `ExternalMultiSelectMenu` no longer cap
+  `initial_options` at 100; Slack documents and enforces no such limit.
 
 ## [2.4.0] — 2026-09-17
 

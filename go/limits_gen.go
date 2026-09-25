@@ -104,8 +104,7 @@ const (
 	limitURLInputPlaceholderMaxLength                        = 150   // url_input.placeholder.max_length
 	limitURLSourceURLMaxLength                               = 3000  // url_source.url.max_length
 	limitURLSourceURLMinLength                               = 1     // url_source.url.min_length
-	limitVideoAltTextMaxLength                               = 200   // video.alt_text.max_length
-	limitVideoAltTextMinLength                               = 1     // video.alt_text.min_length
+	limitVideoAltTextMaxLength                               = 2000  // video.alt_text.max_length
 	limitVideoAuthorNameMaxLength                            = 50    // video.author_name.max_length
 	limitVideoDescriptionMaxLength                           = 200   // video.description.max_length
 	limitVideoProviderNameMaxLength                          = 50    // video.provider_name.max_length

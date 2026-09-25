@@ -179,7 +179,7 @@ public final class VideoBlock implements Block {
     /**
      * Sets a plain-text summary of the image or video for assistive technology.
      *
-     * <p>Required. Must be between 1 and 200 characters.
+     * <p>Required. Slack allows at most 2000 characters.
      *
      * @param value value for Slack's {@code alt_text} field
      * @return this builder

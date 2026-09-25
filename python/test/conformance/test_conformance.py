@@ -327,6 +327,7 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         action_id="a", max_files=LIMITS["file_input"]["max_files"]["max"] + 1
     ),
     "dispatch-action-no-triggers": lambda: DispatchActionConfiguration([]),
+    "dispatch-action-missing-triggers": lambda: DispatchActionConfiguration(),
     "dispatch-action-too-many-triggers": lambda: DispatchActionConfiguration(
         ["on_enter_pressed", "on_character_entered", "on_enter_pressed"]
     ),
@@ -373,7 +374,6 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "section-field-too-long": lambda: SectionBlock(
         fields=["x" * (LIMITS["section"]["fields"]["item_max_length"] + 1)]
     ),
-    "video-alt-text-empty": lambda: video(alt_text=""),
     "video-alt-text-too-long": lambda: video(
         alt_text="x" * (LIMITS["video"]["alt_text"]["max_length"] + 1)
     ),

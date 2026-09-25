@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Nodes;
+using Slackblocks.Internal;
 
 namespace Slackblocks.Tests;
 
@@ -107,6 +108,7 @@ public sealed class InvalidConformanceTests
             "file-input-max-files-too-small" => Typed("FileInput", "file_input", "action_id", "a", "max_files", 0),
             "file-input-max-files-too-large" => Typed("FileInput", "file_input", "action_id", "a", "max_files", 11),
             "dispatch-action-no-triggers" => Case("DispatchActionConfiguration", Map("trigger_actions_on", Items())),
+            "dispatch-action-missing-triggers" => Case("DispatchActionConfiguration", Map()),
             "dispatch-action-too-many-triggers" => Case("DispatchActionConfiguration", Map("trigger_actions_on", Items("on_enter_pressed", "on_character_entered", "on_enter_pressed"))),
             "plain-text-input-max-length-too-large" => Typed("PlainTextInput", "plain_text_input", "action_id", "a", "max_length", 3001),
             "actions-too-many-elements" => Typed("ActionsBlock", "actions", "elements", Copies(26, index => Button())),
@@ -121,8 +123,7 @@ public sealed class InvalidConformanceTests
             "section-text-too-long" => Typed("SectionBlock", "section", "text", Mrkdwn(Repeated("x", 3001))),
             "section-too-many-fields" => Typed("SectionBlock", "section", "fields", Copies(11, index => Mrkdwn("x"))),
             "section-field-too-long" => Typed("SectionBlock", "section", "fields", Items(Mrkdwn(Repeated("x", 2001)))),
-            "video-alt-text-empty" => InvalidVideo("alt_text", ""),
-            "video-alt-text-too-long" => InvalidVideo("alt_text", Repeated("x", 201)),
+            "video-alt-text-too-long" => InvalidVideo("alt_text", Repeated("x", SlackLimits.VideoAltTextMaxLength + 1)),
             "video-title-too-long" => InvalidVideo("title", Plain(Repeated("x", 201))),
             "video-author-name-too-long" => InvalidVideo("author_name", Repeated("x", 51)),
             "video-description-too-long" => InvalidVideo("description", Plain(Repeated("x", 201))),

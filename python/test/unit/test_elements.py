@@ -286,6 +286,20 @@ def test_multi_select_static_invalid_option() -> None:
         )
 
 
+def test_multi_select_initial_options_are_not_capped() -> None:
+    """Slack's validator accepts more than 100 initial options on both
+    static and external multi-selects; no cap is documented."""
+    initial = [
+        Option(text=Text(f"Option {i}", type_=TextType.PLAINTEXT), value=str(i)) for i in range(101)
+    ]
+    static = StaticMultiSelectMenu(
+        action_id="multi_static_select", options=TWO_OPTIONS, initial_options=initial
+    )
+    external = ExternalMultiSelectMenu(action_id="multi_external_select", initial_options=initial)
+    assert len(static._resolve()["initial_options"]) == 101
+    assert len(external._resolve()["initial_options"]) == 101
+
+
 def test_static_select_menu_without_options_or_groups_does_not_raise() -> None:
     """Regression test for #150: StaticSelectMenu must not raise
     UnboundLocalError when neither ``options`` nor ``option_groups`` is set."""
