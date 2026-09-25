@@ -21,7 +21,8 @@
     `date_picker`, `time_picker`, and `rich_text_input`, each with its own
     leaf and invalid case, as Slack documents each separately;
   - `dispatch_action_configuration.trigger_actions_on` (one or both triggers,
-    1 to 2 items).
+    1 to 2 items). The list is required whenever a configuration is present,
+    as Slack's `blocks.validate` enforces although the docs mark it optional.
 
   Minimums that Slack documents only as "required", such as non-empty titles
   and element lists, stay as implementation checks rather than registered

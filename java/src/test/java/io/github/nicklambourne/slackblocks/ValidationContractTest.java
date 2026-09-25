@@ -56,6 +56,21 @@ final class ValidationContractTest {
   }
 
   @Test
+  void rawDispatchActionConfigRequiresTriggers() {
+    ValidationException error =
+        assertThrows(
+            ValidationException.class,
+            () ->
+                PlainTextInputElement.builder()
+                    .actionId("a")
+                    .wireField("dispatch_action_config", Map.of())
+                    .build());
+
+    assertEquals(ErrorCategory.MISSING_REQUIRED, error.getCategory());
+    assertEquals("PlainTextInputElement.dispatch_action_config", error.getPath());
+  }
+
+  @Test
   void modalSubmitErrorsNameTheInputBlock() {
     ValidationException error =
         assertThrows(

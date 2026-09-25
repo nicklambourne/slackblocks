@@ -7,6 +7,8 @@ same version number as the Python, TypeScript, and Java packages.
 
 ### Changed
 
+- A dispatch-action configuration without `trigger_actions_on` is now rejected with
+  `MissingRequired`, matching Slack's `blocks.validate`.
 - Video block `alt_text` now accepts up to 2000 characters, including an empty
   string, matching Slack's validator (previously 1 to 200 characters).
 - `Validate` now rejects `column_settings` on a `data_table` block with

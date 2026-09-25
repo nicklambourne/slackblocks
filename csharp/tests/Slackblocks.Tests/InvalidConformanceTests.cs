@@ -108,6 +108,7 @@ public sealed class InvalidConformanceTests
             "file-input-max-files-too-small" => Typed("FileInput", "file_input", "action_id", "a", "max_files", 0),
             "file-input-max-files-too-large" => Typed("FileInput", "file_input", "action_id", "a", "max_files", 11),
             "dispatch-action-no-triggers" => Case("DispatchActionConfiguration", Map("trigger_actions_on", Items())),
+            "dispatch-action-missing-triggers" => Case("DispatchActionConfiguration", Map()),
             "dispatch-action-too-many-triggers" => Case("DispatchActionConfiguration", Map("trigger_actions_on", Items("on_enter_pressed", "on_character_entered", "on_enter_pressed"))),
             "plain-text-input-max-length-too-large" => Typed("PlainTextInput", "plain_text_input", "action_id", "a", "max_length", 3001),
             "actions-too-many-elements" => Typed("ActionsBlock", "actions", "elements", Copies(26, index => Button())),

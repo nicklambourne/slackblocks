@@ -484,6 +484,14 @@ describe("data table captions", () => {
   });
 });
 
+describe("dispatch action configuration", () => {
+  it("reports a missing trigger list as missing-required", () => {
+    expect(() =>
+      assertValid({ type: "plain_text_input", action_id: "a", dispatch_action_config: {} }),
+    ).toThrowError(MissingRequiredError);
+  });
+});
+
 describe("card and container text coercion", () => {
   it("matches the Python coercion defaults", () => {
     expect(cardBlock({ title: "T", subtitle: "S", body: "B" })).toMatchObject({

@@ -327,6 +327,7 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         action_id="a", max_files=LIMITS["file_input"]["max_files"]["max"] + 1
     ),
     "dispatch-action-no-triggers": lambda: DispatchActionConfiguration([]),
+    "dispatch-action-missing-triggers": lambda: DispatchActionConfiguration(),
     "dispatch-action-too-many-triggers": lambda: DispatchActionConfiguration(
         ["on_enter_pressed", "on_character_entered", "on_enter_pressed"]
     ),

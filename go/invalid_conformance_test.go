@@ -31,8 +31,8 @@ func TestSharedInvalidFixtures(t *testing.T) {
 	if manifest.SpecVersion != slackblocks.SpecVersion {
 		t.Fatalf("spec version = %q, want %q", slackblocks.SpecVersion, manifest.SpecVersion)
 	}
-	if len(manifest.Cases) != 128 {
-		t.Fatalf("expected 128 invalid cases, got %d", len(manifest.Cases))
+	if len(manifest.Cases) != 129 {
+		t.Fatalf("expected 129 invalid cases, got %d", len(manifest.Cases))
 	}
 
 	for _, testCase := range manifest.Cases {
@@ -170,6 +170,8 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewFileInput().ActionID("a").MaxFiles(11))
 	case "dispatch-action-no-triggers":
 		return buildError(slackblocks.NewDispatchActionConfiguration().Set("trigger_actions_on", []any{}))
+	case "dispatch-action-missing-triggers":
+		return buildError(slackblocks.NewDispatchActionConfiguration())
 	case "dispatch-action-too-many-triggers":
 		return buildError(slackblocks.NewDispatchActionConfiguration().TriggerActionsOn("on_enter_pressed", "on_character_entered", "on_enter_pressed"))
 	case "plain-text-input-max-length-too-large":

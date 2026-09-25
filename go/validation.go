@@ -192,13 +192,15 @@ func validateBuilder(name string, object Object) error {
 			return validationError(MissingRequired, name, "expected trigger")
 		}
 	case "DispatchActionConfiguration":
-		if raw, ok := object["trigger_actions_on"]; ok {
-			triggers, err := sliceAt(raw, child(name, "trigger_actions_on"))
-			if err != nil {
-				return err
-			}
-			return sliceLength(triggers, child(name, "trigger_actions_on"), limitDispatchActionConfigurationTriggerActionsOnMinItems, limitDispatchActionConfigurationTriggerActionsOnMaxItems)
+		raw, ok := object["trigger_actions_on"]
+		if !ok {
+			return validationError(MissingRequired, child(name, "trigger_actions_on"), "expected trigger_actions_on")
 		}
+		triggers, err := sliceAt(raw, child(name, "trigger_actions_on"))
+		if err != nil {
+			return err
+		}
+		return sliceLength(triggers, child(name, "trigger_actions_on"), limitDispatchActionConfigurationTriggerActionsOnMinItems, limitDispatchActionConfigurationTriggerActionsOnMaxItems)
 	case "SlackFile":
 		_, hasID := object["id"]
 		_, hasURL := object["url"]

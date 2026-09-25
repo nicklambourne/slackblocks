@@ -599,6 +599,7 @@ const invalidCases: Record<string, () => unknown> = {
   "file-input-max-files-too-large": () =>
     fileInput({ actionId: "a", maxFiles: limits.file_input.max_files.max + 1 }),
   "dispatch-action-no-triggers": () => dispatchActionConfiguration({ triggerActionsOn: [] }),
+  "dispatch-action-missing-triggers": () => dispatchActionConfiguration({} as any),
   "dispatch-action-too-many-triggers": () =>
     dispatchActionConfiguration({
       triggerActionsOn: ["on_enter_pressed", "on_character_entered", "on_enter_pressed"],
