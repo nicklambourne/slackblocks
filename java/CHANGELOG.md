@@ -7,6 +7,10 @@ in lockstep with the Python, TypeScript, and Go packages.
 
 ### Changed
 
+- Validation now rejects plain-text, email, URL, number, date picker, time picker, and
+  rich text input placeholders over 150 characters (only the plain-text input was
+  checked before), and dispatch-action configurations whose `trigger_actions_on` list
+  is empty or has more than two triggers.
 - A raw `dispatch_action_config` set through `wireField` without
   `trigger_actions_on` is now rejected as missing-required, matching Slack's
   `blocks.validate`.
