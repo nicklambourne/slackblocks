@@ -23,6 +23,8 @@ import java.util.Optional;
  *
  * <ul>
  *   <li>Only blocks supported in messages are accepted.
+ *   <li>Markdown block text is limited to 12,000 characters, and data table cell text to 20,000
+ *       characters, across the whole message.
  * </ul>
  *
  * @see <a

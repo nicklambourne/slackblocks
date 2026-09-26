@@ -22,7 +22,7 @@ public sealed partial class DataTableBlock : global::Slackblocks.SlackObject, gl
     /// <param name="rows">Complete table rows in display order. Every row must have the same number of cells. Required. Must contain between 2 and 201 items.</param>
     /// <param name="caption">The caption that describes the table's contents. Required.</param>
     /// <param name="pageSize">How many rows Slack shows per page. Must be between 1 and 100.</param>
-    /// <param name="rowHeaderColumnIndex">The zero-based index of the column whose cells act as row headers.</param>
+    /// <param name="rowHeaderColumnIndex">The zero-based index of the column whose cells act as row headers. Must be at least 0.</param>
     /// <param name="blockId">A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>

@@ -19,9 +19,9 @@ public sealed partial class RichTextList : global::Slackblocks.SlackObject, glob
     /// <summary>Creates and validates a <see cref="RichTextList"/>.</summary>
     /// <param name="style">Whether the list is bulleted or numbered. Required.</param>
     /// <param name="elements">List items, one rich text section per item. Required.</param>
-    /// <param name="indent">The list's indentation level.</param>
-    /// <param name="offset">The number of items to skip when numbering an ordered list.</param>
-    /// <param name="border">The width of the left border, in pixels.</param>
+    /// <param name="indent">The list's indentation level. Must be between 0 and 8.</param>
+    /// <param name="offset">The number of items to skip when numbering an ordered list. Must be at least 0.</param>
+    /// <param name="border">The width of the left border, in pixels. Must be between 0 and 1.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>

@@ -20,8 +20,8 @@ public sealed partial class PlainTextInputElement : global::Slackblocks.SlackObj
     /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
     /// <param name="initialValue">The value present when the input loads.</param>
     /// <param name="multiline">Whether the input is a multi-line text area.</param>
-    /// <param name="minLength">The minimum number of characters the user must enter.</param>
-    /// <param name="maxLength">The maximum number of characters the user can enter. Must be at most 3000.</param>
+    /// <param name="minLength">The minimum number of characters the user must enter. Must be between 0 and 3000.</param>
+    /// <param name="maxLength">The maximum number of characters the user can enter. Must be between 1 and 3000.</param>
     /// <param name="dispatchActionConfig">Which user interactions send a block_actions payload.</param>
     /// <param name="focusOnLoad">Whether the element receives focus when the view opens. Only one element per view may do so.</param>
     /// <param name="placeholder">The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a <c>plain_text</c> text object.</param>

@@ -9,7 +9,7 @@ namespace Slackblocks.Elements;
 /// <summary>An input that accepts whole or decimal numbers.</summary>
 /// <remarks>
 /// <list type="bullet">
-/// <item><description>Required: <c>actionId</c>.</description></item>
+/// <item><description>Required: <c>actionId</c>, <c>isDecimalAllowed</c>.</description></item>
 /// <item><description>The minimum value cannot exceed the maximum value.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/number-input-element">Slack reference</see>.</para>
@@ -19,7 +19,7 @@ public sealed partial class NumberInputElement : global::Slackblocks.SlackObject
 {
     /// <summary>Creates and validates a <see cref="NumberInputElement"/>.</summary>
     /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
-    /// <param name="isDecimalAllowed">Whether the input accepts decimal numbers.</param>
+    /// <param name="isDecimalAllowed">Whether the input accepts decimal numbers. Required.</param>
     /// <param name="initialValue">The number present when the input loads, as a string such as 42 or 3.5.</param>
     /// <param name="minValue">The smallest accepted number.</param>
     /// <param name="maxValue">The largest accepted number.</param>

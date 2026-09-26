@@ -9,7 +9,7 @@ namespace Slackblocks.Elements;
 /// <summary>A button that shows an icon instead of text.</summary>
 /// <remarks>
 /// <list type="bullet">
-/// <item><description>Required: <c>text</c>.</description></item>
+/// <item><description>Required: <c>text</c>, <c>icon</c>.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element">Slack reference</see>.</para>
 /// </remarks>
@@ -18,7 +18,7 @@ public sealed partial class IconButtonElement : global::Slackblocks.SlackObject,
 {
     /// <summary>Creates and validates a <see cref="IconButtonElement"/>.</summary>
     /// <param name="text">The text used as the button's accessible name. Required. A string is sent as a <c>plain_text</c> text object.</param>
-    /// <param name="icon">The icon shown on the button.</param>
+    /// <param name="icon">The icon shown on the button. Required.</param>
     /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="value">The application-defined value sent in interaction payloads. Slack allows at most 2000 characters.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>

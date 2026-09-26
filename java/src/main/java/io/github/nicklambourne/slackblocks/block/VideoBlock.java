@@ -192,7 +192,7 @@ public final class VideoBlock implements Block {
     /**
      * Sets the URL of the image shown before the video plays.
      *
-     * <p>Required.
+     * <p>Required. Slack allows at most 3000 characters.
      *
      * @param value value for Slack's {@code thumbnail_url} field
      * @return this builder
@@ -232,7 +232,7 @@ public final class VideoBlock implements Block {
     /**
      * Sets the embeddable URL of the video. The domain must be listed in the app's unfurl domains.
      *
-     * <p>Required.
+     * <p>Required. Slack allows at most 3000 characters.
      *
      * @param value value for Slack's {@code video_url} field
      * @return this builder
@@ -301,6 +301,8 @@ public final class VideoBlock implements Block {
     /**
      * Sets the URL of the video provider's icon.
      *
+     * <p>Slack allows at most 2000 characters.
+     *
      * @param value value for Slack's {@code provider_icon_url} field
      * @return this builder
      */
@@ -324,6 +326,8 @@ public final class VideoBlock implements Block {
 
     /**
      * Sets the HTTPS URL opened when the title is clicked.
+     *
+     * <p>Slack allows at most 2000 characters.
      *
      * @param value value for Slack's {@code title_url} field
      * @return this builder

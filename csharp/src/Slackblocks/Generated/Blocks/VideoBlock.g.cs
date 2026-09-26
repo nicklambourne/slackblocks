@@ -18,15 +18,15 @@ public sealed partial class VideoBlock : global::Slackblocks.SlackObject, global
 {
     /// <summary>Creates and validates a <see cref="VideoBlock"/>.</summary>
     /// <param name="altText">A plain-text summary of the image or video for assistive technology. Required. Slack allows at most 2000 characters.</param>
-    /// <param name="thumbnailUrl">The URL of the image shown before the video plays. Required.</param>
+    /// <param name="thumbnailUrl">The URL of the image shown before the video plays. Required. Slack allows at most 3000 characters.</param>
     /// <param name="title">The video title. Required. Slack allows at most 200 characters. A string is sent as a <c>plain_text</c> text object.</param>
-    /// <param name="videoUrl">The embeddable URL of the video. The domain must be listed in the app's unfurl domains. Required.</param>
+    /// <param name="videoUrl">The embeddable URL of the video. The domain must be listed in the app's unfurl domains. Required. Slack allows at most 3000 characters.</param>
     /// <param name="blockId">A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters.</param>
     /// <param name="authorName">The name of the video's author. Slack allows at most 50 characters.</param>
     /// <param name="description">The video description. Slack allows at most 200 characters. A string is sent as a <c>plain_text</c> text object.</param>
-    /// <param name="providerIconUrl">The URL of the video provider's icon.</param>
+    /// <param name="providerIconUrl">The URL of the video provider's icon. Slack allows at most 2000 characters.</param>
     /// <param name="providerName">The name of the video provider, such as YouTube. Slack allows at most 50 characters.</param>
-    /// <param name="titleUrl">The HTTPS URL opened when the title is clicked.</param>
+    /// <param name="titleUrl">The HTTPS URL opened when the title is clicked. Slack allows at most 2000 characters.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>

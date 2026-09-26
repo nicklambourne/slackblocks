@@ -35,11 +35,12 @@ public final class Validator {
           entry("emoji", "name"),
           entry("external_select", "action_id"),
           entry("feedback_buttons", "positive_button", "negative_button"),
-          entry("file", "external_id"),
+          entry("file", "external_id", "source"),
           entry("file_input", "action_id"),
           entry("header", "text"),
           entry("home", "blocks"),
-          entry("icon_button", "text"),
+          entry("icon", "name"),
+          entry("icon_button", "text", "icon"),
           entry("image", "alt_text"),
           entry("input", "label", "element"),
           entry("line", "series", "axis_config"),
@@ -51,11 +52,11 @@ public final class Validator {
           entry("multi_external_select", "action_id"),
           entry("multi_static_select", "action_id"),
           entry("multi_users_select", "action_id"),
-          entry("number_input", "action_id"),
+          entry("number_input", "action_id", "is_decimal_allowed"),
           entry("overflow", "action_id", "options"),
           entry("pie", "segments"),
           entry("plain_text_input", "action_id"),
-          entry("plan", "title"),
+          entry("plan", "title", "tasks"),
           entry("radio_buttons", "action_id", "options"),
           entry("raw_number", "value", "text"),
           entry("raw_text", "text"),
@@ -67,7 +68,7 @@ public final class Validator {
           entry("rich_text_section", "elements"),
           entry("static_select", "action_id"),
           entry("table", "rows"),
-          entry("task_card", "task_id", "title"),
+          entry("task_card", "task_id", "title", "status"),
           entry("text", "text"),
           entry("timepicker", "action_id"),
           entry("url", "url", "text"),
@@ -76,7 +77,7 @@ public final class Validator {
           entry("usergroup", "usergroup_id"),
           entry("users_select", "action_id"),
           entry("video", "alt_text", "thumbnail_url", "title", "video_url"),
-          entry("workflow_button", "text", "workflow"));
+          entry("workflow_button", "text", "workflow", "action_id"));
 
   private static final Set<String> INPUT_ELEMENT_TYPES =
       Set.of(
@@ -124,6 +125,17 @@ public final class Validator {
           "users_select",
           "workflow_button");
 
+  private static final Set<String> MULTI_SELECT_TYPES =
+      Set.of(
+          "multi_channels_select",
+          "multi_conversations_select",
+          "multi_external_select",
+          "multi_static_select",
+          "multi_users_select");
+
+  private static final Set<String> CONVERSATION_FILTER_INCLUDES =
+      Set.of("im", "mpim", "private", "public");
+
   private static final Set<String> CONTEXT_ELEMENT_TYPES = Set.of("plain_text", "mrkdwn", "image");
   private static final Set<String> ALERT_LEVELS =
       Set.of("default", "info", "warning", "error", "success");
@@ -135,6 +147,10 @@ public final class Validator {
       Set.of("raw_text", "rich_text", "raw_number");
 
   private static final Pattern ATTACHMENT_COLOR = Pattern.compile("^#[0-9a-fA-F]{6}$");
+  private static final Pattern SLACK_FILE_ID = Pattern.compile("^F[A-Z0-9]{8,}$");
+
+  /** Matches a path ending in a block list item, where an {@code image} is an image block. */
+  private static final Pattern BLOCK_LIST_ITEM = Pattern.compile("(^|\\.)(child_)?blocks\\[\\d+]$");
 
   private Validator() {}
 
@@ -159,24 +175,14 @@ public final class Validator {
       case "Confirmation" -> validateConfirmation(value, name);
       case "Option" -> validateOption(value, name);
       case "OptionGroup" -> validateOptionGroup(value, name);
-      case "ConversationFilter" -> {
-        if (!value.containsKey("include")
-            && !value.containsKey("exclude_external_shared_channels")
-            && !value.containsKey("exclude_bot_users")) {
-          fail(ErrorCategory.MISSING_REQUIRED, name, "expected at least one filter field");
-        }
-      }
+      case "ConversationFilter" -> validateConversationFilter(value, name);
       case "InputParameter" -> {
         require(value, "name", name);
         require(value, "value", name);
       }
       case "Trigger" -> require(value, "url", name);
       case "Workflow" -> require(value, "trigger", name);
-      case "SlackFile" -> {
-        if (value.containsKey("id") == value.containsKey("url")) {
-          fail(ErrorCategory.MUTUALLY_EXCLUSIVE, name, "expected exactly one of id or url");
-        }
-      }
+      case "SlackFile" -> validateSlackFile(value, name);
       case "ChartSegment" ->
           validateLabelValue(
               value, name, SlackLimits.DATA_VISUALIZATION_SEGMENT_LABEL_MAX_LENGTH, true);
@@ -188,6 +194,7 @@ public final class Validator {
       case "FeedbackButton" -> validateFeedbackButton(value, name);
       case "DispatchActionConfiguration" -> validateDispatchActionConfiguration(value, name);
       case "Attachment" -> {
+        require(value, "blocks", name);
         Object raw = value.get("color");
         if (raw instanceof String color
             && !Set.of("good", "warning", "danger").contains(color)
@@ -235,6 +242,19 @@ public final class Validator {
           objectAt(value.get("dispatch_action_config"), child(path, "dispatch_action_config")),
           child(path, "dispatch_action_config"));
     }
+    if (MULTI_SELECT_TYPES.contains(type)) {
+      checkRange(
+          value,
+          "max_selected_items",
+          path,
+          SlackLimits.MULTI_SELECT_MAX_SELECTED_ITEMS_MIN,
+          Integer.MAX_VALUE);
+    }
+    if ((type.equals("conversations_select") || type.equals("multi_conversations_select"))
+        && value.containsKey("filter")) {
+      validateConversationFilter(
+          objectAt(value.get("filter"), child(path, "filter")), child(path, "filter"));
+    }
 
     switch (type) {
       case "plain_text", "mrkdwn" ->
@@ -274,13 +294,18 @@ public final class Validator {
         }
       }
       case "plain_text_input" -> {
-        Double number = number(value.get("max_length"));
-        if (number != null && number > SlackLimits.PLAIN_TEXT_INPUT_MAX_LENGTH_MAX) {
-          fail(
-              ErrorCategory.OUT_OF_RANGE,
-              child(path, "max_length"),
-              "exceeds maximum " + SlackLimits.PLAIN_TEXT_INPUT_MAX_LENGTH_MAX);
-        }
+        checkRange(
+            value,
+            "min_length",
+            path,
+            SlackLimits.PLAIN_TEXT_INPUT_MIN_LENGTH_MIN,
+            SlackLimits.PLAIN_TEXT_INPUT_MIN_LENGTH_MAX);
+        checkRange(
+            value,
+            "max_length",
+            path,
+            SlackLimits.PLAIN_TEXT_INPUT_MAX_LENGTH_MIN,
+            SlackLimits.PLAIN_TEXT_INPUT_MAX_LENGTH_MAX);
         if (value.containsKey("placeholder")) {
           textLength(
               value.get("placeholder"),
@@ -301,9 +326,61 @@ public final class Validator {
       case "timepicker" ->
           checkOptionalText(
               value, "placeholder", path, SlackLimits.TIME_PICKER_PLACEHOLDER_MAX_LENGTH);
-      case "rich_text_input" ->
-          checkOptionalText(
-              value, "placeholder", path, SlackLimits.RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH);
+      case "rich_text_input" -> {
+        checkOptionalText(
+            value, "placeholder", path, SlackLimits.RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH);
+        checkRange(
+            value,
+            "min_lines",
+            path,
+            SlackLimits.RICH_TEXT_INPUT_MIN_LINES_MIN,
+            SlackLimits.RICH_TEXT_INPUT_MIN_LINES_MAX);
+        checkRange(
+            value,
+            "max_lines",
+            path,
+            SlackLimits.RICH_TEXT_INPUT_MAX_LINES_MIN,
+            SlackLimits.RICH_TEXT_INPUT_MAX_LINES_MAX);
+        if (value.containsKey("initial_value")
+            && !"rich_text"
+                .equals(
+                    objectType(
+                        objectAt(value.get("initial_value"), child(path, "initial_value"))))) {
+          fail(
+              ErrorCategory.TYPE_MISMATCH,
+              child(path, "initial_value"),
+              "expected a rich_text block");
+        }
+      }
+      case "rich_text_list" -> {
+        checkRange(
+            value,
+            "indent",
+            path,
+            SlackLimits.RICH_TEXT_LIST_INDENT_MIN,
+            SlackLimits.RICH_TEXT_LIST_INDENT_MAX);
+        checkRange(value, "offset", path, SlackLimits.RICH_TEXT_LIST_OFFSET_MIN, Integer.MAX_VALUE);
+        checkRange(
+            value,
+            "border",
+            path,
+            SlackLimits.RICH_TEXT_LIST_BORDER_MIN,
+            SlackLimits.RICH_TEXT_LIST_BORDER_MAX);
+      }
+      case "rich_text_quote" ->
+          checkRange(
+              value,
+              "border",
+              path,
+              SlackLimits.RICH_TEXT_QUOTE_BORDER_MIN,
+              SlackLimits.RICH_TEXT_QUOTE_BORDER_MAX);
+      case "rich_text_preformatted" ->
+          checkRange(
+              value,
+              "border",
+              path,
+              SlackLimits.RICH_TEXT_PREFORMATTED_BORDER_MIN,
+              SlackLimits.RICH_TEXT_PREFORMATTED_BORDER_MAX);
       case "overflow", "checkboxes", "radio_buttons" -> {
         List<?> options = listAt(value.get("options"), child(path, "options"));
         sliceLength(
@@ -373,10 +450,18 @@ public final class Validator {
       case "pie" -> validatePie(value, path);
       case "bar", "area", "line" -> validateSeriesChart(value, path);
       case "task_card" -> {
-        if (value.get("status") instanceof String status && !TASK_STATUSES.contains(status)) {
-          fail(ErrorCategory.TYPE_MISMATCH, child(path, "status"), "unknown task status");
+        validateTaskStatus(value, path);
+        // A TaskCardBlock is built before it is placed, and plan tasks (which carry no type on the
+        // wire) may be pending, so the builder itself accepts pending. Anywhere a task card
+        // appears as a block, it is standalone and cannot be pending.
+        if ("pending".equals(value.get("status")) && !path.equals("TaskCardBlock")) {
+          fail(
+              ErrorCategory.TYPE_MISMATCH,
+              child(path, "status"),
+              "a standalone task card cannot be pending");
         }
       }
+      case "plan" -> validatePlan(value, path);
       case "input" -> validateInput(value, path);
       case "markdown" ->
           stringLength(
@@ -505,8 +590,82 @@ public final class Validator {
           path,
           "image_url and slack_file cannot be provided together");
     }
-    checkOptionalString(value, "image_url", path, SlackLimits.IMAGE_IMAGE_URL_MAX_LENGTH);
-    checkOptionalString(value, "alt_text", path, SlackLimits.IMAGE_ALT_TEXT_MAX_LENGTH);
+    if (hasSlackFile) {
+      validateSlackFile(
+          objectAt(value.get("slack_file"), child(path, "slack_file")), child(path, "slack_file"));
+    }
+    boolean block = path.equals("ImageBlock") || BLOCK_LIST_ITEM.matcher(path).find();
+    checkOptionalString(
+        value,
+        "image_url",
+        path,
+        block
+            ? SlackLimits.IMAGE_IMAGE_URL_MAX_LENGTH
+            : SlackLimits.IMAGE_ELEMENT_IMAGE_URL_MAX_LENGTH);
+    checkOptionalString(
+        value,
+        "alt_text",
+        path,
+        block
+            ? SlackLimits.IMAGE_ALT_TEXT_MAX_LENGTH
+            : SlackLimits.IMAGE_ELEMENT_ALT_TEXT_MAX_LENGTH);
+    checkOptionalText(value, "title", path, SlackLimits.IMAGE_TITLE_MAX_LENGTH);
+  }
+
+  private static void validateSlackFile(Map<String, Object> value, String path) {
+    if (value.containsKey("id") == value.containsKey("url")) {
+      fail(ErrorCategory.MUTUALLY_EXCLUSIVE, path, "expected exactly one of id or url");
+    }
+    if (value.containsKey("id")
+        && !SLACK_FILE_ID.matcher(stringAt(value.get("id"), child(path, "id"))).matches()) {
+      fail(
+          ErrorCategory.TYPE_MISMATCH,
+          child(path, "id"),
+          "expected an ID matching " + SLACK_FILE_ID);
+    }
+  }
+
+  private static void validateConversationFilter(Map<String, Object> value, String path) {
+    if (!value.containsKey("include")
+        && !value.containsKey("exclude_external_shared_channels")
+        && !value.containsKey("exclude_bot_users")) {
+      fail(ErrorCategory.MISSING_REQUIRED, path, "expected at least one filter field");
+    }
+    if (value.containsKey("include")) {
+      List<?> include = listAt(value.get("include"), child(path, "include"));
+      sliceLength(
+          include, child(path, "include"), SlackLimits.CONVERSATION_FILTER_INCLUDE_MIN_ITEMS, 0);
+      for (int index = 0; index < include.size(); index++) {
+        String itemPath = child(path, "include") + "[" + index + "]";
+        if (!CONVERSATION_FILTER_INCLUDES.contains(stringAt(include.get(index), itemPath))) {
+          fail(ErrorCategory.TYPE_MISMATCH, itemPath, "expected im, mpim, private, or public");
+        }
+      }
+    }
+  }
+
+  private static void validateTaskStatus(Map<String, Object> value, String path) {
+    if (value.get("status") instanceof String status && !TASK_STATUSES.contains(status)) {
+      fail(ErrorCategory.TYPE_MISMATCH, child(path, "status"), "unknown task status");
+    }
+  }
+
+  private static void validatePlan(Map<String, Object> value, String path) {
+    List<?> tasks = listAt(value.get("tasks"), child(path, "tasks"));
+    sliceLength(tasks, child(path, "tasks"), 0, SlackLimits.PLAN_TASKS_MAX_ITEMS);
+    Set<String> seen = new java.util.HashSet<>();
+    for (int index = 0; index < tasks.size(); index++) {
+      String taskPath = child(path, "tasks") + "[" + index + "]";
+      Map<String, Object> task = objectAt(tasks.get(index), taskPath);
+      // Plan tasks carry no type on the wire, so the task card rules are applied here.
+      for (String field : REQUIRED_FIELDS.getOrDefault("task_card", List.of())) {
+        require(task, field, taskPath);
+      }
+      validateTaskStatus(task, taskPath);
+      if (!seen.add(stringAt(task.get("task_id"), child(taskPath, "task_id")))) {
+        fail(ErrorCategory.INVALID_USAGE, child(path, "tasks"), "expected unique task IDs");
+      }
+    }
   }
 
   private static void validateContext(Map<String, Object> value, String path) {
@@ -565,7 +724,10 @@ public final class Validator {
     checkOptionalText(value, "subtitle", path, SlackLimits.CONTAINER_SUBTITLE_MAX_LENGTH);
     List<?> blocks = listAt(value.get("child_blocks"), child(path, "child_blocks"));
     sliceLength(
-        blocks, child(path, "child_blocks"), 1, SlackLimits.CONTAINER_CHILD_BLOCKS_MAX_ITEMS);
+        blocks,
+        child(path, "child_blocks"),
+        SlackLimits.CONTAINER_CHILD_BLOCKS_MIN_ITEMS,
+        SlackLimits.CONTAINER_CHILD_BLOCKS_MAX_ITEMS);
     if (value.get("width") instanceof String width && !CONTAINER_WIDTHS.contains(width)) {
       fail(ErrorCategory.TYPE_MISMATCH, child(path, "width"), "unknown container width");
     }
@@ -624,6 +786,11 @@ public final class Validator {
     checkOptionalString(value, "author_name", path, SlackLimits.VIDEO_AUTHOR_NAME_MAX_LENGTH);
     checkOptionalString(value, "provider_name", path, SlackLimits.VIDEO_PROVIDER_NAME_MAX_LENGTH);
     checkOptionalText(value, "description", path, SlackLimits.VIDEO_DESCRIPTION_MAX_LENGTH);
+    checkOptionalString(value, "thumbnail_url", path, SlackLimits.VIDEO_THUMBNAIL_URL_MAX_LENGTH);
+    checkOptionalString(value, "video_url", path, SlackLimits.VIDEO_VIDEO_URL_MAX_LENGTH);
+    checkOptionalString(value, "title_url", path, SlackLimits.VIDEO_TITLE_URL_MAX_LENGTH);
+    checkOptionalString(
+        value, "provider_icon_url", path, SlackLimits.VIDEO_PROVIDER_ICON_URL_MAX_LENGTH);
   }
 
   private static void validateView(Map<String, Object> value, String path, String type) {
@@ -637,6 +804,7 @@ public final class Validator {
     checkOptionalString(
         value, "private_metadata", path, SlackLimits.VIEW_PRIVATE_METADATA_MAX_LENGTH);
     checkOptionalString(value, "callback_id", path, SlackLimits.VIEW_CALLBACK_ID_MAX_LENGTH);
+    checkOptionalString(value, "external_id", path, SlackLimits.VIEW_EXTERNAL_ID_MAX_LENGTH);
     if (type.equals("modal")) {
       if (!value.containsKey("submit")) {
         for (int index = 0; index < blocks.size(); index++) {
@@ -811,14 +979,11 @@ public final class Validator {
             child(path, "column_settings"),
             "data tables do not support column_settings");
       }
-      List<?> settings = listAt(value.get("column_settings"), child(path, "column_settings"));
-      sliceLength(settings, child(path, "column_settings"), 0, 20);
-      if (settings.size() != columns) {
-        fail(
-            ErrorCategory.INVALID_USAGE,
-            child(path, "column_settings"),
-            "expected one entry for every column");
-      }
+      sliceLength(
+          listAt(value.get("column_settings"), child(path, "column_settings")),
+          child(path, "column_settings"),
+          0,
+          SlackLimits.TABLE_COLUMN_SETTINGS_MAX_ITEMS);
     }
     if (dataTable) {
       Double pageSize = number(value.get("page_size"));
@@ -833,6 +998,12 @@ public final class Validator {
                 + " and "
                 + SlackLimits.DATA_TABLE_PAGE_SIZE_MAX);
       }
+      checkRange(
+          value,
+          "row_header_column_index",
+          path,
+          SlackLimits.DATA_TABLE_ROW_HEADER_COLUMN_INDEX_MIN,
+          Integer.MAX_VALUE);
       String caption = stringAt(value.get("caption"), child(path, "caption"));
       stringLength(caption, child(path, "caption"), 1, 0);
       if (contentLength > SlackLimits.DATA_TABLE_CONTENT_MAX_LENGTH) {
@@ -911,11 +1082,56 @@ public final class Validator {
       validateSurface(blocks, "message", child(path, "blocks"));
     }
     if (value.containsKey("attachments")) {
+      List<?> attachments = listAt(value.get("attachments"), child(path, "attachments"));
       sliceLength(
-          listAt(value.get("attachments"), child(path, "attachments")),
-          child(path, "attachments"),
-          0,
-          SlackLimits.MESSAGE_ATTACHMENTS_MAX_ITEMS);
+          attachments, child(path, "attachments"), 0, SlackLimits.MESSAGE_ATTACHMENTS_MAX_ITEMS);
+      for (int index = 0; index < attachments.size(); index++) {
+        String attachmentPath = child(path, "attachments") + "[" + index + "]";
+        require(objectAt(attachments.get(index), attachmentPath), "blocks", attachmentPath);
+      }
+    }
+    // Slack limits markdown block text and data table cell text across the whole message.
+    int[] totals = new int[2];
+    addMessageTotals(value, totals);
+    if (totals[0] > SlackLimits.MARKDOWN_TOTAL_TEXT_MAX_LENGTH) {
+      fail(
+          ErrorCategory.LENGTH_EXCEEDED,
+          path,
+          "markdown text totals "
+              + totals[0]
+              + ", exceeding maximum "
+              + SlackLimits.MARKDOWN_TOTAL_TEXT_MAX_LENGTH);
+    }
+    if (totals[1] > SlackLimits.DATA_TABLE_TOTAL_CONTENT_MAX_LENGTH) {
+      fail(
+          ErrorCategory.LENGTH_EXCEEDED,
+          path,
+          "data table content totals "
+              + totals[1]
+              + ", exceeding maximum "
+              + SlackLimits.DATA_TABLE_TOTAL_CONTENT_MAX_LENGTH);
+    }
+  }
+
+  /**
+   * Adds markdown block text to {@code totals[0]} and data table cell text to {@code totals[1]}.
+   */
+  private static void addMessageTotals(@Nullable Object value, int[] totals) {
+    if (value instanceof Map<?, ?> map) {
+      Object type = map.get("type");
+      if ("markdown".equals(type) && map.get("text") instanceof String text) {
+        totals[0] += text.codePointCount(0, text.length());
+      } else if ("data_table".equals(type)) {
+        totals[1] += textCharacterCount(map.get("rows"));
+      } else {
+        for (Object nested : map.values()) {
+          addMessageTotals(nested, totals);
+        }
+      }
+    } else if (value instanceof List<?> list) {
+      for (Object item : list) {
+        addMessageTotals(item, totals);
+      }
     }
   }
 
@@ -1048,6 +1264,19 @@ public final class Validator {
       Map<String, Object> value, String field, String path, int maximum) {
     if (value.get(field) instanceof String text) {
       stringLength(text, child(path, field), 0, maximum);
+    }
+  }
+
+  private static void checkRange(
+      Map<String, Object> value, String field, String path, int minimum, int maximum) {
+    Double number = number(value.get(field));
+    if (number != null && (number < minimum || number > maximum)) {
+      fail(
+          ErrorCategory.OUT_OF_RANGE,
+          child(path, field),
+          maximum == Integer.MAX_VALUE
+              ? "expected a value of at least " + minimum
+              : "expected a value between " + minimum + " and " + maximum);
     }
   }
 

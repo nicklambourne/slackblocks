@@ -9,7 +9,8 @@ namespace Slackblocks.Blocks;
 /// <summary>One task with its status, details, output, and sources.</summary>
 /// <remarks>
 /// <list type="bullet">
-/// <item><description>Required: <c>taskId</c>, <c>title</c>.</description></item>
+/// <item><description>Required: <c>taskId</c>, <c>title</c>, <c>status</c>.</description></item>
+/// <item><description>A standalone task card's status cannot be pending; pending is only valid for plan tasks.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/task-card-block">Slack reference</see>.</para>
 /// </remarks>
@@ -22,7 +23,7 @@ public sealed partial class TaskCardBlock : global::Slackblocks.SlackObject, glo
     /// <param name="details">A rich text description of the task.</param>
     /// <param name="output">Rich text describing the task's output.</param>
     /// <param name="sources">Links to the sources the task used, in display order.</param>
-    /// <param name="status">The task's current state.</param>
+    /// <param name="status">The task's current state. Required.</param>
     /// <param name="blockId">A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>

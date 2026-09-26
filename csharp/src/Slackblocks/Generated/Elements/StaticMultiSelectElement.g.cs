@@ -23,7 +23,7 @@ public sealed partial class StaticMultiSelectElement : global::Slackblocks.Slack
     /// <param name="optionGroups">Labelled groups of options in display order. Cannot be combined with ungrouped options. Slack allows at most 100 items.</param>
     /// <param name="initialOptions">Options that are selected when the element loads. Each must match an option in the element.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
-    /// <param name="maxSelectedItems">The maximum number of items a user can select.</param>
+    /// <param name="maxSelectedItems">The maximum number of items a user can select. Must be at least 1.</param>
     /// <param name="focusOnLoad">Whether the element receives focus when the view opens. Only one element per view may do so.</param>
     /// <param name="placeholder">The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a <c>plain_text</c> text object.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>

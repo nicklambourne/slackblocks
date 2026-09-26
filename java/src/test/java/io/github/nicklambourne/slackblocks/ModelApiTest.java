@@ -14,6 +14,7 @@ import io.github.nicklambourne.slackblocks.block.ContainerWidth;
 import io.github.nicklambourne.slackblocks.block.DataTableBlock;
 import io.github.nicklambourne.slackblocks.block.DividerBlock;
 import io.github.nicklambourne.slackblocks.block.HeaderBlock;
+import io.github.nicklambourne.slackblocks.block.ImageBlock;
 import io.github.nicklambourne.slackblocks.block.PlanBlock;
 import io.github.nicklambourne.slackblocks.block.SectionBlock;
 import io.github.nicklambourne.slackblocks.block.TaskCardBlock;
@@ -27,6 +28,7 @@ import io.github.nicklambourne.slackblocks.object.RawNumber;
 import io.github.nicklambourne.slackblocks.object.RawText;
 import io.github.nicklambourne.slackblocks.object.RichTextStyle;
 import io.github.nicklambourne.slackblocks.object.RichTextText;
+import io.github.nicklambourne.slackblocks.object.SlackFile;
 import io.github.nicklambourne.slackblocks.payload.MessagePayload;
 import java.util.List;
 import java.util.Map;
@@ -213,6 +215,34 @@ final class ModelApiTest {
     assertEquals(
         RichTextStyle.builder().bold(true).italic(false).build(), text.getStyle().orElseThrow());
     assertEquals(List.of(), SectionBlock.builder().text("x").build().getFields());
+  }
+
+  @Test
+  void imageBlocksAcceptASlackFileInPlaceOfAUrl() {
+    SlackFile file =
+        SlackFile.builder().url("https://files.slack.com/files-pri/T1-F1/a.png").build();
+    ImageBlock image = ImageBlock.builder().slackFile(file).altText("A kitten").build();
+
+    assertEquals(file, image.getSlackFile().orElseThrow());
+    // getImageUrl keeps its 2.x String signature, so it throws when a Slack file is used instead.
+    assertThrows(IllegalStateException.class, image::getImageUrl);
+    assertEquals(
+        "https://example.com/a.png",
+        ImageBlock.builder("https://example.com/a.png", "A kitten").build().getImageUrl());
+  }
+
+  @Test
+  void onlyPlanTasksMayBePending() {
+    TaskCardBlock pending =
+        TaskCardBlock.builder().taskId("t").title("Wait").status(TaskStatus.PENDING).build();
+
+    assertEquals(1, PlanBlock.builder().title("Plan").tasks(pending).build().getTasks().size());
+    ValidationException error =
+        assertThrows(
+            ValidationException.class,
+            () -> MessagePayload.builder().channel("C123").blocks(pending).build());
+    assertEquals(ErrorCategory.TYPE_MISMATCH, error.getCategory());
+    assertEquals("MessagePayload.blocks[0].status", error.getPath());
   }
 
   @Test

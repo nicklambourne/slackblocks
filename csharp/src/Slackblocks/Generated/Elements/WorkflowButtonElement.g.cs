@@ -9,7 +9,7 @@ namespace Slackblocks.Elements;
 /// <summary>A button that starts a workflow through a link trigger.</summary>
 /// <remarks>
 /// <list type="bullet">
-/// <item><description>Required: <c>text</c>, <c>workflow</c>.</description></item>
+/// <item><description>Required: <c>text</c>, <c>workflow</c>, <c>actionId</c>.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element">Slack reference</see>.</para>
 /// </remarks>
@@ -19,7 +19,7 @@ public sealed partial class WorkflowButtonElement : global::Slackblocks.SlackObj
     /// <summary>Creates and validates a <see cref="WorkflowButtonElement"/>.</summary>
     /// <param name="text">The button label. Required. Slack allows at most 75 characters. A string is sent as a <c>plain_text</c> text object.</param>
     /// <param name="workflow">The workflow started when the button is clicked. Required.</param>
-    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
     /// <param name="style">The button's emphasis. Omit it for the default neutral style.</param>
     /// <param name="accessibilityLabel">The label read by screen readers in place of the visible text. Slack allows at most 75 characters.</param>

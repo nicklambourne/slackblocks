@@ -74,6 +74,9 @@ internal static class SlackLimits
     /// <summary><c>container.child_blocks.max_items</c></summary>
     public const int ContainerChildBlocksMaxItems = 10;
 
+    /// <summary><c>container.child_blocks.min_items</c></summary>
+    public const int ContainerChildBlocksMinItems = 1;
+
     /// <summary><c>container.subtitle.max_length</c></summary>
     public const int ContainerSubtitleMaxLength = 150;
 
@@ -85,6 +88,9 @@ internal static class SlackLimits
 
     /// <summary><c>context_actions.elements.max_items</c></summary>
     public const int ContextActionsElementsMaxItems = 5;
+
+    /// <summary><c>conversation_filter.include.min_items</c></summary>
+    public const int ConversationFilterIncludeMinItems = 1;
 
     /// <summary><c>data_table.cell_text.min_length</c></summary>
     public const int DataTableCellTextMinLength = 1;
@@ -104,11 +110,17 @@ internal static class SlackLimits
     /// <summary><c>data_table.page_size.min</c></summary>
     public const int DataTablePageSizeMin = 1;
 
+    /// <summary><c>data_table.row_header_column_index.min</c></summary>
+    public const int DataTableRowHeaderColumnIndexMin = 0;
+
     /// <summary><c>data_table.rows.max_items</c></summary>
     public const int DataTableRowsMaxItems = 201;
 
     /// <summary><c>data_table.rows.min_items</c></summary>
     public const int DataTableRowsMinItems = 2;
+
+    /// <summary><c>data_table.total_content.max_length</c></summary>
+    public const int DataTableTotalContentMaxLength = 20000;
 
     /// <summary><c>data_visualization.axis_label.max_length</c></summary>
     public const int DataVisualizationAxisLabelMaxLength = 50;
@@ -200,6 +212,15 @@ internal static class SlackLimits
     /// <summary><c>image.image_url.max_length</c></summary>
     public const int ImageImageUrlMaxLength = 3000;
 
+    /// <summary><c>image.title.max_length</c></summary>
+    public const int ImageTitleMaxLength = 2000;
+
+    /// <summary><c>image_element.alt_text.max_length</c></summary>
+    public const int ImageElementAltTextMaxLength = 2000;
+
+    /// <summary><c>image_element.image_url.max_length</c></summary>
+    public const int ImageElementImageUrlMaxLength = 3000;
+
     /// <summary><c>input.hint.max_length</c></summary>
     public const int InputHintMaxLength = 2000;
 
@@ -212,6 +233,9 @@ internal static class SlackLimits
     /// <summary><c>markdown.text.min_length</c></summary>
     public const int MarkdownTextMinLength = 1;
 
+    /// <summary><c>markdown.total_text.max_length</c></summary>
+    public const int MarkdownTotalTextMaxLength = 12000;
+
     /// <summary><c>message.attachments.max_items</c></summary>
     public const int MessageAttachmentsMaxItems = 100;
 
@@ -220,6 +244,9 @@ internal static class SlackLimits
 
     /// <summary><c>message.channel.min_length</c></summary>
     public const int MessageChannelMinLength = 1;
+
+    /// <summary><c>multi_select.max_selected_items.min</c></summary>
+    public const int MultiSelectMaxSelectedItemsMin = 1;
 
     /// <summary><c>number_input.placeholder.max_length</c></summary>
     public const int NumberInputPlaceholderMaxLength = 150;
@@ -254,8 +281,20 @@ internal static class SlackLimits
     /// <summary><c>plain_text_input.max_length.max</c></summary>
     public const int PlainTextInputMaxLengthMax = 3000;
 
+    /// <summary><c>plain_text_input.max_length.min</c></summary>
+    public const int PlainTextInputMaxLengthMin = 1;
+
+    /// <summary><c>plain_text_input.min_length.max</c></summary>
+    public const int PlainTextInputMinLengthMax = 3000;
+
+    /// <summary><c>plain_text_input.min_length.min</c></summary>
+    public const int PlainTextInputMinLengthMin = 0;
+
     /// <summary><c>plain_text_input.placeholder.max_length</c></summary>
     public const int PlainTextInputPlaceholderMaxLength = 150;
+
+    /// <summary><c>plan.tasks.max_items</c></summary>
+    public const int PlanTasksMaxItems = 50;
 
     /// <summary><c>radio_buttons.options.max_items</c></summary>
     public const int RadioButtonsOptionsMaxItems = 10;
@@ -263,8 +302,47 @@ internal static class SlackLimits
     /// <summary><c>radio_buttons.options.min_items</c></summary>
     public const int RadioButtonsOptionsMinItems = 1;
 
+    /// <summary><c>rich_text_input.max_lines.max</c></summary>
+    public const int RichTextInputMaxLinesMax = 100;
+
+    /// <summary><c>rich_text_input.max_lines.min</c></summary>
+    public const int RichTextInputMaxLinesMin = 1;
+
+    /// <summary><c>rich_text_input.min_lines.max</c></summary>
+    public const int RichTextInputMinLinesMax = 100;
+
+    /// <summary><c>rich_text_input.min_lines.min</c></summary>
+    public const int RichTextInputMinLinesMin = 1;
+
     /// <summary><c>rich_text_input.placeholder.max_length</c></summary>
     public const int RichTextInputPlaceholderMaxLength = 150;
+
+    /// <summary><c>rich_text_list.border.max</c></summary>
+    public const int RichTextListBorderMax = 1;
+
+    /// <summary><c>rich_text_list.border.min</c></summary>
+    public const int RichTextListBorderMin = 0;
+
+    /// <summary><c>rich_text_list.indent.max</c></summary>
+    public const int RichTextListIndentMax = 8;
+
+    /// <summary><c>rich_text_list.indent.min</c></summary>
+    public const int RichTextListIndentMin = 0;
+
+    /// <summary><c>rich_text_list.offset.min</c></summary>
+    public const int RichTextListOffsetMin = 0;
+
+    /// <summary><c>rich_text_preformatted.border.max</c></summary>
+    public const int RichTextPreformattedBorderMax = 1;
+
+    /// <summary><c>rich_text_preformatted.border.min</c></summary>
+    public const int RichTextPreformattedBorderMin = 0;
+
+    /// <summary><c>rich_text_quote.border.max</c></summary>
+    public const int RichTextQuoteBorderMax = 1;
+
+    /// <summary><c>rich_text_quote.border.min</c></summary>
+    public const int RichTextQuoteBorderMin = 0;
 
     /// <summary><c>section.fields.item_max_length</c></summary>
     public const int SectionFieldsItemMaxLength = 2000;
@@ -283,6 +361,9 @@ internal static class SlackLimits
 
     /// <summary><c>select.placeholder.max_length</c></summary>
     public const int SelectPlaceholderMaxLength = 150;
+
+    /// <summary><c>table.column_settings.max_items</c></summary>
+    public const int TableColumnSettingsMaxItems = 20;
 
     /// <summary><c>table.columns.max_items</c></summary>
     public const int TableColumnsMaxItems = 20;
@@ -317,11 +398,23 @@ internal static class SlackLimits
     /// <summary><c>video.description.max_length</c></summary>
     public const int VideoDescriptionMaxLength = 200;
 
+    /// <summary><c>video.provider_icon_url.max_length</c></summary>
+    public const int VideoProviderIconUrlMaxLength = 2000;
+
     /// <summary><c>video.provider_name.max_length</c></summary>
     public const int VideoProviderNameMaxLength = 50;
 
+    /// <summary><c>video.thumbnail_url.max_length</c></summary>
+    public const int VideoThumbnailUrlMaxLength = 3000;
+
     /// <summary><c>video.title.max_length</c></summary>
     public const int VideoTitleMaxLength = 200;
+
+    /// <summary><c>video.title_url.max_length</c></summary>
+    public const int VideoTitleUrlMaxLength = 2000;
+
+    /// <summary><c>video.video_url.max_length</c></summary>
+    public const int VideoVideoUrlMaxLength = 3000;
 
     /// <summary><c>view.blocks.max_items</c></summary>
     public const int ViewBlocksMaxItems = 100;
@@ -334,6 +427,9 @@ internal static class SlackLimits
 
     /// <summary><c>view.close.max_length</c></summary>
     public const int ViewCloseMaxLength = 24;
+
+    /// <summary><c>view.external_id.max_length</c></summary>
+    public const int ViewExternalIdMaxLength = 255;
 
     /// <summary><c>view.private_metadata.max_length</c></summary>
     public const int ViewPrivateMetadataMaxLength = 3000;
