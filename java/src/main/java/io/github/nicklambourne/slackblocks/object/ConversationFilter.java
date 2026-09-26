@@ -21,6 +21,7 @@ import java.util.Optional;
  *
  * <ul>
  *   <li>Set at least one filter.
+ *   <li>Include only im, mpim, private, and public.
  * </ul>
  *
  * @see <a
@@ -117,7 +118,7 @@ public final class ConversationFilter implements SlackObject {
     /**
      * Adds conversation types to offer: im, mpim, private, or public.
      *
-     * <p>Each call appends to any values already added.
+     * <p>Must contain at least 1 items. Each call appends to any values already added.
      *
      * @param values values appended in order
      * @return this builder

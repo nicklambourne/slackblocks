@@ -262,6 +262,21 @@ def field_methods(model: Model, owner: dict, field: dict, imports: Imports) -> l
 
 GETTER_SKIPS = {("block", "block_id")}  # Block#getBlockId comes from the SDK LayoutBlock contract
 
+# Getters that keep their 2.x signatures until 3.0, although spec 1.1.0 changed whether the field
+# is required. Newly required fields still return an Optional; ImageBlock.image_url, now optional
+# because a Slack file can replace it, still returns String and throws when the URL is not set.
+# Builders and validation follow model.json either way. Maps (Java type, wire field) to the
+# required flag the getter is generated with.
+GETTER_REQUIRED_UNTIL_3_0 = {
+    ("SlackIcon", "name"): False,
+    ("TaskCardBlock", "status"): False,
+    ("NumberInputElement", "is_decimal_allowed"): False,
+    ("WorkflowButtonElement", "action_id"): False,
+    ("IconButtonElement", "icon"): False,
+    ("FileBlock", "source"): False,
+    ("ImageBlock", "image_url"): True,
+}
+
 
 def getter_name(method_name: str) -> str:
     if method_name.startswith("is") and method_name[2:3].isupper():
@@ -281,7 +296,7 @@ def field_getter(model: Model, owner: dict, field: dict, imports: Imports) -> st
     name, wire, kind = owner["name"], field["wire"], field["kind"]
     if (owner["package"], wire) in GETTER_SKIPS or (name in TEXT_OBJECT_TYPES and wire == "text"):
         return None
-    required = bool(field.get("required"))
+    required = GETTER_REQUIRED_UNTIL_3_0.get((name, wire), bool(field.get("required")))
     target = field.get("type")
     helper = f'"{name}", "{wire}"'
     imports.add(f"{BASE_PACKAGE}.internal.TypedFields")
@@ -350,6 +365,11 @@ def field_getter(model: Model, owner: dict, field: dict, imports: Imports) -> st
         "@throws IllegalStateException if the field was set through a raw wire field to a value"
         " this type cannot represent",
     ]
+    if required and not field.get("required"):
+        doc[-1] = (
+            "@throws IllegalStateException if the field is not set, or was set through a raw wire"
+            " field to a value this type cannot represent"
+        )
     return "\n".join([
         javadoc(doc, "  "),
         f"  public {signature} {getter_name(field['method'])}() {{",

@@ -21,6 +21,7 @@ import java.util.Optional;
  * Builder#build()} to validate and create an immutable value.
  *
  * <ul>
+ *   <li>Required: {@code blocks}.
  *   <li>Only blocks supported in messages are accepted.
  * </ul>
  *
@@ -116,7 +117,7 @@ public final class Attachment implements SlackObject {
     /**
      * Adds the attachment's blocks in display order.
      *
-     * <p>Each call appends to any values already added.
+     * <p>Required. Each call appends to any values already added.
      *
      * @param values {@link Block} values appended in order
      * @return this builder

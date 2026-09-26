@@ -115,6 +115,8 @@ public final class RichTextQuote implements RichTextBlockElement {
     /**
      * Sets the width of the left border, in pixels.
      *
+     * <p>Must be between 0 and 1.
+     *
      * @param value value for Slack's {@code border} field
      * @return this builder
      */

@@ -21,7 +21,8 @@ import java.util.Optional;
  * Builder#build()} to validate and create an immutable value.
  *
  * <ul>
- *   <li>Required: {@code taskId}, {@code title}.
+ *   <li>Required: {@code taskId}, {@code title}, {@code status}.
+ *   <li>A standalone task card's status cannot be pending; pending is only valid for plan tasks.
  * </ul>
  *
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/task-card-block">Slack
@@ -208,6 +209,8 @@ public final class TaskCardBlock implements Block {
 
     /**
      * Sets the task's current state.
+     *
+     * <p>Required.
      *
      * @param value value for Slack's {@code status} field
      * @return this builder
