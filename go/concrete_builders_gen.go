@@ -590,7 +590,7 @@ func (b *BarChartBuilder) AxisConfig(value *AxisConfigBuilder) *BarChartBuilder 
 //
 // An interactive button that sends a payload or opens a URL.
 //
-//   - Required: Text and ActionID.
+//   - Required: Text.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/button-element for Slack's reference.
 type ButtonBuilder struct{ *concreteBuilder }
@@ -613,8 +613,8 @@ func (b *ButtonBuilder) TextObject(value *PlainTextBuilder) *ButtonBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *ButtonBuilder) ActionID(value string) *ButtonBuilder {
 	b.core.ActionID(value)
 	return b
@@ -795,8 +795,6 @@ func (b *CarouselBlockBuilder) BlockID(value string) *CarouselBlockBuilder {
 //
 // A menu for selecting multiple public channels.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element for Slack's reference.
 type ChannelMultiSelectBuilder struct{ *concreteBuilder }
 
@@ -805,8 +803,8 @@ func newChannelMultiSelectBuilder(core *builder) *ChannelMultiSelectBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *ChannelMultiSelectBuilder) ActionID(value string) *ChannelMultiSelectBuilder {
 	b.core.ActionID(value)
 	return b
@@ -857,8 +855,6 @@ func (b *ChannelMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *
 //
 // A menu for selecting one public channel.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element for Slack's reference.
 type ChannelSelectBuilder struct{ *concreteBuilder }
 
@@ -867,8 +863,8 @@ func newChannelSelectBuilder(core *builder) *ChannelSelectBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *ChannelSelectBuilder) ActionID(value string) *ChannelSelectBuilder {
 	b.core.ActionID(value)
 	return b
@@ -944,7 +940,7 @@ func (b *ChartSegmentBuilder) Value(value float64) *ChartSegmentBuilder {
 //
 // A group of checkboxes.
 //
-//   - Required: ActionID and Options.
+//   - Required: Options.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/checkboxes-element for Slack's reference.
 type CheckboxesBuilder struct{ *concreteBuilder }
@@ -954,8 +950,8 @@ func newCheckboxesBuilder(core *builder) *CheckboxesBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *CheckboxesBuilder) ActionID(value string) *CheckboxesBuilder {
 	b.core.ActionID(value)
 	return b
@@ -1294,8 +1290,6 @@ func (b *ConversationFilterBuilder) ExcludeBotUsers(value bool) *ConversationFil
 //
 // A menu for selecting multiple conversations.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element for Slack's reference.
 type ConversationMultiSelectBuilder struct{ *concreteBuilder }
 
@@ -1304,8 +1298,8 @@ func newConversationMultiSelectBuilder(core *builder) *ConversationMultiSelectBu
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *ConversationMultiSelectBuilder) ActionID(value string) *ConversationMultiSelectBuilder {
 	b.core.ActionID(value)
 	return b
@@ -1369,8 +1363,6 @@ func (b *ConversationMultiSelectBuilder) PlaceholderObject(value *PlainTextBuild
 //
 // A menu for selecting one conversation.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element for Slack's reference.
 type ConversationSelectBuilder struct{ *concreteBuilder }
 
@@ -1379,8 +1371,8 @@ func newConversationSelectBuilder(core *builder) *ConversationSelectBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *ConversationSelectBuilder) ActionID(value string) *ConversationSelectBuilder {
 	b.core.ActionID(value)
 	return b
@@ -1589,8 +1581,6 @@ func (b *DataVisualizationBlockBuilder) BlockID(value string) *DataVisualization
 //
 // A calendar date picker.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element for Slack's reference.
 type DatePickerBuilder struct{ *concreteBuilder }
 
@@ -1599,8 +1589,8 @@ func newDatePickerBuilder(core *builder) *DatePickerBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *DatePickerBuilder) ActionID(value string) *DatePickerBuilder {
 	b.core.ActionID(value)
 	return b
@@ -1644,8 +1634,6 @@ func (b *DatePickerBuilder) PlaceholderObject(value *PlainTextBuilder) *DatePick
 //
 // A combined date and time picker.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/datetime-picker-element for Slack's reference.
 type DateTimePickerBuilder struct{ *concreteBuilder }
 
@@ -1654,8 +1642,8 @@ func newDateTimePickerBuilder(core *builder) *DateTimePickerBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *DateTimePickerBuilder) ActionID(value string) *DateTimePickerBuilder {
 	b.core.ActionID(value)
 	return b
@@ -1722,8 +1710,6 @@ func (b *DividerBlockBuilder) BlockID(value string) *DividerBlockBuilder {
 //
 // A single-line input that accepts an email address.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/email-input-element for Slack's reference.
 type EmailInputBuilder struct{ *concreteBuilder }
 
@@ -1732,8 +1718,8 @@ func newEmailInputBuilder(core *builder) *EmailInputBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *EmailInputBuilder) ActionID(value string) *EmailInputBuilder {
 	b.core.ActionID(value)
 	return b
@@ -1777,8 +1763,6 @@ func (b *EmailInputBuilder) PlaceholderObject(value *PlainTextBuilder) *EmailInp
 //
 // A menu for selecting multiple options loaded from your app.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element for Slack's reference.
 type ExternalMultiSelectBuilder struct{ *concreteBuilder }
 
@@ -1787,8 +1771,8 @@ func newExternalMultiSelectBuilder(core *builder) *ExternalMultiSelectBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *ExternalMultiSelectBuilder) ActionID(value string) *ExternalMultiSelectBuilder {
 	b.core.ActionID(value)
 	return b
@@ -1850,8 +1834,6 @@ func (b *ExternalMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) 
 //
 // A menu for selecting one option loaded from your app.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element for Slack's reference.
 type ExternalSelectBuilder struct{ *concreteBuilder }
 
@@ -1860,8 +1842,8 @@ func newExternalSelectBuilder(core *builder) *ExternalSelectBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *ExternalSelectBuilder) ActionID(value string) *ExternalSelectBuilder {
 	b.core.ActionID(value)
 	return b
@@ -2020,8 +2002,6 @@ func (b *FileBlockBuilder) BlockID(value string) *FileBlockBuilder {
 //
 // An input that lets users upload files.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/file-input-element for Slack's reference.
 type FileInputBuilder struct{ *concreteBuilder }
 
@@ -2030,8 +2010,8 @@ func newFileInputBuilder(core *builder) *FileInputBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *FileInputBuilder) ActionID(value string) *FileInputBuilder {
 	b.core.ActionID(value)
 	return b
@@ -2099,8 +2079,8 @@ func newHomeTabBuilder(core *builder) *HomeTabBuilder {
 	return &HomeTabBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Blocks adds the blocks shown on the App Home tab, in display order. Required. Must contain
-// between 1 and 100 items. Each call appends to any values already added.
+// Blocks adds the blocks shown on the App Home tab, in display order. Required. Slack allows at
+// most 100 items. Each call appends to any values already added.
 func (b *HomeTabBuilder) Blocks(values ...Block) *HomeTabBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -2450,8 +2430,8 @@ func newMarkdownBlockBuilder(core *builder) *MarkdownBlockBuilder {
 	return &MarkdownBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Text sets standard markdown content, which Slack renders directly. Required. Must be between
-// 1 and 12000 characters.
+// Text sets standard markdown content, which Slack renders directly. Required. Slack allows at
+// most 12000 characters.
 func (b *MarkdownBlockBuilder) Text(value string) *MarkdownBlockBuilder {
 	b.core.Text(value)
 	return b
@@ -2629,8 +2609,8 @@ func (b *ModalBuilder) TitleObject(value *PlainTextBuilder) *ModalBuilder {
 	return b
 }
 
-// Blocks adds the blocks shown in the modal, in display order. Required. Must contain between 1
-// and 100 items. Each call appends to any values already added.
+// Blocks adds the blocks shown in the modal, in display order. Required. Slack allows at most
+// 100 items. Each call appends to any values already added.
 func (b *ModalBuilder) Blocks(values ...Block) *ModalBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -2712,7 +2692,7 @@ func (b *ModalBuilder) SubmitDisabled(value bool) *ModalBuilder {
 //
 // An input that accepts whole or decimal numbers.
 //
-//   - Required: ActionID and IsDecimalAllowed.
+//   - Required: IsDecimalAllowed.
 //   - The minimum value cannot exceed the maximum value.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/number-input-element for Slack's reference.
@@ -2723,8 +2703,8 @@ func newNumberInputBuilder(core *builder) *NumberInputBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *NumberInputBuilder) ActionID(value string) *NumberInputBuilder {
 	b.core.ActionID(value)
 	return b
@@ -2878,7 +2858,7 @@ func (b *OptionGroupBuilder) Options(values ...*OptionBuilder) *OptionGroupBuild
 //
 // A compact menu of up to five options.
 //
-//   - Required: ActionID and Options.
+//   - Required: Options.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/overflow-menu-element for Slack's reference.
 type OverflowBuilder struct{ *concreteBuilder }
@@ -2888,8 +2868,8 @@ func newOverflowBuilder(core *builder) *OverflowBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *OverflowBuilder) ActionID(value string) *OverflowBuilder {
 	b.core.ActionID(value)
 	return b
@@ -2965,8 +2945,6 @@ func (b *PlainTextBuilder) Emoji(value bool) *PlainTextBuilder {
 //
 // A single-line or multi-line free-text input.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element for Slack's reference.
 type PlainTextInputBuilder struct{ *concreteBuilder }
 
@@ -2975,8 +2953,8 @@ func newPlainTextInputBuilder(core *builder) *PlainTextInputBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *PlainTextInputBuilder) ActionID(value string) *PlainTextInputBuilder {
 	b.core.ActionID(value)
 	return b
@@ -3079,7 +3057,7 @@ func (b *PlanBlockBuilder) BlockID(value string) *PlanBlockBuilder {
 //
 // A group of radio buttons.
 //
-//   - Required: ActionID and Options.
+//   - Required: Options.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/radio-button-group-element for Slack's reference.
 type RadioButtonsBuilder struct{ *concreteBuilder }
@@ -3089,8 +3067,8 @@ func newRadioButtonsBuilder(core *builder) *RadioButtonsBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *RadioButtonsBuilder) ActionID(value string) *RadioButtonsBuilder {
 	b.core.ActionID(value)
 	return b
@@ -3675,7 +3653,6 @@ func (b *SlackIconBuilder) Name(value string) *SlackIconBuilder {
 //
 // A menu for selecting multiple options defined in the payload.
 //
-//   - Required: ActionID.
 //   - Use options or option groups, not both.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element for Slack's reference.
@@ -3686,8 +3663,8 @@ func newStaticMultiSelectBuilder(core *builder) *StaticMultiSelectBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *StaticMultiSelectBuilder) ActionID(value string) *StaticMultiSelectBuilder {
 	b.core.ActionID(value)
 	return b
@@ -3765,7 +3742,6 @@ func (b *StaticMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *S
 //
 // A menu for selecting one option defined in the payload.
 //
-//   - Required: ActionID.
 //   - Use options or option groups, not both.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element for Slack's reference.
@@ -3776,8 +3752,8 @@ func newStaticSelectBuilder(core *builder) *StaticSelectBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *StaticSelectBuilder) ActionID(value string) *StaticSelectBuilder {
 	b.core.ActionID(value)
 	return b
@@ -3846,7 +3822,6 @@ func (b *StaticSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *Static
 // A simple table of raw text and rich text cells.
 //
 //   - Required: Rows.
-//   - Every row must have the same number of cells.
 //
 // See https://docs.slack.dev/reference/block-kit/blocks/table-block for Slack's reference.
 type TableBlockBuilder struct{ *slackBlockBuilder }
@@ -3955,8 +3930,6 @@ func (b *TaskCardBlockBuilder) BlockID(value string) *TaskCardBlockBuilder {
 //
 // A time-of-day picker.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element for Slack's reference.
 type TimePickerBuilder struct{ *concreteBuilder }
 
@@ -3965,8 +3938,8 @@ func newTimePickerBuilder(core *builder) *TimePickerBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *TimePickerBuilder) ActionID(value string) *TimePickerBuilder {
 	b.core.ActionID(value)
 	return b
@@ -4046,8 +4019,6 @@ func (b *TriggerBuilder) CustomizableInputParameters(values ...*InputParameterBu
 //
 // A single-line input that accepts a URL.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/url-input-element for Slack's reference.
 type URLInputBuilder struct{ *concreteBuilder }
 
@@ -4056,8 +4027,8 @@ func newURLInputBuilder(core *builder) *URLInputBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *URLInputBuilder) ActionID(value string) *URLInputBuilder {
 	b.core.ActionID(value)
 	return b
@@ -4110,7 +4081,7 @@ func newURLSourceBuilder(core *builder) *URLSourceBuilder {
 	return &URLSourceBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// URL sets the source URL. Required. Must be between 1 and 3000 characters.
+// URL sets the source URL. Required.
 func (b *URLSourceBuilder) URL(value string) *URLSourceBuilder {
 	b.core.URL(value)
 	return b
@@ -4126,8 +4097,6 @@ func (b *URLSourceBuilder) Text(value string) *URLSourceBuilder {
 //
 // A menu for selecting multiple workspace users.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element for Slack's reference.
 type UserMultiSelectBuilder struct{ *concreteBuilder }
 
@@ -4136,8 +4105,8 @@ func newUserMultiSelectBuilder(core *builder) *UserMultiSelectBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *UserMultiSelectBuilder) ActionID(value string) *UserMultiSelectBuilder {
 	b.core.ActionID(value)
 	return b
@@ -4188,8 +4157,6 @@ func (b *UserMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *Use
 //
 // A menu for selecting one workspace user.
 //
-//   - Required: ActionID.
-//
 // See https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element for Slack's reference.
 type UserSelectBuilder struct{ *concreteBuilder }
 
@@ -4198,8 +4165,8 @@ func newUserSelectBuilder(core *builder) *UserSelectBuilder {
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Required. Slack allows at most
-// 255 characters.
+// element. It must be unique among the elements of its block. Slack allows at most 255
+// characters.
 func (b *UserSelectBuilder) ActionID(value string) *UserSelectBuilder {
 	b.core.ActionID(value)
 	return b

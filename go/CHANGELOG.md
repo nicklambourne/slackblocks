@@ -47,6 +47,13 @@ same version number as the Python, TypeScript, and Java packages.
 - Newly accepted: `input` blocks in messages, `data_visualization` blocks in
   App Home, and tables with fewer or more `column_settings` than columns (up
   to 20).
+- `ActionID` is now optional on every interactive element except rich text
+  inputs and workflow buttons; when it is not set, no `action_id` is sent. The
+  255-character limit still applies when it is set.
+- Also newly accepted: task card source URLs of any length (including empty),
+  empty markdown block text, modals and App Home tabs with no blocks, and
+  `table` rows with different numbers of cells (`data_table` rows must still
+  match).
 - `ImageBlockBuilder` gains `SlackFile`; an image block needs exactly one of
   `ImageURL` or `SlackFile`.
 - `RichTextInputBuilder.InitialValue` now takes a `*RichTextBlockBuilder`

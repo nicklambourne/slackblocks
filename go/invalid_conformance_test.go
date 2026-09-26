@@ -32,8 +32,8 @@ func TestSharedInvalidFixtures(t *testing.T) {
 	if manifest.SpecVersion != slackblocks.SpecVersion {
 		t.Fatalf("spec version = %q, want %q", slackblocks.SpecVersion, manifest.SpecVersion)
 	}
-	if len(manifest.Cases) != 172 {
-		t.Fatalf("expected 172 invalid cases, got %d", len(manifest.Cases))
+	if len(manifest.Cases) != 167 {
+		t.Fatalf("expected 167 invalid cases, got %d", len(manifest.Cases))
 	}
 
 	for _, testCase := range manifest.Cases {
@@ -166,16 +166,10 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewRadioButtons().ActionID("a").Set("options", []any{}))
 	case "radio-buttons-too-many-options":
 		return buildError(slackblocks.NewRadioButtons().ActionID("a").Options(copies(11, func(int) *slackblocks.OptionBuilder { return choice() })...))
-	case "url-source-url-empty":
-		return buildError(slackblocks.NewURLSource().URL("").Text("text"))
-	case "url-source-url-too-long":
-		return buildError(slackblocks.NewURLSource().URL(repeated("x", 3001)).Text("text"))
 	case "table-too-many-rows":
 		return buildError(slackblocks.NewTableBlock().Rows(copies(101, func(int) []slackblocks.TableCell { return []slackblocks.TableCell{rawText("A")} })...))
 	case "table-too-many-columns":
 		return buildError(slackblocks.NewTableBlock().Rows(copies(21, func(int) slackblocks.TableCell { return rawText("A") })))
-	case "table-ragged-rows":
-		return buildError(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText("A"), rawText("B")}, []slackblocks.TableCell{rawText("C")}))
 	case "file-input-max-files-too-small":
 		return buildError(slackblocks.NewFileInput().ActionID("a").MaxFiles(0))
 	case "file-input-max-files-too-large":
@@ -202,8 +196,6 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewInputBlock().Label(repeated("x", 2001)).Element(slackblocks.NewPlainTextInput().ActionID("a")))
 	case "input-hint-too-long":
 		return buildError(slackblocks.NewInputBlock().Label("Label").Hint(repeated("x", 2001)).Element(slackblocks.NewPlainTextInput().ActionID("a")))
-	case "markdown-empty":
-		return buildError(slackblocks.NewMarkdownBlock().Text(""))
 	case "markdown-too-long":
 		return buildError(slackblocks.NewMarkdownBlock().Text(repeated("x", 12001)))
 	case "section-text-too-long":
@@ -238,8 +230,6 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewHomeTab().Blocks(slackblocks.NewAlertBlock().Text("Modal only")))
 	case "modal-input-requires-submit":
 		return buildError(slackblocks.NewModal().Title("Missing submit").Blocks(slackblocks.NewInputBlock().Label("Name").Element(slackblocks.NewPlainTextInput().ActionID("name"))))
-	case "view-missing-blocks":
-		return buildError(slackblocks.NewHomeTab().Set("blocks", []any{}))
 	case "view-too-many-blocks":
 		return buildError(slackblocks.NewHomeTab().Blocks(copies(101, func(int) slackblocks.Block { return slackblocks.NewDividerBlock() })...))
 	case "view-private-metadata-too-long":
