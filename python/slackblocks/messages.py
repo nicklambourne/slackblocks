@@ -13,6 +13,8 @@ from typing import Any
 
 from slackblocks._core import resolve
 from slackblocks._limits import (
+    DATA_TABLE_TOTAL_CONTENT_MAX_LENGTH,
+    MARKDOWN_TOTAL_TEXT_MAX_LENGTH,
     MESSAGE_ATTACHMENTS_MAX_ITEMS,
     MESSAGE_BLOCKS_MAX_ITEMS,
     MESSAGE_CHANNEL_MIN_LENGTH,
@@ -21,8 +23,8 @@ from slackblocks._surfaces import validate_surface_blocks
 from slackblocks.utils import coerce_to_list, validate_string_nonnull
 
 from .attachments import Attachment
-from .blocks import Block
-from .errors import TypeMismatchError
+from .blocks import Block, DataTableBlock, MarkdownBlock, _text_character_count
+from .errors import LengthError, TypeMismatchError
 
 
 class ResponseType(Enum):
@@ -40,6 +42,32 @@ class ResponseType(Enum):
         if value not in [response_type.value for response_type in ResponseType]:
             raise TypeMismatchError("ResponseType must be either `ephemeral` or `in_channel`")
         return value
+
+
+def _validate_message_totals(
+    blocks: list[Block] | None, attachments: list[Attachment] | None
+) -> None:
+    """Apply Slack's message-wide limits on markdown and data table text.
+
+    Both totals count the message's blocks and the blocks of its attachments.
+    """
+    all_blocks = [*(blocks or []), *(block for att in attachments or [] for block in att.blocks)]
+    markdown = sum(len(block.text) for block in all_blocks if isinstance(block, MarkdownBlock))
+    if markdown > MARKDOWN_TOTAL_TEXT_MAX_LENGTH:
+        raise LengthError(
+            f"Markdown block text ({markdown} characters) exceeds the message-wide limit of "
+            f"{MARKDOWN_TOTAL_TEXT_MAX_LENGTH} characters."
+        )
+    data_table = sum(
+        _text_character_count(resolve(block.rows))
+        for block in all_blocks
+        if isinstance(block, DataTableBlock)
+    )
+    if data_table > DATA_TABLE_TOTAL_CONTENT_MAX_LENGTH:
+        raise LengthError(
+            f"Data table cell text ({data_table} characters) exceeds the message-wide limit of "
+            f"{DATA_TABLE_TOTAL_CONTENT_MAX_LENGTH} characters."
+        )
 
 
 class _MessagePayloadMixin:
@@ -97,6 +125,7 @@ class BaseMessage(_MessagePayloadMixin):
         self.mrkdwn = mrkdwn
         if self.blocks is not None:
             validate_surface_blocks(self.blocks, "message")
+        _validate_message_totals(self.blocks, self.attachments)
 
     def _resolve(self) -> dict[str, Any]:
         # The 'text' field is intentionally emitted even when it is an empty
@@ -261,6 +290,7 @@ class WebhookMessage(_MessagePayloadMixin):
         )
         if self.blocks is not None:
             validate_surface_blocks(self.blocks, "message")
+        _validate_message_totals(self.blocks, self.attachments)
         self.response_type = (
             ResponseType.get_value(response_type) if response_type is not None else None
         )

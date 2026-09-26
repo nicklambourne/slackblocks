@@ -12,9 +12,10 @@ from json import dumps
 from typing import Any
 
 from slackblocks._core import resolve
+from slackblocks._surfaces import validate_standalone_task_cards
 from slackblocks.blocks import Block
-from slackblocks.errors import TypeMismatchError
-from slackblocks.utils import coerce_to_list, is_hex
+from slackblocks.errors import MissingRequiredError, TypeMismatchError
+from slackblocks.utils import coerce_to_list, coerce_to_list_nonnull, is_hex
 
 
 class Color(Enum):
@@ -99,7 +100,7 @@ class Attachment:
     `slackblocks`.
 
     Args:
-        blocks: an array of Blocks that define the content of the attachment.
+        blocks: an array of Blocks that define the content of the attachment (required).
         color: the color (in hex format, e.g. #ffffff) of the vertical bar to the left of the
             attachment content. Consider using the `Color` enum from this module.
         fields: a list of `Field` objects to be included in what's rendered in the attachment.
@@ -107,7 +108,7 @@ class Attachment:
             formatted text (eg. IRC, mobile notifications).
 
     Throws:
-        InvalidUsageError: if the `color` code provided is invalid.
+        InvalidUsageError: if `blocks` is missing or the `color` code provided is invalid.
     """
 
     def __init__(
@@ -117,7 +118,10 @@ class Attachment:
         fields: Field | list[Field] | None = None,
         fallback: str | None = None,
     ):
-        self.blocks = coerce_to_list(blocks, Block, allow_none=True)
+        if blocks is None:
+            raise MissingRequiredError("Attachment requires `blocks`.")
+        self.blocks: list[Block] = coerce_to_list_nonnull(blocks, Block)
+        validate_standalone_task_cards(self.blocks)
         self.fields = coerce_to_list(fields, Field, allow_none=True)
         self.fallback = fallback
         self.color: str | None
