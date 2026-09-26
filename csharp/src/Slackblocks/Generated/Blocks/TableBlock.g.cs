@@ -10,7 +10,6 @@ namespace Slackblocks.Blocks;
 /// <remarks>
 /// <list type="bullet">
 /// <item><description>Required: <c>rows</c>.</description></item>
-/// <item><description>Every row must have the same number of cells.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/table-block">Slack reference</see>.</para>
 /// </remarks>

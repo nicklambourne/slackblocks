@@ -8,16 +8,13 @@ namespace Slackblocks.Elements;
 
 /// <summary>A calendar date picker.</summary>
 /// <remarks>
-/// <list type="bullet">
-/// <item><description>Required: <c>actionId</c>.</description></item>
-/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
 public sealed partial class DatePickerElement : global::Slackblocks.SlackObject, global::Slackblocks.Elements.IInputElement
 {
     /// <summary>Creates and validates a <see cref="DatePickerElement"/>.</summary>
-    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="initialDate">The initially selected date, formatted as YYYY-MM-DD.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
     /// <param name="focusOnLoad">Whether the element receives focus when the view opens. Only one element per view may do so.</param>
@@ -26,7 +23,7 @@ public sealed partial class DatePickerElement : global::Slackblocks.SlackObject,
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public DatePickerElement(
-        string actionId,
+        string? actionId = null,
         string? initialDate = null,
         global::Slackblocks.Objects.Confirmation? confirm = null,
         bool? focusOnLoad = null,
@@ -34,7 +31,7 @@ public sealed partial class DatePickerElement : global::Slackblocks.SlackObject,
         global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("DatePickerElement", "datepicker");
-        ActionId = wire.String("action_id", actionId)!;
+        ActionId = wire.String("action_id", actionId);
         InitialDate = wire.String("initial_date", initialDate);
         Confirm = wire.Object("confirm", confirm);
         FocusOnLoad = wire.Boolean("focus_on_load", focusOnLoad);
@@ -43,7 +40,8 @@ public sealed partial class DatePickerElement : global::Slackblocks.SlackObject,
     }
 
     /// <summary>Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.</summary>
-    public string ActionId { get; }
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? ActionId { get; }
 
     /// <summary>Gets the initially selected date, formatted as YYYY-MM-DD.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>

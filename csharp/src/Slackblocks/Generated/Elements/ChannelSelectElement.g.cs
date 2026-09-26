@@ -8,16 +8,13 @@ namespace Slackblocks.Elements;
 
 /// <summary>A menu for selecting one public channel.</summary>
 /// <remarks>
-/// <list type="bullet">
-/// <item><description>Required: <c>actionId</c>.</description></item>
-/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
 public sealed partial class ChannelSelectElement : global::Slackblocks.SlackObject, global::Slackblocks.Elements.IInputElement
 {
     /// <summary>Creates and validates a <see cref="ChannelSelectElement"/>.</summary>
-    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="initialChannel">The channel ID selected when the menu loads.</param>
     /// <param name="responseUrlEnabled">Whether the selected conversation receives a response URL in the view submission payload. Only valid in modals.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
@@ -27,7 +24,7 @@ public sealed partial class ChannelSelectElement : global::Slackblocks.SlackObje
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public ChannelSelectElement(
-        string actionId,
+        string? actionId = null,
         string? initialChannel = null,
         bool? responseUrlEnabled = null,
         global::Slackblocks.Objects.Confirmation? confirm = null,
@@ -36,7 +33,7 @@ public sealed partial class ChannelSelectElement : global::Slackblocks.SlackObje
         global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("ChannelSelectElement", "channels_select");
-        ActionId = wire.String("action_id", actionId)!;
+        ActionId = wire.String("action_id", actionId);
         InitialChannel = wire.String("initial_channel", initialChannel);
         ResponseUrlEnabled = wire.Boolean("response_url_enabled", responseUrlEnabled);
         Confirm = wire.Object("confirm", confirm);
@@ -46,7 +43,8 @@ public sealed partial class ChannelSelectElement : global::Slackblocks.SlackObje
     }
 
     /// <summary>Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.</summary>
-    public string ActionId { get; }
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? ActionId { get; }
 
     /// <summary>Gets the channel ID selected when the menu loads.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>
