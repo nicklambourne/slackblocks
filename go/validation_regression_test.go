@@ -148,3 +148,32 @@ func TestInputBlocksAreAllowedInMessages(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestRelaxedRulesKeepTheirDocumentedLimits(t *testing.T) {
+	for _, typeName := range []string{
+		"button", "channels_select", "checkboxes", "conversations_select", "datepicker",
+		"datetimepicker", "email_text_input", "external_select", "file_input",
+		"multi_channels_select", "multi_conversations_select", "multi_external_select",
+		"multi_static_select", "multi_users_select", "number_input", "overflow",
+		"plain_text_input", "radio_buttons", "static_select", "timepicker",
+		"url_text_input", "users_select",
+	} {
+		if err := slackblocks.Validate(slackblocks.Object{"type": typeName}); err != nil && strings.Contains(err.Error(), "action_id") {
+			t.Fatalf("%s: action_id should be optional: %v", typeName, err)
+		}
+	}
+	assertValidationError(t, slackblocks.Validate(slackblocks.Object{"type": "rich_text_input"}), slackblocks.MissingRequired, "")
+	assertValidationError(t, buildError(slackblocks.NewButton().Text("A").ActionID(repeated("x", 256))), slackblocks.LengthExceeded, "action_id")
+
+	for _, url := range []string{"", repeated("x", 30000)} {
+		if _, err := slackblocks.NewURLSource().URL(url).Text("Source").Build(); err != nil {
+			t.Fatalf("url_source.url of length %d: %v", len(url), err)
+		}
+	}
+
+	_, err := slackblocks.NewDataTableBlock().Caption("Scores").Rows(
+		[]slackblocks.DataTableCell{rawText("A"), rawText("B")},
+		[]slackblocks.DataTableCell{rawText("C")},
+	).Build()
+	assertValidationError(t, err, slackblocks.InvalidUsage, "rows[1]")
+}
