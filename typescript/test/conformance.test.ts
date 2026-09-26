@@ -22,6 +22,7 @@ import {
   channelMultiSelect,
   channelSelect,
   checkboxes,
+  columnSettings,
   confirmation,
   containerBlock,
   contextBlock,
@@ -79,6 +80,7 @@ import {
   richTextUser,
   richTextUserGroup,
   sectionBlock,
+  slackFile,
   slackIcon,
   staticMultiSelect,
   staticSelect,
@@ -193,14 +195,26 @@ function constructChart(payload: FixtureInput): unknown {
   throw new Error(`No chart factory for ${String(payload.type)}`);
 }
 
-function constructTask(payload: FixtureInput): unknown {
+// Plan tasks skip standalone validation because only a plan accepts a pending
+// task; `planBlock` validates them as plan tasks.
+function constructTask(payload: FixtureInput, settings: api.FactorySettings = {}): unknown {
   const value = withoutType(payload);
-  return taskCardBlock({
+  return taskCardBlock(
+    {
+      ...value,
+      details: value.details === undefined ? undefined : constructBlock(value.details),
+      output: value.output === undefined ? undefined : constructBlock(value.output),
+      sources: value.sources?.map((source: FixtureInput) => urlSource(withoutType(source))),
+    },
+    settings,
+  );
+}
+
+function constructImage(value: FixtureInput): FixtureInput {
+  return {
     ...value,
-    details: value.details === undefined ? undefined : constructBlock(value.details),
-    output: value.output === undefined ? undefined : constructBlock(value.output),
-    sources: value.sources?.map((source: FixtureInput) => urlSource(withoutType(source))),
-  });
+    slackFile: value.slackFile === undefined ? undefined : slackFile(value.slackFile),
+  };
 }
 
 function constructBlock(payload: FixtureInput): unknown {
@@ -241,13 +255,13 @@ function constructBlock(payload: FixtureInput): unknown {
     case "divider": return dividerBlock(value);
     case "file": return fileBlock(value);
     case "header": return headerBlock(value);
-    case "image": return imageBlock(value);
+    case "image": return imageBlock(constructImage(value));
     case "input": return inputBlock(value);
     case "markdown": return markdownBlock(value);
     case "plan":
       return planBlock({
         ...value,
-        tasks: value.tasks?.map((task: FixtureInput) => constructTask(task)),
+        tasks: value.tasks?.map((task: FixtureInput) => constructTask(task, { validate: false })),
       });
     case "rich_text": return richTextBlock(value);
     case "section": return sectionBlock(value);
@@ -270,7 +284,7 @@ function constructElement(input: FixtureInput): unknown {
     case "email_text_input": return emailInput(value);
     case "feedback_buttons": return feedbackButtons(value);
     case "external_select": return externalSelect(value);
-    case "image": return imageElement(value);
+    case "image": return imageElement(constructImage(value));
     case "icon_button": return iconButton(value);
     case "multi_channels_select": return channelMultiSelect(value);
     case "multi_conversations_select": return conversationMultiSelect(value);
@@ -281,7 +295,12 @@ function constructElement(input: FixtureInput): unknown {
     case "overflow": return overflow(value);
     case "plain_text_input": return plainTextInput(value);
     case "radio_buttons": return radioButtons(value);
-    case "rich_text_input": return richTextInput(value);
+    case "rich_text_input":
+      return richTextInput({
+        ...value,
+        initialValue:
+          value.initialValue === undefined ? undefined : constructBlock(value.initialValue),
+      });
     case "static_select": return staticSelect(value);
     case "timepicker": return timePicker(value);
     case "url_text_input": return urlInput(value);
@@ -431,6 +450,10 @@ const validSeries = (name = "Series") =>
   dataSeries({ name, data: [dataPoint({ label: "A", value: 1 })] });
 const validWorkflow = () =>
   workflow({ trigger: trigger({ url: "https://slack.com/shortcuts/Ft0/abc" }) });
+const validTask = (taskId = "task") =>
+  taskCardBlock({ taskId, title: "Task", status: "complete" });
+const listItem = () => richTextSection([richText("Item")]);
+const validImageUrl = "https://example.com/image.png";
 
 const invalidCases: Record<string, () => unknown> = {
   "text-empty": () => plainText(""),
@@ -589,11 +612,6 @@ const invalidCases: Record<string, () => unknown> = {
     }),
   "table-ragged-rows": () =>
     tableBlock({ rows: [[rawText("A"), rawText("B")], [rawText("C")]] }),
-  "table-column-settings-mismatch": () =>
-    tableBlock({
-      rows: [[rawText("A"), rawText("B")]],
-      columnSettings: [{ isWrapped: true }],
-    }),
   "file-input-max-files-too-small": () =>
     fileInput({ actionId: "a", maxFiles: limits.file_input.max_files.min - 1 }),
   "file-input-max-files-too-large": () =>
@@ -734,7 +752,7 @@ const invalidCases: Record<string, () => unknown> = {
     imageElement({
       altText: "image",
       imageUrl: "https://example.com/image.png",
-      slackFile: { id: "F123" },
+      slackFile: slackFile({ id: "F0123ABC456" }),
     } as any),
   "number-input-inverted-range": () =>
     numberInput({ actionId: "a", isDecimalAllowed: true, minValue: 2, maxValue: 1 }),
@@ -752,11 +770,13 @@ const invalidCases: Record<string, () => unknown> = {
   "workflow-button-text-too-long": () =>
     workflowButton({
       text: "x".repeat(limits.workflow_button.text.max_length + 1),
+      actionId: "run",
       workflow: validWorkflow(),
     }),
   "workflow-button-accessibility-label-too-long": () =>
     workflowButton({
       text: "Run",
+      actionId: "run",
       workflow: validWorkflow(),
       accessibilityLabel: "x".repeat(limits.workflow_button.accessibility_label.max_length + 1),
     }),
@@ -958,6 +978,162 @@ const invalidCases: Record<string, () => unknown> = {
       categories: ["A"],
       xLabel: "x".repeat(limits.data_visualization.axis_label.max_length + 1),
     }),
+  "plain-text-input-min-length-negative": () =>
+    plainTextInput({ actionId: "a", minLength: limits.plain_text_input.min_length.min - 1 }),
+  "plain-text-input-min-length-too-large": () =>
+    plainTextInput({ actionId: "a", minLength: limits.plain_text_input.min_length.max + 1 }),
+  "plain-text-input-max-length-too-small": () =>
+    plainTextInput({ actionId: "a", maxLength: limits.plain_text_input.max_length.min - 1 }),
+  "rich-text-input-min-lines-too-small": () =>
+    richTextInput({ actionId: "a", minLines: limits.rich_text_input.min_lines.min - 1 }),
+  "rich-text-input-min-lines-too-large": () =>
+    richTextInput({ actionId: "a", minLines: limits.rich_text_input.min_lines.max + 1 }),
+  "rich-text-input-max-lines-too-small": () =>
+    richTextInput({ actionId: "a", maxLines: limits.rich_text_input.max_lines.min - 1 }),
+  "rich-text-input-max-lines-too-large": () =>
+    richTextInput({ actionId: "a", maxLines: limits.rich_text_input.max_lines.max + 1 }),
+  "multi-select-max-selected-items-too-small": () =>
+    staticMultiSelect({
+      actionId: "a",
+      options: [choice()],
+      maxSelectedItems: limits.multi_select.max_selected_items.min - 1,
+    }),
+  "conversation-filter-include-empty": () => conversationFilter({ include: [] }),
+  "conversation-filter-unknown-include": () => conversationFilter({ include: ["channels"] }),
+  "workflow-button-missing-action-id": () =>
+    workflowButton({ text: "Run", workflow: validWorkflow() } as any),
+  "number-input-missing-decimal-flag": () => numberInput({ actionId: "a" } as any),
+  "slack-icon-missing-name": () => slackIcon(undefined as any),
+  "slack-file-id-malformed": () => slackFile({ id: "F0123456" }),
+  "image-element-url-too-long": () =>
+    imageElement({
+      imageUrl: "x".repeat(limits.image_element.image_url.max_length + 1),
+      altText: "Alt",
+    }),
+  "image-element-alt-text-too-long": () =>
+    imageElement({
+      imageUrl: validImageUrl,
+      altText: "x".repeat(limits.image_element.alt_text.max_length + 1),
+    }),
+  "image-block-title-too-long": () =>
+    imageBlock({
+      imageUrl: validImageUrl,
+      altText: "Alt",
+      title: "x".repeat(limits.image.title.max_length + 1),
+    }),
+  "image-block-url-and-slack-file": () =>
+    imageBlock({
+      imageUrl: validImageUrl,
+      slackFile: slackFile({ id: "F0123ABC456" }),
+      altText: "Alt",
+    } as any),
+  "image-block-missing-source": () => imageBlock({ altText: "Alt" } as any),
+  "container-no-child-blocks": () => containerBlock({ title: "Container", childBlocks: [] }),
+  "table-too-many-column-settings": () =>
+    tableBlock({
+      rows: [[rawText("A")]],
+      columnSettings: Array.from(
+        { length: limits.table.column_settings.max_items + 1 },
+        () => columnSettings({ align: "left" }),
+      ),
+    }),
+  "data-table-row-header-index-negative": () =>
+    dataTableBlock({
+      rows: validTableRows(),
+      caption: "Names",
+      rowHeaderColumnIndex: limits.data_table.row_header_column_index.min - 1,
+    }),
+  // Each table's cells ("Name" plus one long cell) are individually within limits.
+  "data-table-total-content-too-long": () =>
+    message({
+      channel: "C123",
+      blocks: [0, 1].map(() =>
+        dataTableBlock({
+          rows: [
+            [rawText("Name")],
+            [rawText("x".repeat(limits.data_table.total_content.max_length / 2 + 1 - "Name".length))],
+          ],
+          caption: "Names",
+        }),
+      ),
+    }),
+  "markdown-total-too-long": () =>
+    message({
+      channel: "C123",
+      blocks: [0, 1].map(() =>
+        markdownBlock({ text: "x".repeat(limits.markdown.total_text.max_length / 2 + 1) }),
+      ),
+    }),
+  "plan-missing-tasks": () => planBlock({ title: "Plan" } as any),
+  "plan-too-many-tasks": () =>
+    planBlock({
+      title: "Plan",
+      tasks: Array.from({ length: limits.plan.tasks.max_items + 1 }, (_, index) =>
+        validTask(`task-${index}`),
+      ),
+    }),
+  "plan-duplicate-task-ids": () =>
+    planBlock({ title: "Plan", tasks: [validTask("task"), validTask("task")] }),
+  "task-card-missing-status": () =>
+    taskCardBlock({ taskId: "task", title: "Task" } as any),
+  "task-card-pending-status": () =>
+    taskCardBlock({ taskId: "task", title: "Task", status: "pending" }),
+  "rich-text-list-indent-negative": () =>
+    richTextList({
+      elements: [listItem()],
+      style: "bullet",
+      indent: limits.rich_text_list.indent.min - 1,
+    }),
+  "rich-text-list-indent-too-large": () =>
+    richTextList({
+      elements: [listItem()],
+      style: "bullet",
+      indent: limits.rich_text_list.indent.max + 1,
+    }),
+  "rich-text-list-offset-negative": () =>
+    richTextList({
+      elements: [listItem()],
+      style: "ordered",
+      offset: limits.rich_text_list.offset.min - 1,
+    }),
+  "rich-text-list-border-negative": () =>
+    richTextList({
+      elements: [listItem()],
+      style: "bullet",
+      border: limits.rich_text_list.border.min - 1,
+    }),
+  "rich-text-list-border-too-large": () =>
+    richTextList({
+      elements: [listItem()],
+      style: "bullet",
+      border: limits.rich_text_list.border.max + 1,
+    }),
+  "rich-text-quote-border-negative": () =>
+    richTextQuote([richText("Quote")], { border: limits.rich_text_quote.border.min - 1 }),
+  "rich-text-quote-border-too-large": () =>
+    richTextQuote([richText("Quote")], { border: limits.rich_text_quote.border.max + 1 }),
+  "rich-text-preformatted-border-negative": () =>
+    richTextCodeBlock([richText("code")], {
+      border: limits.rich_text_preformatted.border.min - 1,
+    }),
+  "rich-text-preformatted-border-too-large": () =>
+    richTextCodeBlock([richText("code")], {
+      border: limits.rich_text_preformatted.border.max + 1,
+    }),
+  "video-thumbnail-url-too-long": () =>
+    video({ thumbnailUrl: "x".repeat(limits.video.thumbnail_url.max_length + 1) }),
+  "video-url-too-long": () =>
+    video({ videoUrl: "x".repeat(limits.video.video_url.max_length + 1) }),
+  "video-title-url-too-long": () =>
+    video({ titleUrl: "x".repeat(limits.video.title_url.max_length + 1) }),
+  "video-provider-icon-url-too-long": () =>
+    video({ providerIconUrl: "x".repeat(limits.video.provider_icon_url.max_length + 1) }),
+  "view-external-id-too-long": () =>
+    homeTab({
+      blocks: [dividerBlock()],
+      externalId: "x".repeat(limits.view.external_id.max_length + 1),
+    }),
+  "attachment-missing-blocks": () => attachment({} as any),
 };
 
 const invalidManifest = readJson<InvalidManifest>(

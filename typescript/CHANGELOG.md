@@ -19,6 +19,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Raw JSON validation now rejects `column_settings` on a `data_table` block with
   `InvalidUsageError`; Slack supports `column_settings` only on the plain `table`
   block.
+- Validation now rejects more inputs that Slack's `blocks.validate` rejects: rich
+  text list `indent` outside 0-8, negative `offset`, and list, quote, and code
+  block `border` outside 0-1; image block titles over 2000 characters; video
+  `thumbnail_url` and `video_url` over 3000 characters and `title_url` and
+  `provider_icon_url` over 2000; view `external_id` over 255 characters; plain
+  text input `min_length` outside 0-3000 and `max_length` below 1; rich text input
+  `min_lines` and `max_lines` outside 1-100; multi-select `max_selected_items`
+  below 1; data table `row_header_column_index` below 0; more than 20 table
+  `column_settings`; containers with no child blocks; plans with more than 50
+  tasks or repeated task IDs; and conversation filters whose `include` list is
+  empty or names a type other than `im`, `mpim`, `private`, or `public`.
+- Slack file IDs must now match `^F[A-Z0-9]{8,}$` (for example `F0123ABC456`).
+- Message payloads, attachments, and raw payloads without a `type` are now limited
+  to 12,000 characters of markdown block text and 20,000 characters of data table
+  cell text across the whole payload.
+- These fields are now required, and their input types say so: `status` on
+  `taskCardBlock` (and on plan tasks), `tasks` on `planBlock`, `isDecimalAllowed`
+  on `numberInput`, and `actionId` on `workflowButton`. `slackIcon` without a name
+  and an attachment without blocks now throw `MissingRequiredError`; an
+  attachment with an empty `blocks` list, previously emitted as `{}`, is rejected
+  too. Raw JSON also requires `icon_button.icon` and `file.source`, which the
+  factories already default.
+- A standalone task card can no longer be `pending`; only plan tasks can. Add
+  `TaskCardBlock()` builders to `PlanBlock().tasks()`, which validates them as
+  plan tasks, or build legacy plan tasks with `{ validate: false }` and let
+  `planBlock` validate them.
+- Image blocks accept a Slack-hosted file: `ImageBlock().slackFile()` and
+  `imageBlock({ slackFile })` take exactly one of `imageUrl` or `slackFile`.
+- The rich text input's `initialValue` is now a `rich_text` block (typed
+  `SlackObject<"rich_text">`, as returned by `richTextBlock` and `RichTextBlock()`)
+  instead of a rich text element, which Slack rejects.
+- Tables accept any number of `column_settings` up to 20, rather than exactly one
+  per column.
+- `input` blocks are now allowed in messages and `data_visualization` blocks in App
+  Home tabs.
 
 ## [2.4.0] — 2026-09-17
 

@@ -247,9 +247,13 @@ export function dataVisualizationBlock(
 }
 
 /**
- * Creates one task card for a plan.
+ * Creates a task card, either standalone or for a plan.
  *
- * @param input - Task identity, title, rich content, sources, and optional status.
+ * A standalone task card cannot be `pending`; only plan tasks can. To build a
+ * pending plan task, add a `TaskCardBlock()` builder to `PlanBlock().tasks()`,
+ * or pass `{ validate: false }` here and let `planBlock` validate the task.
+ *
+ * @param input - Task identity, title, status, rich content, and sources.
  * @param settings - Per-call validation settings.
  * @returns A validated Slack `task_card` block.
  * @throws InvalidUsageError when identifiers, content, or source links are invalid.
@@ -266,8 +270,8 @@ export function taskCardBlock(
     output?: JsonObject;
     /** Optional source links created with `urlSource`. */
     sources?: JsonObject[];
-    /** Current task lifecycle state. */
-    status?: TaskStatus;
+    /** Current task lifecycle state. `pending` is valid only for plan tasks. */
+    status: TaskStatus;
     /** Deterministic identifier, up to 255 characters. */
     blockId?: string;
   },
@@ -282,14 +286,18 @@ export function taskCardBlock(
  * @param input - Plan title, tasks, and optional block identifier.
  * @param settings - Per-call validation settings.
  * @returns A validated Slack `plan` block.
- * @throws InvalidUsageError when task content violates Slack's constraints.
+ * @throws InvalidUsageError when task content violates Slack's constraints,
+ *   including more than 50 tasks or a repeated task identifier.
  */
 export function planBlock(
   input: {
     /** Human-readable plan title. */
     title: string;
-    /** Task-card blocks. Their outer `type` and `block_id` fields are omitted in the plan. */
-    tasks?: JsonObject[];
+    /**
+     * Up to 50 task-card blocks with unique task identifiers. Their outer `type`
+     * and `block_id` fields are omitted in the plan.
+     */
+    tasks: JsonObject[];
     /** Deterministic identifier, up to 255 characters. */
     blockId?: string;
   },
@@ -450,22 +458,35 @@ export function headerBlock(
 /**
  * Creates an image block with optional title text.
  *
- * @param input - Image URL, accessible alternative, title, and optional block identifier.
+ * @param input - Exactly one image source, accessible alternative, title, and
+ *   optional block identifier.
  * @param settings - Per-call validation settings.
  * @returns A validated Slack `image` block.
- * @throws InvalidUsageError when text or URL fields violate Slack's constraints.
+ * @throws InvalidUsageError when both or neither image source is provided, or
+ *   when text or URL fields violate Slack's constraints.
  */
 export function imageBlock(
   input: {
-    /** Public URL of the image. */
-    imageUrl: string;
     /** Accessible description of the image. */
     altText: string;
-    /** Optional plain-text title. */
+    /** Optional plain-text title, up to 2000 characters. */
     title?: TextLike;
     /** Deterministic identifier, up to 255 characters. */
     blockId?: string;
-  },
+  } & (
+    | {
+        /** Public URL of the image. Cannot be combined with `slackFile`. */
+        imageUrl: string;
+        /** A Slack file cannot be combined with `imageUrl`. */
+        slackFile?: never;
+      }
+    | {
+        /** An image URL cannot be combined with `slackFile`. */
+        imageUrl?: never;
+        /** Slack-hosted file reference created with `slackFile`. */
+        slackFile: JsonObject;
+      }
+  ),
   settings: FactorySettings = {},
 ): SlackWire<ImageBlock> {
   return create(

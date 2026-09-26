@@ -51,6 +51,8 @@ type CollectionMode = "flat" | "nested";
 
 interface FluentBuilderOptions<Input extends object> {
   collections?: Partial<Record<keyof Input, CollectionMode>>;
+  /** Settings merged over the parent's when building nested builders for a field. */
+  childSettings?: Partial<Record<keyof Input, FactorySettings>>;
   groupOutput?: boolean;
 }
 
@@ -109,12 +111,15 @@ export function createFluentBuilder<Input extends object, Output>(
     ...(options.groupOutput === true ? { [FLUENT_GROUP]: true as const } : {}),
     build(settings: FactorySettings = {}) {
       const input = Object.fromEntries(
-        [...state.entries()].map(([key, value]) => [
-          key,
-          options.collections?.[key] === "flat"
-            ? materialiseFlatCollection(value, settings)
-            : materialise(value, settings),
-        ]),
+        [...state.entries()].map(([key, value]) => {
+          const childSettings = { ...settings, ...options.childSettings?.[key] };
+          return [
+            key,
+            options.collections?.[key] === "flat"
+              ? materialiseFlatCollection(value, childSettings)
+              : materialise(value, childSettings),
+          ];
+        }),
       ) as Input;
       return factory(input, settings);
     },
