@@ -310,7 +310,8 @@ static string Inline(XElement element)
         switch (node)
         {
             case XText text:
-                builder.Append(Regex.Replace(text.Value, @"\s+", " "));
+                // Braces start MDX expressions and < starts JSX, so escape them in prose as the Java doclet does.
+                builder.Append(Regex.Replace(text.Value, @"\s+", " ").Replace("{", "\\{").Replace("}", "\\}").Replace("<", "&lt;"));
                 break;
             case XElement { Name.LocalName: "c" } code:
                 builder.Append('`').Append(code.Value).Append('`');
