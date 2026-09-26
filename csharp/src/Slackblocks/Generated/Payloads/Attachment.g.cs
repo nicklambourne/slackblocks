@@ -9,6 +9,7 @@ namespace Slackblocks.Payloads;
 /// <summary>A legacy message attachment containing blocks and an optional color bar.</summary>
 /// <remarks>
 /// <list type="bullet">
+/// <item><description>Required: <c>blocks</c>.</description></item>
 /// <item><description>Only blocks supported in messages are accepted.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments">Slack reference</see>.</para>
@@ -17,7 +18,7 @@ namespace Slackblocks.Payloads;
 public sealed partial class Attachment : global::Slackblocks.SlackObject
 {
     /// <summary>Creates and validates a <see cref="Attachment"/>.</summary>
-    /// <param name="blocks">The attachment's blocks in display order.</param>
+    /// <param name="blocks">The attachment's blocks in display order. Required.</param>
     /// <param name="color">The attachment's left border color: a six-digit hex color or good, warning, or danger.</param>
     /// <param name="fallback">Plain-text summary shown in clients that cannot display attachments.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>

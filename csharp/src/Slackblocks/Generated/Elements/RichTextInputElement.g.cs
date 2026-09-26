@@ -22,14 +22,14 @@ public sealed partial class RichTextInputElement : global::Slackblocks.SlackObje
     /// <param name="dispatchActionConfig">Which user interactions send a block_actions payload.</param>
     /// <param name="focusOnLoad">Whether the element receives focus when the view opens. Only one element per view may do so.</param>
     /// <param name="placeholder">The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a <c>plain_text</c> text object.</param>
-    /// <param name="minLines">The minimum visible height of the input, in lines.</param>
-    /// <param name="maxLines">The maximum visible height of the input, in lines.</param>
+    /// <param name="minLines">The minimum visible height of the input, in lines. Must be between 1 and 100.</param>
+    /// <param name="maxLines">The maximum visible height of the input, in lines. Must be between 1 and 100.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public RichTextInputElement(
         string actionId,
-        global::Slackblocks.Objects.RichTextText? initialValue = null,
+        global::Slackblocks.Blocks.RichTextBlock? initialValue = null,
         global::Slackblocks.Objects.DispatchActionConfiguration? dispatchActionConfig = null,
         bool? focusOnLoad = null,
         global::Slackblocks.Objects.PlainText? placeholder = null,
@@ -53,7 +53,7 @@ public sealed partial class RichTextInputElement : global::Slackblocks.SlackObje
 
     /// <summary>Gets the rich text present when the input loads.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>
-    public global::Slackblocks.Objects.RichTextText? InitialValue { get; }
+    public global::Slackblocks.Blocks.RichTextBlock? InitialValue { get; }
 
     /// <summary>Gets which user interactions send a block_actions payload.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>
