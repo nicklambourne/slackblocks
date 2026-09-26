@@ -46,7 +46,7 @@ public final class TableBlock implements Block {
   }
 
   /**
-   * Returns complete table rows in display order. Every row must have the same number of cells.
+   * Returns complete table rows in display order.
    *
    * @return the values in order, or an empty list when none were set
    * @throws IllegalStateException if the field was set through a raw wire field to a value this
@@ -99,7 +99,7 @@ public final class TableBlock implements Block {
     private Builder() {}
 
     /**
-     * Adds complete table rows in display order. Every row must have the same number of cells.
+     * Adds complete table rows in display order.
      *
      * <p>Required. Slack allows at most 100 items. Each call appends to any rows already added.
      *
