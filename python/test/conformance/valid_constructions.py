@@ -368,6 +368,7 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
     "blocks/markdown_block_basic": lambda: MarkdownBlock(
         text="**Hello**, _world_!", block_id="fake_block_id"
     ),
+    "blocks/markdown_empty": lambda: MarkdownBlock(text="", block_id="fake_block_id"),
     "blocks/plan_block": lambda: PlanBlock(
         block_id="fake_block_id",
         title="Thinking completed",
@@ -452,6 +453,13 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
             ],
         ],
     ),
+    "blocks/table_ragged_rows": lambda: TableBlock(
+        block_id="fake_block_id",
+        rows=[
+            [RawText(text="Header A"), RawText(text="Header B")],
+            [RawText(text="Only one cell")],
+        ],
+    ),
     "blocks/task_card_block": lambda: TaskCardBlock(
         block_id="fake_block_id",
         task_id="task_1",
@@ -491,6 +499,7 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
         action_id="button",
     ),
     "elements/button_text_at_limit": lambda: Button(text="x" * 75, action_id="button"),
+    "elements/button_without_action_id": lambda: Button(text="Click Me", value="click_me"),
     "elements/checkbox_basic": lambda: CheckboxGroup(
         options=_two_options(), action_id="and...action", initial_options=_option("A")
     ),
@@ -770,4 +779,5 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
             SectionBlock(text="second section block", block_id="3"),
         ],
     ),
+    "views/modal_without_blocks": lambda: Modal(title="Empty", blocks=[]),
 }

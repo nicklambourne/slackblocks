@@ -53,8 +53,6 @@ from ._limits import (
     SELECT_PLACEHOLDER_MAX_LENGTH,
     TIME_PICKER_PLACEHOLDER_MAX_LENGTH,
     URL_INPUT_PLACEHOLDER_MAX_LENGTH,
-    URL_SOURCE_URL_MAX_LENGTH,
-    URL_SOURCE_URL_MIN_LENGTH,
     WORKFLOW_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
     WORKFLOW_BUTTON_TEXT_MAX_LENGTH,
 )
@@ -177,7 +175,7 @@ class Button(Element):
     def __init__(
         self,
         text: TextLike,
-        action_id: str,
+        action_id: str | None = None,
         url: str | None = None,
         value: str | None = None,
         style: ButtonStyle | ButtonStyleName | None = None,
@@ -186,7 +184,7 @@ class Button(Element):
     ) -> None:
         super().__init__(type_=ElementType.BUTTON)
         self.text = Text.to_text(text, max_length=BUTTON_TEXT_MAX_LENGTH, force_plaintext=True)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.url = validate_string(
             url, field_name="url", max_length=BUTTON_URL_MAX_LENGTH, allow_none=True
         )
@@ -394,7 +392,7 @@ class URLSource(Element):
     See: <https://docs.slack.dev/reference/block-kit/blocks/task-card-block>.
 
     Args:
-        url: the URL of the source (max 3000 chars).
+        url: the URL of the source.
         text: the label displayed for the source.
 
     Throws:
@@ -403,9 +401,7 @@ class URLSource(Element):
 
     def __init__(self, url: str, text: str) -> None:
         super().__init__(ElementType.URL_SOURCE)
-        self.url = validate_string(
-            url, "url", min_length=URL_SOURCE_URL_MIN_LENGTH, max_length=URL_SOURCE_URL_MAX_LENGTH
-        )
+        self.url = validate_string(url, "url")
         self.text = validate_string(text, "text")
 
     def _resolve(self) -> dict[str, Any]:
@@ -438,14 +434,14 @@ class CheckboxGroup(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None,
         options: Option | list[Option],
         initial_options: Option | list[Option] | None = None,
         confirm: ConfirmationDialogue | None = None,
         focus_on_load: bool = False,
     ) -> None:
         super().__init__(type_=ElementType.CHECKBOXES)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.options = coerce_to_list(
             options,
             Option,
@@ -492,14 +488,14 @@ class DatePicker(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_date: str | None = None,
         confirm: ConfirmationDialogue | None = None,
         focus_on_load: bool = False,
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.DATE_PICKER)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_date: str | None = None
         if initial_date:
             self.initial_date = datetime.strptime(initial_date, "%Y-%m-%d").strftime("%Y-%m-%d")
@@ -547,13 +543,13 @@ class DateTimePicker(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_datetime: int | None = None,
         confirm: ConfirmationDialogue | None = None,
         focus_on_load: bool = False,
     ) -> None:
         super().__init__(type_=ElementType.DATETIME_PICKER)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_datetime = initial_datetime
         self.confirm = confirm
         self.focus_on_load = focus_on_load
@@ -593,14 +589,14 @@ class EmailInput(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_value: str | None = None,
         dispatch_action_config: DispatchActionConfiguration | None = None,
         focus_on_load: bool = False,
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.EMAIL_INPUT)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_value = initial_value
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
@@ -648,7 +644,7 @@ class FileInput(Element):
         max_files: int | None = None,
     ) -> None:
         super().__init__(ElementType.FILE_INPUT)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.filetypes = coerce_to_list(
             filetypes,
             (str),
@@ -759,7 +755,7 @@ class StaticMultiSelectMenu(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None,
         options: Option | list[Option],
         option_groups: OptionGroup | list[OptionGroup] | None = None,
         initial_options: Option | list[Option] | OptionGroup | list[OptionGroup] | None = None,
@@ -769,7 +765,7 @@ class StaticMultiSelectMenu(Element):
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.MULTI_SELECT_STATIC)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         if options and option_groups:
             raise MutualExclusivityError(
                 "Cannot set both `options` and `option_groups` parameters."
@@ -877,7 +873,7 @@ class ExternalMultiSelectMenu(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         min_query_length: int | None = None,
         initial_options: Option | list[Option] | OptionGroup | list[OptionGroup] | None = None,
         confirm: ConfirmationDialogue | None = None,
@@ -886,7 +882,7 @@ class ExternalMultiSelectMenu(Element):
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.MULTI_SELECT_EXTERNAL)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.min_query_length = min_query_length
         self.initial_options = coerce_to_list(
             initial_options,  # type: ignore
@@ -946,7 +942,7 @@ class UserMultiSelectMenu(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_users: list[str] | None = None,
         confirm: ConfirmationDialogue | None = None,
         max_selected_items: int | None = None,
@@ -954,7 +950,7 @@ class UserMultiSelectMenu(Element):
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.MULTI_SELECT_USERS)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_users: list[str] | None = coerce_to_list(initial_users, str, allow_none=True)
         self.confirm = confirm
         self.max_selected_items = validate_int(
@@ -1014,7 +1010,7 @@ class ConversationMultiSelectMenu(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_conversations: list[str] | None = None,
         default_to_current_conversation: bool | None = False,
         confirm: ConfirmationDialogue | None = None,
@@ -1024,7 +1020,7 @@ class ConversationMultiSelectMenu(Element):
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.MULTI_SELECT_CONVERSATIONS)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_conversations: list[str] | None = coerce_to_list(
             initial_conversations, str, allow_none=True
         )
@@ -1088,7 +1084,7 @@ class ChannelMultiSelectMenu(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_channels: list[str] | None = None,
         confirm: ConfirmationDialogue | None = None,
         max_selected_items: int | None = None,
@@ -1096,7 +1092,7 @@ class ChannelMultiSelectMenu(Element):
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.MULTI_SELECT_CHANNELS)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_channels: list[str] | None = coerce_to_list(
             initial_channels, class_=str, allow_none=True
         )
@@ -1227,12 +1223,12 @@ class OverflowMenu(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None,
         options: Option | list[Option],
         confirm: ConfirmationDialogue | None = None,
     ) -> None:
         super().__init__(type_=ElementType.OVERFLOW_MENU)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.options = coerce_to_list(
             options,
             Option,
@@ -1282,7 +1278,7 @@ class PlainTextInput(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_value: str | None = None,
         multiline: bool = False,
         min_length: int | None = None,
@@ -1292,7 +1288,7 @@ class PlainTextInput(Element):
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.PLAIN_TEXT_INPUT)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.multiline = multiline
         self.initial_value = initial_value
         self.min_length = validate_int(
@@ -1357,14 +1353,14 @@ class RadioButtonGroup(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None,
         options: list[Option],
         initial_option: Option | None = None,
         confirm: ConfirmationDialogue | None = None,
         focus_on_load: bool = False,
     ) -> None:
         super().__init__(type_=ElementType.RADIO_BUTTON_GROUP)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         if (
             len(options) < RADIO_BUTTONS_OPTIONS_MIN_ITEMS
             or len(options) > RADIO_BUTTONS_OPTIONS_MAX_ITEMS
@@ -1424,7 +1420,7 @@ class StaticSelectMenu(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         options: list[Option] | None = None,
         option_groups: list[OptionGroup] | None = None,
         initial_option: Option | OptionGroup | None = None,
@@ -1433,7 +1429,7 @@ class StaticSelectMenu(Element):
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.STATIC_SELECT_MENU)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         if options and option_groups:
             raise MutualExclusivityError(
                 "Cannot set both `options` and `option_groups` parameters."
@@ -1524,7 +1520,7 @@ class ExternalSelectMenu(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_option: Option | OptionGroup | None = None,
         min_query_length: int | None = None,
         confirm: ConfirmationDialogue | None = None,
@@ -1532,7 +1528,7 @@ class ExternalSelectMenu(Element):
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.EXTERNAL_SELECT_MENU)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_option = initial_option
         self.min_query_length = min_query_length
         self.confirm = confirm
@@ -1582,14 +1578,14 @@ class UserSelectMenu(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_user: str | None = None,
         confirm: ConfirmationDialogue | None = None,
         focus_on_load: bool = False,
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.USERS_SELECT_MENU)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_user = initial_user
         self.confirm = confirm
         self.focus_on_load = focus_on_load
@@ -1646,7 +1642,7 @@ class ConversationSelectMenu(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_conversation: str | None = None,
         default_to_current_conversation: bool | None = False,
         confirm: ConfirmationDialogue | None = None,
@@ -1656,7 +1652,7 @@ class ConversationSelectMenu(Element):
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.CONVERSATIONS_SELECT_MENU)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_conversation = initial_conversation
         self.default_to_current_conversation = default_to_current_conversation
         self.confirm = confirm
@@ -1719,7 +1715,7 @@ class ChannelSelectMenu(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_channel: str | None = None,
         confirm: ConfirmationDialogue | None = None,
         response_url_enabled: bool | None = False,
@@ -1727,7 +1723,7 @@ class ChannelSelectMenu(Element):
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.CHANNELS_SELECT_MENU)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_channel = initial_channel
         self.confirm = confirm
         self.response_url_enabled = response_url_enabled
@@ -1778,7 +1774,7 @@ class TimePicker(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_time: str | None = None,
         confirm: ConfirmationDialogue | None = None,
         focus_on_load: bool = False,
@@ -1786,7 +1782,7 @@ class TimePicker(Element):
         timezone: str | None = None,
     ) -> None:
         super().__init__(type_=ElementType.TIME_PICKER)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_time = initial_time
         self.confirm = confirm
         self.focus_on_load = focus_on_load
@@ -1836,14 +1832,14 @@ class URLInput(Element):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: str | None = None,
         initial_value: str | None = None,
         dispatch_action_config: DispatchActionConfiguration | None = None,
         focus_on_load: bool = False,
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.URL_INPUT)
-        self.action_id = validate_action_id(action_id)
+        self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_value = initial_value
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load

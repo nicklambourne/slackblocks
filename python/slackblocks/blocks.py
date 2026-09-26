@@ -47,7 +47,6 @@ from slackblocks._limits import (
     INPUT_HINT_MAX_LENGTH,
     INPUT_LABEL_MAX_LENGTH,
     MARKDOWN_TEXT_MAX_LENGTH,
-    MARKDOWN_TEXT_MIN_LENGTH,
     PLAN_TASKS_MAX_ITEMS,
     SECTION_FIELDS_ITEM_MAX_LENGTH,
     SECTION_FIELDS_MAX_ITEMS,
@@ -619,12 +618,12 @@ class MarkdownBlock(Block):
     See: <https://api.slack.com/reference/block-kit/blocks#markdown>.
 
     Args:
-        text: the Markdown-formatted text to display (1-12000 characters).
+        text: the Markdown-formatted text to display (max 12000 characters).
         block_id: you can use this field to provide a deterministic identifier
             for the block.
 
     Throws:
-        LengthError: if `text` is empty or longer than 12000 characters.
+        LengthError: if `text` is longer than 12000 characters.
     """
 
     def __init__(
@@ -636,7 +635,6 @@ class MarkdownBlock(Block):
         self.text = validate_string_nonnull(
             text,
             field_name="text",
-            min_length=MARKDOWN_TEXT_MIN_LENGTH,
             max_length=MARKDOWN_TEXT_MAX_LENGTH,
         )
 
@@ -819,11 +817,6 @@ class TableBlock(Block):
         # Validate that there is at least one row
         if len(rows) < 1:
             raise LengthError("`rows` must have at least one row.")
-        # Make sure each row has the same number of elements
-        num_columns = len(rows[0])
-        for row in rows:
-            if len(row) != num_columns:
-                raise InvalidUsageError("All rows must have the same number of columns.")
         if len(rows) > TABLE_ROWS_MAX_ITEMS:
             raise LengthError("`rows` can have a maximum of 100 items.")
         for row in rows:
