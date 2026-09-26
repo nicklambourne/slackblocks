@@ -195,19 +195,14 @@ function constructChart(payload: FixtureInput): unknown {
   throw new Error(`No chart factory for ${String(payload.type)}`);
 }
 
-// Plan tasks skip standalone validation because only a plan accepts a pending
-// task; `planBlock` validates them as plan tasks.
-function constructTask(payload: FixtureInput, settings: api.FactorySettings = {}): unknown {
+function constructTask(payload: FixtureInput): unknown {
   const value = withoutType(payload);
-  return taskCardBlock(
-    {
-      ...value,
-      details: value.details === undefined ? undefined : constructBlock(value.details),
-      output: value.output === undefined ? undefined : constructBlock(value.output),
-      sources: value.sources?.map((source: FixtureInput) => urlSource(withoutType(source))),
-    },
-    settings,
-  );
+  return taskCardBlock({
+    ...value,
+    details: value.details === undefined ? undefined : constructBlock(value.details),
+    output: value.output === undefined ? undefined : constructBlock(value.output),
+    sources: value.sources?.map((source: FixtureInput) => urlSource(withoutType(source))),
+  });
 }
 
 function constructImage(value: FixtureInput): FixtureInput {
@@ -261,7 +256,7 @@ function constructBlock(payload: FixtureInput): unknown {
     case "plan":
       return planBlock({
         ...value,
-        tasks: value.tasks?.map((task: FixtureInput) => constructTask(task, { validate: false })),
+        tasks: value.tasks?.map((task: FixtureInput) => constructTask(task)),
       });
     case "rich_text": return richTextBlock(value);
     case "section": return sectionBlock(value);
@@ -1077,7 +1072,10 @@ const invalidCases: Record<string, () => unknown> = {
   "task-card-missing-status": () =>
     taskCardBlock({ taskId: "task", title: "Task" } as any),
   "task-card-pending-status": () =>
-    taskCardBlock({ taskId: "task", title: "Task", status: "pending" }),
+    message({
+      channel: "C123",
+      blocks: [taskCardBlock({ taskId: "task", title: "Task", status: "pending" })],
+    }),
   "rich-text-list-indent-negative": () =>
     richTextList({
       elements: [listItem()],

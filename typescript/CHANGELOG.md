@@ -41,10 +41,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   attachment with an empty `blocks` list, previously emitted as `{}`, is rejected
   too. Raw JSON also requires `icon_button.icon` and `file.source`, which the
   factories already default.
-- A standalone task card can no longer be `pending`; only plan tasks can. Add
-  `TaskCardBlock()` builders to `PlanBlock().tasks()`, which validates them as
-  plan tasks, or build legacy plan tasks with `{ validate: false }` and let
-  `planBlock` validate them.
+- A task card used as a block in a message, message response, webhook message,
+  attachment, or view can no longer be `pending`; plan tasks still can, so
+  `taskCardBlock()` and `TaskCardBlock()` accept `pending` for use in a plan.
 - Image blocks accept a Slack-hosted file: `ImageBlock().slackFile()` and
   `imageBlock({ slackFile })` take exactly one of `imageUrl` or `slackFile`.
 - The rich text input's `initialValue` is now a `rich_text` block (typed

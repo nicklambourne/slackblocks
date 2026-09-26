@@ -249,9 +249,8 @@ export function dataVisualizationBlock(
 /**
  * Creates a task card, either standalone or for a plan.
  *
- * A standalone task card cannot be `pending`; only plan tasks can. To build a
- * pending plan task, add a `TaskCardBlock()` builder to `PlanBlock().tasks()`,
- * or pass `{ validate: false }` here and let `planBlock` validate the task.
+ * Any status is accepted here, but a task card used as a block in a message,
+ * attachment, or view cannot be `pending`; only plan tasks can.
  *
  * @param input - Task identity, title, status, rich content, and sources.
  * @param settings - Per-call validation settings.

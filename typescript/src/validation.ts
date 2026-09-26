@@ -339,7 +339,9 @@ function numberField(value: JsonValue | undefined): number | undefined {
   return typeof value === "number" ? value : undefined;
 }
 
-function validateTask(task: JsonObject, path: string, planTask: boolean): void {
+// Only a task card used as a block (in a block list) is standalone; the same
+// card can be built on its own and then placed in a plan, where pending is valid.
+function validateTask(task: JsonObject, path: string, standalone: boolean): void {
   for (const field of ["task_id", "title", "status"] as const) {
     if (task[field] === undefined) {
       throw new MissingRequiredError(path, `expected ${field}`);
@@ -351,7 +353,7 @@ function validateTask(task: JsonObject, path: string, planTask: boolean): void {
   if (!TASK_STATUSES.has(String(task.status))) {
     throw new TypeMismatchError(child(path, "status"), "unknown task status");
   }
-  if (!planTask && task.status === "pending") {
+  if (standalone && task.status === "pending") {
     throw new TypeMismatchError(
       child(path, "status"),
       "a standalone task card cannot be pending; pending is only valid for plan tasks",
@@ -449,7 +451,6 @@ function validateConfirmObject(value: JsonValue, path: string): void {
 function validateKnownObject(
   object: JsonObject,
   path: string,
-  planTask: boolean,
   key: string | undefined,
 ): void {
   const type = object.type;
@@ -1097,7 +1098,7 @@ function validateKnownObject(
       validateSeriesChart(object, path);
       break;
     case "task_card":
-      validateTask(object, path, planTask);
+      validateTask(object, path, key === "blocks" || key === "child_blocks");
       break;
     case "plan": {
       if (typeof object.title !== "string") {
@@ -1111,7 +1112,7 @@ function validateKnownObject(
       const taskIds = object.tasks.map((rawTask, index) => {
         const taskPath = `${tasksPath}[${index}]`;
         const task = objectAt(rawTask, taskPath);
-        validateTask(task, taskPath, true);
+        validateTask(task, taskPath, false);
         return task.task_id;
       });
       if (new Set(taskIds).size !== taskIds.length) {
@@ -1267,22 +1268,20 @@ function validateKnownObject(
   }
 }
 
-// `parentType` and `key` locate a value: the `type` of the object that holds
-// it and the field it sits in. Array items inherit their array's location.
-function visit(value: JsonValue, path: string, parentType?: string, key?: string): void {
+// `key` is the field that holds a value; array items inherit their array's key.
+function visit(value: JsonValue, path: string, key?: string): void {
   if (typeof value === "number" && !Number.isFinite(value)) {
     throw new TypeMismatchError(path, "expected a finite number");
   }
   if (Array.isArray(value)) {
-    value.forEach((nested, index) => visit(nested, `${path}[${index}]`, parentType, key));
+    value.forEach((nested, index) => visit(nested, `${path}[${index}]`, key));
     return;
   }
   if (value !== null && typeof value === "object") {
-    validateKnownObject(value, path, parentType === "plan" && key === "tasks", key);
-    const type = typeof value.type === "string" ? value.type : undefined;
+    validateKnownObject(value, path, key);
     for (const [field, nested] of Object.entries(value)) {
       if (field === "event_payload") continue;
-      visit(nested, path ? `${path}.${field}` : field, type, field);
+      visit(nested, path ? `${path}.${field}` : field, field);
     }
   }
 }

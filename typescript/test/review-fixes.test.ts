@@ -27,6 +27,7 @@ import {
   mrkdwn,
   option,
   OutOfRangeError,
+  planBlock,
   radioButtons,
   rawText,
   richTextList,
@@ -35,6 +36,7 @@ import {
   sectionBlock,
   staticSelect,
   tableBlock,
+  taskCardBlock,
   timePicker,
   TypeMismatchError,
   userMultiSelect,
@@ -571,8 +573,21 @@ describe("raw JSON validation aligned with Slack's blocks.validate", () => {
   it("allows pending status only for plan tasks", () => {
     const pendingCard = { type: "task_card", ...task("a", "pending") };
     expect(validate({ type: "plan", title: "Plan", tasks: [task("a", "pending")] })).toBe(true);
-    expect(validate(pendingCard)).toBe(false);
+    expect(validate(pendingCard)).toBe(true);
     expect(validate({ blocks: [pendingCard] })).toBe(false);
+    expect(validate({ attachments: [{ blocks: [pendingCard] }] })).toBe(false);
+    expect(() =>
+      planBlock({
+        title: "Plan",
+        tasks: [taskCardBlock({ taskId: "a", title: "Task", status: "pending" })],
+      }),
+    ).not.toThrow();
+    expect(() =>
+      message({
+        channel: "C1",
+        blocks: [taskCardBlock({ taskId: "a", title: "Task", status: "pending" })],
+      }),
+    ).toThrowError(TypeMismatchError);
     expect(() =>
       assertValid({ type: "plan", title: "Plan", tasks: [{ task_id: "a", title: "Task" }] }),
     ).toThrowError(MissingRequiredError);

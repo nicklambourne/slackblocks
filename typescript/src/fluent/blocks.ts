@@ -138,8 +138,8 @@ export function DataVisualizationBlock(): FluentBuilder<
 /**
  * Creates a fluent task card containing a stable identifier, title, lifecycle
  * state, rich-text details or output, and source links. Task cards may stand
- * alone or be collected in a {@link PlanBlock}; only plan tasks can be
- * `pending`.
+ * alone or be collected in a {@link PlanBlock}; a task card used as a message
+ * block cannot be `pending`.
  *
  * See: <https://docs.slack.dev/reference/block-kit/blocks/task-card-block>.
  */
@@ -153,8 +153,8 @@ export function TaskCardBlock(): FluentBuilder<
 /**
  * Creates a fluent titled sequence of up to 50 task cards with unique task
  * identifiers. Add tasks with `tasks()` using built task cards,
- * {@link TaskCardBlock} builders, or arrays containing either form. Task-card
- * builders are validated as plan tasks, so they may be `pending`.
+ * {@link TaskCardBlock} builders, or arrays containing either form. Plan tasks
+ * may be `pending`.
  *
  * See: <https://docs.slack.dev/reference/block-kit/blocks/plan-block>.
  */
@@ -162,11 +162,7 @@ export function PlanBlock(): FluentBuilder<
   FirstInput<typeof createPlanBlock>,
   Output<typeof createPlanBlock>
 > {
-  // The plan validates its tasks as plan tasks, which may be pending.
-  return createFluentBuilder(createPlanBlock, {
-    collections: { tasks: "flat" },
-    childSettings: { tasks: { validate: false } },
-  });
+  return createFluentBuilder(createPlanBlock, { collections: { tasks: "flat" } });
 }
 
 /**

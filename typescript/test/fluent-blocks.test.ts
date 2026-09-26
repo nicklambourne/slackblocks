@@ -14,6 +14,7 @@ import {
   HeaderBlock,
   ImageBlock,
   InvalidUsageError,
+  Message,
   PlanBlock,
   RawNumber,
   RawText,
@@ -169,9 +170,10 @@ describe("fluent blocks", () => {
     );
   });
 
-  it("allows pending task-card builders only inside a plan", () => {
+  it("allows pending task cards in a plan but not as message blocks", () => {
     const pending = () => TaskCardBlock().taskId("review").title("Review").status("pending");
-    expect(() => pending().build()).toThrow(TypeMismatchError);
+    expect(pending().build().status).toBe("pending");
+    expect(() => Message().channel("C1").blocks(pending()).build()).toThrow(TypeMismatchError);
     expect(PlanBlock().title("Launch").tasks(pending()).build()).toEqual({
       type: "plan",
       title: "Launch",
