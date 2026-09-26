@@ -35,7 +35,8 @@
   "url_source": { "url": { "min_length": 1, "max_length": 3000 } },
   "file_input": { "max_files": { "min": 1, "max": 10 } },
   "plain_text_input": {
-    "max_length": { "max": 3000 },
+    "min_length": { "min": 0, "max": 3000 },
+    "max_length": { "min": 1, "max": 3000 },
     "placeholder": { "max_length": 150 }
   },
   "email_input": { "placeholder": { "max_length": 150 } },
@@ -43,7 +44,13 @@
   "number_input": { "placeholder": { "max_length": 150 } },
   "date_picker": { "placeholder": { "max_length": 150 } },
   "time_picker": { "placeholder": { "max_length": 150 } },
-  "rich_text_input": { "placeholder": { "max_length": 150 } },
+  "rich_text_input": {
+    "placeholder": { "max_length": 150 },
+    "min_lines": { "min": 1, "max": 100 },
+    "max_lines": { "min": 1, "max": 100 }
+  },
+  "multi_select": { "max_selected_items": { "min": 1 } },
+  "conversation_filter": { "include": { "min_items": 1 } },
   "dispatch_action_configuration": { "trigger_actions_on": { "min_items": 1, "max_items": 2 } },
   "actions": { "elements": { "max_items": 25 } },
   "alert": { "text": { "max_length": 200 } },
@@ -58,7 +65,7 @@
   "container": {
     "title": { "max_length": 150 },
     "subtitle": { "max_length": 150 },
-    "child_blocks": { "max_items": 10 }
+    "child_blocks": { "min_items": 1, "max_items": 10 }
   },
   "context": { "elements": { "max_items": 10 } },
   "context_actions": { "elements": { "max_items": 5 } },
@@ -78,14 +85,17 @@
   },
   "table": {
     "rows": { "max_items": 100 },
-    "columns": { "max_items": 20 }
+    "columns": { "max_items": 20 },
+    "column_settings": { "max_items": 20 }
   },
   "data_table": {
     "rows": { "min_items": 2, "max_items": 201 },
     "columns": { "min_items": 1, "max_items": 20 },
     "page_size": { "min": 1, "max": 100 },
     "cell_text": { "min_length": 1 },
-    "content": { "max_length": 20000 }
+    "content": { "max_length": 20000 },
+    "total_content": { "max_length": 20000 },
+    "row_header_column_index": { "min": 0 }
   },
   "data_visualization": {
     "title": { "max_length": 50 },
@@ -105,13 +115,29 @@
   "header": { "text": { "max_length": 150 } },
   "image": {
     "image_url": { "max_length": 3000 },
+    "alt_text": { "max_length": 2000 },
+    "title": { "max_length": 2000 }
+  },
+  "image_element": {
+    "image_url": { "max_length": 3000 },
     "alt_text": { "max_length": 2000 }
   },
   "input": {
     "label": { "max_length": 2000 },
     "hint": { "max_length": 2000 }
   },
-  "markdown": { "text": { "min_length": 1, "max_length": 12000 } },
+  "markdown": {
+    "text": { "min_length": 1, "max_length": 12000 },
+    "total_text": { "max_length": 12000 }
+  },
+  "plan": { "tasks": { "max_items": 50 } },
+  "rich_text_list": {
+    "indent": { "min": 0, "max": 8 },
+    "offset": { "min": 0 },
+    "border": { "min": 0, "max": 1 }
+  },
+  "rich_text_quote": { "border": { "min": 0, "max": 1 } },
+  "rich_text_preformatted": { "border": { "min": 0, "max": 1 } },
   "section": {
     "text": { "max_length": 3000 },
     "fields": { "max_items": 10, "item_max_length": 2000 }
@@ -121,7 +147,11 @@
     "title": { "max_length": 200 },
     "author_name": { "max_length": 50 },
     "description": { "max_length": 200 },
-    "provider_name": { "max_length": 50 }
+    "provider_name": { "max_length": 50 },
+    "thumbnail_url": { "max_length": 3000 },
+    "video_url": { "max_length": 3000 },
+    "title_url": { "max_length": 2000 },
+    "provider_icon_url": { "max_length": 2000 }
   },
   "message": {
     "channel": { "min_length": 1 },
@@ -132,6 +162,7 @@
     "blocks": { "min_items": 1, "max_items": 100 },
     "private_metadata": { "max_length": 3000 },
     "callback_id": { "max_length": 255 },
+    "external_id": { "max_length": 255 },
     "title": { "max_length": 24 },
     "close": { "max_length": 24 },
     "submit": { "max_length": 24 }

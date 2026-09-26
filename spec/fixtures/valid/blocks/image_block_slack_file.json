@@ -1,7 +1,7 @@
 {
     "type": "image",
     "slack_file": {
-        "id": "F0123ABC456"
+        "url": "https://files.slack.com/files-pri/T0123456-F0123ABC456/kitten.png"
     },
     "alt_text": "An incredibly cute kitten."
 }
