@@ -1076,7 +1076,7 @@
           "wire": "rows",
           "kind": "rows",
           "type": "TableCell",
-          "description": "Adds complete table rows in display order. Every row must have the same number of cells.",
+          "description": "Adds complete table rows in display order.",
           "limits": "table.rows",
           "required": true
         },
@@ -4111,7 +4111,6 @@
           "wire": "url",
           "kind": "string",
           "description": "Sets the source URL.",
-          "limits": "url_source.url",
           "required": true
         },
         {
