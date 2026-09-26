@@ -3830,8 +3830,8 @@ func newTableBlockBuilder(core *builder) *TableBlockBuilder {
 	return &TableBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// Rows adds complete table rows in display order. Every row must have the same number of cells.
-// Required. Slack allows at most 100 items. Each call appends to any values already added.
+// Rows adds complete table rows in display order. Required. Slack allows at most 100 items.
+// Each call appends to any values already added.
 func (b *TableBlockBuilder) Rows(rows ...[]TableCell) *TableBlockBuilder {
 	for _, row := range rows {
 		cells := make([]any, len(row))
