@@ -1,5 +1,6 @@
 import limits from "../../spec/limits.json" with { type: "json" };
 
+import { validateConversationFilter, validateSlackFile } from "./composition.js";
 import {
   InvalidUsageError,
   LengthError,
@@ -247,11 +248,12 @@ const REQUIRED_FIELDS: Record<string, readonly string[]> = {
   emoji: ["name"],
   external_select: ["action_id"],
   feedback_buttons: ["positive_button", "negative_button"],
-  file: ["external_id"],
+  file: ["external_id", "source"],
   file_input: ["action_id"],
   header: ["text"],
   home: ["blocks"],
-  icon_button: ["text"],
+  icon: ["name"],
+  icon_button: ["text", "icon"],
   image: ["alt_text"],
   input: ["label", "element"],
   line: ["series", "axis_config"],
@@ -263,11 +265,11 @@ const REQUIRED_FIELDS: Record<string, readonly string[]> = {
   multi_external_select: ["action_id"],
   multi_static_select: ["action_id"],
   multi_users_select: ["action_id"],
-  number_input: ["action_id"],
+  number_input: ["action_id", "is_decimal_allowed"],
   overflow: ["action_id", "options"],
   pie: ["segments"],
   plain_text_input: ["action_id"],
-  plan: ["title"],
+  plan: ["title", "tasks"],
   radio_buttons: ["action_id", "options"],
   rich_text: ["elements"],
   rich_text_input: ["action_id"],
@@ -277,7 +279,7 @@ const REQUIRED_FIELDS: Record<string, readonly string[]> = {
   rich_text_section: ["elements"],
   static_select: ["action_id"],
   table: ["rows"],
-  task_card: ["task_id", "title"],
+  task_card: ["task_id", "title", "status"],
   text: ["text"],
   timepicker: ["action_id"],
   url: ["url", "text"],
@@ -286,7 +288,7 @@ const REQUIRED_FIELDS: Record<string, readonly string[]> = {
   usergroup: ["usergroup_id"],
   users_select: ["action_id"],
   video: ["alt_text", "thumbnail_url", "title", "video_url"],
-  workflow_button: ["text", "workflow"],
+  workflow_button: ["text", "workflow", "action_id"],
 };
 
 const CONFIRM_SUPPORTING_TYPES = new Set([
@@ -322,6 +324,49 @@ const INPUT_PLACEHOLDER_MAX_LENGTHS: Record<string, number> = {
   timepicker: limits.time_picker.placeholder.max_length,
   rich_text_input: limits.rich_text_input.placeholder.max_length,
 };
+
+const MULTI_SELECT_TYPES = new Set([
+  "multi_channels_select",
+  "multi_conversations_select",
+  "multi_external_select",
+  "multi_static_select",
+  "multi_users_select",
+]);
+
+const TASK_STATUSES = new Set(["pending", "in_progress", "complete", "error"]);
+
+function numberField(value: JsonValue | undefined): number | undefined {
+  return typeof value === "number" ? value : undefined;
+}
+
+// Only a task card used as a block (in a block list) is standalone; the same
+// card can be built on its own and then placed in a plan, where pending is valid.
+function validateTask(task: JsonObject, path: string, standalone: boolean): void {
+  for (const field of ["task_id", "title", "status"] as const) {
+    if (task[field] === undefined) {
+      throw new MissingRequiredError(path, `expected ${field}`);
+    }
+  }
+  if (typeof task.task_id !== "string" || typeof task.title !== "string") {
+    throw new MissingRequiredError(path, "expected task_id and title");
+  }
+  if (!TASK_STATUSES.has(String(task.status))) {
+    throw new TypeMismatchError(child(path, "status"), "unknown task status");
+  }
+  if (standalone && task.status === "pending") {
+    throw new TypeMismatchError(
+      child(path, "status"),
+      "a standalone task card cannot be pending; pending is only valid for plan tasks",
+    );
+  }
+  if (Array.isArray(task.sources)) {
+    task.sources.forEach((source, index) => {
+      if (objectAt(source, `${child(path, "sources")}[${index}]`).type !== "url") {
+        throw new TypeMismatchError(`${child(path, "sources")}[${index}]`, "expected a URL source");
+      }
+    });
+  }
+}
 
 function validateOptionEntry(value: JsonValue, path: string): void {
   const option = objectAt(value, path);
@@ -403,7 +448,11 @@ function validateConfirmObject(value: JsonValue, path: string): void {
   }
 }
 
-function validateKnownObject(object: JsonObject, path: string): void {
+function validateKnownObject(
+  object: JsonObject,
+  path: string,
+  key: string | undefined,
+): void {
   const type = object.type;
   const blockId = object.block_id;
   if (typeof blockId === "string") {
@@ -430,6 +479,19 @@ function validateKnownObject(object: JsonObject, path: string): void {
         undefined,
         placeholderMaximum,
       );
+    }
+    if (MULTI_SELECT_TYPES.has(type)) {
+      range(
+        numberField(object.max_selected_items),
+        child(path, "max_selected_items"),
+        limits.multi_select.max_selected_items.min,
+      );
+    }
+    if (
+      (type === "conversations_select" || type === "multi_conversations_select") &&
+      object.filter !== undefined
+    ) {
+      validateConversationFilter(object.filter, child(path, "filter"));
     }
   }
   if (object.dispatch_action_config !== undefined) {
@@ -577,12 +639,62 @@ function validateKnownObject(object: JsonObject, path: string): void {
       break;
     case "plain_text_input":
       range(
-        typeof object.max_length === "number" ? object.max_length : undefined,
+        numberField(object.min_length),
+        child(path, "min_length"),
+        limits.plain_text_input.min_length.min,
+        limits.plain_text_input.min_length.max,
+      );
+      range(
+        numberField(object.max_length),
         child(path, "max_length"),
-        undefined,
+        limits.plain_text_input.max_length.min,
         limits.plain_text_input.max_length.max,
       );
       break;
+    case "rich_text_input":
+      if (
+        object.initial_value !== undefined &&
+        objectAt(object.initial_value, child(path, "initial_value")).type !== "rich_text"
+      ) {
+        throw new TypeMismatchError(child(path, "initial_value"), "expected a rich_text block");
+      }
+      range(
+        numberField(object.min_lines),
+        child(path, "min_lines"),
+        limits.rich_text_input.min_lines.min,
+        limits.rich_text_input.min_lines.max,
+      );
+      range(
+        numberField(object.max_lines),
+        child(path, "max_lines"),
+        limits.rich_text_input.max_lines.min,
+        limits.rich_text_input.max_lines.max,
+      );
+      break;
+    case "rich_text_list":
+      range(
+        numberField(object.indent),
+        child(path, "indent"),
+        limits.rich_text_list.indent.min,
+        limits.rich_text_list.indent.max,
+      );
+      range(numberField(object.offset), child(path, "offset"), limits.rich_text_list.offset.min);
+      range(
+        numberField(object.border),
+        child(path, "border"),
+        limits.rich_text_list.border.min,
+        limits.rich_text_list.border.max,
+      );
+      break;
+    case "rich_text_quote":
+    case "rich_text_preformatted": {
+      const border =
+        type === "rich_text_quote"
+          ? limits.rich_text_quote.border
+          : limits.rich_text_preformatted.border;
+      range(numberField(object.border), child(path, "border"), border.min, border.max);
+      break;
+    }
     case "overflow":
       if (Array.isArray(object.options)) {
         length(
@@ -654,7 +766,7 @@ function validateKnownObject(object: JsonObject, path: string): void {
         throw new OutOfRangeError(path, "min_value cannot exceed max_value");
       }
       break;
-    case "image":
+    case "image": {
       if (object.image_url === undefined && object.slack_file === undefined) {
         throw new MissingRequiredError(path, "expected image_url or slack_file");
       }
@@ -664,12 +776,21 @@ function validateKnownObject(object: JsonObject, path: string): void {
           "image_url and slack_file cannot be provided together",
         );
       }
+      // Image blocks and image elements share a type; only blocks carry a
+      // title or block ID or sit directly in a block list.
+      const imageLimits =
+        key === "blocks" ||
+        key === "child_blocks" ||
+        object.title !== undefined ||
+        object.block_id !== undefined
+          ? limits.image
+          : limits.image_element;
       if (typeof object.image_url === "string") {
         length(
           object.image_url,
           child(path, "image_url"),
           undefined,
-          limits.image.image_url.max_length,
+          imageLimits.image_url.max_length,
         );
       }
       if (typeof object.alt_text === "string") {
@@ -677,10 +798,22 @@ function validateKnownObject(object: JsonObject, path: string): void {
           object.alt_text,
           child(path, "alt_text"),
           undefined,
-          limits.image.alt_text.max_length,
+          imageLimits.alt_text.max_length,
         );
       }
+      if (object.title !== undefined) {
+        length(
+          textValue(object.title),
+          child(path, "title.text"),
+          undefined,
+          limits.image.title.max_length,
+        );
+      }
+      if (object.slack_file !== undefined) {
+        validateSlackFile(object.slack_file, child(path, "slack_file"));
+      }
       break;
+    }
     case "context":
       if (Array.isArray(object.elements)) {
         length(object.elements, child(path, "elements"), undefined, limits.context.elements.max_items);
@@ -785,7 +918,7 @@ function validateKnownObject(object: JsonObject, path: string): void {
       length(
         object.child_blocks,
         child(path, "child_blocks"),
-        1,
+        limits.container.child_blocks.min_items,
         limits.container.child_blocks.max_items,
       );
       const allowed = new Set([
@@ -869,7 +1002,12 @@ function validateKnownObject(object: JsonObject, path: string): void {
         limits.data_table.page_size.max,
       );
       if (typeof object.row_header_column_index === "number") {
-        range(object.row_header_column_index, child(path, "row_header_column_index"), 0, (columns ?? 1) - 1);
+        range(
+          object.row_header_column_index,
+          child(path, "row_header_column_index"),
+          limits.data_table.row_header_column_index.min,
+          (columns ?? 1) - 1,
+        );
       }
       if (typeof object.caption !== "string") {
         throw new TypeMismatchError(child(path, "caption"), "expected a string");
@@ -913,14 +1051,8 @@ function validateKnownObject(object: JsonObject, path: string): void {
           object.column_settings,
           child(path, "column_settings"),
           undefined,
-          limits.table.columns.max_items,
+          limits.table.column_settings.max_items,
         );
-        if (object.column_settings.length !== columns) {
-          throw new InvalidUsageError(
-            child(path, "column_settings"),
-            "expected one entry for every column",
-          );
-        }
       }
       break;
     }
@@ -966,25 +1098,28 @@ function validateKnownObject(object: JsonObject, path: string): void {
       validateSeriesChart(object, path);
       break;
     case "task_card":
-      if (typeof object.task_id !== "string" || typeof object.title !== "string") {
-        throw new MissingRequiredError(path, "expected task_id and title");
-      }
-      if (![undefined, "pending", "in_progress", "complete", "error"].includes(object.status as never)) {
-        throw new TypeMismatchError(child(path, "status"), "unknown task status");
-      }
-      if (Array.isArray(object.sources)) {
-        object.sources.forEach((source, index) => {
-          if (objectAt(source, `${child(path, "sources")}[${index}]`).type !== "url") {
-            throw new TypeMismatchError(`${child(path, "sources")}[${index}]`, "expected a URL source");
-          }
-        });
-      }
+      validateTask(object, path, key === "blocks" || key === "child_blocks");
       break;
-    case "plan":
+    case "plan": {
       if (typeof object.title !== "string") {
         throw new MissingRequiredError(child(path, "title"), "expected a title");
       }
+      const tasksPath = child(path, "tasks");
+      if (!Array.isArray(object.tasks)) {
+        throw new TypeMismatchError(tasksPath, "expected an array");
+      }
+      length(object.tasks, tasksPath, undefined, limits.plan.tasks.max_items);
+      const taskIds = object.tasks.map((rawTask, index) => {
+        const taskPath = `${tasksPath}[${index}]`;
+        const task = objectAt(rawTask, taskPath);
+        validateTask(task, taskPath, false);
+        return task.task_id;
+      });
+      if (new Set(taskIds).size !== taskIds.length) {
+        throw new InvalidUsageError(tasksPath, "task IDs must be unique within a plan");
+      }
       break;
+    }
     case "input": {
       length(
         textValue(object.label),
@@ -1048,6 +1183,15 @@ function validateKnownObject(object: JsonObject, path: string): void {
         undefined,
         limits.video.provider_name.max_length,
       );
+      for (const [field, maximum] of [
+        ["thumbnail_url", limits.video.thumbnail_url.max_length],
+        ["video_url", limits.video.video_url.max_length],
+        ["title_url", limits.video.title_url.max_length],
+        ["provider_icon_url", limits.video.provider_icon_url.max_length],
+      ] as const) {
+        const value = object[field];
+        length(typeof value === "string" ? value : undefined, child(path, field), undefined, maximum);
+      }
       break;
     case "modal":
     case "home":
@@ -1072,6 +1216,12 @@ function validateKnownObject(object: JsonObject, path: string): void {
         child(path, "callback_id"),
         undefined,
         limits.view.callback_id.max_length,
+      );
+      length(
+        typeof object.external_id === "string" ? object.external_id : undefined,
+        child(path, "external_id"),
+        undefined,
+        limits.view.external_id.max_length,
       );
       if (type === "modal") {
         if (
@@ -1118,20 +1268,72 @@ function validateKnownObject(object: JsonObject, path: string): void {
   }
 }
 
-function visit(value: JsonValue, path: string): void {
+// `key` is the field that holds a value; array items inherit their array's key.
+function visit(value: JsonValue, path: string, key?: string): void {
   if (typeof value === "number" && !Number.isFinite(value)) {
     throw new TypeMismatchError(path, "expected a finite number");
   }
   if (Array.isArray(value)) {
-    value.forEach((nested, index) => visit(nested, `${path}[${index}]`));
+    value.forEach((nested, index) => visit(nested, `${path}[${index}]`, key));
     return;
   }
   if (value !== null && typeof value === "object") {
-    validateKnownObject(value, path);
-    for (const [key, nested] of Object.entries(value)) {
-      if (key === "event_payload") continue;
-      visit(nested, path ? `${path}.${key}` : key);
+    validateKnownObject(value, path, key);
+    for (const [field, nested] of Object.entries(value)) {
+      if (field === "event_payload") continue;
+      visit(nested, path ? `${path}.${field}` : field, field);
     }
+  }
+}
+
+function typedTotal(
+  value: JsonValue,
+  type: string,
+  measure: (object: JsonObject) => number,
+): number {
+  if (Array.isArray(value)) {
+    return value.reduce<number>((total, item) => total + typedTotal(item, type, measure), 0);
+  }
+  if (value === null || typeof value !== "object") return 0;
+  if (value.type === type) return measure(value);
+  return Object.entries(value).reduce<number>(
+    (total, [field, nested]) =>
+      field === "event_payload" ? total : total + typedTotal(nested, type, measure),
+    0,
+  );
+}
+
+// A payload without a `type` is a message, attachment, or composition object;
+// only messages and attachments hold blocks, so the message-wide rules apply
+// to every such payload.
+function validateMessagePayload(payload: JsonObject): void {
+  if (Array.isArray(payload.attachments)) {
+    payload.attachments.forEach((rawAttachment, index) => {
+      const attachmentPath = `attachments[${index}]`;
+      if (objectAt(rawAttachment, attachmentPath).blocks === undefined) {
+        throw new MissingRequiredError(attachmentPath, "expected blocks");
+      }
+    });
+  }
+  const markdown = typedTotal(payload, "markdown", (block) =>
+    typeof block.text === "string" ? codePointLength(block.text) : 0,
+  );
+  if (markdown > limits.markdown.total_text.max_length) {
+    throw new LengthError(
+      "blocks",
+      `${markdown} characters of markdown block text exceed maximum ` +
+        `${limits.markdown.total_text.max_length} per message`,
+    );
+  }
+  const tableContent = typedTotal(payload, "data_table", (block) =>
+    textCharacterCount(block.rows ?? []),
+  );
+  if (tableContent > limits.data_table.total_content.max_length) {
+    throw new LengthError(
+      "blocks",
+      `${tableContent} characters of data table cell text exceed maximum ` +
+        `${limits.data_table.total_content.max_length} per message`,
+    );
   }
 }
 
@@ -1149,6 +1351,9 @@ export function assertValid(payload: JsonValue): asserts payload is BlockKitPayl
     throw new TypeMismatchError("payload", "expected a Block Kit object");
   }
   visit(payload, "");
+  if (typeof payload.type !== "string") {
+    validateMessagePayload(payload);
+  }
 }
 
 /**
@@ -1156,12 +1361,16 @@ export function assertValid(payload: JsonValue): asserts payload is BlockKitPayl
  *
  * Validation identifies objects by their `type` field, so it enforces required
  * fields and limits for every typed block, element, view, and rich-text object,
- * and it validates type-less `options`, `option_groups`, and `confirm`
- * composition objects contextually through their typed parents. Known
+ * and it validates type-less `options`, `option_groups`, `confirm`, `filter`,
+ * `slack_file`, and plan `tasks` objects contextually through their typed
+ * parents. A payload without a `type` is checked against Slack's
+ * message-wide rules: every attachment needs blocks, and markdown block text
+ * and data table cell text are limited across the whole payload. Known
  * asymmetries with factory validation remain for type-less objects that
  * appear without a typed parent: standalone confirmation dialogs, options,
- * option groups, attachments, message payloads, workflow objects, and chart
- * axis configurations pass unchecked, and one-of rules enforced only by
+ * option groups, attachments, workflow objects, and chart axis configurations
+ * pass unchecked, message block counts and surface placement are checked only
+ * by the message factories, and one-of rules enforced only by
  * factory signatures (for example `slackFile` requiring exactly one source)
  * are not rediscovered from raw JSON. The contents of message metadata
  * `event_payload` objects are always treated as opaque user data and skipped.

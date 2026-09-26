@@ -12,11 +12,16 @@ import {
   DataTableBlock,
   DataVisualizationBlock,
   HeaderBlock,
+  ImageBlock,
+  InvalidUsageError,
+  Message,
   PlanBlock,
   RawNumber,
   RawText,
   SectionBlock,
+  SlackFile,
   TaskCardBlock,
+  TypeMismatchError,
   UrlSource,
   actionsBlock,
   axisConfig,
@@ -146,6 +151,7 @@ describe("fluent blocks", () => {
           TaskCardBlock()
             .taskId("docs")
             .title("Publish docs")
+            .status("complete")
             .sources(UrlSource().url("https://example.com").text("Preview")),
         )
         .build(),
@@ -156,11 +162,39 @@ describe("fluent blocks", () => {
           taskCardBlock({
             taskId: "docs",
             title: "Publish docs",
+            status: "complete",
             sources: [urlSource({ url: "https://example.com", text: "Preview" })],
           }),
         ],
       }),
     );
+  });
+
+  it("allows pending task cards in a plan but not as message blocks", () => {
+    const pending = () => TaskCardBlock().taskId("review").title("Review").status("pending");
+    expect(pending().build().status).toBe("pending");
+    expect(() => Message().channel("C1").blocks(pending()).build()).toThrow(TypeMismatchError);
+    expect(PlanBlock().title("Launch").tasks(pending()).build()).toEqual({
+      type: "plan",
+      title: "Launch",
+      tasks: [{ task_id: "review", title: "Review", status: "pending" }],
+    });
+    expect(() =>
+      PlanBlock()
+        .title("Launch")
+        .tasks(pending(), TaskCardBlock().taskId("review").title("Again").status("complete"))
+        .build(),
+    ).toThrow(InvalidUsageError);
+  });
+
+  it("builds image blocks from a Slack-hosted file", () => {
+    const url = "https://files.slack.com/files-pri/T0123456-F0123ABC456/kitten.png";
+    expect(ImageBlock().slackFile(SlackFile().url(url)).altText("Kitten").build()).toEqual({
+      type: "image",
+      slack_file: { url },
+      alt_text: "Kitten",
+    });
+    expect(() => ImageBlock().altText("Kitten").build()).toThrow(InvalidUsageError);
   });
 
   it("validates incomplete blocks only at build time", () => {
