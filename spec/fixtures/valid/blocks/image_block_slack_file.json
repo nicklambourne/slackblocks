@@ -1,5 +1,6 @@
 {
     "type": "image",
+    "block_id": "fake_block_id",
     "slack_file": {
         "url": "https://files.slack.com/files-pri/T0123456-F0123ABC456/kitten.png"
     },
