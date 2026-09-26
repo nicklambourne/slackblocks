@@ -20,7 +20,6 @@ import java.util.Map;
  *
  * <ul>
  *   <li>Required: {@code rows}.
- *   <li>Every row must have the same number of cells.
  * </ul>
  *
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/table-block">Slack reference</a>
