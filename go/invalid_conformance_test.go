@@ -3,6 +3,7 @@ package slackblocks_test
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -31,8 +32,8 @@ func TestSharedInvalidFixtures(t *testing.T) {
 	if manifest.SpecVersion != slackblocks.SpecVersion {
 		t.Fatalf("spec version = %q, want %q", slackblocks.SpecVersion, manifest.SpecVersion)
 	}
-	if len(manifest.Cases) != 129 {
-		t.Fatalf("expected 129 invalid cases, got %d", len(manifest.Cases))
+	if len(manifest.Cases) != 172 {
+		t.Fatalf("expected 172 invalid cases, got %d", len(manifest.Cases))
 	}
 
 	for _, testCase := range manifest.Cases {
@@ -74,6 +75,19 @@ func validVideo() *slackblocks.VideoBlockBuilder {
 func validWorkflow() *slackblocks.WorkflowBuilder {
 	return slackblocks.NewWorkflow().Trigger(slackblocks.NewTrigger().URL("https://slack.com/shortcuts/Ft0123/abc"))
 }
+func validImageURL() string { return "https://example.com/image.png" }
+func validTask(id string) *slackblocks.TaskCardBlockBuilder {
+	return slackblocks.NewTaskCardBlock().TaskID(id).Title("Task").Status(slackblocks.TaskStatusComplete)
+}
+func richTextRun() *slackblocks.RichTextBuilder { return slackblocks.NewRichText().Text("text") }
+func validList() *slackblocks.RichTextListBuilder {
+	return slackblocks.NewRichTextList().Style(slackblocks.RichTextListStyleBullet).Elements(slackblocks.NewRichTextSection().Elements(richTextRun()))
+}
+
+// halfAndOne builds a block list whose shared total is one character over maximum, with each
+// block individually valid.
+func halfAndOne(maximum int) int { return maximum/2 + 1 }
+
 func copies[T any](count int, factory func(int) T) []T {
 	values := make([]T, count)
 	for index := range values {
@@ -111,7 +125,7 @@ func invalidConstruction(id string) error {
 	case "option-url-too-long":
 		return buildError(slackblocks.NewOption().Text("A").Value("a").URL(repeated("🙂", 3001)))
 	case "option-description-too-long":
-		return buildError(slackblocks.NewOption().Text("A").Value("a").Description(repeated("x", 76)))
+		return buildError(slackblocks.NewStaticSelect().ActionID("a").Options(slackblocks.NewOption().Text("A").Value("a").Description(repeated("x", 76))))
 	case "option-group-label-too-long":
 		return buildError(slackblocks.NewOptionGroup().Label(repeated("x", 76)).Options(choice()))
 	case "option-group-empty":
@@ -127,7 +141,7 @@ func invalidConstruction(id string) error {
 	case "url-input-placeholder-too-long":
 		return buildError(slackblocks.NewURLInput().ActionID("a").Placeholder(repeated("x", 151)))
 	case "number-input-placeholder-too-long":
-		return buildError(slackblocks.NewNumberInput().ActionID("a").Placeholder(repeated("x", 151)))
+		return buildError(slackblocks.NewNumberInput().ActionID("a").IsDecimalAllowed(false).Placeholder(repeated("x", 151)))
 	case "date-picker-placeholder-too-long":
 		return buildError(slackblocks.NewDatePicker().ActionID("a").Placeholder(repeated("x", 151)))
 	case "time-picker-placeholder-too-long":
@@ -162,8 +176,6 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewTableBlock().Rows(copies(21, func(int) slackblocks.TableCell { return rawText("A") })))
 	case "table-ragged-rows":
 		return buildError(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText("A"), rawText("B")}, []slackblocks.TableCell{rawText("C")}))
-	case "table-column-settings-mismatch":
-		return buildError(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText("A"), rawText("B")}).ColumnSettings(slackblocks.NewColumnSettings().IsWrapped(true)))
 	case "file-input-max-files-too-small":
 		return buildError(slackblocks.NewFileInput().ActionID("a").MaxFiles(0))
 	case "file-input-max-files-too-large":
@@ -247,7 +259,7 @@ func invalidConstruction(id string) error {
 	case "static-select-options-and-groups":
 		return buildError(slackblocks.NewStaticSelect().ActionID("a").Options(choice()).Set("option_groups", []any{slackblocks.Object{"label": slackblocks.NewPlainText().Text("A")}}))
 	case "image-url-and-slack-file":
-		return buildError(slackblocks.NewImageElement().AltText("image").ImageURL("https://example.com/image.png").SlackFile(slackblocks.NewSlackFile().SlackFileID("F123")))
+		return buildError(slackblocks.NewImageElement().AltText("image").ImageURL("https://example.com/image.png").SlackFile(slackblocks.NewSlackFile().SlackFileID("F0123ABC456")))
 	case "number-input-inverted-range":
 		return buildError(slackblocks.NewNumberInput().ActionID("a").IsDecimalAllowed(true).MinValue(2).MaxValue(1))
 	case "context-invalid-element":
@@ -261,9 +273,9 @@ func invalidConstruction(id string) error {
 	case "button-accessibility-label-too-long":
 		return buildError(slackblocks.NewButton().Text("A").ActionID("a").AccessibilityLabel(repeated("x", 76)))
 	case "workflow-button-text-too-long":
-		return buildError(slackblocks.NewWorkflowButton().Text(repeated("x", 76)).Workflow(validWorkflow()))
+		return buildError(slackblocks.NewWorkflowButton().Text(repeated("x", 76)).Workflow(validWorkflow()).ActionID("run"))
 	case "workflow-button-accessibility-label-too-long":
-		return buildError(slackblocks.NewWorkflowButton().Text("Run").Workflow(validWorkflow()).AccessibilityLabel(repeated("x", 76)))
+		return buildError(slackblocks.NewWorkflowButton().Text("Run").Workflow(validWorkflow()).ActionID("run").AccessibilityLabel(repeated("x", 76)))
 	case "alert-text-too-long":
 		return buildError(slackblocks.NewAlertBlock().Text(repeated("x", 201)))
 	case "card-title-too-long":
@@ -357,6 +369,107 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewAxisConfig().Categories(repeated("x", 21)))
 	case "axis-label-too-long":
 		return buildError(slackblocks.NewAxisConfig().Categories("A").XLabel(repeated("x", 51)))
+	case "plain-text-input-min-length-negative":
+		return buildError(slackblocks.NewPlainTextInput().ActionID("a").MinLength(slackblocks.LimitPlainTextInputMinLengthMin - 1))
+	case "plain-text-input-min-length-too-large":
+		return buildError(slackblocks.NewPlainTextInput().ActionID("a").MinLength(slackblocks.LimitPlainTextInputMinLengthMax + 1))
+	case "plain-text-input-max-length-too-small":
+		return buildError(slackblocks.NewPlainTextInput().ActionID("a").MaxLength(slackblocks.LimitPlainTextInputMaxLengthMin - 1))
+	case "rich-text-input-min-lines-too-small":
+		return buildError(slackblocks.NewRichTextInput().ActionID("a").MinLines(slackblocks.LimitRichTextInputMinLinesMin - 1))
+	case "rich-text-input-min-lines-too-large":
+		return buildError(slackblocks.NewRichTextInput().ActionID("a").MinLines(slackblocks.LimitRichTextInputMinLinesMax + 1))
+	case "rich-text-input-max-lines-too-small":
+		return buildError(slackblocks.NewRichTextInput().ActionID("a").MaxLines(slackblocks.LimitRichTextInputMaxLinesMin - 1))
+	case "rich-text-input-max-lines-too-large":
+		return buildError(slackblocks.NewRichTextInput().ActionID("a").MaxLines(slackblocks.LimitRichTextInputMaxLinesMax + 1))
+	case "multi-select-max-selected-items-too-small":
+		return buildError(slackblocks.NewStaticMultiSelect().ActionID("a").Options(choice()).MaxSelectedItems(slackblocks.LimitMultiSelectMaxSelectedItemsMin - 1))
+	case "conversation-filter-include-empty":
+		return buildError(slackblocks.NewConversationFilter().Include())
+	case "conversation-filter-unknown-include":
+		return buildError(slackblocks.NewConversationFilter().Include("public", "channel"))
+	case "workflow-button-missing-action-id":
+		return buildError(slackblocks.NewWorkflowButton().Text("Run").Workflow(validWorkflow()))
+	case "number-input-missing-decimal-flag":
+		return buildError(slackblocks.NewNumberInput().ActionID("a"))
+	case "slack-icon-missing-name":
+		return buildError(slackblocks.NewSlackIcon())
+	case "slack-file-id-malformed":
+		return buildError(slackblocks.NewSlackFile().SlackFileID("F0123456"))
+	case "image-element-url-too-long":
+		return buildError(slackblocks.NewImageElement().ImageURL(repeated("x", slackblocks.LimitImageElementImageURLMaxLength+1)).AltText("Alt"))
+	case "image-element-alt-text-too-long":
+		return buildError(slackblocks.NewImageElement().ImageURL(validImageURL()).AltText(repeated("x", slackblocks.LimitImageElementAltTextMaxLength+1)))
+	case "image-block-title-too-long":
+		return buildError(slackblocks.NewImageBlock().ImageURL(validImageURL()).AltText("Alt").Title(repeated("x", slackblocks.LimitImageTitleMaxLength+1)))
+	case "image-block-url-and-slack-file":
+		return buildError(slackblocks.NewImageBlock().ImageURL(validImageURL()).SlackFile(slackblocks.NewSlackFile().SlackFileID("F0123ABC456")).AltText("Alt"))
+	case "image-block-missing-source":
+		return buildError(slackblocks.NewImageBlock().AltText("Alt"))
+	case "container-no-child-blocks":
+		return buildError(slackblocks.NewContainerBlock().Title("Container").ChildBlocks())
+	case "table-too-many-column-settings":
+		return buildError(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText("A")}).ColumnSettings(copies(slackblocks.LimitTableColumnSettingsMaxItems+1, func(int) *slackblocks.ColumnSettingsBuilder {
+			return slackblocks.NewColumnSettings().IsWrapped(true)
+		})...))
+	case "data-table-row-header-index-negative":
+		return buildError(slackblocks.NewDataTableBlock().Rows(validRows()...).Caption("Names").RowHeaderColumnIndex(slackblocks.LimitDataTableRowHeaderColumnIndexMin - 1))
+	case "data-table-total-content-too-long":
+		table := func(int) slackblocks.Block {
+			header := "Name"
+			return slackblocks.NewDataTableBlock().Caption("Names").Rows(
+				[]slackblocks.DataTableCell{rawText(header)},
+				[]slackblocks.DataTableCell{rawText(repeated("x", halfAndOne(slackblocks.LimitDataTableTotalContentMaxLength)-len(header)))},
+			)
+		}
+		return buildError(slackblocks.NewMessage().Channel("C123").Blocks(copies(2, table)...))
+	case "markdown-total-too-long":
+		return buildError(slackblocks.NewMessage().Channel("C123").Blocks(copies(2, func(int) slackblocks.Block {
+			return slackblocks.NewMarkdownBlock().Text(repeated("x", halfAndOne(slackblocks.LimitMarkdownTotalTextMaxLength)))
+		})...))
+	case "plan-missing-tasks":
+		return buildError(slackblocks.NewPlanBlock().Title("Plan"))
+	case "plan-too-many-tasks":
+		return buildError(slackblocks.NewPlanBlock().Title("Plan").Tasks(copies(slackblocks.LimitPlanTasksMaxItems+1, func(index int) *slackblocks.TaskCardBlockBuilder {
+			return validTask(fmt.Sprintf("task_%d", index))
+		})...))
+	case "plan-duplicate-task-ids":
+		return buildError(slackblocks.NewPlanBlock().Title("Plan").Tasks(validTask("task_1"), validTask("task_1")))
+	case "task-card-missing-status":
+		return buildError(slackblocks.NewTaskCardBlock().TaskID("task_1").Title("Task"))
+	case "task-card-pending-status":
+		return buildError(slackblocks.NewTaskCardBlock().TaskID("task_1").Title("Task").Status(slackblocks.TaskStatusPending))
+	case "rich-text-list-indent-negative":
+		return buildError(validList().Indent(slackblocks.LimitRichTextListIndentMin - 1))
+	case "rich-text-list-indent-too-large":
+		return buildError(validList().Indent(slackblocks.LimitRichTextListIndentMax + 1))
+	case "rich-text-list-offset-negative":
+		return buildError(validList().Offset(slackblocks.LimitRichTextListOffsetMin - 1))
+	case "rich-text-list-border-negative":
+		return buildError(validList().Border(slackblocks.LimitRichTextListBorderMin - 1))
+	case "rich-text-list-border-too-large":
+		return buildError(validList().Border(slackblocks.LimitRichTextListBorderMax + 1))
+	case "rich-text-quote-border-negative":
+		return buildError(slackblocks.NewRichTextQuote().Elements(richTextRun()).Border(slackblocks.LimitRichTextQuoteBorderMin - 1))
+	case "rich-text-quote-border-too-large":
+		return buildError(slackblocks.NewRichTextQuote().Elements(richTextRun()).Border(slackblocks.LimitRichTextQuoteBorderMax + 1))
+	case "rich-text-preformatted-border-negative":
+		return buildError(slackblocks.NewRichTextCodeBlock().Elements(richTextRun()).Border(slackblocks.LimitRichTextPreformattedBorderMin - 1))
+	case "rich-text-preformatted-border-too-large":
+		return buildError(slackblocks.NewRichTextCodeBlock().Elements(richTextRun()).Border(slackblocks.LimitRichTextPreformattedBorderMax + 1))
+	case "video-thumbnail-url-too-long":
+		return buildError(validVideo().ThumbnailURL(repeated("x", slackblocks.LimitVideoThumbnailURLMaxLength+1)))
+	case "video-url-too-long":
+		return buildError(validVideo().VideoURL(repeated("x", slackblocks.LimitVideoVideoURLMaxLength+1)))
+	case "video-title-url-too-long":
+		return buildError(validVideo().TitleURL(repeated("x", slackblocks.LimitVideoTitleURLMaxLength+1)))
+	case "video-provider-icon-url-too-long":
+		return buildError(validVideo().ProviderIconURL(repeated("x", slackblocks.LimitVideoProviderIconURLMaxLength+1)))
+	case "view-external-id-too-long":
+		return buildError(slackblocks.NewHomeTab().Blocks(slackblocks.NewDividerBlock()).ExternalID(repeated("x", slackblocks.LimitViewExternalIDMaxLength+1)))
+	case "attachment-missing-blocks":
+		return buildError(slackblocks.NewAttachment().Fallback("Summary"))
 	default:
 		return nil
 	}

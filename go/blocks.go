@@ -49,9 +49,39 @@ func NewTaskCardBlock() *TaskCardBlockBuilder {
 	return newTaskCardBlockBuilder(newBuilder("TaskCardBlock", "task_card"))
 }
 
+// planTask builds a task card for a plan's tasks without validating it as a standalone task
+// card, which cannot be pending. The plan validates its tasks instead.
+type planTask struct{ core *builder }
+
+func (t planTask) Build() (Object, error) {
+	if t.core.err != nil {
+		return nil, t.core.err
+	}
+	task, err := materialise(t.core.values)
+	if err != nil {
+		return nil, err
+	}
+	return task.(Object), nil
+}
+
+func asPlanTask(value any) (any, error) {
+	if values, ok := value.([]any); ok {
+		tasks := make([]any, len(values))
+		for index, item := range values {
+			tasks[index], _ = asPlanTask(item)
+		}
+		return tasks, nil
+	}
+	task, ok := value.(*TaskCardBlockBuilder)
+	if !ok || task == nil || task.slackBlockBuilder == nil || task.concreteBuilder == nil || task.core == nil {
+		return value, nil
+	}
+	return planTask{core: task.core}, nil
+}
+
 // NewPlanBlock creates a titled sequence of tasks.
 func NewPlanBlock() *PlanBlockBuilder {
-	return newPlanBlockBuilder(newBuilder("PlanBlock", "plan").withTransform(func(object Object) (Object, error) {
+	return newPlanBlockBuilder(newBuilder("PlanBlock", "plan").coerce("tasks", asPlanTask).withTransform(func(object Object) (Object, error) {
 		tasks, ok := object["tasks"].([]any)
 		if !ok {
 			return object, nil
