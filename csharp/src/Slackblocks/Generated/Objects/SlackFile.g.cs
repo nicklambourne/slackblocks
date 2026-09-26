@@ -10,6 +10,7 @@ namespace Slackblocks.Objects;
 /// <remarks>
 /// <list type="bullet">
 /// <item><description>Provide exactly one of an ID or a URL.</description></item>
+/// <item><description>An ID must match ^F[A-Z0-9]{8,}$.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/composition-objects/slack-file-object">Slack reference</see>.</para>
 /// </remarks>

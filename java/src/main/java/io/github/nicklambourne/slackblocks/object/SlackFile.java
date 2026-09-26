@@ -20,6 +20,7 @@ import java.util.Optional;
  *
  * <ul>
  *   <li>Provide exactly one of an ID or a URL.
+ *   <li>An ID must match ^F[A-Z0-9]{8,}$.
  * </ul>
  *
  * @see <a

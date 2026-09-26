@@ -488,6 +488,7 @@ func (b *AreaChartBuilder) AxisConfig(value *AxisConfigBuilder) *AreaChartBuilde
 //
 // A legacy message attachment containing blocks and an optional color bar.
 //
+//   - Required: Blocks.
 //   - Only blocks supported in messages are accepted.
 //
 // See https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments for Slack's reference.
@@ -497,8 +498,8 @@ func newAttachmentBuilder(core *builder) *AttachmentBuilder {
 	return &AttachmentBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Blocks adds the attachment's blocks in display order. Each call appends to any values already
-// added.
+// Blocks adds the attachment's blocks in display order. Required. Each call appends to any
+// values already added.
 func (b *AttachmentBuilder) Blocks(values ...Block) *AttachmentBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -824,7 +825,7 @@ func (b *ChannelMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *Channel
 	return b
 }
 
-// MaxSelectedItems sets the maximum number of items a user can select.
+// MaxSelectedItems sets the maximum number of items a user can select. Must be at least 1.
 func (b *ChannelMultiSelectBuilder) MaxSelectedItems(value int) *ChannelMultiSelectBuilder {
 	b.core.MaxSelectedItems(value)
 	return b
@@ -1107,8 +1108,8 @@ func newContainerBlockBuilder(core *builder) *ContainerBlockBuilder {
 	return &ContainerBlockBuilder{slackBlockBuilder: newSlackBlockBuilder(core)}
 }
 
-// ChildBlocks adds the blocks grouped inside the container, in display order. Required. Slack
-// allows at most 10 items. Each call appends to any values already added.
+// ChildBlocks adds the blocks grouped inside the container, in display order. Required. Must
+// contain between 1 and 10 items. Each call appends to any values already added.
 func (b *ContainerBlockBuilder) ChildBlocks(values ...Block) *ContainerBlockBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -1261,6 +1262,7 @@ func (b *ContextBlockBuilder) BlockID(value string) *ContextBlockBuilder {
 // Limits which conversations a conversation menu offers.
 //
 //   - Set at least one filter.
+//   - Include only im, mpim, private, and public.
 //
 // See https://docs.slack.dev/reference/block-kit/composition-objects/conversation-filter-object for Slack's reference.
 type ConversationFilterBuilder struct{ *concreteBuilder }
@@ -1269,8 +1271,8 @@ func newConversationFilterBuilder(core *builder) *ConversationFilterBuilder {
 	return &ConversationFilterBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Include adds conversation types to offer: im, mpim, private, or public. Each call appends to
-// any values already added.
+// Include adds conversation types to offer: im, mpim, private, or public. Must not be empty.
+// Each call appends to any values already added.
 func (b *ConversationFilterBuilder) Include(values ...string) *ConversationFilterBuilder {
 	b.core.Include(values...)
 	return b
@@ -1335,7 +1337,7 @@ func (b *ConversationMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *Co
 	return b
 }
 
-// MaxSelectedItems sets the maximum number of items a user can select.
+// MaxSelectedItems sets the maximum number of items a user can select. Must be at least 1.
 func (b *ConversationMultiSelectBuilder) MaxSelectedItems(value int) *ConversationMultiSelectBuilder {
 	b.core.MaxSelectedItems(value)
 	return b
@@ -1536,6 +1538,7 @@ func (b *DataTableBlockBuilder) PageSize(value int) *DataTableBlockBuilder {
 }
 
 // RowHeaderColumnIndex sets the zero-based index of the column whose cells act as row headers.
+// Must be at least 0.
 func (b *DataTableBlockBuilder) RowHeaderColumnIndex(value int) *DataTableBlockBuilder {
 	b.core.RowHeaderColumnIndex(value)
 	return b
@@ -1815,7 +1818,7 @@ func (b *ExternalMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *Extern
 	return b
 }
 
-// MaxSelectedItems sets the maximum number of items a user can select.
+// MaxSelectedItems sets the maximum number of items a user can select. Must be at least 1.
 func (b *ExternalMultiSelectBuilder) MaxSelectedItems(value int) *ExternalMultiSelectBuilder {
 	b.core.MaxSelectedItems(value)
 	return b
@@ -1983,7 +1986,7 @@ func (b *FeedbackButtonsBuilder) ActionID(value string) *FeedbackButtonsBuilder 
 //
 // A remote file previously added with the files.remote API.
 //
-//   - Required: ExternalID.
+//   - Required: ExternalID and Source.
 //
 // See https://docs.slack.dev/reference/block-kit/blocks/file-block for Slack's reference.
 type FileBlockBuilder struct{ *slackBlockBuilder }
@@ -1999,7 +2002,7 @@ func (b *FileBlockBuilder) ExternalID(value string) *FileBlockBuilder {
 	return b
 }
 
-// Source sets the file source. Slack currently supports only remote files.
+// Source sets the file source. Slack currently supports only remote files. Required.
 func (b *FileBlockBuilder) Source(value string) *FileBlockBuilder {
 	b.core.Source(value)
 	return b
@@ -2121,7 +2124,8 @@ func (b *HomeTabBuilder) CallbackID(value string) *HomeTabBuilder {
 	return b
 }
 
-// ExternalID sets a workspace-unique identifier you can use to update the view later.
+// ExternalID sets a workspace-unique identifier you can use to update the view later. Slack
+// allows at most 255 characters.
 func (b *HomeTabBuilder) ExternalID(value string) *HomeTabBuilder {
 	b.core.ExternalID(value)
 	return b
@@ -2131,7 +2135,7 @@ func (b *HomeTabBuilder) ExternalID(value string) *HomeTabBuilder {
 //
 // A button that shows an icon instead of text.
 //
-//   - Required: Text.
+//   - Required: Text and Icon.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element for Slack's reference.
 type IconButtonBuilder struct{ *concreteBuilder }
@@ -2153,7 +2157,7 @@ func (b *IconButtonBuilder) TextObject(value *PlainTextBuilder) *IconButtonBuild
 	return b
 }
 
-// Icon sets the icon shown on the button. Accepted values: "trash".
+// Icon sets the icon shown on the button. Required. Accepted values: "trash".
 func (b *IconButtonBuilder) Icon(value IconButtonIcon) *IconButtonBuilder {
 	b.core.Icon(string(value))
 	return b
@@ -2198,7 +2202,8 @@ func (b *IconButtonBuilder) VisibleToUserIDs(values ...string) *IconButtonBuilde
 //
 // A standalone image with alternative text and an optional title.
 //
-//   - Required: ImageURL and AltText.
+//   - Required: AltText.
+//   - Provide exactly one of an image URL or a Slack file.
 //
 // See https://docs.slack.dev/reference/block-kit/blocks/image-block for Slack's reference.
 type ImageBlockBuilder struct{ *slackBlockBuilder }
@@ -2208,9 +2213,16 @@ func newImageBlockBuilder(core *builder) *ImageBlockBuilder {
 }
 
 // ImageURL sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
-// Required. Slack allows at most 3000 characters.
+// Slack allows at most 3000 characters.
 func (b *ImageBlockBuilder) ImageURL(value string) *ImageBlockBuilder {
 	b.core.ImageURL(value)
+	return b
+}
+
+// SlackFile sets a file hosted in Slack as the image source. Cannot be combined with an image
+// URL.
+func (b *ImageBlockBuilder) SlackFile(value *SlackFileBuilder) *ImageBlockBuilder {
+	b.core.SlackFile(value)
 	return b
 }
 
@@ -2221,8 +2233,8 @@ func (b *ImageBlockBuilder) AltText(value string) *ImageBlockBuilder {
 	return b
 }
 
-// Title sets the title shown above the image. The string is sent as a plain_text text object;
-// use TitleObject to pass a text object instead.
+// Title sets the title shown above the image. Slack allows at most 2000 characters. The string
+// is sent as a plain_text text object; use TitleObject to pass a text object instead.
 func (b *ImageBlockBuilder) Title(value string) *ImageBlockBuilder {
 	b.core.Title(value)
 	return b
@@ -2257,12 +2269,14 @@ func newImageElementBuilder(core *builder) *ImageElementBuilder {
 }
 
 // AltText sets a plain-text summary of the image or video for assistive technology. Required.
+// Slack allows at most 2000 characters.
 func (b *ImageElementBuilder) AltText(value string) *ImageElementBuilder {
 	b.core.AltText(value)
 	return b
 }
 
 // ImageURL sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+// Slack allows at most 3000 characters.
 func (b *ImageElementBuilder) ImageURL(value string) *ImageElementBuilder {
 	b.core.ImageURL(value)
 	return b
@@ -2457,6 +2471,7 @@ func (b *MarkdownBlockBuilder) BlockID(value string) *MarkdownBlockBuilder {
 //
 //   - Required: Channel.
 //   - Only blocks supported in messages are accepted.
+//   - Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
 //
 // See https://docs.slack.dev/reference/methods/chat.postMessage for Slack's reference.
 type MessageBuilder struct{ *concreteBuilder }
@@ -2530,6 +2545,7 @@ func (b *MessageBuilder) Metadata(value Object) *MessageBuilder {
 // A response body for slash commands and interaction response URLs.
 //
 //   - Only blocks supported in messages are accepted.
+//   - Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
 //
 // See https://docs.slack.dev/interactivity/handling-user-interaction#message_responses for Slack's reference.
 type MessageResponseBuilder struct{ *concreteBuilder }
@@ -2678,7 +2694,8 @@ func (b *ModalBuilder) NotifyOnClose(value bool) *ModalBuilder {
 	return b
 }
 
-// ExternalID sets a workspace-unique identifier you can use to update the view later.
+// ExternalID sets a workspace-unique identifier you can use to update the view later. Slack
+// allows at most 255 characters.
 func (b *ModalBuilder) ExternalID(value string) *ModalBuilder {
 	b.core.ExternalID(value)
 	return b
@@ -2695,7 +2712,7 @@ func (b *ModalBuilder) SubmitDisabled(value bool) *ModalBuilder {
 //
 // An input that accepts whole or decimal numbers.
 //
-//   - Required: ActionID.
+//   - Required: ActionID and IsDecimalAllowed.
 //   - The minimum value cannot exceed the maximum value.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/number-input-element for Slack's reference.
@@ -2713,7 +2730,7 @@ func (b *NumberInputBuilder) ActionID(value string) *NumberInputBuilder {
 	return b
 }
 
-// IsDecimalAllowed sets whether the input accepts decimal numbers.
+// IsDecimalAllowed sets whether the input accepts decimal numbers. Required.
 func (b *NumberInputBuilder) IsDecimalAllowed(value bool) *NumberInputBuilder {
 	b.core.IsDecimalAllowed(value)
 	return b
@@ -2977,13 +2994,15 @@ func (b *PlainTextInputBuilder) Multiline(value bool) *PlainTextInputBuilder {
 	return b
 }
 
-// MinLength sets the minimum number of characters the user must enter.
+// MinLength sets the minimum number of characters the user must enter. Must be between 0 and
+// 3000.
 func (b *PlainTextInputBuilder) MinLength(value int) *PlainTextInputBuilder {
 	b.core.MinLength(value)
 	return b
 }
 
-// MaxLength sets the maximum number of characters the user can enter. Must be at most 3000.
+// MaxLength sets the maximum number of characters the user can enter. Must be between 1 and
+// 3000.
 func (b *PlainTextInputBuilder) MaxLength(value int) *PlainTextInputBuilder {
 	b.core.MaxLength(value)
 	return b
@@ -3021,7 +3040,8 @@ func (b *PlainTextInputBuilder) PlaceholderObject(value *PlainTextBuilder) *Plai
 //
 // A titled sequence of task cards.
 //
-//   - Required: Title.
+//   - Required: Title and Tasks.
+//   - Task IDs must be unique within a plan.
 //
 // See https://docs.slack.dev/reference/block-kit/blocks/plan-block for Slack's reference.
 type PlanBlockBuilder struct{ *slackBlockBuilder }
@@ -3036,7 +3056,8 @@ func (b *PlanBlockBuilder) Title(value string) *PlanBlockBuilder {
 	return b
 }
 
-// Tasks adds task cards in display order. Each call appends to any values already added.
+// Tasks adds task cards in display order. Required. Slack allows at most 50 items. Each call
+// appends to any values already added.
 func (b *PlanBlockBuilder) Tasks(values ...*TaskCardBlockBuilder) *PlanBlockBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -3259,7 +3280,7 @@ func (b *RichTextCodeBlockBuilder) Elements(values ...RichTextSectionElement) *R
 	return b
 }
 
-// Border sets the width of the left border, in pixels.
+// Border sets the width of the left border, in pixels. Must be between 0 and 1.
 func (b *RichTextCodeBlockBuilder) Border(value int) *RichTextCodeBlockBuilder {
 	b.core.Border(value)
 	return b
@@ -3312,7 +3333,7 @@ func (b *RichTextInputBuilder) ActionID(value string) *RichTextInputBuilder {
 }
 
 // InitialValue sets the rich text present when the input loads.
-func (b *RichTextInputBuilder) InitialValue(value *RichTextBuilder) *RichTextInputBuilder {
+func (b *RichTextInputBuilder) InitialValue(value *RichTextBlockBuilder) *RichTextInputBuilder {
 	b.core.InitialValue(value)
 	return b
 }
@@ -3345,13 +3366,13 @@ func (b *RichTextInputBuilder) PlaceholderObject(value *PlainTextBuilder) *RichT
 	return b
 }
 
-// MinLines sets the minimum visible height of the input, in lines.
+// MinLines sets the minimum visible height of the input, in lines. Must be between 1 and 100.
 func (b *RichTextInputBuilder) MinLines(value int) *RichTextInputBuilder {
 	b.core.MinLines(value)
 	return b
 }
 
-// MaxLines sets the maximum visible height of the input, in lines.
+// MaxLines sets the maximum visible height of the input, in lines. Must be between 1 and 100.
 func (b *RichTextInputBuilder) MaxLines(value int) *RichTextInputBuilder {
 	b.core.MaxLines(value)
 	return b
@@ -3420,19 +3441,19 @@ func (b *RichTextListBuilder) Elements(values ...*RichTextSectionBuilder) *RichT
 	return b
 }
 
-// Indent sets the list's indentation level.
+// Indent sets the list's indentation level. Must be between 0 and 8.
 func (b *RichTextListBuilder) Indent(value int) *RichTextListBuilder {
 	b.core.Indent(value)
 	return b
 }
 
-// Offset sets the number of items to skip when numbering an ordered list.
+// Offset sets the number of items to skip when numbering an ordered list. Must be at least 0.
 func (b *RichTextListBuilder) Offset(value int) *RichTextListBuilder {
 	b.core.Offset(value)
 	return b
 }
 
-// Border sets the width of the left border, in pixels.
+// Border sets the width of the left border, in pixels. Must be between 0 and 1.
 func (b *RichTextListBuilder) Border(value int) *RichTextListBuilder {
 	b.core.Border(value)
 	return b
@@ -3462,7 +3483,7 @@ func (b *RichTextQuoteBuilder) Elements(values ...RichTextSectionElement) *RichT
 	return b
 }
 
-// Border sets the width of the left border, in pixels.
+// Border sets the width of the left border, in pixels. Must be between 0 and 1.
 func (b *RichTextQuoteBuilder) Border(value int) *RichTextQuoteBuilder {
 	b.core.Border(value)
 	return b
@@ -3609,6 +3630,7 @@ func (b *SectionBlockBuilder) BlockID(value string) *SectionBlockBuilder {
 // A reference to an image file hosted in Slack.
 //
 //   - Provide exactly one of an ID or a URL.
+//   - An ID must match ^F[A-Z0-9]{8,}$.
 //
 // See https://docs.slack.dev/reference/block-kit/composition-objects/slack-file-object for Slack's reference.
 type SlackFileBuilder struct{ *concreteBuilder }
@@ -3634,6 +3656,8 @@ func (b *SlackFileBuilder) SlackFileURL(value string) *SlackFileBuilder {
 //
 // A Slack-provided icon, referenced by name.
 //
+//   - Required: Name.
+//
 // See https://docs.slack.dev/reference/block-kit/blocks/card-block for Slack's reference.
 type SlackIconBuilder struct{ *concreteBuilder }
 
@@ -3641,7 +3665,7 @@ func newSlackIconBuilder(core *builder) *SlackIconBuilder {
 	return &SlackIconBuilder{concreteBuilder: newConcreteBuilder(core)}
 }
 
-// Name sets the name of the Slack-provided icon, such as rocket.
+// Name sets the name of the Slack-provided icon, such as rocket. Required.
 func (b *SlackIconBuilder) Name(value string) *SlackIconBuilder {
 	b.core.Name(value)
 	return b
@@ -3709,7 +3733,7 @@ func (b *StaticMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *StaticMu
 	return b
 }
 
-// MaxSelectedItems sets the maximum number of items a user can select.
+// MaxSelectedItems sets the maximum number of items a user can select. Must be at least 1.
 func (b *StaticMultiSelectBuilder) MaxSelectedItems(value int) *StaticMultiSelectBuilder {
 	b.core.MaxSelectedItems(value)
 	return b
@@ -3823,7 +3847,6 @@ func (b *StaticSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *Static
 //
 //   - Required: Rows.
 //   - Every row must have the same number of cells.
-//   - Column settings need one entry for every column.
 //
 // See https://docs.slack.dev/reference/block-kit/blocks/table-block for Slack's reference.
 type TableBlockBuilder struct{ *slackBlockBuilder }
@@ -3846,7 +3869,7 @@ func (b *TableBlockBuilder) Rows(rows ...[]TableCell) *TableBlockBuilder {
 }
 
 // ColumnSettings adds per-column settings in column order. Provide one entry for every column.
-// Each call appends to any values already added.
+// Slack allows at most 20 items. Each call appends to any values already added.
 func (b *TableBlockBuilder) ColumnSettings(values ...*ColumnSettingsBuilder) *TableBlockBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -3868,7 +3891,8 @@ func (b *TableBlockBuilder) BlockID(value string) *TableBlockBuilder {
 //
 // One task with its status, details, output, and sources.
 //
-//   - Required: TaskID and Title.
+//   - Required: TaskID, Title, and Status.
+//   - A standalone task card's status cannot be pending; pending is only valid for plan tasks.
 //
 // See https://docs.slack.dev/reference/block-kit/blocks/task-card-block for Slack's reference.
 type TaskCardBlockBuilder struct{ *slackBlockBuilder }
@@ -3912,8 +3936,8 @@ func (b *TaskCardBlockBuilder) Sources(values ...*URLSourceBuilder) *TaskCardBlo
 	return b
 }
 
-// Status sets the task's current state. Accepted values: "pending", "in_progress", "complete",
-// and "error".
+// Status sets the task's current state. Required. Accepted values: "pending", "in_progress",
+// "complete", and "error".
 func (b *TaskCardBlockBuilder) Status(value TaskStatus) *TaskCardBlockBuilder {
 	b.core.Status(string(value))
 	return b
@@ -4132,7 +4156,7 @@ func (b *UserMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *UserMultiS
 	return b
 }
 
-// MaxSelectedItems sets the maximum number of items a user can select.
+// MaxSelectedItems sets the maximum number of items a user can select. Must be at least 1.
 func (b *UserMultiSelectBuilder) MaxSelectedItems(value int) *UserMultiSelectBuilder {
 	b.core.MaxSelectedItems(value)
 	return b
@@ -4235,7 +4259,8 @@ func (b *VideoBlockBuilder) AltText(value string) *VideoBlockBuilder {
 	return b
 }
 
-// ThumbnailURL sets the URL of the image shown before the video plays. Required.
+// ThumbnailURL sets the URL of the image shown before the video plays. Required. Slack allows
+// at most 3000 characters.
 func (b *VideoBlockBuilder) ThumbnailURL(value string) *VideoBlockBuilder {
 	b.core.ThumbnailURL(value)
 	return b
@@ -4255,7 +4280,7 @@ func (b *VideoBlockBuilder) TitleObject(value *PlainTextBuilder) *VideoBlockBuil
 }
 
 // VideoURL sets the embeddable URL of the video. The domain must be listed in the app's unfurl
-// domains. Required.
+// domains. Required. Slack allows at most 3000 characters.
 func (b *VideoBlockBuilder) VideoURL(value string) *VideoBlockBuilder {
 	b.core.VideoURL(value)
 	return b
@@ -4289,7 +4314,8 @@ func (b *VideoBlockBuilder) DescriptionObject(value *PlainTextBuilder) *VideoBlo
 	return b
 }
 
-// ProviderIconURL sets the URL of the video provider's icon.
+// ProviderIconURL sets the URL of the video provider's icon. Slack allows at most 2000
+// characters.
 func (b *VideoBlockBuilder) ProviderIconURL(value string) *VideoBlockBuilder {
 	b.core.ProviderIconURL(value)
 	return b
@@ -4302,7 +4328,8 @@ func (b *VideoBlockBuilder) ProviderName(value string) *VideoBlockBuilder {
 	return b
 }
 
-// TitleURL sets the HTTPS URL opened when the title is clicked.
+// TitleURL sets the HTTPS URL opened when the title is clicked. Slack allows at most 2000
+// characters.
 func (b *VideoBlockBuilder) TitleURL(value string) *VideoBlockBuilder {
 	b.core.TitleURL(value)
 	return b
@@ -4313,6 +4340,7 @@ func (b *VideoBlockBuilder) TitleURL(value string) *VideoBlockBuilder {
 // A payload for incoming webhooks.
 //
 //   - Only blocks supported in messages are accepted.
+//   - Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
 //
 // See https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks for Slack's reference.
 type WebhookMessageBuilder struct{ *concreteBuilder }
@@ -4409,7 +4437,7 @@ func (b *WorkflowBuilder) Trigger(value *TriggerBuilder) *WorkflowBuilder {
 //
 // A button that starts a workflow through a link trigger.
 //
-//   - Required: Text and Workflow.
+//   - Required: Text, Workflow, and ActionID.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element for Slack's reference.
 type WorkflowButtonBuilder struct{ *concreteBuilder }
@@ -4438,8 +4466,8 @@ func (b *WorkflowButtonBuilder) Workflow(value *WorkflowBuilder) *WorkflowButton
 }
 
 // ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
-// element. It must be unique among the elements of its block. Slack allows at most 255
-// characters.
+// element. It must be unique among the elements of its block. Required. Slack allows at most
+// 255 characters.
 func (b *WorkflowButtonBuilder) ActionID(value string) *WorkflowButtonBuilder {
 	b.core.ActionID(value)
 	return b

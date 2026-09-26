@@ -230,12 +230,6 @@
       "description": "A table whose rows have differing column counts must be rejected"
     },
     {
-      "id": "table-column-settings-mismatch",
-      "category": "invalid-usage",
-      "constraint": "table.column_settings",
-      "description": "A table whose column settings do not match its column count must be rejected"
-    },
-    {
       "id": "file-input-max-files-too-small",
       "category": "out-of-range",
       "constraint": "file_input.max_files.min",
@@ -774,6 +768,270 @@
       "category": "length-exceeded",
       "constraint": "data_visualization.axis_label.max_length",
       "description": "An axis label longer than 50 characters must be rejected"
+    },
+    {
+      "id": "plain-text-input-min-length-negative",
+      "category": "out-of-range",
+      "constraint": "plain_text_input.min_length.min",
+      "description": "A plain-text input min_length below 0 must be rejected"
+    },
+    {
+      "id": "plain-text-input-min-length-too-large",
+      "category": "out-of-range",
+      "constraint": "plain_text_input.min_length.max",
+      "description": "A plain-text input min_length above 3000 must be rejected"
+    },
+    {
+      "id": "plain-text-input-max-length-too-small",
+      "category": "out-of-range",
+      "constraint": "plain_text_input.max_length.min",
+      "description": "A plain-text input max_length below 1 must be rejected"
+    },
+    {
+      "id": "rich-text-input-min-lines-too-small",
+      "category": "out-of-range",
+      "constraint": "rich_text_input.min_lines.min",
+      "description": "A rich text input min_lines below 1 must be rejected"
+    },
+    {
+      "id": "rich-text-input-min-lines-too-large",
+      "category": "out-of-range",
+      "constraint": "rich_text_input.min_lines.max",
+      "description": "A rich text input min_lines above 100 must be rejected"
+    },
+    {
+      "id": "rich-text-input-max-lines-too-small",
+      "category": "out-of-range",
+      "constraint": "rich_text_input.max_lines.min",
+      "description": "A rich text input max_lines below 1 must be rejected"
+    },
+    {
+      "id": "rich-text-input-max-lines-too-large",
+      "category": "out-of-range",
+      "constraint": "rich_text_input.max_lines.max",
+      "description": "A rich text input max_lines above 100 must be rejected"
+    },
+    {
+      "id": "multi-select-max-selected-items-too-small",
+      "category": "out-of-range",
+      "constraint": "multi_select.max_selected_items.min",
+      "description": "A multi-select max_selected_items below 1 must be rejected"
+    },
+    {
+      "id": "conversation-filter-include-empty",
+      "category": "length-exceeded",
+      "constraint": "conversation_filter.include.min_items",
+      "description": "A conversation filter with an empty include list must be rejected"
+    },
+    {
+      "id": "conversation-filter-unknown-include",
+      "category": "type-mismatch",
+      "constraint": "conversation_filter.include.values",
+      "description": "A conversation filter including a type other than im, mpim, private, or public must be rejected"
+    },
+    {
+      "id": "workflow-button-missing-action-id",
+      "category": "missing-required",
+      "constraint": "workflow_button.action_id.required",
+      "description": "A workflow button without an action_id must be rejected"
+    },
+    {
+      "id": "number-input-missing-decimal-flag",
+      "category": "missing-required",
+      "constraint": "number_input.is_decimal_allowed.required",
+      "description": "A number input without is_decimal_allowed must be rejected"
+    },
+    {
+      "id": "slack-icon-missing-name",
+      "category": "missing-required",
+      "constraint": "slack_icon.name.required",
+      "description": "A Slack icon without a name must be rejected"
+    },
+    {
+      "id": "slack-file-id-malformed",
+      "category": "type-mismatch",
+      "constraint": "slack_file.id.pattern",
+      "description": "A Slack file ID that does not match ^F[A-Z0-9]{8,}$ must be rejected"
+    },
+    {
+      "id": "image-element-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "image_element.image_url.max_length",
+      "description": "An image element URL longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "image-element-alt-text-too-long",
+      "category": "length-exceeded",
+      "constraint": "image_element.alt_text.max_length",
+      "description": "Image element alternative text longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "image-block-title-too-long",
+      "category": "length-exceeded",
+      "constraint": "image.title.max_length",
+      "description": "An image block title longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "image-block-url-and-slack-file",
+      "category": "mutually-exclusive",
+      "constraint": "image_block.source",
+      "description": "An image block with both image_url and slack_file must be rejected"
+    },
+    {
+      "id": "image-block-missing-source",
+      "category": "missing-required",
+      "constraint": "image_block.source.required",
+      "description": "An image block with neither image_url nor slack_file must be rejected"
+    },
+    {
+      "id": "container-no-child-blocks",
+      "category": "length-exceeded",
+      "constraint": "container.child_blocks.min_items",
+      "description": "A container with no child blocks must be rejected"
+    },
+    {
+      "id": "table-too-many-column-settings",
+      "category": "length-exceeded",
+      "constraint": "table.column_settings.max_items",
+      "description": "A table with more than 20 column settings must be rejected"
+    },
+    {
+      "id": "data-table-row-header-index-negative",
+      "category": "out-of-range",
+      "constraint": "data_table.row_header_column_index.min",
+      "description": "A data table row_header_column_index below 0 must be rejected"
+    },
+    {
+      "id": "data-table-total-content-too-long",
+      "category": "length-exceeded",
+      "constraint": "data_table.total_content.max_length",
+      "description": "Data table cell text exceeding 20000 characters across a message must be rejected"
+    },
+    {
+      "id": "markdown-total-too-long",
+      "category": "length-exceeded",
+      "constraint": "markdown.total_text.max_length",
+      "description": "Markdown block text exceeding 12000 characters across a payload must be rejected"
+    },
+    {
+      "id": "plan-missing-tasks",
+      "category": "missing-required",
+      "constraint": "plan.tasks.required",
+      "description": "A plan block without tasks must be rejected"
+    },
+    {
+      "id": "plan-too-many-tasks",
+      "category": "length-exceeded",
+      "constraint": "plan.tasks.max_items",
+      "description": "A plan block with more than 50 tasks must be rejected"
+    },
+    {
+      "id": "plan-duplicate-task-ids",
+      "category": "invalid-usage",
+      "constraint": "plan.tasks.unique_task_id",
+      "description": "A plan block whose tasks share a task_id must be rejected"
+    },
+    {
+      "id": "task-card-missing-status",
+      "category": "missing-required",
+      "constraint": "task_card.status.required",
+      "description": "A task card without a status must be rejected"
+    },
+    {
+      "id": "task-card-pending-status",
+      "category": "type-mismatch",
+      "constraint": "task_card.status.standalone",
+      "description": "A standalone task card with pending status must be rejected; pending is only valid for plan tasks"
+    },
+    {
+      "id": "rich-text-list-indent-negative",
+      "category": "out-of-range",
+      "constraint": "rich_text_list.indent.min",
+      "description": "A rich text list indent below 0 must be rejected"
+    },
+    {
+      "id": "rich-text-list-indent-too-large",
+      "category": "out-of-range",
+      "constraint": "rich_text_list.indent.max",
+      "description": "A rich text list indent above 8 must be rejected"
+    },
+    {
+      "id": "rich-text-list-offset-negative",
+      "category": "out-of-range",
+      "constraint": "rich_text_list.offset.min",
+      "description": "A rich text list offset below 0 must be rejected"
+    },
+    {
+      "id": "rich-text-list-border-negative",
+      "category": "out-of-range",
+      "constraint": "rich_text_list.border.min",
+      "description": "A rich text list border below 0 must be rejected"
+    },
+    {
+      "id": "rich-text-list-border-too-large",
+      "category": "out-of-range",
+      "constraint": "rich_text_list.border.max",
+      "description": "A rich text list border above 1 must be rejected"
+    },
+    {
+      "id": "rich-text-quote-border-negative",
+      "category": "out-of-range",
+      "constraint": "rich_text_quote.border.min",
+      "description": "A rich text quote border below 0 must be rejected"
+    },
+    {
+      "id": "rich-text-quote-border-too-large",
+      "category": "out-of-range",
+      "constraint": "rich_text_quote.border.max",
+      "description": "A rich text quote border above 1 must be rejected"
+    },
+    {
+      "id": "rich-text-preformatted-border-negative",
+      "category": "out-of-range",
+      "constraint": "rich_text_preformatted.border.min",
+      "description": "A preformatted rich text border below 0 must be rejected"
+    },
+    {
+      "id": "rich-text-preformatted-border-too-large",
+      "category": "out-of-range",
+      "constraint": "rich_text_preformatted.border.max",
+      "description": "A preformatted rich text border above 1 must be rejected"
+    },
+    {
+      "id": "video-thumbnail-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.thumbnail_url.max_length",
+      "description": "A video thumbnail URL longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "video-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.video_url.max_length",
+      "description": "A video URL longer than 3000 characters must be rejected"
+    },
+    {
+      "id": "video-title-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.title_url.max_length",
+      "description": "A video title URL longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "video-provider-icon-url-too-long",
+      "category": "length-exceeded",
+      "constraint": "video.provider_icon_url.max_length",
+      "description": "A video provider icon URL longer than 2000 characters must be rejected"
+    },
+    {
+      "id": "view-external-id-too-long",
+      "category": "length-exceeded",
+      "constraint": "view.external_id.max_length",
+      "description": "A view external_id longer than 255 characters must be rejected"
+    },
+    {
+      "id": "attachment-missing-blocks",
+      "category": "missing-required",
+      "constraint": "attachment.blocks.required",
+      "description": "An attachment without blocks must be rejected"
     }
   ]
 }

@@ -18,7 +18,8 @@ import java.util.Map;
  * Builder#build()} to validate and create an immutable value.
  *
  * <ul>
- *   <li>Required: {@code title}.
+ *   <li>Required: {@code title}, {@code tasks}.
+ *   <li>Task IDs must be unique within a plan.
  * </ul>
  *
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/plan-block">Slack reference</a>
@@ -113,7 +114,7 @@ public final class PlanBlock implements Block {
     /**
      * Adds task cards in display order.
      *
-     * <p>Each call appends to any values already added.
+     * <p>Required. Slack allows at most 50 items. Each call appends to any values already added.
      *
      * @param values {@link TaskCardBlock} values appended in order
      * @return this builder

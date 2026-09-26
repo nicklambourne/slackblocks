@@ -104,7 +104,6 @@ public sealed class InvalidConformanceTests
             "table-too-many-rows" => Typed("TableBlock", "table", "rows", Copies(101, index => Items(RawText("A")))),
             "table-too-many-columns" => Typed("TableBlock", "table", "rows", Items(Copies(21, index => RawText("A")))),
             "table-ragged-rows" => Typed("TableBlock", "table", "rows", Items(Items(RawText("A"), RawText("B")), Items(RawText("C")))),
-            "table-column-settings-mismatch" => Typed("TableBlock", "table", "rows", Items(Items(RawText("A"), RawText("B"))), "column_settings", Items(Map("is_wrapped", true))),
             "file-input-max-files-too-small" => Typed("FileInput", "file_input", "action_id", "a", "max_files", 0),
             "file-input-max-files-too-large" => Typed("FileInput", "file_input", "action_id", "a", "max_files", 11),
             "dispatch-action-no-triggers" => Case("DispatchActionConfiguration", Map("trigger_actions_on", Items())),
@@ -145,14 +144,14 @@ public sealed class InvalidConformanceTests
             "section-missing-content" => Typed("SectionBlock", "section"),
             "section-empty-fields" => Typed("SectionBlock", "section", "fields", Items()),
             "static-select-options-and-groups" => Typed("StaticSelect", "static_select", "action_id", "a", "options", Items(Option("A", "a")), "option_groups", Items(Map("label", Plain("A"), "options", Items(Option("B", "b"))))),
-            "image-url-and-slack-file" => Typed("ImageElement", "image", "alt_text", "image", "image_url", "https://example.com/image.png", "slack_file", Map("id", "F123")),
+            "image-url-and-slack-file" => Typed("ImageElement", "image", "alt_text", "image", "image_url", "https://example.com/image.png", "slack_file", Map("id", "F0123ABC456")),
             "number-input-inverted-range" => Typed("NumberInput", "number_input", "action_id", "a", "is_decimal_allowed", true, "min_value", 2, "max_value", 1),
             "context-invalid-element" => Typed("ContextBlock", "context", "elements", Items(Divider())),
             "input-invalid-element" => Typed("InputBlock", "input", "label", Plain("Label"), "element", Button()),
             "block-id-too-long" => Typed("DividerBlock", "divider", "block_id", Repeated("x", 256)),
             "button-accessibility-label-too-long" => Typed("Button", "button", "text", Plain("A"), "action_id", "a", "accessibility_label", Repeated("x", 76)),
-            "workflow-button-text-too-long" => Typed("WorkflowButtonElement", "workflow_button", "text", Plain(Repeated("x", 76)), "workflow", Workflow()),
-            "workflow-button-accessibility-label-too-long" => Typed("WorkflowButtonElement", "workflow_button", "text", Plain("Run"), "workflow", Workflow(), "accessibility_label", Repeated("x", 76)),
+            "workflow-button-text-too-long" => Typed("WorkflowButtonElement", "workflow_button", "text", Plain(Repeated("x", 76)), "workflow", Workflow(), "action_id", "a"),
+            "workflow-button-accessibility-label-too-long" => Typed("WorkflowButtonElement", "workflow_button", "text", Plain("Run"), "workflow", Workflow(), "action_id", "a", "accessibility_label", Repeated("x", 76)),
             "alert-text-too-long" => Typed("AlertBlock", "alert", "text", Plain(Repeated("x", 201))),
             "card-title-too-long" => Typed("CardBlock", "card", "title", Plain(Repeated("x", 151))),
             "card-subtitle-too-long" => Typed("CardBlock", "card", "title", Plain("Card"), "subtitle", Plain(Repeated("x", 151))),
@@ -195,6 +194,50 @@ public sealed class InvalidConformanceTests
             "axis-too-many-categories" => Case("AxisConfig", Map("categories", Copies(21, index => "X" + index))),
             "axis-category-label-too-long" => Case("AxisConfig", Axis(Repeated("x", 21))),
             "axis-label-too-long" => Case("AxisConfig", Map("categories", Items("A"), "x_label", Repeated("x", 51))),
+            "plain-text-input-min-length-negative" => Typed("PlainTextInput", "plain_text_input", "action_id", "a", "min_length", SlackLimits.PlainTextInputMinLengthMin - 1),
+            "plain-text-input-min-length-too-large" => Typed("PlainTextInput", "plain_text_input", "action_id", "a", "min_length", SlackLimits.PlainTextInputMinLengthMax + 1),
+            "plain-text-input-max-length-too-small" => Typed("PlainTextInput", "plain_text_input", "action_id", "a", "max_length", SlackLimits.PlainTextInputMaxLengthMin - 1),
+            "rich-text-input-min-lines-too-small" => RichTextInput("min_lines", SlackLimits.RichTextInputMinLinesMin - 1),
+            "rich-text-input-min-lines-too-large" => RichTextInput("min_lines", SlackLimits.RichTextInputMinLinesMax + 1),
+            "rich-text-input-max-lines-too-small" => RichTextInput("max_lines", SlackLimits.RichTextInputMaxLinesMin - 1),
+            "rich-text-input-max-lines-too-large" => RichTextInput("max_lines", SlackLimits.RichTextInputMaxLinesMax + 1),
+            "multi-select-max-selected-items-too-small" => Typed("UserMultiSelectElement", "multi_users_select", "action_id", "a", "max_selected_items", SlackLimits.MultiSelectMaxSelectedItemsMin - 1),
+            "conversation-filter-include-empty" => Case("ConversationFilter", Map("include", Items())),
+            "conversation-filter-unknown-include" => Case("ConversationFilter", Map("include", Items("channel"))),
+            "workflow-button-missing-action-id" => Typed("WorkflowButtonElement", "workflow_button", "text", Plain("Run"), "workflow", Workflow()),
+            "number-input-missing-decimal-flag" => Typed("NumberInput", "number_input", "action_id", "a"),
+            "slack-icon-missing-name" => Typed("SlackIcon", "icon"),
+            "slack-file-id-malformed" => Case("SlackFile", Map("id", "F0123456")),
+            "image-element-url-too-long" => Typed("ImageElement", "image", "image_url", Repeated("x", SlackLimits.ImageElementImageUrlMaxLength + 1), "alt_text", "Alt"),
+            "image-element-alt-text-too-long" => Typed("ImageElement", "image", "image_url", "https://example.com/image.png", "alt_text", Repeated("x", SlackLimits.ImageElementAltTextMaxLength + 1)),
+            "image-block-title-too-long" => Typed("ImageBlock", "image", "image_url", "https://example.com/image.png", "alt_text", "Alt", "title", Plain(Repeated("x", SlackLimits.ImageTitleMaxLength + 1))),
+            "image-block-url-and-slack-file" => Typed("ImageBlock", "image", "image_url", "https://example.com/image.png", "slack_file", Map("id", "F0123ABC456"), "alt_text", "Alt"),
+            "image-block-missing-source" => Typed("ImageBlock", "image", "alt_text", "Alt"),
+            "container-no-child-blocks" => Typed("ContainerBlock", "container", "title", Plain("Container"), "child_blocks", Items()),
+            "table-too-many-column-settings" => Typed("TableBlock", "table", "rows", Items(Items(RawText("A"))), "column_settings", Copies(SlackLimits.TableColumnSettingsMaxItems + 1, index => Map("is_wrapped", true))),
+            "data-table-row-header-index-negative" => DataTable(ValidRows(), "Names", "row_header_column_index", SlackLimits.DataTableRowHeaderColumnIndexMin - 1),
+            "data-table-total-content-too-long" => TwoDataTablesOverTheMessageTotal(),
+            "markdown-total-too-long" => TwoMarkdownBlocksOverTheMessageTotal(),
+            "plan-missing-tasks" => Typed("PlanBlock", "plan", "title", "Plan"),
+            "plan-too-many-tasks" => Typed("PlanBlock", "plan", "title", "Plan", "tasks", Copies(SlackLimits.PlanTasksMaxItems + 1, index => PlanTask("task_" + index))),
+            "plan-duplicate-task-ids" => Typed("PlanBlock", "plan", "title", "Plan", "tasks", Items(PlanTask("task"), PlanTask("task"))),
+            "task-card-missing-status" => Typed("TaskCardBlock", "task_card", "task_id", "task", "title", "Task"),
+            "task-card-pending-status" => Case("Message", Map("channel", "C123", "blocks", Items(Obj("task_card", "task_id", "task", "title", "Task", "status", "pending")))),
+            "rich-text-list-indent-negative" => RichTextList("indent", SlackLimits.RichTextListIndentMin - 1),
+            "rich-text-list-indent-too-large" => RichTextList("indent", SlackLimits.RichTextListIndentMax + 1),
+            "rich-text-list-offset-negative" => RichTextList("offset", SlackLimits.RichTextListOffsetMin - 1),
+            "rich-text-list-border-negative" => RichTextList("border", SlackLimits.RichTextListBorderMin - 1),
+            "rich-text-list-border-too-large" => RichTextList("border", SlackLimits.RichTextListBorderMax + 1),
+            "rich-text-quote-border-negative" => RichTextContainer("RichTextQuote", "rich_text_quote", SlackLimits.RichTextQuoteBorderMin - 1),
+            "rich-text-quote-border-too-large" => RichTextContainer("RichTextQuote", "rich_text_quote", SlackLimits.RichTextQuoteBorderMax + 1),
+            "rich-text-preformatted-border-negative" => RichTextContainer("RichTextCodeBlock", "rich_text_preformatted", SlackLimits.RichTextPreformattedBorderMin - 1),
+            "rich-text-preformatted-border-too-large" => RichTextContainer("RichTextCodeBlock", "rich_text_preformatted", SlackLimits.RichTextPreformattedBorderMax + 1),
+            "video-thumbnail-url-too-long" => InvalidVideo("thumbnail_url", Repeated("x", SlackLimits.VideoThumbnailUrlMaxLength + 1)),
+            "video-url-too-long" => InvalidVideo("video_url", Repeated("x", SlackLimits.VideoVideoUrlMaxLength + 1)),
+            "video-title-url-too-long" => InvalidVideo("title_url", Repeated("x", SlackLimits.VideoTitleUrlMaxLength + 1)),
+            "video-provider-icon-url-too-long" => InvalidVideo("provider_icon_url", Repeated("x", SlackLimits.VideoProviderIconUrlMaxLength + 1)),
+            "view-external-id-too-long" => Typed("HomeTab", "home", "blocks", Items(Divider()), "external_id", Repeated("x", SlackLimits.ViewExternalIdMaxLength + 1)),
+            "attachment-missing-blocks" => Case("Attachment", Map("fallback", "Summary")),
             _ => throw new InvalidOperationException("No C# invalid construction registered for " + id),
         };
 
@@ -226,6 +269,34 @@ public sealed class InvalidConformanceTests
         video[field] = value;
         return Case("VideoBlock", video);
     }
+
+    private static Invalid RichTextInput(string field, int value) =>
+        Typed("RichTextInputElement", "rich_text_input", "action_id", "a", field, value);
+
+    private static Invalid RichTextList(string field, int value) =>
+        Typed("RichTextList", "rich_text_list", "style", "bullet", "elements", Items(Obj("rich_text_section", "elements", Items(RichText("Item")))), field, value);
+
+    private static Invalid RichTextContainer(string name, string type, int border) =>
+        Typed(name, type, "elements", Items(RichText("Text")), "border", border);
+
+    /// <summary>Two data tables each within the per-table limit whose cells together exceed the message total.</summary>
+    private static Invalid TwoDataTablesOverTheMessageTotal()
+    {
+        var each = (SlackLimits.DataTableTotalContentMaxLength / 2) + 1;
+        var table = Obj("data_table", "rows", Items(Items(RawText("Name")), Items(RawText(Repeated("x", each - 4)))), "caption", "Names");
+        return Case("Message", Map("channel", "C123", "blocks", Items(table, table)));
+    }
+
+    /// <summary>Two markdown blocks each within the per-block limit that together exceed the message total.</summary>
+    private static Invalid TwoMarkdownBlocksOverTheMessageTotal()
+    {
+        var markdown = Obj("markdown", "text", Repeated("x", (SlackLimits.MarkdownTotalTextMaxLength / 2) + 1));
+        return Case("Message", Map("channel", "C123", "blocks", Items(markdown, markdown)));
+    }
+
+    private static Dictionary<string, object?> RichText(string value) => Obj("text", "text", value);
+
+    private static Dictionary<string, object?> PlanTask(string id) => Map("task_id", id, "title", "Task", "status", "complete");
 
     private static Invalid DataTable(List<object?> rows, string caption, params object?[] fields)
     {

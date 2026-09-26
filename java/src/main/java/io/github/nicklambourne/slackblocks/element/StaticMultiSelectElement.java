@@ -250,6 +250,8 @@ public final class StaticMultiSelectElement extends BlockElement implements Inpu
     /**
      * Sets the maximum number of items a user can select.
      *
+     * <p>Must be at least 1.
+     *
      * @param value value for Slack's {@code max_selected_items} field
      * @return this builder
      */

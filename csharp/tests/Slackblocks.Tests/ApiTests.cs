@@ -259,11 +259,33 @@ public sealed class ApiTests
     }
 
     [Fact]
+    public void ImageBlocksAcceptASlackFileInPlaceOfAUrl()
+    {
+        var file = new SlackFile(url: "https://files.slack.com/files-pri/T1-F1/a.png");
+        var image = new ImageBlock(imageUrl: null, altText: "A kitten", slackFile: file);
+
+        Assert.Equal(file, image.SlackFile);
+        Assert.Null(image.ImageUrl);
+        Assert.Equal("https://example.com/a.png", new ImageBlock("https://example.com/a.png", "A kitten").ImageUrl);
+    }
+
+    [Fact]
+    public void OnlyPlanTasksMayBePending()
+    {
+        var pending = new TaskCardBlock("t", "Wait", status: TaskCardStatus.Pending);
+
+        Assert.Single(new PlanBlock("Plan", [pending]).Tasks);
+        var error = Assert.Throws<ValidationException>(() => new MessagePayload("C123", blocks: [pending]));
+        Assert.Equal(ErrorCategory.TypeMismatch, error.Category);
+        Assert.Equal("MessagePayload.blocks[0].status", error.Path);
+    }
+
+    [Fact]
     public void AttachmentColorsAcceptHexWithoutTheHash()
     {
-        Assert.Equal("#36a64f", new Attachment(color: "36a64f").ToJsonNode()["color"]!.GetValue<string>());
-        Assert.Equal("danger", new Attachment(color: "danger").ToJsonNode()["color"]!.GetValue<string>());
-        Assert.Throws<ValidationException>(() => new Attachment(color: "blue"));
+        Assert.Equal("#36a64f", new Attachment(blocks: [new DividerBlock()], color: "36a64f").ToJsonNode()["color"]!.GetValue<string>());
+        Assert.Equal("danger", new Attachment(blocks: [new DividerBlock()], color: "danger").ToJsonNode()["color"]!.GetValue<string>());
+        Assert.Throws<ValidationException>(() => new Attachment(blocks: [new DividerBlock()], color: "blue"));
     }
 
     [Fact]

@@ -135,7 +135,7 @@ def test_slack_file_round_trip_url() -> None:
 
 
 def test_slack_file_round_trip_id() -> None:
-    sf = SlackFile(url=None, id="F123")
+    sf = SlackFile(url=None, id="F0123ABC456")
     assert SlackFile.from_dict(sf._resolve())._resolve() == sf._resolve()
 
 
@@ -222,6 +222,13 @@ def test_image_block_round_trip_with_title() -> None:
 
 def test_image_block_round_trip_no_title() -> None:
     ib = ImageBlock(image_url="https://x.png", alt_text="alt", block_id="b1")
+    parsed = Block.from_dict(ib._resolve())
+    assert isinstance(parsed, ImageBlock)
+    assert parsed._resolve() == ib._resolve()
+
+
+def test_image_block_round_trip_slack_file() -> None:
+    ib = ImageBlock(slack_file=SlackFile(url=None, id="F0123ABC456"), alt_text="alt", block_id="b1")
     parsed = Block.from_dict(ib._resolve())
     assert isinstance(parsed, ImageBlock)
     assert parsed._resolve() == ib._resolve()

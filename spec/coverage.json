@@ -25,7 +25,7 @@
       "blocks/header_block_text_at_limit",
       "blocks/header_block_emoji_at_limit"
     ],
-    "blocks.image": ["blocks/image_block_only"],
+    "blocks.image": ["blocks/image_block_only", "blocks/image_block_slack_file"],
     "blocks.input": ["blocks/input_block_only"],
     "blocks.markdown": ["blocks/markdown_block_basic"],
     "blocks.plan": ["blocks/plan_block"],

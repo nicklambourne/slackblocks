@@ -116,7 +116,7 @@ public final class ImageElement extends BlockElement implements Element, Context
     /**
      * Sets a plain-text summary of the image or video for assistive technology.
      *
-     * <p>Required.
+     * <p>Required. Slack allows at most 2000 characters.
      *
      * @param value value for Slack's {@code alt_text} field
      * @return this builder
@@ -128,6 +128,8 @@ public final class ImageElement extends BlockElement implements Element, Context
 
     /**
      * Sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+     *
+     * <p>Slack allows at most 3000 characters.
      *
      * @param value value for Slack's {@code image_url} field
      * @return this builder

@@ -23,7 +23,7 @@ import java.util.OptionalDouble;
  * Builder#build()} to validate and create an immutable value.
  *
  * <ul>
- *   <li>Required: {@code actionId}.
+ *   <li>Required: {@code actionId}, {@code isDecimalAllowed}.
  *   <li>The minimum value cannot exceed the maximum value.
  * </ul>
  *
@@ -191,6 +191,8 @@ public final class NumberInputElement extends BlockElement implements InputEleme
 
     /**
      * Sets whether the input accepts decimal numbers.
+     *
+     * <p>Required.
      *
      * @param value value for Slack's {@code is_decimal_allowed} field
      * @return this builder

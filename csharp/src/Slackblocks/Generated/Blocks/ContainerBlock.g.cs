@@ -18,7 +18,7 @@ namespace Slackblocks.Blocks;
 public sealed partial class ContainerBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock
 {
     /// <summary>Creates and validates a <see cref="ContainerBlock"/>.</summary>
-    /// <param name="childBlocks">The blocks grouped inside the container, in display order. Required. Slack allows at most 10 items.</param>
+    /// <param name="childBlocks">The blocks grouped inside the container, in display order. Required. Must contain between 1 and 10 items.</param>
     /// <param name="title">The container title. Provide either a title or a rich text title. Slack allows at most 150 characters. A string is sent as a <c>plain_text</c> text object.</param>
     /// <param name="richTextTitle">A rich text block used as the title in place of a plain-text title.</param>
     /// <param name="subtitle">The supporting text shown below the title. Slack allows at most 150 characters. A string is sent as a <c>mrkdwn</c> text object.</param>

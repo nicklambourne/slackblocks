@@ -172,6 +172,8 @@ public final class DataTableBlock implements Block {
     /**
      * Sets the zero-based index of the column whose cells act as row headers.
      *
+     * <p>Must be at least 0.
+     *
      * @param value value for Slack's {@code row_header_column_index} field
      * @return this builder
      */

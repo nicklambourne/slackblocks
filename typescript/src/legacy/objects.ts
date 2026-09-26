@@ -18,6 +18,7 @@ import {
 } from "../errors.js";
 import { codePointLength, create, createObject, textValue } from "../internal.js";
 import type { FactorySettings, JsonObject, SlackObject } from "../types.js";
+import { validateConversationFilter, validateSlackFile } from "../composition.js";
 
 /** A Slack plain-text or mrkdwn composition object. */
 export type TextObject = SlackObject<"plain_text" | "mrkdwn">;
@@ -246,10 +247,11 @@ export function optionGroup(
  * @param settings - Per-call validation settings.
  * @returns A validated Slack conversation-filter object.
  * @throws MissingRequiredError when no filter field is supplied.
+ * @throws InvalidUsageError when `include` is empty or names an unknown conversation type.
  */
 export function conversationFilter(
   input: {
-    /** Conversation kinds to include, such as `im`, `mpim`, `private`, or `public`. */
+    /** One or more conversation kinds to include: `im`, `mpim`, `private`, or `public`. */
     include?: string[];
     /** Exclude externally shared conversations. */
     excludeExternalSharedChannels?: boolean;
@@ -261,7 +263,9 @@ export function conversationFilter(
   if (Object.values(input).every((value) => value === undefined)) {
     throw new MissingRequiredError("conversationFilter", "expected at least one filter");
   }
-  return createObject({ ...input }, settings);
+  const filter = createObject({ ...input }, settings);
+  validateConversationFilter(filter, "conversationFilter");
+  return filter;
 }
 
 /**
@@ -360,11 +364,11 @@ export function workflow(
  * @param input - Exactly one Slack file ID or Slack file URL.
  * @param settings - Per-call validation settings.
  * @returns A validated Slack file-reference object.
- * @throws InvalidUsageError when both or neither source is supplied.
+ * @throws InvalidUsageError when both or neither source is supplied, or the ID is malformed.
  */
 export function slackFile(
   input: {
-    /** Slack file identifier. */
+    /** Slack file identifier matching `^F[A-Z0-9]{8,}$`, such as `F0123ABC456`. */
     id?: string;
     /** Slack-hosted file URL. */
     url?: string;
@@ -377,7 +381,9 @@ export function slackFile(
   if (input.id !== undefined && input.url !== undefined) {
     throw new MutualExclusivityError("slackFile", "id and url cannot be provided together");
   }
-  return createObject(input, settings);
+  const file = createObject(input, settings);
+  validateSlackFile(file, "slackFile");
+  return file;
 }
 
 /**
@@ -507,12 +513,16 @@ const SLACK_ICON_NAMES = new Set<SlackIconName>([
  * @param name - One of Slack's supported icon names.
  * @param settings - Per-call validation settings.
  * @returns A validated Slack `icon` object.
+ * @throws MissingRequiredError when the icon name is missing at runtime.
  * @throws TypeMismatchError when the icon name is unsupported at runtime.
  */
 export function slackIcon(
   name: SlackIconName,
   settings: FactorySettings = {},
 ): SlackObject<"icon"> {
+  if (name === undefined) {
+    throw new MissingRequiredError("slackIcon.name", "expected an icon name");
+  }
   if (!SLACK_ICON_NAMES.has(name)) {
     throw new TypeMismatchError("slackIcon.name", `unknown icon ${name}`);
   }

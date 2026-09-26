@@ -36,11 +36,12 @@ internal static partial class Validator
         ["emoji"] = ["name"],
         ["external_select"] = ["action_id"],
         ["feedback_buttons"] = ["positive_button", "negative_button"],
-        ["file"] = ["external_id"],
+        ["file"] = ["external_id", "source"],
         ["file_input"] = ["action_id"],
         ["header"] = ["text"],
         ["home"] = ["blocks"],
-        ["icon_button"] = ["text"],
+        ["icon"] = ["name"],
+        ["icon_button"] = ["text", "icon"],
         ["image"] = ["alt_text"],
         ["input"] = ["label", "element"],
         ["line"] = ["series", "axis_config"],
@@ -52,11 +53,11 @@ internal static partial class Validator
         ["multi_external_select"] = ["action_id"],
         ["multi_static_select"] = ["action_id"],
         ["multi_users_select"] = ["action_id"],
-        ["number_input"] = ["action_id"],
+        ["number_input"] = ["action_id", "is_decimal_allowed"],
         ["overflow"] = ["action_id", "options"],
         ["pie"] = ["segments"],
         ["plain_text_input"] = ["action_id"],
-        ["plan"] = ["title"],
+        ["plan"] = ["title", "tasks"],
         ["radio_buttons"] = ["action_id", "options"],
         ["raw_number"] = ["value", "text"],
         ["raw_text"] = ["text"],
@@ -68,7 +69,7 @@ internal static partial class Validator
         ["rich_text_section"] = ["elements"],
         ["static_select"] = ["action_id"],
         ["table"] = ["rows"],
-        ["task_card"] = ["task_id", "title"],
+        ["task_card"] = ["task_id", "title", "status"],
         ["text"] = ["text"],
         ["timepicker"] = ["action_id"],
         ["url"] = ["url", "text"],
@@ -77,7 +78,7 @@ internal static partial class Validator
         ["usergroup"] = ["usergroup_id"],
         ["users_select"] = ["action_id"],
         ["video"] = ["alt_text", "thumbnail_url", "title", "video_url"],
-        ["workflow_button"] = ["text", "workflow"],
+        ["workflow_button"] = ["text", "workflow", "action_id"],
     }.ToFrozenDictionary(StringComparer.Ordinal);
 
     private static readonly FrozenSet<string> InputElementTypes = Set(
@@ -124,6 +125,14 @@ internal static partial class Validator
         "users_select",
         "workflow_button");
 
+    private static readonly FrozenSet<string> MultiSelectTypes = Set(
+        "multi_channels_select",
+        "multi_conversations_select",
+        "multi_external_select",
+        "multi_static_select",
+        "multi_users_select");
+
+    private static readonly FrozenSet<string> ConversationFilterIncludes = Set("im", "mpim", "private", "public");
     private static readonly FrozenSet<string> ContextElementTypes = Set("plain_text", "mrkdwn", "image");
     private static readonly FrozenSet<string> AlertLevels = Set("default", "info", "warning", "error", "success");
     private static readonly FrozenSet<string> ContainerWidths = Set("narrow", "standard", "wide", "full");
@@ -149,6 +158,13 @@ internal static partial class Validator
     [GeneratedRegex("^#[0-9a-fA-F]{6}$", RegexOptions.CultureInvariant)]
     private static partial Regex AttachmentColor();
 
+    [GeneratedRegex("^F[A-Z0-9]{8,}$", RegexOptions.CultureInvariant)]
+    private static partial Regex SlackFileId();
+
+    /// <summary>Matches a path ending in a block list item, where an <c>image</c> is an image block.</summary>
+    [GeneratedRegex(@"(^|\.)(child_)?blocks\[\d+]$", RegexOptions.CultureInvariant)]
+    private static partial Regex BlockListItem();
+
     private static FrozenSet<string> Set(params string[] values) => values.ToFrozenSet(StringComparer.Ordinal);
 
     private static void ValidateType(string name, JsonObject value)
@@ -165,13 +181,7 @@ internal static partial class Validator
                 ValidateOptionGroup(value, name);
                 break;
             case "ConversationFilter":
-                if (!value.ContainsKey("include")
-                    && !value.ContainsKey("exclude_external_shared_channels")
-                    && !value.ContainsKey("exclude_bot_users"))
-                {
-                    Fail(ErrorCategory.MissingRequired, name, "expected at least one filter field");
-                }
-
+                ValidateConversationFilter(value, name);
                 break;
             case "InputParameter":
                 Require(value, "name", name);
@@ -184,11 +194,7 @@ internal static partial class Validator
                 Require(value, "trigger", name);
                 break;
             case "SlackFile":
-                if (value.ContainsKey("id") == value.ContainsKey("url"))
-                {
-                    Fail(ErrorCategory.MutuallyExclusive, name, "expected exactly one of id or url");
-                }
-
+                ValidateSlackFile(value, name);
                 break;
             case "ChartSegment":
                 ValidateLabelValue(value, name, SlackLimits.DataVisualizationSegmentLabelMaxLength, positive: true);
@@ -209,6 +215,7 @@ internal static partial class Validator
                 ValidateDispatchActionConfiguration(value, name);
                 break;
             case "Attachment":
+                Require(value, "blocks", name);
                 if (JsonValues.IsString(value["color"], out var color)
                     && !AttachmentColorAliases.Contains(color)
                     && !AttachmentColor().IsMatch(color))
@@ -267,6 +274,16 @@ internal static partial class Validator
                 Child(path, "dispatch_action_config"));
         }
 
+        if (MultiSelectTypes.Contains(type))
+        {
+            CheckRange(value, "max_selected_items", path, SlackLimits.MultiSelectMaxSelectedItemsMin, int.MaxValue);
+        }
+
+        if ((type is "conversations_select" or "multi_conversations_select") && value.ContainsKey("filter"))
+        {
+            ValidateConversationFilter(ObjectAt(value["filter"], Child(path, "filter")), Child(path, "filter"));
+        }
+
         switch (type)
         {
             case "plain_text":
@@ -314,11 +331,8 @@ internal static partial class Validator
 
                 break;
             case "plain_text_input":
-                if (JsonValues.Number(value["max_length"]) is double maxLength && maxLength > SlackLimits.PlainTextInputMaxLengthMax)
-                {
-                    Fail(ErrorCategory.OutOfRange, Child(path, "max_length"), $"exceeds maximum {SlackLimits.PlainTextInputMaxLengthMax}");
-                }
-
+                CheckRange(value, "min_length", path, SlackLimits.PlainTextInputMinLengthMin, SlackLimits.PlainTextInputMinLengthMax);
+                CheckRange(value, "max_length", path, SlackLimits.PlainTextInputMaxLengthMin, SlackLimits.PlainTextInputMaxLengthMax);
                 if (value.ContainsKey("placeholder"))
                 {
                     TextLength(value["placeholder"], Child(path, "placeholder.text"), 0, SlackLimits.PlainTextInputPlaceholderMaxLength);
@@ -339,6 +353,25 @@ internal static partial class Validator
                 break;
             case "rich_text_input":
                 CheckOptionalText(value, "placeholder", path, SlackLimits.RichTextInputPlaceholderMaxLength);
+                CheckRange(value, "min_lines", path, SlackLimits.RichTextInputMinLinesMin, SlackLimits.RichTextInputMinLinesMax);
+                CheckRange(value, "max_lines", path, SlackLimits.RichTextInputMaxLinesMin, SlackLimits.RichTextInputMaxLinesMax);
+                if (value.ContainsKey("initial_value")
+                    && ObjectType(ObjectAt(value["initial_value"], Child(path, "initial_value"))) != "rich_text")
+                {
+                    Fail(ErrorCategory.TypeMismatch, Child(path, "initial_value"), "expected a rich_text block");
+                }
+
+                break;
+            case "rich_text_list":
+                CheckRange(value, "indent", path, SlackLimits.RichTextListIndentMin, SlackLimits.RichTextListIndentMax);
+                CheckRange(value, "offset", path, SlackLimits.RichTextListOffsetMin, int.MaxValue);
+                CheckRange(value, "border", path, SlackLimits.RichTextListBorderMin, SlackLimits.RichTextListBorderMax);
+                break;
+            case "rich_text_quote":
+                CheckRange(value, "border", path, SlackLimits.RichTextQuoteBorderMin, SlackLimits.RichTextQuoteBorderMax);
+                break;
+            case "rich_text_preformatted":
+                CheckRange(value, "border", path, SlackLimits.RichTextPreformattedBorderMin, SlackLimits.RichTextPreformattedBorderMax);
                 break;
             case "overflow":
             case "checkboxes":
@@ -430,11 +463,19 @@ internal static partial class Validator
                 ValidateSeriesChart(value, path);
                 break;
             case "task_card":
-                if (JsonValues.IsString(value["status"], out var status) && !TaskStatuses.Contains(status))
+                ValidateTaskStatus(value, path);
+
+                // A TaskCardBlock is constructed before it is placed, and plan tasks (which carry no
+                // type on the wire) may be pending, so the constructor itself accepts pending.
+                // Anywhere a task card appears as a block, it is standalone and cannot be pending.
+                if (JsonValues.IsString(value["status"], out var status) && status == "pending" && path != "TaskCardBlock")
                 {
-                    Fail(ErrorCategory.TypeMismatch, Child(path, "status"), "unknown task status");
+                    Fail(ErrorCategory.TypeMismatch, Child(path, "status"), "a standalone task card cannot be pending");
                 }
 
+                break;
+            case "plan":
+                ValidatePlan(value, path);
                 break;
             case "input":
                 ValidateInput(value, path);
@@ -560,8 +601,84 @@ internal static partial class Validator
             Fail(ErrorCategory.MutuallyExclusive, path, "image_url and slack_file cannot be provided together");
         }
 
-        CheckOptionalString(value, "image_url", path, SlackLimits.ImageImageUrlMaxLength);
-        CheckOptionalString(value, "alt_text", path, SlackLimits.ImageAltTextMaxLength);
+        if (hasSlackFile)
+        {
+            ValidateSlackFile(ObjectAt(value["slack_file"], Child(path, "slack_file")), Child(path, "slack_file"));
+        }
+
+        var block = path == "ImageBlock" || BlockListItem().IsMatch(path);
+        CheckOptionalString(value, "image_url", path, block ? SlackLimits.ImageImageUrlMaxLength : SlackLimits.ImageElementImageUrlMaxLength);
+        CheckOptionalString(value, "alt_text", path, block ? SlackLimits.ImageAltTextMaxLength : SlackLimits.ImageElementAltTextMaxLength);
+        CheckOptionalText(value, "title", path, SlackLimits.ImageTitleMaxLength);
+    }
+
+    private static void ValidateSlackFile(JsonObject value, string path)
+    {
+        if (value.ContainsKey("id") == value.ContainsKey("url"))
+        {
+            Fail(ErrorCategory.MutuallyExclusive, path, "expected exactly one of id or url");
+        }
+
+        if (value.ContainsKey("id") && !SlackFileId().IsMatch(StringAt(value["id"], Child(path, "id"))))
+        {
+            Fail(ErrorCategory.TypeMismatch, Child(path, "id"), "expected an ID matching ^F[A-Z0-9]{8,}$");
+        }
+    }
+
+    private static void ValidateConversationFilter(JsonObject value, string path)
+    {
+        if (!value.ContainsKey("include")
+            && !value.ContainsKey("exclude_external_shared_channels")
+            && !value.ContainsKey("exclude_bot_users"))
+        {
+            Fail(ErrorCategory.MissingRequired, path, "expected at least one filter field");
+        }
+
+        if (value.ContainsKey("include"))
+        {
+            var include = ListAt(value["include"], Child(path, "include"));
+            SliceLength(include, Child(path, "include"), SlackLimits.ConversationFilterIncludeMinItems, 0);
+            for (var index = 0; index < include.Count; index++)
+            {
+                var itemPath = $"{Child(path, "include")}[{index}]";
+                if (!ConversationFilterIncludes.Contains(StringAt(include[index], itemPath)))
+                {
+                    Fail(ErrorCategory.TypeMismatch, itemPath, "expected im, mpim, private, or public");
+                }
+            }
+        }
+    }
+
+    private static void ValidateTaskStatus(JsonObject value, string path)
+    {
+        if (JsonValues.IsString(value["status"], out var status) && !TaskStatuses.Contains(status))
+        {
+            Fail(ErrorCategory.TypeMismatch, Child(path, "status"), "unknown task status");
+        }
+    }
+
+    private static void ValidatePlan(JsonObject value, string path)
+    {
+        var tasks = ListAt(value["tasks"], Child(path, "tasks"));
+        SliceLength(tasks, Child(path, "tasks"), 0, SlackLimits.PlanTasksMaxItems);
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        for (var index = 0; index < tasks.Count; index++)
+        {
+            var taskPath = $"{Child(path, "tasks")}[{index}]";
+            var task = ObjectAt(tasks[index], taskPath);
+
+            // Plan tasks carry no type on the wire, so the task card rules are applied here.
+            foreach (var field in RequiredFields["task_card"])
+            {
+                Require(task, field, taskPath);
+            }
+
+            ValidateTaskStatus(task, taskPath);
+            if (!seen.Add(StringAt(task["task_id"], Child(taskPath, "task_id"))))
+            {
+                Fail(ErrorCategory.InvalidUsage, Child(path, "tasks"), "expected unique task IDs");
+            }
+        }
     }
 
     private static void ValidateContext(JsonObject value, string path)
@@ -627,7 +744,7 @@ internal static partial class Validator
         CheckOptionalText(value, "title", path, SlackLimits.ContainerTitleMaxLength);
         CheckOptionalText(value, "subtitle", path, SlackLimits.ContainerSubtitleMaxLength);
         var blocks = ListAt(value["child_blocks"], Child(path, "child_blocks"));
-        SliceLength(blocks, Child(path, "child_blocks"), 1, SlackLimits.ContainerChildBlocksMaxItems);
+        SliceLength(blocks, Child(path, "child_blocks"), SlackLimits.ContainerChildBlocksMinItems, SlackLimits.ContainerChildBlocksMaxItems);
         if (JsonValues.IsString(value["width"], out var width) && !ContainerWidths.Contains(width))
         {
             Fail(ErrorCategory.TypeMismatch, Child(path, "width"), "unknown container width");
@@ -685,6 +802,10 @@ internal static partial class Validator
         CheckOptionalString(value, "author_name", path, SlackLimits.VideoAuthorNameMaxLength);
         CheckOptionalString(value, "provider_name", path, SlackLimits.VideoProviderNameMaxLength);
         CheckOptionalText(value, "description", path, SlackLimits.VideoDescriptionMaxLength);
+        CheckOptionalString(value, "thumbnail_url", path, SlackLimits.VideoThumbnailUrlMaxLength);
+        CheckOptionalString(value, "video_url", path, SlackLimits.VideoVideoUrlMaxLength);
+        CheckOptionalString(value, "title_url", path, SlackLimits.VideoTitleUrlMaxLength);
+        CheckOptionalString(value, "provider_icon_url", path, SlackLimits.VideoProviderIconUrlMaxLength);
     }
 
     private static void ValidateView(JsonObject value, string path, string type)
@@ -694,6 +815,7 @@ internal static partial class Validator
         ValidateSurface(blocks, type, Child(path, "blocks"));
         CheckOptionalString(value, "private_metadata", path, SlackLimits.ViewPrivateMetadataMaxLength);
         CheckOptionalString(value, "callback_id", path, SlackLimits.ViewCallbackIdMaxLength);
+        CheckOptionalString(value, "external_id", path, SlackLimits.ViewExternalIdMaxLength);
         if (type == "modal")
         {
             if (!value.ContainsKey("submit"))
@@ -870,12 +992,11 @@ internal static partial class Validator
                 Fail(ErrorCategory.InvalidUsage, Child(path, "column_settings"), "data tables do not support column_settings");
             }
 
-            var settings = ListAt(value["column_settings"], Child(path, "column_settings"));
-            SliceLength(settings, Child(path, "column_settings"), 0, 20);
-            if (settings.Count != columns)
-            {
-                Fail(ErrorCategory.InvalidUsage, Child(path, "column_settings"), "expected one entry for every column");
-            }
+            SliceLength(
+                ListAt(value["column_settings"], Child(path, "column_settings")),
+                Child(path, "column_settings"),
+                0,
+                SlackLimits.TableColumnSettingsMaxItems);
         }
 
         if (dataTable)
@@ -889,6 +1010,7 @@ internal static partial class Validator
                     $"expected a value between {SlackLimits.DataTablePageSizeMin} and {SlackLimits.DataTablePageSizeMax}");
             }
 
+            CheckRange(value, "row_header_column_index", path, SlackLimits.DataTableRowHeaderColumnIndexMin, int.MaxValue);
             var caption = StringAt(value["caption"], Child(path, "caption"));
             StringLength(caption, Child(path, "caption"), 1, 0);
             if (contentLength > SlackLimits.DataTableContentMaxLength)
@@ -968,7 +1090,54 @@ internal static partial class Validator
 
         if (value.ContainsKey("attachments"))
         {
-            SliceLength(ListAt(value["attachments"], Child(path, "attachments")), Child(path, "attachments"), 0, SlackLimits.MessageAttachmentsMaxItems);
+            var attachments = ListAt(value["attachments"], Child(path, "attachments"));
+            SliceLength(attachments, Child(path, "attachments"), 0, SlackLimits.MessageAttachmentsMaxItems);
+            for (var index = 0; index < attachments.Count; index++)
+            {
+                var attachmentPath = $"{Child(path, "attachments")}[{index}]";
+                Require(ObjectAt(attachments[index], attachmentPath), "blocks", attachmentPath);
+            }
+        }
+
+        // Slack limits markdown block text and data table cell text across the whole message.
+        var markdownTotal = 0;
+        var dataTableTotal = 0;
+        AddMessageTotals(value, ref markdownTotal, ref dataTableTotal);
+        if (markdownTotal > SlackLimits.MarkdownTotalTextMaxLength)
+        {
+            Fail(ErrorCategory.LengthExceeded, path, $"markdown text totals {markdownTotal}, exceeding maximum {SlackLimits.MarkdownTotalTextMaxLength}");
+        }
+
+        if (dataTableTotal > SlackLimits.DataTableTotalContentMaxLength)
+        {
+            Fail(ErrorCategory.LengthExceeded, path, $"data table content totals {dataTableTotal}, exceeding maximum {SlackLimits.DataTableTotalContentMaxLength}");
+        }
+    }
+
+    private static void AddMessageTotals(JsonNode? value, ref int markdownTotal, ref int dataTableTotal)
+    {
+        switch (value)
+        {
+            case JsonObject obj when ObjectType(obj) == "markdown" && JsonValues.IsString(obj["text"], out var text):
+                markdownTotal += JsonValues.CodePoints(text);
+                break;
+            case JsonObject obj when ObjectType(obj) == "data_table":
+                dataTableTotal += TextCharacterCount(obj["rows"]);
+                break;
+            case JsonObject obj:
+                foreach (var (_, nested) in obj)
+                {
+                    AddMessageTotals(nested, ref markdownTotal, ref dataTableTotal);
+                }
+
+                break;
+            case JsonArray array:
+                foreach (var item in array)
+                {
+                    AddMessageTotals(item, ref markdownTotal, ref dataTableTotal);
+                }
+
+                break;
         }
     }
 
@@ -1119,6 +1288,17 @@ internal static partial class Validator
         if (JsonValues.IsString(value[field], out var text))
         {
             StringLength(text, Child(path, field), 0, maximum);
+        }
+    }
+
+    private static void CheckRange(JsonObject value, string field, string path, int minimum, int maximum)
+    {
+        if (JsonValues.Number(value[field]) is double number && (number < minimum || number > maximum))
+        {
+            Fail(
+                ErrorCategory.OutOfRange,
+                Child(path, field),
+                maximum == int.MaxValue ? $"expected a value of at least {minimum}" : $"expected a value between {minimum} and {maximum}");
         }
     }
 
