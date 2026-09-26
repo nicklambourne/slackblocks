@@ -150,7 +150,7 @@ def test_rich_text_list_ordered() -> None:
             style=ListType.ORDERED,
             indent=1,
             offset=2,
-            border=3,
+            border=1,
         )
     )
 

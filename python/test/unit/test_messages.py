@@ -1,13 +1,22 @@
 from __future__ import annotations
 
+import pytest
+
 from slackblocks import (
     Attachment,
     Color,
+    InputBlock,
+    LengthError,
+    MarkdownBlock,
     Message,
     MessageResponse,
+    PlainTextInput,
+    PlanBlock,
     ResponseType,
     SectionBlock,
+    TaskCardBlock,
     Text,
+    TypeMismatchError,
     WebhookMessage,
 )
 
@@ -123,3 +132,23 @@ def test_webhook_message_delete() -> None:
             },
         )
     ) == fetch_sample("messages/webhook_message_delete.json")
+
+
+def test_messages_accept_input_blocks() -> None:
+    block = InputBlock(label="Name", element=PlainTextInput(action_id="name"))
+    assert Message(channel="C123", blocks=[block]).to_dict()["blocks"]
+
+
+def test_pending_task_cards_are_only_valid_inside_a_plan() -> None:
+    task = TaskCardBlock(task_id="task", title="Task", status="pending")
+    Message(channel="C123", blocks=[PlanBlock(title="Plan", tasks=[task])])
+    with pytest.raises(TypeMismatchError):
+        Attachment(blocks=[task])
+    with pytest.raises(TypeMismatchError):
+        WebhookMessage(blocks=[task])
+
+
+def test_markdown_total_counts_attachment_blocks() -> None:
+    half = MarkdownBlock("x" * 6001)
+    with pytest.raises(LengthError):
+        MessageResponse(blocks=[half], attachments=[Attachment(blocks=[half])])

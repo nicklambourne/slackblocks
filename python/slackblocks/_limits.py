@@ -65,6 +65,12 @@ URL_SOURCE_URL_MAX_LENGTH = 3000
 FILE_INPUT_MAX_FILES_MIN = 1
 # file_input.max_files.max
 FILE_INPUT_MAX_FILES_MAX = 10
+# plain_text_input.min_length.min
+PLAIN_TEXT_INPUT_MIN_LENGTH_MIN = 0
+# plain_text_input.min_length.max
+PLAIN_TEXT_INPUT_MIN_LENGTH_MAX = 3000
+# plain_text_input.max_length.min
+PLAIN_TEXT_INPUT_MAX_LENGTH_MIN = 1
 # plain_text_input.max_length.max
 PLAIN_TEXT_INPUT_MAX_LENGTH_MAX = 3000
 # plain_text_input.placeholder.max_length
@@ -81,6 +87,18 @@ DATE_PICKER_PLACEHOLDER_MAX_LENGTH = 150
 TIME_PICKER_PLACEHOLDER_MAX_LENGTH = 150
 # rich_text_input.placeholder.max_length
 RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH = 150
+# rich_text_input.min_lines.min
+RICH_TEXT_INPUT_MIN_LINES_MIN = 1
+# rich_text_input.min_lines.max
+RICH_TEXT_INPUT_MIN_LINES_MAX = 100
+# rich_text_input.max_lines.min
+RICH_TEXT_INPUT_MAX_LINES_MIN = 1
+# rich_text_input.max_lines.max
+RICH_TEXT_INPUT_MAX_LINES_MAX = 100
+# multi_select.max_selected_items.min
+MULTI_SELECT_MAX_SELECTED_ITEMS_MIN = 1
+# conversation_filter.include.min_items
+CONVERSATION_FILTER_INCLUDE_MIN_ITEMS = 1
 # dispatch_action_configuration.trigger_actions_on.min_items
 DISPATCH_ACTION_CONFIGURATION_TRIGGER_ACTIONS_ON_MIN_ITEMS = 1
 # dispatch_action_configuration.trigger_actions_on.max_items
@@ -107,6 +125,8 @@ CAROUSEL_ELEMENTS_MAX_ITEMS = 10
 CONTAINER_TITLE_MAX_LENGTH = 150
 # container.subtitle.max_length
 CONTAINER_SUBTITLE_MAX_LENGTH = 150
+# container.child_blocks.min_items
+CONTAINER_CHILD_BLOCKS_MIN_ITEMS = 1
 # container.child_blocks.max_items
 CONTAINER_CHILD_BLOCKS_MAX_ITEMS = 10
 # context.elements.max_items
@@ -133,6 +153,8 @@ WORKFLOW_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH = 75
 TABLE_ROWS_MAX_ITEMS = 100
 # table.columns.max_items
 TABLE_COLUMNS_MAX_ITEMS = 20
+# table.column_settings.max_items
+TABLE_COLUMN_SETTINGS_MAX_ITEMS = 20
 # data_table.rows.min_items
 DATA_TABLE_ROWS_MIN_ITEMS = 2
 # data_table.rows.max_items
@@ -149,6 +171,10 @@ DATA_TABLE_PAGE_SIZE_MAX = 100
 DATA_TABLE_CELL_TEXT_MIN_LENGTH = 1
 # data_table.content.max_length
 DATA_TABLE_CONTENT_MAX_LENGTH = 20000
+# data_table.total_content.max_length
+DATA_TABLE_TOTAL_CONTENT_MAX_LENGTH = 20000
+# data_table.row_header_column_index.min
+DATA_TABLE_ROW_HEADER_COLUMN_INDEX_MIN = 0
 # data_visualization.title.max_length
 DATA_VISUALIZATION_TITLE_MAX_LENGTH = 50
 # data_visualization.segments.min_items
@@ -185,6 +211,12 @@ HEADER_TEXT_MAX_LENGTH = 150
 IMAGE_IMAGE_URL_MAX_LENGTH = 3000
 # image.alt_text.max_length
 IMAGE_ALT_TEXT_MAX_LENGTH = 2000
+# image.title.max_length
+IMAGE_TITLE_MAX_LENGTH = 2000
+# image_element.image_url.max_length
+IMAGE_ELEMENT_IMAGE_URL_MAX_LENGTH = 3000
+# image_element.alt_text.max_length
+IMAGE_ELEMENT_ALT_TEXT_MAX_LENGTH = 2000
 # input.label.max_length
 INPUT_LABEL_MAX_LENGTH = 2000
 # input.hint.max_length
@@ -193,6 +225,28 @@ INPUT_HINT_MAX_LENGTH = 2000
 MARKDOWN_TEXT_MIN_LENGTH = 1
 # markdown.text.max_length
 MARKDOWN_TEXT_MAX_LENGTH = 12000
+# markdown.total_text.max_length
+MARKDOWN_TOTAL_TEXT_MAX_LENGTH = 12000
+# plan.tasks.max_items
+PLAN_TASKS_MAX_ITEMS = 50
+# rich_text_list.indent.min
+RICH_TEXT_LIST_INDENT_MIN = 0
+# rich_text_list.indent.max
+RICH_TEXT_LIST_INDENT_MAX = 8
+# rich_text_list.offset.min
+RICH_TEXT_LIST_OFFSET_MIN = 0
+# rich_text_list.border.min
+RICH_TEXT_LIST_BORDER_MIN = 0
+# rich_text_list.border.max
+RICH_TEXT_LIST_BORDER_MAX = 1
+# rich_text_quote.border.min
+RICH_TEXT_QUOTE_BORDER_MIN = 0
+# rich_text_quote.border.max
+RICH_TEXT_QUOTE_BORDER_MAX = 1
+# rich_text_preformatted.border.min
+RICH_TEXT_PREFORMATTED_BORDER_MIN = 0
+# rich_text_preformatted.border.max
+RICH_TEXT_PREFORMATTED_BORDER_MAX = 1
 # section.text.max_length
 SECTION_TEXT_MAX_LENGTH = 3000
 # section.fields.max_items
@@ -209,6 +263,14 @@ VIDEO_AUTHOR_NAME_MAX_LENGTH = 50
 VIDEO_DESCRIPTION_MAX_LENGTH = 200
 # video.provider_name.max_length
 VIDEO_PROVIDER_NAME_MAX_LENGTH = 50
+# video.thumbnail_url.max_length
+VIDEO_THUMBNAIL_URL_MAX_LENGTH = 3000
+# video.video_url.max_length
+VIDEO_VIDEO_URL_MAX_LENGTH = 3000
+# video.title_url.max_length
+VIDEO_TITLE_URL_MAX_LENGTH = 2000
+# video.provider_icon_url.max_length
+VIDEO_PROVIDER_ICON_URL_MAX_LENGTH = 2000
 # message.channel.min_length
 MESSAGE_CHANNEL_MIN_LENGTH = 1
 # message.blocks.max_items
@@ -223,6 +285,8 @@ VIEW_BLOCKS_MAX_ITEMS = 100
 VIEW_PRIVATE_METADATA_MAX_LENGTH = 3000
 # view.callback_id.max_length
 VIEW_CALLBACK_ID_MAX_LENGTH = 255
+# view.external_id.max_length
+VIEW_EXTERNAL_ID_MAX_LENGTH = 255
 # view.title.max_length
 VIEW_TITLE_MAX_LENGTH = 24
 # view.close.max_length

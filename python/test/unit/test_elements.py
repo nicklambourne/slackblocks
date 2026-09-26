@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 
+from slackblocks.blocks import RichTextBlock
 from slackblocks.elements import (
     Button,
     ButtonStyle,
@@ -48,7 +49,7 @@ from slackblocks.objects import (
     Trigger,
     Workflow,
 )
-from slackblocks.rich_text import RichText
+from slackblocks.rich_text import RichText, RichTextSection
 
 from .utils import OPTION_A, THREE_OPTIONS, TWO_OPTIONS, fetch_sample
 
@@ -197,7 +198,7 @@ def test_image_basic() -> None:
 @pytest.mark.parametrize(
     ("fixture_id", "slack_file"),
     [
-        ("elements/image_slack_file_id.json", SlackFile(url=None, id="F0123456")),
+        ("elements/image_slack_file_id.json", SlackFile(url=None, id="F0123ABC456")),
         (
             "elements/image_slack_file_url.json",
             SlackFile(
@@ -527,6 +528,7 @@ def test_url_input_with_placeholder_resolves() -> None:
 def test_workflow_button_basic() -> None:
     workflow_button = WorkflowButton(
         text=Text("Run Your Workflow", type_=TextType.PLAINTEXT),
+        action_id="run_workflow",
         workflow=Workflow(
             trigger=Trigger(
                 url="https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c",
@@ -550,11 +552,22 @@ def test_rich_text_input_basic() -> None:
     assert fetch_sample(path="elements/rich_text_input_basic.json") == repr(
         RichTextInput(
             action_id="action_id",
-            initial_value=RichText("I'm rich"),
+            initial_value=RichTextBlock(RichTextSection(RichText("I'm rich"))),
             focus_on_load=False,
             placeholder="Hello",
         )
     )
+
+
+def test_rich_text_input_initial_value_keeps_an_explicit_block_id() -> None:
+    initial_value = RichTextBlock(RichTextSection(RichText("Hi")), block_id="initial")
+    resolved = RichTextInput(action_id="rt", initial_value=initial_value)._resolve()
+    assert resolved["initial_value"]["block_id"] == "initial"
+
+
+def test_rich_text_input_initial_value_must_be_a_rich_text_block() -> None:
+    with pytest.raises(TypeMismatchError):
+        RichTextInput(action_id="rt", initial_value=RichText("Hi"))  # type: ignore[arg-type]
 
 
 def test_rich_text_input_dispatch_action_config_resolves() -> None:
