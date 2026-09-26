@@ -69,6 +69,14 @@
     both the docs and the validator do.
   - Remove the table rule that `column_settings` must have one entry per column;
     the docs allow fewer, and the validator accepts any number up to 20.
+- Relax rules that neither Slack's docs nor its validator impose, found by the
+  same `blocks.validate` sweep: `action_id` is optional on the 22 elements whose
+  docs mark it optional (rich text inputs and workflow buttons keep it
+  required, as documented); `url_source.url` has no length limits;
+  `markdown.text` may be empty; views may have no blocks; and table rows may
+  have different numbers of cells. New valid fixtures pin each of these:
+  `elements/button_without_action_id`, `blocks/table_ragged_rows`,
+  `blocks/markdown_empty`, and `views/modal_without_blocks`.
 
 ## 1.1.0 - 2026-08-28
 

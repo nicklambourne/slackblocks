@@ -594,9 +594,6 @@ const invalidCases: Record<string, () => unknown> = {
       value: "a",
       url: "\u{1F642}".repeat(limits.option.url.max_length + 1),
     }),
-  "url-source-url-empty": () => urlSource({ url: "", text: "text" }),
-  "url-source-url-too-long": () =>
-    urlSource({ url: "x".repeat(limits.url_source.url.max_length + 1), text: "text" }),
   "table-too-many-rows": () =>
     tableBlock({
       rows: Array.from({ length: limits.table.rows.max_items + 1 }, () => [rawText("A")]),
@@ -605,8 +602,6 @@ const invalidCases: Record<string, () => unknown> = {
     tableBlock({
       rows: [Array.from({ length: limits.table.columns.max_items + 1 }, () => rawText("A"))],
     }),
-  "table-ragged-rows": () =>
-    tableBlock({ rows: [[rawText("A"), rawText("B")], [rawText("C")]] }),
   "file-input-max-files-too-small": () =>
     fileInput({ actionId: "a", maxFiles: limits.file_input.max_files.min - 1 }),
   "file-input-max-files-too-large": () =>
@@ -655,7 +650,6 @@ const invalidCases: Record<string, () => unknown> = {
       hint: "x".repeat(limits.input.hint.max_length + 1),
       element: plainTextInput({ actionId: "a" }),
     }),
-  "markdown-empty": () => markdownBlock({ text: "" }),
   "markdown-too-long": () =>
     markdownBlock({ text: "x".repeat(limits.markdown.text.max_length + 1) }),
   "section-text-too-long": () =>
@@ -707,7 +701,6 @@ const invalidCases: Record<string, () => unknown> = {
         }),
       ],
     }),
-  "view-missing-blocks": () => homeTab({ blocks: [] }),
   "view-too-many-blocks": () =>
     homeTab({
       blocks: Array.from({ length: limits.view.blocks.max_items + 1 }, () => dividerBlock()),

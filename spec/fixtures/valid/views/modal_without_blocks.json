@@ -1,0 +1,8 @@
+{
+    "type": "modal",
+    "title": {
+        "type": "plain_text",
+        "text": "Empty"
+    },
+    "blocks": []
+}

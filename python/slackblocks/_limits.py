@@ -57,10 +57,6 @@ CHECKBOXES_OPTIONS_MAX_ITEMS = 10
 RADIO_BUTTONS_OPTIONS_MIN_ITEMS = 1
 # radio_buttons.options.max_items
 RADIO_BUTTONS_OPTIONS_MAX_ITEMS = 10
-# url_source.url.min_length
-URL_SOURCE_URL_MIN_LENGTH = 1
-# url_source.url.max_length
-URL_SOURCE_URL_MAX_LENGTH = 3000
 # file_input.max_files.min
 FILE_INPUT_MAX_FILES_MIN = 1
 # file_input.max_files.max
@@ -221,8 +217,6 @@ IMAGE_ELEMENT_ALT_TEXT_MAX_LENGTH = 2000
 INPUT_LABEL_MAX_LENGTH = 2000
 # input.hint.max_length
 INPUT_HINT_MAX_LENGTH = 2000
-# markdown.text.min_length
-MARKDOWN_TEXT_MIN_LENGTH = 1
 # markdown.text.max_length
 MARKDOWN_TEXT_MAX_LENGTH = 12000
 # markdown.total_text.max_length
@@ -277,8 +271,6 @@ MESSAGE_CHANNEL_MIN_LENGTH = 1
 MESSAGE_BLOCKS_MAX_ITEMS = 50
 # message.attachments.max_items
 MESSAGE_ATTACHMENTS_MAX_ITEMS = 100
-# view.blocks.min_items
-VIEW_BLOCKS_MIN_ITEMS = 1
 # view.blocks.max_items
 VIEW_BLOCKS_MAX_ITEMS = 100
 # view.private_metadata.max_length

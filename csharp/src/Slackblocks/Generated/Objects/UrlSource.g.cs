@@ -17,7 +17,7 @@ namespace Slackblocks.Objects;
 public sealed partial class UrlSource : global::Slackblocks.SlackObject
 {
     /// <summary>Creates and validates a <see cref="UrlSource"/>.</summary>
-    /// <param name="url">The source URL. Required. Must be between 1 and 3000 characters.</param>
+    /// <param name="url">The source URL. Required.</param>
     /// <param name="text">The source link text. Required.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>

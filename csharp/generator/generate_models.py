@@ -55,7 +55,10 @@ RESERVED_MEMBERS = {"ToJson", "ToJsonNode", "Equals", "GetHashCode", "ToString",
 # stay optional, nullable parameters that the validator rejects when missing. ImageBlock.image_url,
 # now optional because a Slack file can replace it, keeps its leading position (positional
 # callers are unaffected) but becomes nullable, and the new ImageBlock.slack_file goes after the
-# existing optional parameters so their positions do not shift. Maps (type, wire field) to the
+# existing optional parameters so their positions do not shift. action_id, now optional on most
+# interactive elements, becomes a nullable parameter in its old position; where a required
+# parameter follows it (checkboxes, overflow, radio buttons), it stays leading without a default,
+# so positional callers still bind options to the second parameter. Maps (type, wire field) to the
 # shape to generate.
 SHAPE_UNTIL_3_0 = {
     ("SlackIcon", "name"): "optional",
@@ -66,6 +69,9 @@ SHAPE_UNTIL_3_0 = {
     ("WorkflowButtonElement", "action_id"): "optional",
     ("ImageBlock", "image_url"): "leading-nullable",
     ("ImageBlock", "slack_file"): "trailing",
+    ("CheckboxesElement", "action_id"): "leading-nullable",
+    ("OverflowElement", "action_id"): "leading-nullable",
+    ("RadioButtonsElement", "action_id"): "leading-nullable",
 }
 
 

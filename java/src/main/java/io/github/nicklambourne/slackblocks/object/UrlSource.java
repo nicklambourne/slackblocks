@@ -101,7 +101,7 @@ public final class UrlSource implements SlackObject {
     /**
      * Sets the source URL.
      *
-     * <p>Required. Must be between 1 and 3000 characters.
+     * <p>Required.
      *
      * @param value value for Slack's {@code url} field
      * @return this builder

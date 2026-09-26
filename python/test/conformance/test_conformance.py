@@ -69,7 +69,6 @@ from slackblocks import (
     TimePicker,
     TypeMismatchError,
     URLInput,
-    URLSource,
     UserMultiSelectMenu,
     VideoBlock,
     WorkflowButton,
@@ -333,17 +332,12 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         value="a",
         url="\U0001f642" * (LIMITS["option"]["url"]["max_length"] + 1),
     ),
-    "url-source-url-empty": lambda: URLSource("", "text"),
-    "url-source-url-too-long": lambda: URLSource(
-        "x" * (LIMITS["url_source"]["url"]["max_length"] + 1), "text"
-    ),
     "table-too-many-rows": lambda: TableBlock(
         [[RawText("A")] for _ in range(LIMITS["table"]["rows"]["max_items"] + 1)]
     ),
     "table-too-many-columns": lambda: TableBlock(
         [[RawText("A") for _ in range(LIMITS["table"]["columns"]["max_items"] + 1)]]
     ),
-    "table-ragged-rows": lambda: TableBlock([[RawText("A"), RawText("B")], [RawText("C")]]),
     "file-input-max-files-too-small": lambda: FileInput(
         action_id="a", max_files=LIMITS["file_input"]["max_files"]["min"] - 1
     ),
@@ -385,7 +379,6 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         hint="x" * (LIMITS["input"]["hint"]["max_length"] + 1),
         element=PlainTextInput(action_id="a"),
     ),
-    "markdown-empty": lambda: MarkdownBlock(""),
     "markdown-too-long": lambda: MarkdownBlock(
         "x" * (LIMITS["markdown"]["text"]["max_length"] + 1)
     ),
@@ -434,7 +427,6 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         title="Missing submit",
         blocks=[InputBlock(label="Name", element=PlainTextInput(action_id="name"))],
     ),
-    "view-missing-blocks": lambda: HomeTabView(blocks=[]),
     "view-too-many-blocks": lambda: HomeTabView(
         blocks=[DividerBlock() for _ in range(LIMITS["view"]["blocks"]["max_items"] + 1)]
     ),

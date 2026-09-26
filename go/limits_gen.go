@@ -78,7 +78,6 @@ const (
 	limitInputHintMaxLength                                  = 2000  // input.hint.max_length
 	limitInputLabelMaxLength                                 = 2000  // input.label.max_length
 	limitMarkdownTextMaxLength                               = 12000 // markdown.text.max_length
-	limitMarkdownTextMinLength                               = 1     // markdown.text.min_length
 	limitMarkdownTotalTextMaxLength                          = 12000 // markdown.total_text.max_length
 	limitMessageAttachmentsMaxItems                          = 100   // message.attachments.max_items
 	limitMessageBlocksMaxItems                               = 50    // message.blocks.max_items
@@ -129,8 +128,6 @@ const (
 	limitTextMinLength                                       = 1     // text.min_length
 	limitTimePickerPlaceholderMaxLength                      = 150   // time_picker.placeholder.max_length
 	limitURLInputPlaceholderMaxLength                        = 150   // url_input.placeholder.max_length
-	limitURLSourceURLMaxLength                               = 3000  // url_source.url.max_length
-	limitURLSourceURLMinLength                               = 1     // url_source.url.min_length
 	limitVideoAltTextMaxLength                               = 2000  // video.alt_text.max_length
 	limitVideoAuthorNameMaxLength                            = 50    // video.author_name.max_length
 	limitVideoDescriptionMaxLength                           = 200   // video.description.max_length
@@ -141,7 +138,6 @@ const (
 	limitVideoTitleURLMaxLength                              = 2000  // video.title_url.max_length
 	limitVideoVideoURLMaxLength                              = 3000  // video.video_url.max_length
 	limitViewBlocksMaxItems                                  = 100   // view.blocks.max_items
-	limitViewBlocksMinItems                                  = 1     // view.blocks.min_items
 	limitViewCallbackIDMaxLength                             = 255   // view.callback_id.max_length
 	limitViewCloseMaxLength                                  = 24    // view.close.max_length
 	limitViewExternalIDMaxLength                             = 255   // view.external_id.max_length
