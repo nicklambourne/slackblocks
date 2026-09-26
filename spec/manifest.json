@@ -146,6 +146,12 @@
       "since": "1.0.0"
     },
     {
+      "id": "blocks/markdown_empty",
+      "description": "Markdown Empty",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.1.0"
+    },
+    {
       "id": "blocks/plan_block",
       "description": "Plan Block",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/plan-block/",
@@ -194,6 +200,12 @@
       "since": "1.0.0"
     },
     {
+      "id": "blocks/table_ragged_rows",
+      "description": "Table Ragged Rows",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.1.0"
+    },
+    {
       "id": "blocks/task_card_block",
       "description": "Task Card Block",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/task-card-block/",
@@ -216,6 +228,12 @@
       "description": "Button Basic",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
       "since": "1.0.0"
+    },
+    {
+      "id": "elements/button_without_action_id",
+      "description": "Button Without Action Id",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/",
+      "since": "1.1.0"
     },
     {
       "id": "elements/button_link",
@@ -606,6 +624,12 @@
       "description": "Modal With Blocks",
       "slack_docs": "https://docs.slack.dev/surfaces/modals/",
       "since": "1.0.0"
+    },
+    {
+      "id": "views/modal_without_blocks",
+      "description": "Modal Without Blocks",
+      "slack_docs": "https://docs.slack.dev/surfaces/modals/",
+      "since": "1.1.0"
     }
   ]
 }

@@ -200,18 +200,6 @@
       "description": "A radio button group with more than ten options must be rejected"
     },
     {
-      "id": "url-source-url-empty",
-      "category": "length-exceeded",
-      "constraint": "url_source.url.min_length",
-      "description": "A URL source with an empty URL must be rejected"
-    },
-    {
-      "id": "url-source-url-too-long",
-      "category": "length-exceeded",
-      "constraint": "url_source.url.max_length",
-      "description": "A URL source URL longer than 3000 characters must be rejected"
-    },
-    {
       "id": "table-too-many-rows",
       "category": "length-exceeded",
       "constraint": "table.rows.max_items",
@@ -222,12 +210,6 @@
       "category": "length-exceeded",
       "constraint": "table.columns.max_items",
       "description": "A table row with more than 20 cells must be rejected"
-    },
-    {
-      "id": "table-ragged-rows",
-      "category": "invalid-usage",
-      "constraint": "table.row_shape",
-      "description": "A table whose rows have differing column counts must be rejected"
     },
     {
       "id": "file-input-max-files-too-small",
@@ -306,12 +288,6 @@
       "category": "length-exceeded",
       "constraint": "input.hint.max_length",
       "description": "Input-block hint text longer than 2000 characters must be rejected"
-    },
-    {
-      "id": "markdown-empty",
-      "category": "length-exceeded",
-      "constraint": "markdown.text.min_length",
-      "description": "An empty markdown block must be rejected"
     },
     {
       "id": "markdown-too-long",
@@ -408,12 +384,6 @@
       "category": "missing-required",
       "constraint": "view.modal.submit_for_input",
       "description": "A modal containing an input block must define submit text"
-    },
-    {
-      "id": "view-missing-blocks",
-      "category": "length-exceeded",
-      "constraint": "view.blocks.min_items",
-      "description": "A view must contain at least one block"
     },
     {
       "id": "view-too-many-blocks",

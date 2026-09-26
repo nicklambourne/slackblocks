@@ -1,0 +1,22 @@
+{
+    "type": "table",
+    "block_id": "fake_block_id",
+    "rows": [
+        [
+            {
+                "type": "raw_text",
+                "text": "Header A"
+            },
+            {
+                "type": "raw_text",
+                "text": "Header B"
+            }
+        ],
+        [
+            {
+                "type": "raw_text",
+                "text": "Only one cell"
+            }
+        ]
+    ]
+}
