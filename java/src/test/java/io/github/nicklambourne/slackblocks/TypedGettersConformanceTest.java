@@ -92,8 +92,11 @@ final class TypedGettersConformanceTest {
       String key = field.get("wire").getAsString();
       Method getter = value.getClass().getMethod(getterName(field.get("method").getAsString()));
       String label = spec.get("name").getAsString() + "." + getter.getName() + "()";
-      if (label.equals("ImageBlock.getImageUrl()") && !wire.containsKey(key)) {
-        // Keeps its 2.x String signature, so it throws when a Slack file replaces the URL.
+      if ((label.equals("ImageBlock.getImageUrl()")
+              || (key.equals("action_id") && getter.getReturnType() == String.class))
+          && !wire.containsKey(key)) {
+        // Keeps its 2.x String signature, so it throws when the field is not set (a Slack file
+        // replaces the image URL; action_id became optional on most interactive elements).
         assertThrows(IllegalStateException.class, () -> FluentDriver.invoke(getter, value));
         continue;
       }

@@ -89,7 +89,7 @@ public final class MarkdownBlock implements Block {
     /**
      * Sets standard markdown content, which Slack renders directly.
      *
-     * <p>Required. Must be between 1 and 12000 characters.
+     * <p>Required. Slack allows at most 12000 characters.
      *
      * @param value value for Slack's {@code text} field
      * @return this builder

@@ -8,16 +8,13 @@ namespace Slackblocks.Elements;
 
 /// <summary>A single-line or multi-line free-text input.</summary>
 /// <remarks>
-/// <list type="bullet">
-/// <item><description>Required: <c>actionId</c>.</description></item>
-/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
 public sealed partial class PlainTextInputElement : global::Slackblocks.SlackObject, global::Slackblocks.Elements.IInputElement
 {
     /// <summary>Creates and validates a <see cref="PlainTextInputElement"/>.</summary>
-    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="initialValue">The value present when the input loads.</param>
     /// <param name="multiline">Whether the input is a multi-line text area.</param>
     /// <param name="minLength">The minimum number of characters the user must enter. Must be between 0 and 3000.</param>
@@ -29,7 +26,7 @@ public sealed partial class PlainTextInputElement : global::Slackblocks.SlackObj
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public PlainTextInputElement(
-        string actionId,
+        string? actionId = null,
         string? initialValue = null,
         bool? multiline = null,
         int? minLength = null,
@@ -40,7 +37,7 @@ public sealed partial class PlainTextInputElement : global::Slackblocks.SlackObj
         global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("PlainTextInputElement", "plain_text_input");
-        ActionId = wire.String("action_id", actionId)!;
+        ActionId = wire.String("action_id", actionId);
         InitialValue = wire.String("initial_value", initialValue);
         Multiline = wire.Boolean("multiline", multiline);
         MinLength = wire.Int("min_length", minLength);
@@ -52,7 +49,8 @@ public sealed partial class PlainTextInputElement : global::Slackblocks.SlackObj
     }
 
     /// <summary>Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.</summary>
-    public string ActionId { get; }
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? ActionId { get; }
 
     /// <summary>Gets the value present when the input loads.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>

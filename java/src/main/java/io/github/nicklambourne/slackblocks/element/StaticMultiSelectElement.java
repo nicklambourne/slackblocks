@@ -26,7 +26,6 @@ import java.util.OptionalInt;
  * Builder#build()} to validate and create an immutable value.
  *
  * <ul>
- *   <li>Required: {@code actionId}.
  *   <li>Use options or option groups, not both.
  * </ul>
  *
@@ -60,8 +59,8 @@ public final class StaticMultiSelectElement extends BlockElement implements Inpu
    * It must be unique among the elements of its block.
    *
    * @return the value
-   * @throws IllegalStateException if the field was set through a raw wire field to a value this
-   *     type cannot represent
+   * @throws IllegalStateException if the field is not set, or was set through a raw wire field to a
+   *     value this type cannot represent
    */
   public String getActionId() {
     return TypedFields.required(fields, "StaticMultiSelectElement", "action_id", String.class);
@@ -186,7 +185,7 @@ public final class StaticMultiSelectElement extends BlockElement implements Inpu
      * Sets the identifier Slack returns in interaction payloads when a user acts on this element.
      * It must be unique among the elements of its block.
      *
-     * <p>Required. Slack allows at most 255 characters.
+     * <p>Slack allows at most 255 characters.
      *
      * @param value value for Slack's {@code action_id} field
      * @return this builder
