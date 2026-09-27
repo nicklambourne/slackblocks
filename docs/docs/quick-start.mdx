@@ -3,7 +3,7 @@ sidebar_label: Quick Start
 sidebar_position: 2
 ---
 
-import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
 
 # Quick Start
 
@@ -187,6 +187,32 @@ response.EnsureSuccessStatusCode();
 Each constructor validates its arguments and returns an immutable value. `MessagePayload` also checks the message as a whole, including the 50-block limit and which blocks messages accept, before any request is made. Slack reports Web API errors in the response body's `ok` and `error` fields, so check those as well as the HTTP status.
 
 </CSharp>
+<Ruby>
+
+## Install the gem
+
+MRI Ruby 3.3 or newer is required. After the coordinated Ruby release:
+
+```bash
+gem install slackblocks
+```
+
+## Build a message
+
+```ruby
+require "slackblocks"
+
+message = Slackblocks::MessagePayload.new(
+  channel: "C01234567",
+  text: "Hello from slackblocks!",
+  blocks: [Slackblocks::SectionBlock.new(text: "Hello, world!")]
+)
+puts message.to_json
+```
+
+`text` is the plain-text fallback for notifications and accessibility. Values are validated when constructed, and `to_json` emits Slack-compatible JSON.
+
+</Ruby>
 </LanguageContent>
 
 ## Where to go next

@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
 
 # Sending Messages
 
@@ -545,4 +545,26 @@ string body = JsonSerializer.Serialize(new { trigger_id = "12345.98765.abcd2358f
 When your application already uses a .NET Slack client such as SlackNet, pass slackblocks JSON through that library's raw request support, and keep its delivery, retries, and rate-limit handling. Alias one namespace if a file imports both libraries, because several type names overlap.
 
 </CSharp>
+<Ruby>
+
+## With a Slack Web API client
+
+`slackblocks` constructs payloads and leaves delivery to your chosen HTTP or Slack client. The official `slack-ruby-client` gem is an optional application dependency.
+
+```ruby
+require "slackblocks"
+require "slack-ruby-client"
+
+message = Slackblocks::MessagePayload.new(
+  channel: "C01234567",
+  text: "Deployment complete",
+  blocks: [Slackblocks::SectionBlock.new(text: "Deployment complete")]
+)
+client = Slack::Web::Client.new(token: ENV.fetch("SLACK_BOT_TOKEN"))
+client.chat_postMessage(**message.as_json.transform_keys(&:to_sym))
+```
+
+`as_json` returns a fresh hash, so a client may modify it without changing the message. For an incoming webhook, construct `Slackblocks::WebhookMessage` and send its `to_json` as an `application/json` request body. Use `MessageResponse` for interaction responses, `ModalView` for modals, and `HomeTabView` for App Home.
+
+</Ruby>
 </LanguageContent>

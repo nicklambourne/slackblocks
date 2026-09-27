@@ -16,7 +16,9 @@ export default function LanguageContent({ children }: PropsWithChildren) {
               ? "java"
               : child.type === CSharp
                 ? "csharp"
-                : null;
+                : child.type === Ruby
+                  ? "ruby"
+                  : null;
     if (!childLanguage) return null;
 
     return (
@@ -50,5 +52,9 @@ export function Java({ children }: PropsWithChildren) {
 }
 
 export function CSharp({ children }: PropsWithChildren) {
+  return <>{children}</>;
+}
+
+export function Ruby({ children }: PropsWithChildren) {
   return <>{children}</>;
 }

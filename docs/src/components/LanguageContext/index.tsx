@@ -11,7 +11,7 @@ import { useHistory, useLocation } from "@docusaurus/router";
 import { useAllDocsData } from "@docusaurus/plugin-content-docs/client";
 import legacyManifest from "@site/legacy/manifest.json";
 
-export type Language = "python" | "typescript" | "go" | "java" | "csharp";
+export type Language = "python" | "typescript" | "go" | "java" | "csharp" | "ruby";
 
 type LanguageContextValue = {
   language: Language;
@@ -37,13 +37,14 @@ function isLanguage(value: string | null): value is Language {
     value === "typescript" ||
     value === "go" ||
     value === "java" ||
-    value === "csharp"
+    value === "csharp" ||
+    value === "ruby"
   );
 }
 
 function referenceLanguage(pathname: string): Language | null {
   const language =
-    pathname.match(/\/reference\/(python|typescript|go|java|csharp)(?:\/|$)/)?.[1] ?? null;
+    pathname.match(/\/reference\/(python|typescript|go|java|csharp|ruby)(?:\/|$)/)?.[1] ?? null;
   return isLanguage(language) ? language : null;
 }
 
@@ -53,7 +54,7 @@ function languagePath(
   docPaths: ReadonlySet<string>,
 ): string {
   const referenceMatch = pathname.match(
-    /^(.*\/reference\/)(python|typescript|go|java|csharp)(\/.*)?$/,
+    /^(.*\/reference\/)(python|typescript|go|java|csharp|ruby)(\/.*)?$/,
   );
   if (referenceMatch) {
     if (referenceMatch[2] === language) return pathname;
@@ -81,7 +82,7 @@ function latestLanguagePath(
     ? `${legacyMatch[1]}${legacyMatch[2] || "/"}`
     : pathname;
   const historicalReference = latestPathname.match(
-    /^(.*\/reference)\/(?!python(?:\/|$)|typescript(?:\/|$)|go(?:\/|$)|java(?:\/|$)|csharp(?:\/|$))[^/]+(?:\/.*)?$/,
+    /^(.*\/reference)\/(?!python(?:\/|$)|typescript(?:\/|$)|go(?:\/|$)|java(?:\/|$)|csharp(?:\/|$)|ruby(?:\/|$))[^/]+(?:\/.*)?$/,
   );
 
   return historicalReference

@@ -184,7 +184,8 @@ function filterReference(
       !isLanguageReference(child, "typescript") &&
       !isLanguageReference(child, "go") &&
       !isLanguageReference(child, "java") &&
-      !isLanguageReference(child, "csharp"),
+      !isLanguageReference(child, "csharp") &&
+      !isLanguageReference(child, "ruby"),
   );
 
   return {

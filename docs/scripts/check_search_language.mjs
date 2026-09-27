@@ -16,11 +16,13 @@ const typescriptDocuments = await readDocuments("typescript");
 const goDocuments = await readDocuments("go");
 const javaDocuments = await readDocuments("java");
 const csharpDocuments = await readDocuments("csharp");
+const rubyDocuments = await readDocuments("ruby");
 const pythonText = pythonDocuments.map(({ t }) => t).join("\n");
 const typescriptText = typescriptDocuments.map(({ t }) => t).join("\n");
 const goText = goDocuments.map(({ t }) => t).join("\n");
 const javaText = javaDocuments.map(({ t }) => t).join("\n");
 const csharpText = csharpDocuments.map(({ t }) => t).join("\n");
+const rubyText = rubyDocuments.map(({ t }) => t).join("\n");
 
 assert.equal(
   pythonDocuments.some(({ u }) => u.includes("/reference/typescript")),
@@ -82,6 +84,22 @@ assert.equal(
   false,
 );
 
+assert.equal(
+  rubyDocuments.some(({ u }) => /\/reference\/(?:python|typescript|go|java|csharp)/.test(u)),
+  false,
+  "Ruby search leaked another language's API reference",
+);
+for (const [language, documents] of [
+  ["python", pythonDocuments],
+  ["typescript", typescriptDocuments],
+  ["go", goDocuments],
+  ["java", javaDocuments],
+  ["csharp", csharpDocuments],
+]) {
+  assert.equal(documents.some(({ u }) => u.includes("/reference/ruby")), false,
+    `${language} search leaked the Ruby API reference`);
+}
+
 assert.match(pythonText, /Python 3\.10 or newer is required/);
 assert.doesNotMatch(pythonText, /Node\.js 20\.19 or newer is required/);
 assert.match(typescriptText, /Node\.js 20\.19 or newer is required/);
@@ -99,5 +117,8 @@ assert.doesNotMatch(csharpText, /Python 3\.10 or newer is required/);
 assert.doesNotMatch(csharpText, /Node\.js 20\.19 or newer is required/);
 assert.doesNotMatch(csharpText, /Go 1\.22 or newer is required/);
 assert.doesNotMatch(csharpText, /Java 17 or newer is required/);
+
+assert.match(rubyText, /MRI Ruby 3\.3 or newer is required/);
+assert.doesNotMatch(rubyText, /Python 3\.10 or newer is required/);
 
 console.log("Search indexes are scoped to their selected languages.");

@@ -1,0 +1,3142 @@
+---
+sidebar_position: 3
+toc_max_heading_level: 3
+---
+
+# Composition Objects
+
+This page documents the Ruby API for composition objects. Values use keyword-only construction, validate before freezing, and serialize to Slack JSON.
+
+## AreaChart
+
+An area chart for a data visualization block.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: series, axis_config.
+
+```ruby
+def self.new: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> AreaChart
+```
+
+| Parameter | Description |
+| --- | --- |
+| `series` | Adds data series in display order. Series names must be unique. |
+| `axis_config` | Sets the axis categories and labels. Every series needs exactly one point per category. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** AreaChart
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`AreaChart`](/reference/ruby/objects#areachart), [`AxisConfig`](/reference/ruby/objects#axisconfig), [`DataSeries`](/reference/ruby/objects#dataseries)
+
+### series
+
+Adds data series in display order. Series names must be unique. Wire key: series.
+
+```ruby
+def series: () -> Array[DataSeries]
+```
+
+**Returns:** Array[DataSeries]
+
+**Related types:** [`DataSeries`](/reference/ruby/objects#dataseries)
+
+### axis_config
+
+Sets the axis categories and labels. Every series needs exactly one point per category. Wire key: axis_config.
+
+```ruby
+def axis_config: () -> AxisConfig
+```
+
+**Returns:** AxisConfig
+
+**Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> AreaChart
+```
+
+**Returns:** AreaChart
+
+**Related types:** [`AreaChart`](/reference/ruby/objects#areachart)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## AxisConfig
+
+The categories and labels shared by bar, area, and line chart axes.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: categories.
+
+```ruby
+def self.new: (categories: Array[String], ?x_label: (String)?, ?y_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> AxisConfig
+```
+
+| Parameter | Description |
+| --- | --- |
+| `categories` | Adds axis categories in display order. Labels must be unique. |
+| `x_label` | Sets the horizontal axis label. |
+| `y_label` | Sets the vertical axis label. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** AxisConfig
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig)
+
+### categories
+
+Adds axis categories in display order. Labels must be unique. Wire key: categories.
+
+```ruby
+def categories: () -> Array[String]
+```
+
+**Returns:** Array[String]
+
+### x_label
+
+Sets the horizontal axis label. Wire key: x_label.
+
+```ruby
+def x_label: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### y_label
+
+Sets the vertical axis label. Wire key: y_label.
+
+```ruby
+def y_label: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> AxisConfig
+```
+
+**Returns:** AxisConfig
+
+**Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## BarChart
+
+A bar chart for a data visualization block.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: series, axis_config.
+
+```ruby
+def self.new: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> BarChart
+```
+
+| Parameter | Description |
+| --- | --- |
+| `series` | Adds data series in display order. Series names must be unique. |
+| `axis_config` | Sets the axis categories and labels. Every series needs exactly one point per category. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** BarChart
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig), [`BarChart`](/reference/ruby/objects#barchart), [`DataSeries`](/reference/ruby/objects#dataseries)
+
+### series
+
+Adds data series in display order. Series names must be unique. Wire key: series.
+
+```ruby
+def series: () -> Array[DataSeries]
+```
+
+**Returns:** Array[DataSeries]
+
+**Related types:** [`DataSeries`](/reference/ruby/objects#dataseries)
+
+### axis_config
+
+Sets the axis categories and labels. Every series needs exactly one point per category. Wire key: axis_config.
+
+```ruby
+def axis_config: () -> AxisConfig
+```
+
+**Returns:** AxisConfig
+
+**Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> BarChart
+```
+
+**Returns:** BarChart
+
+**Related types:** [`BarChart`](/reference/ruby/objects#barchart)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## Chart
+
+A chart that can be displayed by a data visualization block.
+
+## ChartSegment
+
+One labelled segment of a pie chart.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: label, value.
+
+```ruby
+def self.new: (label: String, value: Integer | Float, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChartSegment
+```
+
+| Parameter | Description |
+| --- | --- |
+| `label` | Sets the segment label. |
+| `value` | Sets the segment's size. Must be greater than zero. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ChartSegment
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ChartSegment`](/reference/ruby/objects#chartsegment)
+
+### label
+
+Sets the segment label. Wire key: label.
+
+```ruby
+def label: () -> String
+```
+
+**Returns:** String
+
+### value
+
+Sets the segment's size. Must be greater than zero. Wire key: value.
+
+```ruby
+def value: () -> Integer | Float
+```
+
+**Returns:** Integer \| Float
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ChartSegment
+```
+
+**Returns:** ChartSegment
+
+**Related types:** [`ChartSegment`](/reference/ruby/objects#chartsegment)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ColumnAlign
+
+Horizontal alignment for table columns. Pass the wire symbol to constructor keywords.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `LEFT` | `:left` | Align cell content to the left. |
+| `CENTER` | `:center` | Center cell content. |
+| `RIGHT` | `:right` | Align cell content to the right. |
+
+## ColumnSettings
+
+Alignment and wrapping settings for one table column.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?align: (:left | :center | :right)?, ?is_wrapped: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ColumnSettings
+```
+
+| Parameter | Description |
+| --- | --- |
+| `align` | Sets how cell content in the column is aligned. |
+| `is_wrapped` | Sets whether long cell content wraps instead of being truncated. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ColumnSettings
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ColumnSettings`](/reference/ruby/objects#columnsettings)
+
+### align
+
+Sets how cell content in the column is aligned. Wire key: align.
+
+```ruby
+def align: () -> (:left | :center | :right)?
+```
+
+**Returns:** (:left \| :center \| :right)?
+
+### is_wrapped
+
+Sets whether long cell content wraps instead of being truncated. Wire key: is_wrapped.
+
+```ruby
+def is_wrapped: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ColumnSettings
+```
+
+**Returns:** ColumnSettings
+
+**Related types:** [`ColumnSettings`](/reference/ruby/objects#columnsettings)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## Confirmation
+
+A dialog that asks users to confirm an action before it is sent.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/confirmation-dialog-object).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: title, text, confirm, deny.
+
+```ruby
+def self.new: (title: String | PlainText, text: String | Text, confirm: String | PlainText, deny: String | PlainText, ?style: (:primary | :danger)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Confirmation
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | Sets the dialog title. |
+| `text` | Sets the explanatory text in the dialog body. |
+| `confirm` | Sets the label of the button that confirms the action. |
+| `deny` | Sets the label of the button that cancels the action. |
+| `style` | Sets the emphasis of the confirm button. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** Confirmation
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`Text`](/reference/ruby/objects#text)
+
+### title
+
+Sets the dialog title. Wire key: title.
+
+```ruby
+def title: () -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### text
+
+Sets the explanatory text in the dialog body. Wire key: text.
+
+```ruby
+def text: () -> Text
+```
+
+**Returns:** Text
+
+**Related types:** [`Text`](/reference/ruby/objects#text)
+
+### confirm
+
+Sets the label of the button that confirms the action. Wire key: confirm.
+
+```ruby
+def confirm: () -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### deny
+
+Sets the label of the button that cancels the action. Wire key: deny.
+
+```ruby
+def deny: () -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### style
+
+Sets the emphasis of the confirm button. Wire key: style.
+
+```ruby
+def style: () -> (:primary | :danger)?
+```
+
+**Returns:** (:primary \| :danger)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> Confirmation
+```
+
+**Returns:** Confirmation
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ConversationFilter
+
+Limits which conversations a conversation menu offers.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/conversation-filter-object).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?include: (Array[String])?, ?exclude_external_shared_channels: (bool)?, ?exclude_bot_users: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationFilter
+```
+
+| Parameter | Description |
+| --- | --- |
+| `include` | Adds conversation types to offer: im, mpim, private, or public. |
+| `exclude_external_shared_channels` | Sets whether externally shared channels are excluded. |
+| `exclude_bot_users` | Sets whether bot users are excluded. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ConversationFilter
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ConversationFilter`](/reference/ruby/objects#conversationfilter)
+
+### include
+
+Adds conversation types to offer: im, mpim, private, or public. Wire key: include.
+
+```ruby
+def include: () -> (Array[String])?
+```
+
+**Returns:** (Array[String])?
+
+### exclude_external_shared_channels
+
+Sets whether externally shared channels are excluded. Wire key: exclude_external_shared_channels.
+
+```ruby
+def exclude_external_shared_channels: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### exclude_bot_users
+
+Sets whether bot users are excluded. Wire key: exclude_bot_users.
+
+```ruby
+def exclude_bot_users: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ConversationFilter
+```
+
+**Returns:** ConversationFilter
+
+**Related types:** [`ConversationFilter`](/reference/ruby/objects#conversationfilter)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## DataPoint
+
+One value of a chart series, keyed by axis category.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: label, value.
+
+```ruby
+def self.new: (label: String, value: Integer | Float, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataPoint
+```
+
+| Parameter | Description |
+| --- | --- |
+| `label` | Sets the axis category this point belongs to. |
+| `value` | Sets the point's value. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** DataPoint
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DataPoint`](/reference/ruby/objects#datapoint)
+
+### label
+
+Sets the axis category this point belongs to. Wire key: label.
+
+```ruby
+def label: () -> String
+```
+
+**Returns:** String
+
+### value
+
+Sets the point's value. Wire key: value.
+
+```ruby
+def value: () -> Integer | Float
+```
+
+**Returns:** Integer \| Float
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> DataPoint
+```
+
+**Returns:** DataPoint
+
+**Related types:** [`DataPoint`](/reference/ruby/objects#datapoint)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## DataSeries
+
+A named series of chart data points.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: name, data.
+
+```ruby
+def self.new: (name: String, data: Array[DataPoint], ?additional_fields: Hash[String | Symbol, untyped]?) -> DataSeries
+```
+
+| Parameter | Description |
+| --- | --- |
+| `name` | Sets the series name shown in the legend. |
+| `data` | Adds data points in axis-category order. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** DataSeries
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DataPoint`](/reference/ruby/objects#datapoint), [`DataSeries`](/reference/ruby/objects#dataseries)
+
+### name
+
+Sets the series name shown in the legend. Wire key: name.
+
+```ruby
+def name: () -> String
+```
+
+**Returns:** String
+
+### data
+
+Adds data points in axis-category order. Wire key: data.
+
+```ruby
+def data: () -> Array[DataPoint]
+```
+
+**Returns:** Array[DataPoint]
+
+**Related types:** [`DataPoint`](/reference/ruby/objects#datapoint)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> DataSeries
+```
+
+**Returns:** DataSeries
+
+**Related types:** [`DataSeries`](/reference/ruby/objects#dataseries)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## DispatchActionConfiguration
+
+Chooses which interactions with an input send a block_actions payload.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/dispatch-action-configuration-object).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?trigger_actions_on: (Array[String])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DispatchActionConfiguration
+```
+
+| Parameter | Description |
+| --- | --- |
+| `trigger_actions_on` | Adds the interactions that send a payload: on_enter_pressed or on_character_entered. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** DispatchActionConfiguration
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration)
+
+### trigger_actions_on
+
+Adds the interactions that send a payload: on_enter_pressed or on_character_entered. Wire key: trigger_actions_on.
+
+```ruby
+def trigger_actions_on: () -> (Array[String])?
+```
+
+**Returns:** (Array[String])?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> DispatchActionConfiguration
+```
+
+**Returns:** DispatchActionConfiguration
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## FeedbackButton
+
+One button of a feedback buttons element.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: text, value.
+
+```ruby
+def self.new: (text: String | PlainText, value: String, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FeedbackButton
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets the button label. |
+| `value` | Sets the application-defined value sent in interaction payloads. |
+| `accessibility_label` | Sets the label read by screen readers in place of the visible text. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** FeedbackButton
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`FeedbackButton`](/reference/ruby/objects#feedbackbutton), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### text
+
+Sets the button label. Wire key: text.
+
+```ruby
+def text: () -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### value
+
+Sets the application-defined value sent in interaction payloads. Wire key: value.
+
+```ruby
+def value: () -> String
+```
+
+**Returns:** String
+
+### accessibility_label
+
+Sets the label read by screen readers in place of the visible text. Wire key: accessibility_label.
+
+```ruby
+def accessibility_label: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> FeedbackButton
+```
+
+**Returns:** FeedbackButton
+
+**Related types:** [`FeedbackButton`](/reference/ruby/objects#feedbackbutton)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## InputParameter
+
+A named value passed to a workflow trigger.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: name, value.
+
+```ruby
+def self.new: (name: String, value: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> InputParameter
+```
+
+| Parameter | Description |
+| --- | --- |
+| `name` | Sets the workflow input parameter name. |
+| `value` | Sets the value passed to the workflow input. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** InputParameter
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`InputParameter`](/reference/ruby/objects#inputparameter)
+
+### name
+
+Sets the workflow input parameter name. Wire key: name.
+
+```ruby
+def name: () -> String
+```
+
+**Returns:** String
+
+### value
+
+Sets the value passed to the workflow input. Wire key: value.
+
+```ruby
+def value: () -> String
+```
+
+**Returns:** String
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> InputParameter
+```
+
+**Returns:** InputParameter
+
+**Related types:** [`InputParameter`](/reference/ruby/objects#inputparameter)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## LineChart
+
+A line chart for a data visualization block.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: series, axis_config.
+
+```ruby
+def self.new: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> LineChart
+```
+
+| Parameter | Description |
+| --- | --- |
+| `series` | Adds data series in display order. Series names must be unique. |
+| `axis_config` | Sets the axis categories and labels. Every series needs exactly one point per category. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** LineChart
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig), [`DataSeries`](/reference/ruby/objects#dataseries), [`LineChart`](/reference/ruby/objects#linechart)
+
+### series
+
+Adds data series in display order. Series names must be unique. Wire key: series.
+
+```ruby
+def series: () -> Array[DataSeries]
+```
+
+**Returns:** Array[DataSeries]
+
+**Related types:** [`DataSeries`](/reference/ruby/objects#dataseries)
+
+### axis_config
+
+Sets the axis categories and labels. Every series needs exactly one point per category. Wire key: axis_config.
+
+```ruby
+def axis_config: () -> AxisConfig
+```
+
+**Returns:** AxisConfig
+
+**Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> LineChart
+```
+
+**Returns:** LineChart
+
+**Related types:** [`LineChart`](/reference/ruby/objects#linechart)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## MarkdownText
+
+A mrkdwn text composition object.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/text-object).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: text.
+
+```ruby
+def self.new: (text: String, ?verbatim: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MarkdownText
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets the mrkdwn-formatted text content. |
+| `verbatim` | Sets whether Slack leaves URLs, mentions, and channel names unlinked. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** MarkdownText
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`MarkdownText`](/reference/ruby/objects#markdowntext)
+
+### text
+
+Sets the mrkdwn-formatted text content. Wire key: text.
+
+```ruby
+def text: () -> String
+```
+
+**Returns:** String
+
+### verbatim
+
+Sets whether Slack leaves URLs, mentions, and channel names unlinked. Wire key: verbatim.
+
+```ruby
+def verbatim: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> MarkdownText
+```
+
+**Returns:** MarkdownText
+
+**Related types:** [`MarkdownText`](/reference/ruby/objects#markdowntext)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## Option
+
+A selectable option for menus, checkboxes, radio buttons, and overflow menus.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/option-object).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: text, value.
+
+```ruby
+def self.new: (text: String | Text, value: String, ?description: (String | Text)?, ?url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Option
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets the option label shown to users. |
+| `value` | Sets the value sent in interaction payloads when this option is chosen. |
+| `description` | Sets supporting text shown below the label. Only rendered by checkboxes and radio buttons. |
+| `url` | Sets a URL loaded in the user's browser when an overflow menu option is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** Option
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Option`](/reference/ruby/objects#option), [`Text`](/reference/ruby/objects#text)
+
+### text
+
+Sets the option label shown to users. Wire key: text.
+
+```ruby
+def text: () -> Text
+```
+
+**Returns:** Text
+
+**Related types:** [`Text`](/reference/ruby/objects#text)
+
+### value
+
+Sets the value sent in interaction payloads when this option is chosen. Wire key: value.
+
+```ruby
+def value: () -> String
+```
+
+**Returns:** String
+
+### description
+
+Sets supporting text shown below the label. Only rendered by checkboxes and radio buttons. Wire key: description.
+
+```ruby
+def description: () -> (Text)?
+```
+
+**Returns:** (Text)?
+
+**Related types:** [`Text`](/reference/ruby/objects#text)
+
+### url
+
+Sets a URL loaded in the user's browser when an overflow menu option is chosen. Wire key: url.
+
+```ruby
+def url: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> Option
+```
+
+**Returns:** Option
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## OptionGroup
+
+A labelled group of options in a static select menu.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/option-group-object).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: label, options.
+
+```ruby
+def self.new: (label: String | PlainText, options: Array[Option], ?additional_fields: Hash[String | Symbol, untyped]?) -> OptionGroup
+```
+
+| Parameter | Description |
+| --- | --- |
+| `label` | Sets the group heading. |
+| `options` | Adds selectable options in display order. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** OptionGroup
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Option`](/reference/ruby/objects#option), [`OptionGroup`](/reference/ruby/objects#optiongroup), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### label
+
+Sets the group heading. Wire key: label.
+
+```ruby
+def label: () -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### options
+
+Adds selectable options in display order. Wire key: options.
+
+```ruby
+def options: () -> Array[Option]
+```
+
+**Returns:** Array[Option]
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> OptionGroup
+```
+
+**Returns:** OptionGroup
+
+**Related types:** [`OptionGroup`](/reference/ruby/objects#optiongroup)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## PieChart
+
+A pie chart for a data visualization block.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: segments.
+
+```ruby
+def self.new: (segments: Array[ChartSegment], ?additional_fields: Hash[String | Symbol, untyped]?) -> PieChart
+```
+
+| Parameter | Description |
+| --- | --- |
+| `segments` | Adds pie segments in display order. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** PieChart
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ChartSegment`](/reference/ruby/objects#chartsegment), [`PieChart`](/reference/ruby/objects#piechart)
+
+### segments
+
+Adds pie segments in display order. Wire key: segments.
+
+```ruby
+def segments: () -> Array[ChartSegment]
+```
+
+**Returns:** Array[ChartSegment]
+
+**Related types:** [`ChartSegment`](/reference/ruby/objects#chartsegment)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> PieChart
+```
+
+**Returns:** PieChart
+
+**Related types:** [`PieChart`](/reference/ruby/objects#piechart)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## PlainText
+
+A plain-text composition object.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/text-object).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: text.
+
+```ruby
+def self.new: (text: String, ?emoji: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlainText
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets the text content. |
+| `emoji` | Sets whether emoji shortcodes such as :tada: are rendered as emoji. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** PlainText
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### text
+
+Sets the text content. Wire key: text.
+
+```ruby
+def text: () -> String
+```
+
+**Returns:** String
+
+### emoji
+
+Sets whether emoji shortcodes such as :tada: are rendered as emoji. Wire key: emoji.
+
+```ruby
+def emoji: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RawNumber
+
+A numeric data table cell with display text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: value, text.
+
+```ruby
+def self.new: (value: Integer | Float, text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> RawNumber
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | Sets the numeric value used for sorting. |
+| `text` | Sets the formatted text displayed for the number, such as 1,234.5. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RawNumber
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RawNumber`](/reference/ruby/objects#rawnumber)
+
+### value
+
+Sets the numeric value used for sorting. Wire key: value.
+
+```ruby
+def value: () -> Integer | Float
+```
+
+**Returns:** Integer \| Float
+
+### text
+
+Sets the formatted text displayed for the number, such as 1,234.5. Wire key: text.
+
+```ruby
+def text: () -> String
+```
+
+**Returns:** String
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RawNumber
+```
+
+**Returns:** RawNumber
+
+**Related types:** [`RawNumber`](/reference/ruby/objects#rawnumber)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RawText
+
+An unformatted table cell.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: text.
+
+```ruby
+def self.new: (text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> RawText
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets the cell text. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RawText
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RawText`](/reference/ruby/objects#rawtext)
+
+### text
+
+Sets the cell text. Wire key: text.
+
+```ruby
+def text: () -> String
+```
+
+**Returns:** String
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RawText
+```
+
+**Returns:** RawText
+
+**Related types:** [`RawText`](/reference/ruby/objects#rawtext)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RichTextBlockElement
+
+A top-level element of a rich text block: a section, list, preformatted block, or quote.
+
+## RichTextChannel
+
+A channel mention inside rich text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: channel_id.
+
+```ruby
+def self.new: (channel_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextChannel
+```
+
+| Parameter | Description |
+| --- | --- |
+| `channel_id` | Sets the ID of the mentioned channel. |
+| `style` | Sets the mention style. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RichTextChannel
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextChannel`](/reference/ruby/objects#richtextchannel), [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### channel_id
+
+Sets the ID of the mentioned channel. Wire key: channel_id.
+
+```ruby
+def channel_id: () -> String
+```
+
+**Returns:** String
+
+### style
+
+Sets the mention style. Wire key: style.
+
+```ruby
+def style: () -> (RichTextStyle)?
+```
+
+**Returns:** (RichTextStyle)?
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextChannel
+```
+
+**Returns:** RichTextChannel
+
+**Related types:** [`RichTextChannel`](/reference/ruby/objects#richtextchannel)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RichTextCodeBlock
+
+A preformatted code block inside rich text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: elements.
+
+```ruby
+def self.new: (elements: Array[RichTextSectionElement], ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextCodeBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Adds inline rich text elements in display order. |
+| `border` | Sets the width of the left border, in pixels. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RichTextCodeBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextCodeBlock`](/reference/ruby/objects#richtextcodeblock), [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
+
+### elements
+
+Adds inline rich text elements in display order. Wire key: elements.
+
+```ruby
+def elements: () -> Array[RichTextSectionElement]
+```
+
+**Returns:** Array[RichTextSectionElement]
+
+**Related types:** [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
+
+### border
+
+Sets the width of the left border, in pixels. Wire key: border.
+
+```ruby
+def border: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextCodeBlock
+```
+
+**Returns:** RichTextCodeBlock
+
+**Related types:** [`RichTextCodeBlock`](/reference/ruby/objects#richtextcodeblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RichTextEmoji
+
+An emoji inside rich text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: name.
+
+```ruby
+def self.new: (name: String, ?skin_tone: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextEmoji
+```
+
+| Parameter | Description |
+| --- | --- |
+| `name` | Sets the emoji shortcode name, without colons. |
+| `skin_tone` | Sets the emoji skin tone, from 1 to 6. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RichTextEmoji
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextEmoji`](/reference/ruby/objects#richtextemoji)
+
+### name
+
+Sets the emoji shortcode name, without colons. Wire key: name.
+
+```ruby
+def name: () -> String
+```
+
+**Returns:** String
+
+### skin_tone
+
+Sets the emoji skin tone, from 1 to 6. Wire key: skin_tone.
+
+```ruby
+def skin_tone: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextEmoji
+```
+
+**Returns:** RichTextEmoji
+
+**Related types:** [`RichTextEmoji`](/reference/ruby/objects#richtextemoji)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RichTextLink
+
+A hyperlink inside rich text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: url.
+
+```ruby
+def self.new: (url: String, ?text: (String)?, ?style: (RichTextStyle)?, ?unsafe: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextLink
+```
+
+| Parameter | Description |
+| --- | --- |
+| `url` | Sets the link target. |
+| `text` | Sets the visible link text. Slack shows the URL when omitted. |
+| `style` | Sets the visual style. |
+| `unsafe` | Sets whether Slack treats the link as unsafe. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RichTextLink
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextLink`](/reference/ruby/objects#richtextlink), [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### url
+
+Sets the link target. Wire key: url.
+
+```ruby
+def url: () -> String
+```
+
+**Returns:** String
+
+### text
+
+Sets the visible link text. Slack shows the URL when omitted. Wire key: text.
+
+```ruby
+def text: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### style
+
+Sets the visual style. Wire key: style.
+
+```ruby
+def style: () -> (RichTextStyle)?
+```
+
+**Returns:** (RichTextStyle)?
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### unsafe
+
+Sets whether Slack treats the link as unsafe. Wire key: unsafe.
+
+```ruby
+def unsafe: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextLink
+```
+
+**Returns:** RichTextLink
+
+**Related types:** [`RichTextLink`](/reference/ruby/objects#richtextlink)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RichTextList
+
+A bulleted or numbered list inside rich text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: style, elements.
+
+```ruby
+def self.new: (style: :bullet | :ordered, elements: Array[RichTextSection], ?indent: (Integer)?, ?offset: (Integer)?, ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextList
+```
+
+| Parameter | Description |
+| --- | --- |
+| `style` | Sets whether the list is bulleted or numbered. |
+| `elements` | Adds list items, one rich text section per item. |
+| `indent` | Sets the list's indentation level. |
+| `offset` | Sets the number of items to skip when numbering an ordered list. |
+| `border` | Sets the width of the left border, in pixels. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RichTextList
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextList`](/reference/ruby/objects#richtextlist), [`RichTextSection`](/reference/ruby/objects#richtextsection)
+
+### style
+
+Sets whether the list is bulleted or numbered. Wire key: style.
+
+```ruby
+def style: () -> :bullet | :ordered
+```
+
+**Returns:** :bullet \| :ordered
+
+### elements
+
+Adds list items, one rich text section per item. Wire key: elements.
+
+```ruby
+def elements: () -> Array[RichTextSection]
+```
+
+**Returns:** Array[RichTextSection]
+
+**Related types:** [`RichTextSection`](/reference/ruby/objects#richtextsection)
+
+### indent
+
+Sets the list's indentation level. Wire key: indent.
+
+```ruby
+def indent: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### offset
+
+Sets the number of items to skip when numbering an ordered list. Wire key: offset.
+
+```ruby
+def offset: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### border
+
+Sets the width of the left border, in pixels. Wire key: border.
+
+```ruby
+def border: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextList
+```
+
+**Returns:** RichTextList
+
+**Related types:** [`RichTextList`](/reference/ruby/objects#richtextlist)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RichTextListStyle
+
+Marker styles for rich text lists. Pass the wire symbol to constructor keywords.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `BULLET` | `:bullet` | An unordered, bulleted list. |
+| `ORDERED` | `:ordered` | A numbered list. |
+
+## RichTextQuote
+
+A quotation inside rich text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: elements.
+
+```ruby
+def self.new: (elements: Array[RichTextSectionElement], ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextQuote
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Adds inline rich text elements in display order. |
+| `border` | Sets the width of the left border, in pixels. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RichTextQuote
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextQuote`](/reference/ruby/objects#richtextquote), [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
+
+### elements
+
+Adds inline rich text elements in display order. Wire key: elements.
+
+```ruby
+def elements: () -> Array[RichTextSectionElement]
+```
+
+**Returns:** Array[RichTextSectionElement]
+
+**Related types:** [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
+
+### border
+
+Sets the width of the left border, in pixels. Wire key: border.
+
+```ruby
+def border: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextQuote
+```
+
+**Returns:** RichTextQuote
+
+**Related types:** [`RichTextQuote`](/reference/ruby/objects#richtextquote)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RichTextSection
+
+A paragraph of inline rich text elements.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: elements.
+
+```ruby
+def self.new: (elements: Array[RichTextSectionElement], ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextSection
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Adds inline rich text elements in display order. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RichTextSection
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextSection`](/reference/ruby/objects#richtextsection), [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
+
+### elements
+
+Adds inline rich text elements in display order. Wire key: elements.
+
+```ruby
+def elements: () -> Array[RichTextSectionElement]
+```
+
+**Returns:** Array[RichTextSectionElement]
+
+**Related types:** [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextSection
+```
+
+**Returns:** RichTextSection
+
+**Related types:** [`RichTextSection`](/reference/ruby/objects#richtextsection)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RichTextSectionElement
+
+An inline rich text element: text, a link, an emoji, or a channel, user, or user group mention.
+
+## RichTextStyle
+
+Immutable rich text style flags. The owning rich text element limits which flags may be set.
+
+### .new
+
+Create a style with permitted boolean flags.
+
+```ruby
+def self.new: (?bold: bool?, ?client_highlight: bool?, ?code: bool?, ?highlight: bool?, ?italic: bool?, ?strike: bool?, ?unlink: bool?) -> RichTextStyle
+```
+
+| Parameter | Description |
+| --- | --- |
+| `bold` | Optional style flag. |
+| `client_highlight` | Optional style flag. |
+| `code` | Optional style flag. |
+| `highlight` | Optional style flag. |
+| `italic` | Optional style flag. |
+| `strike` | Optional style flag. |
+| `unlink` | Optional style flag. |
+
+**Returns:** RichTextStyle
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+## RichTextText
+
+A run of optionally styled text inside rich text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: text.
+
+```ruby
+def self.new: (text: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextText
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets the text content. |
+| `style` | Sets the visual style. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RichTextText
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle), [`RichTextText`](/reference/ruby/objects#richtexttext)
+
+### text
+
+Sets the text content. Wire key: text.
+
+```ruby
+def text: () -> String
+```
+
+**Returns:** String
+
+### style
+
+Sets the visual style. Wire key: style.
+
+```ruby
+def style: () -> (RichTextStyle)?
+```
+
+**Returns:** (RichTextStyle)?
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextText
+```
+
+**Returns:** RichTextText
+
+**Related types:** [`RichTextText`](/reference/ruby/objects#richtexttext)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RichTextUser
+
+A user mention inside rich text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: user_id.
+
+```ruby
+def self.new: (user_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextUser
+```
+
+| Parameter | Description |
+| --- | --- |
+| `user_id` | Sets the ID of the mentioned user. |
+| `style` | Sets the visual style. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RichTextUser
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle), [`RichTextUser`](/reference/ruby/objects#richtextuser)
+
+### user_id
+
+Sets the ID of the mentioned user. Wire key: user_id.
+
+```ruby
+def user_id: () -> String
+```
+
+**Returns:** String
+
+### style
+
+Sets the visual style. Wire key: style.
+
+```ruby
+def style: () -> (RichTextStyle)?
+```
+
+**Returns:** (RichTextStyle)?
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextUser
+```
+
+**Returns:** RichTextUser
+
+**Related types:** [`RichTextUser`](/reference/ruby/objects#richtextuser)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RichTextUserGroup
+
+A user group mention inside rich text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: user_group_id.
+
+```ruby
+def self.new: (user_group_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextUserGroup
+```
+
+| Parameter | Description |
+| --- | --- |
+| `user_group_id` | Sets the ID of the mentioned user group. |
+| `style` | Sets the visual style. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RichTextUserGroup
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle), [`RichTextUserGroup`](/reference/ruby/objects#richtextusergroup)
+
+### user_group_id
+
+Sets the ID of the mentioned user group. Wire key: usergroup_id.
+
+```ruby
+def user_group_id: () -> String
+```
+
+**Returns:** String
+
+### style
+
+Sets the visual style. Wire key: style.
+
+```ruby
+def style: () -> (RichTextStyle)?
+```
+
+**Returns:** (RichTextStyle)?
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextUserGroup
+```
+
+**Returns:** RichTextUserGroup
+
+**Related types:** [`RichTextUserGroup`](/reference/ruby/objects#richtextusergroup)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## SlackFile
+
+A reference to an image file hosted in Slack.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/slack-file-object).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?id: (String)?, ?url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> SlackFile
+```
+
+| Parameter | Description |
+| --- | --- |
+| `id` | Sets the ID of a file previously uploaded to Slack. Cannot be combined with a URL. |
+| `url` | Sets the URL of a file hosted in Slack. Cannot be combined with an ID. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** SlackFile
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`SlackFile`](/reference/ruby/objects#slackfile)
+
+### id
+
+Sets the ID of a file previously uploaded to Slack. Cannot be combined with a URL. Wire key: id.
+
+```ruby
+def id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### url
+
+Sets the URL of a file hosted in Slack. Cannot be combined with an ID. Wire key: url.
+
+```ruby
+def url: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> SlackFile
+```
+
+**Returns:** SlackFile
+
+**Related types:** [`SlackFile`](/reference/ruby/objects#slackfile)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## SlackIcon
+
+A Slack-provided icon, referenced by name.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: name.
+
+```ruby
+def self.new: (name: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> SlackIcon
+```
+
+| Parameter | Description |
+| --- | --- |
+| `name` | Sets the name of the Slack-provided icon, such as rocket. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** SlackIcon
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`SlackIcon`](/reference/ruby/objects#slackicon)
+
+### name
+
+Sets the name of the Slack-provided icon, such as rocket. Wire key: name.
+
+```ruby
+def name: () -> String
+```
+
+**Returns:** String
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> SlackIcon
+```
+
+**Returns:** SlackIcon
+
+**Related types:** [`SlackIcon`](/reference/ruby/objects#slackicon)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## Text
+
+A Slack text composition object: plain text or mrkdwn.
+
+## Trigger
+
+A link trigger that starts a workflow.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: url.
+
+```ruby
+def self.new: (url: String, ?customizable_input_parameters: (Array[InputParameter])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Trigger
+```
+
+| Parameter | Description |
+| --- | --- |
+| `url` | Sets the link trigger URL. |
+| `customizable_input_parameters` | Adds the input values passed to the workflow's trigger. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** Trigger
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`InputParameter`](/reference/ruby/objects#inputparameter), [`Trigger`](/reference/ruby/objects#trigger)
+
+### url
+
+Sets the link trigger URL. Wire key: url.
+
+```ruby
+def url: () -> String
+```
+
+**Returns:** String
+
+### customizable_input_parameters
+
+Adds the input values passed to the workflow's trigger. Wire key: customizable_input_parameters.
+
+```ruby
+def customizable_input_parameters: () -> (Array[InputParameter])?
+```
+
+**Returns:** (Array[InputParameter])?
+
+**Related types:** [`InputParameter`](/reference/ruby/objects#inputparameter)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> Trigger
+```
+
+**Returns:** Trigger
+
+**Related types:** [`Trigger`](/reference/ruby/objects#trigger)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## UrlSource
+
+A linked source cited by a task card.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: url, text.
+
+```ruby
+def self.new: (url: String, text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> UrlSource
+```
+
+| Parameter | Description |
+| --- | --- |
+| `url` | Sets the source URL. |
+| `text` | Sets the source link text. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** UrlSource
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`UrlSource`](/reference/ruby/objects#urlsource)
+
+### url
+
+Sets the source URL. Wire key: url.
+
+```ruby
+def url: () -> String
+```
+
+**Returns:** String
+
+### text
+
+Sets the source link text. Wire key: text.
+
+```ruby
+def text: () -> String
+```
+
+**Returns:** String
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> UrlSource
+```
+
+**Returns:** UrlSource
+
+**Related types:** [`UrlSource`](/reference/ruby/objects#urlsource)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## Workflow
+
+The workflow started by a workflow button.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/workflow-object).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: trigger.
+
+```ruby
+def self.new: (trigger: Trigger, ?additional_fields: Hash[String | Symbol, untyped]?) -> Workflow
+```
+
+| Parameter | Description |
+| --- | --- |
+| `trigger` | Sets the link trigger that starts the workflow. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** Workflow
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Trigger`](/reference/ruby/objects#trigger), [`Workflow`](/reference/ruby/objects#workflow)
+
+### trigger
+
+Sets the link trigger that starts the workflow. Wire key: trigger.
+
+```ruby
+def trigger: () -> Trigger
+```
+
+**Returns:** Trigger
+
+**Related types:** [`Trigger`](/reference/ruby/objects#trigger)
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> Workflow
+```
+
+**Returns:** Workflow
+
+**Related types:** [`Workflow`](/reference/ruby/objects#workflow)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```

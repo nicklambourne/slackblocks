@@ -1,0 +1,853 @@
+---
+sidebar_position: 4
+toc_max_heading_level: 3
+---
+
+# Payloads And Views
+
+This page documents the Ruby API for payloads and views. Values use keyword-only construction, validate before freezing, and serialize to Slack JSON.
+
+## Attachment
+
+A legacy message attachment containing blocks and an optional color bar.
+
+See the [Slack reference](https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: blocks.
+
+```ruby
+def self.new: (blocks: Array[Block], ?color: (String)?, ?fallback: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Attachment
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blocks` | Adds the attachment's blocks in display order. |
+| `color` | Sets the attachment's left border color: a six-digit hex color or good, warning, or danger. |
+| `fallback` | Sets plain-text summary shown in clients that cannot display attachments. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** Attachment
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Attachment`](/reference/ruby/payloads#attachment), [`Block`](/reference/ruby/blocks#block)
+
+### blocks
+
+Adds the attachment's blocks in display order. Wire key: blocks.
+
+```ruby
+def blocks: () -> Array[Block]
+```
+
+**Returns:** Array[Block]
+
+**Related types:** [`Block`](/reference/ruby/blocks#block)
+
+### color
+
+Sets the attachment's left border color: a six-digit hex color or good, warning, or danger. Wire key: color.
+
+```ruby
+def color: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### fallback
+
+Sets plain-text summary shown in clients that cannot display attachments. Wire key: fallback.
+
+```ruby
+def fallback: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> Attachment
+```
+
+**Returns:** Attachment
+
+**Related types:** [`Attachment`](/reference/ruby/payloads#attachment)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## HomeTabView
+
+The payload for publishing an App Home tab with views.publish.
+
+See the [Slack reference](https://docs.slack.dev/surfaces/app-home).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: blocks.
+
+```ruby
+def self.new: (blocks: Array[Block], ?private_metadata: (String)?, ?callback_id: (String)?, ?external_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> HomeTabView
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blocks` | Adds the blocks shown on the App Home tab, in display order. |
+| `private_metadata` | Sets application-defined data returned in view payloads. |
+| `callback_id` | Sets an identifier returned in view payloads so your app can recognize the view. |
+| `external_id` | Sets a workspace-unique identifier you can use to update the view later. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** HomeTabView
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Block`](/reference/ruby/blocks#block), [`HomeTabView`](/reference/ruby/payloads#hometabview)
+
+### blocks
+
+Adds the blocks shown on the App Home tab, in display order. Wire key: blocks.
+
+```ruby
+def blocks: () -> Array[Block]
+```
+
+**Returns:** Array[Block]
+
+**Related types:** [`Block`](/reference/ruby/blocks#block)
+
+### private_metadata
+
+Sets application-defined data returned in view payloads. Wire key: private_metadata.
+
+```ruby
+def private_metadata: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### callback_id
+
+Sets an identifier returned in view payloads so your app can recognize the view. Wire key: callback_id.
+
+```ruby
+def callback_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### external_id
+
+Sets a workspace-unique identifier you can use to update the view later. Wire key: external_id.
+
+```ruby
+def external_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> HomeTabView
+```
+
+**Returns:** HomeTabView
+
+**Related types:** [`HomeTabView`](/reference/ruby/payloads#hometabview)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## MessagePayload
+
+A complete payload for chat.postMessage and related Web API methods.
+
+See the [Slack reference](https://docs.slack.dev/reference/methods/chat.postMessage).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: channel.
+
+```ruby
+def self.new: (channel: String, ?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?mrkdwn: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MessagePayload
+```
+
+| Parameter | Description |
+| --- | --- |
+| `channel` | Sets the ID of the channel, private group, or conversation that receives the message. |
+| `blocks` | Adds the message blocks in display order. |
+| `attachments` | Adds legacy attachments in display order. |
+| `text` | Sets the fallback text used in notifications and by clients that cannot display blocks. |
+| `mrkdwn` | Sets whether Slack formats the top-level text as mrkdwn. |
+| `unfurl_links` | Sets whether Slack unfurls text-based links. |
+| `unfurl_media` | Sets whether Slack unfurls media links. |
+| `metadata` | Sets message metadata as a JSON-compatible map, such as event_type and event_payload. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** MessagePayload
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Attachment`](/reference/ruby/payloads#attachment), [`Block`](/reference/ruby/blocks#block), [`MessagePayload`](/reference/ruby/payloads#messagepayload)
+
+### channel
+
+Sets the ID of the channel, private group, or conversation that receives the message. Wire key: channel.
+
+```ruby
+def channel: () -> String
+```
+
+**Returns:** String
+
+### blocks
+
+Adds the message blocks in display order. Wire key: blocks.
+
+```ruby
+def blocks: () -> (Array[Block])?
+```
+
+**Returns:** (Array[Block])?
+
+**Related types:** [`Block`](/reference/ruby/blocks#block)
+
+### attachments
+
+Adds legacy attachments in display order. Wire key: attachments.
+
+```ruby
+def attachments: () -> (Array[Attachment])?
+```
+
+**Returns:** (Array[Attachment])?
+
+**Related types:** [`Attachment`](/reference/ruby/payloads#attachment)
+
+### text
+
+Sets the fallback text used in notifications and by clients that cannot display blocks. Wire key: text.
+
+```ruby
+def text: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### mrkdwn
+
+Sets whether Slack formats the top-level text as mrkdwn. Wire key: mrkdwn.
+
+```ruby
+def mrkdwn: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### unfurl_links
+
+Sets whether Slack unfurls text-based links. Wire key: unfurl_links.
+
+```ruby
+def unfurl_links: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### unfurl_media
+
+Sets whether Slack unfurls media links. Wire key: unfurl_media.
+
+```ruby
+def unfurl_media: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### metadata
+
+Sets message metadata as a JSON-compatible map, such as event_type and event_payload. Wire key: metadata.
+
+```ruby
+def metadata: () -> (Hash[String, untyped])?
+```
+
+**Returns:** (Hash[String, untyped])?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> MessagePayload
+```
+
+**Returns:** MessagePayload
+
+**Related types:** [`MessagePayload`](/reference/ruby/payloads#messagepayload)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## MessageResponse
+
+A response body for slash commands and interaction response URLs.
+
+See the [Slack reference](https://docs.slack.dev/interactivity/handling-user-interaction#message_responses).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?mrkdwn: (bool)?, ?replace_original: (bool)?, ?response_type: (:in_channel | :ephemeral)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MessageResponse
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blocks` | Adds the response blocks in display order. |
+| `attachments` | Adds legacy attachments in display order. |
+| `text` | Sets the fallback text used in notifications and by clients that cannot display blocks. |
+| `mrkdwn` | Sets whether Slack formats the top-level text as mrkdwn. |
+| `replace_original` | Sets whether the response replaces the message that triggered it. |
+| `response_type` | Sets who can see the response. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** MessageResponse
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Attachment`](/reference/ruby/payloads#attachment), [`Block`](/reference/ruby/blocks#block), [`MessageResponse`](/reference/ruby/payloads#messageresponse)
+
+### blocks
+
+Adds the response blocks in display order. Wire key: blocks.
+
+```ruby
+def blocks: () -> (Array[Block])?
+```
+
+**Returns:** (Array[Block])?
+
+**Related types:** [`Block`](/reference/ruby/blocks#block)
+
+### attachments
+
+Adds legacy attachments in display order. Wire key: attachments.
+
+```ruby
+def attachments: () -> (Array[Attachment])?
+```
+
+**Returns:** (Array[Attachment])?
+
+**Related types:** [`Attachment`](/reference/ruby/payloads#attachment)
+
+### text
+
+Sets the fallback text used in notifications and by clients that cannot display blocks. Wire key: text.
+
+```ruby
+def text: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### mrkdwn
+
+Sets whether Slack formats the top-level text as mrkdwn. Wire key: mrkdwn.
+
+```ruby
+def mrkdwn: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### replace_original
+
+Sets whether the response replaces the message that triggered it. Wire key: replace_original.
+
+```ruby
+def replace_original: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### response_type
+
+Sets who can see the response. Wire key: response_type.
+
+```ruby
+def response_type: () -> (:in_channel | :ephemeral)?
+```
+
+**Returns:** (:in_channel \| :ephemeral)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> MessageResponse
+```
+
+**Returns:** MessageResponse
+
+**Related types:** [`MessageResponse`](/reference/ruby/payloads#messageresponse)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ModalView
+
+The view payload for views.open, views.push, and views.update.
+
+See the [Slack reference](https://docs.slack.dev/surfaces/modals).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: title, blocks.
+
+```ruby
+def self.new: (title: String | PlainText, blocks: Array[Block], ?close: (String | PlainText)?, ?submit: (String | PlainText)?, ?private_metadata: (String)?, ?callback_id: (String)?, ?clear_on_close: (bool)?, ?notify_on_close: (bool)?, ?external_id: (String)?, ?submit_disabled: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ModalView
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | Sets the title in the modal's top bar. |
+| `blocks` | Adds the blocks shown in the modal, in display order. |
+| `close` | Sets the label of the button that closes the modal. |
+| `submit` | Sets the label of the button that submits the modal. |
+| `private_metadata` | Sets application-defined data returned in view payloads. |
+| `callback_id` | Sets an identifier returned in view payloads so your app can recognize the view. |
+| `clear_on_close` | Sets whether closing this modal closes every view in its stack. |
+| `notify_on_close` | Sets whether Slack sends a view_closed event when the user closes the modal. |
+| `external_id` | Sets a workspace-unique identifier you can use to update the view later. |
+| `submit_disabled` | Sets whether the submit button starts disabled. Only valid in workflow configuration modals. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ModalView
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Block`](/reference/ruby/blocks#block), [`ModalView`](/reference/ruby/payloads#modalview), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### title
+
+Sets the title in the modal's top bar. Wire key: title.
+
+```ruby
+def title: () -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### blocks
+
+Adds the blocks shown in the modal, in display order. Wire key: blocks.
+
+```ruby
+def blocks: () -> Array[Block]
+```
+
+**Returns:** Array[Block]
+
+**Related types:** [`Block`](/reference/ruby/blocks#block)
+
+### close
+
+Sets the label of the button that closes the modal. Wire key: close.
+
+```ruby
+def close: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### submit
+
+Sets the label of the button that submits the modal. Wire key: submit.
+
+```ruby
+def submit: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### private_metadata
+
+Sets application-defined data returned in view payloads. Wire key: private_metadata.
+
+```ruby
+def private_metadata: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### callback_id
+
+Sets an identifier returned in view payloads so your app can recognize the view. Wire key: callback_id.
+
+```ruby
+def callback_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### clear_on_close
+
+Sets whether closing this modal closes every view in its stack. Wire key: clear_on_close.
+
+```ruby
+def clear_on_close: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### notify_on_close
+
+Sets whether Slack sends a view_closed event when the user closes the modal. Wire key: notify_on_close.
+
+```ruby
+def notify_on_close: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### external_id
+
+Sets a workspace-unique identifier you can use to update the view later. Wire key: external_id.
+
+```ruby
+def external_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### submit_disabled
+
+Sets whether the submit button starts disabled. Only valid in workflow configuration modals. Wire key: submit_disabled.
+
+```ruby
+def submit_disabled: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ModalView
+```
+
+**Returns:** ModalView
+
+**Related types:** [`ModalView`](/reference/ruby/payloads#modalview)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ResponseType
+
+Visibility of a slash-command or interaction response. Pass the wire symbol to constructor keywords.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `IN_CHANNEL` | `:in_channel` | Visible to everyone in the channel. |
+| `EPHEMERAL` | `:ephemeral` | Visible only to the user who triggered the response. |
+
+## WebhookMessage
+
+A payload for incoming webhooks.
+
+See the [Slack reference](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?response_type: (:in_channel | :ephemeral)?, ?replace_original: (bool)?, ?delete_original: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> WebhookMessage
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blocks` | Adds the message blocks in display order. |
+| `attachments` | Adds legacy attachments in display order. |
+| `text` | Sets the fallback text used in notifications and by clients that cannot display blocks. |
+| `response_type` | Sets who can see the response. |
+| `replace_original` | Sets whether the response replaces the message that triggered it. |
+| `delete_original` | Sets whether the response deletes the message that triggered it. |
+| `unfurl_links` | Sets whether Slack unfurls text-based links. |
+| `unfurl_media` | Sets whether Slack unfurls media links. |
+| `metadata` | Sets message metadata as a JSON-compatible map, such as event_type and event_payload. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** WebhookMessage
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Attachment`](/reference/ruby/payloads#attachment), [`Block`](/reference/ruby/blocks#block), [`WebhookMessage`](/reference/ruby/payloads#webhookmessage)
+
+### blocks
+
+Adds the message blocks in display order. Wire key: blocks.
+
+```ruby
+def blocks: () -> (Array[Block])?
+```
+
+**Returns:** (Array[Block])?
+
+**Related types:** [`Block`](/reference/ruby/blocks#block)
+
+### attachments
+
+Adds legacy attachments in display order. Wire key: attachments.
+
+```ruby
+def attachments: () -> (Array[Attachment])?
+```
+
+**Returns:** (Array[Attachment])?
+
+**Related types:** [`Attachment`](/reference/ruby/payloads#attachment)
+
+### text
+
+Sets the fallback text used in notifications and by clients that cannot display blocks. Wire key: text.
+
+```ruby
+def text: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### response_type
+
+Sets who can see the response. Wire key: response_type.
+
+```ruby
+def response_type: () -> (:in_channel | :ephemeral)?
+```
+
+**Returns:** (:in_channel \| :ephemeral)?
+
+### replace_original
+
+Sets whether the response replaces the message that triggered it. Wire key: replace_original.
+
+```ruby
+def replace_original: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### delete_original
+
+Sets whether the response deletes the message that triggered it. Wire key: delete_original.
+
+```ruby
+def delete_original: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### unfurl_links
+
+Sets whether Slack unfurls text-based links. Wire key: unfurl_links.
+
+```ruby
+def unfurl_links: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### unfurl_media
+
+Sets whether Slack unfurls media links. Wire key: unfurl_media.
+
+```ruby
+def unfurl_media: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### metadata
+
+Sets message metadata as a JSON-compatible map, such as event_type and event_payload. Wire key: metadata.
+
+```ruby
+def metadata: () -> (Hash[String, untyped])?
+```
+
+**Returns:** (Hash[String, untyped])?
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> WebhookMessage
+```
+
+**Returns:** WebhookMessage
+
+**Related types:** [`WebhookMessage`](/reference/ruby/payloads#webhookmessage)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```

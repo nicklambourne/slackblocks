@@ -21,40 +21,17 @@ const DEFAULT_SEARCH_OPTIONS = {
   forceIgnoreNoIndex: false,
 };
 
-const LANGUAGE_INDEXES = {
-  python: {
-    ignoredContent: '[data-language-content="typescript"], [data-language-content="go"], [data-language-content="java"], [data-language-content="csharp"]',
-    ignoredRoutes: [/^reference\/(?:typescript|go|java|csharp)(?:\/|$)/],
-  },
-  typescript: {
-    ignoredContent: '[data-language-content="python"], [data-language-content="go"], [data-language-content="java"], [data-language-content="csharp"]',
+const LANGUAGES = ["python", "typescript", "go", "java", "csharp", "ruby"];
+const LANGUAGE_INDEXES = Object.fromEntries(LANGUAGES.map((language) => {
+  const others = LANGUAGES.filter((candidate) => candidate !== language);
+  return [language, {
+    ignoredContent: others.map((other) => `[data-language-content="${other}"]`).join(", "),
     ignoredRoutes: [
-      /^reference\/(?:python|go|java|csharp)(?:\/|$)/,
-      /^usage\/(?:compatibility|migration)$/,
+      new RegExp(`^reference/(?:${others.join("|")})(?:/|$)`),
+      ...(language === "python" ? [] : [/^usage\/(?:compatibility|migration)$/]),
     ],
-  },
-  go: {
-    ignoredContent: '[data-language-content="python"], [data-language-content="typescript"], [data-language-content="java"], [data-language-content="csharp"]',
-    ignoredRoutes: [
-      /^reference\/(?:python|typescript|java|csharp)(?:\/|$)/,
-      /^usage\/(?:compatibility|migration)$/,
-    ],
-  },
-  java: {
-    ignoredContent: '[data-language-content="python"], [data-language-content="typescript"], [data-language-content="go"], [data-language-content="csharp"]',
-    ignoredRoutes: [
-      /^reference\/(?:python|typescript|go|csharp)(?:\/|$)/,
-      /^usage\/(?:compatibility|migration)$/,
-    ],
-  },
-  csharp: {
-    ignoredContent: '[data-language-content="python"], [data-language-content="typescript"], [data-language-content="go"], [data-language-content="java"]',
-    ignoredRoutes: [
-      /^reference\/(?:python|typescript|go|java)(?:\/|$)/,
-      /^usage\/(?:compatibility|migration)$/,
-    ],
-  },
-};
+  }];
+}));
 
 module.exports = function languageSearchIndexes(context, options) {
   const baseConfig = processPluginOptions(

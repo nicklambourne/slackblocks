@@ -1,0 +1,53 @@
+---
+sidebar_position: 6
+toc_max_heading_level: 3
+---
+
+# Core Types
+
+This page documents the Ruby API for core types. Values use keyword-only construction, validate before freezing, and serialize to Slack JSON.
+
+## Slackblocks
+
+The gem namespace and its version constants.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `VERSION` | `2.5.0` | Coordinated package version. |
+| `SPEC_VERSION` | `1.2.0` | Shared contract version. |
+
+## Value
+
+Shared immutable value protocol used by every Slackblocks value.
+
+### with
+
+Return a validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> self
+```
+
+### to_h
+
+Return structural Ruby members.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a detached wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Return Slack JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
