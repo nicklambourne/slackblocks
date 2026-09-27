@@ -1,0 +1,50 @@
+---
+sidebar_position: 6
+toc_max_heading_level: 2
+---
+
+# Core JSON Types
+
+This page documents the public Go API for core json types. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.
+
+## Buildable
+
+Buildable is implemented by every fluent Slack object builder.
+
+```go
+type Buildable interface {
+	Build() (Object, error)
+}
+```
+
+Related types: [`Object`](/reference/go/core#object).
+
+## GroupBuildable
+
+GroupBuildable is implemented by higher-level components that expand to
+multiple ordinary Slack objects inside a parent collection.
+
+```go
+type GroupBuildable interface {
+	BuildMany() ([]Object, error)
+}
+```
+
+Related types: [`Object`](/reference/go/core#object).
+
+## Object
+
+Object is a JSON-compatible Slack wire object.
+
+```go
+type Object map[string]any
+```
+
+## SpecVersion
+
+SpecVersion is the shared cross-language conformance version implemented by
+this module.
+
+```go
+const SpecVersion = "1.1.0"
+```

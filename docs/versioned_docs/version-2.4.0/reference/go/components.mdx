@@ -1,0 +1,264 @@
+---
+sidebar_position: 5
+toc_max_heading_level: 2
+---
+
+# Components
+
+This page documents the public Go API for components. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.
+
+Higher-level components expose `SlackBlocks() ([]slack.Block, error)`, expanding them into ordinary blocks ready for `slack.MsgOptionBlocks`.
+
+## AccordionBuilder
+
+AccordionBuilder assembles independently collapsible sections.
+
+```go
+type AccordionBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+## NewAccordion
+
+NewAccordion creates a Slack-native accordion component.
+
+```go
+func NewAccordion() *AccordionBuilder
+```
+
+Related types: [`AccordionBuilder`](/reference/go/components#accordionbuilder).
+
+## NewAccordionSection
+
+NewAccordionSection creates one Slack-native collapsible container for an
+accordion. Add its content with Blocks and choose its initial state with
+Expanded.
+
+```go
+func NewAccordionSection() *AccordionSectionBuilder
+```
+
+### AccordionSectionBuilder
+
+AccordionSectionBuilder is the concrete fluent builder returned by NewAccordionSection.
+
+One independently collapsible section of an accordion, rendered as a Slack container block.
+
+- Required: Title and Blocks.
+
+Use NewAccordionSection rather than constructing this type directly.
+
+```go
+type AccordionSectionBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### AccordionSectionBuilder.Title
+
+Title sets the section heading. Required. The string is sent as a plain_text text object; use
+TitleObject to pass a text object instead.
+
+```go
+func (b *AccordionSectionBuilder) Title(value string) *AccordionSectionBuilder
+```
+
+#### AccordionSectionBuilder.TitleObject
+
+TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *AccordionSectionBuilder) TitleObject(value *PlainTextBuilder) *AccordionSectionBuilder
+```
+
+#### AccordionSectionBuilder.Subtitle
+
+Subtitle sets supporting text shown below the heading. The string is sent as a mrkdwn text
+object; use SubtitleObject to pass a text object instead.
+
+```go
+func (b *AccordionSectionBuilder) Subtitle(value string) *AccordionSectionBuilder
+```
+
+#### AccordionSectionBuilder.SubtitleObject
+
+SubtitleObject is Subtitle for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *AccordionSectionBuilder) SubtitleObject(value TextObject) *AccordionSectionBuilder
+```
+
+#### AccordionSectionBuilder.Blocks
+
+Blocks adds the blocks revealed when the section is expanded. Each call appends to any values
+already added.
+
+```go
+func (b *AccordionSectionBuilder) Blocks(values ...Block) *AccordionSectionBuilder
+```
+
+#### AccordionSectionBuilder.Expanded
+
+Expanded sets whether the section starts expanded.
+
+```go
+func (b *AccordionSectionBuilder) Expanded(value bool) *AccordionSectionBuilder
+```
+
+#### AccordionSectionBuilder.BlockID
+
+BlockID sets a unique identifier for this block.
+
+```go
+func (b *AccordionSectionBuilder) BlockID(value string) *AccordionSectionBuilder
+```
+
+Every `AccordionSectionBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewPaginator
+
+NewPaginator creates a pure Block Kit paginator. Interaction handling remains
+in the application; generated button values contain the next one-based page.
+
+```go
+func NewPaginator() *PaginatorBuilder
+```
+
+Related types: [`PaginatorBuilder`](/reference/go/components#paginatorbuilder).
+
+## PaginatorBuilder
+
+PaginatorBuilder renders one page of blocks plus navigation controls.
+
+```go
+type PaginatorBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+## AccordionBuilder.BuildMany
+
+BuildMany materialises the accordion as ordinary container blocks.
+
+```go
+func (b *AccordionBuilder) BuildMany() ([]Object, error)
+```
+
+Related types: [`AccordionBuilder`](/reference/go/components#accordionbuilder), [`Object`](/reference/go/core#object).
+
+## AccordionBuilder.Sections
+
+Sections appends accordion sections, created with NewAccordionSection, in display order.
+
+```go
+func (b *AccordionBuilder) Sections(values ...*AccordionSectionBuilder) *AccordionBuilder
+```
+
+Related types: [`AccordionBuilder`](/reference/go/components#accordionbuilder).
+
+## AccordionBuilder.SlackBlocks
+
+SlackBlocks expands the accordion for direct use with slack-go.
+
+```go
+func (b *AccordionBuilder) SlackBlocks() ([]slack.Block, error)
+```
+
+Related types: [`AccordionBuilder`](/reference/go/components#accordionbuilder), [`Block`](/reference/go/types#block).
+
+## PaginatorBuilder.ActionIDPrefix
+
+ActionIDPrefix sets the prefix used for generated action IDs.
+
+```go
+func (b *PaginatorBuilder) ActionIDPrefix(value string) *PaginatorBuilder
+```
+
+Related types: [`PaginatorBuilder`](/reference/go/components#paginatorbuilder).
+
+## PaginatorBuilder.BlockID
+
+BlockID sets the generated actions block identifier.
+
+```go
+func (b *PaginatorBuilder) BlockID(value string) *PaginatorBuilder
+```
+
+Related types: [`PaginatorBuilder`](/reference/go/components#paginatorbuilder).
+
+## PaginatorBuilder.Blocks
+
+Blocks appends source blocks in display order.
+
+```go
+func (b *PaginatorBuilder) Blocks(values ...Block) *PaginatorBuilder
+```
+
+Related types: [`Block`](/reference/go/types#block), [`PaginatorBuilder`](/reference/go/components#paginatorbuilder).
+
+## PaginatorBuilder.BuildMany
+
+BuildMany materialises the selected page and its controls.
+
+```go
+func (b *PaginatorBuilder) BuildMany() ([]Object, error)
+```
+
+Related types: [`Object`](/reference/go/core#object), [`PaginatorBuilder`](/reference/go/components#paginatorbuilder).
+
+## PaginatorBuilder.NextText
+
+NextText sets the next-page button label.
+
+```go
+func (b *PaginatorBuilder) NextText(value string) *PaginatorBuilder
+```
+
+Related types: [`PaginatorBuilder`](/reference/go/components#paginatorbuilder).
+
+## PaginatorBuilder.Page
+
+Page selects the one-based page to render.
+
+```go
+func (b *PaginatorBuilder) Page(value int) *PaginatorBuilder
+```
+
+Related types: [`PaginatorBuilder`](/reference/go/components#paginatorbuilder).
+
+## PaginatorBuilder.PageSize
+
+PageSize sets the number of source blocks displayed per page.
+
+```go
+func (b *PaginatorBuilder) PageSize(value int) *PaginatorBuilder
+```
+
+Related types: [`PaginatorBuilder`](/reference/go/components#paginatorbuilder).
+
+## PaginatorBuilder.PreviousText
+
+PreviousText sets the previous-page button label.
+
+```go
+func (b *PaginatorBuilder) PreviousText(value string) *PaginatorBuilder
+```
+
+Related types: [`PaginatorBuilder`](/reference/go/components#paginatorbuilder).
+
+## PaginatorBuilder.ShowPageIndicator
+
+ShowPageIndicator controls the Page n of m context block.
+
+```go
+func (b *PaginatorBuilder) ShowPageIndicator(value bool) *PaginatorBuilder
+```
+
+Related types: [`PaginatorBuilder`](/reference/go/components#paginatorbuilder).
+
+## PaginatorBuilder.SlackBlocks
+
+SlackBlocks expands the selected page for direct use with slack-go.
+
+```go
+func (b *PaginatorBuilder) SlackBlocks() ([]slack.Block, error)
+```
+
+Related types: [`Block`](/reference/go/types#block), [`PaginatorBuilder`](/reference/go/components#paginatorbuilder).

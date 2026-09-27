@@ -1,0 +1,2024 @@
+---
+sidebar_position: 3
+toc_max_heading_level: 3
+---
+
+# Composition Objects
+
+This page documents the public C# API for composition objects, generated from the XML documentation of the compiled library. Values are immutable, constructors take named arguments and validate them, and read-only properties return what was passed.
+
+## AreaChart
+
+An area chart for a data visualization block.
+
+- Required: `series`, `axisConfig`.
+- Every series needs exactly one data point for each axis category.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Implements [`IChart`](/reference/csharp/objects#ichart).
+
+### AreaChart
+
+Creates and validates a [`AreaChart`](/reference/csharp/objects#areachart).
+
+```csharp
+public AreaChart(IEnumerable<DataSeries> series, AxisConfig axisConfig, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `series` | Data series in display order. Series names must be unique. Required. Must contain between 1 and 12 items. |
+| `axisConfig` | The axis categories and labels. Every series needs exactly one point per category. Required. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`AreaChart`](/reference/csharp/objects#areachart), [`AxisConfig`](/reference/csharp/objects#axisconfig), [`DataSeries`](/reference/csharp/objects#dataseries)
+
+### Series
+
+Gets data series in display order. Series names must be unique.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<DataSeries> Series { get; }
+```
+
+**Related types:** [`DataSeries`](/reference/csharp/objects#dataseries)
+
+### AxisConfig
+
+Gets the axis categories and labels. Every series needs exactly one point per category.
+
+```csharp
+public AxisConfig AxisConfig { get; }
+```
+
+**Related types:** [`AxisConfig`](/reference/csharp/objects#axisconfig)
+
+## AxisConfig
+
+The categories and labels shared by bar, area, and line chart axes.
+
+- Required: `categories`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### AxisConfig
+
+Creates and validates a [`AxisConfig`](/reference/csharp/objects#axisconfig).
+
+```csharp
+public AxisConfig(IEnumerable<string> categories, string? xLabel = null, string? yLabel = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `categories` | Axis categories in display order. Labels must be unique. Required. Must contain between 1 and 20 items. |
+| `xLabel` | The horizontal axis label. Slack allows at most 50 characters. |
+| `yLabel` | The vertical axis label. Slack allows at most 50 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`AxisConfig`](/reference/csharp/objects#axisconfig)
+
+### Categories
+
+Gets axis categories in display order. Labels must be unique.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<string> Categories { get; }
+```
+
+### XLabel
+
+Gets the horizontal axis label.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? XLabel { get; }
+```
+
+### YLabel
+
+Gets the vertical axis label.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? YLabel { get; }
+```
+
+## BarChart
+
+A bar chart for a data visualization block.
+
+- Required: `series`, `axisConfig`.
+- Every series needs exactly one data point for each axis category.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Implements [`IChart`](/reference/csharp/objects#ichart).
+
+### BarChart
+
+Creates and validates a [`BarChart`](/reference/csharp/objects#barchart).
+
+```csharp
+public BarChart(IEnumerable<DataSeries> series, AxisConfig axisConfig, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `series` | Data series in display order. Series names must be unique. Required. Must contain between 1 and 12 items. |
+| `axisConfig` | The axis categories and labels. Every series needs exactly one point per category. Required. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`AxisConfig`](/reference/csharp/objects#axisconfig), [`BarChart`](/reference/csharp/objects#barchart), [`DataSeries`](/reference/csharp/objects#dataseries)
+
+### Series
+
+Gets data series in display order. Series names must be unique.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<DataSeries> Series { get; }
+```
+
+**Related types:** [`DataSeries`](/reference/csharp/objects#dataseries)
+
+### AxisConfig
+
+Gets the axis categories and labels. Every series needs exactly one point per category.
+
+```csharp
+public AxisConfig AxisConfig { get; }
+```
+
+**Related types:** [`AxisConfig`](/reference/csharp/objects#axisconfig)
+
+## ChartSegment
+
+One labelled segment of a pie chart.
+
+- Required: `label`, `value`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### ChartSegment
+
+Creates and validates a [`ChartSegment`](/reference/csharp/objects#chartsegment).
+
+```csharp
+public ChartSegment(string label, double value, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `label` | The segment label. Required. Slack allows at most 20 characters. |
+| `value` | The segment's size. Must be greater than zero. Required. Whole numbers are sent without a decimal point. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ChartSegment`](/reference/csharp/objects#chartsegment)
+
+### Label
+
+Gets the segment label.
+
+```csharp
+public string Label { get; }
+```
+
+### Value
+
+Gets the segment's size. Must be greater than zero.
+
+```csharp
+public double Value { get; }
+```
+
+## ColumnAlign
+
+Horizontal alignment for table columns.
+
+`ToWireValue()` returns the value Slack expects in JSON.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Left` | `left` | Align cell content to the left. |
+| `Center` | `center` | Center cell content. |
+| `Right` | `right` | Align cell content to the right. |
+
+## ColumnSettings
+
+Alignment and wrapping settings for one table column.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+### ColumnSettings
+
+Creates and validates a [`ColumnSettings`](/reference/csharp/objects#columnsettings).
+
+```csharp
+public ColumnSettings(ColumnAlign? align = null, bool? isWrapped = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `align` | How cell content in the column is aligned. |
+| `isWrapped` | Whether long cell content wraps instead of being truncated. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ColumnAlign`](/reference/csharp/objects#columnalign), [`ColumnSettings`](/reference/csharp/objects#columnsettings)
+
+### Align
+
+Gets how cell content in the column is aligned.
+
+The value, or `null` when it was not set.
+
+```csharp
+public ColumnAlign? Align { get; }
+```
+
+**Related types:** [`ColumnAlign`](/reference/csharp/objects#columnalign)
+
+### IsWrapped
+
+Gets whether long cell content wraps instead of being truncated.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? IsWrapped { get; }
+```
+
+## Confirmation
+
+A dialog that asks users to confirm an action before it is sent.
+
+- Required: `title`, `text`, `confirm`, `deny`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/confirmation-dialog-object).
+
+### Confirmation
+
+Creates and validates a [`Confirmation`](/reference/csharp/objects#confirmation).
+
+```csharp
+public Confirmation(PlainText title, Text text, PlainText confirm, PlainText deny, ButtonStyle? style = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | The dialog title. Required. Slack allows at most 100 characters. A string is sent as a `plain_text` text object. |
+| `text` | The explanatory text in the dialog body. Required. Slack allows at most 300 characters. A string is sent as a `mrkdwn` text object. |
+| `confirm` | The label of the button that confirms the action. Required. Slack allows at most 30 characters. A string is sent as a `plain_text` text object. |
+| `deny` | The label of the button that cancels the action. Required. Slack allows at most 30 characters. A string is sent as a `plain_text` text object. |
+| `style` | The emphasis of the confirm button. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ButtonStyle`](/reference/csharp/elements#buttonstyle), [`Confirmation`](/reference/csharp/objects#confirmation), [`PlainText`](/reference/csharp/objects#plaintext), [`Text`](/reference/csharp/objects#text)
+
+### Title
+
+Gets the dialog title.
+
+```csharp
+public PlainText Title { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Text
+
+Gets the explanatory text in the dialog body.
+
+```csharp
+public Text Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Confirm
+
+Gets the label of the button that confirms the action.
+
+```csharp
+public PlainText Confirm { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Deny
+
+Gets the label of the button that cancels the action.
+
+```csharp
+public PlainText Deny { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Style
+
+Gets the emphasis of the confirm button.
+
+The value, or `null` when it was not set.
+
+```csharp
+public ButtonStyle? Style { get; }
+```
+
+**Related types:** [`ButtonStyle`](/reference/csharp/elements#buttonstyle)
+
+## ConversationFilter
+
+Limits which conversations a conversation menu offers.
+
+- Set at least one filter.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/conversation-filter-object).
+
+### ConversationFilter
+
+Creates and validates a [`ConversationFilter`](/reference/csharp/objects#conversationfilter).
+
+```csharp
+public ConversationFilter(IEnumerable<string>? include = null, bool? excludeExternalSharedChannels = null, bool? excludeBotUsers = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `include` | Conversation types to offer: im, mpim, private, or public. |
+| `excludeExternalSharedChannels` | Whether externally shared channels are excluded. |
+| `excludeBotUsers` | Whether bot users are excluded. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ConversationFilter`](/reference/csharp/objects#conversationfilter)
+
+### Include
+
+Gets conversation types to offer: im, mpim, private, or public.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<string> Include { get; }
+```
+
+### ExcludeExternalSharedChannels
+
+Gets whether externally shared channels are excluded.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? ExcludeExternalSharedChannels { get; }
+```
+
+### ExcludeBotUsers
+
+Gets whether bot users are excluded.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? ExcludeBotUsers { get; }
+```
+
+## DataPoint
+
+One value of a chart series, keyed by axis category.
+
+- Required: `label`, `value`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### DataPoint
+
+Creates and validates a [`DataPoint`](/reference/csharp/objects#datapoint).
+
+```csharp
+public DataPoint(string label, double value, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `label` | The axis category this point belongs to. Required. Slack allows at most 20 characters. |
+| `value` | The point's value. Required. Whole numbers are sent without a decimal point. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`DataPoint`](/reference/csharp/objects#datapoint)
+
+### Label
+
+Gets the axis category this point belongs to.
+
+```csharp
+public string Label { get; }
+```
+
+### Value
+
+Gets the point's value.
+
+```csharp
+public double Value { get; }
+```
+
+## DataSeries
+
+A named series of chart data points.
+
+- Required: `name`, `data`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### DataSeries
+
+Creates and validates a [`DataSeries`](/reference/csharp/objects#dataseries).
+
+```csharp
+public DataSeries(string name, IEnumerable<DataPoint> data, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `name` | The series name shown in the legend. Required. Slack allows at most 20 characters. |
+| `data` | Data points in axis-category order. Required. Must contain between 1 and 20 items. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`DataPoint`](/reference/csharp/objects#datapoint), [`DataSeries`](/reference/csharp/objects#dataseries)
+
+### Name
+
+Gets the series name shown in the legend.
+
+```csharp
+public string Name { get; }
+```
+
+### Data
+
+Gets data points in axis-category order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<DataPoint> Data { get; }
+```
+
+**Related types:** [`DataPoint`](/reference/csharp/objects#datapoint)
+
+## DispatchActionConfiguration
+
+Chooses which interactions with an input send a block_actions payload.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/dispatch-action-configuration-object).
+
+### DispatchActionConfiguration
+
+Creates and validates a [`DispatchActionConfiguration`](/reference/csharp/objects#dispatchactionconfiguration).
+
+```csharp
+public DispatchActionConfiguration(IEnumerable<string>? triggerActionsOn = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `triggerActionsOn` | The interactions that send a payload: on_enter_pressed or on_character_entered. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/csharp/objects#dispatchactionconfiguration)
+
+### TriggerActionsOn
+
+Gets the interactions that send a payload: on_enter_pressed or on_character_entered.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<string> TriggerActionsOn { get; }
+```
+
+## FeedbackButton
+
+One button of a feedback buttons element.
+
+- Required: `text`, `value`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+### FeedbackButton
+
+Creates and validates a [`FeedbackButton`](/reference/csharp/objects#feedbackbutton).
+
+```csharp
+public FeedbackButton(PlainText text, string value, string? accessibilityLabel = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The button label. Required. Slack allows at most 75 characters. A string is sent as a `plain_text` text object. |
+| `value` | The application-defined value sent in interaction payloads. Required. Slack allows at most 2000 characters. |
+| `accessibilityLabel` | The label read by screen readers in place of the visible text. Slack allows at most 75 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`FeedbackButton`](/reference/csharp/objects#feedbackbutton), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Text
+
+Gets the button label.
+
+```csharp
+public PlainText Text { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext), [`Text`](/reference/csharp/objects#text)
+
+### Value
+
+Gets the application-defined value sent in interaction payloads.
+
+```csharp
+public string Value { get; }
+```
+
+### AccessibilityLabel
+
+Gets the label read by screen readers in place of the visible text.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? AccessibilityLabel { get; }
+```
+
+## IChart
+
+A chart that can be displayed by a data visualization block.
+
+Implemented by [`AreaChart`](/reference/csharp/objects#areachart), [`BarChart`](/reference/csharp/objects#barchart), [`LineChart`](/reference/csharp/objects#linechart), [`PieChart`](/reference/csharp/objects#piechart).
+
+## InputParameter
+
+A named value passed to a workflow trigger.
+
+- Required: `name`, `value`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object).
+
+### InputParameter
+
+Creates and validates a [`InputParameter`](/reference/csharp/objects#inputparameter).
+
+```csharp
+public InputParameter(string name, string value, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `name` | The workflow input parameter name. Required. |
+| `value` | The value passed to the workflow input. Required. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`InputParameter`](/reference/csharp/objects#inputparameter)
+
+### Name
+
+Gets the workflow input parameter name.
+
+```csharp
+public string Name { get; }
+```
+
+### Value
+
+Gets the value passed to the workflow input.
+
+```csharp
+public string Value { get; }
+```
+
+## IRichTextBlockElement
+
+A top-level element of a rich text block: a section, list, preformatted block, or quote.
+
+Implemented by [`RichTextCodeBlock`](/reference/csharp/objects#richtextcodeblock), [`RichTextList`](/reference/csharp/objects#richtextlist), [`RichTextQuote`](/reference/csharp/objects#richtextquote), [`RichTextSection`](/reference/csharp/objects#richtextsection).
+
+## IRichTextSectionElement
+
+An inline rich text element: text, a link, an emoji, or a channel, user, or user group mention.
+
+Implemented by [`RichTextChannel`](/reference/csharp/objects#richtextchannel), [`RichTextEmoji`](/reference/csharp/objects#richtextemoji), [`RichTextLink`](/reference/csharp/objects#richtextlink), [`RichTextText`](/reference/csharp/objects#richtexttext), [`RichTextUser`](/reference/csharp/objects#richtextuser), [`RichTextUserGroup`](/reference/csharp/objects#richtextusergroup).
+
+## LineChart
+
+A line chart for a data visualization block.
+
+- Required: `series`, `axisConfig`.
+- Every series needs exactly one data point for each axis category.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Implements [`IChart`](/reference/csharp/objects#ichart).
+
+### LineChart
+
+Creates and validates a [`LineChart`](/reference/csharp/objects#linechart).
+
+```csharp
+public LineChart(IEnumerable<DataSeries> series, AxisConfig axisConfig, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `series` | Data series in display order. Series names must be unique. Required. Must contain between 1 and 12 items. |
+| `axisConfig` | The axis categories and labels. Every series needs exactly one point per category. Required. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`AxisConfig`](/reference/csharp/objects#axisconfig), [`DataSeries`](/reference/csharp/objects#dataseries), [`LineChart`](/reference/csharp/objects#linechart)
+
+### Series
+
+Gets data series in display order. Series names must be unique.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<DataSeries> Series { get; }
+```
+
+**Related types:** [`DataSeries`](/reference/csharp/objects#dataseries)
+
+### AxisConfig
+
+Gets the axis categories and labels. Every series needs exactly one point per category.
+
+```csharp
+public AxisConfig AxisConfig { get; }
+```
+
+**Related types:** [`AxisConfig`](/reference/csharp/objects#axisconfig)
+
+## MarkdownText
+
+A mrkdwn text composition object.
+
+- Required: `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/text-object).
+
+Derives from [`Text`](/reference/csharp/objects#text). Implements [`IContextElement`](/reference/csharp/blocks#icontextelement).
+
+### MarkdownText
+
+Creates and validates a [`MarkdownText`](/reference/csharp/objects#markdowntext).
+
+```csharp
+public MarkdownText(string text, bool? verbatim = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The mrkdwn-formatted text content. Required. |
+| `verbatim` | Whether Slack leaves URLs, mentions, and channel names unlinked. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`MarkdownText`](/reference/csharp/objects#markdowntext)
+
+### Text
+
+Gets the mrkdwn-formatted text content.
+
+```csharp
+public string Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Verbatim
+
+Gets whether Slack leaves URLs, mentions, and channel names unlinked.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? Verbatim { get; }
+```
+
+### Implicit conversion
+
+Converts a string to a `mrkdwn` object.
+
+```csharp
+public static implicit operator MarkdownText?(string? text)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The text content. |
+
+**Returns:** Markdown text, or `null` when `text` is null.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The text breaks a Slack limit. |
+
+**Related types:** [`MarkdownText`](/reference/csharp/objects#markdowntext)
+
+## Option
+
+A selectable option for menus, checkboxes, radio buttons, and overflow menus.
+
+- Required: `text`, `value`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/option-object).
+
+### Option
+
+Creates and validates a [`Option`](/reference/csharp/objects#option).
+
+```csharp
+public Option(Text text, string value, Text? description = null, string? url = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The option label shown to users. Required. Slack allows at most 75 characters. A string is sent as a `plain_text` text object. |
+| `value` | The value sent in interaction payloads when this option is chosen. Required. Slack allows at most 150 characters. |
+| `description` | Supporting text shown below the label. Only rendered by checkboxes and radio buttons. Slack allows at most 75 characters. A string is sent as a `plain_text` text object. |
+| `url` | A URL loaded in the user's browser when an overflow menu option is chosen. Slack allows at most 3000 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Option`](/reference/csharp/objects#option), [`Text`](/reference/csharp/objects#text)
+
+### Text
+
+Gets the option label shown to users.
+
+```csharp
+public Text Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Value
+
+Gets the value sent in interaction payloads when this option is chosen.
+
+```csharp
+public string Value { get; }
+```
+
+### Description
+
+Gets supporting text shown below the label. Only rendered by checkboxes and radio buttons.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Text? Description { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Url
+
+Gets a URL loaded in the user's browser when an overflow menu option is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? Url { get; }
+```
+
+## OptionGroup
+
+A labelled group of options in a static select menu.
+
+- Required: `label`, `options`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/option-group-object).
+
+### OptionGroup
+
+Creates and validates a [`OptionGroup`](/reference/csharp/objects#optiongroup).
+
+```csharp
+public OptionGroup(PlainText label, IEnumerable<Option> options, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `label` | The group heading. Required. Slack allows at most 75 characters. A string is sent as a `plain_text` text object. |
+| `options` | Selectable options in display order. Required. Must contain between 1 and 100 items. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Option`](/reference/csharp/objects#option), [`OptionGroup`](/reference/csharp/objects#optiongroup), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Label
+
+Gets the group heading.
+
+```csharp
+public PlainText Label { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Options
+
+Gets selectable options in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Option> Options { get; }
+```
+
+**Related types:** [`Option`](/reference/csharp/objects#option)
+
+## PieChart
+
+A pie chart for a data visualization block.
+
+- Required: `segments`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Implements [`IChart`](/reference/csharp/objects#ichart).
+
+### PieChart
+
+Creates and validates a [`PieChart`](/reference/csharp/objects#piechart).
+
+```csharp
+public PieChart(IEnumerable<ChartSegment> segments, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `segments` | Pie segments in display order. Required. Must contain between 1 and 12 items. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ChartSegment`](/reference/csharp/objects#chartsegment), [`PieChart`](/reference/csharp/objects#piechart)
+
+### Segments
+
+Gets pie segments in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<ChartSegment> Segments { get; }
+```
+
+**Related types:** [`ChartSegment`](/reference/csharp/objects#chartsegment)
+
+## PlainText
+
+A plain-text composition object.
+
+- Required: `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/text-object).
+
+Derives from [`Text`](/reference/csharp/objects#text). Implements [`IContextElement`](/reference/csharp/blocks#icontextelement).
+
+### PlainText
+
+Creates and validates a [`PlainText`](/reference/csharp/objects#plaintext).
+
+```csharp
+public PlainText(string text, bool? emoji = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The text content. Required. |
+| `emoji` | Whether emoji shortcodes such as :tada: are rendered as emoji. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Text
+
+Gets the text content.
+
+```csharp
+public string Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Emoji
+
+Gets whether emoji shortcodes such as :tada: are rendered as emoji.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? Emoji { get; }
+```
+
+### Implicit conversion
+
+Converts a string to a `plain_text` object.
+
+```csharp
+public static implicit operator PlainText?(string? text)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The text content. |
+
+**Returns:** Plain text, or `null` when `text` is null.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The text breaks a Slack limit. |
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## RawNumber
+
+A numeric data table cell with display text.
+
+- Required: `value`, `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+
+Implements [`IDataTableCell`](/reference/csharp/blocks#idatatablecell).
+
+### RawNumber
+
+Creates and validates a [`RawNumber`](/reference/csharp/objects#rawnumber).
+
+```csharp
+public RawNumber(double value, string text, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | The numeric value used for sorting. Required. Whole numbers are sent without a decimal point. |
+| `text` | The formatted text displayed for the number, such as 1,234.5. Required. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`RawNumber`](/reference/csharp/objects#rawnumber)
+
+### Value
+
+Gets the numeric value used for sorting.
+
+```csharp
+public double Value { get; }
+```
+
+### Text
+
+Gets the formatted text displayed for the number, such as 1,234.5.
+
+```csharp
+public string Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+## RawText
+
+An unformatted table cell.
+
+- Required: `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+Implements [`IDataTableCell`](/reference/csharp/blocks#idatatablecell), [`ITableCell`](/reference/csharp/blocks#itablecell).
+
+### RawText
+
+Creates and validates a [`RawText`](/reference/csharp/objects#rawtext).
+
+```csharp
+public RawText(string text, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The cell text. Required. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`RawText`](/reference/csharp/objects#rawtext)
+
+### Text
+
+Gets the cell text.
+
+```csharp
+public string Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+## RichTextChannel
+
+A channel mention inside rich text.
+
+- Required: `channelId`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Implements [`IRichTextSectionElement`](/reference/csharp/objects#irichtextsectionelement).
+
+### RichTextChannel
+
+Creates and validates a [`RichTextChannel`](/reference/csharp/objects#richtextchannel).
+
+```csharp
+public RichTextChannel(string channelId, RichTextStyle? style = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `channelId` | The ID of the mentioned channel. Required. |
+| `style` | The mention style. Supported flags: `bold`, `italic`, `strike`, `highlight`, `client_highlight`, `unlink`. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`RichTextChannel`](/reference/csharp/objects#richtextchannel), [`RichTextStyle`](/reference/csharp/objects#richtextstyle)
+
+### ChannelId
+
+Gets the ID of the mentioned channel.
+
+```csharp
+public string ChannelId { get; }
+```
+
+### Style
+
+Gets the mention style.
+
+The value, or `null` when it was not set.
+
+```csharp
+public RichTextStyle? Style { get; }
+```
+
+**Related types:** [`RichTextStyle`](/reference/csharp/objects#richtextstyle)
+
+## RichTextCodeBlock
+
+A preformatted code block inside rich text.
+
+- Required: `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Implements [`IRichTextBlockElement`](/reference/csharp/objects#irichtextblockelement).
+
+### RichTextCodeBlock
+
+Creates and validates a [`RichTextCodeBlock`](/reference/csharp/objects#richtextcodeblock).
+
+```csharp
+public RichTextCodeBlock(IEnumerable<IRichTextSectionElement> elements, int? border = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Inline rich text elements in display order. Required. |
+| `border` | The width of the left border, in pixels. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`IRichTextSectionElement`](/reference/csharp/objects#irichtextsectionelement), [`RichTextCodeBlock`](/reference/csharp/objects#richtextcodeblock)
+
+### Elements
+
+Gets inline rich text elements in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IRichTextSectionElement> Elements { get; }
+```
+
+**Related types:** [`IRichTextSectionElement`](/reference/csharp/objects#irichtextsectionelement)
+
+### Border
+
+Gets the width of the left border, in pixels.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? Border { get; }
+```
+
+## RichTextEmoji
+
+An emoji inside rich text.
+
+- Required: `name`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Implements [`IRichTextSectionElement`](/reference/csharp/objects#irichtextsectionelement).
+
+### RichTextEmoji
+
+Creates and validates a [`RichTextEmoji`](/reference/csharp/objects#richtextemoji).
+
+```csharp
+public RichTextEmoji(string name, int? skinTone = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `name` | The emoji shortcode name, without colons. Required. |
+| `skinTone` | The emoji skin tone, from 1 to 6. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`RichTextEmoji`](/reference/csharp/objects#richtextemoji)
+
+### Name
+
+Gets the emoji shortcode name, without colons.
+
+```csharp
+public string Name { get; }
+```
+
+### SkinTone
+
+Gets the emoji skin tone, from 1 to 6.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? SkinTone { get; }
+```
+
+## RichTextLink
+
+A hyperlink inside rich text.
+
+- Required: `url`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Implements [`IRichTextSectionElement`](/reference/csharp/objects#irichtextsectionelement).
+
+### RichTextLink
+
+Creates and validates a [`RichTextLink`](/reference/csharp/objects#richtextlink).
+
+```csharp
+public RichTextLink(string url, string? text = null, RichTextStyle? style = null, bool? unsafe = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `url` | The link target. Required. |
+| `text` | The visible link text. Slack shows the URL when omitted. |
+| `style` | The visual style. Supported flags: `bold`, `italic`, `strike`, `code`. |
+| `unsafe` | Whether Slack treats the link as unsafe. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`RichTextLink`](/reference/csharp/objects#richtextlink), [`RichTextStyle`](/reference/csharp/objects#richtextstyle)
+
+### Url
+
+Gets the link target.
+
+```csharp
+public string Url { get; }
+```
+
+### Text
+
+Gets the visible link text. Slack shows the URL when omitted.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Style
+
+Gets the visual style.
+
+The value, or `null` when it was not set.
+
+```csharp
+public RichTextStyle? Style { get; }
+```
+
+**Related types:** [`RichTextStyle`](/reference/csharp/objects#richtextstyle)
+
+### Unsafe
+
+Gets whether Slack treats the link as unsafe.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? Unsafe { get; }
+```
+
+## RichTextList
+
+A bulleted or numbered list inside rich text.
+
+- Required: `style`, `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Implements [`IRichTextBlockElement`](/reference/csharp/objects#irichtextblockelement).
+
+### RichTextList
+
+Creates and validates a [`RichTextList`](/reference/csharp/objects#richtextlist).
+
+```csharp
+public RichTextList(RichTextListStyle style, IEnumerable<RichTextSection> elements, int? indent = null, int? offset = null, int? border = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `style` | Whether the list is bulleted or numbered. Required. |
+| `elements` | List items, one rich text section per item. Required. |
+| `indent` | The list's indentation level. |
+| `offset` | The number of items to skip when numbering an ordered list. |
+| `border` | The width of the left border, in pixels. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`RichTextList`](/reference/csharp/objects#richtextlist), [`RichTextListStyle`](/reference/csharp/objects#richtextliststyle), [`RichTextSection`](/reference/csharp/objects#richtextsection)
+
+### Style
+
+Gets whether the list is bulleted or numbered.
+
+```csharp
+public RichTextListStyle Style { get; }
+```
+
+**Related types:** [`RichTextListStyle`](/reference/csharp/objects#richtextliststyle)
+
+### Elements
+
+Gets list items, one rich text section per item.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<RichTextSection> Elements { get; }
+```
+
+**Related types:** [`RichTextSection`](/reference/csharp/objects#richtextsection)
+
+### Indent
+
+Gets the list's indentation level.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? Indent { get; }
+```
+
+### Offset
+
+Gets the number of items to skip when numbering an ordered list.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? Offset { get; }
+```
+
+### Border
+
+Gets the width of the left border, in pixels.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? Border { get; }
+```
+
+## RichTextListStyle
+
+Marker styles for rich text lists.
+
+`ToWireValue()` returns the value Slack expects in JSON.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Bullet` | `bullet` | An unordered, bulleted list. |
+| `Ordered` | `ordered` | A numbered list. |
+
+## RichTextQuote
+
+A quotation inside rich text.
+
+- Required: `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Implements [`IRichTextBlockElement`](/reference/csharp/objects#irichtextblockelement).
+
+### RichTextQuote
+
+Creates and validates a [`RichTextQuote`](/reference/csharp/objects#richtextquote).
+
+```csharp
+public RichTextQuote(IEnumerable<IRichTextSectionElement> elements, int? border = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Inline rich text elements in display order. Required. |
+| `border` | The width of the left border, in pixels. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`IRichTextSectionElement`](/reference/csharp/objects#irichtextsectionelement), [`RichTextQuote`](/reference/csharp/objects#richtextquote)
+
+### Elements
+
+Gets inline rich text elements in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IRichTextSectionElement> Elements { get; }
+```
+
+**Related types:** [`IRichTextSectionElement`](/reference/csharp/objects#irichtextsectionelement)
+
+### Border
+
+Gets the width of the left border, in pixels.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? Border { get; }
+```
+
+## RichTextSection
+
+A paragraph of inline rich text elements.
+
+- Required: `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Implements [`IRichTextBlockElement`](/reference/csharp/objects#irichtextblockelement).
+
+### RichTextSection
+
+Creates and validates a [`RichTextSection`](/reference/csharp/objects#richtextsection).
+
+```csharp
+public RichTextSection(IEnumerable<IRichTextSectionElement> elements, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Inline rich text elements in display order. Required. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`IRichTextSectionElement`](/reference/csharp/objects#irichtextsectionelement), [`RichTextSection`](/reference/csharp/objects#richtextsection)
+
+### Elements
+
+Gets inline rich text elements in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IRichTextSectionElement> Elements { get; }
+```
+
+**Related types:** [`IRichTextSectionElement`](/reference/csharp/objects#irichtextsectionelement)
+
+## RichTextStyle
+
+Formatting flags for inline rich text such as text, links, and mentions.
+
+Only the flags you set are sent. Text and links support `bold`, `italic`, `strike`, and `code`; channel, user, and user group mentions support `bold`, `italic`, `strike`, `highlight`, `client_highlight`, and `unlink`.
+
+### RichTextStyle
+
+Creates a style with the given flags.
+
+```csharp
+public RichTextStyle(bool? bold = null, bool? italic = null, bool? strike = null, bool? code = null, bool? highlight = null, bool? clientHighlight = null, bool? unlink = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `bold` | Whether the text is bold. |
+| `italic` | Whether the text is italic. |
+| `strike` | Whether the text is struck through. |
+| `code` | Whether the text is shown as inline code. |
+| `highlight` | Whether a mention is highlighted. |
+| `clientHighlight` | Whether a mention is highlighted for the viewing user. |
+| `unlink` | Whether a mention is shown without a link. |
+
+**Related types:** [`RichTextStyle`](/reference/csharp/objects#richtextstyle)
+
+### Bold
+
+Gets whether the text is bold, or `null` when not set.
+
+```csharp
+public bool? Bold { get; }
+```
+
+### Italic
+
+Gets whether the text is italic, or `null` when not set.
+
+```csharp
+public bool? Italic { get; }
+```
+
+### Strike
+
+Gets whether the text is struck through, or `null` when not set.
+
+```csharp
+public bool? Strike { get; }
+```
+
+### Code
+
+Gets whether the text is inline code, or `null` when not set.
+
+```csharp
+public bool? Code { get; }
+```
+
+### Highlight
+
+Gets whether a mention is highlighted, or `null` when not set.
+
+```csharp
+public bool? Highlight { get; }
+```
+
+### ClientHighlight
+
+Gets whether a mention is highlighted for the viewer, or `null` when not set.
+
+```csharp
+public bool? ClientHighlight { get; }
+```
+
+### Unlink
+
+Gets whether a mention is shown without a link, or `null` when not set.
+
+```csharp
+public bool? Unlink { get; }
+```
+
+## RichTextText
+
+A run of optionally styled text inside rich text.
+
+- Required: `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Implements [`IRichTextSectionElement`](/reference/csharp/objects#irichtextsectionelement).
+
+### RichTextText
+
+Creates and validates a [`RichTextText`](/reference/csharp/objects#richtexttext).
+
+```csharp
+public RichTextText(string text, RichTextStyle? style = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The text content. Required. |
+| `style` | The visual style. Supported flags: `bold`, `italic`, `strike`, `code`. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`RichTextStyle`](/reference/csharp/objects#richtextstyle), [`RichTextText`](/reference/csharp/objects#richtexttext)
+
+### Text
+
+Gets the text content.
+
+```csharp
+public string Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Style
+
+Gets the visual style.
+
+The value, or `null` when it was not set.
+
+```csharp
+public RichTextStyle? Style { get; }
+```
+
+**Related types:** [`RichTextStyle`](/reference/csharp/objects#richtextstyle)
+
+## RichTextUser
+
+A user mention inside rich text.
+
+- Required: `userId`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Implements [`IRichTextSectionElement`](/reference/csharp/objects#irichtextsectionelement).
+
+### RichTextUser
+
+Creates and validates a [`RichTextUser`](/reference/csharp/objects#richtextuser).
+
+```csharp
+public RichTextUser(string userId, RichTextStyle? style = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `userId` | The ID of the mentioned user. Required. |
+| `style` | The visual style. Supported flags: `bold`, `italic`, `strike`, `highlight`, `client_highlight`, `unlink`. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`RichTextStyle`](/reference/csharp/objects#richtextstyle), [`RichTextUser`](/reference/csharp/objects#richtextuser)
+
+### UserId
+
+Gets the ID of the mentioned user.
+
+```csharp
+public string UserId { get; }
+```
+
+### Style
+
+Gets the visual style.
+
+The value, or `null` when it was not set.
+
+```csharp
+public RichTextStyle? Style { get; }
+```
+
+**Related types:** [`RichTextStyle`](/reference/csharp/objects#richtextstyle)
+
+## RichTextUserGroup
+
+A user group mention inside rich text.
+
+- Required: `userGroupId`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Implements [`IRichTextSectionElement`](/reference/csharp/objects#irichtextsectionelement).
+
+### RichTextUserGroup
+
+Creates and validates a [`RichTextUserGroup`](/reference/csharp/objects#richtextusergroup).
+
+```csharp
+public RichTextUserGroup(string userGroupId, RichTextStyle? style = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `userGroupId` | The ID of the mentioned user group. Required. |
+| `style` | The visual style. Supported flags: `bold`, `italic`, `strike`, `highlight`, `client_highlight`, `unlink`. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`RichTextStyle`](/reference/csharp/objects#richtextstyle), [`RichTextUserGroup`](/reference/csharp/objects#richtextusergroup)
+
+### UserGroupId
+
+Gets the ID of the mentioned user group.
+
+```csharp
+public string UserGroupId { get; }
+```
+
+### Style
+
+Gets the visual style.
+
+The value, or `null` when it was not set.
+
+```csharp
+public RichTextStyle? Style { get; }
+```
+
+**Related types:** [`RichTextStyle`](/reference/csharp/objects#richtextstyle)
+
+## SlackFile
+
+A reference to an image file hosted in Slack.
+
+- Provide exactly one of an ID or a URL.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/slack-file-object).
+
+### SlackFile
+
+Creates and validates a [`SlackFile`](/reference/csharp/objects#slackfile).
+
+```csharp
+public SlackFile(string? id = null, string? url = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `id` | The ID of a file previously uploaded to Slack. Cannot be combined with a URL. |
+| `url` | The URL of a file hosted in Slack. Cannot be combined with an ID. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`SlackFile`](/reference/csharp/objects#slackfile)
+
+### Id
+
+Gets the ID of a file previously uploaded to Slack. Cannot be combined with a URL.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? Id { get; }
+```
+
+### Url
+
+Gets the URL of a file hosted in Slack. Cannot be combined with an ID.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? Url { get; }
+```
+
+## SlackIcon
+
+A Slack-provided icon, referenced by name.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+
+### SlackIcon
+
+Creates and validates a [`SlackIcon`](/reference/csharp/objects#slackicon).
+
+```csharp
+public SlackIcon(string? name = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `name` | The name of the Slack-provided icon, such as rocket. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`SlackIcon`](/reference/csharp/objects#slackicon)
+
+### Name
+
+Gets the name of the Slack-provided icon, such as rocket.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? Name { get; }
+```
+
+## Text
+
+A Slack text composition object: either [`PlainText`](/reference/csharp/objects#plaintext) or [`MarkdownText`](/reference/csharp/objects#markdowntext).
+
+A string converts to [`Text`](/reference/csharp/objects#text) implicitly, so a field typed [`Text`](/reference/csharp/objects#text) accepts `"Hello"` directly. The field decides the representation: most such fields send `mrkdwn`, and the few that Slack requires as plain text, such as an option's label, send `plain_text`. On its own, a converted string is [`MarkdownText`](/reference/csharp/objects#markdowntext).
+
+### Implicit conversion
+
+Converts a string to text whose representation the receiving field decides.
+
+```csharp
+public static implicit operator Text?(string? text)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The text content. |
+
+**Returns:** A text object, or `null` when `text` is null.
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+## Trigger
+
+A link trigger that starts a workflow.
+
+- Required: `url`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object).
+
+### Trigger
+
+Creates and validates a [`Trigger`](/reference/csharp/objects#trigger).
+
+```csharp
+public Trigger(string url, IEnumerable<InputParameter>? customizableInputParameters = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `url` | The link trigger URL. Required. |
+| `customizableInputParameters` | The input values passed to the workflow's trigger. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`InputParameter`](/reference/csharp/objects#inputparameter), [`Trigger`](/reference/csharp/objects#trigger)
+
+### Url
+
+Gets the link trigger URL.
+
+```csharp
+public string Url { get; }
+```
+
+### CustomizableInputParameters
+
+Gets the input values passed to the workflow's trigger.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<InputParameter> CustomizableInputParameters { get; }
+```
+
+**Related types:** [`InputParameter`](/reference/csharp/objects#inputparameter)
+
+## UrlSource
+
+A linked source cited by a task card.
+
+- Required: `url`, `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+
+### UrlSource
+
+Creates and validates a [`UrlSource`](/reference/csharp/objects#urlsource).
+
+```csharp
+public UrlSource(string url, string text, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `url` | The source URL. Required. Must be between 1 and 3000 characters. |
+| `text` | The source link text. Required. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`UrlSource`](/reference/csharp/objects#urlsource)
+
+### Url
+
+Gets the source URL.
+
+```csharp
+public string Url { get; }
+```
+
+### Text
+
+Gets the source link text.
+
+```csharp
+public string Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+## Workflow
+
+The workflow started by a workflow button.
+
+- Required: `trigger`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/workflow-object).
+
+### Workflow
+
+Creates and validates a [`Workflow`](/reference/csharp/objects#workflow).
+
+```csharp
+public Workflow(Trigger trigger, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `trigger` | The link trigger that starts the workflow. Required. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Trigger`](/reference/csharp/objects#trigger), [`Workflow`](/reference/csharp/objects#workflow)
+
+### Trigger
+
+Gets the link trigger that starts the workflow.
+
+```csharp
+public Trigger Trigger { get; }
+```
+
+**Related types:** [`Trigger`](/reference/csharp/objects#trigger)

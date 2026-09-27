@@ -5,6 +5,8 @@ lockstep with the Python, TypeScript, Go, and Java packages.
 
 ## [Unreleased]
 
+## [2.5.0] — 2026-09-28
+
 ### Changed
 
 - Validation now rejects plain-text, email, URL, number, date picker, time picker, and
@@ -19,7 +21,7 @@ lockstep with the Python, TypeScript, Go, and Java packages.
 - `DataTableBlock` now rejects `column_settings` supplied through
   `additionalFields` or raw JSON with `ErrorCategory.InvalidUsage`; Slack
   supports `column_settings` only on the plain `table` block.
-- Validation follows Slack's `blocks.validate` more closely (spec 1.1.0):
+- Validation follows Slack's `blocks.validate` more closely (spec 1.2.0):
   - New limits: rich text list `indent` 0-8, `offset` 0 or more, and list, quote,
     and preformatted `border` 0-1; image block `title` 2000 characters; image
     element `image_url` 3000 and `alt_text` 2000; video `thumbnail_url` and

@@ -1,0 +1,63 @@
+---
+sidebar_position: 7
+toc_max_heading_level: 3
+---
+
+# Validation And Errors
+
+This page documents the public C# API for validation and errors, generated from the XML documentation of the compiled library. Values are immutable, constructors take named arguments and validate them, and read-only properties return what was passed.
+
+## ErrorCategory
+
+Stable validation categories shared by every slackblocks implementation.
+
+`ToWireValue()` returns the value Slack expects in JSON.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `LengthExceeded` | `length-exceeded` | A string or collection falls outside Slack's documented length limits. |
+| `OutOfRange` | `out-of-range` | A numeric value falls outside Slack's documented range. |
+| `MutuallyExclusive` | `mutually-exclusive` | Two fields that cannot coexist were supplied together. |
+| `TypeMismatch` | `type-mismatch` | A value is not an accepted Slack object or scalar type. |
+| `MissingRequired` | `missing-required` | A required field or collection is absent. |
+| `InvalidUsage` | `invalid-usage` | A combination of otherwise valid values cannot be used together. |
+
+## ValidationException
+
+Thrown when a slackblocks value would break a Slack Block Kit rule.
+
+This derives from `ArgumentException`, so code that already handles invalid arguments continues to work. Catch [`ValidationException`](/reference/csharp/errors#validationexception) when you need the stable `ValidationException.Category` or the `ValidationException.Path` of the invalid field. Paths start with the type being constructed, for example `SectionBlock.fields[2].text`.
+
+### ValidationException
+
+Creates a structured validation failure.
+
+```csharp
+public ValidationException(ErrorCategory category, string path, string reason)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `category` | Stable cross-language failure category. |
+| `path` | Dotted path of the invalid value. |
+| `reason` | Human-readable explanation. |
+
+**Related types:** [`ErrorCategory`](/reference/csharp/errors#errorcategory), [`ValidationException`](/reference/csharp/errors#validationexception)
+
+### Category
+
+Gets the stable cross-language error category.
+
+```csharp
+public ErrorCategory Category { get; }
+```
+
+**Related types:** [`ErrorCategory`](/reference/csharp/errors#errorcategory)
+
+### Path
+
+Gets the dotted path of the invalid field, starting with the type being constructed.
+
+```csharp
+public string Path { get; }
+```

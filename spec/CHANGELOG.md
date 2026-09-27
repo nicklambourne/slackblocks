@@ -2,10 +2,12 @@
 
 ## Unreleased
 
+## 1.2.0 - 2026-09-28
+
 - Add `vocabulary.json`, the shared registry of Slack icon names and per-surface
   block types. Java generates its validation tables from it, and the Python,
   TypeScript, and Go suites fail if their tables differ. The contents match the
-  tables all four implementations already enforced.
+  tables all five implementations already enforced.
 - Add shared invalid cases for empty section fields and duplicate chart-series
   category labels. These close conformance gaps in the existing 1.1.0 contract.
 - Register limits that Slack documents and that the implementations enforced
@@ -26,9 +28,7 @@
 
   Minimums that Slack documents only as "required", such as non-empty titles
   and element lists, stay as implementation checks rather than registered
-  limits, as in 1.0.1. The table's 20-item `column_settings` maximum is not
-  registered because it cannot be exceeded without breaching
-  `table.columns.max_items` first.
+  limits, as in 1.0.1.
 - Correct `video.alt_text` from 1-200 characters to a 2000-character maximum
   with no minimum, to match Slack's validator. The video block documentation
   states no length for `alt_text`

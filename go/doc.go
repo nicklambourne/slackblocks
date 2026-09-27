@@ -5,4 +5,4 @@ package slackblocks
 
 // SpecVersion is the shared cross-language conformance version implemented by
 // this module.
-const SpecVersion = "1.1.0"
+const SpecVersion = "1.2.0"
