@@ -40,6 +40,18 @@ def self.new: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?,
 
 **Related types:** [`ButtonElement`](/reference/ruby/elements#buttonelement), [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
+```
+
+**Returns:** ButtonElement
+
+**Related types:** [`ButtonElement`](/reference/ruby/elements#buttonelement), [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext)
+
 ### text
 
 Sets the button label. Wire key: text.
@@ -113,6 +125,14 @@ def accessibility_label: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -191,6 +211,18 @@ def self.new: (?action_id: (String)?, ?initial_channels: (Array[String])?, ?conf
 
 **Related types:** [`ChannelMultiSelectElement`](/reference/ruby/elements#channelmultiselectelement), [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_channels: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChannelMultiSelectElement
+```
+
+**Returns:** ChannelMultiSelectElement
+
+**Related types:** [`ChannelMultiSelectElement`](/reference/ruby/elements#channelmultiselectelement), [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -254,6 +286,14 @@ def placeholder: () -> (PlainText)?
 **Returns:** (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -323,6 +363,18 @@ def self.new: (?action_id: (String)?, ?initial_channel: (String)?, ?response_url
 
 **Related types:** [`ChannelSelectElement`](/reference/ruby/elements#channelselectelement), [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_channel: (String)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChannelSelectElement
+```
+
+**Returns:** ChannelSelectElement
+
+**Related types:** [`ChannelSelectElement`](/reference/ruby/elements#channelselectelement), [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -386,6 +438,14 @@ def placeholder: () -> (PlainText)?
 **Returns:** (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -454,6 +514,18 @@ def self.new: (?action_id: (String)?, options: Array[Option], ?initial_options: 
 
 **Related types:** [`CheckboxesElement`](/reference/ruby/elements#checkboxeselement), [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, options: Array[Option], ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CheckboxesElement
+```
+
+**Returns:** CheckboxesElement
+
+**Related types:** [`CheckboxesElement`](/reference/ruby/elements#checkboxeselement), [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -509,6 +581,14 @@ def focus_on_load: () -> (bool)?
 ```
 
 **Returns:** (bool)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -577,6 +657,18 @@ def self.new: (?action_id: (String)?, ?initial_conversations: (Array[String])?, 
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ConversationFilter`](/reference/ruby/objects#conversationfilter), [`ConversationMultiSelectElement`](/reference/ruby/elements#conversationmultiselectelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_conversations: (Array[String])?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationMultiSelectElement
+```
+
+**Returns:** ConversationMultiSelectElement
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ConversationFilter`](/reference/ruby/objects#conversationfilter), [`ConversationMultiSelectElement`](/reference/ruby/elements#conversationmultiselectelement), [`PlainText`](/reference/ruby/objects#plaintext)
 
@@ -666,6 +758,14 @@ def placeholder: () -> (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -733,6 +833,18 @@ def self.new: (?action_id: (String)?, ?initial_conversation: (String)?, ?default
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ConversationFilter`](/reference/ruby/objects#conversationfilter), [`ConversationSelectElement`](/reference/ruby/elements#conversationselectelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_conversation: (String)?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationSelectElement
+```
+
+**Returns:** ConversationSelectElement
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ConversationFilter`](/reference/ruby/objects#conversationfilter), [`ConversationSelectElement`](/reference/ruby/elements#conversationselectelement), [`PlainText`](/reference/ruby/objects#plaintext)
 
@@ -822,6 +934,14 @@ def placeholder: () -> (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -889,6 +1009,18 @@ def self.new: (?action_id: (String)?, ?initial_date: (String)?, ?confirm: (Confi
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`DatePickerElement`](/reference/ruby/elements#datepickerelement), [`PlainText`](/reference/ruby/objects#plaintext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_date: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DatePickerElement
+```
+
+**Returns:** DatePickerElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`DatePickerElement`](/reference/ruby/elements#datepickerelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -942,6 +1074,14 @@ def placeholder: () -> (PlainText)?
 **Returns:** (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1009,6 +1149,18 @@ def self.new: (?action_id: (String)?, ?initial_date_time: (Integer)?, ?confirm: 
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`DateTimePickerElement`](/reference/ruby/elements#datetimepickerelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_date_time: (Integer)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DateTimePickerElement
+```
+
+**Returns:** DateTimePickerElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`DateTimePickerElement`](/reference/ruby/elements#datetimepickerelement)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -1050,6 +1202,14 @@ def focus_on_load: () -> (bool)?
 ```
 
 **Returns:** (bool)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1122,6 +1282,18 @@ def self.new: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_actio
 
 **Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`EmailInputElement`](/reference/ruby/elements#emailinputelement), [`PlainText`](/reference/ruby/objects#plaintext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> EmailInputElement
+```
+
+**Returns:** EmailInputElement
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`EmailInputElement`](/reference/ruby/elements#emailinputelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -1175,6 +1347,14 @@ def placeholder: () -> (PlainText)?
 **Returns:** (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1242,6 +1422,18 @@ def self.new: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_op
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ExternalMultiSelectElement`](/reference/ruby/elements#externalmultiselectelement), [`Option`](/reference/ruby/objects#option), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ExternalMultiSelectElement
+```
+
+**Returns:** ExternalMultiSelectElement
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ExternalMultiSelectElement`](/reference/ruby/elements#externalmultiselectelement), [`Option`](/reference/ruby/objects#option), [`PlainText`](/reference/ruby/objects#plaintext)
 
@@ -1321,6 +1513,14 @@ def placeholder: () -> (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -1386,6 +1586,18 @@ def self.new: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_op
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ExternalSelectElement`](/reference/ruby/elements#externalselectelement), [`Option`](/reference/ruby/objects#option), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ExternalSelectElement
+```
+
+**Returns:** ExternalSelectElement
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ExternalSelectElement`](/reference/ruby/elements#externalselectelement), [`Option`](/reference/ruby/objects#option), [`PlainText`](/reference/ruby/objects#plaintext)
 
@@ -1455,6 +1667,14 @@ def placeholder: () -> (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -1520,6 +1740,18 @@ def self.new: (positive_button: FeedbackButton, negative_button: FeedbackButton,
 
 **Related types:** [`FeedbackButton`](/reference/ruby/objects#feedbackbutton), [`FeedbackButtonsElement`](/reference/ruby/elements#feedbackbuttonselement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (positive_button: FeedbackButton, negative_button: FeedbackButton, ?action_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FeedbackButtonsElement
+```
+
+**Returns:** FeedbackButtonsElement
+
+**Related types:** [`FeedbackButton`](/reference/ruby/objects#feedbackbutton), [`FeedbackButtonsElement`](/reference/ruby/elements#feedbackbuttonselement)
+
 ### positive_button
 
 Sets the button for positive feedback. Wire key: positive_button.
@@ -1553,6 +1785,14 @@ def action_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1619,6 +1859,18 @@ def self.new: (?action_id: (String)?, ?filetypes: (Array[String])?, ?max_files: 
 
 **Related types:** [`FileInputElement`](/reference/ruby/elements#fileinputelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?filetypes: (Array[String])?, ?max_files: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FileInputElement
+```
+
+**Returns:** FileInputElement
+
+**Related types:** [`FileInputElement`](/reference/ruby/elements#fileinputelement)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -1648,6 +1900,14 @@ def max_files: () -> (Integer)?
 ```
 
 **Returns:** (Integer)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1715,6 +1975,18 @@ def self.new: (text: String | PlainText, ?icon: (:trash)?, ?action_id: (String)?
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`IconButtonElement`](/reference/ruby/elements#iconbuttonelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String | PlainText, ?icon: (:trash)?, ?action_id: (String)?, ?value: (String)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?visible_to_user_ids: (Array[String])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> IconButtonElement
+```
+
+**Returns:** IconButtonElement
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`IconButtonElement`](/reference/ruby/elements#iconbuttonelement), [`PlainText`](/reference/ruby/objects#plaintext)
 
@@ -1792,6 +2064,14 @@ def visible_to_user_ids: () -> (Array[String])?
 
 **Returns:** (Array[String])?
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -1865,6 +2145,18 @@ def self.new: (alt_text: String, ?image_url: (String)?, ?slack_file: (SlackFile)
 
 **Related types:** [`ImageElement`](/reference/ruby/elements#imageelement), [`SlackFile`](/reference/ruby/objects#slackfile)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (alt_text: String, ?image_url: (String)?, ?slack_file: (SlackFile)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ImageElement
+```
+
+**Returns:** ImageElement
+
+**Related types:** [`ImageElement`](/reference/ruby/elements#imageelement), [`SlackFile`](/reference/ruby/objects#slackfile)
+
 ### alt_text
 
 Sets a plain-text summary of the image or video for assistive technology. Wire key: alt_text.
@@ -1896,6 +2188,14 @@ def slack_file: () -> (SlackFile)?
 **Returns:** (SlackFile)?
 
 **Related types:** [`SlackFile`](/reference/ruby/objects#slackfile)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1968,6 +2268,18 @@ def self.new: (?action_id: (String)?, is_decimal_allowed: bool, ?initial_value: 
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`NumberInputElement`](/reference/ruby/elements#numberinputelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, is_decimal_allowed: bool, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
+```
+
+**Returns:** NumberInputElement
 
 **Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`NumberInputElement`](/reference/ruby/elements#numberinputelement), [`PlainText`](/reference/ruby/objects#plaintext)
 
@@ -2055,6 +2367,14 @@ def placeholder: () -> (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -2120,6 +2440,18 @@ def self.new: (?action_id: (String)?, options: Array[Option], ?confirm: (Confirm
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`OverflowElement`](/reference/ruby/elements#overflowelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, options: Array[Option], ?confirm: (Confirmation)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> OverflowElement
+```
+
+**Returns:** OverflowElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`OverflowElement`](/reference/ruby/elements#overflowelement)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -2153,6 +2485,14 @@ def confirm: () -> (Confirmation)?
 **Returns:** (Confirmation)?
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2221,6 +2561,18 @@ def self.new: (?action_id: (String)?, ?initial_value: (String)?, ?multiline: (bo
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`PlainText`](/reference/ruby/objects#plaintext), [`PlainTextInputElement`](/reference/ruby/elements#plaintextinputelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_value: (String)?, ?multiline: (bool)?, ?min_length: (Integer)?, ?max_length: (Integer)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlainTextInputElement
+```
+
+**Returns:** PlainTextInputElement
 
 **Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`PlainText`](/reference/ruby/objects#plaintext), [`PlainTextInputElement`](/reference/ruby/elements#plaintextinputelement)
 
@@ -2308,6 +2660,14 @@ def placeholder: () -> (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -2375,6 +2735,18 @@ def self.new: (?action_id: (String)?, options: Array[Option], ?initial_option: (
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`RadioButtonsElement`](/reference/ruby/elements#radiobuttonselement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, options: Array[Option], ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RadioButtonsElement
+```
+
+**Returns:** RadioButtonsElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`RadioButtonsElement`](/reference/ruby/elements#radiobuttonselement)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -2430,6 +2802,14 @@ def focus_on_load: () -> (bool)?
 ```
 
 **Returns:** (bool)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2497,6 +2877,18 @@ def self.new: (action_id: String, ?initial_value: (RichTextBlock)?, ?dispatch_ac
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`PlainText`](/reference/ruby/objects#plaintext), [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`RichTextInputElement`](/reference/ruby/elements#richtextinputelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (action_id: String, ?initial_value: (RichTextBlock)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?min_lines: (Integer)?, ?max_lines: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextInputElement
+```
+
+**Returns:** RichTextInputElement
 
 **Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`PlainText`](/reference/ruby/objects#plaintext), [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`RichTextInputElement`](/reference/ruby/elements#richtextinputelement)
 
@@ -2576,6 +2968,14 @@ def max_lines: () -> (Integer)?
 
 **Returns:** (Integer)?
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -2643,6 +3043,18 @@ def self.new: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`OptionGroup`](/reference/ruby/objects#optiongroup), [`PlainText`](/reference/ruby/objects#plaintext), [`StaticMultiSelectElement`](/reference/ruby/elements#staticmultiselectelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> StaticMultiSelectElement
+```
+
+**Returns:** StaticMultiSelectElement
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`OptionGroup`](/reference/ruby/objects#optiongroup), [`PlainText`](/reference/ruby/objects#plaintext), [`StaticMultiSelectElement`](/reference/ruby/elements#staticmultiselectelement)
 
@@ -2736,6 +3148,14 @@ def placeholder: () -> (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -2802,6 +3222,18 @@ def self.new: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`OptionGroup`](/reference/ruby/objects#optiongroup), [`PlainText`](/reference/ruby/objects#plaintext), [`StaticSelectElement`](/reference/ruby/elements#staticselectelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> StaticSelectElement
+```
+
+**Returns:** StaticSelectElement
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`OptionGroup`](/reference/ruby/objects#optiongroup), [`PlainText`](/reference/ruby/objects#plaintext), [`StaticSelectElement`](/reference/ruby/elements#staticselectelement)
 
@@ -2885,6 +3317,14 @@ def placeholder: () -> (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -2953,6 +3393,18 @@ def self.new: (?action_id: (String)?, ?initial_time: (String)?, ?timezone: (Stri
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`TimePickerElement`](/reference/ruby/elements#timepickerelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_time: (String)?, ?timezone: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TimePickerElement
+```
+
+**Returns:** TimePickerElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`TimePickerElement`](/reference/ruby/elements#timepickerelement)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -3016,6 +3468,14 @@ def placeholder: () -> (PlainText)?
 **Returns:** (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -3084,6 +3544,18 @@ def self.new: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_actio
 
 **Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`PlainText`](/reference/ruby/objects#plaintext), [`UrlInputElement`](/reference/ruby/elements#urlinputelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UrlInputElement
+```
+
+**Returns:** UrlInputElement
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`PlainText`](/reference/ruby/objects#plaintext), [`UrlInputElement`](/reference/ruby/elements#urlinputelement)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -3137,6 +3609,14 @@ def placeholder: () -> (PlainText)?
 **Returns:** (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -3206,6 +3686,18 @@ def self.new: (?action_id: (String)?, ?initial_users: (Array[String])?, ?confirm
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`UserMultiSelectElement`](/reference/ruby/elements#usermultiselectelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_users: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UserMultiSelectElement
+```
+
+**Returns:** UserMultiSelectElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`UserMultiSelectElement`](/reference/ruby/elements#usermultiselectelement)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -3269,6 +3761,14 @@ def placeholder: () -> (PlainText)?
 **Returns:** (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -3337,6 +3837,18 @@ def self.new: (?action_id: (String)?, ?initial_user: (String)?, ?confirm: (Confi
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`UserSelectElement`](/reference/ruby/elements#userselectelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_user: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UserSelectElement
+```
+
+**Returns:** UserSelectElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`UserSelectElement`](/reference/ruby/elements#userselectelement)
+
 ### action_id
 
 Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
@@ -3390,6 +3902,14 @@ def placeholder: () -> (PlainText)?
 **Returns:** (PlainText)?
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -3459,6 +3979,18 @@ def self.new: (text: String | PlainText, workflow: Workflow, action_id: String, 
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`Workflow`](/reference/ruby/objects#workflow), [`WorkflowButtonElement`](/reference/ruby/elements#workflowbuttonelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String | PlainText, workflow: Workflow, action_id: String, ?confirm: (Confirmation)?, ?style: (:primary | :danger)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> WorkflowButtonElement
+```
+
+**Returns:** WorkflowButtonElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`Workflow`](/reference/ruby/objects#workflow), [`WorkflowButtonElement`](/reference/ruby/elements#workflowbuttonelement)
+
 ### text
 
 Sets the button label. Wire key: text.
@@ -3524,6 +4056,14 @@ def accessibility_label: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 

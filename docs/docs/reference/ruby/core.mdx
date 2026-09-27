@@ -20,12 +20,44 @@ The gem namespace and its version constants.
 
 Shared immutable value protocol used by every Slackblocks value.
 
+### additional_fields
+
+Return frozen extension fields.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a validated value with changed keywords.
 
 ```ruby
 def with: (**untyped changes) -> self
+```
+
+### ==
+
+Compare values structurally.
+
+```ruby
+def ==: (untyped other) -> bool
+```
+
+### eql?
+
+Compare values structurally for Hash keys.
+
+```ruby
+def eql?: (untyped other) -> bool
+```
+
+### hash
+
+Return a structural hash for Hash keys.
+
+```ruby
+def hash: () -> Integer
 ```
 
 ### to_h

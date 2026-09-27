@@ -35,6 +35,18 @@ def self.new: (elements: Array[Element], ?block_id: (String)?, ?additional_field
 
 **Related types:** [`ActionsBlock`](/reference/ruby/blocks#actionsblock), [`Element`](/reference/ruby/elements#element)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[Element], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ActionsBlock
+```
+
+**Returns:** ActionsBlock
+
+**Related types:** [`ActionsBlock`](/reference/ruby/blocks#actionsblock), [`Element`](/reference/ruby/elements#element)
+
 ### elements
 
 Adds interactive elements in display order. Wire key: elements.
@@ -56,6 +68,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -122,6 +142,18 @@ def self.new: (text: String | Text, ?level: (:default | :info | :warning | :erro
 
 **Related types:** [`AlertBlock`](/reference/ruby/blocks#alertblock), [`Text`](/reference/ruby/objects#text)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String | Text, ?level: (:default | :info | :warning | :error | :success)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> AlertBlock
+```
+
+**Returns:** AlertBlock
+
+**Related types:** [`AlertBlock`](/reference/ruby/blocks#alertblock), [`Text`](/reference/ruby/objects#text)
+
 ### text
 
 Sets the alert message. Wire key: text.
@@ -153,6 +185,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -238,6 +278,18 @@ def self.new: (?hero_image: (ImageElement)?, ?icon: (ImageElement)?, ?title: (St
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ButtonElement`](/reference/ruby/elements#buttonelement), [`CardBlock`](/reference/ruby/blocks#cardblock), [`ImageElement`](/reference/ruby/elements#imageelement), [`SlackIcon`](/reference/ruby/objects#slackicon), [`Text`](/reference/ruby/objects#text)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?hero_image: (ImageElement)?, ?icon: (ImageElement)?, ?title: (String | Text)?, ?subtitle: (String | Text)?, ?body: (String | Text)?, ?actions: (Array[ButtonElement])?, ?slack_icon: (SlackIcon)?, ?subtext: (String | Text)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CardBlock
+```
+
+**Returns:** CardBlock
 
 **Related types:** [`ButtonElement`](/reference/ruby/elements#buttonelement), [`CardBlock`](/reference/ruby/blocks#cardblock), [`ImageElement`](/reference/ruby/elements#imageelement), [`SlackIcon`](/reference/ruby/objects#slackicon), [`Text`](/reference/ruby/objects#text)
 
@@ -347,6 +399,14 @@ def block_id: () -> (String)?
 
 **Returns:** (String)?
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -411,6 +471,18 @@ def self.new: (elements: Array[CardBlock], ?block_id: (String)?, ?additional_fie
 
 **Related types:** [`CardBlock`](/reference/ruby/blocks#cardblock), [`CarouselBlock`](/reference/ruby/blocks#carouselblock)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[CardBlock], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CarouselBlock
+```
+
+**Returns:** CarouselBlock
+
+**Related types:** [`CardBlock`](/reference/ruby/blocks#cardblock), [`CarouselBlock`](/reference/ruby/blocks#carouselblock)
+
 ### elements
 
 Adds the cards in display order. Wire key: elements.
@@ -432,6 +504,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -502,6 +582,18 @@ def self.new: (child_blocks: Array[Block], ?title: (String | PlainText)?, ?rich_
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Block`](/reference/ruby/blocks#block), [`ContainerBlock`](/reference/ruby/blocks#containerblock), [`ImageElement`](/reference/ruby/elements#imageelement), [`PlainText`](/reference/ruby/objects#plaintext), [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`Text`](/reference/ruby/objects#text)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (child_blocks: Array[Block], ?title: (String | PlainText)?, ?rich_text_title: (RichTextBlock)?, ?subtitle: (String | Text)?, ?width: (:narrow | :standard | :wide | :full)?, ?icon: (ImageElement)?, ?is_collapsible: (bool)?, ?default_collapsed: (bool)?, ?has_header_divider: (bool)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContainerBlock
+```
+
+**Returns:** ContainerBlock
 
 **Related types:** [`Block`](/reference/ruby/blocks#block), [`ContainerBlock`](/reference/ruby/blocks#containerblock), [`ImageElement`](/reference/ruby/elements#imageelement), [`PlainText`](/reference/ruby/objects#plaintext), [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`Text`](/reference/ruby/objects#text)
 
@@ -615,6 +707,14 @@ def block_id: () -> (String)?
 
 **Returns:** (String)?
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -690,6 +790,18 @@ def self.new: (elements: Array[ContextActionsElement], ?block_id: (String)?, ?ad
 
 **Related types:** [`ContextActionsBlock`](/reference/ruby/blocks#contextactionsblock), [`ContextActionsElement`](/reference/ruby/blocks#contextactionselement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[ContextActionsElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContextActionsBlock
+```
+
+**Returns:** ContextActionsBlock
+
+**Related types:** [`ContextActionsBlock`](/reference/ruby/blocks#contextactionsblock), [`ContextActionsElement`](/reference/ruby/blocks#contextactionselement)
+
 ### elements
 
 Adds feedback buttons or icon buttons in display order. Wire key: elements.
@@ -711,6 +823,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -780,6 +900,18 @@ def self.new: (elements: Array[ContextElement], ?block_id: (String)?, ?additiona
 
 **Related types:** [`ContextBlock`](/reference/ruby/blocks#contextblock), [`ContextElement`](/reference/ruby/blocks#contextelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[ContextElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContextBlock
+```
+
+**Returns:** ContextBlock
+
+**Related types:** [`ContextBlock`](/reference/ruby/blocks#contextblock), [`ContextElement`](/reference/ruby/blocks#contextelement)
+
 ### elements
 
 Adds images and text in display order. Wire key: elements.
@@ -801,6 +933,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -873,6 +1013,18 @@ def self.new: (rows: Array[Array[DataTableCell]], caption: String, ?page_size: (
 
 **Related types:** [`DataTableBlock`](/reference/ruby/blocks#datatableblock), [`DataTableCell`](/reference/ruby/blocks#datatablecell)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (rows: Array[Array[DataTableCell]], caption: String, ?page_size: (Integer)?, ?row_header_column_index: (Integer)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataTableBlock
+```
+
+**Returns:** DataTableBlock
+
+**Related types:** [`DataTableBlock`](/reference/ruby/blocks#datatableblock), [`DataTableCell`](/reference/ruby/blocks#datatablecell)
+
 ### rows
 
 Adds complete table rows in display order. Every row must have the same number of cells. Wire key: rows.
@@ -924,6 +1076,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -994,6 +1154,18 @@ def self.new: (title: String, chart: Chart, ?block_id: (String)?, ?additional_fi
 
 **Related types:** [`Chart`](/reference/ruby/objects#chart), [`DataVisualizationBlock`](/reference/ruby/blocks#datavisualizationblock)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (title: String, chart: Chart, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataVisualizationBlock
+```
+
+**Returns:** DataVisualizationBlock
+
+**Related types:** [`Chart`](/reference/ruby/objects#chart), [`DataVisualizationBlock`](/reference/ruby/blocks#datavisualizationblock)
+
 ### title
 
 Sets the chart title. Wire key: title.
@@ -1025,6 +1197,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1089,6 +1269,18 @@ def self.new: (?block_id: (String)?, ?additional_fields: Hash[String | Symbol, u
 
 **Related types:** [`DividerBlock`](/reference/ruby/blocks#dividerblock)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DividerBlock
+```
+
+**Returns:** DividerBlock
+
+**Related types:** [`DividerBlock`](/reference/ruby/blocks#dividerblock)
+
 ### block_id
 
 Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
@@ -1098,6 +1290,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1164,6 +1364,18 @@ def self.new: (external_id: String, ?source: (String)?, ?block_id: (String)?, ?a
 
 **Related types:** [`FileBlock`](/reference/ruby/blocks#fileblock)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (external_id: String, ?source: (String)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FileBlock
+```
+
+**Returns:** FileBlock
+
+**Related types:** [`FileBlock`](/reference/ruby/blocks#fileblock)
+
 ### external_id
 
 Sets the external identifier of a remote file previously added with the files.remote API. Wire key: external_id.
@@ -1193,6 +1405,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1258,6 +1478,18 @@ def self.new: (text: String | PlainText, ?block_id: (String)?, ?additional_field
 
 **Related types:** [`HeaderBlock`](/reference/ruby/blocks#headerblock), [`PlainText`](/reference/ruby/objects#plaintext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String | PlainText, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> HeaderBlock
+```
+
+**Returns:** HeaderBlock
+
+**Related types:** [`HeaderBlock`](/reference/ruby/blocks#headerblock), [`PlainText`](/reference/ruby/objects#plaintext)
+
 ### text
 
 Sets the header text, shown in a larger bold font. Wire key: text.
@@ -1279,6 +1511,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1347,6 +1587,18 @@ def self.new: (?image_url: (String)?, ?slack_file: (SlackFile)?, alt_text: Strin
 
 **Related types:** [`ImageBlock`](/reference/ruby/blocks#imageblock), [`PlainText`](/reference/ruby/objects#plaintext), [`SlackFile`](/reference/ruby/objects#slackfile)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?image_url: (String)?, ?slack_file: (SlackFile)?, alt_text: String, ?title: (String | PlainText)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ImageBlock
+```
+
+**Returns:** ImageBlock
+
+**Related types:** [`ImageBlock`](/reference/ruby/blocks#imageblock), [`PlainText`](/reference/ruby/objects#plaintext), [`SlackFile`](/reference/ruby/objects#slackfile)
+
 ### image_url
 
 Sets the publicly accessible URL of the image. Cannot be combined with a Slack file. Wire key: image_url.
@@ -1400,6 +1652,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1469,6 +1729,18 @@ def self.new: (label: String | PlainText, element: InputElement, ?dispatch_actio
 
 **Related types:** [`InputBlock`](/reference/ruby/blocks#inputblock), [`InputElement`](/reference/ruby/elements#inputelement), [`PlainText`](/reference/ruby/objects#plaintext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (label: String | PlainText, element: InputElement, ?dispatch_action: (bool)?, ?block_id: (String)?, ?hint: (String | PlainText)?, ?optional: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> InputBlock
+```
+
+**Returns:** InputBlock
+
+**Related types:** [`InputBlock`](/reference/ruby/blocks#inputblock), [`InputElement`](/reference/ruby/elements#inputelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
 ### label
 
 Sets the label shown above the input. Wire key: label.
@@ -1535,6 +1807,14 @@ def optional: () -> (bool)?
 
 **Returns:** (bool)?
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -1599,6 +1879,18 @@ def self.new: (text: String, ?block_id: (String)?, ?additional_fields: Hash[Stri
 
 **Related types:** [`MarkdownBlock`](/reference/ruby/blocks#markdownblock)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MarkdownBlock
+```
+
+**Returns:** MarkdownBlock
+
+**Related types:** [`MarkdownBlock`](/reference/ruby/blocks#markdownblock)
+
 ### text
 
 Sets standard markdown content, which Slack renders directly. Wire key: text.
@@ -1618,6 +1910,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1684,6 +1984,18 @@ def self.new: (title: String, tasks: Array[TaskCardBlock], ?block_id: (String)?,
 
 **Related types:** [`PlanBlock`](/reference/ruby/blocks#planblock), [`TaskCardBlock`](/reference/ruby/blocks#taskcardblock)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (title: String, tasks: Array[TaskCardBlock], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlanBlock
+```
+
+**Returns:** PlanBlock
+
+**Related types:** [`PlanBlock`](/reference/ruby/blocks#planblock), [`TaskCardBlock`](/reference/ruby/blocks#taskcardblock)
+
 ### title
 
 Sets the plan title. Wire key: title.
@@ -1715,6 +2027,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1780,6 +2100,18 @@ def self.new: (elements: Array[RichTextBlockElement], ?block_id: (String)?, ?add
 
 **Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`RichTextBlockElement`](/reference/ruby/objects#richtextblockelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[RichTextBlockElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextBlock
+```
+
+**Returns:** RichTextBlock
+
+**Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`RichTextBlockElement`](/reference/ruby/objects#richtextblockelement)
+
 ### elements
 
 Adds sections, lists, preformatted blocks, and quotes in display order. Wire key: elements.
@@ -1801,6 +2133,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1868,6 +2208,18 @@ def self.new: (?text: (String | Text)?, ?fields: (Array[String | Text])?, ?acces
 
 **Related types:** [`Element`](/reference/ruby/elements#element), [`SectionBlock`](/reference/ruby/blocks#sectionblock), [`Text`](/reference/ruby/objects#text)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?text: (String | Text)?, ?fields: (Array[String | Text])?, ?accessory: (Element)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> SectionBlock
+```
+
+**Returns:** SectionBlock
+
+**Related types:** [`Element`](/reference/ruby/elements#element), [`SectionBlock`](/reference/ruby/blocks#sectionblock), [`Text`](/reference/ruby/objects#text)
+
 ### text
 
 Sets the main text of the section. Wire key: text.
@@ -1913,6 +2265,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1979,6 +2339,18 @@ def self.new: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSet
 
 **Related types:** [`ColumnSettings`](/reference/ruby/objects#columnsettings), [`TableBlock`](/reference/ruby/blocks#tableblock), [`TableCell`](/reference/ruby/blocks#tablecell)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
+```
+
+**Returns:** TableBlock
+
+**Related types:** [`ColumnSettings`](/reference/ruby/objects#columnsettings), [`TableBlock`](/reference/ruby/blocks#tableblock), [`TableCell`](/reference/ruby/blocks#tablecell)
+
 ### rows
 
 Adds complete table rows in display order. Wire key: rows.
@@ -2012,6 +2384,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2083,6 +2463,18 @@ def self.new: (task_id: String, title: String, ?details: (RichTextBlock)?, ?outp
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`TaskCardBlock`](/reference/ruby/blocks#taskcardblock), [`UrlSource`](/reference/ruby/objects#urlsource)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (task_id: String, title: String, ?details: (RichTextBlock)?, ?output: (RichTextBlock)?, ?sources: (Array[UrlSource])?, status: :pending | :in_progress | :complete | :error, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TaskCardBlock
+```
+
+**Returns:** TaskCardBlock
 
 **Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`TaskCardBlock`](/reference/ruby/blocks#taskcardblock), [`UrlSource`](/reference/ruby/objects#urlsource)
 
@@ -2161,6 +2553,14 @@ def block_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2242,6 +2642,18 @@ def self.new: (alt_text: String, thumbnail_url: String, title: String | PlainTex
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext), [`VideoBlock`](/reference/ruby/blocks#videoblock)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (alt_text: String, thumbnail_url: String, title: String | PlainText, video_url: String, ?block_id: (String)?, ?author_name: (String)?, ?description: (String | PlainText)?, ?provider_icon_url: (String)?, ?provider_name: (String)?, ?title_url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> VideoBlock
+```
+
+**Returns:** VideoBlock
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext), [`VideoBlock`](/reference/ruby/blocks#videoblock)
 
@@ -2348,6 +2760,14 @@ def title_url: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 

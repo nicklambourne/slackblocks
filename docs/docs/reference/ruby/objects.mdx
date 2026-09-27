@@ -35,6 +35,18 @@ def self.new: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_f
 
 **Related types:** [`AreaChart`](/reference/ruby/objects#areachart), [`AxisConfig`](/reference/ruby/objects#axisconfig), [`DataSeries`](/reference/ruby/objects#dataseries)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> AreaChart
+```
+
+**Returns:** AreaChart
+
+**Related types:** [`AreaChart`](/reference/ruby/objects#areachart), [`AxisConfig`](/reference/ruby/objects#axisconfig), [`DataSeries`](/reference/ruby/objects#dataseries)
+
 ### series
 
 Adds data series in display order. Series names must be unique. Wire key: series.
@@ -58,6 +70,14 @@ def axis_config: () -> AxisConfig
 **Returns:** AxisConfig
 
 **Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -124,6 +144,18 @@ def self.new: (categories: Array[String], ?x_label: (String)?, ?y_label: (String
 
 **Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (categories: Array[String], ?x_label: (String)?, ?y_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> AxisConfig
+```
+
+**Returns:** AxisConfig
+
+**Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig)
+
 ### categories
 
 Adds axis categories in display order. Labels must be unique. Wire key: categories.
@@ -153,6 +185,14 @@ def y_label: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -218,6 +258,18 @@ def self.new: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_f
 
 **Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig), [`BarChart`](/reference/ruby/objects#barchart), [`DataSeries`](/reference/ruby/objects#dataseries)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> BarChart
+```
+
+**Returns:** BarChart
+
+**Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig), [`BarChart`](/reference/ruby/objects#barchart), [`DataSeries`](/reference/ruby/objects#dataseries)
+
 ### series
 
 Adds data series in display order. Series names must be unique. Wire key: series.
@@ -241,6 +293,14 @@ def axis_config: () -> AxisConfig
 **Returns:** AxisConfig
 
 **Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -310,6 +370,18 @@ def self.new: (label: String, value: Integer | Float, ?additional_fields: Hash[S
 
 **Related types:** [`ChartSegment`](/reference/ruby/objects#chartsegment)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (label: String, value: Integer | Float, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChartSegment
+```
+
+**Returns:** ChartSegment
+
+**Related types:** [`ChartSegment`](/reference/ruby/objects#chartsegment)
+
 ### label
 
 Sets the segment label. Wire key: label.
@@ -329,6 +401,14 @@ def value: () -> Integer | Float
 ```
 
 **Returns:** Integer \| Float
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -404,6 +484,18 @@ def self.new: (?align: (:left | :center | :right)?, ?is_wrapped: (bool)?, ?addit
 
 **Related types:** [`ColumnSettings`](/reference/ruby/objects#columnsettings)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?align: (:left | :center | :right)?, ?is_wrapped: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ColumnSettings
+```
+
+**Returns:** ColumnSettings
+
+**Related types:** [`ColumnSettings`](/reference/ruby/objects#columnsettings)
+
 ### align
 
 Sets how cell content in the column is aligned. Wire key: align.
@@ -423,6 +515,14 @@ def is_wrapped: () -> (bool)?
 ```
 
 **Returns:** (bool)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -491,6 +591,18 @@ def self.new: (title: String | PlainText, text: String | Text, confirm: String |
 
 **Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`Text`](/reference/ruby/objects#text)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (title: String | PlainText, text: String | Text, confirm: String | PlainText, deny: String | PlainText, ?style: (:primary | :danger)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Confirmation
+```
+
+**Returns:** Confirmation
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`Text`](/reference/ruby/objects#text)
+
 ### title
 
 Sets the dialog title. Wire key: title.
@@ -548,6 +660,14 @@ def style: () -> (:primary | :danger)?
 ```
 
 **Returns:** (:primary \| :danger)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -614,6 +734,18 @@ def self.new: (?include: (Array[String])?, ?exclude_external_shared_channels: (b
 
 **Related types:** [`ConversationFilter`](/reference/ruby/objects#conversationfilter)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?include: (Array[String])?, ?exclude_external_shared_channels: (bool)?, ?exclude_bot_users: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationFilter
+```
+
+**Returns:** ConversationFilter
+
+**Related types:** [`ConversationFilter`](/reference/ruby/objects#conversationfilter)
+
 ### include
 
 Adds conversation types to offer: im, mpim, private, or public. Wire key: include.
@@ -643,6 +775,14 @@ def exclude_bot_users: () -> (bool)?
 ```
 
 **Returns:** (bool)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -708,6 +848,18 @@ def self.new: (label: String, value: Integer | Float, ?additional_fields: Hash[S
 
 **Related types:** [`DataPoint`](/reference/ruby/objects#datapoint)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (label: String, value: Integer | Float, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataPoint
+```
+
+**Returns:** DataPoint
+
+**Related types:** [`DataPoint`](/reference/ruby/objects#datapoint)
+
 ### label
 
 Sets the axis category this point belongs to. Wire key: label.
@@ -727,6 +879,14 @@ def value: () -> Integer | Float
 ```
 
 **Returns:** Integer \| Float
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -792,6 +952,18 @@ def self.new: (name: String, data: Array[DataPoint], ?additional_fields: Hash[St
 
 **Related types:** [`DataPoint`](/reference/ruby/objects#datapoint), [`DataSeries`](/reference/ruby/objects#dataseries)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (name: String, data: Array[DataPoint], ?additional_fields: Hash[String | Symbol, untyped]?) -> DataSeries
+```
+
+**Returns:** DataSeries
+
+**Related types:** [`DataPoint`](/reference/ruby/objects#datapoint), [`DataSeries`](/reference/ruby/objects#dataseries)
+
 ### name
 
 Sets the series name shown in the legend. Wire key: name.
@@ -813,6 +985,14 @@ def data: () -> Array[DataPoint]
 **Returns:** Array[DataPoint]
 
 **Related types:** [`DataPoint`](/reference/ruby/objects#datapoint)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -877,6 +1057,18 @@ def self.new: (?trigger_actions_on: (Array[String])?, ?additional_fields: Hash[S
 
 **Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?trigger_actions_on: (Array[String])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DispatchActionConfiguration
+```
+
+**Returns:** DispatchActionConfiguration
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration)
+
 ### trigger_actions_on
 
 Adds the interactions that send a payload: on_enter_pressed or on_character_entered. Wire key: trigger_actions_on.
@@ -886,6 +1078,14 @@ def trigger_actions_on: () -> (Array[String])?
 ```
 
 **Returns:** (Array[String])?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -952,6 +1152,18 @@ def self.new: (text: String | PlainText, value: String, ?accessibility_label: (S
 
 **Related types:** [`FeedbackButton`](/reference/ruby/objects#feedbackbutton), [`PlainText`](/reference/ruby/objects#plaintext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String | PlainText, value: String, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FeedbackButton
+```
+
+**Returns:** FeedbackButton
+
+**Related types:** [`FeedbackButton`](/reference/ruby/objects#feedbackbutton), [`PlainText`](/reference/ruby/objects#plaintext)
+
 ### text
 
 Sets the button label. Wire key: text.
@@ -983,6 +1195,14 @@ def accessibility_label: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1048,6 +1268,18 @@ def self.new: (name: String, value: String, ?additional_fields: Hash[String | Sy
 
 **Related types:** [`InputParameter`](/reference/ruby/objects#inputparameter)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (name: String, value: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> InputParameter
+```
+
+**Returns:** InputParameter
+
+**Related types:** [`InputParameter`](/reference/ruby/objects#inputparameter)
+
 ### name
 
 Sets the workflow input parameter name. Wire key: name.
@@ -1067,6 +1299,14 @@ def value: () -> String
 ```
 
 **Returns:** String
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1132,6 +1372,18 @@ def self.new: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_f
 
 **Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig), [`DataSeries`](/reference/ruby/objects#dataseries), [`LineChart`](/reference/ruby/objects#linechart)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> LineChart
+```
+
+**Returns:** LineChart
+
+**Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig), [`DataSeries`](/reference/ruby/objects#dataseries), [`LineChart`](/reference/ruby/objects#linechart)
+
 ### series
 
 Adds data series in display order. Series names must be unique. Wire key: series.
@@ -1155,6 +1407,14 @@ def axis_config: () -> AxisConfig
 **Returns:** AxisConfig
 
 **Related types:** [`AxisConfig`](/reference/ruby/objects#axisconfig)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1220,6 +1480,18 @@ def self.new: (text: String, ?verbatim: (bool)?, ?additional_fields: Hash[String
 
 **Related types:** [`MarkdownText`](/reference/ruby/objects#markdowntext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String, ?verbatim: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MarkdownText
+```
+
+**Returns:** MarkdownText
+
+**Related types:** [`MarkdownText`](/reference/ruby/objects#markdowntext)
+
 ### text
 
 Sets the mrkdwn-formatted text content. Wire key: text.
@@ -1239,6 +1511,14 @@ def verbatim: () -> (bool)?
 ```
 
 **Returns:** (bool)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1306,6 +1586,18 @@ def self.new: (text: String | Text, value: String, ?description: (String | Text)
 
 **Related types:** [`Option`](/reference/ruby/objects#option), [`Text`](/reference/ruby/objects#text)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String | Text, value: String, ?description: (String | Text)?, ?url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Option
+```
+
+**Returns:** Option
+
+**Related types:** [`Option`](/reference/ruby/objects#option), [`Text`](/reference/ruby/objects#text)
+
 ### text
 
 Sets the option label shown to users. Wire key: text.
@@ -1349,6 +1641,14 @@ def url: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1414,6 +1714,18 @@ def self.new: (label: String | PlainText, options: Array[Option], ?additional_fi
 
 **Related types:** [`Option`](/reference/ruby/objects#option), [`OptionGroup`](/reference/ruby/objects#optiongroup), [`PlainText`](/reference/ruby/objects#plaintext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (label: String | PlainText, options: Array[Option], ?additional_fields: Hash[String | Symbol, untyped]?) -> OptionGroup
+```
+
+**Returns:** OptionGroup
+
+**Related types:** [`Option`](/reference/ruby/objects#option), [`OptionGroup`](/reference/ruby/objects#optiongroup), [`PlainText`](/reference/ruby/objects#plaintext)
+
 ### label
 
 Sets the group heading. Wire key: label.
@@ -1437,6 +1749,14 @@ def options: () -> Array[Option]
 **Returns:** Array[Option]
 
 **Related types:** [`Option`](/reference/ruby/objects#option)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1501,6 +1821,18 @@ def self.new: (segments: Array[ChartSegment], ?additional_fields: Hash[String | 
 
 **Related types:** [`ChartSegment`](/reference/ruby/objects#chartsegment), [`PieChart`](/reference/ruby/objects#piechart)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (segments: Array[ChartSegment], ?additional_fields: Hash[String | Symbol, untyped]?) -> PieChart
+```
+
+**Returns:** PieChart
+
+**Related types:** [`ChartSegment`](/reference/ruby/objects#chartsegment), [`PieChart`](/reference/ruby/objects#piechart)
+
 ### segments
 
 Adds pie segments in display order. Wire key: segments.
@@ -1512,6 +1844,14 @@ def segments: () -> Array[ChartSegment]
 **Returns:** Array[ChartSegment]
 
 **Related types:** [`ChartSegment`](/reference/ruby/objects#chartsegment)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1577,6 +1917,18 @@ def self.new: (text: String, ?emoji: (bool)?, ?additional_fields: Hash[String | 
 
 **Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String, ?emoji: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
 ### text
 
 Sets the text content. Wire key: text.
@@ -1596,6 +1948,14 @@ def emoji: () -> (bool)?
 ```
 
 **Returns:** (bool)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1661,6 +2021,18 @@ def self.new: (value: Integer | Float, text: String, ?additional_fields: Hash[St
 
 **Related types:** [`RawNumber`](/reference/ruby/objects#rawnumber)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (value: Integer | Float, text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> RawNumber
+```
+
+**Returns:** RawNumber
+
+**Related types:** [`RawNumber`](/reference/ruby/objects#rawnumber)
+
 ### value
 
 Sets the numeric value used for sorting. Wire key: value.
@@ -1680,6 +2052,14 @@ def text: () -> String
 ```
 
 **Returns:** String
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1744,6 +2124,18 @@ def self.new: (text: String, ?additional_fields: Hash[String | Symbol, untyped]?
 
 **Related types:** [`RawText`](/reference/ruby/objects#rawtext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> RawText
+```
+
+**Returns:** RawText
+
+**Related types:** [`RawText`](/reference/ruby/objects#rawtext)
+
 ### text
 
 Sets the cell text. Wire key: text.
@@ -1753,6 +2145,14 @@ def text: () -> String
 ```
 
 **Returns:** String
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1822,6 +2222,18 @@ def self.new: (channel_id: String, ?style: (RichTextStyle)?, ?additional_fields:
 
 **Related types:** [`RichTextChannel`](/reference/ruby/objects#richtextchannel), [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (channel_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextChannel
+```
+
+**Returns:** RichTextChannel
+
+**Related types:** [`RichTextChannel`](/reference/ruby/objects#richtextchannel), [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
 ### channel_id
 
 Sets the ID of the mentioned channel. Wire key: channel_id.
@@ -1843,6 +2255,14 @@ def style: () -> (RichTextStyle)?
 **Returns:** (RichTextStyle)?
 
 **Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1908,6 +2328,18 @@ def self.new: (elements: Array[RichTextSectionElement], ?border: (Integer)?, ?ad
 
 **Related types:** [`RichTextCodeBlock`](/reference/ruby/objects#richtextcodeblock), [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[RichTextSectionElement], ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextCodeBlock
+```
+
+**Returns:** RichTextCodeBlock
+
+**Related types:** [`RichTextCodeBlock`](/reference/ruby/objects#richtextcodeblock), [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
+
 ### elements
 
 Adds inline rich text elements in display order. Wire key: elements.
@@ -1929,6 +2361,14 @@ def border: () -> (Integer)?
 ```
 
 **Returns:** (Integer)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -1994,6 +2434,18 @@ def self.new: (name: String, ?skin_tone: (Integer)?, ?additional_fields: Hash[St
 
 **Related types:** [`RichTextEmoji`](/reference/ruby/objects#richtextemoji)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (name: String, ?skin_tone: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextEmoji
+```
+
+**Returns:** RichTextEmoji
+
+**Related types:** [`RichTextEmoji`](/reference/ruby/objects#richtextemoji)
+
 ### name
 
 Sets the emoji shortcode name, without colons. Wire key: name.
@@ -2013,6 +2465,14 @@ def skin_tone: () -> (Integer)?
 ```
 
 **Returns:** (Integer)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2080,6 +2540,18 @@ def self.new: (url: String, ?text: (String)?, ?style: (RichTextStyle)?, ?unsafe:
 
 **Related types:** [`RichTextLink`](/reference/ruby/objects#richtextlink), [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (url: String, ?text: (String)?, ?style: (RichTextStyle)?, ?unsafe: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextLink
+```
+
+**Returns:** RichTextLink
+
+**Related types:** [`RichTextLink`](/reference/ruby/objects#richtextlink), [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
 ### url
 
 Sets the link target. Wire key: url.
@@ -2121,6 +2593,14 @@ def unsafe: () -> (bool)?
 ```
 
 **Returns:** (bool)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2189,6 +2669,18 @@ def self.new: (style: :bullet | :ordered, elements: Array[RichTextSection], ?ind
 
 **Related types:** [`RichTextList`](/reference/ruby/objects#richtextlist), [`RichTextSection`](/reference/ruby/objects#richtextsection)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (style: :bullet | :ordered, elements: Array[RichTextSection], ?indent: (Integer)?, ?offset: (Integer)?, ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextList
+```
+
+**Returns:** RichTextList
+
+**Related types:** [`RichTextList`](/reference/ruby/objects#richtextlist), [`RichTextSection`](/reference/ruby/objects#richtextsection)
+
 ### style
 
 Sets whether the list is bulleted or numbered. Wire key: style.
@@ -2240,6 +2732,14 @@ def border: () -> (Integer)?
 ```
 
 **Returns:** (Integer)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2314,6 +2814,18 @@ def self.new: (elements: Array[RichTextSectionElement], ?border: (Integer)?, ?ad
 
 **Related types:** [`RichTextQuote`](/reference/ruby/objects#richtextquote), [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[RichTextSectionElement], ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextQuote
+```
+
+**Returns:** RichTextQuote
+
+**Related types:** [`RichTextQuote`](/reference/ruby/objects#richtextquote), [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
+
 ### elements
 
 Adds inline rich text elements in display order. Wire key: elements.
@@ -2335,6 +2847,14 @@ def border: () -> (Integer)?
 ```
 
 **Returns:** (Integer)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2399,6 +2919,18 @@ def self.new: (elements: Array[RichTextSectionElement], ?additional_fields: Hash
 
 **Related types:** [`RichTextSection`](/reference/ruby/objects#richtextsection), [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[RichTextSectionElement], ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextSection
+```
+
+**Returns:** RichTextSection
+
+**Related types:** [`RichTextSection`](/reference/ruby/objects#richtextsection), [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
+
 ### elements
 
 Adds inline rich text elements in display order. Wire key: elements.
@@ -2410,6 +2942,14 @@ def elements: () -> Array[RichTextSectionElement]
 **Returns:** Array[RichTextSectionElement]
 
 **Related types:** [`RichTextSectionElement`](/reference/ruby/objects#richtextsectionelement)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2460,7 +3000,7 @@ Immutable rich text style flags. The owning rich text element limits which flags
 Create a style with permitted boolean flags.
 
 ```ruby
-def self.new: (?bold: bool?, ?client_highlight: bool?, ?code: bool?, ?highlight: bool?, ?italic: bool?, ?strike: bool?, ?unlink: bool?) -> RichTextStyle
+def self.new: (?bold: bool?, ?client_highlight: bool?, ?code: bool?, ?highlight: bool?, ?italic: bool?, ?strike: bool?, ?unlink: bool?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextStyle
 ```
 
 | Parameter | Description |
@@ -2476,6 +3016,130 @@ def self.new: (?bold: bool?, ?client_highlight: bool?, ?code: bool?, ?highlight:
 **Returns:** RichTextStyle
 
 **Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?bold: bool?, ?client_highlight: bool?, ?code: bool?, ?highlight: bool?, ?italic: bool?, ?strike: bool?, ?unlink: bool?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextStyle
+```
+
+**Returns:** RichTextStyle
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### bold
+
+Read the optional style flag.
+
+```ruby
+def bold: () -> bool?
+```
+
+**Returns:** bool?
+
+### client_highlight
+
+Read the optional style flag.
+
+```ruby
+def client_highlight: () -> bool?
+```
+
+**Returns:** bool?
+
+### code
+
+Read the optional style flag.
+
+```ruby
+def code: () -> bool?
+```
+
+**Returns:** bool?
+
+### highlight
+
+Read the optional style flag.
+
+```ruby
+def highlight: () -> bool?
+```
+
+**Returns:** bool?
+
+### italic
+
+Read the optional style flag.
+
+```ruby
+def italic: () -> bool?
+```
+
+**Returns:** bool?
+
+### strike
+
+Read the optional style flag.
+
+```ruby
+def strike: () -> bool?
+```
+
+**Returns:** bool?
+
+### unlink
+
+Read the optional style flag.
+
+```ruby
+def unlink: () -> bool?
+```
+
+**Returns:** bool?
+
+### additional_fields
+
+Return frozen extension style fields.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a validated style with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextStyle
+```
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### to_h
+
+Return structural style members.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a detached wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Return JSON for this style.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
 
 ## RichTextText
 
@@ -2505,6 +3169,18 @@ def self.new: (text: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[
 
 **Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle), [`RichTextText`](/reference/ruby/objects#richtexttext)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextText
+```
+
+**Returns:** RichTextText
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle), [`RichTextText`](/reference/ruby/objects#richtexttext)
+
 ### text
 
 Sets the text content. Wire key: text.
@@ -2526,6 +3202,14 @@ def style: () -> (RichTextStyle)?
 **Returns:** (RichTextStyle)?
 
 **Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2591,6 +3275,18 @@ def self.new: (user_id: String, ?style: (RichTextStyle)?, ?additional_fields: Ha
 
 **Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle), [`RichTextUser`](/reference/ruby/objects#richtextuser)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (user_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextUser
+```
+
+**Returns:** RichTextUser
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle), [`RichTextUser`](/reference/ruby/objects#richtextuser)
+
 ### user_id
 
 Sets the ID of the mentioned user. Wire key: user_id.
@@ -2612,6 +3308,14 @@ def style: () -> (RichTextStyle)?
 **Returns:** (RichTextStyle)?
 
 **Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2677,6 +3381,18 @@ def self.new: (user_group_id: String, ?style: (RichTextStyle)?, ?additional_fiel
 
 **Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle), [`RichTextUserGroup`](/reference/ruby/objects#richtextusergroup)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (user_group_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextUserGroup
+```
+
+**Returns:** RichTextUserGroup
+
+**Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle), [`RichTextUserGroup`](/reference/ruby/objects#richtextusergroup)
+
 ### user_group_id
 
 Sets the ID of the mentioned user group. Wire key: usergroup_id.
@@ -2698,6 +3414,14 @@ def style: () -> (RichTextStyle)?
 **Returns:** (RichTextStyle)?
 
 **Related types:** [`RichTextStyle`](/reference/ruby/objects#richtextstyle)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2763,6 +3487,18 @@ def self.new: (?id: (String)?, ?url: (String)?, ?additional_fields: Hash[String 
 
 **Related types:** [`SlackFile`](/reference/ruby/objects#slackfile)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?id: (String)?, ?url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> SlackFile
+```
+
+**Returns:** SlackFile
+
+**Related types:** [`SlackFile`](/reference/ruby/objects#slackfile)
+
 ### id
 
 Sets the ID of a file previously uploaded to Slack. Cannot be combined with a URL. Wire key: id.
@@ -2782,6 +3518,14 @@ def url: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2846,6 +3590,18 @@ def self.new: (name: String, ?additional_fields: Hash[String | Symbol, untyped]?
 
 **Related types:** [`SlackIcon`](/reference/ruby/objects#slackicon)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (name: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> SlackIcon
+```
+
+**Returns:** SlackIcon
+
+**Related types:** [`SlackIcon`](/reference/ruby/objects#slackicon)
+
 ### name
 
 Sets the name of the Slack-provided icon, such as rocket. Wire key: name.
@@ -2855,6 +3611,14 @@ def name: () -> String
 ```
 
 **Returns:** String
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -2924,6 +3688,18 @@ def self.new: (url: String, ?customizable_input_parameters: (Array[InputParamete
 
 **Related types:** [`InputParameter`](/reference/ruby/objects#inputparameter), [`Trigger`](/reference/ruby/objects#trigger)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (url: String, ?customizable_input_parameters: (Array[InputParameter])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Trigger
+```
+
+**Returns:** Trigger
+
+**Related types:** [`InputParameter`](/reference/ruby/objects#inputparameter), [`Trigger`](/reference/ruby/objects#trigger)
+
 ### url
 
 Sets the link trigger URL. Wire key: url.
@@ -2945,6 +3721,14 @@ def customizable_input_parameters: () -> (Array[InputParameter])?
 **Returns:** (Array[InputParameter])?
 
 **Related types:** [`InputParameter`](/reference/ruby/objects#inputparameter)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -3010,6 +3794,18 @@ def self.new: (url: String, text: String, ?additional_fields: Hash[String | Symb
 
 **Related types:** [`UrlSource`](/reference/ruby/objects#urlsource)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (url: String, text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> UrlSource
+```
+
+**Returns:** UrlSource
+
+**Related types:** [`UrlSource`](/reference/ruby/objects#urlsource)
+
 ### url
 
 Sets the source URL. Wire key: url.
@@ -3029,6 +3825,14 @@ def text: () -> String
 ```
 
 **Returns:** String
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -3093,6 +3897,18 @@ def self.new: (trigger: Trigger, ?additional_fields: Hash[String | Symbol, untyp
 
 **Related types:** [`Trigger`](/reference/ruby/objects#trigger), [`Workflow`](/reference/ruby/objects#workflow)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (trigger: Trigger, ?additional_fields: Hash[String | Symbol, untyped]?) -> Workflow
+```
+
+**Returns:** Workflow
+
+**Related types:** [`Trigger`](/reference/ruby/objects#trigger), [`Workflow`](/reference/ruby/objects#workflow)
+
 ### trigger
 
 Sets the link trigger that starts the workflow. Wire key: trigger.
@@ -3104,6 +3920,14 @@ def trigger: () -> Trigger
 **Returns:** Trigger
 
 **Related types:** [`Trigger`](/reference/ruby/objects#trigger)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 

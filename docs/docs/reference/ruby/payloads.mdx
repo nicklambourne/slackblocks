@@ -36,6 +36,18 @@ def self.new: (blocks: Array[Block], ?color: (String)?, ?fallback: (String)?, ?a
 
 **Related types:** [`Attachment`](/reference/ruby/payloads#attachment), [`Block`](/reference/ruby/blocks#block)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (blocks: Array[Block], ?color: (String)?, ?fallback: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Attachment
+```
+
+**Returns:** Attachment
+
+**Related types:** [`Attachment`](/reference/ruby/payloads#attachment), [`Block`](/reference/ruby/blocks#block)
+
 ### blocks
 
 Adds the attachment's blocks in display order. Wire key: blocks.
@@ -67,6 +79,14 @@ def fallback: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -134,6 +154,18 @@ def self.new: (blocks: Array[Block], ?private_metadata: (String)?, ?callback_id:
 
 **Related types:** [`Block`](/reference/ruby/blocks#block), [`HomeTabView`](/reference/ruby/payloads#hometabview)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (blocks: Array[Block], ?private_metadata: (String)?, ?callback_id: (String)?, ?external_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> HomeTabView
+```
+
+**Returns:** HomeTabView
+
+**Related types:** [`Block`](/reference/ruby/blocks#block), [`HomeTabView`](/reference/ruby/payloads#hometabview)
+
 ### blocks
 
 Adds the blocks shown on the App Home tab, in display order. Wire key: blocks.
@@ -175,6 +207,14 @@ def external_id: () -> (String)?
 ```
 
 **Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -243,6 +283,18 @@ def self.new: (channel: String, ?blocks: (Array[Block])?, ?attachments: (Array[A
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Attachment`](/reference/ruby/payloads#attachment), [`Block`](/reference/ruby/blocks#block), [`MessagePayload`](/reference/ruby/payloads#messagepayload)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (channel: String, ?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?mrkdwn: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MessagePayload
+```
+
+**Returns:** MessagePayload
 
 **Related types:** [`Attachment`](/reference/ruby/payloads#attachment), [`Block`](/reference/ruby/blocks#block), [`MessagePayload`](/reference/ruby/payloads#messagepayload)
 
@@ -330,6 +382,14 @@ def metadata: () -> (Hash[String, untyped])?
 
 **Returns:** (Hash[String, untyped])?
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -398,6 +458,18 @@ def self.new: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?te
 
 **Related types:** [`Attachment`](/reference/ruby/payloads#attachment), [`Block`](/reference/ruby/blocks#block), [`MessageResponse`](/reference/ruby/payloads#messageresponse)
 
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?mrkdwn: (bool)?, ?replace_original: (bool)?, ?response_type: (:in_channel | :ephemeral)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MessageResponse
+```
+
+**Returns:** MessageResponse
+
+**Related types:** [`Attachment`](/reference/ruby/payloads#attachment), [`Block`](/reference/ruby/blocks#block), [`MessageResponse`](/reference/ruby/payloads#messageresponse)
+
 ### blocks
 
 Adds the response blocks in display order. Wire key: blocks.
@@ -461,6 +533,14 @@ def response_type: () -> (:in_channel | :ephemeral)?
 ```
 
 **Returns:** (:in_channel \| :ephemeral)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 
@@ -531,6 +611,18 @@ def self.new: (title: String | PlainText, blocks: Array[Block], ?close: (String 
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Block`](/reference/ruby/blocks#block), [`ModalView`](/reference/ruby/payloads#modalview), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (title: String | PlainText, blocks: Array[Block], ?close: (String | PlainText)?, ?submit: (String | PlainText)?, ?private_metadata: (String)?, ?callback_id: (String)?, ?clear_on_close: (bool)?, ?notify_on_close: (bool)?, ?external_id: (String)?, ?submit_disabled: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ModalView
+```
+
+**Returns:** ModalView
 
 **Related types:** [`Block`](/reference/ruby/blocks#block), [`ModalView`](/reference/ruby/payloads#modalview), [`PlainText`](/reference/ruby/objects#plaintext)
 
@@ -642,6 +734,14 @@ def submit_disabled: () -> (bool)?
 
 **Returns:** (bool)?
 
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
 ### with
 
 Return a newly validated value with changed keywords.
@@ -719,6 +819,18 @@ def self.new: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?te
 | Throws | When |
 | --- | --- |
 | [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Attachment`](/reference/ruby/payloads#attachment), [`Block`](/reference/ruby/blocks#block), [`WebhookMessage`](/reference/ruby/payloads#webhookmessage)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?response_type: (:in_channel | :ephemeral)?, ?replace_original: (bool)?, ?delete_original: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> WebhookMessage
+```
+
+**Returns:** WebhookMessage
 
 **Related types:** [`Attachment`](/reference/ruby/payloads#attachment), [`Block`](/reference/ruby/blocks#block), [`WebhookMessage`](/reference/ruby/payloads#webhookmessage)
 
@@ -815,6 +927,14 @@ def metadata: () -> (Hash[String, untyped])?
 ```
 
 **Returns:** (Hash[String, untyped])?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
 
 ### with
 

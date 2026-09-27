@@ -37,6 +37,8 @@ assert.match(pages.get("blocks"), /See the \[Slack reference\]\(https:\/\/docs\.
 assert.match(pages.get("blocks"), /def text: \(\) -> \(Text\)\?/);
 assert.match(pages.get("elements"), /\| `PRIMARY` \| `:primary` \|/);
 assert.match(pages.get("objects"), /^## RichTextStyle$/m);
+assert.match(pages.get("objects"), /^### \.\[\]$/m);
+assert.match(pages.get("core"), /^### eql\?$/m);
 assert.match(pages.get("components"), /^## Paginator$/m);
 assert.match(pages.get("core"), /^## Value$/m);
 assert.match(pages.get("errors"), /^## ValidationError$/m);
