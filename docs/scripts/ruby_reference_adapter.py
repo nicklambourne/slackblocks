@@ -92,11 +92,7 @@ for entry in ruby["types"]:
         ),
     ]
     for field in fields:
-        read_type = (
-            field["readerType"]
-            if field["required"]
-            else "(" + field["readerType"] + ")?"
-        )
+        read_type = field["readerType"] if field["required"] else "(" + field["readerType"] + ")?"
         members.append(
             member(
                 field["name"],
@@ -141,9 +137,7 @@ for entry in ruby["types"]:
             entry["package"],
             entry["description"],
             members,
-            see=[{"label": "Slack reference", "url": entry["docUrl"]}]
-            if entry["docUrl"]
-            else [],
+            see=[{"label": "Slack reference", "url": entry["docUrl"]}] if entry["docUrl"] else [],
         )
     )
 
@@ -193,10 +187,7 @@ types.append(
                 + ", ".join("?" + flag + ": bool?" for flag in flags)
                 + ", ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextStyle",
                 "Create a style with permitted boolean flags.",
-                [
-                    {"name": flag, "description": "Optional style flag."}
-                    for flag in flags
-                ],
+                [{"name": flag, "description": "Optional style flag."} for flag in flags],
                 "RichTextStyle",
             ),
             member(
