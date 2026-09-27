@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+for mount in /Volumes/Repos /Volumes/Cache /Volumes/Scratch; do
+  test -d "$mount" || { echo "Required mount unavailable: $mount" >&2; exit 1; }
+done
+
+ruby_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ruby_bin="${RUBY_BIN:-/opt/homebrew/opt/ruby@3.4/bin/ruby}"
+gem_bin="$(dirname "$ruby_bin")/gem"
+rbs_bin="$(dirname "$ruby_bin")/rbs"
+version="$("$ruby_bin" -I "$ruby_root/lib" -r slackblocks/version -e 'print Slackblocks::VERSION')"
+scratch="$(mktemp -d /Volumes/Scratch/slackblocks-ruby-smoke-XXXXXX)"
+trap 'rm -rf "$scratch"' EXIT
+gem_file="$scratch/slackblocks-$version.gem"
+install="$scratch/install"
+
+(
+  cd "$ruby_root"
+  "$gem_bin" build slackblocks.gemspec --output "$gem_file"
+)
+"$gem_bin" install "$gem_file" --install-dir "$install" --no-document
+
+"$ruby_bin" -r rubygems/package -e '
+  spec = Gem::Package.new(ARGV.fetch(0)).spec
+  abort "wrong gem name" unless spec.name == "slackblocks"
+  abort "wrong gem version" unless spec.version.to_s == ARGV.fetch(1)
+  abort "wrong Ruby floor" unless spec.required_ruby_version.satisfied_by?(Gem::Version.new("3.3.0"))
+  abort "runtime dependencies present" unless spec.runtime_dependencies.empty?
+  required = %w[lib/slackblocks.rb lib/slackblocks/components.rb sig/slackblocks.rbs sig/slackblocks/generated.rbs README.md CHANGELOG.md LICENSE]
+  abort "missing package files" unless (required - spec.files).empty?
+  abort "development inputs packaged" if spec.files.any? { |path| path.start_with?("generator/", "test/", "generated/") }
+' "$gem_file" "$version"
+
+(
+  cd "$scratch"
+  env -i PATH="$(dirname "$ruby_bin"):/usr/bin:/bin" GEM_HOME="$install" GEM_PATH="$install" \
+    "$ruby_bin" - "$ruby_root" <<'RUBY'
+require "json"
+require "slackblocks"
+root = ARGV.fetch(0)
+section = Slackblocks::SectionBlock.new(text: "Installed gem")
+message = Slackblocks::MessagePayload.new(channel: "C123", blocks: [section])
+abort "bad installed output" unless JSON.parse(message.to_json).dig("blocks", 0, "text", "text") == "Installed gem"
+abort "checkout runtime loaded" if $LOADED_FEATURES.any? { |path| path.start_with?(root) }
+RUBY
+  "$rbs_bin" -I "$install/gems/slackblocks-$version/sig" validate
+
+  ln -s "$install/gems/slackblocks-$version/sig" sig
+  cat > Steepfile <<RBS
+target :installed do
+  library "json"
+  signature "sig"
+  check "consumer.rb"
+end
+RBS
+  cat > consumer.rb <<'RUBY'
+require "slackblocks"
+section = Slackblocks::SectionBlock.new(text: "Installed")
+Slackblocks::MessagePayload.new(channel: "C123", blocks: [section]).to_json
+RUBY
+  PATH="$(dirname "$ruby_bin"):$PATH" BUNDLE_GEMFILE="$ruby_root/Gemfile" \
+    BUNDLE_PATH=/Volumes/Cache/bundle/slackblocks-ruby34 BUNDLE_DISABLE_SHARED_GEMS=true \
+    bundle exec steep check
+)
+
+echo "Built, inspected, installed, and type-checked slackblocks $version outside the checkout"

@@ -1,0 +1,1268 @@
+# Generated from spec/model.json. Do not edit by hand.
+module Slackblocks
+  module Block
+  end
+
+  module ContextElement
+  end
+
+  module ContextActionsElement
+  end
+
+  module TableCell
+  end
+
+  module DataTableCell
+  end
+
+  module Element
+  end
+
+  module InputElement
+  end
+
+  module Text
+  end
+
+  module Chart
+  end
+
+  module RichTextBlockElement
+  end
+
+  module RichTextSectionElement
+  end
+
+  module AlertLevel
+    DEFAULT: :default
+    INFO: :info
+    WARNING: :warning
+    ERROR: :error
+    SUCCESS: :success
+  end
+
+  module ContainerWidth
+    NARROW: :narrow
+    STANDARD: :standard
+    WIDE: :wide
+    FULL: :full
+  end
+
+  module TaskStatus
+    PENDING: :pending
+    IN_PROGRESS: :in_progress
+    COMPLETE: :complete
+    ERROR: :error
+  end
+
+  module ButtonStyle
+    PRIMARY: :primary
+    DANGER: :danger
+  end
+
+  module IconButtonIcon
+    TRASH: :trash
+  end
+
+  module ColumnAlign
+    LEFT: :left
+    CENTER: :center
+    RIGHT: :right
+  end
+
+  module RichTextListStyle
+    BULLET: :bullet
+    ORDERED: :ordered
+  end
+
+  module ResponseType
+    IN_CHANNEL: :in_channel
+    EPHEMERAL: :ephemeral
+  end
+
+  class ActionsBlock
+    include Value
+    include Block
+    attr_reader elements: Array[Element]
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (elements: Array[Element], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (elements: Array[Element], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ActionsBlock
+    def self.[]: (elements: Array[Element], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ActionsBlock
+  end
+
+  class AlertBlock
+    include Value
+    include Block
+    attr_reader text: String | Text
+    attr_reader level: (:default | :info | :warning | :error | :success)?
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (text: String | Text, ?level: (:default | :info | :warning | :error | :success)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String | Text, ?level: (:default | :info | :warning | :error | :success)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> AlertBlock
+    def self.[]: (text: String | Text, ?level: (:default | :info | :warning | :error | :success)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> AlertBlock
+  end
+
+  class CardBlock
+    include Value
+    include Block
+    attr_reader hero_image: (ImageElement)?
+    attr_reader icon: (ImageElement)?
+    attr_reader title: (String | Text)?
+    attr_reader subtitle: (String | Text)?
+    attr_reader body: (String | Text)?
+    attr_reader actions: (Array[ButtonElement])?
+    attr_reader slack_icon: (SlackIcon)?
+    attr_reader subtext: (String | Text)?
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?hero_image: (ImageElement)?, ?icon: (ImageElement)?, ?title: (String | Text)?, ?subtitle: (String | Text)?, ?body: (String | Text)?, ?actions: (Array[ButtonElement])?, ?slack_icon: (SlackIcon)?, ?subtext: (String | Text)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?hero_image: (ImageElement)?, ?icon: (ImageElement)?, ?title: (String | Text)?, ?subtitle: (String | Text)?, ?body: (String | Text)?, ?actions: (Array[ButtonElement])?, ?slack_icon: (SlackIcon)?, ?subtext: (String | Text)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CardBlock
+    def self.[]: (?hero_image: (ImageElement)?, ?icon: (ImageElement)?, ?title: (String | Text)?, ?subtitle: (String | Text)?, ?body: (String | Text)?, ?actions: (Array[ButtonElement])?, ?slack_icon: (SlackIcon)?, ?subtext: (String | Text)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CardBlock
+  end
+
+  class CarouselBlock
+    include Value
+    include Block
+    attr_reader elements: Array[CardBlock]
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (elements: Array[CardBlock], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (elements: Array[CardBlock], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CarouselBlock
+    def self.[]: (elements: Array[CardBlock], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CarouselBlock
+  end
+
+  class ContainerBlock
+    include Value
+    include Block
+    attr_reader child_blocks: Array[Block]
+    attr_reader title: (String | PlainText)?
+    attr_reader rich_text_title: (RichTextBlock)?
+    attr_reader subtitle: (String | Text)?
+    attr_reader width: (:narrow | :standard | :wide | :full)?
+    attr_reader icon: (ImageElement)?
+    attr_reader is_collapsible: (bool)?
+    attr_reader default_collapsed: (bool)?
+    attr_reader has_header_divider: (bool)?
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (child_blocks: Array[Block], ?title: (String | PlainText)?, ?rich_text_title: (RichTextBlock)?, ?subtitle: (String | Text)?, ?width: (:narrow | :standard | :wide | :full)?, ?icon: (ImageElement)?, ?is_collapsible: (bool)?, ?default_collapsed: (bool)?, ?has_header_divider: (bool)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (child_blocks: Array[Block], ?title: (String | PlainText)?, ?rich_text_title: (RichTextBlock)?, ?subtitle: (String | Text)?, ?width: (:narrow | :standard | :wide | :full)?, ?icon: (ImageElement)?, ?is_collapsible: (bool)?, ?default_collapsed: (bool)?, ?has_header_divider: (bool)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContainerBlock
+    def self.[]: (child_blocks: Array[Block], ?title: (String | PlainText)?, ?rich_text_title: (RichTextBlock)?, ?subtitle: (String | Text)?, ?width: (:narrow | :standard | :wide | :full)?, ?icon: (ImageElement)?, ?is_collapsible: (bool)?, ?default_collapsed: (bool)?, ?has_header_divider: (bool)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContainerBlock
+  end
+
+  class ContextActionsBlock
+    include Value
+    include Block
+    attr_reader elements: Array[ContextActionsElement]
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (elements: Array[ContextActionsElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (elements: Array[ContextActionsElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContextActionsBlock
+    def self.[]: (elements: Array[ContextActionsElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContextActionsBlock
+  end
+
+  class ContextBlock
+    include Value
+    include Block
+    attr_reader elements: Array[ContextElement]
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (elements: Array[ContextElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (elements: Array[ContextElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContextBlock
+    def self.[]: (elements: Array[ContextElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContextBlock
+  end
+
+  class DataTableBlock
+    include Value
+    include Block
+    attr_reader rows: Array[Array[DataTableCell]]
+    attr_reader caption: String
+    attr_reader page_size: (Integer)?
+    attr_reader row_header_column_index: (Integer)?
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (rows: Array[Array[DataTableCell]], caption: String, ?page_size: (Integer)?, ?row_header_column_index: (Integer)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (rows: Array[Array[DataTableCell]], caption: String, ?page_size: (Integer)?, ?row_header_column_index: (Integer)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataTableBlock
+    def self.[]: (rows: Array[Array[DataTableCell]], caption: String, ?page_size: (Integer)?, ?row_header_column_index: (Integer)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataTableBlock
+  end
+
+  class DataVisualizationBlock
+    include Value
+    include Block
+    attr_reader title: String
+    attr_reader chart: Chart
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (title: String, chart: Chart, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (title: String, chart: Chart, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataVisualizationBlock
+    def self.[]: (title: String, chart: Chart, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataVisualizationBlock
+  end
+
+  class DividerBlock
+    include Value
+    include Block
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DividerBlock
+    def self.[]: (?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DividerBlock
+  end
+
+  class FileBlock
+    include Value
+    include Block
+    attr_reader external_id: String
+    attr_reader source: (String)?
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (external_id: String, ?source: (String)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (external_id: String, ?source: (String)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FileBlock
+    def self.[]: (external_id: String, ?source: (String)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FileBlock
+  end
+
+  class HeaderBlock
+    include Value
+    include Block
+    attr_reader text: String | PlainText
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (text: String | PlainText, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String | PlainText, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> HeaderBlock
+    def self.[]: (text: String | PlainText, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> HeaderBlock
+  end
+
+  class ImageBlock
+    include Value
+    include Block
+    attr_reader image_url: (String)?
+    attr_reader slack_file: (SlackFile)?
+    attr_reader alt_text: String
+    attr_reader title: (String | PlainText)?
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (alt_text: String, ?image_url: (String)?, ?slack_file: (SlackFile)?, ?title: (String | PlainText)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (alt_text: String, ?image_url: (String)?, ?slack_file: (SlackFile)?, ?title: (String | PlainText)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ImageBlock
+    def self.[]: (alt_text: String, ?image_url: (String)?, ?slack_file: (SlackFile)?, ?title: (String | PlainText)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ImageBlock
+  end
+
+  class InputBlock
+    include Value
+    include Block
+    attr_reader label: String | PlainText
+    attr_reader element: InputElement
+    attr_reader dispatch_action: (bool)?
+    attr_reader block_id: (String)?
+    attr_reader hint: (String | PlainText)?
+    attr_reader optional: (bool)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (label: String | PlainText, element: InputElement, ?dispatch_action: (bool)?, ?block_id: (String)?, ?hint: (String | PlainText)?, ?optional: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (label: String | PlainText, element: InputElement, ?dispatch_action: (bool)?, ?block_id: (String)?, ?hint: (String | PlainText)?, ?optional: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> InputBlock
+    def self.[]: (label: String | PlainText, element: InputElement, ?dispatch_action: (bool)?, ?block_id: (String)?, ?hint: (String | PlainText)?, ?optional: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> InputBlock
+  end
+
+  class MarkdownBlock
+    include Value
+    include Block
+    attr_reader text: String
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (text: String, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MarkdownBlock
+    def self.[]: (text: String, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MarkdownBlock
+  end
+
+  class PlanBlock
+    include Value
+    include Block
+    attr_reader title: String
+    attr_reader tasks: Array[TaskCardBlock]
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (title: String, tasks: Array[TaskCardBlock], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (title: String, tasks: Array[TaskCardBlock], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlanBlock
+    def self.[]: (title: String, tasks: Array[TaskCardBlock], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlanBlock
+  end
+
+  class RichTextBlock
+    include Value
+    include Block
+    include DataTableCell
+    include TableCell
+    attr_reader elements: Array[RichTextBlockElement]
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (elements: Array[RichTextBlockElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (elements: Array[RichTextBlockElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextBlock
+    def self.[]: (elements: Array[RichTextBlockElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextBlock
+  end
+
+  class SectionBlock
+    include Value
+    include Block
+    attr_reader text: (String | Text)?
+    attr_reader fields: (Array[String | Text])?
+    attr_reader accessory: (Element)?
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?text: (String | Text)?, ?fields: (Array[String | Text])?, ?accessory: (Element)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?text: (String | Text)?, ?fields: (Array[String | Text])?, ?accessory: (Element)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> SectionBlock
+    def self.[]: (?text: (String | Text)?, ?fields: (Array[String | Text])?, ?accessory: (Element)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> SectionBlock
+  end
+
+  class TableBlock
+    include Value
+    include Block
+    attr_reader rows: Array[Array[TableCell]]
+    attr_reader column_settings: (Array[ColumnSettings])?
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
+    def self.[]: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
+  end
+
+  class TaskCardBlock
+    include Value
+    include Block
+    attr_reader task_id: String
+    attr_reader title: String
+    attr_reader details: (RichTextBlock)?
+    attr_reader output: (RichTextBlock)?
+    attr_reader sources: (Array[UrlSource])?
+    attr_reader status: :pending | :in_progress | :complete | :error
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (task_id: String, title: String, status: :pending | :in_progress | :complete | :error, ?details: (RichTextBlock)?, ?output: (RichTextBlock)?, ?sources: (Array[UrlSource])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (task_id: String, title: String, status: :pending | :in_progress | :complete | :error, ?details: (RichTextBlock)?, ?output: (RichTextBlock)?, ?sources: (Array[UrlSource])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TaskCardBlock
+    def self.[]: (task_id: String, title: String, status: :pending | :in_progress | :complete | :error, ?details: (RichTextBlock)?, ?output: (RichTextBlock)?, ?sources: (Array[UrlSource])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TaskCardBlock
+  end
+
+  class VideoBlock
+    include Value
+    include Block
+    attr_reader alt_text: String
+    attr_reader thumbnail_url: String
+    attr_reader title: String | PlainText
+    attr_reader video_url: String
+    attr_reader block_id: (String)?
+    attr_reader author_name: (String)?
+    attr_reader description: (String | PlainText)?
+    attr_reader provider_icon_url: (String)?
+    attr_reader provider_name: (String)?
+    attr_reader title_url: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (alt_text: String, thumbnail_url: String, title: String | PlainText, video_url: String, ?block_id: (String)?, ?author_name: (String)?, ?description: (String | PlainText)?, ?provider_icon_url: (String)?, ?provider_name: (String)?, ?title_url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (alt_text: String, thumbnail_url: String, title: String | PlainText, video_url: String, ?block_id: (String)?, ?author_name: (String)?, ?description: (String | PlainText)?, ?provider_icon_url: (String)?, ?provider_name: (String)?, ?title_url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> VideoBlock
+    def self.[]: (alt_text: String, thumbnail_url: String, title: String | PlainText, video_url: String, ?block_id: (String)?, ?author_name: (String)?, ?description: (String | PlainText)?, ?provider_icon_url: (String)?, ?provider_name: (String)?, ?title_url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> VideoBlock
+  end
+
+  class ButtonElement
+    include Value
+    include Element
+    attr_reader text: String | PlainText
+    attr_reader action_id: (String)?
+    attr_reader url: (String)?
+    attr_reader value: (String)?
+    attr_reader style: (:primary | :danger)?
+    attr_reader confirm: (Confirmation)?
+    attr_reader accessibility_label: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
+    def self.[]: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
+  end
+
+  class ChannelMultiSelectElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader initial_channels: (Array[String])?
+    attr_reader confirm: (Confirmation)?
+    attr_reader max_selected_items: (Integer)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?initial_channels: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?initial_channels: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChannelMultiSelectElement
+    def self.[]: (?action_id: (String)?, ?initial_channels: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChannelMultiSelectElement
+  end
+
+  class ChannelSelectElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader initial_channel: (String)?
+    attr_reader response_url_enabled: (bool)?
+    attr_reader confirm: (Confirmation)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?initial_channel: (String)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?initial_channel: (String)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChannelSelectElement
+    def self.[]: (?action_id: (String)?, ?initial_channel: (String)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChannelSelectElement
+  end
+
+  class CheckboxesElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader options: Array[Option]
+    attr_reader initial_options: (Array[Option])?
+    attr_reader confirm: (Confirmation)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (options: Array[Option], ?action_id: (String)?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (options: Array[Option], ?action_id: (String)?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CheckboxesElement
+    def self.[]: (options: Array[Option], ?action_id: (String)?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CheckboxesElement
+  end
+
+  class ConversationMultiSelectElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader initial_conversations: (Array[String])?
+    attr_reader default_to_current_conversation: (bool)?
+    attr_reader filter: (ConversationFilter)?
+    attr_reader confirm: (Confirmation)?
+    attr_reader max_selected_items: (Integer)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?initial_conversations: (Array[String])?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?initial_conversations: (Array[String])?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationMultiSelectElement
+    def self.[]: (?action_id: (String)?, ?initial_conversations: (Array[String])?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationMultiSelectElement
+  end
+
+  class ConversationSelectElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader initial_conversation: (String)?
+    attr_reader default_to_current_conversation: (bool)?
+    attr_reader filter: (ConversationFilter)?
+    attr_reader response_url_enabled: (bool)?
+    attr_reader confirm: (Confirmation)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?initial_conversation: (String)?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?initial_conversation: (String)?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationSelectElement
+    def self.[]: (?action_id: (String)?, ?initial_conversation: (String)?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationSelectElement
+  end
+
+  class DatePickerElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader initial_date: (String)?
+    attr_reader confirm: (Confirmation)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?initial_date: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?initial_date: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DatePickerElement
+    def self.[]: (?action_id: (String)?, ?initial_date: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DatePickerElement
+  end
+
+  class DateTimePickerElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader initial_date_time: (Integer)?
+    attr_reader confirm: (Confirmation)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?initial_date_time: (Integer)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?initial_date_time: (Integer)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DateTimePickerElement
+    def self.[]: (?action_id: (String)?, ?initial_date_time: (Integer)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DateTimePickerElement
+  end
+
+  class EmailInputElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader initial_value: (String)?
+    attr_reader dispatch_action_config: (DispatchActionConfiguration)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> EmailInputElement
+    def self.[]: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> EmailInputElement
+  end
+
+  class ExternalMultiSelectElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader min_query_length: (Integer)?
+    attr_reader initial_options: (Array[Option])?
+    attr_reader confirm: (Confirmation)?
+    attr_reader max_selected_items: (Integer)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ExternalMultiSelectElement
+    def self.[]: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ExternalMultiSelectElement
+  end
+
+  class ExternalSelectElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader min_query_length: (Integer)?
+    attr_reader initial_option: (Option)?
+    attr_reader confirm: (Confirmation)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ExternalSelectElement
+    def self.[]: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ExternalSelectElement
+  end
+
+  class FeedbackButtonsElement
+    include Value
+    include ContextActionsElement
+    include Element
+    attr_reader positive_button: FeedbackButton
+    attr_reader negative_button: FeedbackButton
+    attr_reader action_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (positive_button: FeedbackButton, negative_button: FeedbackButton, ?action_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (positive_button: FeedbackButton, negative_button: FeedbackButton, ?action_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FeedbackButtonsElement
+    def self.[]: (positive_button: FeedbackButton, negative_button: FeedbackButton, ?action_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FeedbackButtonsElement
+  end
+
+  class FileInputElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader filetypes: (Array[String])?
+    attr_reader max_files: (Integer)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?filetypes: (Array[String])?, ?max_files: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?filetypes: (Array[String])?, ?max_files: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FileInputElement
+    def self.[]: (?action_id: (String)?, ?filetypes: (Array[String])?, ?max_files: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FileInputElement
+  end
+
+  class IconButtonElement
+    include Value
+    include ContextActionsElement
+    include Element
+    attr_reader text: String | PlainText
+    attr_reader icon: (:trash)?
+    attr_reader action_id: (String)?
+    attr_reader value: (String)?
+    attr_reader confirm: (Confirmation)?
+    attr_reader accessibility_label: (String)?
+    attr_reader visible_to_user_ids: (Array[String])?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (text: String | PlainText, ?icon: (:trash)?, ?action_id: (String)?, ?value: (String)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?visible_to_user_ids: (Array[String])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String | PlainText, ?icon: (:trash)?, ?action_id: (String)?, ?value: (String)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?visible_to_user_ids: (Array[String])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> IconButtonElement
+    def self.[]: (text: String | PlainText, ?icon: (:trash)?, ?action_id: (String)?, ?value: (String)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?visible_to_user_ids: (Array[String])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> IconButtonElement
+  end
+
+  class ImageElement
+    include Value
+    include ContextElement
+    include Element
+    attr_reader alt_text: String
+    attr_reader image_url: (String)?
+    attr_reader slack_file: (SlackFile)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (alt_text: String, ?image_url: (String)?, ?slack_file: (SlackFile)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (alt_text: String, ?image_url: (String)?, ?slack_file: (SlackFile)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ImageElement
+    def self.[]: (alt_text: String, ?image_url: (String)?, ?slack_file: (SlackFile)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ImageElement
+  end
+
+  class NumberInputElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader is_decimal_allowed: bool
+    attr_reader initial_value: (String)?
+    attr_reader min_value: (Integer | Float)?
+    attr_reader max_value: (Integer | Float)?
+    attr_reader dispatch_action_config: (DispatchActionConfiguration)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (is_decimal_allowed: bool, ?action_id: (String)?, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (is_decimal_allowed: bool, ?action_id: (String)?, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
+    def self.[]: (is_decimal_allowed: bool, ?action_id: (String)?, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
+  end
+
+  class OverflowElement
+    include Value
+    include Element
+    attr_reader action_id: (String)?
+    attr_reader options: Array[Option]
+    attr_reader confirm: (Confirmation)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (options: Array[Option], ?action_id: (String)?, ?confirm: (Confirmation)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (options: Array[Option], ?action_id: (String)?, ?confirm: (Confirmation)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> OverflowElement
+    def self.[]: (options: Array[Option], ?action_id: (String)?, ?confirm: (Confirmation)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> OverflowElement
+  end
+
+  class PlainTextInputElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader initial_value: (String)?
+    attr_reader multiline: (bool)?
+    attr_reader min_length: (Integer)?
+    attr_reader max_length: (Integer)?
+    attr_reader dispatch_action_config: (DispatchActionConfiguration)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?initial_value: (String)?, ?multiline: (bool)?, ?min_length: (Integer)?, ?max_length: (Integer)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?initial_value: (String)?, ?multiline: (bool)?, ?min_length: (Integer)?, ?max_length: (Integer)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlainTextInputElement
+    def self.[]: (?action_id: (String)?, ?initial_value: (String)?, ?multiline: (bool)?, ?min_length: (Integer)?, ?max_length: (Integer)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlainTextInputElement
+  end
+
+  class RadioButtonsElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader options: Array[Option]
+    attr_reader initial_option: (Option)?
+    attr_reader confirm: (Confirmation)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (options: Array[Option], ?action_id: (String)?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (options: Array[Option], ?action_id: (String)?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RadioButtonsElement
+    def self.[]: (options: Array[Option], ?action_id: (String)?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RadioButtonsElement
+  end
+
+  class RichTextInputElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: String
+    attr_reader initial_value: (RichTextBlock)?
+    attr_reader dispatch_action_config: (DispatchActionConfiguration)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader min_lines: (Integer)?
+    attr_reader max_lines: (Integer)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (action_id: String, ?initial_value: (RichTextBlock)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?min_lines: (Integer)?, ?max_lines: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (action_id: String, ?initial_value: (RichTextBlock)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?min_lines: (Integer)?, ?max_lines: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextInputElement
+    def self.[]: (action_id: String, ?initial_value: (RichTextBlock)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?min_lines: (Integer)?, ?max_lines: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextInputElement
+  end
+
+  class StaticMultiSelectElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader options: (Array[Option])?
+    attr_reader option_groups: (Array[OptionGroup])?
+    attr_reader initial_options: (Array[Option])?
+    attr_reader confirm: (Confirmation)?
+    attr_reader max_selected_items: (Integer)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> StaticMultiSelectElement
+    def self.[]: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> StaticMultiSelectElement
+  end
+
+  class StaticSelectElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader options: (Array[Option])?
+    attr_reader option_groups: (Array[OptionGroup])?
+    attr_reader initial_option: (Option)?
+    attr_reader confirm: (Confirmation)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> StaticSelectElement
+    def self.[]: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> StaticSelectElement
+  end
+
+  class TimePickerElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader initial_time: (String)?
+    attr_reader timezone: (String)?
+    attr_reader confirm: (Confirmation)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?initial_time: (String)?, ?timezone: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?initial_time: (String)?, ?timezone: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TimePickerElement
+    def self.[]: (?action_id: (String)?, ?initial_time: (String)?, ?timezone: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TimePickerElement
+  end
+
+  class UrlInputElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader initial_value: (String)?
+    attr_reader dispatch_action_config: (DispatchActionConfiguration)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UrlInputElement
+    def self.[]: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UrlInputElement
+  end
+
+  class UserMultiSelectElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader initial_users: (Array[String])?
+    attr_reader confirm: (Confirmation)?
+    attr_reader max_selected_items: (Integer)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?initial_users: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?initial_users: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UserMultiSelectElement
+    def self.[]: (?action_id: (String)?, ?initial_users: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UserMultiSelectElement
+  end
+
+  class UserSelectElement
+    include Value
+    include Element
+    include InputElement
+    attr_reader action_id: (String)?
+    attr_reader initial_user: (String)?
+    attr_reader confirm: (Confirmation)?
+    attr_reader focus_on_load: (bool)?
+    attr_reader placeholder: (String | PlainText)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?action_id: (String)?, ?initial_user: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?action_id: (String)?, ?initial_user: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UserSelectElement
+    def self.[]: (?action_id: (String)?, ?initial_user: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UserSelectElement
+  end
+
+  class WorkflowButtonElement
+    include Value
+    include Element
+    attr_reader text: String | PlainText
+    attr_reader workflow: Workflow
+    attr_reader action_id: String
+    attr_reader confirm: (Confirmation)?
+    attr_reader style: (:primary | :danger)?
+    attr_reader accessibility_label: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (text: String | PlainText, workflow: Workflow, action_id: String, ?confirm: (Confirmation)?, ?style: (:primary | :danger)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String | PlainText, workflow: Workflow, action_id: String, ?confirm: (Confirmation)?, ?style: (:primary | :danger)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> WorkflowButtonElement
+    def self.[]: (text: String | PlainText, workflow: Workflow, action_id: String, ?confirm: (Confirmation)?, ?style: (:primary | :danger)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> WorkflowButtonElement
+  end
+
+  class AreaChart
+    include Value
+    include Chart
+    attr_reader series: Array[DataSeries]
+    attr_reader axis_config: AxisConfig
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> AreaChart
+    def self.[]: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> AreaChart
+  end
+
+  class AxisConfig
+    include Value
+    attr_reader categories: Array[String]
+    attr_reader x_label: (String)?
+    attr_reader y_label: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (categories: Array[String], ?x_label: (String)?, ?y_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (categories: Array[String], ?x_label: (String)?, ?y_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> AxisConfig
+    def self.[]: (categories: Array[String], ?x_label: (String)?, ?y_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> AxisConfig
+  end
+
+  class BarChart
+    include Value
+    include Chart
+    attr_reader series: Array[DataSeries]
+    attr_reader axis_config: AxisConfig
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> BarChart
+    def self.[]: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> BarChart
+  end
+
+  class ChartSegment
+    include Value
+    attr_reader label: String
+    attr_reader value: Integer | Float
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (label: String, value: Integer | Float, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (label: String, value: Integer | Float, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChartSegment
+    def self.[]: (label: String, value: Integer | Float, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChartSegment
+  end
+
+  class ColumnSettings
+    include Value
+    attr_reader align: (:left | :center | :right)?
+    attr_reader is_wrapped: (bool)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?align: (:left | :center | :right)?, ?is_wrapped: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?align: (:left | :center | :right)?, ?is_wrapped: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ColumnSettings
+    def self.[]: (?align: (:left | :center | :right)?, ?is_wrapped: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ColumnSettings
+  end
+
+  class Confirmation
+    include Value
+    attr_reader title: String | PlainText
+    attr_reader text: String | Text
+    attr_reader confirm: String | PlainText
+    attr_reader deny: String | PlainText
+    attr_reader style: (:primary | :danger)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (title: String | PlainText, text: String | Text, confirm: String | PlainText, deny: String | PlainText, ?style: (:primary | :danger)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (title: String | PlainText, text: String | Text, confirm: String | PlainText, deny: String | PlainText, ?style: (:primary | :danger)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Confirmation
+    def self.[]: (title: String | PlainText, text: String | Text, confirm: String | PlainText, deny: String | PlainText, ?style: (:primary | :danger)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Confirmation
+  end
+
+  class ConversationFilter
+    include Value
+    attr_reader include: (Array[String])?
+    attr_reader exclude_external_shared_channels: (bool)?
+    attr_reader exclude_bot_users: (bool)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?include: (Array[String])?, ?exclude_external_shared_channels: (bool)?, ?exclude_bot_users: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?include: (Array[String])?, ?exclude_external_shared_channels: (bool)?, ?exclude_bot_users: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationFilter
+    def self.[]: (?include: (Array[String])?, ?exclude_external_shared_channels: (bool)?, ?exclude_bot_users: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationFilter
+  end
+
+  class DataPoint
+    include Value
+    attr_reader label: String
+    attr_reader value: Integer | Float
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (label: String, value: Integer | Float, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (label: String, value: Integer | Float, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataPoint
+    def self.[]: (label: String, value: Integer | Float, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataPoint
+  end
+
+  class DataSeries
+    include Value
+    attr_reader name: String
+    attr_reader data: Array[DataPoint]
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (name: String, data: Array[DataPoint], ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (name: String, data: Array[DataPoint], ?additional_fields: Hash[String | Symbol, untyped]?) -> DataSeries
+    def self.[]: (name: String, data: Array[DataPoint], ?additional_fields: Hash[String | Symbol, untyped]?) -> DataSeries
+  end
+
+  class DispatchActionConfiguration
+    include Value
+    attr_reader trigger_actions_on: (Array[String])?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?trigger_actions_on: (Array[String])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?trigger_actions_on: (Array[String])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DispatchActionConfiguration
+    def self.[]: (?trigger_actions_on: (Array[String])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DispatchActionConfiguration
+  end
+
+  class FeedbackButton
+    include Value
+    attr_reader text: String | PlainText
+    attr_reader value: String
+    attr_reader accessibility_label: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (text: String | PlainText, value: String, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String | PlainText, value: String, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FeedbackButton
+    def self.[]: (text: String | PlainText, value: String, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FeedbackButton
+  end
+
+  class InputParameter
+    include Value
+    attr_reader name: String
+    attr_reader value: String
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (name: String, value: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (name: String, value: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> InputParameter
+    def self.[]: (name: String, value: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> InputParameter
+  end
+
+  class LineChart
+    include Value
+    include Chart
+    attr_reader series: Array[DataSeries]
+    attr_reader axis_config: AxisConfig
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> LineChart
+    def self.[]: (series: Array[DataSeries], axis_config: AxisConfig, ?additional_fields: Hash[String | Symbol, untyped]?) -> LineChart
+  end
+
+  class MarkdownText
+    include Value
+    include ContextElement
+    include Text
+    attr_reader text: String
+    attr_reader verbatim: (bool)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (text: String, ?verbatim: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String, ?verbatim: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MarkdownText
+    def self.[]: (text: String, ?verbatim: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MarkdownText
+  end
+
+  class Option
+    include Value
+    attr_reader text: String | Text
+    attr_reader value: String
+    attr_reader description: (String | Text)?
+    attr_reader url: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (text: String | Text, value: String, ?description: (String | Text)?, ?url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String | Text, value: String, ?description: (String | Text)?, ?url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Option
+    def self.[]: (text: String | Text, value: String, ?description: (String | Text)?, ?url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Option
+  end
+
+  class OptionGroup
+    include Value
+    attr_reader label: String | PlainText
+    attr_reader options: Array[Option]
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (label: String | PlainText, options: Array[Option], ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (label: String | PlainText, options: Array[Option], ?additional_fields: Hash[String | Symbol, untyped]?) -> OptionGroup
+    def self.[]: (label: String | PlainText, options: Array[Option], ?additional_fields: Hash[String | Symbol, untyped]?) -> OptionGroup
+  end
+
+  class PieChart
+    include Value
+    include Chart
+    attr_reader segments: Array[ChartSegment]
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (segments: Array[ChartSegment], ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (segments: Array[ChartSegment], ?additional_fields: Hash[String | Symbol, untyped]?) -> PieChart
+    def self.[]: (segments: Array[ChartSegment], ?additional_fields: Hash[String | Symbol, untyped]?) -> PieChart
+  end
+
+  class PlainText
+    include Value
+    include ContextElement
+    include Text
+    attr_reader text: String
+    attr_reader emoji: (bool)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (text: String, ?emoji: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String, ?emoji: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlainText
+    def self.[]: (text: String, ?emoji: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlainText
+  end
+
+  class RawNumber
+    include Value
+    include DataTableCell
+    attr_reader value: Integer | Float
+    attr_reader text: String
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (value: Integer | Float, text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (value: Integer | Float, text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> RawNumber
+    def self.[]: (value: Integer | Float, text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> RawNumber
+  end
+
+  class RawText
+    include Value
+    include DataTableCell
+    include TableCell
+    attr_reader text: String
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> RawText
+    def self.[]: (text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> RawText
+  end
+
+  class RichTextChannel
+    include Value
+    include RichTextSectionElement
+    attr_reader channel_id: String
+    attr_reader style: (RichTextStyle)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (channel_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (channel_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextChannel
+    def self.[]: (channel_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextChannel
+  end
+
+  class RichTextCodeBlock
+    include Value
+    include RichTextBlockElement
+    attr_reader elements: Array[RichTextSectionElement]
+    attr_reader border: (Integer)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (elements: Array[RichTextSectionElement], ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (elements: Array[RichTextSectionElement], ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextCodeBlock
+    def self.[]: (elements: Array[RichTextSectionElement], ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextCodeBlock
+  end
+
+  class RichTextEmoji
+    include Value
+    include RichTextSectionElement
+    attr_reader name: String
+    attr_reader skin_tone: (Integer)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (name: String, ?skin_tone: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (name: String, ?skin_tone: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextEmoji
+    def self.[]: (name: String, ?skin_tone: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextEmoji
+  end
+
+  class RichTextLink
+    include Value
+    include RichTextSectionElement
+    attr_reader url: String
+    attr_reader text: (String)?
+    attr_reader style: (RichTextStyle)?
+    attr_reader unsafe: (bool)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (url: String, ?text: (String)?, ?style: (RichTextStyle)?, ?unsafe: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (url: String, ?text: (String)?, ?style: (RichTextStyle)?, ?unsafe: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextLink
+    def self.[]: (url: String, ?text: (String)?, ?style: (RichTextStyle)?, ?unsafe: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextLink
+  end
+
+  class RichTextList
+    include Value
+    include RichTextBlockElement
+    attr_reader style: :bullet | :ordered
+    attr_reader elements: Array[RichTextSection]
+    attr_reader indent: (Integer)?
+    attr_reader offset: (Integer)?
+    attr_reader border: (Integer)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (style: :bullet | :ordered, elements: Array[RichTextSection], ?indent: (Integer)?, ?offset: (Integer)?, ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (style: :bullet | :ordered, elements: Array[RichTextSection], ?indent: (Integer)?, ?offset: (Integer)?, ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextList
+    def self.[]: (style: :bullet | :ordered, elements: Array[RichTextSection], ?indent: (Integer)?, ?offset: (Integer)?, ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextList
+  end
+
+  class RichTextQuote
+    include Value
+    include RichTextBlockElement
+    attr_reader elements: Array[RichTextSectionElement]
+    attr_reader border: (Integer)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (elements: Array[RichTextSectionElement], ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (elements: Array[RichTextSectionElement], ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextQuote
+    def self.[]: (elements: Array[RichTextSectionElement], ?border: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextQuote
+  end
+
+  class RichTextSection
+    include Value
+    include RichTextBlockElement
+    attr_reader elements: Array[RichTextSectionElement]
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (elements: Array[RichTextSectionElement], ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (elements: Array[RichTextSectionElement], ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextSection
+    def self.[]: (elements: Array[RichTextSectionElement], ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextSection
+  end
+
+  class RichTextText
+    include Value
+    include RichTextSectionElement
+    attr_reader text: String
+    attr_reader style: (RichTextStyle)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (text: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextText
+    def self.[]: (text: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextText
+  end
+
+  class RichTextUser
+    include Value
+    include RichTextSectionElement
+    attr_reader user_id: String
+    attr_reader style: (RichTextStyle)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (user_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (user_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextUser
+    def self.[]: (user_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextUser
+  end
+
+  class RichTextUserGroup
+    include Value
+    include RichTextSectionElement
+    attr_reader user_group_id: String
+    attr_reader style: (RichTextStyle)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (user_group_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (user_group_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextUserGroup
+    def self.[]: (user_group_id: String, ?style: (RichTextStyle)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextUserGroup
+  end
+
+  class SlackFile
+    include Value
+    attr_reader id: (String)?
+    attr_reader url: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?id: (String)?, ?url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?id: (String)?, ?url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> SlackFile
+    def self.[]: (?id: (String)?, ?url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> SlackFile
+  end
+
+  class SlackIcon
+    include Value
+    attr_reader name: String
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (name: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (name: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> SlackIcon
+    def self.[]: (name: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> SlackIcon
+  end
+
+  class Trigger
+    include Value
+    attr_reader url: String
+    attr_reader customizable_input_parameters: (Array[InputParameter])?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (url: String, ?customizable_input_parameters: (Array[InputParameter])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (url: String, ?customizable_input_parameters: (Array[InputParameter])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Trigger
+    def self.[]: (url: String, ?customizable_input_parameters: (Array[InputParameter])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Trigger
+  end
+
+  class UrlSource
+    include Value
+    attr_reader url: String
+    attr_reader text: String
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (url: String, text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (url: String, text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> UrlSource
+    def self.[]: (url: String, text: String, ?additional_fields: Hash[String | Symbol, untyped]?) -> UrlSource
+  end
+
+  class Workflow
+    include Value
+    attr_reader trigger: Trigger
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (trigger: Trigger, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (trigger: Trigger, ?additional_fields: Hash[String | Symbol, untyped]?) -> Workflow
+    def self.[]: (trigger: Trigger, ?additional_fields: Hash[String | Symbol, untyped]?) -> Workflow
+  end
+
+  class Attachment
+    include Value
+    attr_reader blocks: Array[Block]
+    attr_reader color: (String)?
+    attr_reader fallback: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (blocks: Array[Block], ?color: (String)?, ?fallback: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (blocks: Array[Block], ?color: (String)?, ?fallback: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Attachment
+    def self.[]: (blocks: Array[Block], ?color: (String)?, ?fallback: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> Attachment
+  end
+
+  class HomeTabView
+    include Value
+    attr_reader blocks: Array[Block]
+    attr_reader private_metadata: (String)?
+    attr_reader callback_id: (String)?
+    attr_reader external_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (blocks: Array[Block], ?private_metadata: (String)?, ?callback_id: (String)?, ?external_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (blocks: Array[Block], ?private_metadata: (String)?, ?callback_id: (String)?, ?external_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> HomeTabView
+    def self.[]: (blocks: Array[Block], ?private_metadata: (String)?, ?callback_id: (String)?, ?external_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> HomeTabView
+  end
+
+  class MessagePayload
+    include Value
+    attr_reader channel: String
+    attr_reader blocks: (Array[Block])?
+    attr_reader attachments: (Array[Attachment])?
+    attr_reader text: (String)?
+    attr_reader mrkdwn: (bool)?
+    attr_reader unfurl_links: (bool)?
+    attr_reader unfurl_media: (bool)?
+    attr_reader metadata: (Hash[String | Symbol, untyped])?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (channel: String, ?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?mrkdwn: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (channel: String, ?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?mrkdwn: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MessagePayload
+    def self.[]: (channel: String, ?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?mrkdwn: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MessagePayload
+  end
+
+  class MessageResponse
+    include Value
+    attr_reader blocks: (Array[Block])?
+    attr_reader attachments: (Array[Attachment])?
+    attr_reader text: (String)?
+    attr_reader mrkdwn: (bool)?
+    attr_reader replace_original: (bool)?
+    attr_reader response_type: (:in_channel | :ephemeral)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?mrkdwn: (bool)?, ?replace_original: (bool)?, ?response_type: (:in_channel | :ephemeral)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?mrkdwn: (bool)?, ?replace_original: (bool)?, ?response_type: (:in_channel | :ephemeral)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MessageResponse
+    def self.[]: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?mrkdwn: (bool)?, ?replace_original: (bool)?, ?response_type: (:in_channel | :ephemeral)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MessageResponse
+  end
+
+  class ModalView
+    include Value
+    attr_reader title: String | PlainText
+    attr_reader blocks: Array[Block]
+    attr_reader close: (String | PlainText)?
+    attr_reader submit: (String | PlainText)?
+    attr_reader private_metadata: (String)?
+    attr_reader callback_id: (String)?
+    attr_reader clear_on_close: (bool)?
+    attr_reader notify_on_close: (bool)?
+    attr_reader external_id: (String)?
+    attr_reader submit_disabled: (bool)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (title: String | PlainText, blocks: Array[Block], ?close: (String | PlainText)?, ?submit: (String | PlainText)?, ?private_metadata: (String)?, ?callback_id: (String)?, ?clear_on_close: (bool)?, ?notify_on_close: (bool)?, ?external_id: (String)?, ?submit_disabled: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (title: String | PlainText, blocks: Array[Block], ?close: (String | PlainText)?, ?submit: (String | PlainText)?, ?private_metadata: (String)?, ?callback_id: (String)?, ?clear_on_close: (bool)?, ?notify_on_close: (bool)?, ?external_id: (String)?, ?submit_disabled: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ModalView
+    def self.[]: (title: String | PlainText, blocks: Array[Block], ?close: (String | PlainText)?, ?submit: (String | PlainText)?, ?private_metadata: (String)?, ?callback_id: (String)?, ?clear_on_close: (bool)?, ?notify_on_close: (bool)?, ?external_id: (String)?, ?submit_disabled: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ModalView
+  end
+
+  class WebhookMessage
+    include Value
+    attr_reader blocks: (Array[Block])?
+    attr_reader attachments: (Array[Attachment])?
+    attr_reader text: (String)?
+    attr_reader response_type: (:in_channel | :ephemeral)?
+    attr_reader replace_original: (bool)?
+    attr_reader delete_original: (bool)?
+    attr_reader unfurl_links: (bool)?
+    attr_reader unfurl_media: (bool)?
+    attr_reader metadata: (Hash[String | Symbol, untyped])?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?response_type: (:in_channel | :ephemeral)?, ?replace_original: (bool)?, ?delete_original: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?response_type: (:in_channel | :ephemeral)?, ?replace_original: (bool)?, ?delete_original: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> WebhookMessage
+    def self.[]: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?response_type: (:in_channel | :ephemeral)?, ?replace_original: (bool)?, ?delete_original: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> WebhookMessage
+  end
+
+  module StyleFlags
+    NAMES: Array[String]
+  end
+
+  class RichTextStyle
+    include Value
+    attr_reader bold: bool?
+    attr_reader client_highlight: bool?
+    attr_reader code: bool?
+    attr_reader highlight: bool?
+    attr_reader italic: bool?
+    attr_reader strike: bool?
+    attr_reader unlink: bool?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (?bold: bool?, ?client_highlight: bool?, ?code: bool?, ?highlight: bool?, ?italic: bool?, ?strike: bool?, ?unlink: bool?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (?bold: bool?, ?client_highlight: bool?, ?code: bool?, ?highlight: bool?, ?italic: bool?, ?strike: bool?, ?unlink: bool?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextStyle
+    def self.[]: (?bold: bool?, ?client_highlight: bool?, ?code: bool?, ?highlight: bool?, ?italic: bool?, ?strike: bool?, ?unlink: bool?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextStyle
+  end
+end

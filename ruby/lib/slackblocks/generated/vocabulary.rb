@@ -1,0 +1,7 @@
+# Generated from spec/vocabulary.json. Do not edit by hand.
+module Slackblocks
+  module Vocabulary
+    ICON_NAMES = Value.deep_freeze(["archive", "book", "bookmark", "bot", "bug", "calendar", "call", "caret-left", "caret-right", "check", "clipboard", "code", "comment", "compass", "copy", "cube", "download", "edit", "email", "eye-closed", "eye-open", "file", "flag", "folder", "gear", "globe", "heart", "help", "image", "info", "key", "lightbulb", "link", "map", "mobile", "new-window", "pin", "plus", "refine", "refresh", "rocket", "save", "screen", "share", "sparkle", "star", "star-filled", "tag", "thumbs-down", "thumbs-up", "trash", "upload", "user", "warning"])
+    SURFACE_BLOCK_TYPES = Value.deep_freeze({"home" => ["actions", "card", "carousel", "container", "context", "data_table", "data_visualization", "divider", "header", "image", "input", "rich_text", "section", "table", "video"], "message" => ["actions", "card", "carousel", "container", "context", "context_actions", "data_table", "data_visualization", "divider", "file", "header", "image", "input", "markdown", "plan", "rich_text", "section", "table", "task_card", "video"], "modal" => ["actions", "alert", "card", "context", "divider", "header", "image", "input", "rich_text", "section", "video"]})
+  end
+end
