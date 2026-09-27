@@ -162,10 +162,8 @@ describe("table blocks", () => {
     ).toBe("table");
   });
 
-  it("rejects ragged rows", () => {
-    expect(() => tableBlock({ rows: [row("Name", "Role"), row("Alice")] })).toThrowError(
-      InvalidUsageError,
-    );
+  it("accepts ragged rows", () => {
+    expect(tableBlock({ rows: [row("Name", "Role"), row("Alice")] }).rows).toHaveLength(2);
   });
 
   it("rejects more than 100 rows", () => {
@@ -230,7 +228,8 @@ describe("video blocks", () => {
 describe("raw JSON validation", () => {
   it("rejects known objects with missing required fields", () => {
     expect(validate({ type: "header" })).toBe(false);
-    expect(validate({ type: "button", text: { type: "plain_text", text: "A" } })).toBe(false);
+    expect(validate({ type: "button", action_id: "a" })).toBe(false);
+    expect(validate({ type: "rich_text_input" })).toBe(false);
     expect(validate({ type: "image", alt_text: "x" })).toBe(false);
     expect(validate({ type: "image", image_url: "https://example.com/a.png" })).toBe(false);
     expect(validate({ type: "input", label: { type: "plain_text", text: "L" } })).toBe(false);
@@ -243,9 +242,9 @@ describe("raw JSON validation", () => {
 
   it("reports missing required fields with the missing-required category", () => {
     expect(() => assertValid({ type: "header" })).toThrowError(MissingRequiredError);
-    expect(() =>
-      assertValid({ type: "button", text: { type: "plain_text", text: "A" } }),
-    ).toThrowError(MissingRequiredError);
+    expect(() => assertValid({ type: "button", action_id: "a" })).toThrowError(
+      MissingRequiredError,
+    );
   });
 
   it("validates option entries reached through typed parents", () => {

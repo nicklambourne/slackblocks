@@ -53,6 +53,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   per column.
 - `input` blocks are now allowed in messages and `data_visualization` blocks in App
   Home tabs.
+- `actionId` is now optional on every interactive element except `richTextInput`
+  and `workflowButton`, in both the factory input types and the fluent builders;
+  when omitted, no `action_id` is emitted.
+- Validation now accepts task-card URL sources of any length, empty markdown
+  blocks, modals and App Home tabs with no blocks, and table rows with different
+  numbers of cells (data tables still require equal rows).
 
 ## [2.4.0] — 2026-09-17
 

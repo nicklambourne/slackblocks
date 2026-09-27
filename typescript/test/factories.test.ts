@@ -74,10 +74,9 @@ describe("data-first factories", () => {
     expect(sectionBlock({ text: "x".repeat(3001) }, { validate: false }).type).toBe("section");
   });
 
-  it("bounds the URL-source URL to between 1 and 3000 code points", () => {
-    expect(urlSource({ url: "x".repeat(3000), text: "docs" }).type).toBe("url");
-    expect(() => urlSource({ url: "", text: "docs" })).toThrowError(LengthError);
-    expect(() => urlSource({ url: "x".repeat(3001), text: "docs" })).toThrowError(LengthError);
+  it("does not bound the URL-source URL length", () => {
+    expect(urlSource({ url: "", text: "docs" }).url).toBe("");
+    expect(urlSource({ url: "x".repeat(30000), text: "docs" }).url).toHaveLength(30000);
   });
 
   it("validates arbitrary existing JSON with a type guard", () => {

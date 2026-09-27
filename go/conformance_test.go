@@ -32,8 +32,8 @@ func TestSharedValidFixtures(t *testing.T) {
 	if manifest.SpecVersion != slackblocks.SpecVersion {
 		t.Fatalf("spec version = %q, want %q", slackblocks.SpecVersion, manifest.SpecVersion)
 	}
-	if len(manifest.Fixtures) != 101 {
-		t.Fatalf("expected the complete 101-fixture corpus, got %d", len(manifest.Fixtures))
+	if len(manifest.Fixtures) != 105 {
+		t.Fatalf("expected the complete 105-fixture corpus, got %d", len(manifest.Fixtures))
 	}
 	assertEmptySkipList(t)
 
@@ -60,6 +60,44 @@ func TestSharedValidFixtures(t *testing.T) {
 				want, _ := json.MarshalIndent(expected, "", "  ")
 				got, _ := json.MarshalIndent(actual, "", "  ")
 				t.Fatalf("fixture mismatch\nwant:\n%s\ngot:\n%s", want, got)
+			}
+		})
+	}
+}
+
+// TestRelaxedFixturesThroughFluentBuilders pins the fixtures for rules the spec
+// relaxed, built with the named fluent methods rather than the generic Set path.
+func TestRelaxedFixturesThroughFluentBuilders(t *testing.T) {
+	cases := map[string]slackblocks.Buildable{
+		"elements/button_without_action_id": slackblocks.NewButton().Text("Click Me").Value("click_me"),
+		"blocks/table_ragged_rows": slackblocks.NewTableBlock().BlockID("fake_block_id").Rows(
+			[]slackblocks.TableCell{rawText("Header A"), rawText("Header B")},
+			[]slackblocks.TableCell{rawText("Only one cell")},
+		),
+		"blocks/markdown_empty":      slackblocks.NewMarkdownBlock().BlockID("fake_block_id").Text(""),
+		"views/modal_without_blocks": slackblocks.NewModal().Title("Empty").Blocks(),
+	}
+	for id, builder := range cases {
+		t.Run(id, func(t *testing.T) {
+			data, err := os.ReadFile(filepath.Join("..", "spec", "fixtures", "valid", id+".json"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			var expected any
+			if err := json.Unmarshal(data, &expected); err != nil {
+				t.Fatal(err)
+			}
+			built, err := builder.Build()
+			if err != nil {
+				t.Fatal(err)
+			}
+			actual, err := materialiseFixture(built)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !reflect.DeepEqual(actual, expected) {
+				got, _ := json.MarshalIndent(actual, "", "  ")
+				t.Fatalf("fixture mismatch, got:\n%s", got)
 			}
 		})
 	}

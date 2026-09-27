@@ -21,7 +21,7 @@ export function modal(
   input: {
     /** Plain-text modal title, up to 24 characters. */
     title: TextLike;
-    /** Between one and 100 modal-compatible blocks. */
+    /** Up to 100 modal-compatible blocks. */
     blocks: JsonObject[];
     /** Optional plain-text close-button label. */
     close?: TextLike;
@@ -75,7 +75,7 @@ export function modal(
  */
 export function homeTab(
   input: {
-    /** Between one and 100 App Home-compatible blocks. */
+    /** Up to 100 App Home-compatible blocks. */
     blocks: JsonObject[];
     /** Opaque application metadata returned with view interactions. */
     privateMetadata?: string;

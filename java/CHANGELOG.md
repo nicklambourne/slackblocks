@@ -53,6 +53,15 @@ in lockstep with the Python, TypeScript, and Go packages.
   `getInitialValue()` returns one), since Slack rejects a bare rich text
   element there. This is a source-incompatible change for callers that passed a
   `RichTextText`.
+- `actionId` is now optional on buttons, checkboxes, date, datetime and time
+  pickers, email, URL, number, plain-text and file inputs, overflow menus, radio
+  buttons, and every select and multi-select, and nothing is sent when it is
+  omitted; rich text inputs and workflow buttons still require it. Their
+  `getActionId()` keeps its `String` return type and throws
+  `IllegalStateException` when no action identifier is set.
+- Validation now accepts an empty markdown block, a modal or home tab with no
+  blocks, a `url` source URL of any length, and `table` rows with different
+  numbers of cells (`DataTableBlock` rows must still match).
 
 ## [2.4.0] — 2026-09-17
 

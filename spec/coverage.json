@@ -27,14 +27,14 @@
     ],
     "blocks.image": ["blocks/image_block_only", "blocks/image_block_slack_file"],
     "blocks.input": ["blocks/input_block_only"],
-    "blocks.markdown": ["blocks/markdown_block_basic"],
+    "blocks.markdown": ["blocks/markdown_block_basic", "blocks/markdown_empty"],
     "blocks.plan": ["blocks/plan_block"],
     "blocks.rich_text": ["blocks/rich_text_block_basic"],
     "blocks.section": ["blocks/section_block_text_only"],
-    "blocks.table": ["blocks/table_block"],
+    "blocks.table": ["blocks/table_block", "blocks/table_ragged_rows"],
     "blocks.task_card": ["blocks/task_card_block"],
     "blocks.video": ["blocks/video_block_basic"],
-    "elements.button": ["elements/button_basic", "elements/button_text_at_limit"],
+    "elements.button": ["elements/button_basic", "elements/button_text_at_limit", "elements/button_without_action_id"],
     "elements.checkboxes": ["elements/checkbox_basic"],
     "elements.date_picker": ["elements/date_picker_basic"],
     "elements.datetime_picker": ["elements/datetime_picker_basic"],
@@ -106,6 +106,6 @@
     "rich_text.user": ["rich_text/rich_text_user_basic"],
     "rich_text.user_group": ["rich_text/rich_text_user_group_basic"],
     "views.home_tab": ["views/hometab_view"],
-    "views.modal": ["views/modal_with_blocks"]
+    "views.modal": ["views/modal_with_blocks", "views/modal_without_blocks"]
   }
 }

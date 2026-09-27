@@ -52,6 +52,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `TableBlock` no longer requires one `column_settings` entry per column.
 - Messages now accept `InputBlock`, and `HomeTabView` accepts
   `DataVisualizationBlock`.
+- `action_id` is now optional (and omitted from the payload when unset) on
+  every interactive element except `RichTextInput` and `WorkflowButton`; it
+  defaults to `None`, except on `CheckboxGroup`, `OverflowMenu`,
+  `RadioButtonGroup` and `StaticMultiSelectMenu`, where a required `options`
+  follows it, so pass `action_id=None` there.
+- Newly accepted: a `URLSource` `url` of any length, an empty `MarkdownBlock`
+  `text`, a view with no blocks, and `TableBlock` rows with different numbers
+  of cells.
 
 ## [2.4.0] — 2026-09-17
 

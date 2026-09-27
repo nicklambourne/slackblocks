@@ -262,11 +262,12 @@ def field_methods(model: Model, owner: dict, field: dict, imports: Imports) -> l
 
 GETTER_SKIPS = {("block", "block_id")}  # Block#getBlockId comes from the SDK LayoutBlock contract
 
-# Getters that keep their 2.x signatures until 3.0, although spec 1.1.0 changed whether the field
+# Getters that keep their 2.x signatures until 3.0, although the spec changed whether the field
 # is required. Newly required fields still return an Optional; ImageBlock.image_url, now optional
-# because a Slack file can replace it, still returns String and throws when the URL is not set.
-# Builders and validation follow model.json either way. Maps (Java type, wire field) to the
-# required flag the getter is generated with.
+# because a Slack file can replace it, still returns String and throws when the URL is not set,
+# and so does getActionId() on the elements whose action_id became optional. Builders and
+# validation follow model.json either way. Maps (Java type, wire field) to the required flag the
+# getter is generated with.
 GETTER_REQUIRED_UNTIL_3_0 = {
     ("SlackIcon", "name"): False,
     ("TaskCardBlock", "status"): False,
@@ -275,6 +276,33 @@ GETTER_REQUIRED_UNTIL_3_0 = {
     ("IconButtonElement", "icon"): False,
     ("FileBlock", "source"): False,
     ("ImageBlock", "image_url"): True,
+    **{
+        (element, "action_id"): True
+        for element in (
+            "ButtonElement",
+            "ChannelMultiSelectElement",
+            "ChannelSelectElement",
+            "CheckboxesElement",
+            "ConversationMultiSelectElement",
+            "ConversationSelectElement",
+            "DatePickerElement",
+            "DateTimePickerElement",
+            "EmailInputElement",
+            "ExternalMultiSelectElement",
+            "ExternalSelectElement",
+            "FileInputElement",
+            "NumberInputElement",
+            "OverflowElement",
+            "PlainTextInputElement",
+            "RadioButtonsElement",
+            "StaticMultiSelectElement",
+            "StaticSelectElement",
+            "TimePickerElement",
+            "UrlInputElement",
+            "UserMultiSelectElement",
+            "UserSelectElement",
+        )
+    },
 }
 
 
@@ -386,7 +414,7 @@ CONVENIENCE = {
 }
 BUILDER_SHORTCUTS = {
     "HeaderBlock": ("String text", "builder().text(text)", "Starts a header builder with its required text.", [("text", "header text")]),
-    "ButtonElement": ("String text, String actionId", "builder().text(text).actionId(actionId)", "Starts a button builder with its required label and action identifier.", [("text", "button label"), ("actionId", "identifier returned in interaction payloads")]),
+    "ButtonElement": ("String text, String actionId", "builder().text(text).actionId(actionId)", "Starts a button builder with its required label and an action identifier.", [("text", "button label"), ("actionId", "identifier returned in interaction payloads")]),
     "Option": ("String text, String value", "builder().text(text).value(value)", "Starts an option builder with its required label and value.", [("text", "visible option label"), ("value", "application-defined value")]),
     "ImageBlock": ("String imageUrl, String altText", "builder().imageUrl(imageUrl).altText(altText)", "Starts an image builder with its required URL and alternative text.", [("imageUrl", "public image URL"), ("altText", "accessible image description")]),
 }

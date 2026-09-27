@@ -18,7 +18,7 @@ namespace Slackblocks.Payloads;
 public sealed partial class HomeTabView : global::Slackblocks.SlackObject
 {
     /// <summary>Creates and validates a <see cref="HomeTabView"/>.</summary>
-    /// <param name="blocks">The blocks shown on the App Home tab, in display order. Required. Must contain between 1 and 100 items.</param>
+    /// <param name="blocks">The blocks shown on the App Home tab, in display order. Required. Slack allows at most 100 items.</param>
     /// <param name="privateMetadata">Application-defined data returned in view payloads. Slack allows at most 3000 characters.</param>
     /// <param name="callbackId">An identifier returned in view payloads so your app can recognize the view. Slack allows at most 255 characters.</param>
     /// <param name="externalId">A workspace-unique identifier you can use to update the view later. Slack allows at most 255 characters.</param>

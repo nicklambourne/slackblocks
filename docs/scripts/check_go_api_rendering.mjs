@@ -99,7 +99,7 @@ assert.match(
 );
 assert.match(
   pages.get("elements"),
-  /^- Required: Text and ActionID\.$/m,
+  /^- Required: Text, Workflow, and ActionID\.$/m,
   "Builder docs must list required fields",
 );
 assert.match(

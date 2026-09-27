@@ -54,6 +54,16 @@ lockstep with the Python, TypeScript, Go, and Java packages.
 - `RichTextInputElement` `initialValue` (and the `InitialValue` property) is now
   a `RichTextBlock`, since Slack rejects a bare rich text element there. Callers
   that passed a `RichTextText` need to wrap it in a `RichTextBlock`.
+- `actionId` is now optional on buttons, checkboxes, date, datetime and time
+  pickers, email, URL, number, plain-text and file inputs, overflow menus, radio
+  buttons, and every select and multi-select, and nothing is sent when it is
+  `null`; rich text inputs and workflow buttons still require it. The
+  parameter keeps its position and becomes `string?` (defaulting to `null`
+  except on `CheckboxesElement`, `OverflowElement`, and `RadioButtonsElement`,
+  where the required `options` follows it), and `ActionId` is now `string?`.
+- Validation now accepts an empty markdown block, a modal or home tab with no
+  blocks, a `url` source URL of any length, and `table` rows with different
+  numbers of cells (`DataTableBlock` rows must still match).
 
 ## [2.4.0] — 2026-09-17
 
