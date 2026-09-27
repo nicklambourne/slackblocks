@@ -103,6 +103,17 @@ def field_type(field: dict, enum_values: dict[str, list[str]]) -> str:
     raise ValueError(f"Unsupported field kind: {kind}")
 
 
+def reader_type(field: dict, enum_values: dict[str, list[str]]) -> str:
+    kind = field["kind"]
+    if kind == "text":
+        return field["type"]
+    if kind == "textList":
+        return f"Array[{field['type']}]"
+    if kind == "map":
+        return "Hash[String, untyped]"
+    return field_type(field, enum_values)
+
+
 def model_outputs(model: dict) -> tuple[str, str, str]:
     interfaces = {item["name"] for item in model["interfaces"]}
     enum_values = {
@@ -203,12 +214,13 @@ def model_outputs(model: dict) -> tuple[str, str, str]:
         required, optional = [], []
         for original, field in zip(item["fields"], fields):
             declared = field_type(original, enum_values)
+            normalized = reader_type(original, enum_values)
             if field["required"] and field["name"] not in defaults:
                 required.append(f"{field['name']}: {declared}")
-                read_type = declared
+                read_type = normalized
             else:
                 optional.append(f"?{field['name']}: ({declared})?")
-                read_type = f"({declared})?"
+                read_type = f"({normalized})?"
             signatures.append(f"    attr_reader {field['name']}: {read_type}")
         signatures.append(
             "    attr_reader additional_fields: Hash[String, untyped]"
@@ -223,7 +235,7 @@ def model_outputs(model: dict) -> tuple[str, str, str]:
             "docUrl": item["docUrl"], "wireType": item["wireType"],
             "fields": [
                 {"name": f["name"], "wire": f["wire"], "type": field_type(original, enum_values),
-                 "required": f["required"] and f["name"] not in defaults,
+                 "readerType": reader_type(original, enum_values), "required": f["required"] and f["name"] not in defaults,
                  "description": original["description"]}
                 for original, f in zip(item["fields"], fields)
             ],

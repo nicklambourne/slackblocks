@@ -94,7 +94,7 @@ module Slackblocks
   class AlertBlock
     include Value
     include Block
-    attr_reader text: String | Text
+    attr_reader text: Text
     attr_reader level: (:default | :info | :warning | :error | :success)?
     attr_reader block_id: (String)?
     attr_reader additional_fields: Hash[String, untyped]
@@ -108,12 +108,12 @@ module Slackblocks
     include Block
     attr_reader hero_image: (ImageElement)?
     attr_reader icon: (ImageElement)?
-    attr_reader title: (String | Text)?
-    attr_reader subtitle: (String | Text)?
-    attr_reader body: (String | Text)?
+    attr_reader title: (Text)?
+    attr_reader subtitle: (Text)?
+    attr_reader body: (Text)?
     attr_reader actions: (Array[ButtonElement])?
     attr_reader slack_icon: (SlackIcon)?
-    attr_reader subtext: (String | Text)?
+    attr_reader subtext: (Text)?
     attr_reader block_id: (String)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?hero_image: (ImageElement)?, ?icon: (ImageElement)?, ?title: (String | Text)?, ?subtitle: (String | Text)?, ?body: (String | Text)?, ?actions: (Array[ButtonElement])?, ?slack_icon: (SlackIcon)?, ?subtext: (String | Text)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
@@ -136,9 +136,9 @@ module Slackblocks
     include Value
     include Block
     attr_reader child_blocks: Array[Block]
-    attr_reader title: (String | PlainText)?
+    attr_reader title: (PlainText)?
     attr_reader rich_text_title: (RichTextBlock)?
-    attr_reader subtitle: (String | Text)?
+    attr_reader subtitle: (Text)?
     attr_reader width: (:narrow | :standard | :wide | :full)?
     attr_reader icon: (ImageElement)?
     attr_reader is_collapsible: (bool)?
@@ -224,7 +224,7 @@ module Slackblocks
   class HeaderBlock
     include Value
     include Block
-    attr_reader text: String | PlainText
+    attr_reader text: PlainText
     attr_reader block_id: (String)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (text: String | PlainText, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
@@ -238,7 +238,7 @@ module Slackblocks
     attr_reader image_url: (String)?
     attr_reader slack_file: (SlackFile)?
     attr_reader alt_text: String
-    attr_reader title: (String | PlainText)?
+    attr_reader title: (PlainText)?
     attr_reader block_id: (String)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (alt_text: String, ?image_url: (String)?, ?slack_file: (SlackFile)?, ?title: (String | PlainText)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
@@ -249,11 +249,11 @@ module Slackblocks
   class InputBlock
     include Value
     include Block
-    attr_reader label: String | PlainText
+    attr_reader label: PlainText
     attr_reader element: InputElement
     attr_reader dispatch_action: (bool)?
     attr_reader block_id: (String)?
-    attr_reader hint: (String | PlainText)?
+    attr_reader hint: (PlainText)?
     attr_reader optional: (bool)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (label: String | PlainText, element: InputElement, ?dispatch_action: (bool)?, ?block_id: (String)?, ?hint: (String | PlainText)?, ?optional: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
@@ -300,8 +300,8 @@ module Slackblocks
   class SectionBlock
     include Value
     include Block
-    attr_reader text: (String | Text)?
-    attr_reader fields: (Array[String | Text])?
+    attr_reader text: (Text)?
+    attr_reader fields: (Array[Text])?
     attr_reader accessory: (Element)?
     attr_reader block_id: (String)?
     attr_reader additional_fields: Hash[String, untyped]
@@ -343,11 +343,11 @@ module Slackblocks
     include Block
     attr_reader alt_text: String
     attr_reader thumbnail_url: String
-    attr_reader title: String | PlainText
+    attr_reader title: PlainText
     attr_reader video_url: String
     attr_reader block_id: (String)?
     attr_reader author_name: (String)?
-    attr_reader description: (String | PlainText)?
+    attr_reader description: (PlainText)?
     attr_reader provider_icon_url: (String)?
     attr_reader provider_name: (String)?
     attr_reader title_url: (String)?
@@ -360,7 +360,7 @@ module Slackblocks
   class ButtonElement
     include Value
     include Element
-    attr_reader text: String | PlainText
+    attr_reader text: PlainText
     attr_reader action_id: (String)?
     attr_reader url: (String)?
     attr_reader value: (String)?
@@ -382,7 +382,7 @@ module Slackblocks
     attr_reader confirm: (Confirmation)?
     attr_reader max_selected_items: (Integer)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?initial_channels: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?initial_channels: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChannelMultiSelectElement
@@ -398,7 +398,7 @@ module Slackblocks
     attr_reader response_url_enabled: (bool)?
     attr_reader confirm: (Confirmation)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?initial_channel: (String)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?initial_channel: (String)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChannelSelectElement
@@ -431,7 +431,7 @@ module Slackblocks
     attr_reader confirm: (Confirmation)?
     attr_reader max_selected_items: (Integer)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?initial_conversations: (Array[String])?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?initial_conversations: (Array[String])?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationMultiSelectElement
@@ -449,7 +449,7 @@ module Slackblocks
     attr_reader response_url_enabled: (bool)?
     attr_reader confirm: (Confirmation)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?initial_conversation: (String)?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?initial_conversation: (String)?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationSelectElement
@@ -464,7 +464,7 @@ module Slackblocks
     attr_reader initial_date: (String)?
     attr_reader confirm: (Confirmation)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?initial_date: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?initial_date: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DatePickerElement
@@ -493,7 +493,7 @@ module Slackblocks
     attr_reader initial_value: (String)?
     attr_reader dispatch_action_config: (DispatchActionConfiguration)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> EmailInputElement
@@ -510,7 +510,7 @@ module Slackblocks
     attr_reader confirm: (Confirmation)?
     attr_reader max_selected_items: (Integer)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ExternalMultiSelectElement
@@ -526,7 +526,7 @@ module Slackblocks
     attr_reader initial_option: (Option)?
     attr_reader confirm: (Confirmation)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ExternalSelectElement
@@ -563,7 +563,7 @@ module Slackblocks
     include Value
     include ContextActionsElement
     include Element
-    attr_reader text: String | PlainText
+    attr_reader text: PlainText
     attr_reader icon: (:trash)?
     attr_reader action_id: (String)?
     attr_reader value: (String)?
@@ -600,7 +600,7 @@ module Slackblocks
     attr_reader max_value: (Integer | Float)?
     attr_reader dispatch_action_config: (DispatchActionConfiguration)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (is_decimal_allowed: bool, ?action_id: (String)?, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (is_decimal_allowed: bool, ?action_id: (String)?, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
@@ -630,7 +630,7 @@ module Slackblocks
     attr_reader max_length: (Integer)?
     attr_reader dispatch_action_config: (DispatchActionConfiguration)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?initial_value: (String)?, ?multiline: (bool)?, ?min_length: (Integer)?, ?max_length: (Integer)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?initial_value: (String)?, ?multiline: (bool)?, ?min_length: (Integer)?, ?max_length: (Integer)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlainTextInputElement
@@ -660,7 +660,7 @@ module Slackblocks
     attr_reader initial_value: (RichTextBlock)?
     attr_reader dispatch_action_config: (DispatchActionConfiguration)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader min_lines: (Integer)?
     attr_reader max_lines: (Integer)?
     attr_reader additional_fields: Hash[String, untyped]
@@ -680,7 +680,7 @@ module Slackblocks
     attr_reader confirm: (Confirmation)?
     attr_reader max_selected_items: (Integer)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> StaticMultiSelectElement
@@ -697,7 +697,7 @@ module Slackblocks
     attr_reader initial_option: (Option)?
     attr_reader confirm: (Confirmation)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> StaticSelectElement
@@ -713,7 +713,7 @@ module Slackblocks
     attr_reader timezone: (String)?
     attr_reader confirm: (Confirmation)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?initial_time: (String)?, ?timezone: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?initial_time: (String)?, ?timezone: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TimePickerElement
@@ -728,7 +728,7 @@ module Slackblocks
     attr_reader initial_value: (String)?
     attr_reader dispatch_action_config: (DispatchActionConfiguration)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UrlInputElement
@@ -744,7 +744,7 @@ module Slackblocks
     attr_reader confirm: (Confirmation)?
     attr_reader max_selected_items: (Integer)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?initial_users: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?initial_users: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UserMultiSelectElement
@@ -759,7 +759,7 @@ module Slackblocks
     attr_reader initial_user: (String)?
     attr_reader confirm: (Confirmation)?
     attr_reader focus_on_load: (bool)?
-    attr_reader placeholder: (String | PlainText)?
+    attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?action_id: (String)?, ?initial_user: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?action_id: (String)?, ?initial_user: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UserSelectElement
@@ -769,7 +769,7 @@ module Slackblocks
   class WorkflowButtonElement
     include Value
     include Element
-    attr_reader text: String | PlainText
+    attr_reader text: PlainText
     attr_reader workflow: Workflow
     attr_reader action_id: String
     attr_reader confirm: (Confirmation)?
@@ -836,10 +836,10 @@ module Slackblocks
 
   class Confirmation
     include Value
-    attr_reader title: String | PlainText
-    attr_reader text: String | Text
-    attr_reader confirm: String | PlainText
-    attr_reader deny: String | PlainText
+    attr_reader title: PlainText
+    attr_reader text: Text
+    attr_reader confirm: PlainText
+    attr_reader deny: PlainText
     attr_reader style: (:primary | :danger)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (title: String | PlainText, text: String | Text, confirm: String | PlainText, deny: String | PlainText, ?style: (:primary | :danger)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
@@ -889,7 +889,7 @@ module Slackblocks
 
   class FeedbackButton
     include Value
-    attr_reader text: String | PlainText
+    attr_reader text: PlainText
     attr_reader value: String
     attr_reader accessibility_label: (String)?
     attr_reader additional_fields: Hash[String, untyped]
@@ -933,9 +933,9 @@ module Slackblocks
 
   class Option
     include Value
-    attr_reader text: String | Text
+    attr_reader text: Text
     attr_reader value: String
-    attr_reader description: (String | Text)?
+    attr_reader description: (Text)?
     attr_reader url: (String)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (text: String | Text, value: String, ?description: (String | Text)?, ?url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
@@ -945,7 +945,7 @@ module Slackblocks
 
   class OptionGroup
     include Value
-    attr_reader label: String | PlainText
+    attr_reader label: PlainText
     attr_reader options: Array[Option]
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (label: String | PlainText, options: Array[Option], ?additional_fields: Hash[String | Symbol, untyped]?) -> void
@@ -1191,7 +1191,7 @@ module Slackblocks
     attr_reader mrkdwn: (bool)?
     attr_reader unfurl_links: (bool)?
     attr_reader unfurl_media: (bool)?
-    attr_reader metadata: (Hash[String | Symbol, untyped])?
+    attr_reader metadata: (Hash[String, untyped])?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (channel: String, ?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?mrkdwn: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (channel: String, ?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?mrkdwn: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MessagePayload
@@ -1214,10 +1214,10 @@ module Slackblocks
 
   class ModalView
     include Value
-    attr_reader title: String | PlainText
+    attr_reader title: PlainText
     attr_reader blocks: Array[Block]
-    attr_reader close: (String | PlainText)?
-    attr_reader submit: (String | PlainText)?
+    attr_reader close: (PlainText)?
+    attr_reader submit: (PlainText)?
     attr_reader private_metadata: (String)?
     attr_reader callback_id: (String)?
     attr_reader clear_on_close: (bool)?
@@ -1240,7 +1240,7 @@ module Slackblocks
     attr_reader delete_original: (bool)?
     attr_reader unfurl_links: (bool)?
     attr_reader unfurl_media: (bool)?
-    attr_reader metadata: (Hash[String | Symbol, untyped])?
+    attr_reader metadata: (Hash[String, untyped])?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?response_type: (:in_channel | :ephemeral)?, ?replace_original: (bool)?, ?delete_original: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?response_type: (:in_channel | :ephemeral)?, ?replace_original: (bool)?, ?delete_original: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> WebhookMessage
