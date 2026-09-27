@@ -27,9 +27,9 @@ const prelude = [
 let checked = 0;
 for (const guide of guides) {
   const source = await readFile(path.join(repository, "docs/docs", guide), "utf8");
-  const sections = source.match(/<Ruby>[\s\S]*?<\/Ruby>/g) ?? [];
+  const sections = [...source.matchAll(/<Ruby>[\s\S]*?<\/Ruby>/g)];
   for (const [sectionIndex, section] of sections.entries()) {
-    for (const [snippetIndex, snippet] of [...section.matchAll(/```ruby\n([\s\S]*?)\n```/g)].entries()) {
+    for (const snippet of section[0].matchAll(/```ruby\n([\s\S]*?)\n```/g)) {
       const code = snippet[1];
       if (!code.includes('require "slackblocks"')) continue;
       const output = execFileSync(ruby, ["-I", rubyLib, "-e", `${prelude}\n${code}`], {
@@ -41,7 +41,10 @@ for (const guide of guides) {
         const payload = JSON.parse(output.trim().split("\n").at(-1));
         assert.ok(payload && typeof payload === "object", `${guide} Ruby snippet must emit a JSON object`);
         if (guide === "usage/using_blocks.mdx" && sectionIndex > 0 && sectionIndex < 22) {
-          assert.equal(typeof payload.type, "string", `${guide} block ${sectionIndex} must emit a block`);
+          const heading = [...source.slice(0, section.index).matchAll(/^## (.+) Block$/gm)].at(-1)?.[1];
+          assert.ok(heading, `${guide} block ${sectionIndex} must have a heading`);
+          assert.equal(payload.type, heading.toLowerCase().replaceAll(" ", "_"),
+            `${guide} block ${sectionIndex} must emit its documented block type`);
         }
       }
       checked++;
