@@ -69,14 +69,34 @@ for entry in ruby["types"]:
             ".new",
             "def self.new: " + constructor,
             "Construct an immutable, validated value with keyword arguments." + note,
-            fields + [{"name": "additional_fields", "description": "JSON-compatible extension fields that do not replace modeled wire keys."}],
+            fields
+            + [
+                {
+                    "name": "additional_fields",
+                    "description": "JSON-compatible extension fields that do not replace modeled wire keys.",
+                }
+            ],
             name,
-            [{"type": "ValidationError", "doc": "A field or cross-field Slack rule fails."}],
+            [
+                {
+                    "type": "ValidationError",
+                    "doc": "A field or cross-field Slack rule fails.",
+                }
+            ],
         ),
-        member(".[]", "def self.[]: " + constructor, "Keyword-only alias for .new.", returns=name),
+        member(
+            ".[]",
+            "def self.[]: " + constructor,
+            "Keyword-only alias for .new.",
+            returns=name,
+        ),
     ]
     for field in fields:
-        read_type = field["readerType"] if field["required"] else "(" + field["readerType"] + ")?"
+        read_type = (
+            field["readerType"]
+            if field["required"]
+            else "(" + field["readerType"] + ")?"
+        )
         members.append(
             member(
                 field["name"],
@@ -87,11 +107,32 @@ for entry in ruby["types"]:
         )
     members.extend(
         [
-            member("additional_fields", "def additional_fields: () -> Hash[String, untyped]", "Return frozen extension fields with normalized string keys."),
-            member("with", "def with: (**untyped changes) -> " + name, "Return a newly validated value with changed keywords.", returns=name),
-            member("to_h", "def to_h: () -> Hash[Symbol, untyped]", "Return structural Ruby members, including additional_fields. Nested members remain frozen."),
-            member("as_json", "def as_json: (?untyped options) -> Hash[String, untyped]", "Return a fresh, detached Slack wire Hash."),
-            member("to_json", "def to_json: (?untyped options) -> String", "Encode the Slack wire payload as JSON."),
+            member(
+                "additional_fields",
+                "def additional_fields: () -> Hash[String, untyped]",
+                "Return frozen extension fields with normalized string keys.",
+            ),
+            member(
+                "with",
+                "def with: (**untyped changes) -> " + name,
+                "Return a newly validated value with changed keywords.",
+                returns=name,
+            ),
+            member(
+                "to_h",
+                "def to_h: () -> Hash[Symbol, untyped]",
+                "Return structural Ruby members, including additional_fields. Nested members remain frozen.",
+            ),
+            member(
+                "as_json",
+                "def as_json: (?untyped options) -> Hash[String, untyped]",
+                "Return a fresh, detached Slack wire Hash.",
+            ),
+            member(
+                "to_json",
+                "def to_json: (?untyped options) -> String",
+                "Encode the Slack wire payload as JSON.",
+            ),
         ]
     )
     types.append(
@@ -100,7 +141,9 @@ for entry in ruby["types"]:
             entry["package"],
             entry["description"],
             members,
-            see=[{"label": "Slack reference", "url": entry["docUrl"]}] if entry["docUrl"] else [],
+            see=[{"label": "Slack reference", "url": entry["docUrl"]}]
+            if entry["docUrl"]
+            else [],
         )
     )
 
@@ -146,23 +189,58 @@ types.append(
         [
             member(
                 ".new",
-                "def self.new: (" + ", ".join("?" + flag + ": bool?" for flag in flags) + ", ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextStyle",
+                "def self.new: ("
+                + ", ".join("?" + flag + ": bool?" for flag in flags)
+                + ", ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextStyle",
                 "Create a style with permitted boolean flags.",
-                [{"name": flag, "description": "Optional style flag."} for flag in flags],
+                [
+                    {"name": flag, "description": "Optional style flag."}
+                    for flag in flags
+                ],
                 "RichTextStyle",
             ),
             member(
                 ".[]",
-                "def self.[]: (" + ", ".join("?" + flag + ": bool?" for flag in flags) + ", ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextStyle",
+                "def self.[]: ("
+                + ", ".join("?" + flag + ": bool?" for flag in flags)
+                + ", ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextStyle",
                 "Keyword-only alias for .new.",
                 returns="RichTextStyle",
             ),
-            *[member(flag, "def " + flag + ": () -> bool?", "Read the optional style flag.", returns="bool?") for flag in flags],
-            member("additional_fields", "def additional_fields: () -> Hash[String, untyped]", "Return frozen extension style fields."),
-            member("with", "def with: (**untyped changes) -> RichTextStyle", "Return a validated style with changed keywords."),
-            member("to_h", "def to_h: () -> Hash[Symbol, untyped]", "Return structural style members."),
-            member("as_json", "def as_json: (?untyped options) -> Hash[String, untyped]", "Return a detached wire Hash."),
-            member("to_json", "def to_json: (?untyped options) -> String", "Return JSON for this style."),
+            *[
+                member(
+                    flag,
+                    "def " + flag + ": () -> bool?",
+                    "Read the optional style flag.",
+                    returns="bool?",
+                )
+                for flag in flags
+            ],
+            member(
+                "additional_fields",
+                "def additional_fields: () -> Hash[String, untyped]",
+                "Return frozen extension style fields.",
+            ),
+            member(
+                "with",
+                "def with: (**untyped changes) -> RichTextStyle",
+                "Return a validated style with changed keywords.",
+            ),
+            member(
+                "to_h",
+                "def to_h: () -> Hash[Symbol, untyped]",
+                "Return structural style members.",
+            ),
+            member(
+                "as_json",
+                "def as_json: (?untyped options) -> Hash[String, untyped]",
+                "Return a detached wire Hash.",
+            ),
+            member(
+                "to_json",
+                "def to_json: (?untyped options) -> String",
+                "Return JSON for this style.",
+            ),
         ],
     )
 )
@@ -213,14 +291,46 @@ types.extend(
             "core",
             "Shared immutable value protocol used by every Slackblocks value.",
             [
-                member("additional_fields", "def additional_fields: () -> Hash[String, untyped]", "Return frozen extension fields."),
-                member("with", "def with: (**untyped changes) -> self", "Return a validated value with changed keywords."),
-                member("==", "def ==: (untyped other) -> bool", "Compare values structurally."),
-                member("eql?", "def eql?: (untyped other) -> bool", "Compare values structurally for Hash keys."),
-                member("hash", "def hash: () -> Integer", "Return a structural hash for Hash keys."),
-                member("to_h", "def to_h: () -> Hash[Symbol, untyped]", "Return structural Ruby members."),
-                member("as_json", "def as_json: (?untyped options) -> Hash[String, untyped]", "Return a detached wire Hash."),
-                member("to_json", "def to_json: (?untyped options) -> String", "Return Slack JSON."),
+                member(
+                    "additional_fields",
+                    "def additional_fields: () -> Hash[String, untyped]",
+                    "Return frozen extension fields.",
+                ),
+                member(
+                    "with",
+                    "def with: (**untyped changes) -> self",
+                    "Return a validated value with changed keywords.",
+                ),
+                member(
+                    "==",
+                    "def ==: (untyped other) -> bool",
+                    "Compare values structurally.",
+                ),
+                member(
+                    "eql?",
+                    "def eql?: (untyped other) -> bool",
+                    "Compare values structurally for Hash keys.",
+                ),
+                member(
+                    "hash",
+                    "def hash: () -> Integer",
+                    "Return a structural hash for Hash keys.",
+                ),
+                member(
+                    "to_h",
+                    "def to_h: () -> Hash[Symbol, untyped]",
+                    "Return structural Ruby members.",
+                ),
+                member(
+                    "as_json",
+                    "def as_json: (?untyped options) -> Hash[String, untyped]",
+                    "Return a detached wire Hash.",
+                ),
+                member(
+                    "to_json",
+                    "def to_json: (?untyped options) -> String",
+                    "Return Slack JSON.",
+                ),
             ],
         ),
         type_entry(
@@ -228,8 +338,16 @@ types.extend(
             "core",
             "The gem namespace and its version constants.",
             constants=[
-                {"name": "VERSION", "wire": version, "doc": "Coordinated package version."},
-                {"name": "SPEC_VERSION", "wire": spec_version, "doc": "Shared contract version."},
+                {
+                    "name": "VERSION",
+                    "wire": version,
+                    "doc": "Coordinated package version.",
+                },
+                {
+                    "name": "SPEC_VERSION",
+                    "wire": spec_version,
+                    "doc": "Shared contract version.",
+                },
             ],
         ),
         type_entry(
@@ -237,8 +355,16 @@ types.extend(
             "error",
             "Raised when a Slack rule fails. category is one of six stable wire names; path identifies the offending value.",
             [
-                member("category", "def category: () -> String", "Validation category, such as length-exceeded or type-mismatch."),
-                member("path", "def path: () -> String", "Root value type followed by wire field names and array indexes."),
+                member(
+                    "category",
+                    "def category: () -> String",
+                    "Validation category, such as length-exceeded or type-mismatch.",
+                ),
+                member(
+                    "path",
+                    "def path: () -> String",
+                    "Root value type followed by wire field names and array indexes.",
+                ),
             ],
         ),
     ]
