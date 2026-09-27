@@ -9,7 +9,6 @@ namespace Slackblocks.Elements;
 /// <summary>A menu for selecting multiple options defined in the payload.</summary>
 /// <remarks>
 /// <list type="bullet">
-/// <item><description>Required: <c>actionId</c>.</description></item>
 /// <item><description>Use options or option groups, not both.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element">Slack reference</see>.</para>
@@ -18,7 +17,7 @@ namespace Slackblocks.Elements;
 public sealed partial class StaticMultiSelectElement : global::Slackblocks.SlackObject, global::Slackblocks.Elements.IInputElement
 {
     /// <summary>Creates and validates a <see cref="StaticMultiSelectElement"/>.</summary>
-    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="options">Selectable options in display order. Slack allows at most 100 items.</param>
     /// <param name="optionGroups">Labelled groups of options in display order. Cannot be combined with ungrouped options. Slack allows at most 100 items.</param>
     /// <param name="initialOptions">Options that are selected when the element loads. Each must match an option in the element.</param>
@@ -30,7 +29,7 @@ public sealed partial class StaticMultiSelectElement : global::Slackblocks.Slack
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public StaticMultiSelectElement(
-        string actionId,
+        string? actionId = null,
         global::System.Collections.Generic.IEnumerable<global::Slackblocks.Objects.Option>? options = null,
         global::System.Collections.Generic.IEnumerable<global::Slackblocks.Objects.OptionGroup>? optionGroups = null,
         global::System.Collections.Generic.IEnumerable<global::Slackblocks.Objects.Option>? initialOptions = null,
@@ -41,7 +40,7 @@ public sealed partial class StaticMultiSelectElement : global::Slackblocks.Slack
         global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("StaticMultiSelectElement", "multi_static_select");
-        ActionId = wire.String("action_id", actionId)!;
+        ActionId = wire.String("action_id", actionId);
         Options = wire.List("options", options);
         OptionGroups = wire.List("option_groups", optionGroups);
         InitialOptions = wire.List("initial_options", initialOptions);
@@ -53,7 +52,8 @@ public sealed partial class StaticMultiSelectElement : global::Slackblocks.Slack
     }
 
     /// <summary>Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.</summary>
-    public string ActionId { get; }
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? ActionId { get; }
 
     /// <summary>Gets selectable options in display order.</summary>
     /// <value>The values in order, or an empty list when none were set.</value>

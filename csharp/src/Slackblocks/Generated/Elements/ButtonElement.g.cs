@@ -9,7 +9,7 @@ namespace Slackblocks.Elements;
 /// <summary>An interactive button that sends a payload or opens a URL.</summary>
 /// <remarks>
 /// <list type="bullet">
-/// <item><description>Required: <c>text</c>, <c>actionId</c>.</description></item>
+/// <item><description>Required: <c>text</c>.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/button-element">Slack reference</see>.</para>
 /// </remarks>
@@ -18,7 +18,7 @@ public sealed partial class ButtonElement : global::Slackblocks.SlackObject, glo
 {
     /// <summary>Creates and validates a <see cref="ButtonElement"/>.</summary>
     /// <param name="text">The button label. Required. Slack allows at most 75 characters. A string is sent as a <c>plain_text</c> text object.</param>
-    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="url">A URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload. Slack allows at most 3000 characters.</param>
     /// <param name="value">The application-defined value sent in interaction payloads. Slack allows at most 2000 characters.</param>
     /// <param name="style">The button's emphasis. Omit it for the default neutral style.</param>
@@ -29,7 +29,7 @@ public sealed partial class ButtonElement : global::Slackblocks.SlackObject, glo
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public ButtonElement(
         global::Slackblocks.Objects.PlainText text,
-        string actionId,
+        string? actionId = null,
         string? url = null,
         string? value = null,
         global::Slackblocks.Elements.ButtonStyle? style = null,
@@ -39,7 +39,7 @@ public sealed partial class ButtonElement : global::Slackblocks.SlackObject, glo
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("ButtonElement", "button");
         Text = wire.Text("text", text, "plain_text")!;
-        ActionId = wire.String("action_id", actionId)!;
+        ActionId = wire.String("action_id", actionId);
         Url = wire.String("url", url);
         Value = wire.String("value", value);
         Style = wire.Enum("style", style, global::Slackblocks.Elements.ButtonStyleExtensions.ToWireValue);
@@ -52,7 +52,8 @@ public sealed partial class ButtonElement : global::Slackblocks.SlackObject, glo
     public global::Slackblocks.Objects.PlainText Text { get; }
 
     /// <summary>Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.</summary>
-    public string ActionId { get; }
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? ActionId { get; }
 
     /// <summary>Gets a URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>

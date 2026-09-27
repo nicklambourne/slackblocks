@@ -8,16 +8,13 @@ namespace Slackblocks.Elements;
 
 /// <summary>A menu for selecting one option loaded from your app.</summary>
 /// <remarks>
-/// <list type="bullet">
-/// <item><description>Required: <c>actionId</c>.</description></item>
-/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
 public sealed partial class ExternalSelectElement : global::Slackblocks.SlackObject, global::Slackblocks.Elements.IInputElement
 {
     /// <summary>Creates and validates a <see cref="ExternalSelectElement"/>.</summary>
-    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="minQueryLength">How many characters the user must type before Slack queries your options endpoint.</param>
     /// <param name="initialOption">The option selected when the element loads. It must match an option in the element.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
@@ -27,7 +24,7 @@ public sealed partial class ExternalSelectElement : global::Slackblocks.SlackObj
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public ExternalSelectElement(
-        string actionId,
+        string? actionId = null,
         int? minQueryLength = null,
         global::Slackblocks.Objects.Option? initialOption = null,
         global::Slackblocks.Objects.Confirmation? confirm = null,
@@ -36,7 +33,7 @@ public sealed partial class ExternalSelectElement : global::Slackblocks.SlackObj
         global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("ExternalSelectElement", "external_select");
-        ActionId = wire.String("action_id", actionId)!;
+        ActionId = wire.String("action_id", actionId);
         MinQueryLength = wire.Int("min_query_length", minQueryLength);
         InitialOption = wire.Object("initial_option", initialOption);
         Confirm = wire.Object("confirm", confirm);
@@ -46,7 +43,8 @@ public sealed partial class ExternalSelectElement : global::Slackblocks.SlackObj
     }
 
     /// <summary>Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.</summary>
-    public string ActionId { get; }
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? ActionId { get; }
 
     /// <summary>Gets how many characters the user must type before Slack queries your options endpoint.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>

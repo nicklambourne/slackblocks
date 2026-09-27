@@ -20,7 +20,7 @@ public sealed partial class ModalView : global::Slackblocks.SlackObject
 {
     /// <summary>Creates and validates a <see cref="ModalView"/>.</summary>
     /// <param name="title">The title in the modal's top bar. Required. Slack allows at most 24 characters. A string is sent as a <c>plain_text</c> text object.</param>
-    /// <param name="blocks">The blocks shown in the modal, in display order. Required. Must contain between 1 and 100 items.</param>
+    /// <param name="blocks">The blocks shown in the modal, in display order. Required. Slack allows at most 100 items.</param>
     /// <param name="close">The label of the button that closes the modal. Slack allows at most 24 characters. A string is sent as a <c>plain_text</c> text object.</param>
     /// <param name="submit">The label of the button that submits the modal. Slack allows at most 24 characters. A string is sent as a <c>plain_text</c> text object.</param>
     /// <param name="privateMetadata">Application-defined data returned in view payloads. Slack allows at most 3000 characters.</param>

@@ -32,7 +32,6 @@
   "overflow": { "options": { "min_items": 1, "max_items": 5 } },
   "checkboxes": { "options": { "min_items": 1, "max_items": 10 } },
   "radio_buttons": { "options": { "min_items": 1, "max_items": 10 } },
-  "url_source": { "url": { "min_length": 1, "max_length": 3000 } },
   "file_input": { "max_files": { "min": 1, "max": 10 } },
   "plain_text_input": {
     "min_length": { "min": 0, "max": 3000 },
@@ -127,7 +126,7 @@
     "hint": { "max_length": 2000 }
   },
   "markdown": {
-    "text": { "min_length": 1, "max_length": 12000 },
+    "text": { "max_length": 12000 },
     "total_text": { "max_length": 12000 }
   },
   "plan": { "tasks": { "max_items": 50 } },
@@ -159,7 +158,7 @@
     "attachments": { "max_items": 100 }
   },
   "view": {
-    "blocks": { "min_items": 1, "max_items": 100 },
+    "blocks": { "max_items": 100 },
     "private_metadata": { "max_length": 3000 },
     "callback_id": { "max_length": 255 },
     "external_id": { "max_length": 255 },

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import pytest
 
 from slackblocks.blocks import RichTextBlock
@@ -13,6 +15,7 @@ from slackblocks.elements import (
     ConversationSelectMenu,
     DatePicker,
     DateTimePicker,
+    Element,
     EmailInput,
     ExternalMultiSelectMenu,
     ExternalSelectMenu,
@@ -35,7 +38,12 @@ from slackblocks.elements import (
     UserSelectMenu,
     WorkflowButton,
 )
-from slackblocks.errors import InvalidUsageError, LengthError, TypeMismatchError
+from slackblocks.errors import (
+    InvalidUsageError,
+    LengthError,
+    MissingRequiredError,
+    TypeMismatchError,
+)
 from slackblocks.objects import (
     ConfirmationDialogue,
     ConversationFilter,
@@ -52,6 +60,9 @@ from slackblocks.objects import (
 from slackblocks.rich_text import RichText, RichTextSection
 
 from .utils import OPTION_A, THREE_OPTIONS, TWO_OPTIONS, fetch_sample
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 def test_button_basic() -> None:
@@ -608,11 +619,48 @@ def test_icon_button_confirm_must_be_a_confirmation_dialogue() -> None:
         IconButton("Delete", confirm="are you sure?")
 
 
-def test_url_source_empty_url_throws() -> None:
-    with pytest.raises(LengthError):
-        URLSource("", "empty")
+def test_url_source_url_has_no_length_limits() -> None:
+    assert URLSource("", "empty").url == ""
+    long_url = "https://ndl.im/" + "x" * 30000
+    assert URLSource(long_url, "long").url == long_url
 
 
-def test_url_source_url_too_long_throws() -> None:
+@pytest.mark.parametrize(
+    "build",
+    [
+        lambda: Button(text="Click"),
+        lambda: CheckboxGroup(action_id=None, options=TWO_OPTIONS),
+        lambda: DatePicker(),
+        lambda: DateTimePicker(),
+        lambda: EmailInput(),
+        lambda: FileInput(),
+        lambda: StaticMultiSelectMenu(action_id=None, options=TWO_OPTIONS),
+        lambda: ExternalMultiSelectMenu(),
+        lambda: UserMultiSelectMenu(),
+        lambda: ConversationMultiSelectMenu(),
+        lambda: ChannelMultiSelectMenu(),
+        lambda: NumberInput(is_decimal_allowed=False),
+        lambda: OverflowMenu(action_id=None, options=TWO_OPTIONS),
+        lambda: PlainTextInput(),
+        lambda: RadioButtonGroup(action_id=None, options=TWO_OPTIONS),
+        lambda: StaticSelectMenu(options=TWO_OPTIONS),
+        lambda: ExternalSelectMenu(),
+        lambda: UserSelectMenu(),
+        lambda: ConversationSelectMenu(),
+        lambda: ChannelSelectMenu(),
+        lambda: TimePicker(),
+        lambda: URLInput(),
+    ],
+)
+def test_action_id_is_optional_and_omitted_when_unset(build: Callable[[], Element]) -> None:
+    assert "action_id" not in build()._resolve()
+
+
+def test_optional_action_id_keeps_its_length_limit() -> None:
     with pytest.raises(LengthError):
-        URLSource("https://ndl.im/" + "x" * 3000, "too long")
+        Button(text="Click", action_id="a" * 256)
+
+
+def test_rich_text_input_still_requires_action_id() -> None:
+    with pytest.raises(MissingRequiredError):
+        RichTextInput(action_id=None)  # type: ignore[arg-type]

@@ -8,36 +8,34 @@ namespace Slackblocks.Elements;
 
 /// <summary>An input that lets users upload files.</summary>
 /// <remarks>
-/// <list type="bullet">
-/// <item><description>Required: <c>actionId</c>.</description></item>
-/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/file-input-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
 public sealed partial class FileInputElement : global::Slackblocks.SlackObject, global::Slackblocks.Elements.IInputElement
 {
     /// <summary>Creates and validates a <see cref="FileInputElement"/>.</summary>
-    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="filetypes">Accepted file extensions, such as pdf or png.</param>
     /// <param name="maxFiles">The maximum number of files a user can upload. Must be between 1 and 10.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public FileInputElement(
-        string actionId,
+        string? actionId = null,
         global::System.Collections.Generic.IEnumerable<string>? filetypes = null,
         int? maxFiles = null,
         global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("FileInputElement", "file_input");
-        ActionId = wire.String("action_id", actionId)!;
+        ActionId = wire.String("action_id", actionId);
         Filetypes = wire.Strings("filetypes", filetypes);
         MaxFiles = wire.Int("max_files", maxFiles);
         Initialize(wire.Build(additionalFields));
     }
 
     /// <summary>Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.</summary>
-    public string ActionId { get; }
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? ActionId { get; }
 
     /// <summary>Gets accepted file extensions, such as pdf or png.</summary>
     /// <value>The values in order, or an empty list when none were set.</value>

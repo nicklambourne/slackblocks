@@ -13,7 +13,6 @@ from typing import Any
 from slackblocks._core import resolve
 from slackblocks._limits import (
     VIEW_BLOCKS_MAX_ITEMS,
-    VIEW_BLOCKS_MIN_ITEMS,
     VIEW_CALLBACK_ID_MAX_LENGTH,
     VIEW_CLOSE_MAX_LENGTH,
     VIEW_EXTERNAL_ID_MAX_LENGTH,
@@ -48,7 +47,7 @@ class View:
         type: one of the `ViewType` enum members. Concrete subclasses set
             this for you; in practice you should construct `ModalView` or
             `HomeTabView` rather than `View` directly.
-        blocks: 1-100 blocks that make up the contents of the view.
+        blocks: up to 100 blocks that make up the contents of the view.
         private_metadata: a string (max 3000 characters) that will be sent
             back to your app in any view-related interaction payloads.
             Useful for stashing per-view server-side context.
@@ -71,9 +70,7 @@ class View:
         external_id: str | None = None,
     ) -> None:
         self.type_ = type.value
-        blocks_list = coerce_to_list(
-            blocks, class_=Block, min_size=VIEW_BLOCKS_MIN_ITEMS, max_size=VIEW_BLOCKS_MAX_ITEMS
-        )
+        blocks_list = coerce_to_list(blocks, class_=Block, max_size=VIEW_BLOCKS_MAX_ITEMS)
         assert blocks_list is not None
         self.blocks = blocks_list
         validate_surface_blocks(self.blocks, type.value)

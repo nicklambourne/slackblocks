@@ -9,70 +9,53 @@ import (
 )
 
 var requiredFields = map[string][]string{
-	"actions":                    {"elements"},
-	"alert":                      {"text"},
-	"area":                       {"series", "axis_config"},
-	"bar":                        {"series", "axis_config"},
-	"button":                     {"text", "action_id"},
-	"carousel":                   {"elements"},
-	"channel":                    {"channel_id"},
-	"channels_select":            {"action_id"},
-	"checkboxes":                 {"action_id", "options"},
-	"container":                  {"child_blocks"},
-	"context":                    {"elements"},
-	"context_actions":            {"elements"},
-	"conversations_select":       {"action_id"},
-	"data_table":                 {"rows", "caption"},
-	"data_visualization":         {"title", "chart"},
-	"datepicker":                 {"action_id"},
-	"datetimepicker":             {"action_id"},
-	"email_text_input":           {"action_id"},
-	"emoji":                      {"name"},
-	"external_select":            {"action_id"},
-	"feedback_buttons":           {"positive_button", "negative_button"},
-	"file":                       {"external_id", "source"},
-	"file_input":                 {"action_id"},
-	"header":                     {"text"},
-	"home":                       {"blocks"},
-	"icon":                       {"name"},
-	"icon_button":                {"text", "icon"},
-	"image":                      {"alt_text"},
-	"input":                      {"label", "element"},
-	"line":                       {"series", "axis_config"},
-	"link":                       {"url"},
-	"markdown":                   {"text"},
-	"modal":                      {"title", "blocks"},
-	"multi_channels_select":      {"action_id"},
-	"multi_conversations_select": {"action_id"},
-	"multi_external_select":      {"action_id"},
-	"multi_static_select":        {"action_id"},
-	"multi_users_select":         {"action_id"},
-	"number_input":               {"action_id", "is_decimal_allowed"},
-	"overflow":                   {"action_id", "options"},
-	"pie":                        {"segments"},
-	"plain_text_input":           {"action_id"},
-	"plan":                       {"title", "tasks"},
-	"radio_buttons":              {"action_id", "options"},
-	"raw_number":                 {"value", "text"},
-	"raw_text":                   {"text"},
-	"rich_text":                  {"elements"},
-	"rich_text_input":            {"action_id"},
-	"rich_text_list":             {"style", "elements"},
-	"rich_text_preformatted":     {"elements"},
-	"rich_text_quote":            {"elements"},
-	"rich_text_section":          {"elements"},
-	"static_select":              {"action_id"},
-	"table":                      {"rows"},
-	"task_card":                  {"task_id", "title", "status"},
-	"text":                       {"text"},
-	"timepicker":                 {"action_id"},
-	"url":                        {"url", "text"},
-	"url_text_input":             {"action_id"},
-	"user":                       {"user_id"},
-	"usergroup":                  {"usergroup_id"},
-	"users_select":               {"action_id"},
-	"video":                      {"alt_text", "thumbnail_url", "title", "video_url"},
-	"workflow_button":            {"text", "workflow", "action_id"},
+	"actions":                {"elements"},
+	"alert":                  {"text"},
+	"area":                   {"series", "axis_config"},
+	"bar":                    {"series", "axis_config"},
+	"button":                 {"text"},
+	"carousel":               {"elements"},
+	"channel":                {"channel_id"},
+	"checkboxes":             {"options"},
+	"container":              {"child_blocks"},
+	"context":                {"elements"},
+	"context_actions":        {"elements"},
+	"data_table":             {"rows", "caption"},
+	"data_visualization":     {"title", "chart"},
+	"emoji":                  {"name"},
+	"feedback_buttons":       {"positive_button", "negative_button"},
+	"file":                   {"external_id", "source"},
+	"header":                 {"text"},
+	"home":                   {"blocks"},
+	"icon":                   {"name"},
+	"icon_button":            {"text", "icon"},
+	"image":                  {"alt_text"},
+	"input":                  {"label", "element"},
+	"line":                   {"series", "axis_config"},
+	"link":                   {"url"},
+	"markdown":               {"text"},
+	"modal":                  {"title", "blocks"},
+	"number_input":           {"is_decimal_allowed"},
+	"overflow":               {"options"},
+	"pie":                    {"segments"},
+	"plan":                   {"title", "tasks"},
+	"radio_buttons":          {"options"},
+	"raw_number":             {"value", "text"},
+	"raw_text":               {"text"},
+	"rich_text":              {"elements"},
+	"rich_text_input":        {"action_id"},
+	"rich_text_list":         {"style", "elements"},
+	"rich_text_preformatted": {"elements"},
+	"rich_text_quote":        {"elements"},
+	"rich_text_section":      {"elements"},
+	"table":                  {"rows"},
+	"task_card":              {"task_id", "title", "status"},
+	"text":                   {"text"},
+	"url":                    {"url", "text"},
+	"user":                   {"user_id"},
+	"usergroup":              {"usergroup_id"},
+	"video":                  {"alt_text", "thumbnail_url", "title", "video_url"},
+	"workflow_button":        {"text", "workflow", "action_id"},
 }
 
 var inputElementTypes = stringSet(
@@ -515,9 +498,6 @@ func validateObject(object Object, path string) error {
 		if err := validateOptions(options, child(path, "options")); err != nil {
 			return err
 		}
-	case "url":
-		value, _ := object["url"].(string)
-		return stringLength(value, child(path, "url"), limitURLSourceURLMinLength, limitURLSourceURLMaxLength)
 	case "static_select", "multi_static_select":
 		_, hasOptions := object["options"]
 		_, hasGroups := object["option_groups"]
@@ -785,7 +765,7 @@ func validateObject(object Object, path string) error {
 		}
 	case "markdown":
 		value, _ := object["text"].(string)
-		return stringLength(value, child(path, "text"), limitMarkdownTextMinLength, limitMarkdownTextMaxLength)
+		return stringLength(value, child(path, "text"), 0, limitMarkdownTextMaxLength)
 	case "video":
 		if value, ok := object["alt_text"].(string); ok {
 			if err := stringLength(value, child(path, "alt_text"), 0, limitVideoAltTextMaxLength); err != nil {
@@ -819,7 +799,7 @@ func validateObject(object Object, path string) error {
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(blocks, child(path, "blocks"), limitViewBlocksMinItems, limitViewBlocksMaxItems); err != nil {
+		if err := sliceLength(blocks, child(path, "blocks"), 0, limitViewBlocksMaxItems); err != nil {
 			return err
 		}
 		if err := validateSurface(blocks, typeName, child(path, "blocks")); err != nil {
@@ -968,10 +948,13 @@ func validateTable(object Object, path string, dataTable bool) error {
 		if err := sliceLength(row, fmt.Sprintf("%s[%d]", child(path, "rows"), rowIndex), minColumns, maxColumns); err != nil {
 			return err
 		}
-		if columns < 0 {
-			columns = len(row)
-		} else if len(row) != columns {
-			return validationError(InvalidUsage, fmt.Sprintf("%s[%d]", child(path, "rows"), rowIndex), "column count differs")
+		// Only data tables require every row to have the same number of cells.
+		if dataTable {
+			if columns < 0 {
+				columns = len(row)
+			} else if len(row) != columns {
+				return validationError(InvalidUsage, fmt.Sprintf("%s[%d]", child(path, "rows"), rowIndex), "column count differs")
+			}
 		}
 		for cellIndex, rawCell := range row {
 			cellPath := fmt.Sprintf("%s[%d][%d]", child(path, "rows"), rowIndex, cellIndex)

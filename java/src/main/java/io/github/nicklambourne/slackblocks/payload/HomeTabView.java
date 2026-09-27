@@ -126,8 +126,7 @@ public final class HomeTabView implements SlackObject {
     /**
      * Adds the blocks shown on the App Home tab, in display order.
      *
-     * <p>Required. Must contain between 1 and 100 items. Each call appends to any values already
-     * added.
+     * <p>Required. Slack allows at most 100 items. Each call appends to any values already added.
      *
      * @param values {@link Block} values appended in order
      * @return this builder

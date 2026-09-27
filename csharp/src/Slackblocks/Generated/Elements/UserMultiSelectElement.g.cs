@@ -8,16 +8,13 @@ namespace Slackblocks.Elements;
 
 /// <summary>A menu for selecting multiple workspace users.</summary>
 /// <remarks>
-/// <list type="bullet">
-/// <item><description>Required: <c>actionId</c>.</description></item>
-/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
 public sealed partial class UserMultiSelectElement : global::Slackblocks.SlackObject, global::Slackblocks.Elements.IInputElement
 {
     /// <summary>Creates and validates a <see cref="UserMultiSelectElement"/>.</summary>
-    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="initialUsers">User IDs that are selected when the menu loads.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
     /// <param name="maxSelectedItems">The maximum number of items a user can select. Must be at least 1.</param>
@@ -27,7 +24,7 @@ public sealed partial class UserMultiSelectElement : global::Slackblocks.SlackOb
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public UserMultiSelectElement(
-        string actionId,
+        string? actionId = null,
         global::System.Collections.Generic.IEnumerable<string>? initialUsers = null,
         global::Slackblocks.Objects.Confirmation? confirm = null,
         int? maxSelectedItems = null,
@@ -36,7 +33,7 @@ public sealed partial class UserMultiSelectElement : global::Slackblocks.SlackOb
         global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("UserMultiSelectElement", "multi_users_select");
-        ActionId = wire.String("action_id", actionId)!;
+        ActionId = wire.String("action_id", actionId);
         InitialUsers = wire.Strings("initial_users", initialUsers);
         Confirm = wire.Object("confirm", confirm);
         MaxSelectedItems = wire.Int("max_selected_items", maxSelectedItems);
@@ -46,7 +43,8 @@ public sealed partial class UserMultiSelectElement : global::Slackblocks.SlackOb
     }
 
     /// <summary>Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.</summary>
-    public string ActionId { get; }
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? ActionId { get; }
 
     /// <summary>Gets user IDs that are selected when the menu loads.</summary>
     /// <value>The values in order, or an empty list when none were set.</value>

@@ -230,9 +230,6 @@ internal static class SlackLimits
     /// <summary><c>markdown.text.max_length</c></summary>
     public const int MarkdownTextMaxLength = 12000;
 
-    /// <summary><c>markdown.text.min_length</c></summary>
-    public const int MarkdownTextMinLength = 1;
-
     /// <summary><c>markdown.total_text.max_length</c></summary>
     public const int MarkdownTotalTextMaxLength = 12000;
 
@@ -383,12 +380,6 @@ internal static class SlackLimits
     /// <summary><c>url_input.placeholder.max_length</c></summary>
     public const int UrlInputPlaceholderMaxLength = 150;
 
-    /// <summary><c>url_source.url.max_length</c></summary>
-    public const int UrlSourceUrlMaxLength = 3000;
-
-    /// <summary><c>url_source.url.min_length</c></summary>
-    public const int UrlSourceUrlMinLength = 1;
-
     /// <summary><c>video.alt_text.max_length</c></summary>
     public const int VideoAltTextMaxLength = 2000;
 
@@ -418,9 +409,6 @@ internal static class SlackLimits
 
     /// <summary><c>view.blocks.max_items</c></summary>
     public const int ViewBlocksMaxItems = 100;
-
-    /// <summary><c>view.blocks.min_items</c></summary>
-    public const int ViewBlocksMinItems = 1;
 
     /// <summary><c>view.callback_id.max_length</c></summary>
     public const int ViewCallbackIdMaxLength = 255;

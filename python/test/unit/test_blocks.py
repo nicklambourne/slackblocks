@@ -308,9 +308,8 @@ def test_markdown_block_block_id_is_optional() -> None:
     assert resolved["block_id"] is not None and len(resolved["block_id"]) > 0
 
 
-def test_markdown_block_rejects_empty_text() -> None:
-    with pytest.raises(LengthError):
-        MarkdownBlock(text="")
+def test_markdown_block_accepts_empty_text() -> None:
+    assert MarkdownBlock(text="")._resolve()["text"] == ""
 
 
 def test_markdown_block_rejects_text_over_12000_chars() -> None:

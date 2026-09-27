@@ -18,25 +18,18 @@ public final class Validator {
           entry("alert", "text"),
           entry("area", "series", "axis_config"),
           entry("bar", "series", "axis_config"),
-          entry("button", "text", "action_id"),
+          entry("button", "text"),
           entry("carousel", "elements"),
           entry("channel", "channel_id"),
-          entry("channels_select", "action_id"),
-          entry("checkboxes", "action_id", "options"),
+          entry("checkboxes", "options"),
           entry("container", "child_blocks"),
           entry("context", "elements"),
           entry("context_actions", "elements"),
-          entry("conversations_select", "action_id"),
           entry("data_table", "rows", "caption"),
           entry("data_visualization", "title", "chart"),
-          entry("datepicker", "action_id"),
-          entry("datetimepicker", "action_id"),
-          entry("email_text_input", "action_id"),
           entry("emoji", "name"),
-          entry("external_select", "action_id"),
           entry("feedback_buttons", "positive_button", "negative_button"),
           entry("file", "external_id", "source"),
-          entry("file_input", "action_id"),
           entry("header", "text"),
           entry("home", "blocks"),
           entry("icon", "name"),
@@ -47,17 +40,11 @@ public final class Validator {
           entry("link", "url"),
           entry("markdown", "text"),
           entry("modal", "title", "blocks"),
-          entry("multi_channels_select", "action_id"),
-          entry("multi_conversations_select", "action_id"),
-          entry("multi_external_select", "action_id"),
-          entry("multi_static_select", "action_id"),
-          entry("multi_users_select", "action_id"),
-          entry("number_input", "action_id", "is_decimal_allowed"),
-          entry("overflow", "action_id", "options"),
+          entry("number_input", "is_decimal_allowed"),
+          entry("overflow", "options"),
           entry("pie", "segments"),
-          entry("plain_text_input", "action_id"),
           entry("plan", "title", "tasks"),
-          entry("radio_buttons", "action_id", "options"),
+          entry("radio_buttons", "options"),
           entry("raw_number", "value", "text"),
           entry("raw_text", "text"),
           entry("rich_text", "elements"),
@@ -66,16 +53,12 @@ public final class Validator {
           entry("rich_text_preformatted", "elements"),
           entry("rich_text_quote", "elements"),
           entry("rich_text_section", "elements"),
-          entry("static_select", "action_id"),
           entry("table", "rows"),
           entry("task_card", "task_id", "title", "status"),
           entry("text", "text"),
-          entry("timepicker", "action_id"),
           entry("url", "url", "text"),
-          entry("url_text_input", "action_id"),
           entry("user", "user_id"),
           entry("usergroup", "usergroup_id"),
-          entry("users_select", "action_id"),
           entry("video", "alt_text", "thumbnail_url", "title", "video_url"),
           entry("workflow_button", "text", "workflow", "action_id"));
 
@@ -398,12 +381,7 @@ public final class Validator {
             });
         validateOptions(options, child(path, "options"));
       }
-      case "url" ->
-          stringLength(
-              stringAt(value.get("url"), child(path, "url")),
-              child(path, "url"),
-              SlackLimits.URL_SOURCE_URL_MIN_LENGTH,
-              SlackLimits.URL_SOURCE_URL_MAX_LENGTH);
+      case "url" -> stringAt(value.get("url"), child(path, "url"));
       case "static_select", "multi_static_select" -> validateStaticSelect(value, path);
       case "number_input" -> {
         Double minimum = number(value.get("min_value"));
@@ -467,7 +445,7 @@ public final class Validator {
           stringLength(
               stringAt(value.get("text"), child(path, "text")),
               child(path, "text"),
-              SlackLimits.MARKDOWN_TEXT_MIN_LENGTH,
+              0,
               SlackLimits.MARKDOWN_TEXT_MAX_LENGTH);
       case "video" -> validateVideo(value, path);
       case "modal", "home" -> validateView(value, path, type);
@@ -795,11 +773,7 @@ public final class Validator {
 
   private static void validateView(Map<String, Object> value, String path, String type) {
     List<?> blocks = listAt(value.get("blocks"), child(path, "blocks"));
-    sliceLength(
-        blocks,
-        child(path, "blocks"),
-        SlackLimits.VIEW_BLOCKS_MIN_ITEMS,
-        SlackLimits.VIEW_BLOCKS_MAX_ITEMS);
+    sliceLength(blocks, child(path, "blocks"), 0, SlackLimits.VIEW_BLOCKS_MAX_ITEMS);
     validateSurface(blocks, type, child(path, "blocks"));
     checkOptionalString(
         value, "private_metadata", path, SlackLimits.VIEW_PRIVATE_METADATA_MAX_LENGTH);
@@ -949,7 +923,7 @@ public final class Validator {
       sliceLength(row, rowPath, minimumColumns, maximumColumns);
       if (columns < 0) {
         columns = row.size();
-      } else if (row.size() != columns) {
+      } else if (dataTable && row.size() != columns) {
         fail(ErrorCategory.INVALID_USAGE, rowPath, "column count differs");
       }
       for (int cellIndex = 0; cellIndex < row.size(); cellIndex++) {

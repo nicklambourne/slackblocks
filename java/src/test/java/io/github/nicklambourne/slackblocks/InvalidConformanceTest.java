@@ -226,19 +226,10 @@ final class InvalidConformanceTest {
               "a",
               "options",
               copies(11, index -> option("A", "a")));
-      case "url-source-url-empty" -> typed("URLSource", "url", "url", "", "text", "text");
-      case "url-source-url-too-long" ->
-          typed("URLSource", "url", "url", repeated("x", 3001), "text", "text");
       case "table-too-many-rows" ->
           typed("TableBlock", "table", "rows", copies(101, index -> List.of(rawText("A"))));
       case "table-too-many-columns" ->
           typed("TableBlock", "table", "rows", List.of(copies(21, index -> rawText("A"))));
-      case "table-ragged-rows" ->
-          typed(
-              "TableBlock",
-              "table",
-              "rows",
-              List.of(List.of(rawText("A"), rawText("B")), List.of(rawText("C"))));
       case "file-input-max-files-too-small" ->
           typed("FileInput", "file_input", "action_id", "a", "max_files", 0);
       case "file-input-max-files-too-large" ->
@@ -288,7 +279,6 @@ final class InvalidConformanceTest {
               plain(repeated("x", 2001)),
               "element",
               inputElement());
-      case "markdown-empty" -> typed("MarkdownBlock", "markdown", "text", "");
       case "markdown-too-long" -> typed("MarkdownBlock", "markdown", "text", repeated("x", 12001));
       case "section-text-too-long" ->
           typed("SectionBlock", "section", "text", mrkdwn(repeated("x", 3001)));
@@ -330,7 +320,6 @@ final class InvalidConformanceTest {
       case "modal-input-requires-submit" ->
           typed(
               "Modal", "modal", "title", plain("Missing submit"), "blocks", List.of(inputBlock()));
-      case "view-missing-blocks" -> typed("HomeTab", "home", "blocks", List.of());
       case "view-too-many-blocks" ->
           typed("HomeTab", "home", "blocks", copies(101, index -> divider()));
       case "view-private-metadata-too-long" ->

@@ -584,7 +584,7 @@ export function richTextBlock(
  */
 export function tableBlock(
   input: {
-    /** Up to 100 equally sized rows of raw-text or rich-text cells. */
+    /** Up to 100 rows of raw-text or rich-text cells. */
     rows: JsonObject[][];
     /** Optional display settings for each column. */
     columnSettings?: JsonObject[];

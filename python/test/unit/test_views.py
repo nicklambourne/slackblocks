@@ -48,3 +48,7 @@ def test_to_dict() -> None:
             }
         ],
     }
+
+
+def test_hometab_view_accepts_no_blocks() -> None:
+    assert HomeTabView(blocks=[])._resolve()["blocks"] == []

@@ -225,9 +225,6 @@ public final class SlackLimits {
   /** {@code markdown.text.max_length} */
   public static final int MARKDOWN_TEXT_MAX_LENGTH = 12000;
 
-  /** {@code markdown.text.min_length} */
-  public static final int MARKDOWN_TEXT_MIN_LENGTH = 1;
-
   /** {@code markdown.total_text.max_length} */
   public static final int MARKDOWN_TOTAL_TEXT_MAX_LENGTH = 12000;
 
@@ -378,12 +375,6 @@ public final class SlackLimits {
   /** {@code url_input.placeholder.max_length} */
   public static final int URL_INPUT_PLACEHOLDER_MAX_LENGTH = 150;
 
-  /** {@code url_source.url.max_length} */
-  public static final int URL_SOURCE_URL_MAX_LENGTH = 3000;
-
-  /** {@code url_source.url.min_length} */
-  public static final int URL_SOURCE_URL_MIN_LENGTH = 1;
-
   /** {@code video.alt_text.max_length} */
   public static final int VIDEO_ALT_TEXT_MAX_LENGTH = 2000;
 
@@ -413,9 +404,6 @@ public final class SlackLimits {
 
   /** {@code view.blocks.max_items} */
   public static final int VIEW_BLOCKS_MAX_ITEMS = 100;
-
-  /** {@code view.blocks.min_items} */
-  public static final int VIEW_BLOCKS_MIN_ITEMS = 1;
 
   /** {@code view.callback_id.max_length} */
   public static final int VIEW_CALLBACK_ID_MAX_LENGTH = 255;

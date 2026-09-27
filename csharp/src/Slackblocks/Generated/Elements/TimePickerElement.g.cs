@@ -8,16 +8,13 @@ namespace Slackblocks.Elements;
 
 /// <summary>A time-of-day picker.</summary>
 /// <remarks>
-/// <list type="bullet">
-/// <item><description>Required: <c>actionId</c>.</description></item>
-/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
 public sealed partial class TimePickerElement : global::Slackblocks.SlackObject, global::Slackblocks.Elements.IInputElement
 {
     /// <summary>Creates and validates a <see cref="TimePickerElement"/>.</summary>
-    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="initialTime">The initially selected time, formatted as HH:mm in 24-hour time.</param>
     /// <param name="timezone">The IANA time zone used to display the time, such as Australia/Brisbane.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
@@ -27,7 +24,7 @@ public sealed partial class TimePickerElement : global::Slackblocks.SlackObject,
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public TimePickerElement(
-        string actionId,
+        string? actionId = null,
         string? initialTime = null,
         string? timezone = null,
         global::Slackblocks.Objects.Confirmation? confirm = null,
@@ -36,7 +33,7 @@ public sealed partial class TimePickerElement : global::Slackblocks.SlackObject,
         global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("TimePickerElement", "timepicker");
-        ActionId = wire.String("action_id", actionId)!;
+        ActionId = wire.String("action_id", actionId);
         InitialTime = wire.String("initial_time", initialTime);
         Timezone = wire.String("timezone", timezone);
         Confirm = wire.Object("confirm", confirm);
@@ -46,7 +43,8 @@ public sealed partial class TimePickerElement : global::Slackblocks.SlackObject,
     }
 
     /// <summary>Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.</summary>
-    public string ActionId { get; }
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? ActionId { get; }
 
     /// <summary>Gets the initially selected time, formatted as HH:mm in 24-hour time.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>

@@ -18,7 +18,7 @@ import type { FactorySettings, JsonObject, SlackObject } from "../types.js";
  */
 export interface CheckboxesInput {
   /** Identifier returned when the checkbox selection changes, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Up to ten option objects displayed as checkboxes. */
   options: JsonObject[];
   /** Options from `options` that are selected when the element first loads. */
@@ -35,7 +35,7 @@ export interface CheckboxesInput {
  */
 export interface DatePickerInput {
   /** Identifier returned when a date is selected, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Initially selected date in `YYYY-MM-DD` format. */
   initialDate?: string;
   /** Optional confirmation dialog shown after a date is selected. */
@@ -52,7 +52,7 @@ export interface DatePickerInput {
  */
 export interface DateTimePickerInput {
   /** Identifier returned when a date and time are selected, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Initially selected date and time as a Unix timestamp in seconds. */
   initialDateTime?: number;
   /** Optional confirmation dialog shown after a date and time are selected. */
@@ -67,7 +67,7 @@ export interface DateTimePickerInput {
  */
 export interface EmailElementInput {
   /** Identifier used to find the submitted email value, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Email address present when the input first loads. */
   initialValue?: string;
   /** Configuration controlling when typing dispatches a `block_actions` payload. */
@@ -84,7 +84,7 @@ export interface EmailElementInput {
  */
 export interface ChannelMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Public channel IDs selected when the menu first loads. */
   initialChannels?: string[];
   /** Optional confirmation dialog shown before the selection is submitted. */
@@ -103,7 +103,7 @@ export interface ChannelMultiSelectInput {
  */
 export interface ConversationMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Conversation IDs selected when the menu first loads. */
   initialConversations?: string[];
   /** Select the conversation from which the view was opened by default. */
@@ -126,7 +126,7 @@ export interface ConversationMultiSelectInput {
  */
 export interface ExternalMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Minimum typed characters before Slack requests options; defaults to three. */
   minQueryLength?: number;
   /** Options selected when the menu first loads. */
@@ -147,7 +147,7 @@ export interface ExternalMultiSelectInput {
  */
 export interface StaticMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Up to 100 directly supplied options; mutually exclusive with `optionGroups`. */
   options?: JsonObject[];
   /** Up to 100 groups of options; mutually exclusive with `options`. */
@@ -170,7 +170,7 @@ export interface StaticMultiSelectInput {
  */
 export interface UserMultiSelectInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** User IDs selected when the menu first loads. */
   initialUsers?: string[];
   /** Optional confirmation dialog shown before the selection is submitted. */
@@ -189,7 +189,7 @@ export interface UserMultiSelectInput {
  */
 export interface NumberElementInput {
   /** Identifier used to find the submitted numeric value, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Whether the input accepts decimal values as well as whole numbers. Slack requires it. */
   isDecimalAllowed: boolean;
   /** Numeric text present when the input first loads. */
@@ -212,7 +212,7 @@ export interface NumberElementInput {
  */
 export interface OverflowInput {
   /** Identifier returned when an option is selected, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Between two and five option objects displayed in the compact menu. */
   options: JsonObject[];
   /** Optional confirmation dialog shown after an option is selected. */
@@ -225,7 +225,7 @@ export interface OverflowInput {
  */
 export interface PlainTextElementInput {
   /** Identifier used to find the submitted text value, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Text present when the input first loads. */
   initialValue?: string;
   /** Whether the input is a multi-line textarea instead of a single line. */
@@ -248,7 +248,7 @@ export interface PlainTextElementInput {
  */
 export interface RadioButtonsInput {
   /** Identifier returned when the selection changes, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Up to ten options displayed as radio buttons. */
   options: JsonObject[];
   /** Option from `options` selected when the element first loads. */
@@ -265,7 +265,7 @@ export interface RadioButtonsInput {
  */
 export interface ChannelSelectInput {
   /** Identifier returned when a channel is selected, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Public channel ID selected when the menu first loads. */
   initialChannel?: string;
   /** Include a `response_url` in a parent modal's submission payload. */
@@ -284,7 +284,7 @@ export interface ChannelSelectInput {
  */
 export interface ConversationSelectInput {
   /** Identifier returned when a conversation is selected, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Conversation ID selected when the menu first loads. */
   initialConversation?: string;
   /** Select the conversation from which the view was opened by default. */
@@ -307,7 +307,7 @@ export interface ConversationSelectInput {
  */
 export interface ExternalSelectInput {
   /** Identifier returned when an option is selected, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Minimum typed characters before Slack requests options; defaults to three. */
   minQueryLength?: number;
   /** Option selected when the menu first loads. */
@@ -326,7 +326,7 @@ export interface ExternalSelectInput {
  */
 export interface StaticSelectInput {
   /** Identifier returned when an option is selected, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Up to 100 directly supplied options; mutually exclusive with `optionGroups`. */
   options?: JsonObject[];
   /** Up to 100 groups of options; mutually exclusive with `options`. */
@@ -347,7 +347,7 @@ export interface StaticSelectInput {
  */
 export interface UserSelectInput {
   /** Identifier returned when a user is selected, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** User ID selected when the menu first loads. */
   initialUser?: string;
   /** Optional confirmation dialog shown before the selection is submitted. */
@@ -364,7 +364,7 @@ export interface UserSelectInput {
  */
 export interface TimePickerInput {
   /** Identifier returned when a time is selected, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** Initially selected time in 24-hour `HH:mm` format. */
   initialTime?: string;
   /** IANA timezone displayed as supporting text and returned with interactions. */
@@ -383,7 +383,7 @@ export interface TimePickerInput {
  */
 export interface UrlElementInput {
   /** Identifier used to find the submitted URL, up to 255 characters. */
-  actionId: string;
+  actionId?: string;
   /** URL present when the input first loads. */
   initialValue?: string;
   /** Configuration controlling when typing dispatches a `block_actions` payload. */
@@ -439,7 +439,7 @@ export interface ButtonInput {
   /** Plain-text label displayed on the button. */
   text: TextLike;
   /** Identifier returned when the button is selected. */
-  actionId: string;
+  actionId?: string;
   /** Optional URL opened by the button. */
   url?: string;
   /** Optional application-defined value returned with the interaction. */
@@ -710,7 +710,7 @@ export function emailInput(
 export function fileInput(
   input: {
     /** Identifier returned with submitted files. */
-    actionId: string;
+    actionId?: string;
     /** Optional allowed file extensions. */
     filetypes?: string[];
     /** Maximum files accepted, between 1 and 10. */

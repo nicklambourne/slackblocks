@@ -9,7 +9,7 @@ namespace Slackblocks.Elements;
 /// <summary>An input that accepts whole or decimal numbers.</summary>
 /// <remarks>
 /// <list type="bullet">
-/// <item><description>Required: <c>actionId</c>, <c>isDecimalAllowed</c>.</description></item>
+/// <item><description>Required: <c>isDecimalAllowed</c>.</description></item>
 /// <item><description>The minimum value cannot exceed the maximum value.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/number-input-element">Slack reference</see>.</para>
@@ -18,7 +18,7 @@ namespace Slackblocks.Elements;
 public sealed partial class NumberInputElement : global::Slackblocks.SlackObject, global::Slackblocks.Elements.IInputElement
 {
     /// <summary>Creates and validates a <see cref="NumberInputElement"/>.</summary>
-    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="isDecimalAllowed">Whether the input accepts decimal numbers. Required.</param>
     /// <param name="initialValue">The number present when the input loads, as a string such as 42 or 3.5.</param>
     /// <param name="minValue">The smallest accepted number.</param>
@@ -30,7 +30,7 @@ public sealed partial class NumberInputElement : global::Slackblocks.SlackObject
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public NumberInputElement(
-        string actionId,
+        string? actionId = null,
         bool? isDecimalAllowed = null,
         string? initialValue = null,
         double? minValue = null,
@@ -41,7 +41,7 @@ public sealed partial class NumberInputElement : global::Slackblocks.SlackObject
         global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("NumberInputElement", "number_input");
-        ActionId = wire.String("action_id", actionId)!;
+        ActionId = wire.String("action_id", actionId);
         IsDecimalAllowed = wire.Boolean("is_decimal_allowed", isDecimalAllowed);
         InitialValue = wire.String("initial_value", initialValue);
         MinValue = wire.Double("min_value", minValue);
@@ -53,7 +53,8 @@ public sealed partial class NumberInputElement : global::Slackblocks.SlackObject
     }
 
     /// <summary>Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.</summary>
-    public string ActionId { get; }
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? ActionId { get; }
 
     /// <summary>Gets whether the input accepts decimal numbers.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>

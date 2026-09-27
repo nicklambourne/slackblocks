@@ -116,6 +116,19 @@ describe("fluent elements", () => {
   });
 
   it("validates required element fields at build time", () => {
-    expect(() => Button().text("Missing action ID").build()).toThrow(/action_id/);
+    expect(() => Button().actionId("missing_text").build()).toThrow(/text/);
+    expect(() =>
+      WorkflowButton()
+        .text("Run")
+        .workflow(Workflow().trigger({ url: "https://example.com" }))
+        .build(),
+    ).toThrow(/action_id/);
+  });
+
+  it("omits an unset optional action ID", () => {
+    expect(Button().text("No action ID").build()).toEqual({
+      type: "button",
+      text: { type: "plain_text", text: "No action ID" },
+    });
   });
 });

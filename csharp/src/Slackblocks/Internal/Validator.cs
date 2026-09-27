@@ -19,25 +19,18 @@ internal static partial class Validator
         ["alert"] = ["text"],
         ["area"] = ["series", "axis_config"],
         ["bar"] = ["series", "axis_config"],
-        ["button"] = ["text", "action_id"],
+        ["button"] = ["text"],
         ["carousel"] = ["elements"],
         ["channel"] = ["channel_id"],
-        ["channels_select"] = ["action_id"],
-        ["checkboxes"] = ["action_id", "options"],
+        ["checkboxes"] = ["options"],
         ["container"] = ["child_blocks"],
         ["context"] = ["elements"],
         ["context_actions"] = ["elements"],
-        ["conversations_select"] = ["action_id"],
         ["data_table"] = ["rows", "caption"],
         ["data_visualization"] = ["title", "chart"],
-        ["datepicker"] = ["action_id"],
-        ["datetimepicker"] = ["action_id"],
-        ["email_text_input"] = ["action_id"],
         ["emoji"] = ["name"],
-        ["external_select"] = ["action_id"],
         ["feedback_buttons"] = ["positive_button", "negative_button"],
         ["file"] = ["external_id", "source"],
-        ["file_input"] = ["action_id"],
         ["header"] = ["text"],
         ["home"] = ["blocks"],
         ["icon"] = ["name"],
@@ -48,17 +41,11 @@ internal static partial class Validator
         ["link"] = ["url"],
         ["markdown"] = ["text"],
         ["modal"] = ["title", "blocks"],
-        ["multi_channels_select"] = ["action_id"],
-        ["multi_conversations_select"] = ["action_id"],
-        ["multi_external_select"] = ["action_id"],
-        ["multi_static_select"] = ["action_id"],
-        ["multi_users_select"] = ["action_id"],
-        ["number_input"] = ["action_id", "is_decimal_allowed"],
-        ["overflow"] = ["action_id", "options"],
+        ["number_input"] = ["is_decimal_allowed"],
+        ["overflow"] = ["options"],
         ["pie"] = ["segments"],
-        ["plain_text_input"] = ["action_id"],
         ["plan"] = ["title", "tasks"],
-        ["radio_buttons"] = ["action_id", "options"],
+        ["radio_buttons"] = ["options"],
         ["raw_number"] = ["value", "text"],
         ["raw_text"] = ["text"],
         ["rich_text"] = ["elements"],
@@ -67,16 +54,12 @@ internal static partial class Validator
         ["rich_text_preformatted"] = ["elements"],
         ["rich_text_quote"] = ["elements"],
         ["rich_text_section"] = ["elements"],
-        ["static_select"] = ["action_id"],
         ["table"] = ["rows"],
         ["task_card"] = ["task_id", "title", "status"],
         ["text"] = ["text"],
-        ["timepicker"] = ["action_id"],
         ["url"] = ["url", "text"],
-        ["url_text_input"] = ["action_id"],
         ["user"] = ["user_id"],
         ["usergroup"] = ["usergroup_id"],
-        ["users_select"] = ["action_id"],
         ["video"] = ["alt_text", "thumbnail_url", "title", "video_url"],
         ["workflow_button"] = ["text", "workflow", "action_id"],
     }.ToFrozenDictionary(StringComparer.Ordinal);
@@ -395,7 +378,7 @@ internal static partial class Validator
                 ValidateOptions(options, Child(path, "options"));
                 break;
             case "url":
-                StringLength(StringAt(value["url"], Child(path, "url")), Child(path, "url"), SlackLimits.UrlSourceUrlMinLength, SlackLimits.UrlSourceUrlMaxLength);
+                StringAt(value["url"], Child(path, "url"));
                 break;
             case "static_select":
             case "multi_static_select":
@@ -481,7 +464,7 @@ internal static partial class Validator
                 ValidateInput(value, path);
                 break;
             case "markdown":
-                StringLength(StringAt(value["text"], Child(path, "text")), Child(path, "text"), SlackLimits.MarkdownTextMinLength, SlackLimits.MarkdownTextMaxLength);
+                StringLength(StringAt(value["text"], Child(path, "text")), Child(path, "text"), 0, SlackLimits.MarkdownTextMaxLength);
                 break;
             case "video":
                 ValidateVideo(value, path);
@@ -811,7 +794,7 @@ internal static partial class Validator
     private static void ValidateView(JsonObject value, string path, string type)
     {
         var blocks = ListAt(value["blocks"], Child(path, "blocks"));
-        SliceLength(blocks, Child(path, "blocks"), SlackLimits.ViewBlocksMinItems, SlackLimits.ViewBlocksMaxItems);
+        SliceLength(blocks, Child(path, "blocks"), 0, SlackLimits.ViewBlocksMaxItems);
         ValidateSurface(blocks, type, Child(path, "blocks"));
         CheckOptionalString(value, "private_metadata", path, SlackLimits.ViewPrivateMetadataMaxLength);
         CheckOptionalString(value, "callback_id", path, SlackLimits.ViewCallbackIdMaxLength);
@@ -957,7 +940,7 @@ internal static partial class Validator
             {
                 columns = row.Count;
             }
-            else if (row.Count != columns)
+            else if (dataTable && row.Count != columns)
             {
                 Fail(ErrorCategory.InvalidUsage, rowPath, "column count differs");
             }

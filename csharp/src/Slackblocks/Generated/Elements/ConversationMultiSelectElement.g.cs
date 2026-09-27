@@ -8,16 +8,13 @@ namespace Slackblocks.Elements;
 
 /// <summary>A menu for selecting multiple conversations.</summary>
 /// <remarks>
-/// <list type="bullet">
-/// <item><description>Required: <c>actionId</c>.</description></item>
-/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
 public sealed partial class ConversationMultiSelectElement : global::Slackblocks.SlackObject, global::Slackblocks.Elements.IInputElement
 {
     /// <summary>Creates and validates a <see cref="ConversationMultiSelectElement"/>.</summary>
-    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="initialConversations">Conversation IDs that are selected when the menu loads.</param>
     /// <param name="defaultToCurrentConversation">Whether the menu pre-selects the conversation the user is viewing.</param>
     /// <param name="filter">Which conversation types the menu offers.</param>
@@ -29,7 +26,7 @@ public sealed partial class ConversationMultiSelectElement : global::Slackblocks
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public ConversationMultiSelectElement(
-        string actionId,
+        string? actionId = null,
         global::System.Collections.Generic.IEnumerable<string>? initialConversations = null,
         bool? defaultToCurrentConversation = null,
         global::Slackblocks.Objects.ConversationFilter? filter = null,
@@ -40,7 +37,7 @@ public sealed partial class ConversationMultiSelectElement : global::Slackblocks
         global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("ConversationMultiSelectElement", "multi_conversations_select");
-        ActionId = wire.String("action_id", actionId)!;
+        ActionId = wire.String("action_id", actionId);
         InitialConversations = wire.Strings("initial_conversations", initialConversations);
         DefaultToCurrentConversation = wire.Boolean("default_to_current_conversation", defaultToCurrentConversation);
         Filter = wire.Object("filter", filter);
@@ -52,7 +49,8 @@ public sealed partial class ConversationMultiSelectElement : global::Slackblocks
     }
 
     /// <summary>Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.</summary>
-    public string ActionId { get; }
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? ActionId { get; }
 
     /// <summary>Gets conversation IDs that are selected when the menu loads.</summary>
     /// <value>The values in order, or an empty list when none were set.</value>

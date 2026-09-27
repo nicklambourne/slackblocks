@@ -17,7 +17,7 @@ namespace Slackblocks.Blocks;
 public sealed partial class MarkdownBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock
 {
     /// <summary>Creates and validates a <see cref="MarkdownBlock"/>.</summary>
-    /// <param name="text">Standard markdown content, which Slack renders directly. Required. Must be between 1 and 12000 characters.</param>
+    /// <param name="text">Standard markdown content, which Slack renders directly. Required. Slack allows at most 12000 characters.</param>
     /// <param name="blockId">A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
