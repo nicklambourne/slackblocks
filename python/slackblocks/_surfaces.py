@@ -24,6 +24,7 @@ _BLOCK_TYPES_BY_SURFACE: dict[BlockSurface, frozenset[str]] = {
             "file",
             "header",
             "image",
+            "input",
             "markdown",
             "plan",
             "rich_text",
@@ -56,6 +57,7 @@ _BLOCK_TYPES_BY_SURFACE: dict[BlockSurface, frozenset[str]] = {
             "container",
             "context",
             "data_table",
+            "data_visualization",
             "divider",
             "header",
             "image",
@@ -86,4 +88,20 @@ def validate_surface_blocks(blocks: list[Any], surface: BlockSurface) -> None:
         if type_ not in allowed:
             raise TypeMismatchError(
                 f"blocks[{index}] type {type_!r} is not supported on {surface} surfaces"
+            )
+    validate_standalone_task_cards(blocks)
+
+
+def validate_standalone_task_cards(blocks: list[Any]) -> None:
+    """Reject standalone task cards with ``pending`` status; only plan tasks may be pending."""
+    for index, block in enumerate(blocks):
+        rendered = resolve(block)
+        if (
+            isinstance(rendered, dict)
+            and rendered.get("type") == "task_card"
+            and rendered.get("status") == "pending"
+        ):
+            raise TypeMismatchError(
+                f"blocks[{index}] is a standalone task card with `pending` status; "
+                "only plan tasks can be pending"
             )

@@ -166,6 +166,8 @@ public final class HomeTabView implements SlackObject {
     /**
      * Sets a workspace-unique identifier you can use to update the view later.
      *
+     * <p>Slack allows at most 255 characters.
+     *
      * @param value value for Slack's {@code external_id} field
      * @return this builder
      */

@@ -128,6 +128,12 @@
       "since": "1.0.0"
     },
     {
+      "id": "blocks/image_block_slack_file",
+      "description": "Image Block Slack File",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
+      "since": "1.1.0"
+    },
+    {
       "id": "blocks/input_block_only",
       "description": "Input Block Only",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",

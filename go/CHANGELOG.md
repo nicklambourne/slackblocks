@@ -18,6 +18,39 @@ same version number as the Python, TypeScript, and Java packages.
 - `Validate` now rejects `column_settings` on a `data_table` block with
   `InvalidUsage`; Slack supports `column_settings` only on the plain `table`
   block.
+- Validation now follows Slack's `blocks.validate` more closely. Newly rejected:
+  - Rich text list `indent` outside 0-8, negative `offset`, and list, quote, and
+    preformatted `border` outside 0-1; image block `title` over 2000 characters;
+    video `thumbnail_url` or `video_url` over 3000 and `title_url` or
+    `provider_icon_url` over 2000 characters; view `external_id` over 255
+    characters; plain-text input `min_length` outside 0-3000 or `max_length`
+    below 1; rich text input `min_lines` or `max_lines` outside 1-100;
+    multi-select `max_selected_items` below 1; negative data table
+    `row_header_column_index`; more than 20 table `column_settings`; containers
+    with no child blocks; and plans with more than 50 tasks or duplicate
+    `task_id`s.
+  - Conversation filters with an empty `include` list or a type other than
+    `im`, `mpim`, `private`, or `public`, including filters on raw
+    conversation selects passed to `Validate`.
+  - Slack file IDs that do not match `^F[A-Z0-9]{8,}$`, in `NewSlackFile` and in
+    image `slack_file` objects passed to `Validate`.
+  - Messages, message responses, and webhook messages whose markdown blocks
+    total more than 12,000 characters or whose data table cells total more
+    than 20,000 characters.
+  - A standalone task card with `pending` status (`TypeMismatch`). Plan tasks
+    can still be `pending`.
+  - Missing required fields (`MissingRequired`), checked at `Build`: a Slack
+    icon's `Name`, a plan's `Tasks`, a task card's `Status` (also for plan
+    tasks), a number input's `IsDecimalAllowed`, an attachment's `Blocks`, and
+    a workflow button's `ActionID`. Icon buttons and file blocks still default
+    `icon` and `source`.
+- Newly accepted: `input` blocks in messages, `data_visualization` blocks in
+  App Home, and tables with fewer or more `column_settings` than columns (up
+  to 20).
+- `ImageBlockBuilder` gains `SlackFile`; an image block needs exactly one of
+  `ImageURL` or `SlackFile`.
+- `RichTextInputBuilder.InitialValue` now takes a `*RichTextBlockBuilder`
+  instead of a `*RichTextBuilder`, since Slack requires a `rich_text` block.
 
 ## [2.4.0] — 2026-09-17
 

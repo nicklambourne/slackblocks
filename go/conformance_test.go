@@ -32,8 +32,8 @@ func TestSharedValidFixtures(t *testing.T) {
 	if manifest.SpecVersion != slackblocks.SpecVersion {
 		t.Fatalf("spec version = %q, want %q", slackblocks.SpecVersion, manifest.SpecVersion)
 	}
-	if len(manifest.Fixtures) != 100 {
-		t.Fatalf("expected the complete 100-fixture corpus, got %d", len(manifest.Fixtures))
+	if len(manifest.Fixtures) != 101 {
+		t.Fatalf("expected the complete 101-fixture corpus, got %d", len(manifest.Fixtures))
 	}
 	assertEmptySkipList(t)
 

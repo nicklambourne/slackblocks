@@ -103,11 +103,13 @@ describe("fluent elements", () => {
     expect(
       WorkflowButton()
         .text("Run")
+        .actionId("run")
         .workflow(Workflow().trigger({ url: "https://example.com" }))
         .build(),
     ).toEqual(
       workflowButton({
         text: "Run",
+        actionId: "run",
         workflow: workflow({ trigger: { url: "https://example.com" } }),
       }),
     );

@@ -407,6 +407,7 @@ _ELEMENT_CASES: list[tuple[str, Callable[[], Any], str, bool]] = [
         lambda: WorkflowButton(
             text="Run",
             workflow=Workflow.from_url("https://slack.com/x", env="prod"),
+            action_id="run",
         ),
         "workflow_button",
         True,
@@ -463,7 +464,7 @@ _OBJECT_CASES: list[tuple[str, Callable[[], Any], str, bool]] = [
     ),
     ("InputParameter", lambda: InputParameter("a", "1"), "", False),
     ("SlackFile_url", lambda: SlackFile(url="https://x.png", id=None), "", False),
-    ("SlackFile_id", lambda: SlackFile(url=None, id="F123"), "", False),
+    ("SlackFile_id", lambda: SlackFile(url=None, id="F0123ABC456"), "", False),
     (
         "Trigger_no_params",
         lambda: Trigger(url="https://slack.com/x", customizable_input_parameters=None),

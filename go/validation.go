@@ -30,11 +30,12 @@ var requiredFields = map[string][]string{
 	"emoji":                      {"name"},
 	"external_select":            {"action_id"},
 	"feedback_buttons":           {"positive_button", "negative_button"},
-	"file":                       {"external_id"},
+	"file":                       {"external_id", "source"},
 	"file_input":                 {"action_id"},
 	"header":                     {"text"},
 	"home":                       {"blocks"},
-	"icon_button":                {"text"},
+	"icon":                       {"name"},
+	"icon_button":                {"text", "icon"},
 	"image":                      {"alt_text"},
 	"input":                      {"label", "element"},
 	"line":                       {"series", "axis_config"},
@@ -46,11 +47,11 @@ var requiredFields = map[string][]string{
 	"multi_external_select":      {"action_id"},
 	"multi_static_select":        {"action_id"},
 	"multi_users_select":         {"action_id"},
-	"number_input":               {"action_id"},
+	"number_input":               {"action_id", "is_decimal_allowed"},
 	"overflow":                   {"action_id", "options"},
 	"pie":                        {"segments"},
 	"plain_text_input":           {"action_id"},
-	"plan":                       {"title"},
+	"plan":                       {"title", "tasks"},
 	"radio_buttons":              {"action_id", "options"},
 	"raw_number":                 {"value", "text"},
 	"raw_text":                   {"text"},
@@ -62,7 +63,7 @@ var requiredFields = map[string][]string{
 	"rich_text_section":          {"elements"},
 	"static_select":              {"action_id"},
 	"table":                      {"rows"},
-	"task_card":                  {"task_id", "title"},
+	"task_card":                  {"task_id", "title", "status"},
 	"text":                       {"text"},
 	"timepicker":                 {"action_id"},
 	"url":                        {"url", "text"},
@@ -71,7 +72,7 @@ var requiredFields = map[string][]string{
 	"usergroup":                  {"usergroup_id"},
 	"users_select":               {"action_id"},
 	"video":                      {"alt_text", "thumbnail_url", "title", "video_url"},
-	"workflow_button":            {"text", "workflow"},
+	"workflow_button":            {"text", "workflow", "action_id"},
 }
 
 var inputElementTypes = stringSet(
@@ -102,6 +103,8 @@ var inputPlaceholderMaxLengths = map[string]int{
 
 var attachmentColorPattern = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
 
+var slackFileIDPattern = regexp.MustCompile(`^F[A-Z0-9]{8,}$`)
+
 var slackIconNames = stringSet(
 	"archive", "book", "bookmark", "bot", "bug", "calendar", "call", "caret-left",
 	"caret-right", "check", "clipboard", "code", "comment", "compass", "copy", "cube",
@@ -117,14 +120,16 @@ var (
 	alertLevels         = stringSet("default", "info", "warning", "error", "success")
 	containerWidths     = stringSet("narrow", "standard", "wide", "full")
 	taskStatuses        = stringSet("pending", "in_progress", "complete", "error")
+	conversationTypes   = stringSet("im", "mpim", "private", "public")
+	multiSelectTypes    = stringSet("multi_channels_select", "multi_conversations_select", "multi_external_select", "multi_static_select", "multi_users_select")
 	tableCellTypes      = stringSet("raw_text", "rich_text")
 	dataTableCellTypes  = stringSet("raw_text", "rich_text", "raw_number")
 )
 
 var surfaceBlocks = map[string]map[string]bool{
-	"message": stringSet("actions", "card", "carousel", "container", "context", "context_actions", "data_table", "data_visualization", "divider", "file", "header", "image", "markdown", "plan", "rich_text", "section", "table", "task_card", "video"),
+	"message": stringSet("actions", "card", "carousel", "container", "context", "context_actions", "data_table", "data_visualization", "divider", "file", "header", "image", "input", "markdown", "plan", "rich_text", "section", "table", "task_card", "video"),
 	"modal":   stringSet("actions", "alert", "card", "context", "divider", "header", "image", "input", "rich_text", "section", "video"),
-	"home":    stringSet("actions", "card", "carousel", "container", "context", "data_table", "divider", "header", "image", "input", "rich_text", "section", "table", "video"),
+	"home":    stringSet("actions", "card", "carousel", "container", "context", "data_table", "data_visualization", "divider", "header", "image", "input", "rich_text", "section", "table", "video"),
 }
 
 func stringSet(values ...string) map[string]bool {
@@ -176,6 +181,20 @@ func validateBuilder(name string, object Object) error {
 				}
 			}
 		}
+		if raw, ok := object["include"]; ok {
+			include, err := sliceAt(raw, child(name, "include"))
+			if err != nil {
+				return err
+			}
+			if err := sliceLength(include, child(name, "include"), limitConversationFilterIncludeMinItems, 0); err != nil {
+				return err
+			}
+			for index, value := range include {
+				if kind, ok := value.(string); !ok || !conversationTypes[kind] {
+					return validationError(TypeMismatch, fmt.Sprintf("%s[%d]", child(name, "include"), index), "expected im, mpim, private, or public")
+				}
+			}
+		}
 	case "InputParameter":
 		if _, ok := object["name"]; !ok {
 			return validationError(MissingRequired, name, "expected name")
@@ -202,11 +221,7 @@ func validateBuilder(name string, object Object) error {
 		}
 		return sliceLength(triggers, child(name, "trigger_actions_on"), limitDispatchActionConfigurationTriggerActionsOnMinItems, limitDispatchActionConfigurationTriggerActionsOnMaxItems)
 	case "SlackFile":
-		_, hasID := object["id"]
-		_, hasURL := object["url"]
-		if hasID == hasURL {
-			return validationError(MutuallyExclusive, name, "expected exactly one of id or url")
-		}
+		return validateSlackFile(object, name)
 	case "ChartSegment":
 		return validateLabelValue(object, name, limitDataVisualizationSegmentLabelMaxLength, true)
 	case "DataPoint":
@@ -274,6 +289,9 @@ func validateBuilder(name string, object Object) error {
 			}
 		}
 	case "Attachment":
+		if _, ok := object["blocks"]; !ok {
+			return validationError(MissingRequired, child(name, "blocks"), "expected blocks")
+		}
 		if color, ok := object["color"].(string); ok && color != "good" && color != "warning" && color != "danger" && !attachmentColorPattern.MatchString(color) {
 			return validationError(TypeMismatch, child(name, "color"), "expected a six-digit hex color or Slack alias")
 		}
@@ -327,6 +345,22 @@ func validateObject(object Object, path string) error {
 	if maximum, ok := inputPlaceholderMaxLengths[typeName]; ok {
 		if placeholder, ok := object["placeholder"]; ok {
 			if err := textLength(placeholder, child(path, "placeholder.text"), 0, maximum); err != nil {
+				return err
+			}
+		}
+	}
+	if multiSelectTypes[typeName] {
+		if err := numberBetween(object, "max_selected_items", path, limitMultiSelectMaxSelectedItemsMin, math.MaxInt); err != nil {
+			return err
+		}
+	}
+	if typeName == "conversations_select" || typeName == "multi_conversations_select" {
+		if raw, ok := object["filter"]; ok {
+			filter, err := objectAt(raw, child(path, "filter"))
+			if err != nil {
+				return err
+			}
+			if err := validateBuilder("ConversationFilter", filter); err != nil {
 				return err
 			}
 		}
@@ -432,6 +466,37 @@ func validateObject(object Object, path string) error {
 		if value, ok := number(object["max_length"]); ok && value > limitPlainTextInputMaxLengthMax {
 			return validationError(OutOfRange, child(path, "max_length"), "exceeds maximum %d", limitPlainTextInputMaxLengthMax)
 		}
+		if err := numberBetween(object, "max_length", path, limitPlainTextInputMaxLengthMin, limitPlainTextInputMaxLengthMax); err != nil {
+			return err
+		}
+		if err := numberBetween(object, "min_length", path, limitPlainTextInputMinLengthMin, limitPlainTextInputMinLengthMax); err != nil {
+			return err
+		}
+	case "rich_text_input":
+		if err := numberBetween(object, "min_lines", path, limitRichTextInputMinLinesMin, limitRichTextInputMinLinesMax); err != nil {
+			return err
+		}
+		if err := numberBetween(object, "max_lines", path, limitRichTextInputMaxLinesMin, limitRichTextInputMaxLinesMax); err != nil {
+			return err
+		}
+	case "rich_text_list":
+		if err := numberBetween(object, "indent", path, limitRichTextListIndentMin, limitRichTextListIndentMax); err != nil {
+			return err
+		}
+		if err := numberBetween(object, "offset", path, limitRichTextListOffsetMin, math.MaxInt); err != nil {
+			return err
+		}
+		if err := numberBetween(object, "border", path, limitRichTextListBorderMin, limitRichTextListBorderMax); err != nil {
+			return err
+		}
+	case "rich_text_quote":
+		if err := numberBetween(object, "border", path, limitRichTextQuoteBorderMin, limitRichTextQuoteBorderMax); err != nil {
+			return err
+		}
+	case "rich_text_preformatted":
+		if err := numberBetween(object, "border", path, limitRichTextPreformattedBorderMin, limitRichTextPreformattedBorderMax); err != nil {
+			return err
+		}
 	case "overflow", "checkboxes", "radio_buttons":
 		options, err := sliceAt(object["options"], child(path, "options"))
 		if err != nil {
@@ -509,13 +574,35 @@ func validateObject(object Object, path string) error {
 		if imageURL && slackFile {
 			return validationError(MutuallyExclusive, path, "image_url and slack_file cannot be provided together")
 		}
+		if slackFile {
+			file, err := objectAt(object["slack_file"], child(path, "slack_file"))
+			if err != nil {
+				return err
+			}
+			if err := validateSlackFile(file, child(path, "slack_file")); err != nil {
+				return err
+			}
+		}
+		// Image blocks and image elements share the "image" type. Only a block can carry a
+		// title or block_id; anything else is checked against the image element's limits.
+		urlMaximum, altMaximum := limitImageElementImageURLMaxLength, limitImageElementAltTextMaxLength
+		_, title := object["title"]
+		_, blockID := object["block_id"]
+		if title || blockID {
+			urlMaximum, altMaximum = limitImageImageURLMaxLength, limitImageAltTextMaxLength
+		}
 		if value, ok := object["image_url"].(string); ok {
-			if err := stringLength(value, child(path, "image_url"), 0, limitImageImageURLMaxLength); err != nil {
+			if err := stringLength(value, child(path, "image_url"), 0, urlMaximum); err != nil {
 				return err
 			}
 		}
 		if value, ok := object["alt_text"].(string); ok {
-			if err := stringLength(value, child(path, "alt_text"), 0, limitImageAltTextMaxLength); err != nil {
+			if err := stringLength(value, child(path, "alt_text"), 0, altMaximum); err != nil {
+				return err
+			}
+		}
+		if title {
+			if err := textLength(object["title"], child(path, "title.text"), 0, limitImageTitleMaxLength); err != nil {
 				return err
 			}
 		}
@@ -611,7 +698,7 @@ func validateObject(object Object, path string) error {
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(blocks, child(path, "child_blocks"), 1, limitContainerChildBlocksMaxItems); err != nil {
+		if err := sliceLength(blocks, child(path, "child_blocks"), limitContainerChildBlocksMinItems, limitContainerChildBlocksMaxItems); err != nil {
 			return err
 		}
 		if width, ok := object["width"].(string); ok && !containerWidths[width] {
@@ -673,6 +760,13 @@ func validateObject(object Object, path string) error {
 		if status, ok := object["status"].(string); ok && !taskStatuses[status] {
 			return validationError(TypeMismatch, child(path, "status"), "unknown task status")
 		}
+		if object["status"] == "pending" {
+			return validationError(TypeMismatch, child(path, "status"), "pending is only valid for plan tasks")
+		}
+	case "plan":
+		if err := validatePlanTasks(object["tasks"], child(path, "tasks")); err != nil {
+			return err
+		}
 	case "input":
 		if err := textLength(object["label"], child(path, "label.text"), 0, limitInputLabelMaxLength); err != nil {
 			return err
@@ -701,7 +795,14 @@ func validateObject(object Object, path string) error {
 		if err := textLength(object["title"], child(path, "title.text"), 0, limitVideoTitleMaxLength); err != nil {
 			return err
 		}
-		for field, maximum := range map[string]int{"author_name": limitVideoAuthorNameMaxLength, "provider_name": limitVideoProviderNameMaxLength} {
+		for field, maximum := range map[string]int{
+			"author_name":       limitVideoAuthorNameMaxLength,
+			"provider_name":     limitVideoProviderNameMaxLength,
+			"thumbnail_url":     limitVideoThumbnailURLMaxLength,
+			"video_url":         limitVideoVideoURLMaxLength,
+			"title_url":         limitVideoTitleURLMaxLength,
+			"provider_icon_url": limitVideoProviderIconURLMaxLength,
+		} {
 			if value, ok := object[field].(string); ok {
 				if err := stringLength(value, child(path, field), 0, maximum); err != nil {
 					return err
@@ -734,6 +835,11 @@ func validateObject(object Object, path string) error {
 				return err
 			}
 		}
+		if value, ok := object["external_id"].(string); ok {
+			if err := stringLength(value, child(path, "external_id"), 0, limitViewExternalIDMaxLength); err != nil {
+				return err
+			}
+		}
 		if typeName == "modal" {
 			if _, submit := object["submit"]; !submit {
 				for _, raw := range blocks {
@@ -758,7 +864,7 @@ func validateObject(object Object, path string) error {
 	}
 	sort.Strings(fields)
 	for _, field := range fields {
-		if field == "type" || field == "event_payload" {
+		if field == "type" || field == "event_payload" || (typeName == "plan" && field == "tasks") {
 			continue
 		}
 		value := object[field]
@@ -901,16 +1007,16 @@ func validateTable(object Object, path string, dataTable bool) error {
 		if err != nil {
 			return err
 		}
-		if err := sliceLength(values, child(path, "column_settings"), 0, 20); err != nil {
+		if err := sliceLength(values, child(path, "column_settings"), 0, limitTableColumnSettingsMaxItems); err != nil {
 			return err
-		}
-		if len(values) != columns {
-			return validationError(InvalidUsage, child(path, "column_settings"), "expected one entry for every column")
 		}
 	}
 	if dataTable {
 		if pageSize, ok := number(object["page_size"]); ok && (pageSize < limitDataTablePageSizeMin || pageSize > limitDataTablePageSizeMax) {
 			return validationError(OutOfRange, child(path, "page_size"), "expected a value between %d and %d", limitDataTablePageSizeMin, limitDataTablePageSizeMax)
+		}
+		if err := numberBetween(object, "row_header_column_index", path, limitDataTableRowHeaderColumnIndexMin, math.MaxInt); err != nil {
+			return err
 		}
 		caption, ok := object["caption"].(string)
 		if !ok {
@@ -1028,7 +1134,110 @@ func validateMessageCollections(object Object, path string) error {
 			return err
 		}
 	}
+	markdown, tableContent := messageTotals(object)
+	if markdown > limitMarkdownTotalTextMaxLength {
+		return validationError(LengthExceeded, path, "markdown block text totals %d characters, exceeding maximum %d", markdown, limitMarkdownTotalTextMaxLength)
+	}
+	if tableContent > limitDataTableTotalContentMaxLength {
+		return validationError(LengthExceeded, path, "data table cell text totals %d characters, exceeding maximum %d", tableContent, limitDataTableTotalContentMaxLength)
+	}
 	return nil
+}
+
+// messageTotals counts the markdown block text and data table cell text anywhere in a message,
+// including attachment blocks and container children.
+func messageTotals(value any) (markdown, tableContent int) {
+	switch typed := value.(type) {
+	case Object:
+		switch objectType(typed) {
+		case "markdown":
+			text, _ := typed["text"].(string)
+			return utf8.RuneCountInString(text), 0
+		case "data_table":
+			return 0, textCharacterCount(typed["rows"])
+		}
+		for _, nested := range typed {
+			nestedMarkdown, nestedContent := messageTotals(nested)
+			markdown += nestedMarkdown
+			tableContent += nestedContent
+		}
+	case []any:
+		for _, nested := range typed {
+			nestedMarkdown, nestedContent := messageTotals(nested)
+			markdown += nestedMarkdown
+			tableContent += nestedContent
+		}
+	}
+	return markdown, tableContent
+}
+
+// validatePlanTasks checks a plan's task cards. Plan tasks are sent without a type and, unlike
+// standalone task cards, may be pending.
+func validatePlanTasks(value any, path string) error {
+	tasks, err := sliceAt(value, path)
+	if err != nil {
+		return err
+	}
+	if err := sliceLength(tasks, path, 0, limitPlanTasksMaxItems); err != nil {
+		return err
+	}
+	seen := map[string]bool{}
+	for index, raw := range tasks {
+		taskPath := fmt.Sprintf("%s[%d]", path, index)
+		task, err := objectAt(raw, taskPath)
+		if err != nil {
+			return err
+		}
+		for _, field := range requiredFields["task_card"] {
+			if _, ok := task[field]; !ok {
+				return validationError(MissingRequired, taskPath, "expected %s", field)
+			}
+		}
+		if status, ok := task["status"].(string); !ok || !taskStatuses[status] {
+			return validationError(TypeMismatch, child(taskPath, "status"), "unknown task status")
+		}
+		if id, ok := task["task_id"].(string); ok {
+			if seen[id] {
+				return validationError(InvalidUsage, child(taskPath, "task_id"), "task IDs must be unique within a plan")
+			}
+			seen[id] = true
+		}
+		untyped := Object{}
+		for key, nested := range task {
+			if key != "type" {
+				untyped[key] = nested
+			}
+		}
+		if err := validateObject(untyped, taskPath); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func validateSlackFile(object Object, path string) error {
+	_, hasID := object["id"]
+	_, hasURL := object["url"]
+	if hasID == hasURL {
+		return validationError(MutuallyExclusive, path, "expected exactly one of id or url")
+	}
+	if id, ok := object["id"].(string); ok && !slackFileIDPattern.MatchString(id) {
+		return validationError(TypeMismatch, child(path, "id"), "expected an ID matching %s", slackFileIDPattern)
+	}
+	return nil
+}
+
+// numberBetween checks an optional numeric field against an inclusive range. Pass math.MaxInt
+// as the maximum for a field with only a lower bound.
+func numberBetween(object Object, field, path string, minimum, maximum int) error {
+	value, ok := number(object[field])
+	if !ok || (value >= float64(minimum) && value <= float64(maximum)) {
+		return nil
+	}
+	if maximum == math.MaxInt {
+		return validationError(OutOfRange, child(path, field), "expected a value of at least %d", minimum)
+	}
+	return validationError(OutOfRange, child(path, field), "expected a value between %d and %d", minimum, maximum)
 }
 
 func validateSurface(blocks []any, surface, path string) error {

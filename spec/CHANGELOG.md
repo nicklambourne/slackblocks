@@ -37,6 +37,38 @@
   2001 characters ("max_length expected 2000"). The
   `video-alt-text-empty` invalid case is removed and `video-alt-text-too-long`
   now exceeds 2000 characters.
+- Align the contract with Slack's own validator. Every leaf in `limits.json`,
+  every required field, every surface placement, and every shared fixture was
+  probed against `blocks.validate` (1,251 probes, 2026-09-26). Where the docs
+  and the validator disagree, the stricter applies; where the docs are silent,
+  the validator's value does.
+  - Fix four valid fixtures Slack rejected: a standalone task card with
+    `pending` status, a Slack file ID shorter than `^F[A-Z0-9]{8,}$`, a rich
+    text input whose `initial_value` was a text element rather than a
+    `rich_text` block, and a rich text list with `border: 3`.
+  - Register limits Slack enforces: rich text list `indent` 0-8, `offset` 0 or
+    more, and list, quote, and preformatted `border` 0-1; image block `title`
+    2000; image element `image_url` 3000 and `alt_text` 2000; video
+    `thumbnail_url` and `video_url` 3000, `title_url` and `provider_icon_url`
+    2000; view `external_id` 255; plain-text input `min_length` 0-3000 and
+    `max_length` 1 or more; rich text input `min_lines` and `max_lines` 1-100;
+    multi-select `max_selected_items` 1 or more; data table
+    `row_header_column_index` 0 or more; table `column_settings` at most 20;
+    container `child_blocks` at least 1; plan `tasks` at most 50 with unique
+    `task_id`s; and conversation filter `include` non-empty and limited to
+    `im`, `mpim`, `private`, and `public`.
+  - Apply the documented message-wide totals: 12,000 characters of markdown
+    block text and 20,000 characters of data table cell text.
+  - Require fields Slack rejects when missing: `SlackIcon.name`, `plan.tasks`,
+    `task_card.status`, `number_input.is_decimal_allowed`, `attachment.blocks`,
+    `workflow_button.action_id`, and the defaulted `icon_button.icon` and
+    `file.source`. A standalone task card cannot be `pending`; plan tasks can.
+  - Change the rich text input's `initial_value` to a `rich_text` block, and add
+    `slack_file` to the image block with exactly one of it or `image_url`.
+  - Allow `input` blocks in messages and `data_visualization` in App Home, as
+    both the docs and the validator do.
+  - Remove the table rule that `column_settings` must have one entry per column;
+    the docs allow fewer, and the validator accepts any number up to 20.
 
 ## 1.1.0 - 2026-08-28
 

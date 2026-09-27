@@ -10,6 +10,7 @@ namespace Slackblocks.Objects;
 /// <remarks>
 /// <list type="bullet">
 /// <item><description>Set at least one filter.</description></item>
+/// <item><description>Include only im, mpim, private, and public.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/composition-objects/conversation-filter-object">Slack reference</see>.</para>
 /// </remarks>
@@ -17,7 +18,7 @@ namespace Slackblocks.Objects;
 public sealed partial class ConversationFilter : global::Slackblocks.SlackObject
 {
     /// <summary>Creates and validates a <see cref="ConversationFilter"/>.</summary>
-    /// <param name="include">Conversation types to offer: im, mpim, private, or public.</param>
+    /// <param name="include">Conversation types to offer: im, mpim, private, or public. Must contain at least 1 items.</param>
     /// <param name="excludeExternalSharedChannels">Whether externally shared channels are excluded.</param>
     /// <param name="excludeBotUsers">Whether bot users are excluded.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>

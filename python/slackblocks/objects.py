@@ -6,10 +6,11 @@ See: <https://api.slack.com/reference/block-kit/composition-objects>.
 
 from __future__ import annotations
 
+import re
 from abc import ABC, abstractmethod
 from enum import Enum
 from json import dumps
-from typing import Any, Literal, TypeAlias, cast, overload
+from typing import Any, Literal, TypeAlias, cast, get_args, overload
 
 from slackblocks._core import RenderableMixin, omit_none, resolve
 from slackblocks._limits import (
@@ -17,6 +18,7 @@ from slackblocks._limits import (
     CONFIRMATION_DENY_MAX_LENGTH,
     CONFIRMATION_TEXT_MAX_LENGTH,
     CONFIRMATION_TITLE_MAX_LENGTH,
+    CONVERSATION_FILTER_INCLUDE_MIN_ITEMS,
     DATA_TABLE_CELL_TEXT_MIN_LENGTH,
     DATA_VISUALIZATION_AXIS_LABEL_MAX_LENGTH,
     DATA_VISUALIZATION_CATEGORIES_MAX_ITEMS,
@@ -626,7 +628,7 @@ class ConversationFilter(CompositionObject):
 
     Args:
         include: Which types of conversations to include in the list.
-            One of more of `im`, `mpim`, `private`, `public`.
+            One or more of `im`, `mpim`, `private`, `public` (cannot be empty).
         exclude_external_shared_channels: whether to remove shared public channels
             from the list. See <https://api.slack.com/enterprise/shared-channels>.
         exclude_bot_users: whether to remove bot users from the list of conversations.
@@ -643,14 +645,27 @@ class ConversationFilter(CompositionObject):
         exclude_bot_users: bool | None = None,
     ) -> None:
         super().__init__(type_=CompositionObjectType.FILTER)
-        if not (
-            include or exclude_external_shared_channels is not None or exclude_bot_users is not None
+        if (
+            include is None
+            and exclude_external_shared_channels is None
+            and exclude_bot_users is None
         ):
             raise MissingRequiredError(
                 "One of `include`, `exclude_external_shared_channels`, or "
                 "`exclude_bot_users` is required."
             )
-        self.include = coerce_to_list(cast("str | list[str] | None", include), str, allow_none=True)
+        self.include = coerce_to_list(
+            cast("str | list[str] | None", include),
+            str,
+            allow_none=True,
+            min_size=CONVERSATION_FILTER_INCLUDE_MIN_ITEMS,
+        )
+        for conversation_type in self.include or []:
+            if conversation_type not in get_args(ConversationType):
+                raise TypeMismatchError(
+                    f"Unknown conversation type {conversation_type!r} in `include`; "
+                    f"expected one of {list(get_args(ConversationType))}."
+                )
         self.exclude_external_shared_channels = exclude_external_shared_channels
         self.exclude_bot_users = exclude_bot_users
 
@@ -713,6 +728,9 @@ class InputParameter(CompositionObject):
         return cls(name=data["name"], value=data["value"])
 
 
+_SLACK_FILE_ID = re.compile(r"F[A-Z0-9]{8,}")
+
+
 class SlackFile(CompositionObject):
     """
     Defines an object containing Slack file information to be used in an image
@@ -725,11 +743,11 @@ class SlackFile(CompositionObject):
     Args:
         url: the URL can be the `url_private` or the `permalink` of the Slack file
             (only one of `url` or `id` can be provided).
-        id: the Slack ID of the file
+        id: the Slack ID of the file, matching `^F[A-Z0-9]{8,}$`
             (only one of `url` or `id` can be provided).
 
     Throws:
-        InvalidUsageError: if both `url` and `id` are provided
+        InvalidUsageError: if both `url` and `id` are provided, or `id` is malformed.
     """
 
     def __init__(
@@ -740,6 +758,8 @@ class SlackFile(CompositionObject):
         super().__init__(CompositionObjectType.SLACK_FILE)
         if url and id:
             raise MutualExclusivityError("Cannot provide both `url` and `id`.")
+        if id is not None and not _SLACK_FILE_ID.fullmatch(id):
+            raise TypeMismatchError(f"Slack file `id` {id!r} must match ^F[A-Z0-9]{{8,}}$.")
         self.url = url
         self.id = id
 
@@ -1057,10 +1077,13 @@ class SlackIcon(RenderableMixin):
             (see `SlackIconName` for the full list of valid names).
 
     Throws:
+        MissingRequiredError: if `name` is `None`.
         TypeMismatchError: if `name` is not a recognised Slack icon name.
     """
 
     def __init__(self, name: SlackIconName) -> None:
+        if name is None:
+            raise MissingRequiredError("SlackIcon requires a `name`.")
         if name not in _SLACK_ICON_NAMES:
             raise TypeMismatchError(f"Unknown Slack icon name: {name!r}.")
         self.type = "icon"

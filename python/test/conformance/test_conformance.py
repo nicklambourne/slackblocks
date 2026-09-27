@@ -22,6 +22,7 @@ from slackblocks import (
     ContainerBlock,
     ContextActionsBlock,
     ContextBlock,
+    ConversationFilter,
     DataPoint,
     DataSeries,
     DataTableBlock,
@@ -53,23 +54,34 @@ from slackblocks import (
     PieChart,
     PlainText,
     PlainTextInput,
+    PlanBlock,
     RadioButtonGroup,
     RangeError,
     RawText,
     RichTextInput,
     SectionBlock,
     SlackFile,
+    SlackIcon,
     StaticSelectMenu,
     TableBlock,
+    TaskCardBlock,
     Text,
     TimePicker,
     TypeMismatchError,
     URLInput,
     URLSource,
+    UserMultiSelectMenu,
     VideoBlock,
     WorkflowButton,
 )
 from slackblocks.errors import InvalidUsageError
+from slackblocks.rich_text import (
+    RichText,
+    RichTextCodeBlock,
+    RichTextList,
+    RichTextQuote,
+    RichTextSection,
+)
 
 from .valid_constructions import CONSTRUCTIONS
 
@@ -170,6 +182,22 @@ def valid_axis() -> AxisConfig:
 
 def valid_series(name: str = "Series") -> DataSeries:
     return DataSeries(name, [DataPoint("A", 1)])
+
+
+def valid_task(task_id: str = "task", status: str = "complete") -> TaskCardBlock:
+    return TaskCardBlock(task_id=task_id, title="Task", status=status)  # type: ignore[arg-type]
+
+
+def valid_rich_text_list(**overrides: int) -> RichTextList:
+    return RichTextList(style="bullet", elements=[RichTextSection(RichText("A"))], **overrides)
+
+
+def data_table_with_content(length: int) -> DataTableBlock:
+    """A data table whose cells total ``length`` characters."""
+    header = "Name"
+    return DataTableBlock(
+        [[RawText(header)], [RawText("x" * (length - len(header)))]], caption="Names"
+    )
 
 
 INVALID_CASES: dict[str, Callable[[], object]] = {
@@ -316,10 +344,6 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         [[RawText("A") for _ in range(LIMITS["table"]["columns"]["max_items"] + 1)]]
     ),
     "table-ragged-rows": lambda: TableBlock([[RawText("A"), RawText("B")], [RawText("C")]]),
-    "table-column-settings-mismatch": lambda: TableBlock(
-        rows=[[RawText("A"), RawText("B")]],
-        column_settings=[ColumnSettings(is_wrapped=True)],
-    ),
     "file-input-max-files-too-small": lambda: FileInput(
         action_id="a", max_files=LIMITS["file_input"]["max_files"]["min"] - 1
     ),
@@ -444,7 +468,7 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         option_groups=[object()],  # type: ignore[list-item]
     ),
     "image-url-and-slack-file": lambda: Image(
-        image_url="https://example.com/image.png", slack_file=SlackFile(url=None, id="F123")
+        image_url="https://example.com/image.png", slack_file=SlackFile(url=None, id="F0123ABC456")
     ),
     "number-input-inverted-range": lambda: NumberInput(
         is_decimal_allowed=True, min_value=2, max_value=1
@@ -460,12 +484,13 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         accessibility_label="x" * (LIMITS["button"]["accessibility_label"]["max_length"] + 1),
     ),
     "workflow-button-text-too-long": lambda: WorkflowButton(
-        "x" * (LIMITS["workflow_button"]["text"]["max_length"] + 1)
+        "x" * (LIMITS["workflow_button"]["text"]["max_length"] + 1), action_id="a"
     ),
     "workflow-button-accessibility-label-too-long": lambda: WorkflowButton(
         "Run",
         accessibility_label="x"
         * (LIMITS["workflow_button"]["accessibility_label"]["max_length"] + 1),
+        action_id="a",
     ),
     "alert-text-too-long": lambda: AlertBlock("x" * (LIMITS["alert"]["text"]["max_length"] + 1)),
     "card-title-too-long": lambda: CardBlock(
@@ -633,6 +658,146 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "axis-label-too-long": lambda: AxisConfig(
         ["A"], x_label="x" * (LIMITS["data_visualization"]["axis_label"]["max_length"] + 1)
     ),
+    "plain-text-input-min-length-negative": lambda: PlainTextInput(
+        action_id="a", min_length=LIMITS["plain_text_input"]["min_length"]["min"] - 1
+    ),
+    "plain-text-input-min-length-too-large": lambda: PlainTextInput(
+        action_id="a", min_length=LIMITS["plain_text_input"]["min_length"]["max"] + 1
+    ),
+    "plain-text-input-max-length-too-small": lambda: PlainTextInput(
+        action_id="a", max_length=LIMITS["plain_text_input"]["max_length"]["min"] - 1
+    ),
+    "rich-text-input-min-lines-too-small": lambda: RichTextInput(
+        action_id="a", min_lines=LIMITS["rich_text_input"]["min_lines"]["min"] - 1
+    ),
+    "rich-text-input-min-lines-too-large": lambda: RichTextInput(
+        action_id="a", min_lines=LIMITS["rich_text_input"]["min_lines"]["max"] + 1
+    ),
+    "rich-text-input-max-lines-too-small": lambda: RichTextInput(
+        action_id="a", max_lines=LIMITS["rich_text_input"]["max_lines"]["min"] - 1
+    ),
+    "rich-text-input-max-lines-too-large": lambda: RichTextInput(
+        action_id="a", max_lines=LIMITS["rich_text_input"]["max_lines"]["max"] + 1
+    ),
+    "multi-select-max-selected-items-too-small": lambda: UserMultiSelectMenu(
+        action_id="a",
+        max_selected_items=LIMITS["multi_select"]["max_selected_items"]["min"] - 1,
+    ),
+    "conversation-filter-include-empty": lambda: ConversationFilter(include=[]),
+    "conversation-filter-unknown-include": lambda: ConversationFilter(
+        include=["channels"]  # type: ignore[list-item]
+    ),
+    "workflow-button-missing-action-id": lambda: WorkflowButton("Run"),
+    "number-input-missing-decimal-flag": lambda: NumberInput(
+        is_decimal_allowed=None,  # type: ignore[arg-type]
+        action_id="a",
+    ),
+    "slack-icon-missing-name": lambda: SlackIcon(None),  # type: ignore[arg-type]
+    "slack-file-id-malformed": lambda: SlackFile(url=None, id="F0123456"),
+    "image-element-url-too-long": lambda: Image(
+        image_url="x" * (LIMITS["image_element"]["image_url"]["max_length"] + 1),
+        alt_text="Alt",
+    ),
+    "image-element-alt-text-too-long": lambda: Image(
+        image_url="https://example.com/image.png",
+        alt_text="x" * (LIMITS["image_element"]["alt_text"]["max_length"] + 1),
+    ),
+    "image-block-title-too-long": lambda: ImageBlock(
+        image_url="https://example.com/image.png",
+        alt_text="Alt",
+        title="x" * (LIMITS["image"]["title"]["max_length"] + 1),
+    ),
+    "image-block-url-and-slack-file": lambda: ImageBlock(
+        image_url="https://example.com/image.png",
+        alt_text="Alt",
+        slack_file=SlackFile(url=None, id="F0123ABC456"),
+    ),
+    "image-block-missing-source": lambda: ImageBlock(alt_text="Alt"),
+    "container-no-child-blocks": lambda: ContainerBlock(title="Container", child_blocks=[]),
+    "table-too-many-column-settings": lambda: TableBlock(
+        [[RawText("A")]],
+        column_settings=[
+            ColumnSettings(is_wrapped=True)
+            for _ in range(LIMITS["table"]["column_settings"]["max_items"] + 1)
+        ],
+    ),
+    "data-table-row-header-index-negative": lambda: DataTableBlock(
+        valid_table_rows(),
+        caption="Names",
+        row_header_column_index=LIMITS["data_table"]["row_header_column_index"]["min"] - 1,
+    ),
+    "data-table-total-content-too-long": lambda: Message(
+        channel="C123",
+        blocks=[
+            data_table_with_content(LIMITS["data_table"]["total_content"]["max_length"] // 2 + 1)
+            for _ in range(2)
+        ],
+    ),
+    "markdown-total-too-long": lambda: Message(
+        channel="C123",
+        blocks=[
+            MarkdownBlock("x" * (LIMITS["markdown"]["total_text"]["max_length"] // 2 + 1))
+            for _ in range(2)
+        ],
+    ),
+    "plan-missing-tasks": lambda: PlanBlock(title="Plan"),
+    "plan-too-many-tasks": lambda: PlanBlock(
+        title="Plan",
+        tasks=[
+            valid_task(f"task-{index}") for index in range(LIMITS["plan"]["tasks"]["max_items"] + 1)
+        ],
+    ),
+    "plan-duplicate-task-ids": lambda: PlanBlock(
+        title="Plan", tasks=[valid_task("task"), valid_task("task")]
+    ),
+    "task-card-missing-status": lambda: TaskCardBlock(task_id="task", title="Task"),
+    "task-card-pending-status": lambda: Message(
+        channel="C123", blocks=[valid_task(status="pending")]
+    ),
+    "rich-text-list-indent-negative": lambda: valid_rich_text_list(
+        indent=LIMITS["rich_text_list"]["indent"]["min"] - 1
+    ),
+    "rich-text-list-indent-too-large": lambda: valid_rich_text_list(
+        indent=LIMITS["rich_text_list"]["indent"]["max"] + 1
+    ),
+    "rich-text-list-offset-negative": lambda: valid_rich_text_list(
+        offset=LIMITS["rich_text_list"]["offset"]["min"] - 1
+    ),
+    "rich-text-list-border-negative": lambda: valid_rich_text_list(
+        border=LIMITS["rich_text_list"]["border"]["min"] - 1
+    ),
+    "rich-text-list-border-too-large": lambda: valid_rich_text_list(
+        border=LIMITS["rich_text_list"]["border"]["max"] + 1
+    ),
+    "rich-text-quote-border-negative": lambda: RichTextQuote(
+        [RichText("A")], border=LIMITS["rich_text_quote"]["border"]["min"] - 1
+    ),
+    "rich-text-quote-border-too-large": lambda: RichTextQuote(
+        [RichText("A")], border=LIMITS["rich_text_quote"]["border"]["max"] + 1
+    ),
+    "rich-text-preformatted-border-negative": lambda: RichTextCodeBlock(
+        [RichText("A")], border=LIMITS["rich_text_preformatted"]["border"]["min"] - 1
+    ),
+    "rich-text-preformatted-border-too-large": lambda: RichTextCodeBlock(
+        [RichText("A")], border=LIMITS["rich_text_preformatted"]["border"]["max"] + 1
+    ),
+    "video-thumbnail-url-too-long": lambda: video(
+        thumbnail_url="x" * (LIMITS["video"]["thumbnail_url"]["max_length"] + 1)
+    ),
+    "video-url-too-long": lambda: video(
+        video_url="x" * (LIMITS["video"]["video_url"]["max_length"] + 1)
+    ),
+    "video-title-url-too-long": lambda: video(
+        title_url="x" * (LIMITS["video"]["title_url"]["max_length"] + 1)
+    ),
+    "video-provider-icon-url-too-long": lambda: video(
+        provider_icon_url="x" * (LIMITS["video"]["provider_icon_url"]["max_length"] + 1)
+    ),
+    "view-external-id-too-long": lambda: HomeTabView(
+        blocks=[DividerBlock()],
+        external_id="x" * (LIMITS["view"]["external_id"]["max_length"] + 1),
+    ),
+    "attachment-missing-blocks": lambda: Attachment(),
 }
 
 

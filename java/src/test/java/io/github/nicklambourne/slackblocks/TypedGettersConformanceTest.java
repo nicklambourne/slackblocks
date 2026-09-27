@@ -91,8 +91,13 @@ final class TypedGettersConformanceTest {
       JsonObject field = fieldElement.getAsJsonObject();
       String key = field.get("wire").getAsString();
       Method getter = value.getClass().getMethod(getterName(field.get("method").getAsString()));
-      Object result = unwrap(getter.invoke(value));
       String label = spec.get("name").getAsString() + "." + getter.getName() + "()";
+      if (label.equals("ImageBlock.getImageUrl()") && !wire.containsKey(key)) {
+        // Keeps its 2.x String signature, so it throws when a Slack file replaces the URL.
+        assertThrows(IllegalStateException.class, () -> FluentDriver.invoke(getter, value));
+        continue;
+      }
+      Object result = unwrap(getter.invoke(value));
       if (!wire.containsKey(key)) {
         assertTrue(result == null || (result instanceof List<?> list && list.isEmpty()), label);
         continue;

@@ -5,13 +5,13 @@ import com.google.gson.annotations.JsonAdapter;
 import com.slack.api.model.block.element.BlockElement;
 import io.github.nicklambourne.slackblocks.Buildable;
 import io.github.nicklambourne.slackblocks.ValidationException;
+import io.github.nicklambourne.slackblocks.block.RichTextBlock;
 import io.github.nicklambourne.slackblocks.internal.BuilderState;
 import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
 import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.DispatchActionConfiguration;
 import io.github.nicklambourne.slackblocks.object.PlainText;
-import io.github.nicklambourne.slackblocks.object.RichTextText;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -71,9 +71,9 @@ public final class RichTextInputElement extends BlockElement implements InputEle
    * @throws IllegalStateException if the field was set through a raw wire field to a value this
    *     type cannot represent
    */
-  public Optional<RichTextText> getInitialValue() {
+  public Optional<RichTextBlock> getInitialValue() {
     return TypedFields.optional(
-        fields, "RichTextInputElement", "initial_value", RichTextText.class);
+        fields, "RichTextInputElement", "initial_value", RichTextBlock.class);
   }
 
   /**
@@ -185,10 +185,10 @@ public final class RichTextInputElement extends BlockElement implements InputEle
     /**
      * Sets the rich text present when the input loads.
      *
-     * @param value nested {@link RichTextText}
+     * @param value nested {@link RichTextBlock}
      * @return this builder
      */
-    public Builder initialValue(RichTextText value) {
+    public Builder initialValue(RichTextBlock value) {
       state.set("initial_value", value);
       return this;
     }
@@ -248,6 +248,8 @@ public final class RichTextInputElement extends BlockElement implements InputEle
     /**
      * Sets the minimum visible height of the input, in lines.
      *
+     * <p>Must be between 1 and 100.
+     *
      * @param value value for Slack's {@code min_lines} field
      * @return this builder
      */
@@ -258,6 +260,8 @@ public final class RichTextInputElement extends BlockElement implements InputEle
 
     /**
      * Sets the maximum visible height of the input, in lines.
+     *
+     * <p>Must be between 1 and 100.
      *
      * @param value value for Slack's {@code max_lines} field
      * @return this builder

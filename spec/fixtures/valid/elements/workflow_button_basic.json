@@ -1,5 +1,6 @@
 {
     "type": "workflow_button",
+    "action_id": "run_workflow",
     "text": {
         "type": "plain_text",
         "text": "Run Your Workflow"

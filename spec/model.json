@@ -634,7 +634,8 @@
           "goMethod": "RowHeaderColumnIndex",
           "wire": "row_header_column_index",
           "kind": "int",
-          "description": "Sets the zero-based index of the column whose cells act as row headers."
+          "description": "Sets the zero-based index of the column whose cells act as row headers.",
+          "limits": "data_table.row_header_column_index"
         },
         {
           "method": "blockId",
@@ -735,7 +736,8 @@
           "goMethod": "Source",
           "wire": "source",
           "kind": "string",
-          "description": "Sets the file source. Slack currently supports only remote files."
+          "description": "Sets the file source. Slack currently supports only remote files.",
+          "required": true
         },
         {
           "method": "blockId",
@@ -796,8 +798,15 @@
           "wire": "image_url",
           "kind": "string",
           "description": "Sets the publicly accessible URL of the image. Cannot be combined with a Slack file.",
-          "limits": "image.image_url",
-          "required": true
+          "limits": "image.image_url"
+        },
+        {
+          "method": "slackFile",
+          "goMethod": "SlackFile",
+          "wire": "slack_file",
+          "kind": "object",
+          "type": "SlackFile",
+          "description": "Sets a file hosted in Slack as the image source. Cannot be combined with an image URL."
         },
         {
           "method": "altText",
@@ -815,7 +824,8 @@
           "kind": "text",
           "type": "PlainText",
           "coerce": "plain_text",
-          "description": "Sets the title shown above the image."
+          "description": "Sets the title shown above the image.",
+          "limits": "image.title"
         },
         {
           "method": "blockId",
@@ -826,7 +836,9 @@
           "limits": "block_id"
         }
       ],
-      "rules": []
+      "rules": [
+        "Provide exactly one of an image URL or a Slack file."
+      ]
     },
     {
       "name": "InputBlock",
@@ -947,7 +959,9 @@
           "wire": "tasks",
           "kind": "list",
           "type": "TaskCardBlock",
-          "description": "Adds task cards in display order."
+          "description": "Adds task cards in display order.",
+          "limits": "plan.tasks",
+          "required": true
         },
         {
           "method": "blockId",
@@ -958,7 +972,9 @@
           "limits": "block_id"
         }
       ],
-      "rules": []
+      "rules": [
+        "Task IDs must be unique within a plan."
+      ]
     },
     {
       "name": "RichTextBlock",
@@ -1070,7 +1086,8 @@
           "wire": "column_settings",
           "kind": "list",
           "type": "ColumnSettings",
-          "description": "Adds per-column settings in column order. Provide one entry for every column."
+          "description": "Adds per-column settings in column order. Provide one entry for every column.",
+          "limits": "table.column_settings"
         },
         {
           "method": "blockId",
@@ -1082,8 +1099,7 @@
         }
       ],
       "rules": [
-        "Every row must have the same number of cells.",
-        "Column settings need one entry for every column."
+        "Every row must have the same number of cells."
       ]
     },
     {
@@ -1142,7 +1158,8 @@
           "wire": "status",
           "kind": "enum",
           "type": "TaskStatus",
-          "description": "Sets the task's current state."
+          "description": "Sets the task's current state.",
+          "required": true
         },
         {
           "method": "blockId",
@@ -1153,7 +1170,9 @@
           "limits": "block_id"
         }
       ],
-      "rules": []
+      "rules": [
+        "A standalone task card's status cannot be pending; pending is only valid for plan tasks."
+      ]
     },
     {
       "name": "VideoBlock",
@@ -1180,6 +1199,7 @@
           "wire": "thumbnail_url",
           "kind": "string",
           "description": "Sets the URL of the image shown before the video plays.",
+          "limits": "video.thumbnail_url",
           "required": true
         },
         {
@@ -1199,6 +1219,7 @@
           "wire": "video_url",
           "kind": "string",
           "description": "Sets the embeddable URL of the video. The domain must be listed in the app's unfurl domains.",
+          "limits": "video.video_url",
           "required": true
         },
         {
@@ -1232,7 +1253,8 @@
           "goMethod": "ProviderIconURL",
           "wire": "provider_icon_url",
           "kind": "string",
-          "description": "Sets the URL of the video provider's icon."
+          "description": "Sets the URL of the video provider's icon.",
+          "limits": "video.provider_icon_url"
         },
         {
           "method": "providerName",
@@ -1247,7 +1269,8 @@
           "goMethod": "TitleURL",
           "wire": "title_url",
           "kind": "string",
-          "description": "Sets the HTTPS URL opened when the title is clicked."
+          "description": "Sets the HTTPS URL opened when the title is clicked.",
+          "limits": "video.title_url"
         }
       ],
       "rules": []
@@ -1366,7 +1389,8 @@
           "goMethod": "MaxSelectedItems",
           "wire": "max_selected_items",
           "kind": "int",
-          "description": "Sets the maximum number of items a user can select."
+          "description": "Sets the maximum number of items a user can select.",
+          "limits": "multi_select.max_selected_items"
         },
         {
           "method": "focusOnLoad",
@@ -1564,7 +1588,8 @@
           "goMethod": "MaxSelectedItems",
           "wire": "max_selected_items",
           "kind": "int",
-          "description": "Sets the maximum number of items a user can select."
+          "description": "Sets the maximum number of items a user can select.",
+          "limits": "multi_select.max_selected_items"
         },
         {
           "method": "focusOnLoad",
@@ -1871,7 +1896,8 @@
           "goMethod": "MaxSelectedItems",
           "wire": "max_selected_items",
           "kind": "int",
-          "description": "Sets the maximum number of items a user can select."
+          "description": "Sets the maximum number of items a user can select.",
+          "limits": "multi_select.max_selected_items"
         },
         {
           "method": "focusOnLoad",
@@ -2067,7 +2093,8 @@
           "wire": "icon",
           "kind": "enum",
           "type": "IconButtonIcon",
-          "description": "Sets the icon shown on the button."
+          "description": "Sets the icon shown on the button.",
+          "required": true
         },
         {
           "method": "actionId",
@@ -2130,6 +2157,7 @@
           "wire": "alt_text",
           "kind": "string",
           "description": "Sets a plain-text summary of the image or video for assistive technology.",
+          "limits": "image_element.alt_text",
           "required": true
         },
         {
@@ -2137,7 +2165,8 @@
           "goMethod": "ImageURL",
           "wire": "image_url",
           "kind": "string",
-          "description": "Sets the publicly accessible URL of the image. Cannot be combined with a Slack file."
+          "description": "Sets the publicly accessible URL of the image. Cannot be combined with a Slack file.",
+          "limits": "image_element.image_url"
         },
         {
           "method": "slackFile",
@@ -2178,7 +2207,8 @@
           "goMethod": "IsDecimalAllowed",
           "wire": "is_decimal_allowed",
           "kind": "boolean",
-          "description": "Sets whether the input accepts decimal numbers."
+          "description": "Sets whether the input accepts decimal numbers.",
+          "required": true
         },
         {
           "method": "initialValue",
@@ -2311,7 +2341,8 @@
           "goMethod": "MinLength",
           "wire": "min_length",
           "kind": "int",
-          "description": "Sets the minimum number of characters the user must enter."
+          "description": "Sets the minimum number of characters the user must enter.",
+          "limits": "plain_text_input.min_length"
         },
         {
           "method": "maxLength",
@@ -2432,7 +2463,7 @@
           "goMethod": "InitialValue",
           "wire": "initial_value",
           "kind": "object",
-          "type": "RichTextText",
+          "type": "RichTextBlock",
           "description": "Sets the rich text present when the input loads."
         },
         {
@@ -2465,14 +2496,16 @@
           "goMethod": "MinLines",
           "wire": "min_lines",
           "kind": "int",
-          "description": "Sets the minimum visible height of the input, in lines."
+          "description": "Sets the minimum visible height of the input, in lines.",
+          "limits": "rich_text_input.min_lines"
         },
         {
           "method": "maxLines",
           "goMethod": "MaxLines",
           "wire": "max_lines",
           "kind": "int",
-          "description": "Sets the maximum visible height of the input, in lines."
+          "description": "Sets the maximum visible height of the input, in lines.",
+          "limits": "rich_text_input.max_lines"
         }
       ],
       "rules": []
@@ -2537,7 +2570,8 @@
           "goMethod": "MaxSelectedItems",
           "wire": "max_selected_items",
           "kind": "int",
-          "description": "Sets the maximum number of items a user can select."
+          "description": "Sets the maximum number of items a user can select.",
+          "limits": "multi_select.max_selected_items"
         },
         {
           "method": "focusOnLoad",
@@ -2798,7 +2832,8 @@
           "goMethod": "MaxSelectedItems",
           "wire": "max_selected_items",
           "kind": "int",
-          "description": "Sets the maximum number of items a user can select."
+          "description": "Sets the maximum number of items a user can select.",
+          "limits": "multi_select.max_selected_items"
         },
         {
           "method": "focusOnLoad",
@@ -2912,7 +2947,8 @@
           "wire": "action_id",
           "kind": "string",
           "description": "Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.",
-          "limits": "action_id"
+          "limits": "action_id",
+          "required": true
         },
         {
           "method": "confirm",
@@ -3189,7 +3225,8 @@
           "goMethod": "Include",
           "wire": "include",
           "kind": "stringList",
-          "description": "Adds conversation types to offer: im, mpim, private, or public."
+          "description": "Adds conversation types to offer: im, mpim, private, or public.",
+          "limits": "conversation_filter.include"
         },
         {
           "method": "excludeExternalSharedChannels",
@@ -3207,7 +3244,8 @@
         }
       ],
       "rules": [
-        "Set at least one filter."
+        "Set at least one filter.",
+        "Include only im, mpim, private, and public."
       ]
     },
     {
@@ -3690,7 +3728,8 @@
           "goMethod": "Border",
           "wire": "border",
           "kind": "int",
-          "description": "Sets the width of the left border, in pixels."
+          "description": "Sets the width of the left border, in pixels.",
+          "limits": "rich_text_preformatted.border"
         }
       ],
       "rules": []
@@ -3810,21 +3849,24 @@
           "goMethod": "Indent",
           "wire": "indent",
           "kind": "int",
-          "description": "Sets the list's indentation level."
+          "description": "Sets the list's indentation level.",
+          "limits": "rich_text_list.indent"
         },
         {
           "method": "offset",
           "goMethod": "Offset",
           "wire": "offset",
           "kind": "int",
-          "description": "Sets the number of items to skip when numbering an ordered list."
+          "description": "Sets the number of items to skip when numbering an ordered list.",
+          "limits": "rich_text_list.offset"
         },
         {
           "method": "border",
           "goMethod": "Border",
           "wire": "border",
           "kind": "int",
-          "description": "Sets the width of the left border, in pixels."
+          "description": "Sets the width of the left border, in pixels.",
+          "limits": "rich_text_list.border"
         }
       ],
       "rules": []
@@ -3855,7 +3897,8 @@
           "goMethod": "Border",
           "wire": "border",
           "kind": "int",
-          "description": "Sets the width of the left border, in pixels."
+          "description": "Sets the width of the left border, in pixels.",
+          "limits": "rich_text_quote.border"
         }
       ],
       "rules": []
@@ -4022,7 +4065,8 @@
         }
       ],
       "rules": [
-        "Provide exactly one of an ID or a URL."
+        "Provide exactly one of an ID or a URL.",
+        "An ID must match ^F[A-Z0-9]{8,}$."
       ]
     },
     {
@@ -4040,7 +4084,8 @@
           "goMethod": "Name",
           "wire": "name",
           "kind": "string",
-          "description": "Sets the name of the Slack-provided icon, such as rocket."
+          "description": "Sets the name of the Slack-provided icon, such as rocket.",
+          "required": true
         }
       ],
       "rules": []
@@ -4142,7 +4187,8 @@
           "wire": "blocks",
           "kind": "list",
           "type": "Block",
-          "description": "Adds the attachment's blocks in display order."
+          "description": "Adds the attachment's blocks in display order.",
+          "required": true
         },
         {
           "method": "color",
@@ -4204,7 +4250,8 @@
           "goMethod": "ExternalID",
           "wire": "external_id",
           "kind": "string",
-          "description": "Sets a workspace-unique identifier you can use to update the view later."
+          "description": "Sets a workspace-unique identifier you can use to update the view later.",
+          "limits": "view.external_id"
         }
       ],
       "rules": [
@@ -4288,7 +4335,8 @@
         }
       ],
       "rules": [
-        "Only blocks supported in messages are accepted."
+        "Only blocks supported in messages are accepted.",
+        "Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message."
       ]
     },
     {
@@ -4355,7 +4403,8 @@
         }
       ],
       "rules": [
-        "Only blocks supported in messages are accepted."
+        "Only blocks supported in messages are accepted.",
+        "Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message."
       ]
     },
     {
@@ -4444,7 +4493,8 @@
           "goMethod": "ExternalID",
           "wire": "external_id",
           "kind": "string",
-          "description": "Sets a workspace-unique identifier you can use to update the view later."
+          "description": "Sets a workspace-unique identifier you can use to update the view later.",
+          "limits": "view.external_id"
         },
         {
           "method": "submitDisabled",
@@ -4539,7 +4589,8 @@
         }
       ],
       "rules": [
-        "Only blocks supported in messages are accepted."
+        "Only blocks supported in messages are accepted.",
+        "Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message."
       ]
     }
   ]

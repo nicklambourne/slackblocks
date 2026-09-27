@@ -23,7 +23,7 @@ import java.util.Optional;
  * Builder#build()} to validate and create an immutable value.
  *
  * <ul>
- *   <li>Required: {@code text}, {@code workflow}.
+ *   <li>Required: {@code text}, {@code workflow}, {@code actionId}.
  * </ul>
  *
  * @see <a
@@ -209,7 +209,7 @@ public final class WorkflowButtonElement extends BlockElement implements Element
      * Sets the identifier Slack returns in interaction payloads when a user acts on this element.
      * It must be unique among the elements of its block.
      *
-     * <p>Slack allows at most 255 characters.
+     * <p>Required. Slack allows at most 255 characters.
      *
      * @param value value for Slack's {@code action_id} field
      * @return this builder

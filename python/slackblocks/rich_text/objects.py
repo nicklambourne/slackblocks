@@ -12,6 +12,17 @@ from enum import Enum
 from typing import Any
 
 from slackblocks._core import RenderableMixin, resolve
+from slackblocks._limits import (
+    RICH_TEXT_LIST_BORDER_MAX,
+    RICH_TEXT_LIST_BORDER_MIN,
+    RICH_TEXT_LIST_INDENT_MAX,
+    RICH_TEXT_LIST_INDENT_MIN,
+    RICH_TEXT_LIST_OFFSET_MIN,
+    RICH_TEXT_PREFORMATTED_BORDER_MAX,
+    RICH_TEXT_PREFORMATTED_BORDER_MIN,
+    RICH_TEXT_QUOTE_BORDER_MAX,
+    RICH_TEXT_QUOTE_BORDER_MIN,
+)
 from slackblocks.errors import TypeMismatchError
 from slackblocks.rich_text.elements import (
     RichText,
@@ -112,9 +123,9 @@ class RichTextList(RichTextObject):
         style: one of `ListType.BULLET` or `ListType.ORDERED`.
         elements: a list of (possibly nested) `RichTextSection` elements.
             Each object in this list will be rendered as a list item.
-        indent: indent (in pixels) of each list item.
-        offset: offset (in pixels) of each list item.
-        border: thickness (in pixels) of the (optional) border around the list.
+        indent: indentation level of the list (0-8).
+        offset: number of items to skip when numbering an ordered list (0 or more).
+        border: thickness (in pixels) of the (optional) border around the list (0-1).
 
     Throws:
         InvalidUsageError: if style is not a valid `ListType` or any of the
@@ -138,9 +149,19 @@ class RichTextList(RichTextObject):
         elif isinstance(style, ListType):
             self.style = style.value
         self.elements = coerce_to_list(elements, RichTextSection, min_size=1)
-        self.indent = validate_int(indent, allow_none=True)
-        self.offset = validate_int(offset, allow_none=True)
-        self.border = validate_int(border, allow_none=True)
+        self.indent = validate_int(
+            indent,
+            min_value=RICH_TEXT_LIST_INDENT_MIN,
+            max_value=RICH_TEXT_LIST_INDENT_MAX,
+            allow_none=True,
+        )
+        self.offset = validate_int(offset, min_value=RICH_TEXT_LIST_OFFSET_MIN, allow_none=True)
+        self.border = validate_int(
+            border,
+            min_value=RICH_TEXT_LIST_BORDER_MIN,
+            max_value=RICH_TEXT_LIST_BORDER_MAX,
+            allow_none=True,
+        )
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(
@@ -169,7 +190,7 @@ class RichTextCodeBlock(RichTextObject):
     Args:
         elements: one or more rich text primitive objexts
             (e.g. [`RichText`](/slackblocks/latest/reference/rich_text/#rich_text.RichText)).
-        border: the thickness (in pixels) of the border around the code block.
+        border: the thickness (in pixels) of the border around the code block (0-1).
 
     Throws:
         InvalidUsageError: if any of the items in `elements` aren't valid rich
@@ -193,7 +214,12 @@ class RichTextCodeBlock(RichTextObject):
                 RichTextUserGroup,
             ),
         )
-        self.border = border
+        self.border = validate_int(
+            border,
+            min_value=RICH_TEXT_PREFORMATTED_BORDER_MIN,
+            max_value=RICH_TEXT_PREFORMATTED_BORDER_MAX,
+            allow_none=True,
+        )
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(
@@ -219,7 +245,7 @@ class RichTextQuote(RichTextObject):
     Args:
         elements: one or more rich text primitive objexts
             (e.g. [`RichText`](/slackblocks/latest/reference/rich_text/#rich_text.RichText)).
-        border: the thickness (in pixels) of the border around the code block.
+        border: the thickness (in pixels) of the border around the quote (0-1).
     """
 
     def __init__(
@@ -239,7 +265,12 @@ class RichTextQuote(RichTextObject):
                 RichTextUserGroup,
             ),
         )
-        self.border = border
+        self.border = validate_int(
+            border,
+            min_value=RICH_TEXT_QUOTE_BORDER_MIN,
+            max_value=RICH_TEXT_QUOTE_BORDER_MAX,
+            allow_none=True,
+        )
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(

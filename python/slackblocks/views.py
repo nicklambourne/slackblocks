@@ -16,6 +16,7 @@ from slackblocks._limits import (
     VIEW_BLOCKS_MIN_ITEMS,
     VIEW_CALLBACK_ID_MAX_LENGTH,
     VIEW_CLOSE_MAX_LENGTH,
+    VIEW_EXTERNAL_ID_MAX_LENGTH,
     VIEW_PRIVATE_METADATA_MAX_LENGTH,
     VIEW_SUBMIT_MAX_LENGTH,
     VIEW_TITLE_MAX_LENGTH,
@@ -54,8 +55,8 @@ class View:
         callback_id: an identifier (max 255 characters) for distinguishing
             this view's submissions from other views your app exposes.
         external_id: a custom identifier that is unique within the views of
-            a given Slack team. Slack uses it to find views your app has
-            previously published.
+            a given Slack team (max 255 characters). Slack uses it to find
+            views your app has previously published.
 
     Throws:
         InvalidUsageError: if any of the validation checks fail.
@@ -88,7 +89,12 @@ class View:
             max_length=VIEW_CALLBACK_ID_MAX_LENGTH,
             allow_none=True,
         )
-        self.external_id = external_id
+        self.external_id = validate_string(
+            external_id,
+            field_name="external_id",
+            max_length=VIEW_EXTERNAL_ID_MAX_LENGTH,
+            allow_none=True,
+        )
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(

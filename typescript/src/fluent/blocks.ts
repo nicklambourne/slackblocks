@@ -28,6 +28,8 @@ import {
   type CardBlockInput,
   type SectionBlockInput,
 } from "../legacy/blocks.js";
+import type { TextLike } from "../legacy/objects.js";
+import type { JsonObject } from "../types.js";
 import { createFluentBuilder, type FluentBuilder } from "./core.js";
 
 type FirstInput<Factory extends (...args: never[]) => unknown> = Parameters<Factory>[0];
@@ -136,7 +138,8 @@ export function DataVisualizationBlock(): FluentBuilder<
 /**
  * Creates a fluent task card containing a stable identifier, title, lifecycle
  * state, rich-text details or output, and source links. Task cards may stand
- * alone or be collected in a {@link PlanBlock}.
+ * alone or be collected in a {@link PlanBlock}; a task card used as a message
+ * block cannot be `pending`.
  *
  * See: <https://docs.slack.dev/reference/block-kit/blocks/task-card-block>.
  */
@@ -148,9 +151,10 @@ export function TaskCardBlock(): FluentBuilder<
 }
 
 /**
- * Creates a fluent titled sequence of task cards. Add tasks with `tasks()` using
- * built task cards, {@link TaskCardBlock} builders, or arrays containing either
- * form.
+ * Creates a fluent titled sequence of up to 50 task cards with unique task
+ * identifiers. Add tasks with `tasks()` using built task cards,
+ * {@link TaskCardBlock} builders, or arrays containing either form. Plan tasks
+ * may be `pending`.
  *
  * See: <https://docs.slack.dev/reference/block-kit/blocks/plan-block>.
  */
@@ -244,18 +248,36 @@ export function HeaderBlock(): FluentBuilder<
   return createFluentBuilder(createHeaderBlock);
 }
 
+/** Values configured through {@link ImageBlock}. */
+interface ImageBlockBuilderInput {
+  /** Alternative text for screen readers and unavailable images. */
+  altText: string;
+  /** Public URL of the image. Mutually exclusive with `slackFile`. */
+  imageUrl?: string;
+  /** Slack-hosted file object. Mutually exclusive with `imageUrl`. */
+  slackFile?: JsonObject;
+  /** Optional plain-text title, up to 2000 characters. */
+  title?: TextLike;
+  /** Deterministic identifier, up to 255 characters. */
+  blockId?: string;
+}
+
 /**
  * Creates a block containing one image with accessible alternative text and an
- * optional title. Use {@link ImageElement} instead when the image must sit inside
- * a section or context block.
+ * optional title. Supply exactly one public image URL or Slack-hosted file
+ * reference. Use {@link ImageElement} instead when the image must sit inside a
+ * section or context block.
  *
  * See: <https://docs.slack.dev/reference/block-kit/blocks/image-block>.
  */
 export function ImageBlock(): FluentBuilder<
-  FirstInput<typeof createImageBlock>,
+  ImageBlockBuilderInput,
   Output<typeof createImageBlock>
 > {
-  return createFluentBuilder(createImageBlock);
+  return createFluentBuilder<ImageBlockBuilderInput, Output<typeof createImageBlock>>(
+    (input, settings) =>
+      createImageBlock(input as FirstInput<typeof createImageBlock>, settings),
+  );
 }
 
 /**

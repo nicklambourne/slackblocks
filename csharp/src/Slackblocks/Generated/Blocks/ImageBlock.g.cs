@@ -9,7 +9,8 @@ namespace Slackblocks.Blocks;
 /// <summary>A standalone image with alternative text and an optional title.</summary>
 /// <remarks>
 /// <list type="bullet">
-/// <item><description>Required: <c>imageUrl</c>, <c>altText</c>.</description></item>
+/// <item><description>Required: <c>altText</c>.</description></item>
+/// <item><description>Provide exactly one of an image URL or a Slack file.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/image-block">Slack reference</see>.</para>
 /// </remarks>
@@ -17,22 +18,25 @@ namespace Slackblocks.Blocks;
 public sealed partial class ImageBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock
 {
     /// <summary>Creates and validates a <see cref="ImageBlock"/>.</summary>
-    /// <param name="imageUrl">The publicly accessible URL of the image. Cannot be combined with a Slack file. Required. Slack allows at most 3000 characters.</param>
+    /// <param name="imageUrl">The publicly accessible URL of the image. Cannot be combined with a Slack file. Slack allows at most 3000 characters.</param>
     /// <param name="altText">A plain-text summary of the image or video for assistive technology. Required. Slack allows at most 2000 characters.</param>
-    /// <param name="title">The title shown above the image. A string is sent as a <c>plain_text</c> text object.</param>
+    /// <param name="title">The title shown above the image. Slack allows at most 2000 characters. A string is sent as a <c>plain_text</c> text object.</param>
     /// <param name="blockId">A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters.</param>
+    /// <param name="slackFile">A file hosted in Slack as the image source. Cannot be combined with an image URL.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
     public ImageBlock(
-        string imageUrl,
+        string? imageUrl,
         string altText,
         global::Slackblocks.Objects.PlainText? title = null,
         string? blockId = null,
+        global::Slackblocks.Objects.SlackFile? slackFile = null,
         global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("ImageBlock", "image");
-        ImageUrl = wire.String("image_url", imageUrl)!;
+        ImageUrl = wire.String("image_url", imageUrl);
+        SlackFile = wire.Object("slack_file", slackFile);
         AltText = wire.String("alt_text", altText)!;
         Title = wire.Text("title", title, "plain_text");
         BlockId = wire.String("block_id", blockId);
@@ -40,7 +44,12 @@ public sealed partial class ImageBlock : global::Slackblocks.SlackObject, global
     }
 
     /// <summary>Gets the publicly accessible URL of the image. Cannot be combined with a Slack file.</summary>
-    public string ImageUrl { get; }
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? ImageUrl { get; }
+
+    /// <summary>Gets a file hosted in Slack as the image source. Cannot be combined with an image URL.</summary>
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public global::Slackblocks.Objects.SlackFile? SlackFile { get; }
 
     /// <summary>Gets a plain-text summary of the image or video for assistive technology.</summary>
     public string AltText { get; }

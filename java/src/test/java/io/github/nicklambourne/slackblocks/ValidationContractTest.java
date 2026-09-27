@@ -30,7 +30,7 @@ final class ValidationContractTest {
                 ImageElement.builder()
                     .altText("Logo")
                     .imageUrl("https://example.com/logo.png")
-                    .slackFile(SlackFile.builder().id("F123").build())
+                    .slackFile(SlackFile.builder().id("F0123ABC456").build())
                     .build());
     assertEquals(ErrorCategory.MUTUALLY_EXCLUSIVE, mutuallyExclusive.getCategory());
     assertEquals("ImageElement", mutuallyExclusive.getPath());

@@ -378,7 +378,7 @@ def test_slack_file_round_trip_url(url: str) -> None:
     assert SlackFile.from_dict(sf._resolve())._resolve() == sf._resolve()
 
 
-@given(st.text(min_size=1, max_size=64))
+@given(st.from_regex(r"F[A-Z0-9]{8,63}", fullmatch=True))
 @HYPOTHESIS_PROFILE
 def test_slack_file_round_trip_id(file_id: str) -> None:
     sf = SlackFile(url=None, id=file_id)

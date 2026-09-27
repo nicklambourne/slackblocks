@@ -17,8 +17,8 @@ internal static class SlackVocabulary
         global::System.Collections.Frozen.FrozenDictionary.ToFrozenDictionary(
             new global::System.Collections.Generic.Dictionary<string, global::System.Collections.Frozen.FrozenSet<string>>
             {
-        ["home"] = global::System.Collections.Frozen.FrozenSet.ToFrozenSet<string>(["actions", "card", "carousel", "container", "context", "data_table", "divider", "header", "image", "input", "rich_text", "section", "table", "video"], global::System.StringComparer.Ordinal),
-        ["message"] = global::System.Collections.Frozen.FrozenSet.ToFrozenSet<string>(["actions", "card", "carousel", "container", "context", "context_actions", "data_table", "data_visualization", "divider", "file", "header", "image", "markdown", "plan", "rich_text", "section", "table", "task_card", "video"], global::System.StringComparer.Ordinal),
+        ["home"] = global::System.Collections.Frozen.FrozenSet.ToFrozenSet<string>(["actions", "card", "carousel", "container", "context", "data_table", "data_visualization", "divider", "header", "image", "input", "rich_text", "section", "table", "video"], global::System.StringComparer.Ordinal),
+        ["message"] = global::System.Collections.Frozen.FrozenSet.ToFrozenSet<string>(["actions", "card", "carousel", "container", "context", "context_actions", "data_table", "data_visualization", "divider", "file", "header", "image", "input", "markdown", "plan", "rich_text", "section", "table", "task_card", "video"], global::System.StringComparer.Ordinal),
         ["modal"] = global::System.Collections.Frozen.FrozenSet.ToFrozenSet<string>(["actions", "alert", "card", "context", "divider", "header", "image", "input", "rich_text", "section", "video"], global::System.StringComparer.Ordinal),
             },
             global::System.StringComparer.Ordinal);

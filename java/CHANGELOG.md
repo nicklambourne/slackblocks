@@ -19,6 +19,40 @@ in lockstep with the Python, TypeScript, and Go packages.
 - `DataTableBlock` now rejects `column_settings` supplied through `wireField` or
   raw JSON with `INVALID_USAGE`; Slack supports `column_settings` only on the
   plain `table` block.
+- Validation follows Slack's `blocks.validate` more closely (spec 1.1.0):
+  - New limits: rich text list `indent` 0-8, `offset` 0 or more, and list, quote,
+    and preformatted `border` 0-1; image block `title` 2000 characters; image
+    element `image_url` 3000 and `alt_text` 2000; video `thumbnail_url` and
+    `video_url` 3000, `title_url` and `provider_icon_url` 2000; view
+    `external_id` 255; plain-text input `min_length` 0-3000 and `max_length` 1
+    or more; rich text input `min_lines` and `max_lines` 1-100; multi-select
+    `max_selected_items` 1 or more; data table `row_header_column_index` 0 or
+    more; table `column_settings` at most 20; container `child_blocks` at least
+    one; plan `tasks` at most 50 with unique `task_id`s.
+  - Message payloads, webhook messages, and message responses reject more than
+    12,000 characters of markdown block text or 20,000 characters of data table
+    cell text across the whole message.
+  - Newly required: `SlackIcon` `name`, `PlanBlock` `tasks`, `TaskCardBlock`
+    `status` (including plan tasks), `NumberInputElement` `isDecimalAllowed`,
+    `Attachment` `blocks`, and `WorkflowButtonElement` `actionId`.
+    `IconButtonElement` `icon` and `FileBlock` `source` are required too but keep
+    their `trash` and `remote` defaults. Getters keep their 2.x return types.
+  - A task card placed as a block, rather than as a plan task, cannot be
+    `pending`.
+  - Slack file IDs must match `^F[A-Z0-9]{8,}$`, and conversation filter
+    `include` must be non-empty and contain only `im`, `mpim`, `private`, and
+    `public`.
+  - A table's `column_settings` no longer has to have one entry per column.
+- `input` blocks are now accepted in messages, and `data_visualization` blocks
+  in App Home.
+- `ImageBlock` accepts a Slack-hosted image through `slackFile(SlackFile)`, read
+  back with `getSlackFile()`; exactly one of `imageUrl` and `slackFile` is
+  required. `getImageUrl()` keeps its `String` return type and throws
+  `IllegalStateException` when the block uses a Slack file.
+- `RichTextInputElement.initialValue` now takes a `RichTextBlock` (and
+  `getInitialValue()` returns one), since Slack rejects a bare rich text
+  element there. This is a source-incompatible change for callers that passed a
+  `RichTextText`.
 
 ## [2.4.0] — 2026-09-17
 

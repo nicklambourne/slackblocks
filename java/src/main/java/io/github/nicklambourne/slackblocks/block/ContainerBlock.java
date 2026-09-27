@@ -187,7 +187,8 @@ public final class ContainerBlock implements Block {
     /**
      * Adds the blocks grouped inside the container, in display order.
      *
-     * <p>Required. Slack allows at most 10 items. Each call appends to any values already added.
+     * <p>Required. Must contain between 1 and 10 items. Each call appends to any values already
+     * added.
      *
      * @param values {@link Block} values appended in order
      * @return this builder

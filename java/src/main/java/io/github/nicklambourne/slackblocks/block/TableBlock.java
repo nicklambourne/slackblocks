@@ -21,7 +21,6 @@ import java.util.Map;
  * <ul>
  *   <li>Required: {@code rows}.
  *   <li>Every row must have the same number of cells.
- *   <li>Column settings need one entry for every column.
  * </ul>
  *
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/table-block">Slack reference</a>
@@ -118,7 +117,7 @@ public final class TableBlock implements Block {
     /**
      * Adds per-column settings in column order. Provide one entry for every column.
      *
-     * <p>Each call appends to any values already added.
+     * <p>Slack allows at most 20 items. Each call appends to any values already added.
      *
      * @param values {@link ColumnSettings} values appended in order
      * @return this builder

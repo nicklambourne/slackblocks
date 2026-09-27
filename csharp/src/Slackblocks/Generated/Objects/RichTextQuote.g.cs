@@ -18,7 +18,7 @@ public sealed partial class RichTextQuote : global::Slackblocks.SlackObject, glo
 {
     /// <summary>Creates and validates a <see cref="RichTextQuote"/>.</summary>
     /// <param name="elements">Inline rich text elements in display order. Required.</param>
-    /// <param name="border">The width of the left border, in pixels.</param>
+    /// <param name="border">The width of the left border, in pixels. Must be between 0 and 1.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>

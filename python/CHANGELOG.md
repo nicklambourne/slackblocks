@@ -17,6 +17,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   empty string, matching Slack's validator (previously 1 to 200 characters).
 - `StaticMultiSelectMenu` and `ExternalMultiSelectMenu` no longer cap
   `initial_options` at 100; Slack documents and enforces no such limit.
+- Validation now follows Slack's `blocks.validate`. Newly rejected:
+  - out-of-range `RichTextList` `indent` (0-8), `offset` (0 or more) and
+    `border` (0-1), and `RichTextQuote` / `RichTextCodeBlock` `border` (0-1);
+  - `PlainTextInput` `min_length` outside 0-3000 or `max_length` below 1;
+    `max_selected_items` below 1 on all five multi-select menus; a negative
+    `DataTableBlock` `row_header_column_index`;
+  - an `ImageBlock` `title` over 2000 characters, an `Image` element
+    `image_url` over 3000 or `alt_text` over 2000, `VideoBlock`
+    `thumbnail_url` / `video_url` over 3000 and `title_url` /
+    `provider_icon_url` over 2000, and a view `external_id` over 255;
+  - more than 20 `TableBlock` `column_settings`, a `ContainerBlock` with no
+    child blocks, and a `PlanBlock` with more than 50 tasks or duplicate
+    `task_id`s;
+  - a `ConversationFilter` whose `include` is empty or names anything other
+    than `im`, `mpim`, `private` or `public`;
+  - a `SlackFile` `id` that does not match `^F[A-Z0-9]{8,}$`;
+  - messages (`Message`, `MessageResponse`, `WebhookMessage`) whose markdown
+    blocks total more than 12,000 characters or whose data tables total more
+    than 20,000 characters of cell text, counting attachment blocks;
+  - a standalone `TaskCardBlock` with `pending` status in a message or
+    attachment (plan tasks may still be `pending`).
+- Newly required, raising `MissingRequiredError` when omitted (signatures are
+  unchanged): `PlanBlock` `tasks`, `TaskCardBlock` `status`, `SlackIcon`
+  `name`, `NumberInput` `is_decimal_allowed`, `Attachment` `blocks`, and
+  `WorkflowButton` `action_id`. `WorkflowButton` gains the `action_id`
+  keyword argument, which it now renders.
+- `ImageBlock` accepts a `slack_file` keyword argument (and parses it in
+  `from_dict`); exactly one of `image_url` and `slack_file` is required, so
+  `image_url` is now optional.
+- `RichTextInput` `initial_value` now takes a `RichTextBlock` instead of a
+  rich text element, and `RichTextInput` gains `min_lines` and `max_lines`
+  (1-100).
+- `TableBlock` no longer requires one `column_settings` entry per column.
+- Messages now accept `InputBlock`, and `HomeTabView` accepts
+  `DataVisualizationBlock`.
 
 ## [2.4.0] — 2026-09-17
 

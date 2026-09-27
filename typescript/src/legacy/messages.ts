@@ -5,7 +5,7 @@
  */
 import limits from "../../../spec/limits.json" with { type: "json" };
 
-import { LengthError, TypeMismatchError } from "../errors.js";
+import { LengthError, MissingRequiredError, TypeMismatchError } from "../errors.js";
 import { createObject, dropEmpty } from "../internal.js";
 import { validateSurfaceBlocks } from "../surfaces.js";
 import type { FactorySettings, JsonObject } from "../types.js";
@@ -89,13 +89,14 @@ function normalizeColor(color: string): string {
  * @param input - Attachment blocks plus optional color and fallback text.
  * @param settings - Per-call validation settings.
  * @returns A Slack attachment object.
+ * @throws MissingRequiredError when the attachment has no blocks.
  * @throws InvalidUsageError when the color is not a valid hex code or a nested
  *   block violates a supported Block Kit constraint.
  * @see https://docs.slack.dev/legacy/legacy-messaging/legacy-secondary-message-attachments
  */
 export function attachment(
   input: {
-    /** Blocks displayed inside the attachment. */
+    /** One or more blocks displayed inside the attachment. */
     blocks: JsonObject[];
     /** Optional side-border color: a `Color` value or a six-digit hex code. */
     color?: string;
@@ -104,10 +105,14 @@ export function attachment(
   },
   settings: FactorySettings = {},
 ): JsonObject {
+  const blocks = dropEmpty(input.blocks);
+  if (blocks === undefined) {
+    throw new MissingRequiredError("attachment.blocks", "expected at least one block");
+  }
   return createObject(
     {
       ...input,
-      blocks: dropEmpty(input.blocks),
+      blocks,
       color: input.color === undefined ? undefined : normalizeColor(input.color),
     },
     settings,

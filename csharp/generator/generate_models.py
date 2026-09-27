@@ -50,6 +50,23 @@ KEYWORDS = {
     "uint", "ulong", "unchecked", "unsafe", "ushort", "using", "virtual", "void", "volatile", "while",
 }
 RESERVED_MEMBERS = {"ToJson", "ToJsonNode", "Equals", "GetHashCode", "ToString", "GetType", "Wire", "Initialize"}
+# Constructor parameters and properties that keep their 2.x shape until 3.0, although spec 1.1.0
+# changed whether the field is required, so existing callers still compile. Newly required fields
+# stay optional, nullable parameters that the validator rejects when missing. ImageBlock.image_url,
+# now optional because a Slack file can replace it, keeps its leading position (positional
+# callers are unaffected) but becomes nullable, and the new ImageBlock.slack_file goes after the
+# existing optional parameters so their positions do not shift. Maps (type, wire field) to the
+# shape to generate.
+SHAPE_UNTIL_3_0 = {
+    ("SlackIcon", "name"): "optional",
+    ("PlanBlock", "tasks"): "optional",
+    ("TaskCardBlock", "status"): "optional",
+    ("NumberInputElement", "is_decimal_allowed"): "optional",
+    ("Attachment", "blocks"): "optional",
+    ("WorkflowButtonElement", "action_id"): "optional",
+    ("ImageBlock", "image_url"): "leading-nullable",
+    ("ImageBlock", "slack_file"): "trailing",
+}
 
 
 def load_java_generator():
@@ -161,6 +178,12 @@ class Field:
             raise ValueError(f"{owner['name']}.{self.property} collides with a reserved member")
         self.default = owner["defaults"].get(self.wire)
         self.required = bool(field.get("required")) and self.default is None
+        shape = SHAPE_UNTIL_3_0.get((owner["name"], self.wire))
+        # A leading parameter takes a positional slot without a default, whatever its nullability.
+        if shape is not None:
+            self.required = False
+        self.leading = self.required or shape == "leading-nullable"
+        self.trailing = shape == "trailing"
         target = field.get("type")
         self.target = names.qualified(target) if target else None
         self.enum_members = {}
@@ -293,7 +316,11 @@ def class_source(model, names: Names, spec: dict) -> str:
     name, package = spec["name"], spec["package"]
     simple = names.simple(name)
     fields = [Field(names, spec, field) for field in spec["fields"]]
-    ordered = [field for field in fields if field.required] + [field for field in fields if not field.required]
+    ordered = (
+        [field for field in fields if field.leading]
+        + [field for field in fields if not field.leading and not field.trailing]
+        + [field for field in fields if field.trailing]
+    )
 
     implements = [item for item in spec["implements"] if item != TEXT_BASE]
     if package == "block":
@@ -329,7 +356,7 @@ def class_source(model, names: Names, spec: dict) -> str:
         constructor_doc.append(
             f"    /// <param name=\"{field.name.lstrip('@')}\">{description}{(' ' + notes) if notes else ''}</param>"
         )
-        signature.append(f"{field.parameter_type} {field.name}" + ("" if field.required else " = null"))
+        signature.append(f"{field.parameter_type} {field.name}" + ("" if field.leading else " = null"))
     constructor_doc += [
         "    /// <param name=\"additionalFields\">Slack fields that have no named parameter yet, such as a field Slack "
         "introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, "

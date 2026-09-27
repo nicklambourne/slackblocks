@@ -244,6 +244,7 @@
 	],
 	"NewImageBlock": [
 		"ImageURL",
+		"SlackFile",
 		"AltText",
 		"Title",
 		"BlockID"

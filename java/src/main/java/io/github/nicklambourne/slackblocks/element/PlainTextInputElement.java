@@ -218,6 +218,8 @@ public final class PlainTextInputElement extends BlockElement implements InputEl
     /**
      * Sets the minimum number of characters the user must enter.
      *
+     * <p>Must be between 0 and 3000.
+     *
      * @param value value for Slack's {@code min_length} field
      * @return this builder
      */
@@ -229,7 +231,7 @@ public final class PlainTextInputElement extends BlockElement implements InputEl
     /**
      * Sets the maximum number of characters the user can enter.
      *
-     * <p>Must be at most 3000.
+     * <p>Must be between 1 and 3000.
      *
      * @param value value for Slack's {@code max_length} field
      * @return this builder

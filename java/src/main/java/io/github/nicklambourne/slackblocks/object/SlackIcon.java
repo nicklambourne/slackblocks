@@ -18,6 +18,10 @@ import java.util.Optional;
  * <p>Start with {@link #builder()}, set fields with the named fluent methods, and call {@link
  * Builder#build()} to validate and create an immutable value.
  *
+ * <ul>
+ *   <li>Required: {@code name}.
+ * </ul>
+ *
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/card-block">Slack reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
@@ -85,6 +89,8 @@ public final class SlackIcon implements SlackObject {
 
     /**
      * Sets the name of the Slack-provided icon, such as rocket.
+     *
+     * <p>Required.
      *
      * @param value value for Slack's {@code name} field
      * @return this builder

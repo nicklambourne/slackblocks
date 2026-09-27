@@ -239,14 +239,6 @@ final class InvalidConformanceTest {
               "table",
               "rows",
               List.of(List.of(rawText("A"), rawText("B")), List.of(rawText("C"))));
-      case "table-column-settings-mismatch" ->
-          typed(
-              "TableBlock",
-              "table",
-              "rows",
-              List.of(List.of(rawText("A"), rawText("B"))),
-              "column_settings",
-              List.of(map("is_wrapped", true)));
       case "file-input-max-files-too-small" ->
           typed("FileInput", "file_input", "action_id", "a", "max_files", 0);
       case "file-input-max-files-too-large" ->
@@ -394,7 +386,7 @@ final class InvalidConformanceTest {
               "image_url",
               "https://example.com/image.png",
               "slack_file",
-              map("id", "F123"));
+              map("id", "F0123ABC456"));
       case "number-input-inverted-range" ->
           typed(
               "NumberInput",
@@ -429,7 +421,9 @@ final class InvalidConformanceTest {
               "text",
               plain(repeated("x", 76)),
               "workflow",
-              workflow());
+              workflow(),
+              "action_id",
+              "a");
       case "workflow-button-accessibility-label-too-long" ->
           typed(
               "WorkflowButtonElement",
@@ -438,6 +432,8 @@ final class InvalidConformanceTest {
               plain("Run"),
               "workflow",
               workflow(),
+              "action_id",
+              "a",
               "accessibility_label",
               repeated("x", 76));
       case "alert-text-too-long" -> typed("AlertBlock", "alert", "text", plain(repeated("x", 201)));
@@ -599,6 +595,212 @@ final class InvalidConformanceTest {
       case "axis-category-label-too-long" -> invalid("AxisConfig", axis(repeated("x", 21)));
       case "axis-label-too-long" ->
           invalid("AxisConfig", map("categories", List.of("A"), "x_label", repeated("x", 51)));
+      case "plain-text-input-min-length-negative" ->
+          typed(
+              "PlainTextInput",
+              "plain_text_input",
+              "action_id",
+              "a",
+              "min_length",
+              SlackLimits.PLAIN_TEXT_INPUT_MIN_LENGTH_MIN - 1);
+      case "plain-text-input-min-length-too-large" ->
+          typed(
+              "PlainTextInput",
+              "plain_text_input",
+              "action_id",
+              "a",
+              "min_length",
+              SlackLimits.PLAIN_TEXT_INPUT_MIN_LENGTH_MAX + 1);
+      case "plain-text-input-max-length-too-small" ->
+          typed(
+              "PlainTextInput",
+              "plain_text_input",
+              "action_id",
+              "a",
+              "max_length",
+              SlackLimits.PLAIN_TEXT_INPUT_MAX_LENGTH_MIN - 1);
+      case "rich-text-input-min-lines-too-small" ->
+          richTextInput("min_lines", SlackLimits.RICH_TEXT_INPUT_MIN_LINES_MIN - 1);
+      case "rich-text-input-min-lines-too-large" ->
+          richTextInput("min_lines", SlackLimits.RICH_TEXT_INPUT_MIN_LINES_MAX + 1);
+      case "rich-text-input-max-lines-too-small" ->
+          richTextInput("max_lines", SlackLimits.RICH_TEXT_INPUT_MAX_LINES_MIN - 1);
+      case "rich-text-input-max-lines-too-large" ->
+          richTextInput("max_lines", SlackLimits.RICH_TEXT_INPUT_MAX_LINES_MAX + 1);
+      case "multi-select-max-selected-items-too-small" ->
+          typed(
+              "UserMultiSelectElement",
+              "multi_users_select",
+              "action_id",
+              "a",
+              "max_selected_items",
+              SlackLimits.MULTI_SELECT_MAX_SELECTED_ITEMS_MIN - 1);
+      case "conversation-filter-include-empty" ->
+          invalid("ConversationFilter", map("include", List.of()));
+      case "conversation-filter-unknown-include" ->
+          invalid("ConversationFilter", map("include", List.of("channel")));
+      case "workflow-button-missing-action-id" ->
+          typed(
+              "WorkflowButtonElement",
+              "workflow_button",
+              "text",
+              plain("Run"),
+              "workflow",
+              workflow());
+      case "number-input-missing-decimal-flag" ->
+          typed("NumberInput", "number_input", "action_id", "a");
+      case "slack-icon-missing-name" -> typed("SlackIcon", "icon");
+      case "slack-file-id-malformed" -> invalid("SlackFile", map("id", "F0123456"));
+      case "image-element-url-too-long" ->
+          typed(
+              "ImageElement",
+              "image",
+              "image_url",
+              repeated("x", SlackLimits.IMAGE_ELEMENT_IMAGE_URL_MAX_LENGTH + 1),
+              "alt_text",
+              "Alt");
+      case "image-element-alt-text-too-long" ->
+          typed(
+              "ImageElement",
+              "image",
+              "image_url",
+              "https://example.com/image.png",
+              "alt_text",
+              repeated("x", SlackLimits.IMAGE_ELEMENT_ALT_TEXT_MAX_LENGTH + 1));
+      case "image-block-title-too-long" ->
+          typed(
+              "ImageBlock",
+              "image",
+              "image_url",
+              "https://example.com/image.png",
+              "alt_text",
+              "Alt",
+              "title",
+              plain(repeated("x", SlackLimits.IMAGE_TITLE_MAX_LENGTH + 1)));
+      case "image-block-url-and-slack-file" ->
+          typed(
+              "ImageBlock",
+              "image",
+              "image_url",
+              "https://example.com/image.png",
+              "slack_file",
+              map("id", "F0123ABC456"),
+              "alt_text",
+              "Alt");
+      case "image-block-missing-source" -> typed("ImageBlock", "image", "alt_text", "Alt");
+      case "container-no-child-blocks" ->
+          typed(
+              "ContainerBlock",
+              "container",
+              "title",
+              plain("Container"),
+              "child_blocks",
+              List.of());
+      case "table-too-many-column-settings" ->
+          typed(
+              "TableBlock",
+              "table",
+              "rows",
+              List.of(List.of(rawText("A"))),
+              "column_settings",
+              copies(
+                  SlackLimits.TABLE_COLUMN_SETTINGS_MAX_ITEMS + 1,
+                  index -> map("is_wrapped", true)));
+      case "data-table-row-header-index-negative" ->
+          dataTable(
+              validRows(),
+              "Names",
+              "row_header_column_index",
+              SlackLimits.DATA_TABLE_ROW_HEADER_COLUMN_INDEX_MIN - 1);
+      case "data-table-total-content-too-long" -> {
+        // Two tables each within the per-table limit whose cells together exceed the total.
+        int each = SlackLimits.DATA_TABLE_TOTAL_CONTENT_MAX_LENGTH / 2 + 1;
+        Map<String, Object> table =
+            obj(
+                "data_table",
+                "rows",
+                List.of(List.of(rawText("Name")), List.of(rawText(repeated("x", each - 4)))),
+                "caption",
+                "Names");
+        yield invalid("Message", map("channel", "C123", "blocks", List.of(table, table)));
+      }
+      case "markdown-total-too-long" -> {
+        // Two markdown blocks each within the per-block limit that together exceed the total.
+        Map<String, Object> markdown =
+            obj(
+                "markdown",
+                "text",
+                repeated("x", SlackLimits.MARKDOWN_TOTAL_TEXT_MAX_LENGTH / 2 + 1));
+        yield invalid("Message", map("channel", "C123", "blocks", List.of(markdown, markdown)));
+      }
+      case "plan-missing-tasks" -> typed("PlanBlock", "plan", "title", "Plan");
+      case "plan-too-many-tasks" ->
+          typed(
+              "PlanBlock",
+              "plan",
+              "title",
+              "Plan",
+              "tasks",
+              copies(SlackLimits.PLAN_TASKS_MAX_ITEMS + 1, index -> task("task_" + index)));
+      case "plan-duplicate-task-ids" ->
+          typed("PlanBlock", "plan", "title", "Plan", "tasks", List.of(task("task"), task("task")));
+      case "task-card-missing-status" ->
+          typed("TaskCardBlock", "task_card", "task_id", "task", "title", "Task");
+      case "task-card-pending-status" ->
+          invalid(
+              "Message",
+              map(
+                  "channel",
+                  "C123",
+                  "blocks",
+                  List.of(
+                      obj("task_card", "task_id", "task", "title", "Task", "status", "pending"))));
+      case "rich-text-list-indent-negative" ->
+          richTextList("indent", SlackLimits.RICH_TEXT_LIST_INDENT_MIN - 1);
+      case "rich-text-list-indent-too-large" ->
+          richTextList("indent", SlackLimits.RICH_TEXT_LIST_INDENT_MAX + 1);
+      case "rich-text-list-offset-negative" ->
+          richTextList("offset", SlackLimits.RICH_TEXT_LIST_OFFSET_MIN - 1);
+      case "rich-text-list-border-negative" ->
+          richTextList("border", SlackLimits.RICH_TEXT_LIST_BORDER_MIN - 1);
+      case "rich-text-list-border-too-large" ->
+          richTextList("border", SlackLimits.RICH_TEXT_LIST_BORDER_MAX + 1);
+      case "rich-text-quote-border-negative" ->
+          richTextContainer(
+              "RichTextQuote", "rich_text_quote", SlackLimits.RICH_TEXT_QUOTE_BORDER_MIN - 1);
+      case "rich-text-quote-border-too-large" ->
+          richTextContainer(
+              "RichTextQuote", "rich_text_quote", SlackLimits.RICH_TEXT_QUOTE_BORDER_MAX + 1);
+      case "rich-text-preformatted-border-negative" ->
+          richTextContainer(
+              "RichTextCodeBlock",
+              "rich_text_preformatted",
+              SlackLimits.RICH_TEXT_PREFORMATTED_BORDER_MIN - 1);
+      case "rich-text-preformatted-border-too-large" ->
+          richTextContainer(
+              "RichTextCodeBlock",
+              "rich_text_preformatted",
+              SlackLimits.RICH_TEXT_PREFORMATTED_BORDER_MAX + 1);
+      case "video-thumbnail-url-too-long" ->
+          invalidVideo(
+              "thumbnail_url", repeated("x", SlackLimits.VIDEO_THUMBNAIL_URL_MAX_LENGTH + 1));
+      case "video-url-too-long" ->
+          invalidVideo("video_url", repeated("x", SlackLimits.VIDEO_VIDEO_URL_MAX_LENGTH + 1));
+      case "video-title-url-too-long" ->
+          invalidVideo("title_url", repeated("x", SlackLimits.VIDEO_TITLE_URL_MAX_LENGTH + 1));
+      case "video-provider-icon-url-too-long" ->
+          invalidVideo(
+              "provider_icon_url",
+              repeated("x", SlackLimits.VIDEO_PROVIDER_ICON_URL_MAX_LENGTH + 1));
+      case "view-external-id-too-long" ->
+          typed(
+              "HomeTab",
+              "home",
+              "blocks",
+              List.of(divider()),
+              "external_id",
+              repeated("x", SlackLimits.VIEW_EXTERNAL_ID_MAX_LENGTH + 1));
+      case "attachment-missing-blocks" -> invalid("Attachment", map("fallback", "Summary"));
       default -> throw new AssertionError("No Java invalid construction registered for " + id);
     };
   }
@@ -633,6 +835,34 @@ final class InvalidConformanceTest {
     Map<String, Object> video = validVideo();
     video.put(field, value);
     return invalid("VideoBlock", video);
+  }
+
+  private static InvalidValue richTextInput(String field, int value) {
+    return typed("RichTextInputElement", "rich_text_input", "action_id", "a", field, value);
+  }
+
+  private static InvalidValue richTextList(String field, int value) {
+    return typed(
+        "RichTextList",
+        "rich_text_list",
+        "style",
+        "bullet",
+        "elements",
+        List.of(obj("rich_text_section", "elements", List.of(richText("Item")))),
+        field,
+        value);
+  }
+
+  private static InvalidValue richTextContainer(String name, String type, int border) {
+    return typed(name, type, "elements", List.of(richText("Text")), "border", border);
+  }
+
+  private static Map<String, Object> richText(String value) {
+    return obj("text", "text", value);
+  }
+
+  private static Map<String, Object> task(String id) {
+    return map("task_id", id, "title", "Task", "status", "complete");
   }
 
   private static InvalidValue dataTable(List<?> rows, String caption, Object... fields) {

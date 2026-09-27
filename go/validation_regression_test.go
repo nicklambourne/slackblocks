@@ -97,3 +97,54 @@ func TestVideoAltTextAcceptsEmptyAndMaximumLength(t *testing.T) {
 		}
 	}
 }
+
+func TestPlanTasksMayBePendingButStandaloneTaskCardsMayNot(t *testing.T) {
+	pending := func() *slackblocks.TaskCardBlockBuilder {
+		return slackblocks.NewTaskCardBlock().TaskID("deploy").Title("Deploy").Status(slackblocks.TaskStatusPending)
+	}
+	if _, err := slackblocks.NewPlanBlock().Title("Plan").Tasks(pending()).Build(); err != nil {
+		t.Fatal(err)
+	}
+	_, err := slackblocks.NewMessage().Channel("C123").Blocks(pending()).Build()
+	assertValidationError(t, err, slackblocks.TypeMismatch, "status")
+
+	plan := slackblocks.Object{"type": "plan", "title": "Plan", "tasks": []any{
+		slackblocks.Object{"task_id": "deploy", "title": "Deploy", "status": "pending"},
+	}}
+	if err := slackblocks.Validate(plan); err != nil {
+		t.Fatal(err)
+	}
+	plan["tasks"] = []any{slackblocks.Object{"task_id": "deploy", "title": "Deploy"}}
+	assertValidationError(t, slackblocks.Validate(plan), slackblocks.MissingRequired, "tasks[0]")
+}
+
+func TestRawValidationChecksNestedFiltersAndSlackFiles(t *testing.T) {
+	selectMenu := slackblocks.Object{"type": "conversations_select", "action_id": "a", "filter": slackblocks.Object{"include": []any{"channel"}}}
+	assertValidationError(t, slackblocks.Validate(selectMenu), slackblocks.TypeMismatch, "ConversationFilter.include[0]")
+
+	image := slackblocks.Object{"type": "image", "alt_text": "Alt", "slack_file": slackblocks.Object{"id": "F0123456"}}
+	assertValidationError(t, slackblocks.Validate(image), slackblocks.TypeMismatch, "slack_file.id")
+	image["slack_file"] = slackblocks.Object{"id": "F0123ABC456"}
+	if err := slackblocks.Validate(image); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestTableColumnSettingsNeedNotMatchColumnCount(t *testing.T) {
+	_, err := slackblocks.NewTableBlock().
+		Rows([]slackblocks.TableCell{rawText("A"), rawText("B")}).
+		ColumnSettings(slackblocks.NewColumnSettings().IsWrapped(true)).
+		Build()
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestInputBlocksAreAllowedInMessages(t *testing.T) {
+	_, err := slackblocks.NewMessage().Channel("C123").Blocks(
+		slackblocks.NewInputBlock().Label("Name").Element(slackblocks.NewPlainTextInput().ActionID("name")),
+	).Build()
+	if err != nil {
+		t.Fatal(err)
+	}
+}

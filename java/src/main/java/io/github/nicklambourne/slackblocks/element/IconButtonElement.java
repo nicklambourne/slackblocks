@@ -24,7 +24,7 @@ import java.util.Optional;
  * Builder#build()} to validate and create an immutable value.
  *
  * <ul>
- *   <li>Required: {@code text}.
+ *   <li>Required: {@code text}, {@code icon}.
  * </ul>
  *
  * @see <a
@@ -206,6 +206,8 @@ public final class IconButtonElement extends BlockElement
 
     /**
      * Sets the icon shown on the button.
+     *
+     * <p>Required.
      *
      * @param value value for Slack's {@code icon} field
      * @return this builder

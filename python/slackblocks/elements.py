@@ -30,13 +30,23 @@ from ._limits import (
     ICON_BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
     ICON_BUTTON_VALUE_MAX_LENGTH,
     ICON_BUTTON_VISIBLE_TO_USER_IDS_MAX_ITEMS,
+    IMAGE_ELEMENT_ALT_TEXT_MAX_LENGTH,
+    IMAGE_ELEMENT_IMAGE_URL_MAX_LENGTH,
+    MULTI_SELECT_MAX_SELECTED_ITEMS_MIN,
     NUMBER_INPUT_PLACEHOLDER_MAX_LENGTH,
     OVERFLOW_OPTIONS_MAX_ITEMS,
     OVERFLOW_OPTIONS_MIN_ITEMS,
     PLAIN_TEXT_INPUT_MAX_LENGTH_MAX,
+    PLAIN_TEXT_INPUT_MAX_LENGTH_MIN,
+    PLAIN_TEXT_INPUT_MIN_LENGTH_MAX,
+    PLAIN_TEXT_INPUT_MIN_LENGTH_MIN,
     PLAIN_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
     RADIO_BUTTONS_OPTIONS_MAX_ITEMS,
     RADIO_BUTTONS_OPTIONS_MIN_ITEMS,
+    RICH_TEXT_INPUT_MAX_LINES_MAX,
+    RICH_TEXT_INPUT_MAX_LINES_MIN,
+    RICH_TEXT_INPUT_MIN_LINES_MAX,
+    RICH_TEXT_INPUT_MIN_LINES_MIN,
     RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
     SELECT_OPTION_GROUPS_MAX_ITEMS,
     SELECT_OPTIONS_MAX_ITEMS,
@@ -76,7 +86,7 @@ from .utils import (
 )
 
 if TYPE_CHECKING:
-    from .rich_text import RichText
+    from .blocks import RichTextBlock
 
 
 ButtonStyleName: TypeAlias = Literal["primary", "danger"]
@@ -337,6 +347,8 @@ class IconButton(Element):
         visible_to_user_ids: list[str] | None = None,
     ) -> None:
         super().__init__(ElementType.ICON_BUTTON)
+        if icon is None:
+            raise MissingRequiredError("`icon` is required.")
         if icon != "trash":
             raise TypeMismatchError("`icon` must be `trash`.")
         self.icon = icon
@@ -693,8 +705,15 @@ class Image(Element):
             raise MissingRequiredError("Must provide one of `image_url` or `slack_file`")
         if image_url and slack_file:
             raise MutualExclusivityError("Cannot provide both `image_url` or `slack_file`")
-        self.image_url = image_url
-        self.alt_text = alt_text
+        self.image_url = validate_string(
+            image_url,
+            field_name="image_url",
+            max_length=IMAGE_ELEMENT_IMAGE_URL_MAX_LENGTH,
+            allow_none=True,
+        )
+        self.alt_text = validate_string(
+            alt_text, field_name="alt_text", max_length=IMAGE_ELEMENT_ALT_TEXT_MAX_LENGTH
+        )
         self.slack_file = slack_file
 
     def _resolve(self) -> dict[str, Any]:
@@ -803,7 +822,9 @@ class StaticMultiSelectMenu(Element):
                 )
 
         self.confirm = confirm
-        self.max_selected_items = max_selected_items
+        self.max_selected_items = validate_int(
+            max_selected_items, min_value=MULTI_SELECT_MAX_SELECTED_ITEMS_MIN, allow_none=True
+        )
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
@@ -873,7 +894,9 @@ class ExternalMultiSelectMenu(Element):
             allow_none=True,
         )
         self.confirm = confirm
-        self.max_selected_items = max_selected_items
+        self.max_selected_items = validate_int(
+            max_selected_items, min_value=MULTI_SELECT_MAX_SELECTED_ITEMS_MIN, allow_none=True
+        )
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
@@ -934,7 +957,9 @@ class UserMultiSelectMenu(Element):
         self.action_id = validate_action_id(action_id)
         self.initial_users: list[str] | None = coerce_to_list(initial_users, str, allow_none=True)
         self.confirm = confirm
-        self.max_selected_items = max_selected_items
+        self.max_selected_items = validate_int(
+            max_selected_items, min_value=MULTI_SELECT_MAX_SELECTED_ITEMS_MIN, allow_none=True
+        )
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
@@ -1005,7 +1030,9 @@ class ConversationMultiSelectMenu(Element):
         )
         self.default_to_current_conversation = default_to_current_conversation
         self.confirm = confirm
-        self.max_selected_items = max_selected_items
+        self.max_selected_items = validate_int(
+            max_selected_items, min_value=MULTI_SELECT_MAX_SELECTED_ITEMS_MIN, allow_none=True
+        )
         self.filter = filter
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
@@ -1074,7 +1101,9 @@ class ChannelMultiSelectMenu(Element):
             initial_channels, class_=str, allow_none=True
         )
         self.confirm = confirm
-        self.max_selected_items = max_selected_items
+        self.max_selected_items = validate_int(
+            max_selected_items, min_value=MULTI_SELECT_MAX_SELECTED_ITEMS_MIN, allow_none=True
+        )
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
@@ -1134,6 +1163,8 @@ class NumberInput(Element):
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.NUMBER_INPUT)
+        if is_decimal_allowed is None:
+            raise MissingRequiredError("`is_decimal_allowed` is required.")
         self.is_decimal_allowed = is_decimal_allowed
         self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_value = initial_value
@@ -1264,10 +1295,18 @@ class PlainTextInput(Element):
         self.action_id = validate_action_id(action_id)
         self.multiline = multiline
         self.initial_value = initial_value
-        self.min_length = min_length
-        if max_length and max_length > PLAIN_TEXT_INPUT_MAX_LENGTH_MAX:
-            raise RangeError("`max_length` value cannot exceed 3000 characters")
-        self.max_length = max_length
+        self.min_length = validate_int(
+            min_length,
+            min_value=PLAIN_TEXT_INPUT_MIN_LENGTH_MIN,
+            max_value=PLAIN_TEXT_INPUT_MIN_LENGTH_MAX,
+            allow_none=True,
+        )
+        self.max_length = validate_int(
+            max_length,
+            min_value=PLAIN_TEXT_INPUT_MAX_LENGTH_MIN,
+            max_value=PLAIN_TEXT_INPUT_MAX_LENGTH_MAX,
+            allow_none=True,
+        )
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
@@ -1873,6 +1912,7 @@ class WorkflowButton(Element):
             object for this.
         accessibility_label: a string label for longer descriptive text about
             a button element. Used by screen readers (max 75 chars).
+        action_id: an identifier so the source of the action can be known (required).
 
     Throws:
         InvalidUsageError: if any of the provided arguments fail validation.
@@ -1884,8 +1924,10 @@ class WorkflowButton(Element):
         workflow: Workflow | None = None,
         style: ButtonStyleLike | None = ButtonStyle.DEFAULT,
         accessibility_label: str | None = None,
+        action_id: str | None = None,
     ) -> None:
         super().__init__(type_=ElementType.WORKFLOW_BUTTON)
+        self.action_id = validate_action_id(action_id)
         self.text = Text.to_text(
             text, force_plaintext=True, max_length=WORKFLOW_BUTTON_TEXT_MAX_LENGTH
         )
@@ -1903,6 +1945,7 @@ class WorkflowButton(Element):
             {
                 **self._attributes(),
                 "text": self.text,
+                "action_id": self.action_id,
                 "workflow": self.workflow,
                 "style": self.style,
                 "accessibility_label": self.accessibility_label
@@ -1921,7 +1964,8 @@ class RichTextInput(Element):
 
     Args:
         action_id: an identifier so the source of the action can be known.
-        initial_value: The initial value in the rich text input when it is loaded.
+        initial_value: a [`RichTextBlock`](/slackblocks/latest/reference/blocks/#blocks.RichTextBlock)
+            holding the initial value of the rich text input when it is loaded.
         dispatch_action_config: a `DispatchActionConfiguration` object that
             determines when during text input the element returns a
             `block_actions` payload.
@@ -1929,6 +1973,8 @@ class RichTextInput(Element):
             within the view object.
         placeholder: a plain-text `Text` object (max 150 chars) that shows
             in the menu when it's initially rendered.
+        min_lines: the minimum visible height of the input, in lines (1-100).
+        max_lines: the maximum visible height of the input, in lines (1-100).
 
     Throws:
         InvalidUsageError: if any of the provided arguments fail validation.
@@ -1937,14 +1983,32 @@ class RichTextInput(Element):
     def __init__(
         self,
         action_id: str,
-        initial_value: RichText | None = None,
+        initial_value: RichTextBlock | None = None,
         dispatch_action_config: DispatchActionConfiguration | None = None,
         focus_on_load: bool = False,
         placeholder: TextLike | None = None,
+        min_lines: int | None = None,
+        max_lines: int | None = None,
     ) -> None:
+        from .blocks import RichTextBlock
+
         super().__init__(ElementType.RICH_TEXT_INPUT)
         self.action_id = validate_action_id(action_id)
-        self.initial_value = initial_value
+        self.initial_value = validate_type(
+            initial_value, RichTextBlock, "initial_value", allow_none=True
+        )
+        self.min_lines = validate_int(
+            min_lines,
+            min_value=RICH_TEXT_INPUT_MIN_LINES_MIN,
+            max_value=RICH_TEXT_INPUT_MIN_LINES_MAX,
+            allow_none=True,
+        )
+        self.max_lines = validate_int(
+            max_lines,
+            min_value=RICH_TEXT_INPUT_MAX_LINES_MIN,
+            max_value=RICH_TEXT_INPUT_MAX_LINES_MAX,
+            allow_none=True,
+        )
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
@@ -1959,13 +2023,19 @@ class RichTextInput(Element):
         # ``if self.focus_on_load is not None``, which is always true given the
         # default of False). Preserving this behaviour to avoid breaking the
         # existing test golden file.
+        initial_value = resolve(self.initial_value)
+        if self.initial_value is not None and self.initial_value._generated_block_id:
+            # A generated block_id carries no meaning inside an initial value.
+            del initial_value["block_id"]
         return resolve(
             {
                 **self._attributes(),
                 "action_id": self.action_id,
-                "initial_value": self.initial_value,
+                "initial_value": initial_value,
                 "dispatch_action_config": self.dispatch_action_config,
                 "focus_on_load": self.focus_on_load,
                 "placeholder": self.placeholder,
+                "min_lines": self.min_lines,
+                "max_lines": self.max_lines,
             }
         )

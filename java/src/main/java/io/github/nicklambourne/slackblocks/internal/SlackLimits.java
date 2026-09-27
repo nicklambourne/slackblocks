@@ -69,6 +69,9 @@ public final class SlackLimits {
   /** {@code container.child_blocks.max_items} */
   public static final int CONTAINER_CHILD_BLOCKS_MAX_ITEMS = 10;
 
+  /** {@code container.child_blocks.min_items} */
+  public static final int CONTAINER_CHILD_BLOCKS_MIN_ITEMS = 1;
+
   /** {@code container.subtitle.max_length} */
   public static final int CONTAINER_SUBTITLE_MAX_LENGTH = 150;
 
@@ -80,6 +83,9 @@ public final class SlackLimits {
 
   /** {@code context_actions.elements.max_items} */
   public static final int CONTEXT_ACTIONS_ELEMENTS_MAX_ITEMS = 5;
+
+  /** {@code conversation_filter.include.min_items} */
+  public static final int CONVERSATION_FILTER_INCLUDE_MIN_ITEMS = 1;
 
   /** {@code data_table.cell_text.min_length} */
   public static final int DATA_TABLE_CELL_TEXT_MIN_LENGTH = 1;
@@ -99,11 +105,17 @@ public final class SlackLimits {
   /** {@code data_table.page_size.min} */
   public static final int DATA_TABLE_PAGE_SIZE_MIN = 1;
 
+  /** {@code data_table.row_header_column_index.min} */
+  public static final int DATA_TABLE_ROW_HEADER_COLUMN_INDEX_MIN = 0;
+
   /** {@code data_table.rows.max_items} */
   public static final int DATA_TABLE_ROWS_MAX_ITEMS = 201;
 
   /** {@code data_table.rows.min_items} */
   public static final int DATA_TABLE_ROWS_MIN_ITEMS = 2;
+
+  /** {@code data_table.total_content.max_length} */
+  public static final int DATA_TABLE_TOTAL_CONTENT_MAX_LENGTH = 20000;
 
   /** {@code data_visualization.axis_label.max_length} */
   public static final int DATA_VISUALIZATION_AXIS_LABEL_MAX_LENGTH = 50;
@@ -195,6 +207,15 @@ public final class SlackLimits {
   /** {@code image.image_url.max_length} */
   public static final int IMAGE_IMAGE_URL_MAX_LENGTH = 3000;
 
+  /** {@code image.title.max_length} */
+  public static final int IMAGE_TITLE_MAX_LENGTH = 2000;
+
+  /** {@code image_element.alt_text.max_length} */
+  public static final int IMAGE_ELEMENT_ALT_TEXT_MAX_LENGTH = 2000;
+
+  /** {@code image_element.image_url.max_length} */
+  public static final int IMAGE_ELEMENT_IMAGE_URL_MAX_LENGTH = 3000;
+
   /** {@code input.hint.max_length} */
   public static final int INPUT_HINT_MAX_LENGTH = 2000;
 
@@ -207,6 +228,9 @@ public final class SlackLimits {
   /** {@code markdown.text.min_length} */
   public static final int MARKDOWN_TEXT_MIN_LENGTH = 1;
 
+  /** {@code markdown.total_text.max_length} */
+  public static final int MARKDOWN_TOTAL_TEXT_MAX_LENGTH = 12000;
+
   /** {@code message.attachments.max_items} */
   public static final int MESSAGE_ATTACHMENTS_MAX_ITEMS = 100;
 
@@ -215,6 +239,9 @@ public final class SlackLimits {
 
   /** {@code message.channel.min_length} */
   public static final int MESSAGE_CHANNEL_MIN_LENGTH = 1;
+
+  /** {@code multi_select.max_selected_items.min} */
+  public static final int MULTI_SELECT_MAX_SELECTED_ITEMS_MIN = 1;
 
   /** {@code number_input.placeholder.max_length} */
   public static final int NUMBER_INPUT_PLACEHOLDER_MAX_LENGTH = 150;
@@ -249,8 +276,20 @@ public final class SlackLimits {
   /** {@code plain_text_input.max_length.max} */
   public static final int PLAIN_TEXT_INPUT_MAX_LENGTH_MAX = 3000;
 
+  /** {@code plain_text_input.max_length.min} */
+  public static final int PLAIN_TEXT_INPUT_MAX_LENGTH_MIN = 1;
+
+  /** {@code plain_text_input.min_length.max} */
+  public static final int PLAIN_TEXT_INPUT_MIN_LENGTH_MAX = 3000;
+
+  /** {@code plain_text_input.min_length.min} */
+  public static final int PLAIN_TEXT_INPUT_MIN_LENGTH_MIN = 0;
+
   /** {@code plain_text_input.placeholder.max_length} */
   public static final int PLAIN_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH = 150;
+
+  /** {@code plan.tasks.max_items} */
+  public static final int PLAN_TASKS_MAX_ITEMS = 50;
 
   /** {@code radio_buttons.options.max_items} */
   public static final int RADIO_BUTTONS_OPTIONS_MAX_ITEMS = 10;
@@ -258,8 +297,47 @@ public final class SlackLimits {
   /** {@code radio_buttons.options.min_items} */
   public static final int RADIO_BUTTONS_OPTIONS_MIN_ITEMS = 1;
 
+  /** {@code rich_text_input.max_lines.max} */
+  public static final int RICH_TEXT_INPUT_MAX_LINES_MAX = 100;
+
+  /** {@code rich_text_input.max_lines.min} */
+  public static final int RICH_TEXT_INPUT_MAX_LINES_MIN = 1;
+
+  /** {@code rich_text_input.min_lines.max} */
+  public static final int RICH_TEXT_INPUT_MIN_LINES_MAX = 100;
+
+  /** {@code rich_text_input.min_lines.min} */
+  public static final int RICH_TEXT_INPUT_MIN_LINES_MIN = 1;
+
   /** {@code rich_text_input.placeholder.max_length} */
   public static final int RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH = 150;
+
+  /** {@code rich_text_list.border.max} */
+  public static final int RICH_TEXT_LIST_BORDER_MAX = 1;
+
+  /** {@code rich_text_list.border.min} */
+  public static final int RICH_TEXT_LIST_BORDER_MIN = 0;
+
+  /** {@code rich_text_list.indent.max} */
+  public static final int RICH_TEXT_LIST_INDENT_MAX = 8;
+
+  /** {@code rich_text_list.indent.min} */
+  public static final int RICH_TEXT_LIST_INDENT_MIN = 0;
+
+  /** {@code rich_text_list.offset.min} */
+  public static final int RICH_TEXT_LIST_OFFSET_MIN = 0;
+
+  /** {@code rich_text_preformatted.border.max} */
+  public static final int RICH_TEXT_PREFORMATTED_BORDER_MAX = 1;
+
+  /** {@code rich_text_preformatted.border.min} */
+  public static final int RICH_TEXT_PREFORMATTED_BORDER_MIN = 0;
+
+  /** {@code rich_text_quote.border.max} */
+  public static final int RICH_TEXT_QUOTE_BORDER_MAX = 1;
+
+  /** {@code rich_text_quote.border.min} */
+  public static final int RICH_TEXT_QUOTE_BORDER_MIN = 0;
 
   /** {@code section.fields.item_max_length} */
   public static final int SECTION_FIELDS_ITEM_MAX_LENGTH = 2000;
@@ -278,6 +356,9 @@ public final class SlackLimits {
 
   /** {@code select.placeholder.max_length} */
   public static final int SELECT_PLACEHOLDER_MAX_LENGTH = 150;
+
+  /** {@code table.column_settings.max_items} */
+  public static final int TABLE_COLUMN_SETTINGS_MAX_ITEMS = 20;
 
   /** {@code table.columns.max_items} */
   public static final int TABLE_COLUMNS_MAX_ITEMS = 20;
@@ -312,11 +393,23 @@ public final class SlackLimits {
   /** {@code video.description.max_length} */
   public static final int VIDEO_DESCRIPTION_MAX_LENGTH = 200;
 
+  /** {@code video.provider_icon_url.max_length} */
+  public static final int VIDEO_PROVIDER_ICON_URL_MAX_LENGTH = 2000;
+
   /** {@code video.provider_name.max_length} */
   public static final int VIDEO_PROVIDER_NAME_MAX_LENGTH = 50;
 
+  /** {@code video.thumbnail_url.max_length} */
+  public static final int VIDEO_THUMBNAIL_URL_MAX_LENGTH = 3000;
+
   /** {@code video.title.max_length} */
   public static final int VIDEO_TITLE_MAX_LENGTH = 200;
+
+  /** {@code video.title_url.max_length} */
+  public static final int VIDEO_TITLE_URL_MAX_LENGTH = 2000;
+
+  /** {@code video.video_url.max_length} */
+  public static final int VIDEO_VIDEO_URL_MAX_LENGTH = 3000;
 
   /** {@code view.blocks.max_items} */
   public static final int VIEW_BLOCKS_MAX_ITEMS = 100;
@@ -329,6 +422,9 @@ public final class SlackLimits {
 
   /** {@code view.close.max_length} */
   public static final int VIEW_CLOSE_MAX_LENGTH = 24;
+
+  /** {@code view.external_id.max_length} */
+  public static final int VIEW_EXTERNAL_ID_MAX_LENGTH = 255;
 
   /** {@code view.private_metadata.max_length} */
   public static final int VIEW_PRIVATE_METADATA_MAX_LENGTH = 3000;

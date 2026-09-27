@@ -9,6 +9,7 @@ import io.github.nicklambourne.slackblocks.internal.SlackObjectJsonAdapter;
 import io.github.nicklambourne.slackblocks.internal.TypedFields;
 import io.github.nicklambourne.slackblocks.internal.WireObjects;
 import io.github.nicklambourne.slackblocks.object.PlainText;
+import io.github.nicklambourne.slackblocks.object.SlackFile;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,7 +21,8 @@ import java.util.Optional;
  * Builder#build()} to validate and create an immutable value.
  *
  * <ul>
- *   <li>Required: {@code imageUrl}, {@code altText}.
+ *   <li>Required: {@code altText}.
+ *   <li>Provide exactly one of an image URL or a Slack file.
  * </ul>
  *
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/image-block">Slack reference</a>
@@ -61,11 +63,22 @@ public final class ImageBlock implements Block {
    * Returns the publicly accessible URL of the image. Cannot be combined with a Slack file.
    *
    * @return the value
-   * @throws IllegalStateException if the field was set through a raw wire field to a value this
-   *     type cannot represent
+   * @throws IllegalStateException if the field is not set, or was set through a raw wire field to a
+   *     value this type cannot represent
    */
   public String getImageUrl() {
     return TypedFields.required(fields, "ImageBlock", "image_url", String.class);
+  }
+
+  /**
+   * Returns a file hosted in Slack as the image source. Cannot be combined with an image URL.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<SlackFile> getSlackFile() {
+    return TypedFields.optional(fields, "ImageBlock", "slack_file", SlackFile.class);
   }
 
   /**
@@ -124,13 +137,24 @@ public final class ImageBlock implements Block {
     /**
      * Sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
      *
-     * <p>Required. Slack allows at most 3000 characters.
+     * <p>Slack allows at most 3000 characters.
      *
      * @param value value for Slack's {@code image_url} field
      * @return this builder
      */
     public Builder imageUrl(String value) {
       state.set("image_url", value);
+      return this;
+    }
+
+    /**
+     * Sets a file hosted in Slack as the image source. Cannot be combined with an image URL.
+     *
+     * @param value nested {@link SlackFile}
+     * @return this builder
+     */
+    public Builder slackFile(SlackFile value) {
+      state.set("slack_file", value);
       return this;
     }
 
@@ -150,7 +174,8 @@ public final class ImageBlock implements Block {
     /**
      * Sets the title shown above the image.
      *
-     * <p>The string is sent as a {@code plain_text} text object.
+     * <p>Slack allows at most 2000 characters. The string is sent as a {@code plain_text} text
+     * object.
      *
      * @param value text content
      * @return this builder
@@ -162,6 +187,8 @@ public final class ImageBlock implements Block {
 
     /**
      * Sets the title shown above the image.
+     *
+     * <p>Slack allows at most 2000 characters.
      *
      * @param value a {@link PlainText} object
      * @return this builder

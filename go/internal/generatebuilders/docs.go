@@ -210,6 +210,8 @@ func limitSentence(limits map[string]any, path string) string {
 			return fmt.Sprintf("Must contain between %d and %d items.", low, high)
 		case hasHigh:
 			return fmt.Sprintf("Slack allows at most %d items.", high)
+		case low == 1:
+			return "Must not be empty."
 		default:
 			return fmt.Sprintf("Must contain at least %d items.", low)
 		}

@@ -351,6 +351,13 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
         title="image1",
         block_id="fake_block_id",
     ),
+    "blocks/image_block_slack_file": lambda: ImageBlock(
+        slack_file=SlackFile(
+            url="https://files.slack.com/files-pri/T0123456-F0123ABC456/kitten.png", id=None
+        ),
+        alt_text="An incredibly cute kitten.",
+        block_id="fake_block_id",
+    ),
     "blocks/input_block_only": lambda: InputBlock(
         label=Text("Label", type_=TextType.PLAINTEXT, emoji=True),
         hint=Text("Hint", type_=TextType.PLAINTEXT, emoji=True),
@@ -454,7 +461,7 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
             URLSource("https://weather.com/", "weather.com"),
             URLSource("https://www.accuweather.com/", "accuweather.com"),
         ],
-        status="pending",
+        status="in_progress",
     ),
     "blocks/video_block_basic": lambda: VideoBlock(
         alt_text="alt",
@@ -506,7 +513,7 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
     ),
     "elements/image_slack_file_id": lambda: Image(
         alt_text="An incredibly cute kitten.",
-        slack_file=SlackFile(url=None, id="F0123456"),
+        slack_file=SlackFile(url=None, id="F0123ABC456"),
     ),
     "elements/image_slack_file_url": lambda: Image(
         alt_text="An incredibly cute kitten.",
@@ -554,7 +561,7 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
     "elements/radio_button_group_basic": _radio_button_group,
     "elements/rich_text_input_basic": lambda: RichTextInput(
         action_id="action_id",
-        initial_value=RichText("I'm rich"),
+        initial_value=RichTextBlock(RichTextSection(RichText("I'm rich"))),
         focus_on_load=False,
         placeholder="Hello",
     ),
@@ -583,6 +590,7 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
     "elements/url_source_basic": lambda: URLSource("https://docs.slack.dev/", "Slack API docs"),
     "elements/workflow_button_basic": lambda: WorkflowButton(
         text=Text("Run Your Workflow", type_=TextType.PLAINTEXT),
+        action_id="run_workflow",
         workflow=Workflow(
             trigger=Trigger(
                 url="https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c",
@@ -723,7 +731,7 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
         ListType.BULLET, indent=0, offset=0, border=1
     ),
     "rich_text/rich_text_list_ordered": _rich_text_list(
-        ListType.ORDERED, indent=1, offset=2, border=3
+        ListType.ORDERED, indent=1, offset=2, border=1
     ),
     "rich_text/rich_text_quote_basic": lambda: RichTextQuote(
         elements=[RichText(text="Great and good are seldom the same man")], border=1

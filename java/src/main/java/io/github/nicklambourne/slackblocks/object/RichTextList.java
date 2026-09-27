@@ -163,6 +163,8 @@ public final class RichTextList implements RichTextBlockElement {
     /**
      * Sets the list's indentation level.
      *
+     * <p>Must be between 0 and 8.
+     *
      * @param value value for Slack's {@code indent} field
      * @return this builder
      */
@@ -174,6 +176,8 @@ public final class RichTextList implements RichTextBlockElement {
     /**
      * Sets the number of items to skip when numbering an ordered list.
      *
+     * <p>Must be at least 0.
+     *
      * @param value value for Slack's {@code offset} field
      * @return this builder
      */
@@ -184,6 +188,8 @@ public final class RichTextList implements RichTextBlockElement {
 
     /**
      * Sets the width of the left border, in pixels.
+     *
+     * <p>Must be between 0 and 1.
      *
      * @param value value for Slack's {@code border} field
      * @return this builder

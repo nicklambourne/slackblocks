@@ -12,8 +12,9 @@ Version 1.1.0 defines the language-neutral contract for slackblocks implementati
 
 Payload-level cases also enforce the official 50-block message limit, the
 100-attachment message limit, block compatibility for message, modal, and App
-Home surfaces, and the requirement for submit text when a modal contains an
-input block.
+Home surfaces, the requirement for submit text when a modal contains an
+input block, and the message-wide totals of 12,000 characters of markdown block
+text and 20,000 characters of data table cell text.
 
 The normative categories are `length-exceeded`, `out-of-range`, `mutually-exclusive`, `type-mismatch`, `missing-required`, and `invalid-usage`.
 

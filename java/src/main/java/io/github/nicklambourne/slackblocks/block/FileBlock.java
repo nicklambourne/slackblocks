@@ -18,7 +18,7 @@ import java.util.Optional;
  * Builder#build()} to validate and create an immutable value.
  *
  * <ul>
- *   <li>Required: {@code externalId}.
+ *   <li>Required: {@code externalId}, {@code source}.
  * </ul>
  *
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/file-block">Slack reference</a>
@@ -114,6 +114,8 @@ public final class FileBlock implements Block {
 
     /**
      * Sets the file source. Slack currently supports only remote files.
+     *
+     * <p>Required.
      *
      * @param value value for Slack's {@code source} field
      * @return this builder

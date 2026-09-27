@@ -10,6 +10,7 @@ import io.github.nicklambourne.slackblocks.block.CardBlock;
 import io.github.nicklambourne.slackblocks.block.DividerBlock;
 import io.github.nicklambourne.slackblocks.block.RichTextBlock;
 import io.github.nicklambourne.slackblocks.block.TaskCardBlock;
+import io.github.nicklambourne.slackblocks.block.TaskStatus;
 import io.github.nicklambourne.slackblocks.element.ButtonElement;
 import io.github.nicklambourne.slackblocks.element.IconButtonElement;
 import io.github.nicklambourne.slackblocks.element.ImageElement;
@@ -82,7 +83,9 @@ final class BuilderMethodsTest {
     sample("ButtonElement", () -> ButtonElement.builder("x", "a").build());
     sample("Block", DividerBlock::create);
     sample("CardBlock", () -> CardBlock.builder().title("x").build());
-    sample("TaskCardBlock", () -> TaskCardBlock.builder().taskId("t").title("x").build());
+    sample(
+        "TaskCardBlock",
+        () -> TaskCardBlock.builder().taskId("t").title("x").status(TaskStatus.COMPLETE).build());
     sample(
         "RichTextBlock",
         () ->
@@ -127,7 +130,7 @@ final class BuilderMethodsTest {
         "DispatchActionConfiguration",
         () -> DispatchActionConfiguration.builder().triggerActionsOn("on_enter_pressed").build());
     sample("FeedbackButton", () -> FeedbackButton.builder().text("x").value("v").build());
-    sample("SlackFile", () -> SlackFile.builder().id("F123").build());
+    sample("SlackFile", () -> SlackFile.builder().id("F0123ABC456").build());
     sample("SlackIcon", () -> SlackIcon.builder().name("rocket").build());
     sample("UrlSource", () -> UrlSource.builder().url("https://example.com").text("x").build());
     sample("Trigger", () -> Trigger.builder().url("https://example.com").build());

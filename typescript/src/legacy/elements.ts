@@ -190,8 +190,8 @@ export interface UserMultiSelectInput {
 export interface NumberElementInput {
   /** Identifier used to find the submitted numeric value, up to 255 characters. */
   actionId: string;
-  /** Whether the input accepts decimal values as well as whole numbers. */
-  isDecimalAllowed?: boolean;
+  /** Whether the input accepts decimal values as well as whole numbers. Slack requires it. */
+  isDecimalAllowed: boolean;
   /** Numeric text present when the input first loads. */
   initialValue?: string;
   /** Minimum accepted value; it cannot exceed `maxValue`. */
@@ -401,8 +401,8 @@ export interface UrlElementInput {
 export interface RichTextElementInput {
   /** Identifier used to find the submitted rich-text value, up to 255 characters. */
   actionId: string;
-  /** Rich-text content present when the editor first loads. */
-  initialValue?: JsonObject;
+  /** Rich-text block, created with `richTextBlock`, present when the editor first loads. */
+  initialValue?: SlackObject<"rich_text">;
   /** Configuration controlling when editing dispatches a `block_actions` payload. */
   dispatchActionConfig?: JsonObject;
   /** Whether this element receives focus when its containing view opens. */
@@ -461,8 +461,8 @@ export interface WorkflowButtonInput {
   text: TextLike;
   /** Workflow object created with `workflow`. */
   workflow: JsonObject;
-  /** Optional interaction identifier. */
-  actionId?: string;
+  /** Identifier returned when the button is selected, up to 255 characters. */
+  actionId: string;
   /** Optional confirmation dialog. */
   confirm?: JsonObject;
   /** Optional visual emphasis. */

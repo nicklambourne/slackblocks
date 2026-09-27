@@ -681,19 +681,19 @@ def test_task_card_block() -> None:
             URLSource("https://weather.com/", "weather.com"),
             URLSource("https://www.accuweather.com/", "accuweather.com"),
         ],
-        status="pending",
+        status="in_progress",
     )
     assert fetch_sample(path="blocks/task_card_block.json") == repr(block)
 
 
 def test_task_card_block_details_must_be_a_rich_text_block() -> None:
     with pytest.raises(TypeMismatchError):
-        TaskCardBlock(task_id="task_1", title="Task", details="just text")
+        TaskCardBlock(task_id="task_1", title="Task", details="just text", status="complete")
 
 
 def test_task_card_block_output_must_be_a_rich_text_block() -> None:
     with pytest.raises(TypeMismatchError):
-        TaskCardBlock(task_id="task_1", title="Task", output="just text")
+        TaskCardBlock(task_id="task_1", title="Task", output="just text", status="complete")
 
 
 def test_plan_block() -> None:

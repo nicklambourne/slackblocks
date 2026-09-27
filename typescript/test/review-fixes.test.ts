@@ -27,6 +27,7 @@ import {
   mrkdwn,
   option,
   OutOfRangeError,
+  planBlock,
   radioButtons,
   rawText,
   richTextList,
@@ -35,6 +36,7 @@ import {
   sectionBlock,
   staticSelect,
   tableBlock,
+  taskCardBlock,
   timePicker,
   TypeMismatchError,
   userMultiSelect,
@@ -178,13 +180,16 @@ describe("table blocks", () => {
     ).toThrowError(LengthError);
   });
 
-  it("rejects column settings that do not match the column count", () => {
-    expect(() =>
+  it("accepts fewer or more column settings than columns", () => {
+    expect(
+      tableBlock({ rows: [row("Name", "Role")], columnSettings: [{ align: "left" }] }).type,
+    ).toBe("table");
+    expect(
       tableBlock({
-        rows: [row("Name", "Role")],
-        columnSettings: [{ align: "left" }],
-      }),
-    ).toThrowError(InvalidUsageError);
+        rows: [row("Name")],
+        columnSettings: [{ align: "left" }, { align: "right" }],
+      }).type,
+    ).toBe("table");
   });
 
   it("rejects unsupported cell types", () => {
@@ -349,8 +354,8 @@ describe("empty optional collection parity", () => {
     });
   });
 
-  it("omits empty attachment blocks", () => {
-    expect(attachment({ blocks: [] })).toEqual({});
+  it("rejects an attachment whose blocks are empty", () => {
+    expect(() => attachment({ blocks: [] })).toThrowError(MissingRequiredError);
   });
 
   it("omits empty select collections", () => {
@@ -529,5 +534,113 @@ describe("text object coercion helpers", () => {
   it("keeps explicit text objects unchanged", () => {
     const block = sectionBlock({ text: mrkdwn("*Hi*") });
     expect(block.text).toEqual({ type: "mrkdwn", text: "*Hi*" });
+  });
+});
+
+describe("raw JSON validation aligned with Slack's blocks.validate", () => {
+  const markdown = (length: number) => ({ type: "markdown", text: "x".repeat(length) });
+  const table = (length: number) => ({
+    type: "data_table",
+    caption: "Names",
+    rows: [
+      [{ type: "raw_text", text: "Name" }],
+      [{ type: "raw_text", text: "x".repeat(length - "Name".length) }],
+    ],
+  });
+  const task = (taskId: string, status: string) => ({ task_id: taskId, title: "Task", status });
+
+  it("applies the message-wide markdown and data table totals", () => {
+    const half = limits.markdown.total_text.max_length / 2;
+    expect(validate({ blocks: [markdown(half), markdown(half)] })).toBe(true);
+    expect(validate({ blocks: [markdown(half), markdown(half + 1)] })).toBe(false);
+    expect(
+      validate({ attachments: [{ blocks: [markdown(half)] }], blocks: [markdown(half + 1)] }),
+    ).toBe(false);
+    const tableHalf = limits.data_table.total_content.max_length / 2;
+    expect(validate({ blocks: [table(tableHalf), table(tableHalf)] })).toBe(true);
+    expect(validate({ blocks: [table(tableHalf), table(tableHalf + 1)] })).toBe(false);
+    expect(() =>
+      webhookMessage({ blocks: [markdown(half), markdown(half + 1)] }),
+    ).toThrowError(LengthError);
+  });
+
+  it("requires attachment blocks in a message payload", () => {
+    expect(() => assertValid({ attachments: [{ color: "#ff0000" }] })).toThrowError(
+      MissingRequiredError,
+    );
+  });
+
+  it("allows pending status only for plan tasks", () => {
+    const pendingCard = { type: "task_card", ...task("a", "pending") };
+    expect(validate({ type: "plan", title: "Plan", tasks: [task("a", "pending")] })).toBe(true);
+    expect(validate(pendingCard)).toBe(true);
+    expect(validate({ blocks: [pendingCard] })).toBe(false);
+    expect(validate({ attachments: [{ blocks: [pendingCard] }] })).toBe(false);
+    expect(() =>
+      planBlock({
+        title: "Plan",
+        tasks: [taskCardBlock({ taskId: "a", title: "Task", status: "pending" })],
+      }),
+    ).not.toThrow();
+    expect(() =>
+      message({
+        channel: "C1",
+        blocks: [taskCardBlock({ taskId: "a", title: "Task", status: "pending" })],
+      }),
+    ).toThrowError(TypeMismatchError);
+    expect(() =>
+      assertValid({ type: "plan", title: "Plan", tasks: [{ task_id: "a", title: "Task" }] }),
+    ).toThrowError(MissingRequiredError);
+  });
+
+  it("checks Slack file IDs, conversation filters, icons, and file sources in context", () => {
+    expect(
+      validate({ type: "image", alt_text: "Alt", slack_file: { id: "F0123456" } }),
+    ).toBe(false);
+    expect(
+      validate({ type: "image", alt_text: "Alt", slack_file: { id: "F0123ABC456" } }),
+    ).toBe(true);
+    expect(() =>
+      assertValid({
+        type: "conversations_select",
+        action_id: "a",
+        filter: { include: ["channels"] },
+      }),
+    ).toThrowError(TypeMismatchError);
+    expect(() =>
+      assertValid({
+        type: "card",
+        title: { type: "mrkdwn", text: "Card" },
+        slack_icon: { type: "icon" },
+      }),
+    ).toThrowError(MissingRequiredError);
+    expect(() => assertValid({ type: "file", external_id: "ABC" })).toThrowError(
+      MissingRequiredError,
+    );
+  });
+
+  it("requires a rich_text block as a rich text input's initial value", () => {
+    expect(() =>
+      assertValid({
+        type: "rich_text_input",
+        action_id: "a",
+        initial_value: { type: "text", text: "Hello" },
+      }),
+    ).toThrowError(TypeMismatchError);
+  });
+
+  it("allows input blocks in messages and data visualizations in App Home", () => {
+    const input = {
+      type: "input",
+      label: { type: "plain_text", text: "Name" },
+      element: { type: "plain_text_input", action_id: "name" },
+    };
+    expect(message({ channel: "C1", blocks: [input] }).blocks).toHaveLength(1);
+    const chart = {
+      type: "data_visualization",
+      title: "Share",
+      chart: { type: "pie", segments: [{ label: "A", value: 1 }] },
+    };
+    expect(slackblocks.homeTab({ blocks: [chart] }).type).toBe("home");
   });
 });
