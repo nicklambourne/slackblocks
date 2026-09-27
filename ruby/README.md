@@ -4,8 +4,9 @@ Build and validate Slack Block Kit payloads with Ruby 3.3 or newer. The gem impl
 
 Install from the repository while the first Ruby release is being prepared:
 
-    gem build ruby/slackblocks.gemspec
-    gem install slackblocks-2.5.0.gem
+    cd ruby
+    gem build slackblocks.gemspec
+    gem install ./slackblocks-2.5.0.gem
 
 Use keyword arguments for every value:
 
