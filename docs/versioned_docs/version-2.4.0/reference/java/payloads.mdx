@@ -1,0 +1,1733 @@
+---
+sidebar_position: 4
+toc_max_heading_level: 3
+---
+
+# Payloads And Views
+
+This page documents the public Java API for payloads and views, generated from the Javadoc by the javadoc tool. Values are immutable, builders are concrete and fluent, validation runs when you call `.build()`, and typed getters read built values back.
+
+## Attachment
+
+A legacy message attachment containing blocks and an optional color bar.
+
+Start with [`builder()`](/reference/java/payloads#attachment), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/payloads#attachment) to validate and create an immutable value.
+
+- Only blocks supported in messages are accepted.
+
+See the [Slack reference](https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static Attachment.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`Attachment`](/reference/java/payloads#attachment)
+
+### GetBlocks
+
+Returns the attachment's blocks in display order.
+
+```java
+public List<Block> getBlocks()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Block`](/reference/java/blocks#block)
+
+### GetColor
+
+Returns the attachment's left border color: a six-digit hex color or good, warning, or danger.
+
+```java
+public Optional<String> getColor()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetFallback
+
+Returns plain-text summary shown in clients that cannot display attachments.
+
+```java
+public Optional<String> getFallback()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Blocks
+
+Adds the attachment's blocks in display order.
+
+Each call appends to any values already added.
+
+```java
+public Attachment.Builder blocks(Block... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`Block`](/reference/java/blocks#block) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`Attachment`](/reference/java/payloads#attachment), [`Block`](/reference/java/blocks#block)
+
+### Color
+
+Sets the attachment's left border color: a six-digit hex color or good, warning, or danger.
+
+```java
+public Attachment.Builder color(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `color` field |
+
+**Returns:** this builder
+
+**Related types:** [`Attachment`](/reference/java/payloads#attachment)
+
+### Fallback
+
+Sets plain-text summary shown in clients that cannot display attachments.
+
+```java
+public Attachment.Builder fallback(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `fallback` field |
+
+**Returns:** this builder
+
+**Related types:** [`Attachment`](/reference/java/payloads#attachment)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public Attachment.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`Attachment`](/reference/java/payloads#attachment)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public Attachment build()
+```
+
+**Returns:** an immutable [`Attachment`](/reference/java/payloads#attachment)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`Attachment`](/reference/java/payloads#attachment)
+
+## HomeTabView
+
+The payload for publishing an App Home tab with views.publish.
+
+Start with [`builder()`](/reference/java/payloads#hometabview), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/payloads#hometabview) to validate and create an immutable value.
+
+- Required: `blocks`.
+
+- Only blocks supported on the App Home tab are accepted.
+
+See the [Slack reference](https://docs.slack.dev/surfaces/app-home).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static HomeTabView.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`HomeTabView`](/reference/java/payloads#hometabview)
+
+### GetBlocks
+
+Returns the blocks shown on the App Home tab, in display order.
+
+```java
+public List<Block> getBlocks()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Block`](/reference/java/blocks#block)
+
+### GetPrivateMetadata
+
+Returns application-defined data returned in view payloads.
+
+```java
+public Optional<String> getPrivateMetadata()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetCallbackId
+
+Returns an identifier returned in view payloads so your app can recognize the view.
+
+```java
+public Optional<String> getCallbackId()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetExternalId
+
+Returns a workspace-unique identifier you can use to update the view later.
+
+```java
+public Optional<String> getExternalId()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Blocks
+
+Adds the blocks shown on the App Home tab, in display order.
+
+Required. Must contain between 1 and 100 items. Each call appends to any values already added.
+
+```java
+public HomeTabView.Builder blocks(Block... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`Block`](/reference/java/blocks#block) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`Block`](/reference/java/blocks#block), [`HomeTabView`](/reference/java/payloads#hometabview)
+
+### PrivateMetadata
+
+Sets application-defined data returned in view payloads.
+
+Slack allows at most 3000 characters.
+
+```java
+public HomeTabView.Builder privateMetadata(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `private_metadata` field |
+
+**Returns:** this builder
+
+**Related types:** [`HomeTabView`](/reference/java/payloads#hometabview)
+
+### CallbackId
+
+Sets an identifier returned in view payloads so your app can recognize the view.
+
+Slack allows at most 255 characters.
+
+```java
+public HomeTabView.Builder callbackId(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `callback_id` field |
+
+**Returns:** this builder
+
+**Related types:** [`HomeTabView`](/reference/java/payloads#hometabview)
+
+### ExternalId
+
+Sets a workspace-unique identifier you can use to update the view later.
+
+```java
+public HomeTabView.Builder externalId(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `external_id` field |
+
+**Returns:** this builder
+
+**Related types:** [`HomeTabView`](/reference/java/payloads#hometabview)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public HomeTabView.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`HomeTabView`](/reference/java/payloads#hometabview)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public HomeTabView build()
+```
+
+**Returns:** an immutable [`HomeTabView`](/reference/java/payloads#hometabview)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`HomeTabView`](/reference/java/payloads#hometabview)
+
+## MessagePayload
+
+A complete payload for chat.postMessage and related Web API methods.
+
+Start with [`builder()`](/reference/java/payloads#messagepayload), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/payloads#messagepayload) to validate and create an immutable value.
+
+- Required: `channel`.
+
+- Only blocks supported in messages are accepted.
+
+See the [Slack reference](https://docs.slack.dev/reference/methods/chat.postMessage).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static MessagePayload.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`MessagePayload`](/reference/java/payloads#messagepayload)
+
+### GetChannel
+
+Returns the ID of the channel, private group, or conversation that receives the message.
+
+```java
+public String getChannel()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetBlocks
+
+Returns the message blocks in display order.
+
+```java
+public List<Block> getBlocks()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Block`](/reference/java/blocks#block)
+
+### GetAttachments
+
+Returns legacy attachments in display order.
+
+```java
+public List<Attachment> getAttachments()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Attachment`](/reference/java/payloads#attachment)
+
+### GetText
+
+Returns the fallback text used in notifications and by clients that cannot display blocks.
+
+```java
+public Optional<String> getText()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetMrkdwn
+
+Returns whether Slack formats the top-level text as mrkdwn.
+
+```java
+public Optional<Boolean> getMrkdwn()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetUnfurlLinks
+
+Returns whether Slack unfurls text-based links.
+
+```java
+public Optional<Boolean> getUnfurlLinks()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetUnfurlMedia
+
+Returns whether Slack unfurls media links.
+
+```java
+public Optional<Boolean> getUnfurlMedia()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetMetadata
+
+Returns message metadata as a JSON-compatible map, such as event_type and event_payload.
+
+```java
+public Optional<Map<String,Object>> getMetadata()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Channel
+
+Sets the ID of the channel, private group, or conversation that receives the message.
+
+Required. Must not be empty.
+
+```java
+public MessagePayload.Builder channel(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `channel` field |
+
+**Returns:** this builder
+
+**Related types:** [`MessagePayload`](/reference/java/payloads#messagepayload)
+
+### Blocks
+
+Adds the message blocks in display order.
+
+Slack allows at most 50 items. Each call appends to any values already added.
+
+```java
+public MessagePayload.Builder blocks(Block... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`Block`](/reference/java/blocks#block) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`Block`](/reference/java/blocks#block), [`MessagePayload`](/reference/java/payloads#messagepayload)
+
+### Attachments
+
+Adds legacy attachments in display order.
+
+Slack allows at most 100 items. Each call appends to any values already added.
+
+```java
+public MessagePayload.Builder attachments(Attachment... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`Attachment`](/reference/java/payloads#attachment) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`Attachment`](/reference/java/payloads#attachment), [`MessagePayload`](/reference/java/payloads#messagepayload)
+
+### Text
+
+Sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```java
+public MessagePayload.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `text` field |
+
+**Returns:** this builder
+
+**Related types:** [`MessagePayload`](/reference/java/payloads#messagepayload)
+
+### Mrkdwn
+
+Sets whether Slack formats the top-level text as mrkdwn.
+
+```java
+public MessagePayload.Builder mrkdwn(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `mrkdwn` field |
+
+**Returns:** this builder
+
+**Related types:** [`MessagePayload`](/reference/java/payloads#messagepayload)
+
+### UnfurlLinks
+
+Sets whether Slack unfurls text-based links.
+
+```java
+public MessagePayload.Builder unfurlLinks(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `unfurl_links` field |
+
+**Returns:** this builder
+
+**Related types:** [`MessagePayload`](/reference/java/payloads#messagepayload)
+
+### UnfurlMedia
+
+Sets whether Slack unfurls media links.
+
+```java
+public MessagePayload.Builder unfurlMedia(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `unfurl_media` field |
+
+**Returns:** this builder
+
+**Related types:** [`MessagePayload`](/reference/java/payloads#messagepayload)
+
+### Metadata
+
+Sets message metadata as a JSON-compatible map, such as event_type and event_payload.
+
+```java
+public MessagePayload.Builder metadata(Map<String,?> value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | map of strings, numbers, booleans, lists, and maps |
+
+**Returns:** this builder
+
+**Related types:** [`MessagePayload`](/reference/java/payloads#messagepayload)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public MessagePayload.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`MessagePayload`](/reference/java/payloads#messagepayload)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public MessagePayload build()
+```
+
+**Returns:** an immutable [`MessagePayload`](/reference/java/payloads#messagepayload)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`MessagePayload`](/reference/java/payloads#messagepayload)
+
+## MessageResponse
+
+A response body for slash commands and interaction response URLs.
+
+Start with [`builder()`](/reference/java/payloads#messageresponse), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/payloads#messageresponse) to validate and create an immutable value.
+
+- Only blocks supported in messages are accepted.
+
+See the [Slack reference](https://docs.slack.dev/interactivity/handling-user-interaction#message_responses).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static MessageResponse.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`MessageResponse`](/reference/java/payloads#messageresponse)
+
+### GetBlocks
+
+Returns the response blocks in display order.
+
+```java
+public List<Block> getBlocks()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Block`](/reference/java/blocks#block)
+
+### GetAttachments
+
+Returns legacy attachments in display order.
+
+```java
+public List<Attachment> getAttachments()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Attachment`](/reference/java/payloads#attachment)
+
+### GetText
+
+Returns the fallback text used in notifications and by clients that cannot display blocks.
+
+```java
+public Optional<String> getText()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetMrkdwn
+
+Returns whether Slack formats the top-level text as mrkdwn.
+
+```java
+public Optional<Boolean> getMrkdwn()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetReplaceOriginal
+
+Returns whether the response replaces the message that triggered it.
+
+```java
+public Optional<Boolean> getReplaceOriginal()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetResponseType
+
+Returns who can see the response.
+
+```java
+public Optional<ResponseType> getResponseType()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`ResponseType`](/reference/java/payloads#responsetype)
+
+### Blocks
+
+Adds the response blocks in display order.
+
+Slack allows at most 50 items. Each call appends to any values already added.
+
+```java
+public MessageResponse.Builder blocks(Block... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`Block`](/reference/java/blocks#block) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`Block`](/reference/java/blocks#block), [`MessageResponse`](/reference/java/payloads#messageresponse)
+
+### Attachments
+
+Adds legacy attachments in display order.
+
+Slack allows at most 100 items. Each call appends to any values already added.
+
+```java
+public MessageResponse.Builder attachments(Attachment... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`Attachment`](/reference/java/payloads#attachment) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`Attachment`](/reference/java/payloads#attachment), [`MessageResponse`](/reference/java/payloads#messageresponse)
+
+### Text
+
+Sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```java
+public MessageResponse.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `text` field |
+
+**Returns:** this builder
+
+**Related types:** [`MessageResponse`](/reference/java/payloads#messageresponse)
+
+### Mrkdwn
+
+Sets whether Slack formats the top-level text as mrkdwn.
+
+```java
+public MessageResponse.Builder mrkdwn(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `mrkdwn` field |
+
+**Returns:** this builder
+
+**Related types:** [`MessageResponse`](/reference/java/payloads#messageresponse)
+
+### ReplaceOriginal
+
+Sets whether the response replaces the message that triggered it.
+
+```java
+public MessageResponse.Builder replaceOriginal(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `replace_original` field |
+
+**Returns:** this builder
+
+**Related types:** [`MessageResponse`](/reference/java/payloads#messageresponse)
+
+### ResponseType
+
+Sets who can see the response.
+
+```java
+public MessageResponse.Builder responseType(ResponseType value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `response_type` field |
+
+**Returns:** this builder
+
+**Related types:** [`MessageResponse`](/reference/java/payloads#messageresponse), [`ResponseType`](/reference/java/payloads#responsetype)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public MessageResponse.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`MessageResponse`](/reference/java/payloads#messageresponse)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public MessageResponse build()
+```
+
+**Returns:** an immutable [`MessageResponse`](/reference/java/payloads#messageresponse)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`MessageResponse`](/reference/java/payloads#messageresponse)
+
+## ModalView
+
+The view payload for views.open, views.push, and views.update.
+
+Start with [`builder()`](/reference/java/payloads#modalview), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/payloads#modalview) to validate and create an immutable value.
+
+- Required: `title`, `blocks`.
+
+- Only blocks supported in modals are accepted.
+
+- A modal that contains an input block must have a submit label.
+
+See the [Slack reference](https://docs.slack.dev/surfaces/modals).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static ModalView.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview)
+
+### GetTitle
+
+Returns the title in the modal's top bar.
+
+```java
+public PlainText getTitle()
+```
+
+**Returns:** the value
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### GetBlocks
+
+Returns the blocks shown in the modal, in display order.
+
+```java
+public List<Block> getBlocks()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Block`](/reference/java/blocks#block)
+
+### GetClose
+
+Returns the label of the button that closes the modal.
+
+```java
+public Optional<PlainText> getClose()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### GetSubmit
+
+Returns the label of the button that submits the modal.
+
+```java
+public Optional<PlainText> getSubmit()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`PlainText`](/reference/java/objects#plaintext)
+
+### GetPrivateMetadata
+
+Returns application-defined data returned in view payloads.
+
+```java
+public Optional<String> getPrivateMetadata()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetCallbackId
+
+Returns an identifier returned in view payloads so your app can recognize the view.
+
+```java
+public Optional<String> getCallbackId()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetClearOnClose
+
+Returns whether closing this modal closes every view in its stack.
+
+```java
+public Optional<Boolean> getClearOnClose()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetNotifyOnClose
+
+Returns whether Slack sends a view_closed event when the user closes the modal.
+
+```java
+public Optional<Boolean> getNotifyOnClose()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetExternalId
+
+Returns a workspace-unique identifier you can use to update the view later.
+
+```java
+public Optional<String> getExternalId()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetSubmitDisabled
+
+Returns whether the submit button starts disabled. Only valid in workflow configuration modals.
+
+```java
+public Optional<Boolean> getSubmitDisabled()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Title — `String`
+
+Sets the title in the modal's top bar.
+
+Required. Slack allows at most 24 characters. The string is sent as a `plain_text` text object.
+
+```java
+public ModalView.Builder title(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview)
+
+### Title — `PlainText`
+
+Sets the title in the modal's top bar.
+
+Required. Slack allows at most 24 characters.
+
+```java
+public ModalView.Builder title(PlainText value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | a [`PlainText`](/reference/java/objects#plaintext) object |
+
+**Returns:** this builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview), [`PlainText`](/reference/java/objects#plaintext)
+
+### Blocks
+
+Adds the blocks shown in the modal, in display order.
+
+Required. Must contain between 1 and 100 items. Each call appends to any values already added.
+
+```java
+public ModalView.Builder blocks(Block... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`Block`](/reference/java/blocks#block) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`Block`](/reference/java/blocks#block), [`ModalView`](/reference/java/payloads#modalview)
+
+### Close — `String`
+
+Sets the label of the button that closes the modal.
+
+Slack allows at most 24 characters. The string is sent as a `plain_text` text object.
+
+```java
+public ModalView.Builder close(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview)
+
+### Close — `PlainText`
+
+Sets the label of the button that closes the modal.
+
+Slack allows at most 24 characters.
+
+```java
+public ModalView.Builder close(PlainText value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | a [`PlainText`](/reference/java/objects#plaintext) object |
+
+**Returns:** this builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview), [`PlainText`](/reference/java/objects#plaintext)
+
+### Submit — `String`
+
+Sets the label of the button that submits the modal.
+
+Slack allows at most 24 characters. The string is sent as a `plain_text` text object.
+
+```java
+public ModalView.Builder submit(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | text content |
+
+**Returns:** this builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview)
+
+### Submit — `PlainText`
+
+Sets the label of the button that submits the modal.
+
+Slack allows at most 24 characters.
+
+```java
+public ModalView.Builder submit(PlainText value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | a [`PlainText`](/reference/java/objects#plaintext) object |
+
+**Returns:** this builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview), [`PlainText`](/reference/java/objects#plaintext)
+
+### PrivateMetadata
+
+Sets application-defined data returned in view payloads.
+
+Slack allows at most 3000 characters.
+
+```java
+public ModalView.Builder privateMetadata(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `private_metadata` field |
+
+**Returns:** this builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview)
+
+### CallbackId
+
+Sets an identifier returned in view payloads so your app can recognize the view.
+
+Slack allows at most 255 characters.
+
+```java
+public ModalView.Builder callbackId(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `callback_id` field |
+
+**Returns:** this builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview)
+
+### ClearOnClose
+
+Sets whether closing this modal closes every view in its stack.
+
+```java
+public ModalView.Builder clearOnClose(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `clear_on_close` field |
+
+**Returns:** this builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview)
+
+### NotifyOnClose
+
+Sets whether Slack sends a view_closed event when the user closes the modal.
+
+```java
+public ModalView.Builder notifyOnClose(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `notify_on_close` field |
+
+**Returns:** this builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview)
+
+### ExternalId
+
+Sets a workspace-unique identifier you can use to update the view later.
+
+```java
+public ModalView.Builder externalId(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `external_id` field |
+
+**Returns:** this builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview)
+
+### SubmitDisabled
+
+Sets whether the submit button starts disabled. Only valid in workflow configuration modals.
+
+```java
+public ModalView.Builder submitDisabled(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `submit_disabled` field |
+
+**Returns:** this builder
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public ModalView.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public ModalView build()
+```
+
+**Returns:** an immutable [`ModalView`](/reference/java/payloads#modalview)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`ModalView`](/reference/java/payloads#modalview)
+
+## ResponseType
+
+Visibility of a slash-command or interaction response.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `IN_CHANNEL` | `in_channel` | Visible to everyone in the channel. |
+| `EPHEMERAL` | `ephemeral` | Visible only to the user who triggered the response. |
+
+### WireValue
+
+Returns the value Slack expects in JSON.
+
+```java
+public String wireValue()
+```
+
+**Returns:** the wire value
+
+### FromWireValue
+
+Finds the constant for a Slack JSON value.
+
+```java
+public static Optional<ResponseType> fromWireValue(String wireValue)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `wireValue` | the value Slack uses in JSON |
+
+**Returns:** the matching constant, or an empty optional for an unknown value
+
+**Related types:** [`ResponseType`](/reference/java/payloads#responsetype)
+
+## WebhookMessage
+
+A payload for incoming webhooks.
+
+Start with [`builder()`](/reference/java/payloads#webhookmessage), set fields with the named fluent methods, and call [`Builder.build()`](/reference/java/payloads#webhookmessage) to validate and create an immutable value.
+
+- Only blocks supported in messages are accepted.
+
+See the [Slack reference](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks).
+
+### Builder
+
+Starts a new builder.
+
+```java
+public static WebhookMessage.Builder builder()
+```
+
+**Returns:** a new builder
+
+**Related types:** [`WebhookMessage`](/reference/java/payloads#webhookmessage)
+
+### GetBlocks
+
+Returns the message blocks in display order.
+
+```java
+public List<Block> getBlocks()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Block`](/reference/java/blocks#block)
+
+### GetAttachments
+
+Returns legacy attachments in display order.
+
+```java
+public List<Attachment> getAttachments()
+```
+
+**Returns:** the values in order, or an empty list when none were set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`Attachment`](/reference/java/payloads#attachment)
+
+### GetText
+
+Returns the fallback text used in notifications and by clients that cannot display blocks.
+
+```java
+public Optional<String> getText()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetResponseType
+
+Returns who can see the response.
+
+```java
+public Optional<ResponseType> getResponseType()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+**Related types:** [`ResponseType`](/reference/java/payloads#responsetype)
+
+### GetReplaceOriginal
+
+Returns whether the response replaces the message that triggered it.
+
+```java
+public Optional<Boolean> getReplaceOriginal()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetDeleteOriginal
+
+Returns whether the response deletes the message that triggered it.
+
+```java
+public Optional<Boolean> getDeleteOriginal()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetUnfurlLinks
+
+Returns whether Slack unfurls text-based links.
+
+```java
+public Optional<Boolean> getUnfurlLinks()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetUnfurlMedia
+
+Returns whether Slack unfurls media links.
+
+```java
+public Optional<Boolean> getUnfurlMedia()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### GetMetadata
+
+Returns message metadata as a JSON-compatible map, such as event_type and event_payload.
+
+```java
+public Optional<Map<String,Object>> getMetadata()
+```
+
+**Returns:** the value, or an empty optional when it was not set
+
+| Throws | When |
+| --- | --- |
+| `IllegalStateException` | if the field was set through a raw wire field to a value this type cannot represent |
+
+### Blocks
+
+Adds the message blocks in display order.
+
+Slack allows at most 50 items. Each call appends to any values already added.
+
+```java
+public WebhookMessage.Builder blocks(Block... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`Block`](/reference/java/blocks#block) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`Block`](/reference/java/blocks#block), [`WebhookMessage`](/reference/java/payloads#webhookmessage)
+
+### Attachments
+
+Adds legacy attachments in display order.
+
+Slack allows at most 100 items. Each call appends to any values already added.
+
+```java
+public WebhookMessage.Builder attachments(Attachment... values)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `values` | [`Attachment`](/reference/java/payloads#attachment) values appended in order |
+
+**Returns:** this builder
+
+**Related types:** [`Attachment`](/reference/java/payloads#attachment), [`WebhookMessage`](/reference/java/payloads#webhookmessage)
+
+### Text
+
+Sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```java
+public WebhookMessage.Builder text(String value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `text` field |
+
+**Returns:** this builder
+
+**Related types:** [`WebhookMessage`](/reference/java/payloads#webhookmessage)
+
+### ResponseType
+
+Sets who can see the response.
+
+```java
+public WebhookMessage.Builder responseType(ResponseType value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `response_type` field |
+
+**Returns:** this builder
+
+**Related types:** [`ResponseType`](/reference/java/payloads#responsetype), [`WebhookMessage`](/reference/java/payloads#webhookmessage)
+
+### ReplaceOriginal
+
+Sets whether the response replaces the message that triggered it.
+
+```java
+public WebhookMessage.Builder replaceOriginal(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `replace_original` field |
+
+**Returns:** this builder
+
+**Related types:** [`WebhookMessage`](/reference/java/payloads#webhookmessage)
+
+### DeleteOriginal
+
+Sets whether the response deletes the message that triggered it.
+
+```java
+public WebhookMessage.Builder deleteOriginal(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `delete_original` field |
+
+**Returns:** this builder
+
+**Related types:** [`WebhookMessage`](/reference/java/payloads#webhookmessage)
+
+### UnfurlLinks
+
+Sets whether Slack unfurls text-based links.
+
+```java
+public WebhookMessage.Builder unfurlLinks(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `unfurl_links` field |
+
+**Returns:** this builder
+
+**Related types:** [`WebhookMessage`](/reference/java/payloads#webhookmessage)
+
+### UnfurlMedia
+
+Sets whether Slack unfurls media links.
+
+```java
+public WebhookMessage.Builder unfurlMedia(boolean value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | value for Slack's `unfurl_media` field |
+
+**Returns:** this builder
+
+**Related types:** [`WebhookMessage`](/reference/java/payloads#webhookmessage)
+
+### Metadata
+
+Sets message metadata as a JSON-compatible map, such as event_type and event_payload.
+
+```java
+public WebhookMessage.Builder metadata(Map<String,?> value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | map of strings, numbers, booleans, lists, and maps |
+
+**Returns:** this builder
+
+**Related types:** [`WebhookMessage`](/reference/java/payloads#webhookmessage)
+
+### WireField
+
+Sets a Slack field that has no named method yet, such as a field Slack introduced after this release. Prefer the named methods, which are typed and documented.
+
+The value is checked at build time like any other field. It must be a string, number, boolean, slackblocks value or builder, or a list or map containing only those.
+
+```java
+public WebhookMessage.Builder wireField(String field, Object value)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `field` | Slack JSON field name |
+| `value` | JSON-compatible value |
+
+**Returns:** this builder
+
+| Throws | When |
+| --- | --- |
+| `IllegalArgumentException` | if the field name is empty or the value cannot be written as Slack JSON |
+
+**Related types:** [`WebhookMessage`](/reference/java/payloads#webhookmessage)
+
+### Build
+
+Validates the configured fields and creates an immutable value. The builder can be reused.
+
+```java
+public WebhookMessage build()
+```
+
+**Returns:** an immutable [`WebhookMessage`](/reference/java/payloads#webhookmessage)
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/java/errors#validationexception) | if the value breaks a Block Kit rule, such as a missing required field or an exceeded length limit |
+
+**Related types:** [`WebhookMessage`](/reference/java/payloads#webhookmessage)

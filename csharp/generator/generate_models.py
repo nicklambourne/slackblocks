@@ -50,7 +50,7 @@ KEYWORDS = {
     "uint", "ulong", "unchecked", "unsafe", "ushort", "using", "virtual", "void", "volatile", "while",
 }
 RESERVED_MEMBERS = {"ToJson", "ToJsonNode", "Equals", "GetHashCode", "ToString", "GetType", "Wire", "Initialize"}
-# Constructor parameters and properties that keep their 2.x shape until 3.0, although spec 1.1.0
+# Constructor parameters and properties that keep their 2.x shape until 3.0, although spec 1.2.0
 # changed whether the field is required, so existing callers still compile. Newly required fields
 # stay optional, nullable parameters that the validator rejects when missing. ImageBlock.image_url,
 # now optional because a Slack file can replace it, keeps its leading position (positional

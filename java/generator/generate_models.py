@@ -262,7 +262,7 @@ def field_methods(model: Model, owner: dict, field: dict, imports: Imports) -> l
 
 GETTER_SKIPS = {("block", "block_id")}  # Block#getBlockId comes from the SDK LayoutBlock contract
 
-# Getters that keep their 2.x signatures until 3.0, although spec 1.1.0 changed whether the field
+# Getters that keep their 2.x signatures until 3.0, although spec 1.2.0 changed whether the field
 # is required. Newly required fields still return an Optional; ImageBlock.image_url, now optional
 # because a Slack file can replace it, still returns String and throws when the URL is not set.
 # Builders and validation follow model.json either way. Maps (Java type, wire field) to the

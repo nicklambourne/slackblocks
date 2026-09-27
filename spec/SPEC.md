@@ -1,6 +1,6 @@
 # slackblocks conformance specification
 
-Version 1.1.0 defines the language-neutral contract for slackblocks implementations.
+Version 1.2.0 defines the language-neutral contract for slackblocks implementations.
 
 ## Valid fixtures
 

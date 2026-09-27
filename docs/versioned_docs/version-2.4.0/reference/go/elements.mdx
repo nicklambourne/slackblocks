@@ -1,0 +1,2442 @@
+---
+sidebar_position: 2
+toc_max_heading_level: 2
+---
+
+# Elements
+
+This page documents the public Go API for elements. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.
+
+## NewButton
+
+NewButton creates an interactive button.
+
+```go
+func NewButton() *ButtonBuilder
+```
+
+### ButtonBuilder
+
+ButtonBuilder is the concrete fluent builder returned by NewButton.
+
+An interactive button that sends a payload or opens a URL.
+
+- Required: Text and ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/button-element).
+
+Use NewButton rather than constructing this type directly.
+
+```go
+type ButtonBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ButtonBuilder.Text
+
+Text sets the button label. Required. Slack allows at most 75 characters. The string is sent
+as a plain_text text object; use TextObject to pass a text object instead.
+
+```go
+func (b *ButtonBuilder) Text(value string) *ButtonBuilder
+```
+
+#### ButtonBuilder.TextObject
+
+TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ButtonBuilder) TextObject(value *PlainTextBuilder) *ButtonBuilder
+```
+
+#### ButtonBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *ButtonBuilder) ActionID(value string) *ButtonBuilder
+```
+
+#### ButtonBuilder.URL
+
+URL sets a URL opened in the user's browser when the button is clicked. Slack still sends an
+interaction payload. Slack allows at most 3000 characters.
+
+```go
+func (b *ButtonBuilder) URL(value string) *ButtonBuilder
+```
+
+#### ButtonBuilder.Value
+
+Value sets the application-defined value sent in interaction payloads. Slack allows at most
+2000 characters.
+
+```go
+func (b *ButtonBuilder) Value(value string) *ButtonBuilder
+```
+
+#### ButtonBuilder.Style
+
+Style sets the button's emphasis. Omit it for the default neutral style. Accepted values:
+"primary" and "danger".
+
+```go
+func (b *ButtonBuilder) Style(value ButtonStyle) *ButtonBuilder
+```
+
+#### ButtonBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *ButtonBuilder) Confirm(value *ConfirmationBuilder) *ButtonBuilder
+```
+
+#### ButtonBuilder.AccessibilityLabel
+
+AccessibilityLabel sets the label read by screen readers in place of the visible text. Slack
+allows at most 75 characters.
+
+```go
+func (b *ButtonBuilder) AccessibilityLabel(value string) *ButtonBuilder
+```
+
+Every `ButtonBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewChannelMultiSelect
+
+NewChannelMultiSelect creates a multi-select of public channels.
+
+```go
+func NewChannelMultiSelect() *ChannelMultiSelectBuilder
+```
+
+### ChannelMultiSelectBuilder
+
+ChannelMultiSelectBuilder is the concrete fluent builder returned by NewChannelMultiSelect.
+
+A menu for selecting multiple public channels.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+Use NewChannelMultiSelect rather than constructing this type directly.
+
+```go
+type ChannelMultiSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ChannelMultiSelectBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *ChannelMultiSelectBuilder) ActionID(value string) *ChannelMultiSelectBuilder
+```
+
+#### ChannelMultiSelectBuilder.InitialChannels
+
+InitialChannels adds channel IDs that are selected when the menu loads. Each call appends to
+any values already added.
+
+```go
+func (b *ChannelMultiSelectBuilder) InitialChannels(values ...string) *ChannelMultiSelectBuilder
+```
+
+#### ChannelMultiSelectBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *ChannelMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *ChannelMultiSelectBuilder
+```
+
+#### ChannelMultiSelectBuilder.MaxSelectedItems
+
+MaxSelectedItems sets the maximum number of items a user can select.
+
+```go
+func (b *ChannelMultiSelectBuilder) MaxSelectedItems(value int) *ChannelMultiSelectBuilder
+```
+
+#### ChannelMultiSelectBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *ChannelMultiSelectBuilder) FocusOnLoad(value bool) *ChannelMultiSelectBuilder
+```
+
+#### ChannelMultiSelectBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+a text object instead.
+
+```go
+func (b *ChannelMultiSelectBuilder) Placeholder(value string) *ChannelMultiSelectBuilder
+```
+
+#### ChannelMultiSelectBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ChannelMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *ChannelMultiSelectBuilder
+```
+
+Every `ChannelMultiSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewChannelSelect
+
+NewChannelSelect creates a public-channel single-select.
+
+```go
+func NewChannelSelect() *ChannelSelectBuilder
+```
+
+### ChannelSelectBuilder
+
+ChannelSelectBuilder is the concrete fluent builder returned by NewChannelSelect.
+
+A menu for selecting one public channel.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+Use NewChannelSelect rather than constructing this type directly.
+
+```go
+type ChannelSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ChannelSelectBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *ChannelSelectBuilder) ActionID(value string) *ChannelSelectBuilder
+```
+
+#### ChannelSelectBuilder.InitialChannel
+
+InitialChannel sets the channel ID selected when the menu loads.
+
+```go
+func (b *ChannelSelectBuilder) InitialChannel(value string) *ChannelSelectBuilder
+```
+
+#### ChannelSelectBuilder.ResponseURLEnabled
+
+ResponseURLEnabled sets whether the selected conversation receives a response URL in the view
+submission payload. Only valid in modals.
+
+```go
+func (b *ChannelSelectBuilder) ResponseURLEnabled(value bool) *ChannelSelectBuilder
+```
+
+#### ChannelSelectBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *ChannelSelectBuilder) Confirm(value *ConfirmationBuilder) *ChannelSelectBuilder
+```
+
+#### ChannelSelectBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *ChannelSelectBuilder) FocusOnLoad(value bool) *ChannelSelectBuilder
+```
+
+#### ChannelSelectBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+a text object instead.
+
+```go
+func (b *ChannelSelectBuilder) Placeholder(value string) *ChannelSelectBuilder
+```
+
+#### ChannelSelectBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ChannelSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *ChannelSelectBuilder
+```
+
+Every `ChannelSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewCheckboxes
+
+NewCheckboxes creates a checkbox group.
+
+```go
+func NewCheckboxes() *CheckboxesBuilder
+```
+
+### CheckboxesBuilder
+
+CheckboxesBuilder is the concrete fluent builder returned by NewCheckboxes.
+
+A group of checkboxes.
+
+- Required: ActionID and Options.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/checkboxes-element).
+
+Use NewCheckboxes rather than constructing this type directly.
+
+```go
+type CheckboxesBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### CheckboxesBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *CheckboxesBuilder) ActionID(value string) *CheckboxesBuilder
+```
+
+#### CheckboxesBuilder.Options
+
+Options adds selectable options in display order. Required. Must contain between 1 and 10
+items. Each call appends to any values already added.
+
+```go
+func (b *CheckboxesBuilder) Options(values ...*OptionBuilder) *CheckboxesBuilder
+```
+
+#### CheckboxesBuilder.InitialOptions
+
+InitialOptions adds options that are selected when the element loads. Each must match an
+option in the element. Each call appends to any values already added.
+
+```go
+func (b *CheckboxesBuilder) InitialOptions(values ...*OptionBuilder) *CheckboxesBuilder
+```
+
+#### CheckboxesBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *CheckboxesBuilder) Confirm(value *ConfirmationBuilder) *CheckboxesBuilder
+```
+
+#### CheckboxesBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *CheckboxesBuilder) FocusOnLoad(value bool) *CheckboxesBuilder
+```
+
+Every `CheckboxesBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewConversationMultiSelect
+
+NewConversationMultiSelect creates a multi-select of conversations.
+
+```go
+func NewConversationMultiSelect() *ConversationMultiSelectBuilder
+```
+
+### ConversationMultiSelectBuilder
+
+ConversationMultiSelectBuilder is the concrete fluent builder returned by NewConversationMultiSelect.
+
+A menu for selecting multiple conversations.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+Use NewConversationMultiSelect rather than constructing this type directly.
+
+```go
+type ConversationMultiSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ConversationMultiSelectBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *ConversationMultiSelectBuilder) ActionID(value string) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.InitialConversations
+
+InitialConversations adds conversation IDs that are selected when the menu loads. Each call
+appends to any values already added.
+
+```go
+func (b *ConversationMultiSelectBuilder) InitialConversations(values ...string) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.DefaultToCurrentConversation
+
+DefaultToCurrentConversation sets whether the menu pre-selects the conversation the user is
+viewing.
+
+```go
+func (b *ConversationMultiSelectBuilder) DefaultToCurrentConversation(value bool) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.Filter
+
+Filter sets which conversation types the menu offers.
+
+```go
+func (b *ConversationMultiSelectBuilder) Filter(value *ConversationFilterBuilder) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *ConversationMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.MaxSelectedItems
+
+MaxSelectedItems sets the maximum number of items a user can select.
+
+```go
+func (b *ConversationMultiSelectBuilder) MaxSelectedItems(value int) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *ConversationMultiSelectBuilder) FocusOnLoad(value bool) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+a text object instead.
+
+```go
+func (b *ConversationMultiSelectBuilder) Placeholder(value string) *ConversationMultiSelectBuilder
+```
+
+#### ConversationMultiSelectBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ConversationMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *ConversationMultiSelectBuilder
+```
+
+Every `ConversationMultiSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewConversationSelect
+
+NewConversationSelect creates a conversation single-select.
+
+```go
+func NewConversationSelect() *ConversationSelectBuilder
+```
+
+### ConversationSelectBuilder
+
+ConversationSelectBuilder is the concrete fluent builder returned by NewConversationSelect.
+
+A menu for selecting one conversation.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+Use NewConversationSelect rather than constructing this type directly.
+
+```go
+type ConversationSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ConversationSelectBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *ConversationSelectBuilder) ActionID(value string) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.InitialConversation
+
+InitialConversation sets the conversation ID selected when the menu loads.
+
+```go
+func (b *ConversationSelectBuilder) InitialConversation(value string) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.DefaultToCurrentConversation
+
+DefaultToCurrentConversation sets whether the menu pre-selects the conversation the user is
+viewing.
+
+```go
+func (b *ConversationSelectBuilder) DefaultToCurrentConversation(value bool) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.Filter
+
+Filter sets which conversation types the menu offers.
+
+```go
+func (b *ConversationSelectBuilder) Filter(value *ConversationFilterBuilder) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.ResponseURLEnabled
+
+ResponseURLEnabled sets whether the selected conversation receives a response URL in the view
+submission payload. Only valid in modals.
+
+```go
+func (b *ConversationSelectBuilder) ResponseURLEnabled(value bool) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *ConversationSelectBuilder) Confirm(value *ConfirmationBuilder) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *ConversationSelectBuilder) FocusOnLoad(value bool) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+a text object instead.
+
+```go
+func (b *ConversationSelectBuilder) Placeholder(value string) *ConversationSelectBuilder
+```
+
+#### ConversationSelectBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ConversationSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *ConversationSelectBuilder
+```
+
+Every `ConversationSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDatePicker
+
+NewDatePicker creates a calendar date picker.
+
+```go
+func NewDatePicker() *DatePickerBuilder
+```
+
+### DatePickerBuilder
+
+DatePickerBuilder is the concrete fluent builder returned by NewDatePicker.
+
+A calendar date picker.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element).
+
+Use NewDatePicker rather than constructing this type directly.
+
+```go
+type DatePickerBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### DatePickerBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *DatePickerBuilder) ActionID(value string) *DatePickerBuilder
+```
+
+#### DatePickerBuilder.InitialDate
+
+InitialDate sets the initially selected date, formatted as YYYY-MM-DD.
+
+```go
+func (b *DatePickerBuilder) InitialDate(value string) *DatePickerBuilder
+```
+
+#### DatePickerBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *DatePickerBuilder) Confirm(value *ConfirmationBuilder) *DatePickerBuilder
+```
+
+#### DatePickerBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *DatePickerBuilder) FocusOnLoad(value bool) *DatePickerBuilder
+```
+
+#### DatePickerBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+plain_text text object; use PlaceholderObject to pass a text object instead.
+
+```go
+func (b *DatePickerBuilder) Placeholder(value string) *DatePickerBuilder
+```
+
+#### DatePickerBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *DatePickerBuilder) PlaceholderObject(value *PlainTextBuilder) *DatePickerBuilder
+```
+
+Every `DatePickerBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDateTimePicker
+
+NewDateTimePicker creates a combined date-and-time picker.
+
+```go
+func NewDateTimePicker() *DateTimePickerBuilder
+```
+
+### DateTimePickerBuilder
+
+DateTimePickerBuilder is the concrete fluent builder returned by NewDateTimePicker.
+
+A combined date and time picker.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/datetime-picker-element).
+
+Use NewDateTimePicker rather than constructing this type directly.
+
+```go
+type DateTimePickerBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### DateTimePickerBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *DateTimePickerBuilder) ActionID(value string) *DateTimePickerBuilder
+```
+
+#### DateTimePickerBuilder.InitialDateTime
+
+InitialDateTime sets the initially selected moment as a UNIX timestamp in seconds.
+
+```go
+func (b *DateTimePickerBuilder) InitialDateTime(value int64) *DateTimePickerBuilder
+```
+
+#### DateTimePickerBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *DateTimePickerBuilder) Confirm(value *ConfirmationBuilder) *DateTimePickerBuilder
+```
+
+#### DateTimePickerBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *DateTimePickerBuilder) FocusOnLoad(value bool) *DateTimePickerBuilder
+```
+
+Every `DateTimePickerBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewEmailInput
+
+NewEmailInput creates an email-address input.
+
+```go
+func NewEmailInput() *EmailInputBuilder
+```
+
+### EmailInputBuilder
+
+EmailInputBuilder is the concrete fluent builder returned by NewEmailInput.
+
+A single-line input that accepts an email address.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/email-input-element).
+
+Use NewEmailInput rather than constructing this type directly.
+
+```go
+type EmailInputBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### EmailInputBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *EmailInputBuilder) ActionID(value string) *EmailInputBuilder
+```
+
+#### EmailInputBuilder.InitialValue
+
+InitialValue sets the value present when the input loads.
+
+```go
+func (b *EmailInputBuilder) InitialValue(value string) *EmailInputBuilder
+```
+
+#### EmailInputBuilder.DispatchActionConfig
+
+DispatchActionConfig sets which user interactions send a block_actions payload.
+
+```go
+func (b *EmailInputBuilder) DispatchActionConfig(value *DispatchActionConfigurationBuilder) *EmailInputBuilder
+```
+
+#### EmailInputBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *EmailInputBuilder) FocusOnLoad(value bool) *EmailInputBuilder
+```
+
+#### EmailInputBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+plain_text text object; use PlaceholderObject to pass a text object instead.
+
+```go
+func (b *EmailInputBuilder) Placeholder(value string) *EmailInputBuilder
+```
+
+#### EmailInputBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *EmailInputBuilder) PlaceholderObject(value *PlainTextBuilder) *EmailInputBuilder
+```
+
+Every `EmailInputBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewExternalMultiSelect
+
+NewExternalMultiSelect creates an externally populated multi-select.
+
+```go
+func NewExternalMultiSelect() *ExternalMultiSelectBuilder
+```
+
+### ExternalMultiSelectBuilder
+
+ExternalMultiSelectBuilder is the concrete fluent builder returned by NewExternalMultiSelect.
+
+A menu for selecting multiple options loaded from your app.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+Use NewExternalMultiSelect rather than constructing this type directly.
+
+```go
+type ExternalMultiSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ExternalMultiSelectBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *ExternalMultiSelectBuilder) ActionID(value string) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.MinQueryLength
+
+MinQueryLength sets how many characters the user must type before Slack queries your options
+endpoint.
+
+```go
+func (b *ExternalMultiSelectBuilder) MinQueryLength(value int) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.InitialOptions
+
+InitialOptions adds options that are selected when the element loads. Each must match an
+option in the element. Each call appends to any values already added.
+
+```go
+func (b *ExternalMultiSelectBuilder) InitialOptions(values ...*OptionBuilder) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *ExternalMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.MaxSelectedItems
+
+MaxSelectedItems sets the maximum number of items a user can select.
+
+```go
+func (b *ExternalMultiSelectBuilder) MaxSelectedItems(value int) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *ExternalMultiSelectBuilder) FocusOnLoad(value bool) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+a text object instead.
+
+```go
+func (b *ExternalMultiSelectBuilder) Placeholder(value string) *ExternalMultiSelectBuilder
+```
+
+#### ExternalMultiSelectBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ExternalMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *ExternalMultiSelectBuilder
+```
+
+Every `ExternalMultiSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewExternalSelect
+
+NewExternalSelect creates an externally populated single-select.
+
+```go
+func NewExternalSelect() *ExternalSelectBuilder
+```
+
+### ExternalSelectBuilder
+
+ExternalSelectBuilder is the concrete fluent builder returned by NewExternalSelect.
+
+A menu for selecting one option loaded from your app.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+Use NewExternalSelect rather than constructing this type directly.
+
+```go
+type ExternalSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ExternalSelectBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *ExternalSelectBuilder) ActionID(value string) *ExternalSelectBuilder
+```
+
+#### ExternalSelectBuilder.MinQueryLength
+
+MinQueryLength sets how many characters the user must type before Slack queries your options
+endpoint.
+
+```go
+func (b *ExternalSelectBuilder) MinQueryLength(value int) *ExternalSelectBuilder
+```
+
+#### ExternalSelectBuilder.InitialOption
+
+InitialOption sets the option selected when the element loads. It must match an option in the
+element.
+
+```go
+func (b *ExternalSelectBuilder) InitialOption(value *OptionBuilder) *ExternalSelectBuilder
+```
+
+#### ExternalSelectBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *ExternalSelectBuilder) Confirm(value *ConfirmationBuilder) *ExternalSelectBuilder
+```
+
+#### ExternalSelectBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *ExternalSelectBuilder) FocusOnLoad(value bool) *ExternalSelectBuilder
+```
+
+#### ExternalSelectBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+a text object instead.
+
+```go
+func (b *ExternalSelectBuilder) Placeholder(value string) *ExternalSelectBuilder
+```
+
+#### ExternalSelectBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ExternalSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *ExternalSelectBuilder
+```
+
+Every `ExternalSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewFeedbackButton
+
+NewFeedbackButton creates one positive or negative feedback choice.
+
+```go
+func NewFeedbackButton() *FeedbackButtonBuilder
+```
+
+### FeedbackButtonBuilder
+
+FeedbackButtonBuilder is the concrete fluent builder returned by NewFeedbackButton.
+
+One button of a feedback buttons element.
+
+- Required: Text and Value.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+Use NewFeedbackButton rather than constructing this type directly.
+
+```go
+type FeedbackButtonBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### FeedbackButtonBuilder.Text
+
+Text sets the button label. Required. Slack allows at most 75 characters. The string is sent
+as a plain_text text object; use TextObject to pass a text object instead.
+
+```go
+func (b *FeedbackButtonBuilder) Text(value string) *FeedbackButtonBuilder
+```
+
+#### FeedbackButtonBuilder.TextObject
+
+TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *FeedbackButtonBuilder) TextObject(value *PlainTextBuilder) *FeedbackButtonBuilder
+```
+
+#### FeedbackButtonBuilder.Value
+
+Value sets the application-defined value sent in interaction payloads. Required. Slack allows
+at most 2000 characters.
+
+```go
+func (b *FeedbackButtonBuilder) Value(value string) *FeedbackButtonBuilder
+```
+
+#### FeedbackButtonBuilder.AccessibilityLabel
+
+AccessibilityLabel sets the label read by screen readers in place of the visible text. Slack
+allows at most 75 characters.
+
+```go
+func (b *FeedbackButtonBuilder) AccessibilityLabel(value string) *FeedbackButtonBuilder
+```
+
+Every `FeedbackButtonBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewFeedbackButtons
+
+NewFeedbackButtons creates a paired positive/negative feedback control.
+
+```go
+func NewFeedbackButtons() *FeedbackButtonsBuilder
+```
+
+### FeedbackButtonsBuilder
+
+FeedbackButtonsBuilder is the concrete fluent builder returned by NewFeedbackButtons.
+
+A pair of thumbs-up and thumbs-down feedback buttons.
+
+- Required: PositiveButton and NegativeButton.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+Use NewFeedbackButtons rather than constructing this type directly.
+
+```go
+type FeedbackButtonsBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### FeedbackButtonsBuilder.PositiveButton
+
+PositiveButton sets the button for positive feedback. Required.
+
+```go
+func (b *FeedbackButtonsBuilder) PositiveButton(value *FeedbackButtonBuilder) *FeedbackButtonsBuilder
+```
+
+#### FeedbackButtonsBuilder.NegativeButton
+
+NegativeButton sets the button for negative feedback. Required.
+
+```go
+func (b *FeedbackButtonsBuilder) NegativeButton(value *FeedbackButtonBuilder) *FeedbackButtonsBuilder
+```
+
+#### FeedbackButtonsBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Slack allows at most 255
+characters.
+
+```go
+func (b *FeedbackButtonsBuilder) ActionID(value string) *FeedbackButtonsBuilder
+```
+
+Every `FeedbackButtonsBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewFileInput
+
+NewFileInput creates a file-upload input.
+
+```go
+func NewFileInput() *FileInputBuilder
+```
+
+### FileInputBuilder
+
+FileInputBuilder is the concrete fluent builder returned by NewFileInput.
+
+An input that lets users upload files.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/file-input-element).
+
+Use NewFileInput rather than constructing this type directly.
+
+```go
+type FileInputBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### FileInputBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *FileInputBuilder) ActionID(value string) *FileInputBuilder
+```
+
+#### FileInputBuilder.Filetypes
+
+Filetypes adds accepted file extensions, such as pdf or png. Each call appends to any values
+already added.
+
+```go
+func (b *FileInputBuilder) Filetypes(values ...string) *FileInputBuilder
+```
+
+#### FileInputBuilder.MaxFiles
+
+MaxFiles sets the maximum number of files a user can upload. Must be between 1 and 10.
+
+```go
+func (b *FileInputBuilder) MaxFiles(value int) *FileInputBuilder
+```
+
+Every `FileInputBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewIconButton
+
+NewIconButton creates a compact context action.
+
+```go
+func NewIconButton() *IconButtonBuilder
+```
+
+### IconButtonBuilder
+
+IconButtonBuilder is the concrete fluent builder returned by NewIconButton.
+
+A button that shows an icon instead of text.
+
+- Required: Text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element).
+
+Use NewIconButton rather than constructing this type directly.
+
+```go
+type IconButtonBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### IconButtonBuilder.Text
+
+Text sets the text used as the button's accessible name. Required. The string is sent as a
+plain_text text object; use TextObject to pass a text object instead.
+
+```go
+func (b *IconButtonBuilder) Text(value string) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.TextObject
+
+TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *IconButtonBuilder) TextObject(value *PlainTextBuilder) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.Icon
+
+Icon sets the icon shown on the button. Accepted values: "trash".
+
+```go
+func (b *IconButtonBuilder) Icon(value IconButtonIcon) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Slack allows at most 255
+characters.
+
+```go
+func (b *IconButtonBuilder) ActionID(value string) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.Value
+
+Value sets the application-defined value sent in interaction payloads.
+
+```go
+func (b *IconButtonBuilder) Value(value string) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *IconButtonBuilder) Confirm(value *ConfirmationBuilder) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.AccessibilityLabel
+
+AccessibilityLabel sets the label read by screen readers in place of the visible text.
+
+```go
+func (b *IconButtonBuilder) AccessibilityLabel(value string) *IconButtonBuilder
+```
+
+#### IconButtonBuilder.VisibleToUserIDs
+
+VisibleToUserIDs adds the IDs of users who can see this button. Slack allows at most 10
+items. Each call appends to any values already added.
+
+```go
+func (b *IconButtonBuilder) VisibleToUserIDs(values ...string) *IconButtonBuilder
+```
+
+Every `IconButtonBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewImageElement
+
+NewImageElement creates an image element from a URL or Slack-hosted file.
+
+```go
+func NewImageElement() *ImageElementBuilder
+```
+
+### ImageElementBuilder
+
+ImageElementBuilder is the concrete fluent builder returned by NewImageElement.
+
+An image displayed inside a section, context, or card.
+
+- Required: AltText.
+- Provide exactly one of an image URL or a Slack file.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/image-element).
+
+Use NewImageElement rather than constructing this type directly.
+
+```go
+type ImageElementBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### ImageElementBuilder.AltText
+
+AltText sets a plain-text summary of the image or video for assistive technology. Required.
+
+```go
+func (b *ImageElementBuilder) AltText(value string) *ImageElementBuilder
+```
+
+#### ImageElementBuilder.ImageURL
+
+ImageURL sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+
+```go
+func (b *ImageElementBuilder) ImageURL(value string) *ImageElementBuilder
+```
+
+#### ImageElementBuilder.SlackFile
+
+SlackFile sets a file hosted in Slack as the image source. Cannot be combined with an image
+URL.
+
+```go
+func (b *ImageElementBuilder) SlackFile(value *SlackFileBuilder) *ImageElementBuilder
+```
+
+Every `ImageElementBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewNumberInput
+
+NewNumberInput creates a numeric input.
+
+```go
+func NewNumberInput() *NumberInputBuilder
+```
+
+### NumberInputBuilder
+
+NumberInputBuilder is the concrete fluent builder returned by NewNumberInput.
+
+An input that accepts whole or decimal numbers.
+
+- Required: ActionID.
+- The minimum value cannot exceed the maximum value.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/number-input-element).
+
+Use NewNumberInput rather than constructing this type directly.
+
+```go
+type NumberInputBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### NumberInputBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *NumberInputBuilder) ActionID(value string) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.IsDecimalAllowed
+
+IsDecimalAllowed sets whether the input accepts decimal numbers.
+
+```go
+func (b *NumberInputBuilder) IsDecimalAllowed(value bool) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.InitialValue
+
+InitialValue sets the number present when the input loads, as a string such as 42 or 3.5.
+
+```go
+func (b *NumberInputBuilder) InitialValue(value string) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.MinValue
+
+MinValue sets the smallest accepted number.
+
+```go
+func (b *NumberInputBuilder) MinValue(value float64) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.MaxValue
+
+MaxValue sets the largest accepted number.
+
+```go
+func (b *NumberInputBuilder) MaxValue(value float64) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.DispatchActionConfig
+
+DispatchActionConfig sets which user interactions send a block_actions payload.
+
+```go
+func (b *NumberInputBuilder) DispatchActionConfig(value *DispatchActionConfigurationBuilder) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *NumberInputBuilder) FocusOnLoad(value bool) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+plain_text text object; use PlaceholderObject to pass a text object instead.
+
+```go
+func (b *NumberInputBuilder) Placeholder(value string) *NumberInputBuilder
+```
+
+#### NumberInputBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *NumberInputBuilder) PlaceholderObject(value *PlainTextBuilder) *NumberInputBuilder
+```
+
+Every `NumberInputBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewOverflow
+
+NewOverflow creates a compact overflow menu.
+
+```go
+func NewOverflow() *OverflowBuilder
+```
+
+### OverflowBuilder
+
+OverflowBuilder is the concrete fluent builder returned by NewOverflow.
+
+A compact menu of up to five options.
+
+- Required: ActionID and Options.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/overflow-menu-element).
+
+Use NewOverflow rather than constructing this type directly.
+
+```go
+type OverflowBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### OverflowBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *OverflowBuilder) ActionID(value string) *OverflowBuilder
+```
+
+#### OverflowBuilder.Options
+
+Options adds selectable options in display order. Required. Must contain between 1 and 5
+items. Each call appends to any values already added.
+
+```go
+func (b *OverflowBuilder) Options(values ...*OptionBuilder) *OverflowBuilder
+```
+
+#### OverflowBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *OverflowBuilder) Confirm(value *ConfirmationBuilder) *OverflowBuilder
+```
+
+Every `OverflowBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewPlainTextInput
+
+NewPlainTextInput creates a free-form text input.
+
+```go
+func NewPlainTextInput() *PlainTextInputBuilder
+```
+
+### PlainTextInputBuilder
+
+PlainTextInputBuilder is the concrete fluent builder returned by NewPlainTextInput.
+
+A single-line or multi-line free-text input.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element).
+
+Use NewPlainTextInput rather than constructing this type directly.
+
+```go
+type PlainTextInputBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### PlainTextInputBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *PlainTextInputBuilder) ActionID(value string) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.InitialValue
+
+InitialValue sets the value present when the input loads.
+
+```go
+func (b *PlainTextInputBuilder) InitialValue(value string) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.Multiline
+
+Multiline sets whether the input is a multi-line text area.
+
+```go
+func (b *PlainTextInputBuilder) Multiline(value bool) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.MinLength
+
+MinLength sets the minimum number of characters the user must enter.
+
+```go
+func (b *PlainTextInputBuilder) MinLength(value int) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.MaxLength
+
+MaxLength sets the maximum number of characters the user can enter. Must be at most 3000.
+
+```go
+func (b *PlainTextInputBuilder) MaxLength(value int) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.DispatchActionConfig
+
+DispatchActionConfig sets which user interactions send a block_actions payload.
+
+```go
+func (b *PlainTextInputBuilder) DispatchActionConfig(value *DispatchActionConfigurationBuilder) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *PlainTextInputBuilder) FocusOnLoad(value bool) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+plain_text text object; use PlaceholderObject to pass a text object instead.
+
+```go
+func (b *PlainTextInputBuilder) Placeholder(value string) *PlainTextInputBuilder
+```
+
+#### PlainTextInputBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *PlainTextInputBuilder) PlaceholderObject(value *PlainTextBuilder) *PlainTextInputBuilder
+```
+
+Every `PlainTextInputBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRadioButtons
+
+NewRadioButtons creates a single-choice radio group.
+
+```go
+func NewRadioButtons() *RadioButtonsBuilder
+```
+
+### RadioButtonsBuilder
+
+RadioButtonsBuilder is the concrete fluent builder returned by NewRadioButtons.
+
+A group of radio buttons.
+
+- Required: ActionID and Options.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/radio-button-group-element).
+
+Use NewRadioButtons rather than constructing this type directly.
+
+```go
+type RadioButtonsBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RadioButtonsBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *RadioButtonsBuilder) ActionID(value string) *RadioButtonsBuilder
+```
+
+#### RadioButtonsBuilder.Options
+
+Options adds selectable options in display order. Required. Must contain between 1 and 10
+items. Each call appends to any values already added.
+
+```go
+func (b *RadioButtonsBuilder) Options(values ...*OptionBuilder) *RadioButtonsBuilder
+```
+
+#### RadioButtonsBuilder.InitialOption
+
+InitialOption sets the option selected when the element loads. It must match an option in the
+element.
+
+```go
+func (b *RadioButtonsBuilder) InitialOption(value *OptionBuilder) *RadioButtonsBuilder
+```
+
+#### RadioButtonsBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *RadioButtonsBuilder) Confirm(value *ConfirmationBuilder) *RadioButtonsBuilder
+```
+
+#### RadioButtonsBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *RadioButtonsBuilder) FocusOnLoad(value bool) *RadioButtonsBuilder
+```
+
+Every `RadioButtonsBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextInput
+
+NewRichTextInput creates a WYSIWYG rich-text editor.
+
+```go
+func NewRichTextInput() *RichTextInputBuilder
+```
+
+### RichTextInputBuilder
+
+RichTextInputBuilder is the concrete fluent builder returned by NewRichTextInput.
+
+An input that accepts formatted rich text.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/rich-text-input-element).
+
+Use NewRichTextInput rather than constructing this type directly.
+
+```go
+type RichTextInputBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### RichTextInputBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *RichTextInputBuilder) ActionID(value string) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.InitialValue
+
+InitialValue sets the rich text present when the input loads.
+
+```go
+func (b *RichTextInputBuilder) InitialValue(value *RichTextBuilder) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.DispatchActionConfig
+
+DispatchActionConfig sets which user interactions send a block_actions payload.
+
+```go
+func (b *RichTextInputBuilder) DispatchActionConfig(value *DispatchActionConfigurationBuilder) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *RichTextInputBuilder) FocusOnLoad(value bool) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+plain_text text object; use PlaceholderObject to pass a text object instead.
+
+```go
+func (b *RichTextInputBuilder) Placeholder(value string) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *RichTextInputBuilder) PlaceholderObject(value *PlainTextBuilder) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.MinLines
+
+MinLines sets the minimum visible height of the input, in lines.
+
+```go
+func (b *RichTextInputBuilder) MinLines(value int) *RichTextInputBuilder
+```
+
+#### RichTextInputBuilder.MaxLines
+
+MaxLines sets the maximum visible height of the input, in lines.
+
+```go
+func (b *RichTextInputBuilder) MaxLines(value int) *RichTextInputBuilder
+```
+
+Every `RichTextInputBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewStaticMultiSelect
+
+NewStaticMultiSelect creates a multi-select with embedded options.
+
+```go
+func NewStaticMultiSelect() *StaticMultiSelectBuilder
+```
+
+### StaticMultiSelectBuilder
+
+StaticMultiSelectBuilder is the concrete fluent builder returned by NewStaticMultiSelect.
+
+A menu for selecting multiple options defined in the payload.
+
+- Required: ActionID.
+- Use options or option groups, not both.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+Use NewStaticMultiSelect rather than constructing this type directly.
+
+```go
+type StaticMultiSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### StaticMultiSelectBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *StaticMultiSelectBuilder) ActionID(value string) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.Options
+
+Options adds selectable options in display order. Slack allows at most 100 items. Each call
+appends to any values already added.
+
+```go
+func (b *StaticMultiSelectBuilder) Options(values ...*OptionBuilder) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.OptionGroups
+
+OptionGroups adds labelled groups of options in display order. Cannot be combined with
+ungrouped options. Slack allows at most 100 items. Each call appends to any values already
+added.
+
+```go
+func (b *StaticMultiSelectBuilder) OptionGroups(values ...*OptionGroupBuilder) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.InitialOptions
+
+InitialOptions adds options that are selected when the element loads. Each must match an
+option in the element. Each call appends to any values already added.
+
+```go
+func (b *StaticMultiSelectBuilder) InitialOptions(values ...*OptionBuilder) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *StaticMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.MaxSelectedItems
+
+MaxSelectedItems sets the maximum number of items a user can select.
+
+```go
+func (b *StaticMultiSelectBuilder) MaxSelectedItems(value int) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *StaticMultiSelectBuilder) FocusOnLoad(value bool) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+a text object instead.
+
+```go
+func (b *StaticMultiSelectBuilder) Placeholder(value string) *StaticMultiSelectBuilder
+```
+
+#### StaticMultiSelectBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *StaticMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *StaticMultiSelectBuilder
+```
+
+Every `StaticMultiSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewStaticSelect
+
+NewStaticSelect creates a single-select with embedded options.
+
+```go
+func NewStaticSelect() *StaticSelectBuilder
+```
+
+### StaticSelectBuilder
+
+StaticSelectBuilder is the concrete fluent builder returned by NewStaticSelect.
+
+A menu for selecting one option defined in the payload.
+
+- Required: ActionID.
+- Use options or option groups, not both.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+Use NewStaticSelect rather than constructing this type directly.
+
+```go
+type StaticSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### StaticSelectBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *StaticSelectBuilder) ActionID(value string) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.Options
+
+Options adds selectable options in display order. Slack allows at most 100 items. Each call
+appends to any values already added.
+
+```go
+func (b *StaticSelectBuilder) Options(values ...*OptionBuilder) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.OptionGroups
+
+OptionGroups adds labelled groups of options in display order. Cannot be combined with
+ungrouped options. Slack allows at most 100 items. Each call appends to any values already
+added.
+
+```go
+func (b *StaticSelectBuilder) OptionGroups(values ...*OptionGroupBuilder) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.InitialOption
+
+InitialOption sets the option selected when the element loads. It must match an option in the
+element.
+
+```go
+func (b *StaticSelectBuilder) InitialOption(value *OptionBuilder) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *StaticSelectBuilder) Confirm(value *ConfirmationBuilder) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *StaticSelectBuilder) FocusOnLoad(value bool) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+a text object instead.
+
+```go
+func (b *StaticSelectBuilder) Placeholder(value string) *StaticSelectBuilder
+```
+
+#### StaticSelectBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *StaticSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *StaticSelectBuilder
+```
+
+Every `StaticSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewTimePicker
+
+NewTimePicker creates a time-of-day picker.
+
+```go
+func NewTimePicker() *TimePickerBuilder
+```
+
+### TimePickerBuilder
+
+TimePickerBuilder is the concrete fluent builder returned by NewTimePicker.
+
+A time-of-day picker.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element).
+
+Use NewTimePicker rather than constructing this type directly.
+
+```go
+type TimePickerBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### TimePickerBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *TimePickerBuilder) ActionID(value string) *TimePickerBuilder
+```
+
+#### TimePickerBuilder.InitialTime
+
+InitialTime sets the initially selected time, formatted as HH:mm in 24-hour time.
+
+```go
+func (b *TimePickerBuilder) InitialTime(value string) *TimePickerBuilder
+```
+
+#### TimePickerBuilder.Timezone
+
+Timezone sets the IANA time zone used to display the time, such as Australia/Brisbane.
+
+```go
+func (b *TimePickerBuilder) Timezone(value string) *TimePickerBuilder
+```
+
+#### TimePickerBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *TimePickerBuilder) Confirm(value *ConfirmationBuilder) *TimePickerBuilder
+```
+
+#### TimePickerBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *TimePickerBuilder) FocusOnLoad(value bool) *TimePickerBuilder
+```
+
+#### TimePickerBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+plain_text text object; use PlaceholderObject to pass a text object instead.
+
+```go
+func (b *TimePickerBuilder) Placeholder(value string) *TimePickerBuilder
+```
+
+#### TimePickerBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *TimePickerBuilder) PlaceholderObject(value *PlainTextBuilder) *TimePickerBuilder
+```
+
+Every `TimePickerBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewURLInput
+
+NewURLInput creates a URL input.
+
+```go
+func NewURLInput() *URLInputBuilder
+```
+
+### URLInputBuilder
+
+URLInputBuilder is the concrete fluent builder returned by NewURLInput.
+
+A single-line input that accepts a URL.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/url-input-element).
+
+Use NewURLInput rather than constructing this type directly.
+
+```go
+type URLInputBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### URLInputBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *URLInputBuilder) ActionID(value string) *URLInputBuilder
+```
+
+#### URLInputBuilder.InitialValue
+
+InitialValue sets the value present when the input loads.
+
+```go
+func (b *URLInputBuilder) InitialValue(value string) *URLInputBuilder
+```
+
+#### URLInputBuilder.DispatchActionConfig
+
+DispatchActionConfig sets which user interactions send a block_actions payload.
+
+```go
+func (b *URLInputBuilder) DispatchActionConfig(value *DispatchActionConfigurationBuilder) *URLInputBuilder
+```
+
+#### URLInputBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *URLInputBuilder) FocusOnLoad(value bool) *URLInputBuilder
+```
+
+#### URLInputBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. The string is sent as a
+plain_text text object; use PlaceholderObject to pass a text object instead.
+
+```go
+func (b *URLInputBuilder) Placeholder(value string) *URLInputBuilder
+```
+
+#### URLInputBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *URLInputBuilder) PlaceholderObject(value *PlainTextBuilder) *URLInputBuilder
+```
+
+Every `URLInputBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewURLSource
+
+NewURLSource creates a source link for a task card.
+
+```go
+func NewURLSource() *URLSourceBuilder
+```
+
+### URLSourceBuilder
+
+URLSourceBuilder is the concrete fluent builder returned by NewURLSource.
+
+A linked source cited by a task card.
+
+- Required: URL and Text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+
+Use NewURLSource rather than constructing this type directly.
+
+```go
+type URLSourceBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### URLSourceBuilder.URL
+
+URL sets the source URL. Required. Must be between 1 and 3000 characters.
+
+```go
+func (b *URLSourceBuilder) URL(value string) *URLSourceBuilder
+```
+
+#### URLSourceBuilder.Text
+
+Text sets the source link text. Required.
+
+```go
+func (b *URLSourceBuilder) Text(value string) *URLSourceBuilder
+```
+
+Every `URLSourceBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewUserMultiSelect
+
+NewUserMultiSelect creates a workspace-user multi-select.
+
+```go
+func NewUserMultiSelect() *UserMultiSelectBuilder
+```
+
+### UserMultiSelectBuilder
+
+UserMultiSelectBuilder is the concrete fluent builder returned by NewUserMultiSelect.
+
+A menu for selecting multiple workspace users.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+Use NewUserMultiSelect rather than constructing this type directly.
+
+```go
+type UserMultiSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### UserMultiSelectBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *UserMultiSelectBuilder) ActionID(value string) *UserMultiSelectBuilder
+```
+
+#### UserMultiSelectBuilder.InitialUsers
+
+InitialUsers adds user IDs that are selected when the menu loads. Each call appends to any
+values already added.
+
+```go
+func (b *UserMultiSelectBuilder) InitialUsers(values ...string) *UserMultiSelectBuilder
+```
+
+#### UserMultiSelectBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *UserMultiSelectBuilder) Confirm(value *ConfirmationBuilder) *UserMultiSelectBuilder
+```
+
+#### UserMultiSelectBuilder.MaxSelectedItems
+
+MaxSelectedItems sets the maximum number of items a user can select.
+
+```go
+func (b *UserMultiSelectBuilder) MaxSelectedItems(value int) *UserMultiSelectBuilder
+```
+
+#### UserMultiSelectBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *UserMultiSelectBuilder) FocusOnLoad(value bool) *UserMultiSelectBuilder
+```
+
+#### UserMultiSelectBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+a text object instead.
+
+```go
+func (b *UserMultiSelectBuilder) Placeholder(value string) *UserMultiSelectBuilder
+```
+
+#### UserMultiSelectBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *UserMultiSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *UserMultiSelectBuilder
+```
+
+Every `UserMultiSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewUserSelect
+
+NewUserSelect creates a workspace-user single-select.
+
+```go
+func NewUserSelect() *UserSelectBuilder
+```
+
+### UserSelectBuilder
+
+UserSelectBuilder is the concrete fluent builder returned by NewUserSelect.
+
+A menu for selecting one workspace user.
+
+- Required: ActionID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+Use NewUserSelect rather than constructing this type directly.
+
+```go
+type UserSelectBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### UserSelectBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Required. Slack allows at most
+255 characters.
+
+```go
+func (b *UserSelectBuilder) ActionID(value string) *UserSelectBuilder
+```
+
+#### UserSelectBuilder.InitialUser
+
+InitialUser sets the user ID selected when the menu loads.
+
+```go
+func (b *UserSelectBuilder) InitialUser(value string) *UserSelectBuilder
+```
+
+#### UserSelectBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *UserSelectBuilder) Confirm(value *ConfirmationBuilder) *UserSelectBuilder
+```
+
+#### UserSelectBuilder.FocusOnLoad
+
+FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
+view may do so.
+
+```go
+func (b *UserSelectBuilder) FocusOnLoad(value bool) *UserSelectBuilder
+```
+
+#### UserSelectBuilder.Placeholder
+
+Placeholder sets the placeholder text shown before a value is chosen. Slack allows at most
+150 characters. The string is sent as a plain_text text object; use PlaceholderObject to pass
+a text object instead.
+
+```go
+func (b *UserSelectBuilder) Placeholder(value string) *UserSelectBuilder
+```
+
+#### UserSelectBuilder.PlaceholderObject
+
+PlaceholderObject is Placeholder for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *UserSelectBuilder) PlaceholderObject(value *PlainTextBuilder) *UserSelectBuilder
+```
+
+Every `UserSelectBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewWorkflowButton
+
+NewWorkflowButton creates a button that launches a Slack workflow.
+
+```go
+func NewWorkflowButton() *WorkflowButtonBuilder
+```
+
+### WorkflowButtonBuilder
+
+WorkflowButtonBuilder is the concrete fluent builder returned by NewWorkflowButton.
+
+A button that starts a workflow through a link trigger.
+
+- Required: Text and Workflow.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element).
+
+Use NewWorkflowButton rather than constructing this type directly.
+
+```go
+type WorkflowButtonBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+#### WorkflowButtonBuilder.Text
+
+Text sets the button label. Required. The string is sent as a plain_text text object; use
+TextObject to pass a text object instead.
+
+```go
+func (b *WorkflowButtonBuilder) Text(value string) *WorkflowButtonBuilder
+```
+
+#### WorkflowButtonBuilder.TextObject
+
+TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *WorkflowButtonBuilder) TextObject(value *PlainTextBuilder) *WorkflowButtonBuilder
+```
+
+#### WorkflowButtonBuilder.Workflow
+
+Workflow sets the workflow started when the button is clicked. Required.
+
+```go
+func (b *WorkflowButtonBuilder) Workflow(value *WorkflowBuilder) *WorkflowButtonBuilder
+```
+
+#### WorkflowButtonBuilder.ActionID
+
+ActionID sets the identifier Slack returns in interaction payloads when a user acts on this
+element. It must be unique among the elements of its block. Slack allows at most 255
+characters.
+
+```go
+func (b *WorkflowButtonBuilder) ActionID(value string) *WorkflowButtonBuilder
+```
+
+#### WorkflowButtonBuilder.Confirm
+
+Confirm sets a confirmation dialog shown before the action is sent.
+
+```go
+func (b *WorkflowButtonBuilder) Confirm(value *ConfirmationBuilder) *WorkflowButtonBuilder
+```
+
+#### WorkflowButtonBuilder.Style
+
+Style sets the button's emphasis. Omit it for the default neutral style. Accepted values:
+"primary" and "danger".
+
+```go
+func (b *WorkflowButtonBuilder) Style(value ButtonStyle) *WorkflowButtonBuilder
+```
+
+#### WorkflowButtonBuilder.AccessibilityLabel
+
+AccessibilityLabel sets the label read by screen readers in place of the visible text.
+
+```go
+func (b *WorkflowButtonBuilder) AccessibilityLabel(value string) *WorkflowButtonBuilder
+```
+
+Every `WorkflowButtonBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.

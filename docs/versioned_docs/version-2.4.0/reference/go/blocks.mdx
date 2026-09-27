@@ -1,0 +1,1533 @@
+---
+sidebar_position: 1
+toc_max_heading_level: 2
+---
+
+# Blocks
+
+This page documents the public Go API for blocks. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.
+
+Every block builder implements `slack.Block`: pass it directly to `slack.MsgOptionBlocks` while keeping the channel and other message options in slack-go. Validation runs when slack-go marshals the block, before it sends the request.
+
+## NewActionsBlock
+
+NewActionsBlock creates a row of interactive elements.
+
+```go
+func NewActionsBlock() *ActionsBlockBuilder
+```
+
+### ActionsBlockBuilder
+
+ActionsBlockBuilder is the concrete fluent builder returned by NewActionsBlock.
+
+A block that holds interactive elements such as buttons and menus.
+
+- Required: Elements.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/actions-block).
+
+Use NewActionsBlock rather than constructing this type directly.
+
+```go
+type ActionsBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### ActionsBlockBuilder.Elements
+
+Elements adds interactive elements in display order. Required. Slack allows at most 25 items.
+Each call appends to any values already added.
+
+```go
+func (b *ActionsBlockBuilder) Elements(values ...Element) *ActionsBlockBuilder
+```
+
+#### ActionsBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *ActionsBlockBuilder) BlockID(value string) *ActionsBlockBuilder
+```
+
+Every `ActionsBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewAlertBlock
+
+NewAlertBlock creates a severity-labelled notice for a modal.
+
+```go
+func NewAlertBlock() *AlertBlockBuilder
+```
+
+### AlertBlockBuilder
+
+AlertBlockBuilder is the concrete fluent builder returned by NewAlertBlock.
+
+A severity-labelled alert, available in modals.
+
+- Required: Text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/alert-block).
+
+Use NewAlertBlock rather than constructing this type directly.
+
+```go
+type AlertBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### AlertBlockBuilder.Text
+
+Text sets the alert message. Required. Slack allows at most 200 characters. The string is
+sent as a mrkdwn text object; use TextObject to pass a text object instead.
+
+```go
+func (b *AlertBlockBuilder) Text(value string) *AlertBlockBuilder
+```
+
+#### AlertBlockBuilder.TextObject
+
+TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *AlertBlockBuilder) TextObject(value TextObject) *AlertBlockBuilder
+```
+
+#### AlertBlockBuilder.Level
+
+Level sets the alert severity, which controls its color and icon. Accepted values: "default",
+"info", "warning", "error", and "success".
+
+```go
+func (b *AlertBlockBuilder) Level(value AlertLevel) *AlertBlockBuilder
+```
+
+#### AlertBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *AlertBlockBuilder) BlockID(value string) *AlertBlockBuilder
+```
+
+Every `AlertBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewCardBlock
+
+NewCardBlock creates a compact card with text, imagery, and actions.
+
+```go
+func NewCardBlock() *CardBlockBuilder
+```
+
+### CardBlockBuilder
+
+CardBlockBuilder is the concrete fluent builder returned by NewCardBlock.
+
+A compact card with an image, text, and up to three buttons.
+
+- Provide at least one of a hero image, title, actions, or body.
+- An image icon and a Slack icon cannot be combined.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+
+Use NewCardBlock rather than constructing this type directly.
+
+```go
+type CardBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### CardBlockBuilder.HeroImage
+
+HeroImage sets the image displayed prominently at the top of the card.
+
+```go
+func (b *CardBlockBuilder) HeroImage(value *ImageElementBuilder) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.Icon
+
+Icon sets the image displayed beside the title.
+
+```go
+func (b *CardBlockBuilder) Icon(value *ImageElementBuilder) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.Title
+
+Title sets the card title. Slack allows at most 150 characters. The string is sent as a
+mrkdwn text object; use TitleObject to pass a text object instead.
+
+```go
+func (b *CardBlockBuilder) Title(value string) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.TitleObject
+
+TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *CardBlockBuilder) TitleObject(value TextObject) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.Subtitle
+
+Subtitle sets the supporting text shown below the title. Slack allows at most 150 characters.
+The string is sent as a mrkdwn text object; use SubtitleObject to pass a text object instead.
+
+```go
+func (b *CardBlockBuilder) Subtitle(value string) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.SubtitleObject
+
+SubtitleObject is Subtitle for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *CardBlockBuilder) SubtitleObject(value TextObject) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.Body
+
+Body sets the main body text of the card. Slack allows at most 200 characters. The string is
+sent as a mrkdwn text object; use BodyObject to pass a text object instead.
+
+```go
+func (b *CardBlockBuilder) Body(value string) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.BodyObject
+
+BodyObject is Body for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *CardBlockBuilder) BodyObject(value TextObject) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.Actions
+
+Actions adds buttons displayed at the bottom of the card, in display order. Slack allows at
+most 3 items. Each call appends to any values already added.
+
+```go
+func (b *CardBlockBuilder) Actions(values ...*ButtonBuilder) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.SlackIcon
+
+SlackIcon sets a Slack-provided icon displayed beside the title. Cannot be combined with an
+image icon.
+
+```go
+func (b *CardBlockBuilder) SlackIcon(value *SlackIconBuilder) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.Subtext
+
+Subtext sets the small print shown at the bottom of the card. Slack allows at most 200
+characters. The string is sent as a mrkdwn text object; use SubtextObject to pass a text
+object instead.
+
+```go
+func (b *CardBlockBuilder) Subtext(value string) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.SubtextObject
+
+SubtextObject is Subtext for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *CardBlockBuilder) SubtextObject(value TextObject) *CardBlockBuilder
+```
+
+#### CardBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *CardBlockBuilder) BlockID(value string) *CardBlockBuilder
+```
+
+Every `CardBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewCarouselBlock
+
+NewCarouselBlock creates a horizontally scrolling collection of cards.
+
+```go
+func NewCarouselBlock() *CarouselBlockBuilder
+```
+
+### CarouselBlockBuilder
+
+CarouselBlockBuilder is the concrete fluent builder returned by NewCarouselBlock.
+
+A horizontally scrolling set of cards, available in messages and App Home.
+
+- Required: Elements.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/carousel-block).
+
+Use NewCarouselBlock rather than constructing this type directly.
+
+```go
+type CarouselBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### CarouselBlockBuilder.Elements
+
+Elements adds the cards in display order. Required. Must contain between 1 and 10 items. Each
+call appends to any values already added.
+
+```go
+func (b *CarouselBlockBuilder) Elements(values ...*CardBlockBuilder) *CarouselBlockBuilder
+```
+
+#### CarouselBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *CarouselBlockBuilder) BlockID(value string) *CarouselBlockBuilder
+```
+
+Every `CarouselBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewContainerBlock
+
+NewContainerBlock creates a titled group of child blocks.
+
+```go
+func NewContainerBlock() *ContainerBlockBuilder
+```
+
+### ContainerBlockBuilder
+
+ContainerBlockBuilder is the concrete fluent builder returned by NewContainerBlock.
+
+A titled group of blocks that can optionally collapse.
+
+- Required: ChildBlocks.
+- Provide a title or a rich text title.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/container-block).
+
+Use NewContainerBlock rather than constructing this type directly.
+
+```go
+type ContainerBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### ContainerBlockBuilder.ChildBlocks
+
+ChildBlocks adds the blocks grouped inside the container, in display order. Required. Slack
+allows at most 10 items. Each call appends to any values already added.
+
+```go
+func (b *ContainerBlockBuilder) ChildBlocks(values ...Block) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.Title
+
+Title sets the container title. Provide either a title or a rich text title. Slack allows at
+most 150 characters. The string is sent as a plain_text text object; use TitleObject to pass
+a text object instead.
+
+```go
+func (b *ContainerBlockBuilder) Title(value string) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.TitleObject
+
+TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ContainerBlockBuilder) TitleObject(value *PlainTextBuilder) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.RichTextTitle
+
+RichTextTitle sets a rich text block used as the title in place of a plain-text title.
+
+```go
+func (b *ContainerBlockBuilder) RichTextTitle(value *RichTextBlockBuilder) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.Subtitle
+
+Subtitle sets the supporting text shown below the title. Slack allows at most 150 characters.
+The string is sent as a mrkdwn text object; use SubtitleObject to pass a text object instead.
+
+```go
+func (b *ContainerBlockBuilder) Subtitle(value string) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.SubtitleObject
+
+SubtitleObject is Subtitle for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ContainerBlockBuilder) SubtitleObject(value TextObject) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.Width
+
+Width sets the horizontal width of the container. Accepted values: "narrow", "standard",
+"wide", and "full".
+
+```go
+func (b *ContainerBlockBuilder) Width(value ContainerWidth) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.Icon
+
+Icon sets the image displayed beside the title.
+
+```go
+func (b *ContainerBlockBuilder) Icon(value *ImageElementBuilder) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.IsCollapsible
+
+IsCollapsible sets whether users can collapse and expand the container.
+
+```go
+func (b *ContainerBlockBuilder) IsCollapsible(value bool) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.DefaultCollapsed
+
+DefaultCollapsed sets whether a collapsible container starts collapsed. Requires the
+container to be collapsible.
+
+```go
+func (b *ContainerBlockBuilder) DefaultCollapsed(value bool) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.HasHeaderDivider
+
+HasHeaderDivider sets whether Slack draws a divider below the container header. Only valid
+for non-collapsible containers.
+
+```go
+func (b *ContainerBlockBuilder) HasHeaderDivider(value bool) *ContainerBlockBuilder
+```
+
+#### ContainerBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *ContainerBlockBuilder) BlockID(value string) *ContainerBlockBuilder
+```
+
+Every `ContainerBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewContextActionsBlock
+
+NewContextActionsBlock creates contextual feedback or icon controls.
+
+```go
+func NewContextActionsBlock() *ContextActionsBlockBuilder
+```
+
+### ContextActionsBlockBuilder
+
+ContextActionsBlockBuilder is the concrete fluent builder returned by NewContextActionsBlock.
+
+A row of feedback or icon buttons, usually shown below AI-generated content.
+
+- Required: Elements.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/context-actions-block).
+
+Use NewContextActionsBlock rather than constructing this type directly.
+
+```go
+type ContextActionsBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### ContextActionsBlockBuilder.Elements
+
+Elements adds feedback buttons or icon buttons in display order. Required. Slack allows at
+most 5 items. Each call appends to any values already added.
+
+```go
+func (b *ContextActionsBlockBuilder) Elements(values ...ContextActionsElement) *ContextActionsBlockBuilder
+```
+
+#### ContextActionsBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *ContextActionsBlockBuilder) BlockID(value string) *ContextActionsBlockBuilder
+```
+
+Every `ContextActionsBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewContextBlock
+
+NewContextBlock creates compact contextual text and images.
+
+```go
+func NewContextBlock() *ContextBlockBuilder
+```
+
+### ContextBlockBuilder
+
+ContextBlockBuilder is the concrete fluent builder returned by NewContextBlock.
+
+A block of small, secondary images and text.
+
+- Required: Elements.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/context-block).
+
+Use NewContextBlock rather than constructing this type directly.
+
+```go
+type ContextBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### ContextBlockBuilder.Elements
+
+Elements adds images and text in display order. Required. Slack allows at most 10 items. Each
+call appends to any values already added.
+
+```go
+func (b *ContextBlockBuilder) Elements(values ...ContextElement) *ContextBlockBuilder
+```
+
+#### ContextBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *ContextBlockBuilder) BlockID(value string) *ContextBlockBuilder
+```
+
+Every `ContextBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDataTableBlock
+
+NewDataTableBlock creates a sortable, paginated data table.
+
+```go
+func NewDataTableBlock() *DataTableBlockBuilder
+```
+
+### DataTableBlockBuilder
+
+DataTableBlockBuilder is the concrete fluent builder returned by NewDataTableBlock.
+
+A sortable, paginated table of raw text, numbers, and rich text.
+
+- Required: Rows and Caption.
+- The first row is the header row and cannot contain rich text.
+- Every row must have the same number of cells, and all cell text together is limited to 20,000 characters.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+
+Use NewDataTableBlock rather than constructing this type directly.
+
+```go
+type DataTableBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### DataTableBlockBuilder.Rows
+
+Rows adds complete table rows in display order. Every row must have the same number of cells.
+Required. Must contain between 2 and 201 items. Each call appends to any values already
+added.
+
+```go
+func (b *DataTableBlockBuilder) Rows(rows ...[]DataTableCell) *DataTableBlockBuilder
+```
+
+#### DataTableBlockBuilder.Caption
+
+Caption sets the caption that describes the table's contents. Required.
+
+```go
+func (b *DataTableBlockBuilder) Caption(value string) *DataTableBlockBuilder
+```
+
+#### DataTableBlockBuilder.PageSize
+
+PageSize sets how many rows Slack shows per page. Must be between 1 and 100.
+
+```go
+func (b *DataTableBlockBuilder) PageSize(value int) *DataTableBlockBuilder
+```
+
+#### DataTableBlockBuilder.RowHeaderColumnIndex
+
+RowHeaderColumnIndex sets the zero-based index of the column whose cells act as row headers.
+
+```go
+func (b *DataTableBlockBuilder) RowHeaderColumnIndex(value int) *DataTableBlockBuilder
+```
+
+#### DataTableBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *DataTableBlockBuilder) BlockID(value string) *DataTableBlockBuilder
+```
+
+Every `DataTableBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDataVisualizationBlock
+
+NewDataVisualizationBlock creates a Slack-rendered chart block.
+
+```go
+func NewDataVisualizationBlock() *DataVisualizationBlockBuilder
+```
+
+### DataVisualizationBlockBuilder
+
+DataVisualizationBlockBuilder is the concrete fluent builder returned by NewDataVisualizationBlock.
+
+A titled pie, bar, area, or line chart.
+
+- Required: Title and Chart.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Use NewDataVisualizationBlock rather than constructing this type directly.
+
+```go
+type DataVisualizationBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### DataVisualizationBlockBuilder.Title
+
+Title sets the chart title. Required. Slack allows at most 50 characters.
+
+```go
+func (b *DataVisualizationBlockBuilder) Title(value string) *DataVisualizationBlockBuilder
+```
+
+#### DataVisualizationBlockBuilder.Chart
+
+Chart sets the chart to display. Required.
+
+```go
+func (b *DataVisualizationBlockBuilder) Chart(value Chart) *DataVisualizationBlockBuilder
+```
+
+#### DataVisualizationBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *DataVisualizationBlockBuilder) BlockID(value string) *DataVisualizationBlockBuilder
+```
+
+Every `DataVisualizationBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewDividerBlock
+
+NewDividerBlock creates a visual divider block.
+
+```go
+func NewDividerBlock() *DividerBlockBuilder
+```
+
+### DividerBlockBuilder
+
+DividerBlockBuilder is the concrete fluent builder returned by NewDividerBlock.
+
+A horizontal rule that separates blocks.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/divider-block).
+
+Use NewDividerBlock rather than constructing this type directly.
+
+```go
+type DividerBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### DividerBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *DividerBlockBuilder) BlockID(value string) *DividerBlockBuilder
+```
+
+Every `DividerBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewFileBlock
+
+NewFileBlock creates a block for a Slack remote file.
+
+```go
+func NewFileBlock() *FileBlockBuilder
+```
+
+### FileBlockBuilder
+
+FileBlockBuilder is the concrete fluent builder returned by NewFileBlock.
+
+A remote file previously added with the files.remote API.
+
+- Required: ExternalID.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/file-block).
+
+Use NewFileBlock rather than constructing this type directly.
+
+```go
+type FileBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### FileBlockBuilder.ExternalID
+
+ExternalID sets the external identifier of a remote file previously added with the
+files.remote API. Required.
+
+```go
+func (b *FileBlockBuilder) ExternalID(value string) *FileBlockBuilder
+```
+
+#### FileBlockBuilder.Source
+
+Source sets the file source. Slack currently supports only remote files.
+
+```go
+func (b *FileBlockBuilder) Source(value string) *FileBlockBuilder
+```
+
+#### FileBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *FileBlockBuilder) BlockID(value string) *FileBlockBuilder
+```
+
+Every `FileBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewHeaderBlock
+
+NewHeaderBlock creates a prominent plain-text heading.
+
+```go
+func NewHeaderBlock() *HeaderBlockBuilder
+```
+
+### HeaderBlockBuilder
+
+HeaderBlockBuilder is the concrete fluent builder returned by NewHeaderBlock.
+
+Large, bold plain text that introduces a group of blocks.
+
+- Required: Text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/header-block).
+
+Use NewHeaderBlock rather than constructing this type directly.
+
+```go
+type HeaderBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### HeaderBlockBuilder.Text
+
+Text sets the header text, shown in a larger bold font. Required. Slack allows at most 150
+characters. The string is sent as a plain_text text object; use TextObject to pass a text
+object instead.
+
+```go
+func (b *HeaderBlockBuilder) Text(value string) *HeaderBlockBuilder
+```
+
+#### HeaderBlockBuilder.TextObject
+
+TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *HeaderBlockBuilder) TextObject(value *PlainTextBuilder) *HeaderBlockBuilder
+```
+
+#### HeaderBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *HeaderBlockBuilder) BlockID(value string) *HeaderBlockBuilder
+```
+
+Every `HeaderBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewImageBlock
+
+NewImageBlock creates an image block with optional title text.
+
+```go
+func NewImageBlock() *ImageBlockBuilder
+```
+
+### ImageBlockBuilder
+
+ImageBlockBuilder is the concrete fluent builder returned by NewImageBlock.
+
+A standalone image with alternative text and an optional title.
+
+- Required: ImageURL and AltText.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/image-block).
+
+Use NewImageBlock rather than constructing this type directly.
+
+```go
+type ImageBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### ImageBlockBuilder.ImageURL
+
+ImageURL sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+Required. Slack allows at most 3000 characters.
+
+```go
+func (b *ImageBlockBuilder) ImageURL(value string) *ImageBlockBuilder
+```
+
+#### ImageBlockBuilder.AltText
+
+AltText sets a plain-text summary of the image or video for assistive technology. Required.
+Slack allows at most 2000 characters.
+
+```go
+func (b *ImageBlockBuilder) AltText(value string) *ImageBlockBuilder
+```
+
+#### ImageBlockBuilder.Title
+
+Title sets the title shown above the image. The string is sent as a plain_text text object;
+use TitleObject to pass a text object instead.
+
+```go
+func (b *ImageBlockBuilder) Title(value string) *ImageBlockBuilder
+```
+
+#### ImageBlockBuilder.TitleObject
+
+TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *ImageBlockBuilder) TitleObject(value *PlainTextBuilder) *ImageBlockBuilder
+```
+
+#### ImageBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *ImageBlockBuilder) BlockID(value string) *ImageBlockBuilder
+```
+
+Every `ImageBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewInputBlock
+
+NewInputBlock creates a labelled form control.
+
+```go
+func NewInputBlock() *InputBlockBuilder
+```
+
+### InputBlockBuilder
+
+InputBlockBuilder is the concrete fluent builder returned by NewInputBlock.
+
+A labelled input that collects a value in a modal, App Home, or message.
+
+- Required: Label and Element.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/input-block).
+
+Use NewInputBlock rather than constructing this type directly.
+
+```go
+type InputBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### InputBlockBuilder.Label
+
+Label sets the label shown above the input. Required. Slack allows at most 2000 characters.
+The string is sent as a plain_text text object; use LabelObject to pass a text object
+instead.
+
+```go
+func (b *InputBlockBuilder) Label(value string) *InputBlockBuilder
+```
+
+#### InputBlockBuilder.LabelObject
+
+LabelObject is Label for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *InputBlockBuilder) LabelObject(value *PlainTextBuilder) *InputBlockBuilder
+```
+
+#### InputBlockBuilder.Element
+
+Element sets the input element that collects the user's value. Required.
+
+```go
+func (b *InputBlockBuilder) Element(value InputElement) *InputBlockBuilder
+```
+
+#### InputBlockBuilder.DispatchAction
+
+DispatchAction sets whether changing the element sends a block_actions payload immediately.
+
+```go
+func (b *InputBlockBuilder) DispatchAction(value bool) *InputBlockBuilder
+```
+
+#### InputBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *InputBlockBuilder) BlockID(value string) *InputBlockBuilder
+```
+
+#### InputBlockBuilder.Hint
+
+Hint sets helper text shown below the input. Slack allows at most 2000 characters. The string
+is sent as a plain_text text object; use HintObject to pass a text object instead.
+
+```go
+func (b *InputBlockBuilder) Hint(value string) *InputBlockBuilder
+```
+
+#### InputBlockBuilder.HintObject
+
+HintObject is Hint for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *InputBlockBuilder) HintObject(value *PlainTextBuilder) *InputBlockBuilder
+```
+
+#### InputBlockBuilder.Optional
+
+Optional sets whether the modal can be submitted when this input is empty.
+
+```go
+func (b *InputBlockBuilder) Optional(value bool) *InputBlockBuilder
+```
+
+Every `InputBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewMarkdownBlock
+
+NewMarkdownBlock creates a block rendered from GitHub-flavoured Markdown.
+
+```go
+func NewMarkdownBlock() *MarkdownBlockBuilder
+```
+
+### MarkdownBlockBuilder
+
+MarkdownBlockBuilder is the concrete fluent builder returned by NewMarkdownBlock.
+
+Standard markdown rendered by Slack, intended for AI-generated content.
+
+- Required: Text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/markdown-block).
+
+Use NewMarkdownBlock rather than constructing this type directly.
+
+```go
+type MarkdownBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### MarkdownBlockBuilder.Text
+
+Text sets standard markdown content, which Slack renders directly. Required. Must be between
+1 and 12000 characters.
+
+```go
+func (b *MarkdownBlockBuilder) Text(value string) *MarkdownBlockBuilder
+```
+
+#### MarkdownBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *MarkdownBlockBuilder) BlockID(value string) *MarkdownBlockBuilder
+```
+
+Every `MarkdownBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewPlanBlock
+
+NewPlanBlock creates a titled sequence of tasks.
+
+```go
+func NewPlanBlock() *PlanBlockBuilder
+```
+
+### PlanBlockBuilder
+
+PlanBlockBuilder is the concrete fluent builder returned by NewPlanBlock.
+
+A titled sequence of task cards.
+
+- Required: Title.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/plan-block).
+
+Use NewPlanBlock rather than constructing this type directly.
+
+```go
+type PlanBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### PlanBlockBuilder.Title
+
+Title sets the plan title. Required.
+
+```go
+func (b *PlanBlockBuilder) Title(value string) *PlanBlockBuilder
+```
+
+#### PlanBlockBuilder.Tasks
+
+Tasks adds task cards in display order. Each call appends to any values already added.
+
+```go
+func (b *PlanBlockBuilder) Tasks(values ...*TaskCardBlockBuilder) *PlanBlockBuilder
+```
+
+#### PlanBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *PlanBlockBuilder) BlockID(value string) *PlanBlockBuilder
+```
+
+Every `PlanBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewRichTextBlock
+
+NewRichTextBlock creates a rich-text layout block.
+
+```go
+func NewRichTextBlock() *RichTextBlockBuilder
+```
+
+### RichTextBlockBuilder
+
+RichTextBlockBuilder is the concrete fluent builder returned by NewRichTextBlock.
+
+Formatted text built from sections, lists, preformatted blocks, and quotes.
+
+- Required: Elements.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Use NewRichTextBlock rather than constructing this type directly.
+
+```go
+type RichTextBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### RichTextBlockBuilder.Elements
+
+Elements adds sections, lists, preformatted blocks, and quotes in display order. Required.
+Each call appends to any values already added.
+
+```go
+func (b *RichTextBlockBuilder) Elements(values ...RichTextBlockElement) *RichTextBlockBuilder
+```
+
+#### RichTextBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *RichTextBlockBuilder) BlockID(value string) *RichTextBlockBuilder
+```
+
+Every `RichTextBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewSectionBlock
+
+NewSectionBlock creates a section block. String text and fields are coerced
+to Slack mrkdwn objects.
+
+```go
+func NewSectionBlock() *SectionBlockBuilder
+```
+
+### SectionBlockBuilder
+
+SectionBlockBuilder is the concrete fluent builder returned by NewSectionBlock.
+
+Text, a grid of fields, or both, with an optional accessory element.
+
+- Provide text, fields, or both.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/section-block).
+
+Use NewSectionBlock rather than constructing this type directly.
+
+```go
+type SectionBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### SectionBlockBuilder.Text
+
+Text sets the main text of the section. Slack allows at most 3000 characters. The string is
+sent as a mrkdwn text object; use TextObject to pass a text object instead.
+
+```go
+func (b *SectionBlockBuilder) Text(value string) *SectionBlockBuilder
+```
+
+#### SectionBlockBuilder.TextObject
+
+TextObject is Text for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *SectionBlockBuilder) TextObject(value TextObject) *SectionBlockBuilder
+```
+
+#### SectionBlockBuilder.Fields
+
+Fields adds section fields, shown in a two-column grid, in display order. Slack allows at
+most 10 items, each at most 2000 characters. Strings are sent as mrkdwn text objects; use
+FieldObjects to pass text objects. Each call appends to any values already added.
+
+```go
+func (b *SectionBlockBuilder) Fields(values ...string) *SectionBlockBuilder
+```
+
+#### SectionBlockBuilder.FieldObjects
+
+FieldObjects is Fields for text objects. Each call appends to any values already added.
+
+```go
+func (b *SectionBlockBuilder) FieldObjects(values ...TextObject) *SectionBlockBuilder
+```
+
+#### SectionBlockBuilder.Accessory
+
+Accessory sets the element displayed beside the section text.
+
+```go
+func (b *SectionBlockBuilder) Accessory(value Element) *SectionBlockBuilder
+```
+
+#### SectionBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *SectionBlockBuilder) BlockID(value string) *SectionBlockBuilder
+```
+
+Every `SectionBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewTableBlock
+
+NewTableBlock creates a table from raw-text or rich-text cells.
+
+```go
+func NewTableBlock() *TableBlockBuilder
+```
+
+### TableBlockBuilder
+
+TableBlockBuilder is the concrete fluent builder returned by NewTableBlock.
+
+A simple table of raw text and rich text cells.
+
+- Required: Rows.
+- Every row must have the same number of cells.
+- Column settings need one entry for every column.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+Use NewTableBlock rather than constructing this type directly.
+
+```go
+type TableBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### TableBlockBuilder.Rows
+
+Rows adds complete table rows in display order. Every row must have the same number of cells.
+Required. Each call appends to any values already added.
+
+```go
+func (b *TableBlockBuilder) Rows(rows ...[]TableCell) *TableBlockBuilder
+```
+
+#### TableBlockBuilder.ColumnSettings
+
+ColumnSettings adds per-column settings in column order. Provide one entry for every column.
+Each call appends to any values already added.
+
+```go
+func (b *TableBlockBuilder) ColumnSettings(values ...*ColumnSettingsBuilder) *TableBlockBuilder
+```
+
+#### TableBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *TableBlockBuilder) BlockID(value string) *TableBlockBuilder
+```
+
+Every `TableBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewTaskCardBlock
+
+NewTaskCardBlock creates one task in a plan.
+
+```go
+func NewTaskCardBlock() *TaskCardBlockBuilder
+```
+
+### TaskCardBlockBuilder
+
+TaskCardBlockBuilder is the concrete fluent builder returned by NewTaskCardBlock.
+
+One task with its status, details, output, and sources.
+
+- Required: TaskID and Title.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+
+Use NewTaskCardBlock rather than constructing this type directly.
+
+```go
+type TaskCardBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### TaskCardBlockBuilder.TaskID
+
+TaskID sets the identifier of the task. Required.
+
+```go
+func (b *TaskCardBlockBuilder) TaskID(value string) *TaskCardBlockBuilder
+```
+
+#### TaskCardBlockBuilder.Title
+
+Title sets the task title. Required.
+
+```go
+func (b *TaskCardBlockBuilder) Title(value string) *TaskCardBlockBuilder
+```
+
+#### TaskCardBlockBuilder.Details
+
+Details sets a rich text description of the task.
+
+```go
+func (b *TaskCardBlockBuilder) Details(value *RichTextBlockBuilder) *TaskCardBlockBuilder
+```
+
+#### TaskCardBlockBuilder.Output
+
+Output sets rich text describing the task's output.
+
+```go
+func (b *TaskCardBlockBuilder) Output(value *RichTextBlockBuilder) *TaskCardBlockBuilder
+```
+
+#### TaskCardBlockBuilder.Sources
+
+Sources adds links to the sources the task used, in display order. Each call appends to any
+values already added.
+
+```go
+func (b *TaskCardBlockBuilder) Sources(values ...*URLSourceBuilder) *TaskCardBlockBuilder
+```
+
+#### TaskCardBlockBuilder.Status
+
+Status sets the task's current state. Accepted values: "pending", "in_progress", "complete",
+and "error".
+
+```go
+func (b *TaskCardBlockBuilder) Status(value TaskStatus) *TaskCardBlockBuilder
+```
+
+#### TaskCardBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *TaskCardBlockBuilder) BlockID(value string) *TaskCardBlockBuilder
+```
+
+Every `TaskCardBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
+
+## NewVideoBlock
+
+NewVideoBlock creates an embedded video block.
+
+```go
+func NewVideoBlock() *VideoBlockBuilder
+```
+
+### VideoBlockBuilder
+
+VideoBlockBuilder is the concrete fluent builder returned by NewVideoBlock.
+
+An embedded video player.
+
+- Required: AltText, ThumbnailURL, Title, and VideoURL.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/video-block).
+
+Use NewVideoBlock rather than constructing this type directly.
+
+```go
+type VideoBlockBuilder struct { /* contains filtered or unexported fields */ }
+```
+
+Its fluent methods return the same concrete builder, so invalid fields are rejected at compile time. Parameters use the interfaces and enums on [Interfaces And Enums](/reference/go/types), so values of the wrong kind are rejected at compile time too.
+
+It also implements `slack.Block`, including `BlockType()` and `ID()`, and can be passed directly to `slack.MsgOptionBlocks`.
+
+#### VideoBlockBuilder.AltText
+
+AltText sets a plain-text summary of the image or video for assistive technology. Required.
+Must be between 1 and 200 characters.
+
+```go
+func (b *VideoBlockBuilder) AltText(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.ThumbnailURL
+
+ThumbnailURL sets the URL of the image shown before the video plays. Required.
+
+```go
+func (b *VideoBlockBuilder) ThumbnailURL(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.Title
+
+Title sets the video title. Required. Slack allows at most 200 characters. The string is sent
+as a plain_text text object; use TitleObject to pass a text object instead.
+
+```go
+func (b *VideoBlockBuilder) Title(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.TitleObject
+
+TitleObject is Title for a text object, such as NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *VideoBlockBuilder) TitleObject(value *PlainTextBuilder) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.VideoURL
+
+VideoURL sets the embeddable URL of the video. The domain must be listed in the app's unfurl
+domains. Required.
+
+```go
+func (b *VideoBlockBuilder) VideoURL(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.BlockID
+
+BlockID sets a unique identifier for this block. Slack returns it in interaction payloads, so
+use a stable value when you need to find the block again. Slack allows at most 255
+characters.
+
+```go
+func (b *VideoBlockBuilder) BlockID(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.AuthorName
+
+AuthorName sets the name of the video's author. Slack allows at most 50 characters.
+
+```go
+func (b *VideoBlockBuilder) AuthorName(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.Description
+
+Description sets the video description. Slack allows at most 200 characters. The string is
+sent as a plain_text text object; use DescriptionObject to pass a text object instead.
+
+```go
+func (b *VideoBlockBuilder) Description(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.DescriptionObject
+
+DescriptionObject is Description for a text object, such as
+NewPlainText().Text("...").Emoji(true).
+
+```go
+func (b *VideoBlockBuilder) DescriptionObject(value *PlainTextBuilder) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.ProviderIconURL
+
+ProviderIconURL sets the URL of the video provider's icon.
+
+```go
+func (b *VideoBlockBuilder) ProviderIconURL(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.ProviderName
+
+ProviderName sets the name of the video provider, such as YouTube. Slack allows at most 50
+characters.
+
+```go
+func (b *VideoBlockBuilder) ProviderName(value string) *VideoBlockBuilder
+```
+
+#### VideoBlockBuilder.TitleURL
+
+TitleURL sets the HTTPS URL opened when the title is clicked.
+
+```go
+func (b *VideoBlockBuilder) TitleURL(value string) *VideoBlockBuilder
+```
+
+Every `VideoBlockBuilder` also provides `Build() (Object, error)`, `MustBuild() Object`, and JSON marshaling. `Set(field, value)` is available as an advanced raw wire-format escape hatch; it deliberately ends the typed fluent chain.
