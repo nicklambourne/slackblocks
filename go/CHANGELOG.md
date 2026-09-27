@@ -5,7 +5,7 @@ same version number as the Python, TypeScript, and Java packages.
 
 ## [Unreleased]
 
-## [2.5.0] — 2026-09-27
+## [2.5.0] — 2026-09-28
 
 ### Changed
 

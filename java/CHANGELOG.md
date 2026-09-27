@@ -5,7 +5,7 @@ in lockstep with the Python, TypeScript, and Go packages.
 
 ## [Unreleased]
 
-## [2.5.0] — 2026-09-27
+## [2.5.0] — 2026-09-28
 
 ### Changed
 

@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## 1.2.0 - 2026-09-27
+## 1.2.0 - 2026-09-28
 
 - Add `vocabulary.json`, the shared registry of Slack icon names and per-surface
   block types. Java generates its validation tables from it, and the Python,
