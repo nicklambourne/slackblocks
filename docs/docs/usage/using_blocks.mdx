@@ -42,7 +42,7 @@ For constructors, typed properties, and validation errors, see the [C# API refer
 
 <Ruby>
 
-For keyword constructors, immutable values, and validation errors, see the [Ruby API reference](../reference/ruby). Interactive controls are in [Elements](../reference/ruby/elements). The Ruby snippets below show minimal valid blocks; the shared JSON and screenshots show fuller examples.
+For keyword constructors, immutable values, and validation errors, see the [Ruby API reference](../reference/ruby). Interactive controls are in [Elements](../reference/ruby/elements). The Ruby snippets below produce the same payloads shown in the JSON tabs.
 
 </Ruby>
 </LanguageContent>
@@ -149,7 +149,14 @@ var block = new SectionBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = SectionBlock.new(text: "Hello *Ruby*!", block_id: "intro")
+block = SectionBlock.new(
+  text: MarkdownText.new(text: "This is a section block with a checkbox accessory."),
+  accessory: CheckboxesElement.new(
+    action_id: "checkboxes-action",
+    options: [Option.new(text: MarkdownText.new(text: "*Your Only Option*"), value: "option_one")]
+  ),
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -310,7 +317,27 @@ var block = new RichTextBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = RichTextBlock.new(elements: [RichTextSection.new(elements: [RichTextText.new(text: "Hello", style: RichTextStyle.new(bold: true))])])
+block = RichTextBlock.new(
+  elements: [
+    RichTextSection.new(
+      elements: [
+        RichTextText.new(
+          text: "You 'bout to witness hip-hop in its most purest\n",
+          style: RichTextStyle.new(bold: true)
+        ),
+        RichTextText.new(
+          text: "Most rawest form, flow almost flawless\n",
+          style: RichTextStyle.new(strike: true)
+        ),
+        RichTextText.new(
+          text: "Most hardest, most honest known artist\n",
+          style: RichTextStyle.new(italic: true)
+        )
+      ]
+    )
+  ],
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -429,7 +456,7 @@ var block = new HeaderBlock("This is a header block", blockId: "fake_block_id");
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = HeaderBlock.new(text: "Deployment complete")
+block = HeaderBlock.new(text: PlainText.new(text: "This is a header block"), block_id: "fake_block_id")
 puts block.to_json
 ```
 
@@ -530,7 +557,10 @@ var block = new MarkdownBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = MarkdownBlock.new(text: "**Deployment complete**")
+block = MarkdownBlock.new(
+  text: "**Hello!** Markdown blocks support _GitHub-flavored_ syntax.",
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -639,7 +669,12 @@ var block = new ImageBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = ImageBlock.new(image_url: "https://example.com/chart.png", alt_text: "A chart")
+block = ImageBlock.new(
+  image_url: "https://api.slack.com/img/blocks/bkb_template_images/beagle.png",
+  alt_text: "a beagle",
+  title: PlainText.new(text: "dog"),
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -756,7 +791,13 @@ var block = new InputBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = InputBlock.new(label: "Your name", element: PlainTextInputElement.new(action_id: "name"))
+block = InputBlock.new(
+  label: PlainText.new(text: "Label", emoji: true),
+  element: PlainTextInputElement.new(action_id: "action"),
+  block_id: "fake_block_id",
+  hint: PlainText.new(text: "Hint", emoji: true),
+  optional: true
+)
 puts block.to_json
 ```
 
@@ -853,7 +894,7 @@ var block = new DividerBlock(blockId: "fake_block_id");
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = DividerBlock.new
+block = DividerBlock.new(block_id: "fake_block_id")
 puts block.to_json
 ```
 
@@ -944,7 +985,7 @@ var block = new FileBlock("external_id", blockId: "fake_block_id");
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = FileBlock.new(external_id: "F12345678")
+block = FileBlock.new(external_id: "external_id", source: "remote", block_id: "fake_block_id")
 puts block.to_json
 ```
 
@@ -1043,7 +1084,7 @@ var block = new ContextBlock(elements: [new MarkdownText("Hello, world!")], bloc
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = ContextBlock.new(elements: [MarkdownText.new(text: "Updated just now")])
+block = ContextBlock.new(elements: [MarkdownText.new(text: "Hello, world!")], block_id: "fake_block_id")
 puts block.to_json
 ```
 
@@ -1185,7 +1226,31 @@ var block = new ActionsBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = ActionsBlock.new(elements: [ButtonElement.new(text: "Open", action_id: "open")])
+block = ActionsBlock.new(
+  elements: [
+    CheckboxesElement.new(
+      action_id: "actionId-0",
+      options: [
+        Option.new(
+          text: MarkdownText.new(text: "*a*"),
+          value: "a",
+          description: PlainText.new(text: "*a*")
+        ),
+        Option.new(
+          text: MarkdownText.new(text: "*b*"),
+          value: "b",
+          description: PlainText.new(text: "*b*")
+        ),
+        Option.new(
+          text: MarkdownText.new(text: "*c*"),
+          value: "c",
+          description: PlainText.new(text: "*c*")
+        )
+      ]
+    )
+  ],
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -1453,7 +1518,36 @@ var block = new TableBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = TableBlock.new(rows: [[RawText.new(text: "Name"), RawText.new(text: "Status")], [RawText.new(text: "Build"), RawText.new(text: "Passed")]])
+block = TableBlock.new(
+  rows: [
+    [
+      RichTextBlock.new(
+        elements: [
+          RichTextSection.new(
+            elements: [RichTextText.new(text: "Header 1", style: RichTextStyle.new(bold: true))]
+          )
+        ]
+      ),
+      RichTextBlock.new(
+        elements: [
+          RichTextSection.new(
+            elements: [RichTextText.new(text: "Header 2", style: RichTextStyle.new(bold: true))]
+          )
+        ]
+      )
+    ],
+    [
+      RawText.new(text: "Datum 1"),
+      RichTextBlock.new(
+        elements: [
+          RichTextSection.new(elements: [RichTextLink.new(url: "https://slack.com", text: "Datum 2")])
+        ]
+      )
+    ]
+  ],
+  column_settings: [ColumnSettings.new(align: :right, is_wrapped: true), ColumnSettings.new(align: :left)],
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -1643,7 +1737,15 @@ var block = new VideoBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = VideoBlock.new(alt_text: "Demo", thumbnail_url: "https://example.com/thumbnail.png", title: "Demo video", video_url: "https://example.com/video")
+block = VideoBlock.new(
+  alt_text: "Use the Events API to create a dynamic App Home",
+  thumbnail_url: "https://i.ytimg.com/vi/8876OZV_Yy0/hqdefault.jpg",
+  title: PlainText.new(text: "Use the Events API to create a dynamic App Home"),
+  video_url: "https://www.youtube.com/embed/8876OZV_Yy0?feature=oembed&autoplay=1",
+  block_id: "fake_block_id",
+  description: PlainText.new(text: "Slack sure is nifty!"),
+  title_url: "https://www.youtube.com/watch?v=8876OZV_Yy0"
+)
 puts block.to_json
 ```
 
@@ -1757,7 +1859,11 @@ var block = new AlertBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = AlertBlock.new(text: "Check the deployment", level: :warning)
+block = AlertBlock.new(
+  text: MarkdownText.new(text: "The deployment needs attention."),
+  level: :warning,
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -1871,7 +1977,13 @@ var block = new CardBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = CardBlock.new(title: "Release notes", body: "The release is ready")
+block = CardBlock.new(
+  title: MarkdownText.new(text: "Build complete"),
+  body: MarkdownText.new(text: "Version 2.1.0 is ready to deploy."),
+  actions: [ButtonElement.new(text: PlainText.new(text: "Open build"), action_id: "open_build")],
+  slack_icon: SlackIcon.new(name: "rocket"),
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -1998,7 +2110,13 @@ var block = new CarouselBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = CarouselBlock.new(elements: [CardBlock.new(title: "First card"), CardBlock.new(title: "Second card")])
+block = CarouselBlock.new(
+  elements: [
+    CardBlock.new(title: MarkdownText.new(text: "First result"), block_id: "card_1"),
+    CardBlock.new(title: MarkdownText.new(text: "Second result"), block_id: "card_2")
+  ],
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -2137,7 +2255,15 @@ var block = new ContainerBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = ContainerBlock.new(title: "Summary", child_blocks: [SectionBlock.new(text: "All checks passed")])
+block = ContainerBlock.new(
+  child_blocks: [SectionBlock.new(text: MarkdownText.new(text: "All systems operational."), block_id: "child_1")],
+  title: PlainText.new(text: "Deployment summary"),
+  width: :standard,
+  is_collapsible: false,
+  default_collapsed: false,
+  has_header_divider: true,
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -2271,7 +2397,16 @@ var block = new ContextActionsBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = ContextActionsBlock.new(elements: [FeedbackButtonsElement.new(action_id: "rate", positive_button: FeedbackButton.new(text: "Good", value: "good"), negative_button: FeedbackButton.new(text: "Bad", value: "bad"))])
+block = ContextActionsBlock.new(
+  elements: [
+    FeedbackButtonsElement.new(
+      positive_button: FeedbackButton.new(text: PlainText.new(text: "Good"), value: "positive"),
+      negative_button: FeedbackButton.new(text: PlainText.new(text: "Bad"), value: "negative"),
+      action_id: "response_feedback"
+    )
+  ],
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -2403,7 +2538,16 @@ var block = new DataTableBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = DataTableBlock.new(caption: "Scores", rows: [[RawText.new(text: "Name"), RawText.new(text: "Score")], [RawText.new(text: "Alice"), RawNumber.new(value: 42, text: "42")]])
+block = DataTableBlock.new(
+  rows: [
+    [RawText.new(text: "Name"), RawText.new(text: "Score")],
+    [RawText.new(text: "Alice"), RawNumber.new(value: 42, text: "42")]
+  ],
+  caption: "Team scores",
+  page_size: 5,
+  row_header_column_index: 0,
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -2545,7 +2689,13 @@ var block = new DataVisualizationBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = DataVisualizationBlock.new(title: "Votes", chart: PieChart.new(segments: [ChartSegment.new(label: "Yes", value: 3), ChartSegment.new(label: "No", value: 1)]))
+block = DataVisualizationBlock.new(
+  title: "Incidents by severity",
+  chart: PieChart.new(
+    segments: [ChartSegment.new(label: "High", value: 3), ChartSegment.new(label: "Low", value: 12)]
+  ),
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -2668,7 +2818,13 @@ var block = new TaskCardBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = TaskCardBlock.new(task_id: "task-1", title: "Run checks", status: :complete)
+block = TaskCardBlock.new(
+  task_id: "weather_1",
+  title: "Fetch weather data",
+  sources: [UrlSource.new(url: "https://weather.com/", text: "weather.com")],
+  status: :complete,
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 
@@ -2791,7 +2947,14 @@ var block = new PlanBlock(
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = PlanBlock.new(title: "Release plan", tasks: [TaskCardBlock.new(task_id: "task-1", title: "Run checks", status: :complete)])
+block = PlanBlock.new(
+  title: "Release plan",
+  tasks: [
+    TaskCardBlock.new(task_id: "test", title: "Run the test suite", status: :complete),
+    TaskCardBlock.new(task_id: "deploy", title: "Deploy the release", status: :pending)
+  ],
+  block_id: "fake_block_id"
+)
 puts block.to_json
 ```
 

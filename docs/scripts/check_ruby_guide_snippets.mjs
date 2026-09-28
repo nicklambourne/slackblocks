@@ -24,32 +24,48 @@ const prelude = [
   "  def chat_postMessage(**payload); payload; end",
   "end; end; end",
 ].join("\n");
+
+function runSnippet(code) {
+  const output = execFileSync(ruby, ["-I", rubyLib, "-e", `${prelude}\n${code}`], {
+    encoding: "utf8",
+    env: { ...process.env, SLACK_BOT_TOKEN: "test-token" },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  return output.trim() ? JSON.parse(output.trim().split("\n").at(-1)) : null;
+}
+
+function runOtherSnippets(source) {
+  let count = 0;
+  for (const section of source.matchAll(/<Ruby>[\s\S]*?<\/Ruby>/g)) {
+    for (const snippet of section[0].matchAll(/```ruby\n([\s\S]*?)\n```/g)) {
+      if (!snippet[1].includes('require "slackblocks"')) continue;
+      runSnippet(snippet[1]);
+      count++;
+    }
+  }
+  return count;
+}
+
 let checked = 0;
 for (const guide of guides) {
   const source = await readFile(path.join(repository, "docs/docs", guide), "utf8");
-  const sections = [...source.matchAll(/<Ruby>[\s\S]*?<\/Ruby>/g)];
-  for (const [sectionIndex, section] of sections.entries()) {
-    for (const snippet of section[0].matchAll(/```ruby\n([\s\S]*?)\n```/g)) {
-      const code = snippet[1];
-      if (!code.includes('require "slackblocks"')) continue;
-      const output = execFileSync(ruby, ["-I", rubyLib, "-e", `${prelude}\n${code}`], {
-        encoding: "utf8",
-        env: { ...process.env, SLACK_BOT_TOKEN: "test-token" },
-        stdio: ["ignore", "pipe", "pipe"],
-      });
-      if (output.trim()) {
-        const payload = JSON.parse(output.trim().split("\n").at(-1));
-        assert.ok(payload && typeof payload === "object", `${guide} Ruby snippet must emit a JSON object`);
-        if (guide === "usage/using_blocks.mdx" && sectionIndex > 0 && sectionIndex < 22) {
-          const heading = [...source.slice(0, section.index).matchAll(/^## (.+) Block$/gm)].at(-1)?.[1];
-          assert.ok(heading, `${guide} block ${sectionIndex} must have a heading`);
-          assert.equal(payload.type, heading.toLowerCase().replaceAll(" ", "_"),
-            `${guide} block ${sectionIndex} must emit its documented block type`);
-        }
-      }
+  if (guide === "usage/using_blocks.mdx") {
+    const headings = [...source.matchAll(/^## (.+) Block$/gm)];
+    assert.ok(headings.length > 0, "Ruby block guide has no block sections");
+    for (const [index, heading] of headings.entries()) {
+      const section = source.slice(heading.index, headings[index + 1]?.index);
+      const rubySection = section.match(/<Ruby>([\s\S]*?)<\/Ruby>/)?.[1];
+      const code = rubySection?.match(/```ruby\n([\s\S]*?)\n```/)?.[1];
+      const json = section.match(/```json\n([\s\S]*?)\n```/)?.[1];
+      assert.ok(code && json, `${heading[1]} Block needs Ruby and JSON examples`);
+      assert.deepEqual(runSnippet(code), JSON.parse(json), `${heading[1]} Block Ruby differs from documented JSON`);
       checked++;
     }
+    const nextSection = source.indexOf("\n## ", headings.at(-1).index + 3);
+    if (nextSection >= 0) checked += runOtherSnippets(source.slice(nextSection));
+  } else {
+    checked += runOtherSnippets(source);
   }
 }
-assert.ok(checked === 28, `only ${checked} Ruby guide snippets were exercised`);
-console.log(`Executed ${checked} Ruby guide snippets.`);
+assert.equal(checked, 28, `only ${checked} Ruby guide snippets were exercised`);
+console.log(`Executed ${checked} Ruby guide snippets; block payloads match the documented JSON.`);
