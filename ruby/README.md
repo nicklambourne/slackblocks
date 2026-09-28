@@ -2,11 +2,9 @@
 
 Build and validate Slack Block Kit payloads with Ruby 3.3 or newer. The gem implements shared spec 1.2.0 and uses only Ruby's JSON default gem at runtime.
 
-Install from the repository while the first Ruby release is being prepared:
+Install from RubyGems:
 
-    cd ruby
-    gem build slackblocks.gemspec
-    gem install ./slackblocks-2.5.0.gem
+    gem install slackblocks
 
 Use keyword arguments for every value:
 
