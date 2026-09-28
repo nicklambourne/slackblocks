@@ -21,6 +21,7 @@ export BUNDLE_PATH=/Volumes/Cache/bundle/slackblocks-ruby34
 export BUNDLE_DISABLE_SHARED_GEMS=true
 cd "$ruby_root"
 bundle exec standardrb
+ruby "$ruby_root/bin/coverage"
 bundle exec steep check --group=lib --group=consumer
 
 negative_log="$(mktemp /Volumes/Scratch/slackblocks-negative-XXXXXX)"
