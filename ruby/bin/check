@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+for mount in /Volumes/Repos /Volumes/Cache /Volumes/Scratch; do
+  test -d "$mount" || { echo "Required mount unavailable: $mount" >&2; exit 1; }
+done
+
+ruby_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+repo_root="$(cd "$ruby_root/.." && pwd)"
+python3 "$ruby_root/generator/generate_models.py" --check
+
+for binary in \
+  /opt/homebrew/opt/ruby@3.3/bin/ruby \
+  /opt/homebrew/opt/ruby@3.4/bin/ruby \
+  /opt/homebrew/opt/ruby/bin/ruby; do
+  "$binary" -I "$ruby_root/test" -e 'Dir[ARGV.fetch(0)].sort.each { |path| require path }' "$ruby_root/test/*_test.rb"
+done
+
+export PATH="/opt/homebrew/opt/ruby@3.4/bin:$PATH"
+export BUNDLE_PATH=/Volumes/Cache/bundle/slackblocks-ruby34
+export BUNDLE_DISABLE_SHARED_GEMS=true
+cd "$ruby_root"
+bundle exec standardrb
+bundle exec steep check --group=lib --group=consumer
+
+negative_log="$(mktemp /Volumes/Scratch/slackblocks-negative-XXXXXX)"
+trap 'rm -f "$negative_log"' EXIT
+if bundle exec steep check --group=negative > "$negative_log" 2>&1; then
+  echo "Steep accepted intentionally invalid examples" >&2
+  exit 1
+fi
+rg -q 'keyword.rb.*Unexpected keyword argument|Unexpected keyword argument' "$negative_log"
+rg -q 'enum.rb:.*Cannot pass a value' "$negative_log"
+rg -q 'nested.rb:.*Cannot pass a value' "$negative_log"
+
+bundle exec ruby -I lib -e '
+  require "slackblocks"
+  abort "ActiveSupport loaded by slackblocks" if $LOADED_FEATURES.any? { |path| path.include?("active_support") }
+  require "active_support/json"
+  block = Slackblocks::SectionBlock.new(text: "Hello")
+  abort "ActiveSupport serialization differs" unless JSON.parse(ActiveSupport::JSON.encode(block)) == JSON.parse(block.to_json)
+'
+bundle exec ruby -I lib -e '
+  require "active_support/json"
+  require "slackblocks"
+  block = Slackblocks::SectionBlock.new(text: "Hello")
+  abort "Reverse ActiveSupport require order differs" unless JSON.parse(ActiveSupport::JSON.encode(block)) == JSON.parse(block.to_json)
+'
+
+"$ruby_root/bin/package-smoke"
+echo "All local Ruby gates passed for $repo_root"
