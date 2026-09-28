@@ -32,12 +32,12 @@ The six publisher workflows also accept a manual dispatch at an existing,
 matching language tag. The coordinator uses those entry points so each job
 retains its registry-specific publisher workflow identity.
 
-The Python, TypeScript, Java, C#, and Ruby workflows fail fast if the tag does not
-match their package manifest. Every workflow also verifies that
-`python/pyproject.toml`, `typescript/package.json`, `java/pom.xml`,
+The coordinator verifies that `python/pyproject.toml`,
+`typescript/package.json`, `java/pom.xml`,
 `csharp/src/Slackblocks/Slackblocks.csproj`, and
-`ruby/lib/slackblocks/version.rb` agree; the Go workflow requires its
-tag to match that coordinated version.
+`ruby/lib/slackblocks/version.rb` agree. The Ruby publisher repeats this
+check and requires its tag to match the version. The existing publishers
+retain their own tag and coordinated-version guards.
 
 ## One-time setup
 
