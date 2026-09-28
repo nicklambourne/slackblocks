@@ -132,13 +132,12 @@ These must be in place before the workflows can publish:
    **NuGet package** job packs and pushes to a local feed on every relevant pull
    request, so packaging problems surface before a release.
 
-7. **RubyGems trusted publishing** — sign in to RubyGems.org with MFA enabled.
-   For the first `slackblocks` gem, register a pending trusted publisher for
-   gem `slackblocks`, repository `nicklambourne/slackblocks`, workflow
-   `publish-rubygems.yml`, and environment `rubygems`. Configure a required
-   reviewer for the GitHub environment if release approval is desired. The
-   publisher exchanges GitHub OIDC for a short-lived credential; it needs no
-   RubyGems API key. Confirm the gem name is still available before dispatch.
+7. **RubyGems trusted publishing** — the first gem was published in 2.5.0.
+   Keep the trusted publisher for gem `slackblocks`, repository
+   `nicklambourne/slackblocks`, workflow `publish-rubygems.yml`, and environment
+   `rubygems`. Configure a required reviewer for the GitHub environment if
+   release approval is desired. The publisher exchanges GitHub OIDC for a
+   short-lived credential; it needs no RubyGems API key.
 
 ## Coordinated release procedure
 
@@ -150,8 +149,8 @@ from the dropdown. CI enforces this: the `check:release-snapshots` guard fails
 if any released `python/v*` tag other than the current package version is
 missing from `docs/versions.json` (or the legacy manifest).
 
-For the first Ruby release, 2.5.0, the outgoing 2.4.0 docs snapshot is
-already present. Freeze 2.5.0 only when preparing the subsequent release.
+The outgoing 2.4.0 docs snapshot was frozen before the 2.5.0 release.
+Freeze 2.5.0 when preparing the next release.
 
 1. On one branch, freeze the **outgoing** docs version — the value currently in
    `python/pyproject.toml`, before you bump it — so it survives as a dropdown

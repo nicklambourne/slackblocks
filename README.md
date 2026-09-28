@@ -288,10 +288,10 @@ puts message.to_json
 - [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end
   recipes for build notifications, approval requests, modals, and more.
 - [API Reference](https://nicklambourne.github.io/slackblocks/reference) —
-  [Python](https://nicklambourne.github.io/slackblocks/reference/python) and
-  [TypeScript](https://nicklambourne.github.io/slackblocks/reference/typescript), and
-  [Go](https://nicklambourne.github.io/slackblocks/reference/go), and
-  [Java](https://nicklambourne.github.io/slackblocks/reference/java), and
+  [Python](https://nicklambourne.github.io/slackblocks/reference/python),
+  [TypeScript](https://nicklambourne.github.io/slackblocks/reference/typescript),
+  [Go](https://nicklambourne.github.io/slackblocks/reference/go),
+  [Java](https://nicklambourne.github.io/slackblocks/reference/java),
   [C#](https://nicklambourne.github.io/slackblocks/reference/csharp), and
   [Ruby](https://nicklambourne.github.io/slackblocks/reference/ruby).
 - [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/usage/migration) ·
