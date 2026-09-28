@@ -3,14 +3,14 @@
 The Python (`slackblocks` on PyPI), TypeScript
 (`@nicklambourne/slackblocks` on npm), Go
 (`github.com/nicklambourne/slackblocks/go/v2`), Java
-(`io.github.nicklambourne:slackblocks` on Maven Central), and C# (`Slackblocks`
-on NuGet) packages are released together and always carry the same version
+(`io.github.nicklambourne:slackblocks` on Maven Central), C# (`Slackblocks` on NuGet), and Ruby (`slackblocks` on RubyGems)
+packages are released together and always carry the same version
 number.
 
 The recommended entry point is the **Coordinated Release** workflow in GitHub
 Actions. Run it from `master` with one `X.Y.Z` input; it validates the shared
-version and changelogs, creates all five annotated tags in one atomic push,
-dispatches each publisher at its tag, and waits for all five runs.
+version and changelogs, creates all six annotated tags in one atomic push,
+dispatches each publisher at its tag, and waits for all six runs.
 
 ## Tag scheme
 
@@ -23,25 +23,27 @@ Releases are triggered by pushing tags:
 | `go/vX.Y.Z` | [`.github/workflows/publish-go.yml`](.github/workflows/publish-go.yml) | `github.com/nicklambourne/slackblocks/go/v2` to the Go module ecosystem |
 | `java/vX.Y.Z` | [`.github/workflows/publish-java.yml`](.github/workflows/publish-java.yml) | `io.github.nicklambourne:slackblocks` to Maven Central |
 | `csharp/vX.Y.Z` | [`.github/workflows/publish-nuget.yml`](.github/workflows/publish-nuget.yml) | `Slackblocks` to NuGet |
+| `ruby/vX.Y.Z` | [`.github/workflows/publish-rubygems.yml`](.github/workflows/publish-rubygems.yml) | `slackblocks` to RubyGems |
 
 Plain `v*` tags (used by the pre-monorepo 1.x/2.0 releases) no longer trigger
 anything.
 
-The five publisher workflows also accept a manual dispatch at an existing,
+The six publisher workflows also accept a manual dispatch at an existing,
 matching language tag. The coordinator uses those entry points so each job
 retains its registry-specific publisher workflow identity.
 
-The Python, TypeScript, Java, and C# workflows fail fast if the tag does not
-match their package manifest. Every workflow also verifies that
-`python/pyproject.toml`, `typescript/package.json`, `java/pom.xml`, and
-`csharp/src/Slackblocks/Slackblocks.csproj` agree; the Go workflow requires its
-tag to match that coordinated version.
+The coordinator verifies that `python/pyproject.toml`,
+`typescript/package.json`, `java/pom.xml`,
+`csharp/src/Slackblocks/Slackblocks.csproj`, and
+`ruby/lib/slackblocks/version.rb` agree. The Ruby publisher repeats this
+check and requires its tag to match the version. The existing publishers
+retain their own tag and coordinated-version guards.
 
 ## One-time setup
 
 These must be in place before the workflows can publish:
 
-1. **GitHub environments** — create `pypi`, `npm`, `maven-central`, and `nuget`
+1. **GitHub environments** — create `pypi`, `npm`, `maven-central`, `nuget`, and `rubygems`
    environments in the repository settings (Settings → Environments). The
    publish jobs run inside them; add required reviewers there if you want
    manual approval before publishing.
@@ -130,6 +132,14 @@ These must be in place before the workflows can publish:
    **NuGet package** job packs and pushes to a local feed on every relevant pull
    request, so packaging problems surface before a release.
 
+7. **RubyGems trusted publishing** — sign in to RubyGems.org with MFA enabled.
+   For the first `slackblocks` gem, register a pending trusted publisher for
+   gem `slackblocks`, repository `nicklambourne/slackblocks`, workflow
+   `publish-rubygems.yml`, and environment `rubygems`. Configure a required
+   reviewer for the GitHub environment if release approval is desired. The
+   publisher exchanges GitHub OIDC for a short-lived credential; it needs no
+   RubyGems API key. Confirm the gem name is still available before dispatch.
+
 ## Coordinated release procedure
 
 The docs site serves the current package version live (`lastVersion:
@@ -139,6 +149,9 @@ before the new version takes over as current — otherwise that version vanishes
 from the dropdown. CI enforces this: the `check:release-snapshots` guard fails
 if any released `python/v*` tag other than the current package version is
 missing from `docs/versions.json` (or the legacy manifest).
+
+For the first Ruby release, 2.5.0, the outgoing 2.4.0 docs snapshot is
+already present. Freeze 2.5.0 only when preparing the subsequent release.
 
 1. On one branch, freeze the **outgoing** docs version — the value currently in
    `python/pyproject.toml`, before you bump it — so it survives as a dropdown
@@ -165,6 +178,7 @@ missing from `docs/versions.json` (or the legacy manifest).
    - `csharp/src/Slackblocks/Slackblocks.csproj` (`Version`)
    - `csharp/src/Slackblocks/SlackblocksInfo.cs` (`Version`; the C# tests verify
      that it matches the project)
+   - `ruby/lib/slackblocks/version.rb` (`VERSION`)
    - the pinned versions in the installation examples of `README.md`,
      `java/README.md`, `docs/docs/quick-start.mdx`, and
      `docs/docs/usage/installation.mdx`
@@ -175,8 +189,8 @@ missing from `docs/versions.json` (or the legacy manifest).
    3.0.0 release therefore requires a Go `/v3` module; the
    existing `/v2` path cannot publish `go/v3.0.0`.
 3. Add a `## [X.Y.Z] — YYYY-MM-DD` section to `python/CHANGELOG.md`,
-   `typescript/CHANGELOG.md`, `go/CHANGELOG.md`, `java/CHANGELOG.md`, and
-   `csharp/CHANGELOG.md`. The
+   `typescript/CHANGELOG.md`, `go/CHANGELOG.md`, `java/CHANGELOG.md`,
+   `csharp/CHANGELOG.md`, and `ruby/CHANGELOG.md`. The
    publish workflows extract the matching section for their GitHub Release
    notes. Pull requests may use `Unreleased` while the release is prepared, but
    replace it with the release date before dispatching: the coordinator rejects
@@ -195,8 +209,8 @@ missing from `docs/versions.json` (or the legacy manifest).
    ```
 
 7. The coordinator atomically pushes `python/vX.Y.Z`, `ts/vX.Y.Z`,
-   `go/vX.Y.Z`, `java/vX.Y.Z`, and `csharp/vX.Y.Z`, then dispatches and
-   monitors all five publishers.
+   `go/vX.Y.Z`, `java/vX.Y.Z`, `csharp/vX.Y.Z`, and `ruby/vX.Y.Z`,
+   then dispatches and monitors all six publishers.
    Each publisher creates its own GitHub Release after its registry step
    succeeds.
 8. **Java only:** the publisher uploads the bundle and waits for Central to
@@ -206,14 +220,19 @@ missing from `docs/versions.json` (or the legacy manifest).
    with the binary, sources, and Javadoc JARs, the POM, and a `.asc` signature
    for each. A published version can never be replaced, so fix any problem by
    releasing a new patch version of every package.
-9. **C# only:** approve the `nuget` environment deployment if it has required
+9. **Ruby only:** approve the `rubygems` environment deployment if it has
+   required reviewers. Confirm `https://rubygems.org/gems/slackblocks/versions/X.Y.Z`
+   lists the new gem, then install that exact version in a clean location and
+   render a sample payload.
+10. **C# only:** approve the `nuget` environment deployment if it has required
    reviewers. NuGet indexes a new version within minutes; confirm
    `https://www.nuget.org/packages/Slackblocks/X.Y.Z` lists it. NuGet versions
    cannot be deleted or re-uploaded, only unlisted.
 
-If the coordinator is unavailable, the direct tag triggers remain as a manual
-fallback. Create all five signed tags at the same commit and push them
-atomically:
+If the coordinator is unavailable, create all six signed tags at the same
+commit and push them atomically. GitHub does not generate tag-push workflow
+runs when more than three tags are pushed at once, so dispatch each publisher
+explicitly at its tag after the push:
 
 ```sh
 git tag -s python/vX.Y.Z -m "slackblocks X.Y.Z (Python)"
@@ -221,7 +240,14 @@ git tag -s ts/vX.Y.Z -m "@nicklambourne/slackblocks X.Y.Z (TypeScript)"
 git tag -s go/vX.Y.Z -m "slackblocks X.Y.Z (Go)"
 git tag -s java/vX.Y.Z -m "slackblocks X.Y.Z (Java)"
 git tag -s csharp/vX.Y.Z -m "Slackblocks X.Y.Z (C#)"
-git push --atomic origin python/vX.Y.Z ts/vX.Y.Z go/vX.Y.Z java/vX.Y.Z csharp/vX.Y.Z
+git tag -s ruby/vX.Y.Z -m "slackblocks X.Y.Z (Ruby)"
+git push --atomic origin python/vX.Y.Z ts/vX.Y.Z go/vX.Y.Z java/vX.Y.Z csharp/vX.Y.Z ruby/vX.Y.Z
+gh workflow run publish.yml --ref python/vX.Y.Z
+gh workflow run publish-npm.yml --ref ts/vX.Y.Z
+gh workflow run publish-go.yml --ref go/vX.Y.Z
+gh workflow run publish-java.yml --ref java/vX.Y.Z
+gh workflow run publish-nuget.yml --ref csharp/vX.Y.Z
+gh workflow run publish-rubygems.yml --ref ruby/vX.Y.Z
 ```
 
 Tags created by the coordinator are annotated as `github-actions[bot]` but
@@ -230,12 +256,12 @@ store that private key.
 
 ## Partial-failure recovery
 
-The five tags are created atomically, but five external registries cannot be
+The six tags are created atomically, but six external registries cannot be
 updated as one transaction. If one publisher fails after another succeeds,
 re-run the failed publisher from its existing workflow run; never move the
 tags or republish an already released version.
 
-All five workflows are safe to re-run from the Actions UI:
+Inspect the registry state before re-running a failed publisher:
 
 - **PyPI** — `uv publish` runs with
   `--check-url https://pypi.org/simple/slackblocks/`, so files already
@@ -255,6 +281,9 @@ All five workflows are safe to re-run from the Actions UI:
 - **NuGet** — the push uses `--skip-duplicate`, so a version NuGet already holds
   is skipped rather than failing, and re-running completes whatever is missing,
   such as the symbols package or the GitHub Release.
+- **RubyGems** — a gem version cannot be pushed twice. If RubyGems already
+  lists the version, treat publication as complete and create a missing GitHub
+  Release separately. Re-run the publisher only if the gem is absent.
 - **GitHub Releases** — the release step skips itself if a release for the
   tag already exists.
 
@@ -269,8 +298,9 @@ After a failure, check:
 - Maven Central: https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks
   lists the new artifact version with binary, source, and Javadoc JARs.
 - NuGet: https://www.nuget.org/packages/Slackblocks lists the new version.
-- GitHub: a Release exists for each of the five tags with the changelog notes.
+- RubyGems: https://rubygems.org/gems/slackblocks lists the new version.
+- GitHub: a Release exists for each of the six tags with the changelog notes.
 
 If a bad artifact was published, do not delete and re-upload: registries
 reject reused file names and versions. Yank, deprecate, or unlist the broken
-version and release a new coordinated patch version of **all five** packages.
+version and release a new coordinated patch version of **all six** packages.

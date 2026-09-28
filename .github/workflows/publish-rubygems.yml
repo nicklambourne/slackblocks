@@ -1,0 +1,129 @@
+name: Publish Ruby Package
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/publish-rubygems.yml"
+      - "ruby/**"
+  push:
+    tags:
+      - "ruby/v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build and verify Ruby release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Install Ruby 3.4
+        uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1
+        with:
+          ruby-version: "3.4"
+          bundler-cache: true
+          working-directory: ruby
+
+      - name: Install Python for release verification and model generation
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: Verify release tag and coordinated versions
+        if: github.event_name != 'pull_request'
+        run: python ruby/bin/verify-release
+
+      - name: Run Ruby tests and verify generated sources
+        working-directory: ruby
+        run: |
+          python generator/generate_models.py --check
+          ruby -I test -e 'Dir[File.expand_path("test/*_test.rb")].sort.each { |path| require path }'
+
+      - name: Build, install, and inspect the gem outside the checkout
+        working-directory: ruby
+        run: bash bin/package-smoke
+
+      - name: Build release gem
+        working-directory: ruby
+        run: |
+          mkdir -p dist
+          gem build slackblocks.gemspec --output "dist/slackblocks-$(ruby -I lib -r slackblocks/version -e 'print Slackblocks::VERSION').gem"
+
+      - name: Upload release gem
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: ruby-gem
+          path: ruby/dist/*.gem
+          if-no-files-found: error
+
+  publish:
+    name: Publish to RubyGems
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: rubygems
+      url: https://rubygems.org/gems/slackblocks
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Download release gem
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: ruby-gem
+          path: dist
+
+      - name: Install Ruby 3.4
+        uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1
+        with:
+          ruby-version: "3.4"
+
+      - name: Configure RubyGems trusted publishing credentials
+        uses: rubygems/configure-rubygems-credentials@8674aee7f9f9055a8b771794d6f1e66b5fad36a9
+
+      - name: Publish to RubyGems
+        run: gem push "dist/slackblocks-${GITHUB_REF_NAME#ruby/v}.gem"
+
+  github-release:
+    name: Create GitHub Release
+    if: github.event_name != 'pull_request'
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Create release from changelog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release for $GITHUB_REF_NAME already exists; skipping."
+            exit 0
+          fi
+          version="${GITHUB_REF_NAME#ruby/v}"
+          awk -v version="$version" '
+            $0 ~ "^## \\[" version "\\]" { capture = 1; next }
+            capture && /^## \[/ { exit }
+            capture { print }
+          ' ruby/CHANGELOG.md > release-notes.md
+          if [ -s release-notes.md ]; then
+            gh release create "$GITHUB_REF_NAME" --title "Ruby v$version" --notes-file release-notes.md
+          else
+            echo "::error::Missing Ruby release notes for $version."
+            exit 1
+          fi

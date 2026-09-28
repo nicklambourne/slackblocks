@@ -4,7 +4,7 @@
 2. Serialized output must be semantically identical for every shared valid fixture.
 3. Validation outcomes must agree on rejection and error category; concrete error types and messages are language-specific.
 4. Feature gaps must be explicit in a checked-in conformance skip list.
-5. Every implementation must declare the spec version it conforms to: Python exports `slackblocks.SPEC_VERSION`, TypeScript `specVersion`, Go `slackblocks.SpecVersion`, Java `Slackblocks.SPEC_VERSION`, and C# `SlackblocksInfo.SpecVersion`. Every conformance harness asserts the declared version matches `manifest.json`.
+5. Every implementation must declare the spec version it conforms to: Python exports `slackblocks.SPEC_VERSION`, TypeScript `specVersion`, Go `slackblocks.SpecVersion`, Java `Slackblocks.SPEC_VERSION`, C# `SlackblocksInfo.SpecVersion`, and Ruby `Slackblocks::SPEC_VERSION`. Every conformance harness asserts the declared version matches `manifest.json`.
 
 ## Documented policies and intentional divergences
 

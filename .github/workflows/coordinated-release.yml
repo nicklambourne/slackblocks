@@ -9,6 +9,7 @@ on:
       - ".github/workflows/publish-go.yml"
       - ".github/workflows/publish-java.yml"
       - ".github/workflows/publish-nuget.yml"
+      - ".github/workflows/publish-rubygems.yml"
       - "python/pyproject.toml"
       - "typescript/package.json"
       - "python/CHANGELOG.md"
@@ -18,6 +19,8 @@ on:
       - "java/CHANGELOG.md"
       - "csharp/src/Slackblocks/Slackblocks.csproj"
       - "csharp/CHANGELOG.md"
+      - "ruby/lib/slackblocks/version.rb"
+      - "ruby/CHANGELOG.md"
   workflow_dispatch:
     inputs:
       version:
@@ -57,14 +60,15 @@ jobs:
           python_version=$(node -e "const text = require('fs').readFileSync('python/pyproject.toml', 'utf8'); const match = text.match(/^version = \"([^\"]+)\"$/m); if (!match) process.exit(1); process.stdout.write(match[1]);")
           java_version=$(node -e "const text = require('fs').readFileSync('java/pom.xml', 'utf8'); const match = text.match(/<artifactId>slackblocks<\/artifactId>\s*<version>([^<]+)<\/version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
           csharp_version=$(node -e "const text = require('fs').readFileSync('csharp/src/Slackblocks/Slackblocks.csproj', 'utf8'); const match = text.match(/<Version>([^<]+)<\/Version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
+          ruby_version=$(node -e "const text = require('fs').readFileSync('ruby/lib/slackblocks/version.rb', 'utf8'); const match = text.match(/^  VERSION = \"([^\"]+)\"$/m); if (!match) process.exit(1); process.stdout.write(match[1]);")
           version="${REQUESTED_VERSION:-$typescript_version}"
 
           if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "::error::Version '$version' must use the stable X.Y.Z format."
             exit 1
           fi
-          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ] || [ "$python_version" != "$csharp_version" ]; then
-            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version, C#=$csharp_version."
+          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ] || [ "$python_version" != "$csharp_version" ] || [ "$python_version" != "$ruby_version" ]; then
+            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version, C#=$csharp_version, Ruby=$ruby_version."
             exit 1
           fi
           if [ "$version" != "$python_version" ]; then
@@ -77,7 +81,7 @@ jobs:
           fi
 
           release_date=""
-          for changelog in python/CHANGELOG.md typescript/CHANGELOG.md go/CHANGELOG.md java/CHANGELOG.md csharp/CHANGELOG.md; do
+          for changelog in python/CHANGELOG.md typescript/CHANGELOG.md go/CHANGELOG.md java/CHANGELOG.md csharp/CHANGELOG.md ruby/CHANGELOG.md; do
             heading=$(grep -F "## [$version]" "$changelog" | head -n 1 || true)
             if [ -z "$heading" ]; then
               echo "::error file=$changelog::Missing release notes for version $version."
@@ -132,7 +136,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          tags=("python/v$VERSION" "ts/v$VERSION" "go/v$VERSION" "java/v$VERSION" "csharp/v$VERSION")
+          tags=("python/v$VERSION" "ts/v$VERSION" "go/v$VERSION" "java/v$VERSION" "csharp/v$VERSION" "ruby/v$VERSION")
           existing=0
 
           for tag in "${tags[@]}"; do
@@ -162,6 +166,7 @@ jobs:
           git tag --annotate "go/v$VERSION" --message "slackblocks $VERSION (Go)"
           git tag --annotate "java/v$VERSION" --message "slackblocks $VERSION (Java)"
           git tag --annotate "csharp/v$VERSION" --message "Slackblocks $VERSION (C#)"
+          git tag --annotate "ruby/v$VERSION" --message "slackblocks $VERSION (Ruby)"
           git push --atomic origin "${tags[@]}"
 
   publish:
@@ -193,6 +198,9 @@ jobs:
           - language: C#
             workflow: publish-nuget.yml
             tag_prefix: csharp/v
+          - language: Ruby
+            workflow: publish-rubygems.yml
+            tag_prefix: ruby/v
     steps:
       - name: Dispatch and monitor publisher
         env:
