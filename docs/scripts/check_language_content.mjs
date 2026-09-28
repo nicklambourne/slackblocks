@@ -22,8 +22,9 @@ for (const file of await markdownFiles(docsRoot)) {
     const relative = path.relative(docsRoot, file);
     assert.match(block, /<Go>/, `${relative} LanguageContent #${index + 1} has no Go variant`);
     assert.match(block, /<Java>/, `${relative} LanguageContent #${index + 1} has no Java variant`);
+    assert.match(block, /<Ruby>/, `${relative} LanguageContent #${index + 1} has no Ruby variant`);
     assert.match(block, /<CSharp>/, `${relative} LanguageContent #${index + 1} has no C# variant`);
   });
 }
 
-console.log("Every language-switched documentation section includes Go, Java, and C# content.");
+console.log("Every language-switched documentation section includes Go, Java, C#, and Ruby content.");

@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
 
 # Using Blocks
 
@@ -39,6 +39,12 @@ For concrete fluent builders, immutable values, and validation errors, see the [
 For constructors, typed properties, and validation errors, see the [C# API reference](../reference/csharp). Interactive controls such as buttons, menus, and date pickers are grouped under [Elements](../reference/csharp/elements).
 
 </CSharp>
+
+<Ruby>
+
+For keyword constructors, immutable values, and validation errors, see the [Ruby API reference](../reference/ruby). Interactive controls are in [Elements](../reference/ruby/elements). The Ruby snippets below show minimal valid blocks; the shared JSON and screenshots show fuller examples.
+
+</Ruby>
 </LanguageContent>
 
 ## Section Block
@@ -137,6 +143,17 @@ var block = new SectionBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = SectionBlock.new(text: "Hello *Ruby*!", block_id: "intro")
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -287,6 +304,17 @@ var block = new RichTextBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = RichTextBlock.new(elements: [RichTextSection.new(elements: [RichTextText.new(text: "Hello", style: RichTextStyle.new(bold: true))])])
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -395,6 +423,17 @@ var block = new HeaderBlock("This is a header block", blockId: "fake_block_id");
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = HeaderBlock.new(text: "Deployment complete")
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -485,6 +524,17 @@ var block = new MarkdownBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = MarkdownBlock.new(text: "**Deployment complete**")
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -583,6 +633,17 @@ var block = new ImageBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = ImageBlock.new(image_url: "https://example.com/chart.png", alt_text: "A chart")
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -689,6 +750,17 @@ var block = new InputBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = InputBlock.new(label: "Your name", element: PlainTextInputElement.new(action_id: "name"))
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -775,6 +847,17 @@ var block = new DividerBlock(blockId: "fake_block_id");
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = DividerBlock.new
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -855,6 +938,17 @@ var block = new FileBlock("external_id", blockId: "fake_block_id");
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = FileBlock.new(external_id: "F12345678")
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -943,6 +1037,17 @@ var block = new ContextBlock(elements: [new MarkdownText("Hello, world!")], bloc
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = ContextBlock.new(elements: [MarkdownText.new(text: "Updated just now")])
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -1074,6 +1179,17 @@ var block = new ActionsBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = ActionsBlock.new(elements: [ButtonElement.new(text: "Open", action_id: "open")])
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -1331,6 +1447,17 @@ var block = new TableBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = TableBlock.new(rows: [[RawText.new(text: "Name"), RawText.new(text: "Status")], [RawText.new(text: "Build"), RawText.new(text: "Passed")]])
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -1510,6 +1637,17 @@ var block = new VideoBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = VideoBlock.new(alt_text: "Demo", thumbnail_url: "https://example.com/thumbnail.png", title: "Demo video", video_url: "https://example.com/video")
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -1613,6 +1751,17 @@ var block = new AlertBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = AlertBlock.new(text: "Check the deployment", level: :warning)
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -1716,6 +1865,17 @@ var block = new CardBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = CardBlock.new(title: "Release notes", body: "The release is ready")
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -1832,6 +1992,17 @@ var block = new CarouselBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = CarouselBlock.new(elements: [CardBlock.new(title: "First card"), CardBlock.new(title: "Second card")])
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -1960,6 +2131,17 @@ var block = new ContainerBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = ContainerBlock.new(title: "Summary", child_blocks: [SectionBlock.new(text: "All checks passed")])
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -2083,6 +2265,17 @@ var block = new ContextActionsBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = ContextActionsBlock.new(elements: [FeedbackButtonsElement.new(action_id: "rate", positive_button: FeedbackButton.new(text: "Good", value: "good"), negative_button: FeedbackButton.new(text: "Bad", value: "bad"))])
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -2204,6 +2397,17 @@ var block = new DataTableBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = DataTableBlock.new(caption: "Scores", rows: [[RawText.new(text: "Name"), RawText.new(text: "Score")], [RawText.new(text: "Alice"), RawNumber.new(value: 42, text: "42")]])
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -2335,6 +2539,17 @@ var block = new DataVisualizationBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = DataVisualizationBlock.new(title: "Votes", chart: PieChart.new(segments: [ChartSegment.new(label: "Yes", value: 3), ChartSegment.new(label: "No", value: 1)]))
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -2447,6 +2662,17 @@ var block = new TaskCardBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = TaskCardBlock.new(task_id: "task-1", title: "Run checks", status: :complete)
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -2559,6 +2785,17 @@ var block = new PlanBlock(
 ```
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = PlanBlock.new(title: "Release plan", tasks: [TaskCardBlock.new(task_id: "task-1", title: "Run checks", status: :complete)])
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>
 
 </TabItem>
@@ -2811,4 +3048,15 @@ var message = new MessagePayload("C01234567", text: "Deployment details", blocks
 Accordion sections use Slack-native collapsible containers and need no application-side expansion handler. See [Components](../reference/csharp/components) for the complete API.
 
 </CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+block = PlanBlock.new(title: "Release plan", tasks: [TaskCardBlock.new(task_id: "task-1", title: "Run checks", status: :complete)])
+puts block.to_json
+```
+
+</Ruby>
 </LanguageContent>

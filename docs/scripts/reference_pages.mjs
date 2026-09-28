@@ -18,8 +18,8 @@ function resolveLinks(markdown, typeLinks) {
     .replace(/\[(`[^`]*`)\]\(\)/g, "$1");
 }
 
-function heading(member, overloaded) {
-  const base = member.name.replace(/^[a-z]/, (letter) => letter.toUpperCase());
+function heading(member, overloaded, preserveMemberNames) {
+  const base = preserveMemberNames ? member.name : member.name.replace(/^[a-z]/, (letter) => letter.toUpperCase());
   if (!overloaded) return base;
   return `${base} — ${member.parameterTypes ? `\`${member.parameterTypes}\`` : "no arguments"}`;
 }
@@ -30,8 +30,8 @@ function relatedTypes(signature, typeLinks) {
     .sort();
 }
 
-function memberSection(member, typeLinks, overloaded, fence) {
-  let output = `### ${heading(member, overloaded)}\n\n`;
+function memberSection(member, typeLinks, overloaded, fence, preserveMemberNames) {
+  let output = `### ${heading(member, overloaded, preserveMemberNames)}\n\n`;
   if (member.doc) output += `${resolveLinks(member.doc, typeLinks)}\n\n`;
   output += `\`\`\`${fence}\n${member.signature}\n\`\`\`\n\n`;
   if (member.params.length) {
@@ -69,9 +69,10 @@ function memberSection(member, typeLinks, overloaded, fence) {
  * @param {string} options.outputRoot directory that receives the MDX pages
  * @param {(domain: object) => string} options.introduction Markdown that opens each area page
  * @param {string} options.index the index page, including front matter
+ * @param {boolean} [options.preserveMemberNames] retain method spelling for Ruby
  * @returns {Promise<number>} the number of documented types
  */
-export async function writeReferencePages({ reference, domains, domainFor, language, fence, outputRoot, introduction, index }) {
+export async function writeReferencePages({ reference, domains, domainFor, language, fence, outputRoot, introduction, index, preserveMemberNames = false }) {
   const byDomain = new Map(domains.map((domain) => [domain.slug, []]));
   for (const type of reference.types) {
     const domain = domainFor(type);
@@ -104,7 +105,7 @@ export async function writeReferencePages({ reference, domains, domainFor, langu
       }
       const counts = new Map();
       for (const member of type.members) counts.set(member.name, (counts.get(member.name) ?? 0) + 1);
-      for (const member of type.members) output += memberSection(member, typeLinks, counts.get(member.name) > 1, fence);
+      for (const member of type.members) output += memberSection(member, typeLinks, counts.get(member.name) > 1, fence, preserveMemberNames);
     }
     await writeFile(path.join(outputRoot, `${domain.slug}.mdx`), output.trimEnd() + "\n");
   }

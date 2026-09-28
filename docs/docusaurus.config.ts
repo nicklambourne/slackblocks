@@ -39,6 +39,15 @@ if (!csharpVersion) {
   throw new Error("Could not read the C# package version");
 }
 
+const rubyVersionSource = readFileSync(
+  new URL("../ruby/lib/slackblocks/version.rb", import.meta.url),
+  "utf8",
+);
+const rubyVersion = rubyVersionSource.match(/VERSION = "([^"]+)"/)?.[1];
+if (!rubyVersion) {
+  throw new Error("Could not read the Ruby gem version");
+}
+
 const legacyManifest = JSON.parse(
   readFileSync(new URL("./legacy/manifest.json", import.meta.url), "utf8"),
 ) as {
@@ -103,10 +112,11 @@ const currentAliasRedirects = ["latest", "master"].flatMap((alias) =>
 if (
   typescriptPackage.version !== pythonVersion ||
   javaVersion !== pythonVersion ||
-  csharpVersion !== pythonVersion
+  csharpVersion !== pythonVersion ||
+  rubyVersion !== pythonVersion
 ) {
   throw new Error(
-    `Package versions must match: Python is ${pythonVersion}, TypeScript is ${typescriptPackage.version}, Java is ${javaVersion}, C# is ${csharpVersion}`,
+    `Package versions must match: Python is ${pythonVersion}, TypeScript is ${typescriptPackage.version}, Java is ${javaVersion}, C# is ${csharpVersion}, Ruby is ${rubyVersion}`,
   );
 }
 
@@ -191,7 +201,7 @@ function legacyTypeScriptRedirect(path: string): string | undefined {
 
 const config: Config = {
   title: "slackblocks",
-  tagline: "Validated Slack Block Kit construction for Python, TypeScript, Go, Java, and C#",
+  tagline: "Validated Slack Block Kit construction for Python, TypeScript, Go, Java, C#, and Ruby",
   favicon: "img/sb.png",
   url: "https://nicklambourne.github.io",
   baseUrl: "/slackblocks/",
@@ -338,7 +348,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.vsDark,
-      additionalLanguages: ["python", "typescript", "go", "java", "csharp", "json", "toml"],
+      additionalLanguages: ["python", "typescript", "go", "java", "csharp", "ruby", "json", "toml"],
     },
     navbar: {
       title: "slackblocks",

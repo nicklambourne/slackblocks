@@ -3,7 +3,7 @@ sidebar_label: Welcome
 sidebar_position: 1
 ---
 
-import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
 
 # Welcome to `slackblocks`!
 
@@ -11,14 +11,14 @@ import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src
   <img width="30%" src="/slackblocks/img/sb.png" alt="slackblocks logo" />
 </p>
 
-`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, and C# — without writing JSON by hand.
+`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, C#, and Ruby — without writing JSON by hand.
 
 It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control. `slackblocks` gives you:
 
-- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, and C#.
+- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, C#, and Ruby.
 - **Validation as you build** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
 - **Drop-in compatibility** with established Slack SDKs and clients and their plain JSON payloads.
-- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, and C# depends on nothing beyond .NET.
+- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, C# depends on nothing beyond .NET, and Ruby uses the default `json` gem.
 
 ## Quick Start
 
@@ -203,6 +203,27 @@ Every block is named `<Kind>Block` and implements [`IBlock`](reference/csharp/bl
 [`ValidationException`](reference/csharp/errors#validationexception) exposes stable categories and field paths. [`SlackObject`](reference/csharp/core#slackobject) is the immutable base of every value, with `ToJson()` for compact JSON and `ToJsonNode()` for a mutable copy.
 
 </CSharp>
+<Ruby>
+
+Ruby offers immutable keyword-constructed values for every shared block, element, composition object, payload, and view.
+
+### Composition objects
+
+[`PlainText`](reference/ruby/objects#plaintext), [`MarkdownText`](reference/ruby/objects#markdowntext), and [`Option`](reference/ruby/objects#option) are small values used by elements and blocks.
+
+### Elements and blocks
+
+[`ButtonElement`](reference/ruby/elements#buttonelement) and other elements fit inside blocks. Start with [`SectionBlock`](reference/ruby/blocks#sectionblock), [`ActionsBlock`](reference/ruby/blocks#actionsblock), or [`HeaderBlock`](reference/ruby/blocks#headerblock).
+
+### Payloads and components
+
+[`MessagePayload`](reference/ruby/payloads#messagepayload), [`ModalView`](reference/ruby/payloads#modalview), and [`HomeTabView`](reference/ruby/payloads#hometabview) compose blocks for Slack. [`Paginator`](reference/ruby/components#paginator) and [`Accordion`](reference/ruby/components#accordion) return arrays of ordinary blocks.
+
+### Validation and JSON
+
+[`ValidationError`](reference/ruby/errors#validationerror) exposes a category and field path. Every value has `as_json` for a detached Slack hash and `to_json` for encoded JSON.
+
+</Ruby>
 </LanguageContent>
 
 ## Guides
@@ -257,4 +278,14 @@ Every block is named `<Kind>Block` and implements [`IBlock`](reference/csharp/bl
 - [Contributing](contributing)
 
 </CSharp>
+<Ruby>
+
+- [Installation](usage/installation)
+- [Using Blocks](usage/using_blocks)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook)
+- [Troubleshooting & FAQ](usage/troubleshooting)
+- [Contributing](contributing)
+
+</Ruby>
 </LanguageContent>

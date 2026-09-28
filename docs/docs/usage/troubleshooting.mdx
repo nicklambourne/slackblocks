@@ -1,4 +1,4 @@
-import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
 
 # Troubleshooting & FAQ
 
@@ -518,4 +518,41 @@ A client library's block classes describe the JSON shape for that client. slackb
 Use [GitHub Issues](https://github.com/nicklambourne/slackblocks/issues).
 
 </CSharp>
+<Ruby>
+
+## Why is Slack showing literal `*asterisks*`?
+
+Use a markdown-capable field such as `SectionBlock.new(text: "*bold*")`. `HeaderBlock` uses plain text.
+
+## Why should a message set fallback text?
+
+Fallback text supports notifications, accessibility, and clients that do not render blocks. Set `text:` on `MessagePayload` alongside `blocks:`.
+
+## What does a validation failure contain?
+
+Invalid Slack values raise `Slackblocks::ValidationError` with `category` and `path`. Unknown Ruby keywords raise `ArgumentError`.
+
+```ruby
+require "slackblocks"
+
+begin
+  Slackblocks::HeaderBlock.new(text: "")
+rescue Slackblocks::ValidationError => error
+  warn "#{error.category} at #{error.path}: #{error.message}"
+end
+```
+
+## How do I preview or send a payload?
+
+Call `to_json` for Slack JSON or `as_json` for a detached Ruby hash. Paste the JSON into Slack's Block Kit Builder. A Slack client library sends the hash; slackblocks does not send network requests.
+
+## Can I use slackblocks in asynchronous code?
+
+Yes. Values are immutable and the library makes no network calls; use any asynchronous HTTP client in your application.
+
+## Where do I report bugs or request features?
+
+Use the [repository issue tracker](https://github.com/nicklambourne/slackblocks/issues).
+
+</Ruby>
 </LanguageContent>

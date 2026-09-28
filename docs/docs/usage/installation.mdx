@@ -1,10 +1,10 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
 
 # Installation
 
-Choose Python, TypeScript, Go, or Java from the site navigation. The selection applies across the documentation and is preserved as you move between pages.
+Choose a language from the site navigation. The selection applies across the documentation and is preserved as you move between pages.
 
 <LanguageContent>
 <Python>
@@ -237,4 +237,36 @@ var block = new Blocks.SectionBlock(text: "Hello, world!");
 The NuGet package version moves in lockstep with the Python, TypeScript, Go, and Java packages. A floating version such as `2.*` accepts compatible 2.x updates.
 
 </CSharp>
+<Ruby>
+
+Install the gem from RubyGems after the coordinated Ruby release. MRI Ruby 3.3 or newer is required.
+
+```bash
+gem install slackblocks
+```
+
+Or add it to your `Gemfile`:
+
+```ruby
+gem "slackblocks", "~> 2.6"
+```
+
+The runtime uses Ruby and the default `json` gem. It does not install a Slack transport client.
+
+Verify the installation:
+
+```ruby
+require "slackblocks"
+
+message = Slackblocks::MessagePayload.new(
+  channel: "C01234567",
+  text: "Hello, world!",
+  blocks: [Slackblocks::SectionBlock.new(text: "Hello, world!")]
+)
+puts message.to_json
+```
+
+Uninstall with `gem uninstall slackblocks`.
+
+</Ruby>
 </LanguageContent>

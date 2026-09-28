@@ -1,4 +1,4 @@
-import LanguageContent, { CSharp, Go, Java, Python, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
 
 # Recipe Book
 
@@ -222,6 +222,47 @@ static MessagePayload BuildStatusMessage(
 ```
 
 </CSharp>
+<Ruby>
+
+Ruby values use keyword constructors. Complete messages serialize to Slack-shaped hashes through `as_json` and to JSON through `to_json`.
+
+```ruby
+require "slackblocks"
+
+message = Slackblocks::MessagePayload.new(
+  channel: "C01234567",
+  text: "Build passed for example/main",
+  blocks: [
+    Slackblocks::HeaderBlock.new(text: "Build passed"),
+    Slackblocks::SectionBlock.new(fields: ["*Branch*\n`main`", "*Status*\nPassed"]),
+    Slackblocks::DividerBlock.new,
+    Slackblocks::ContextBlock.new(elements: [Slackblocks::MarkdownText.new(text: "Triggered by a push")])
+  ]
+)
+puts message.to_json
+```
+
+For a simple approval request, use an action ID that your Slack interaction handler recognizes:
+
+```ruby
+require "slackblocks"
+
+message = Slackblocks::MessagePayload.new(
+  channel: "C01234567",
+  text: "Approval requested",
+  blocks: [
+    Slackblocks::SectionBlock.new(text: "Approve the deployment?"),
+    Slackblocks::ActionsBlock.new(elements: [
+      Slackblocks::ButtonElement.new(text: "Approve", action_id: "approve", value: "release-42")
+    ])
+  ]
+)
+puts message.to_json
+```
+
+Use `Slackblocks::ModalView.new(title: "Approval", blocks: [...])` for a modal. See [Payloads](../reference/ruby/payloads) and [Components](../reference/ruby/components) for more patterns.
+
+</Ruby>
 </LanguageContent>
 
 ![A build status notification rendered in Slack](/img/usage/build_notification.png)

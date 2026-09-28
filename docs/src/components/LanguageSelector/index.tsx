@@ -16,6 +16,7 @@ const languageLabels: Record<Language, string> = {
   go: "Go",
   java: "Java",
   csharp: "C#",
+  ruby: "Ruby",
 };
 
 function LanguageLogo({ language }: { language: Language }) {
@@ -94,6 +95,13 @@ function LanguageLogo({ language }: { language: Language }) {
       >
         C#
       </text>
+    </svg>
+  );
+
+  if (language === "ruby") return (
+    <svg aria-hidden="true" className="language-selector__logo" viewBox="0 0 24 24">
+      <path fill="#cc342d" d="M4 3h16l3 8-11 12L1 11z" />
+      <path fill="#fff" d="M7 6h10l2 5-7 7-7-7z" opacity=".22" />
     </svg>
   );
 
