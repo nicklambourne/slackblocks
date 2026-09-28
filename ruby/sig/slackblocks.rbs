@@ -1,0 +1,76 @@
+module Slackblocks
+  VERSION: String
+  SPEC_VERSION: String
+
+  module KeywordOnly
+    def new: (*untyped args, **untyped keywords) -> untyped
+    def []: (*untyped args, **untyped keywords) -> untyped
+  end
+
+  module Value
+    def self.deep_freeze: (untyped value) -> untyped
+    def self.fail!: (String category, String path, String message) -> bot
+    def self.string: (untyped value, String path) -> String
+    def self.json_value: (untyped value, String path, ?Hash[untyped, untyped] seen) -> untyped
+    def self.normalize_field: (Hash[String, untyped] field, untyped value, String path) -> untyped
+    def self.construct: (untyped klass, Hash[Symbol, untyped] keywords) -> Hash[Symbol, untyped]
+    def self.detach: (untyped value) -> untyped
+    def self.wire: (untyped klass, Hash[Symbol, untyped] values) -> Hash[String, untyped]
+    def initialize: (**untyped keywords) -> void
+    def additional_fields: () -> Hash[String, untyped]
+    def to_h: () -> Hash[Symbol, untyped]
+    def with: (**untyped changes) -> self
+    def ==: (untyped other) -> bool
+    def eql?: (untyped other) -> bool
+    def hash: () -> Integer
+    def as_json: (?untyped options) -> Hash[String, untyped]
+    def to_json: (?untyped options) -> String
+  end
+
+  module Limits
+    VALUES: Hash[String, Integer]
+    def self.[]: (String path) -> Integer
+  end
+
+  module Vocabulary
+    ICON_NAMES: Array[String]
+    SURFACE_BLOCK_TYPES: Hash[String, Array[String]]
+  end
+
+  module Validator
+    def self.validate: (untyped klass, Hash[Symbol, untyped] values) -> untyped
+    def self.limit: (String key) -> Integer
+    def self.fail!: (String category, String path, String message) -> bot
+    def self.string_limit: (untyped value, String key, String path) -> untyped
+    def self.text_limit: (untyped value, String key, String path) -> untyped
+    def self.max_items: (untyped items, String key, String path) -> untyped
+    def self.special: (untyped klass, Hash[String, untyped] wire, String path) -> untyped
+    def self.surface: (Array[untyped] blocks, String name, String path) -> untyped
+    def self.standalone_task: (untyped value, String path) -> untyped
+    def self.message: (Hash[String, untyped] wire, String path) -> untyped
+    def self.tally: (untyped node, Hash[String, Integer] totals) -> untyped
+    def self.characters: (untyped node) -> Integer
+    def self.table: (Hash[String, untyped] wire, String path, bool data_table) -> untyped
+    def self.chart: (Hash[String, untyped] wire, String path) -> untyped
+    def self.check_limits: (untyped value, untyped prefix, String path) -> untyped
+  end
+
+  class ValidationError < StandardError
+    CATEGORIES: Array[String]
+    attr_reader category: String
+    attr_reader path: String
+    def initialize: (String category, String path, String message) -> void
+  end
+
+  module AccordionSection
+    def self.create: (title: String | PlainText, blocks: Array[Block], ?subtitle: String | Text?, ?icon: ImageElement?, ?expanded: bool, ?width: :narrow | :standard | :wide | :full, ?has_header_divider: bool, ?block_id: String?) -> ContainerBlock
+  end
+
+  module Accordion
+    def self.create: (sections: Array[ContainerBlock]) -> Array[Block]
+  end
+
+  module Paginator
+    def self.create: (action_id_prefix: String, blocks: Array[Block], ?page: Integer, ?page_size: Integer, ?previous_text: String, ?next_text: String, ?show_page_indicator: bool, ?block_id: String?) -> Array[Block]
+  end
+end

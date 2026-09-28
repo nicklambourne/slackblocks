@@ -1,0 +1,8 @@
+source "https://rubygems.org"
+
+gemspec
+
+gem "minitest", "~> 5.25"
+gem "rbs", "~> 3.8"
+gem "standard", "~> 1.48"
+gem "steep", "~> 1.10"

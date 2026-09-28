@@ -1,0 +1,15 @@
+target :lib do
+  library "json"
+  signature "sig"
+  check "lib"
+end
+
+target :consumer do
+  signature "sig"
+  check "typecheck/positive.rb"
+end
+
+target :negative do
+  signature "sig"
+  check "typecheck/negative"
+end
