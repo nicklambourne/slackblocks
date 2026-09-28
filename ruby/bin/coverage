@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+require "coverage"
+
+root = File.expand_path("..", __dir__)
+lib = File.join(root, "lib")
+Coverage.start(branches: true)
+
+require "minitest/autorun"
+Minitest.after_run do
+  files = Coverage.result.select { |path, _| path.start_with?("#{lib}/") || path == "#{lib}/slackblocks.rb" }
+  counts = files.values.flat_map { |data| data.fetch(:branches).values.flat_map(&:values) }
+  covered = counts.count(&:positive?)
+  percentage = 100.0 * covered / counts.length
+  puts format("Ruby branch coverage: %d/%d (%.1f%%)", covered, counts.length, percentage)
+  abort "Ruby branch coverage is below 90%" if percentage < 90
+end
+
+Dir[File.join(root, "test/*_test.rb")].sort.each { |path| require path }

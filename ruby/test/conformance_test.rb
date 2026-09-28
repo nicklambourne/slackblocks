@@ -1,5 +1,6 @@
 require_relative "test_helper"
 require_relative "invalid_cases"
+require_relative "valid_constructions"
 
 class FixtureDriver
   ROOT_TYPES = {
@@ -133,11 +134,21 @@ class ConformanceTest < Minitest::Test
     assert_empty entries
   end
 
+  def test_independent_constructions_cover_manifest
+    assert_equal IDS.sort, ValidConstructions::CONSTRUCTIONS.keys.sort
+  end
+
   IDS.each do |id|
     define_method("test_valid_#{id.tr("/", "_")}") do
       expected = JSON.parse(File.read(File.join(ROOT, "spec/fixtures/valid", "#{id}.json")))
       driver = FixtureDriver.new
       built = driver.build(expected, driver.root_type(id), id)
+      assert_equal expected, JSON.parse(built.to_json)
+    end
+
+    define_method("test_independent_#{id.tr("/", "_")}") do
+      expected = JSON.parse(File.read(File.join(ROOT, "spec/fixtures/valid", "#{id}.json")))
+      built = ValidConstructions::CONSTRUCTIONS.fetch(id).call
       assert_equal expected, JSON.parse(built.to_json)
     end
   end
