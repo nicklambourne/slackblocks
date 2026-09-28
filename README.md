@@ -39,14 +39,14 @@ your tests, rather than in production.
   `client.chat_postMessage(**message)` with [`slack-sdk`](https://pypi.org/project/slack-sdk/),
   pass a payload directly to [`@slack/web-api`](https://www.npmjs.com/package/@slack/web-api),
   pass Go block builders directly to [`slack-go/slack`](https://github.com/slack-go/slack), pass Java blocks directly to the [official Slack Java SDK](https://slack.dev/java-slack-sdk/), or serialize C# values with `System.Text.Json`.
-- **One library, five languages** — the same blocks, validation rules, and version
-  numbers in Python, TypeScript, Go, Java, and C#. A shared conformance corpus keeps all five
+- **One library, six languages** — the same blocks, validation rules, and version
+  numbers in Python, TypeScript, Go, Java, C#, and Ruby. A shared conformance corpus keeps all six
   implementations emitting the same Slack JSON.
 - **Everything Block Kit ships today** — all current blocks and elements, rich text,
   modals and Home tabs, and the 2025 block families (tables, cards, carousels, charts).
 - **Light** — zero runtime dependencies in Python, a self-contained ESM module on npm,
   one direct Go dependency (`slack-go/slack`), Java integration through the official Slack model interfaces,
-  and no dependencies beyond .NET itself in C#.
+  no dependencies beyond .NET itself in C#, and only Ruby's default JSON gem in Ruby.
 
 ## Installation
 
@@ -83,6 +83,12 @@ C# (.NET 8+):
 
 ```bash
 dotnet add package Slackblocks
+```
+
+Ruby (3.3+, from the coordinated 2.5.0 release):
+
+```bash
+gem install slackblocks
 ```
 
 ## Quickstart
@@ -238,7 +244,7 @@ var message = new MessagePayload(
 - **Full docs:** <https://nicklambourne.github.io/slackblocks/>
 - [Installation](https://nicklambourne.github.io/slackblocks/usage/installation)
 - [Using Blocks](https://nicklambourne.github.io/slackblocks/usage/using_blocks) — every
-  block type with code in all five languages, the JSON it produces, and screenshots.
+  block type with code in all six languages, the JSON it produces, and screenshots.
 - [Sending Messages](https://nicklambourne.github.io/slackblocks/usage/sending_messages)
 - [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end
   recipes for build notifications, approval requests, modals, and more.
@@ -247,10 +253,11 @@ var message = new MessagePayload(
   [TypeScript](https://nicklambourne.github.io/slackblocks/reference/typescript), and
   [Go](https://nicklambourne.github.io/slackblocks/reference/go), and
   [Java](https://nicklambourne.github.io/slackblocks/reference/java), and
-  [C#](https://nicklambourne.github.io/slackblocks/reference/csharp).
+  [C#](https://nicklambourne.github.io/slackblocks/reference/csharp), and
+  [Ruby](https://nicklambourne.github.io/slackblocks/reference/ruby).
 - [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/usage/migration) ·
   [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/usage/troubleshooting)
-- Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md) · [Go](go/CHANGELOG.md) · [Java](java/CHANGELOG.md) · [C#](csharp/CHANGELOG.md)
+- Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md) · [Go](go/CHANGELOG.md) · [Java](java/CHANGELOG.md) · [C#](csharp/CHANGELOG.md) · [Ruby](ruby/CHANGELOG.md)
 - [Roadmap](ROADMAP.md) — including the TypeScript legacy API removal planned for v3.0.
 
 ## Repository layout
@@ -260,8 +267,9 @@ var message = new MessagePayload(
 - [`go/`](go/) — the Go v2 module (`github.com/nicklambourne/slackblocks/go/v2`).
 - [`java/`](java/) — the Java artifact (`io.github.nicklambourne:slackblocks` on Maven Central).
 - [`csharp/`](csharp/) — the .NET package (`Slackblocks` on NuGet).
+- [`ruby/`](ruby/) — the Ruby gem (`slackblocks` on RubyGems from 2.5.0).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
-  and capability coverage that all five implementations are tested against.
+  and capability coverage that all six implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.
 
 ## Licensing
