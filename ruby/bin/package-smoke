@@ -1,16 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-for mount in /Volumes/Repos /Volumes/Cache /Volumes/Scratch; do
-  test -d "$mount" || { echo "Required mount unavailable: $mount" >&2; exit 1; }
-done
+if [[ -d /Volumes/Repos || -d /Volumes/Cache || -d /Volumes/Scratch ]]; then
+  for mount in /Volumes/Repos /Volumes/Cache /Volumes/Scratch; do
+    test -d "$mount" || { echo "Required mount unavailable: $mount" >&2; exit 1; }
+  done
+  scratch_root=/Volumes/Scratch
+  export BUNDLE_PATH="${BUNDLE_PATH:-/Volumes/Cache/bundle/slackblocks-ruby34}"
+  export BUNDLE_DISABLE_SHARED_GEMS=true
+else
+  scratch_root="${RUNNER_TEMP:?RUNNER_TEMP must be set outside mini}"
+fi
 
 ruby_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ruby_bin="${RUBY_BIN:-/opt/homebrew/opt/ruby@3.4/bin/ruby}"
+if [[ -x /opt/homebrew/opt/ruby@3.4/bin/ruby ]]; then
+  ruby_bin="${RUBY_BIN:-/opt/homebrew/opt/ruby@3.4/bin/ruby}"
+else
+  ruby_bin="${RUBY_BIN:-$(command -v ruby)}"
+fi
 gem_bin="$(dirname "$ruby_bin")/gem"
-rbs_bin="$(dirname "$ruby_bin")/rbs"
 version="$("$ruby_bin" -I "$ruby_root/lib" -r slackblocks/version -e 'print Slackblocks::VERSION')"
-scratch="$(mktemp -d /Volumes/Scratch/slackblocks-ruby-smoke-XXXXXX)"
+scratch="$(mktemp -d "$scratch_root/slackblocks-ruby-smoke-XXXXXX")"
 trap 'rm -rf "$scratch"' EXIT
 gem_file="$scratch/slackblocks-$version.gem"
 install="$scratch/install"
@@ -44,7 +54,7 @@ message = Slackblocks::MessagePayload.new(channel: "C123", blocks: [section])
 abort "bad installed output" unless JSON.parse(message.to_json).dig("blocks", 0, "text", "text") == "Installed gem"
 abort "checkout runtime loaded" if $LOADED_FEATURES.any? { |path| path.start_with?(root) }
 RUBY
-  "$rbs_bin" -I "$install/gems/slackblocks-$version/sig" validate
+  PATH="$(dirname "$ruby_bin"):$PATH" BUNDLE_GEMFILE="$ruby_root/Gemfile" bundle exec rbs -I "$install/gems/slackblocks-$version/sig" validate
 
   ln -s "$install/gems/slackblocks-$version/sig" sig
   cat > Steepfile <<RBS
@@ -59,9 +69,7 @@ require "slackblocks"
 section = Slackblocks::SectionBlock.new(text: "Installed")
 Slackblocks::MessagePayload.new(channel: "C123", blocks: [section]).to_json
 RUBY
-  PATH="$(dirname "$ruby_bin"):$PATH" BUNDLE_GEMFILE="$ruby_root/Gemfile" \
-    BUNDLE_PATH=/Volumes/Cache/bundle/slackblocks-ruby34 BUNDLE_DISABLE_SHARED_GEMS=true \
-    bundle exec steep check
+  PATH="$(dirname "$ruby_bin"):$PATH" BUNDLE_GEMFILE="$ruby_root/Gemfile" bundle exec steep check
 )
 
 echo "Built, inspected, installed, and type-checked slackblocks $version outside the checkout"
