@@ -352,4 +352,12 @@ For the full development guide — testing conventions, the conformance-fixture 
 docstring style, and the release process — see the
 [Contributing page](https://nicklambourne.github.io/slackblocks/contributing).
 
+Adding a newly released Slack component or field? Follow the in-repo
+[Adding New Block Kit Features](docs/docs/contributing/maintaining-block-kit.mdx) for the shared
+contract, implementation, test, and documentation checklist.
+
+Adding a new language? Follow the in-repo
+[language implementation guide](docs/docs/contributing/adding-a-language.mdx) for native API
+design, parity, testing, documentation, packaging and release integration.
+
 Bug reports and feature requests: <https://github.com/nicklambourne/slackblocks/issues>.
