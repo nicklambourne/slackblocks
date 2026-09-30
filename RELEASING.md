@@ -13,7 +13,7 @@ version and changelogs, creates all six annotated tags in one atomic push,
 dispatches each publisher at its tag, and waits for all six runs.
 
 When adding another language package, complete the
-[new language implementation workflow](docs/docs/adding-a-language.mdx) before
+[new language implementation workflow](docs/docs/contributing/adding-a-language.mdx) before
 activating its publisher. That guide covers registry bootstrap, dry-run checks,
 coordinator integration and documentation history alongside implementation parity.
 

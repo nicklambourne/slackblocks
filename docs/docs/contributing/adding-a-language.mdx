@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 2
 slug: /contributing/new-language
 sidebar_label: Adding a language
 ---
@@ -17,7 +17,7 @@ start of the project. A plan or an unfinished implementation does not add a
 language to the release set.
 
 Paths and commands below are relative to the repository root unless stated
-otherwise. Read [Contributing](./contributing.mdx),
+otherwise. Read [Contributing](./index.mdx),
 [the specification](https://github.com/nicklambourne/slackblocks/blob/master/spec/SPEC.md),
 [the implementation principles](https://github.com/nicklambourne/slackblocks/blob/master/spec/PRINCIPLES.md),
 and [ADR 0002](https://github.com/nicklambourne/slackblocks/blob/master/spec/ADR.md#adr-0002-shared-model-generated-apis-and-lockstep-releases)
@@ -56,7 +56,7 @@ disposition; they need not be copied into a new API.
 
 Adding a language to the existing contract does not itself change the spec
 version. If the work discovers a missing capability or conflicting rule, resolve
-it through [Adding or updating Block Kit support](./maintaining-block-kit.mdx)
+it through [Adding New Block Kit Features](./maintaining-block-kit.mdx)
 and update the existing implementations too. Do not change shared fixtures just
 to fit the new implementation.
 
@@ -331,7 +331,7 @@ examples with `docs/examples/section_hello.json` where applicable.
 | Search | `docs/plugins/language-search-indexes.cjs`, `docs/src/theme/SearchBar/`, `docs/src/theme/SearchPage/` |
 | Site configuration and reference generation | `docs/docusaurus.config.ts` (versions, labels, syntax highlighting), `docs/package.json`, `docs/scripts/generate_*_reference.*`, `docs/scripts/reference_pages.mjs`, `docs/docs/reference/index.mdx` |
 | Regression guards | `docs/scripts/check_language_content.mjs`, `check_search_language.mjs`, `check_version_selector.mjs`, `check_release_snapshots.mjs` in the same scripts directory; add native snippet/reference-rendering checks to the build |
-| Maintainer instructions | Root `README.md`, `AGENTS.md`, `RELEASING.md`, `docs/docs/contributing.mdx`, this guide and `docs/docs/maintaining-block-kit.mdx`; update language maps in `spec/SPEC.md` and `spec/PRINCIPLES.md` |
+| Maintainer instructions | Root `README.md`, `AGENTS.md`, `RELEASING.md`, `docs/docs/contributing/index.mdx`, this guide and `docs/docs/contributing/maintaining-block-kit.mdx`; update language maps in `spec/SPEC.md` and `spec/PRINCIPLES.md` |
 
 Search for existing language lists and patterns as a cross-check; this table is
 not a substitute for finding integration points added since it was written.

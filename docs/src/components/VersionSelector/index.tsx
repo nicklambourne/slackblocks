@@ -91,10 +91,18 @@ function targetDoc(
   if (alternateDoc) return alternateDoc;
   if (!activeDoc) return versionMainDoc(version);
 
+  // The current overview moved into a category; frozen versions retain its old ID.
+  const contributingId =
+    activeDoc.id === "contributing"
+      ? "contributing/index"
+      : activeDoc.id === "contributing/index"
+        ? "contributing"
+        : null;
   const candidateIds =
     version.name === CURRENT_VERSION
-      ? [currentReferenceId(activeDoc.id)]
+      ? [contributingId, currentReferenceId(activeDoc.id)]
       : [
+          contributingId,
           historicalReferenceId(activeDoc.id),
           activeDoc.id === "quick-start" ? "usage/installation" : null,
         ];
@@ -119,6 +127,11 @@ function targetHash(
 ): string {
   if (!hash || !activeDoc) return "";
   if (activeDoc.id === nextDoc.id) return hash;
+  if (
+    [activeDoc.id, nextDoc.id].every(
+      (id) => id === "contributing" || id === "contributing/index",
+    )
+  ) return hash;
 
   const currentReference = currentReferenceId(activeDoc.id);
   const historicalReference = activeDoc.id.startsWith("reference/python/")

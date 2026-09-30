@@ -5,7 +5,7 @@ This open source repository uses GitHub-provided runners for GitHub Actions. The
 ## Block Kit changes
 
 When adding or changing a Block Kit type, field, vocabulary, validation rule, or
-composition helper, follow [Adding or updating Block Kit support](docs/docs/maintaining-block-kit.mdx).
+composition helper, follow [Adding New Block Kit Features](docs/docs/contributing/maintaining-block-kit.mdx).
 Start with official Slack evidence and the shared contract; update every
 maintained implementation using its native API, regenerate owned outputs, and
 verify conformance, exports, documentation and package checks. Do not treat raw
@@ -14,7 +14,7 @@ the guide's language and verification lists whenever a new implementation ships.
 
 ## New language implementations
 
-Follow [Adding a language implementation](docs/docs/adding-a-language.mdx).
+Follow [Adding a language implementation](docs/docs/contributing/adding-a-language.mdx).
 Review a native API prototype and parity inventory before bulk generation. Cover
 the shared contract, useful helpers, independent public API coverage, language
 quality gates, standalone packaging, documentation and coordinated releases.
