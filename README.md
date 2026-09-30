@@ -356,4 +356,8 @@ Adding a newly released Slack component or field? Follow the in-repo
 [Block Kit maintenance guide](docs/docs/maintaining-block-kit.mdx) for the shared
 contract, implementation, test, and documentation checklist.
 
+Adding a new language? Follow the in-repo
+[language implementation guide](docs/docs/adding-a-language.mdx) for native API
+design, parity, testing, documentation, packaging and release integration.
+
 Bug reports and feature requests: <https://github.com/nicklambourne/slackblocks/issues>.

@@ -7,6 +7,10 @@ For the end-to-end maintenance workflow, follow
 including official Slack evidence, native implementations, regeneration,
 conformance, documentation, and release readiness.
 
+For a new language implementing this contract, follow
+[Adding a language implementation](../docs/docs/adding-a-language.mdx) for native
+API design, independent conformance, helper parity, packaging and integration.
+
 ## Valid fixtures
 
 `fixtures/valid/` contains canonical Slack Block Kit JSON. Every entry in `manifest.json` must be constructed through an implementation's public API and compared as parsed JSON. Every harness enforces this generatively: each maps every manifest fixture ID to a construction through its public API and fails for unregistered IDs and for constructions whose rendered JSON differs from the fixture. Object key order and whitespace are not significant; array order and values are significant.

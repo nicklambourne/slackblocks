@@ -11,3 +11,12 @@ maintained implementation using its native API, regenerate owned outputs, and
 verify conformance, exports, documentation and package checks. Do not treat raw
 JSON escape hatches or nonempty release skip lists as completed support. Extend
 the guide's language and verification lists whenever a new implementation ships.
+
+## New language implementations
+
+Follow [Adding a language implementation](docs/docs/adding-a-language.mdx).
+Review a native API prototype and parity inventory before bulk generation. Cover
+the shared contract, useful helpers, independent public API coverage, language
+quality gates, standalone packaging, documentation and coordinated releases.
+Keep publication disabled until the complete implementation and registry setup
+are ready; preserve outgoing documentation before adding new-language content.
