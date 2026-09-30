@@ -1,10 +1,10 @@
 ---
-sidebar_position: 6
+sidebar_position: 1
 slug: /contributing/block-kit-updates
-sidebar_label: Adding Block Kit support
+sidebar_label: Adding New Block Kit Features
 ---
 
-# Adding or updating Block Kit support
+# Adding New Block Kit Features
 
 Use this workflow when Slack releases a block, element, composition object, field,
 vocabulary value, or validation rule. It also applies to higher-level helpers
@@ -18,7 +18,7 @@ planned implementation is not yet a required package.
 
 To add another implementation of the existing contract, follow
 [Adding a language implementation](./adding-a-language.mdx).
-The [contributing guide](./contributing.mdx) covers setup and language checks.
+The [contributing guide](./index.mdx) covers setup and language checks.
 [The shared specification](https://github.com/nicklambourne/slackblocks/blob/master/spec/SPEC.md),
 [implementation principles](https://github.com/nicklambourne/slackblocks/blob/master/spec/PRINCIPLES.md),
 and [ADR 0002](https://github.com/nicklambourne/slackblocks/blob/master/spec/ADR.md#adr-0002-shared-model-generated-apis-and-lockstep-releases)
@@ -170,7 +170,7 @@ away type errors, silently drop fields, or advertise an unsupported integration.
 
 ### Regenerate after handwritten model consumers are updated
 
-From the repository root, with the [development tools installed](./contributing.mdx#run-the-checks)
+From the repository root, with the [development tools installed](./index.mdx#run-the-checks)
 and JDK 21 or newer selected for Java formatting:
 
 ```bash
@@ -198,7 +198,7 @@ contextual validators still need handwritten changes and tests.
 
 ## 5. Verify the complete change
 
-Run the [language checks](./contributing.mdx#run-the-checks) for **all maintained
+Run the [language checks](./index.mdx#run-the-checks) for **all maintained
 implementations** after any shared contract change, including their unit,
 conformance, typing/lint, coverage and package checks. Use the current workflow
 commands for additional gates rather than reducing checks to a single example:

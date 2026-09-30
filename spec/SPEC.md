@@ -3,12 +3,12 @@
 Version 1.2.0 defines the language-neutral contract for slackblocks implementations.
 
 For the end-to-end maintenance workflow, follow
-[Adding or updating Block Kit support](../docs/docs/maintaining-block-kit.mdx),
+[Adding New Block Kit Features](../docs/docs/contributing/maintaining-block-kit.mdx),
 including official Slack evidence, native implementations, regeneration,
 conformance, documentation, and release readiness.
 
 For a new language implementing this contract, follow
-[Adding a language implementation](../docs/docs/adding-a-language.mdx) for native
+[Adding a language implementation](../docs/docs/contributing/adding-a-language.mdx) for native
 API design, independent conformance, helper parity, packaging and integration.
 
 ## Valid fixtures
