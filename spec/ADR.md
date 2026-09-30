@@ -40,3 +40,11 @@ ADR 0001 was written for two hand-written implementations. Since then Go, Java, 
 ## Consequences
 
 Generated sources are checked in, and CI regenerates them and fails on any difference. The shared corpus remains the arbiter of cross-language agreement for generated and hand-written implementations alike. Hand-written implementations keep their idiomatic APIs and documented divergences, and implement each new capability by hand in the same pull request as its fixtures, or record it in their skip list. A limit changes by editing `limits.json` and regenerating, not by editing each language.
+
+## Ruby follow-up (2026-09-28)
+
+Ruby joined the coordinated release in 2.5.0. Its public values, limits,
+vocabulary, RBS signatures, and reference metadata are generated from the
+shared model and registries. The same lockstep version and conformance decisions
+apply to Ruby; the language counts above describe the repository when ADR 0002
+was accepted.

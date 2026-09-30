@@ -32,6 +32,13 @@ major release.
 - Add C#-specific guides and generated API reference documentation to the
   language-aware documentation site.
 
+## 2.5
+
+- Add a Ruby 3.3+ gem with immutable validated values, generated RBS signatures,
+  and the shared conformance suite.
+- Publish Ruby to RubyGems with the other five packages in the coordinated release.
+- Add Ruby guides and a generated API reference to the language-aware docs site.
+
 ## 3.0
 
 - Remove every deprecated lowercase TypeScript factory and its root-package re-export.
