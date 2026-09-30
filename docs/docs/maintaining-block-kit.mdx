@@ -1,0 +1,330 @@
+---
+sidebar_position: 6
+slug: /contributing/block-kit-updates
+sidebar_label: Adding Block Kit support
+---
+
+# Adding or updating Block Kit support
+
+Use this workflow when Slack releases a block, element, composition object, field,
+vocabulary value, or validation rule. It also applies to higher-level helpers
+that compose existing blocks. Start with the shared contract, implement the
+behavior in every maintained language, then verify the public APIs and docs.
+
+The current implementations are Python, TypeScript, Go, Java, C#, and Ruby. Check
+the packages, CI workflows, and coordinated release before starting: when a new
+language ships, extend this guide's implementation and verification lists. A
+planned implementation is not yet a required package.
+
+The [contributing guide](./contributing.mdx) covers setup and language checks.
+[The shared specification](https://github.com/nicklambourne/slackblocks/blob/master/spec/SPEC.md),
+[implementation principles](https://github.com/nicklambourne/slackblocks/blob/master/spec/PRINCIPLES.md),
+and [ADR 0002](https://github.com/nicklambourne/slackblocks/blob/master/spec/ADR.md#adr-0002-shared-model-generated-apis-and-lockstep-releases)
+define the contract. Paths and commands below are relative to the repository
+root unless a working directory is stated.
+
+## 1. Establish what Slack supports
+
+Start with the [Slack developer changelog](https://docs.slack.dev/changelog/) and
+the specific page in the [Block Kit reference](https://docs.slack.dev/reference/block-kit/).
+Record the exact reference URL, date checked, and release or availability caveats
+in the PR. An SDK type definition or an example payload alone is not enough to
+establish the whole contract.
+
+Write a short field-and-rule table before implementation:
+
+| Question | Evidence to record |
+| --- | --- |
+| What is it? | Block, nested element, composition object, payload field, vocabulary addition, or library helper; exact wire discriminator, including when none is emitted. |
+| Where is it allowed? | Message, modal, App Home, attachment, and permitted parent roles such as section accessory, actions, input, context, table cell or rich-text child. |
+| What data does it accept? | Wire names/types, required fields, optional fields, defaults, explicit null/omission, enum values, text kind and string coercion. |
+| What makes it invalid? | Scalar boundaries, Unicode counting, mutually exclusive fields, required combinations, parent-dependent rules and aggregate payload limits. |
+| What else changes? | Existing types that can contain it, SDK integration, parsing paths, exports, helpers, docs and backwards compatibility. |
+
+Use Slack's [`blocks.validate`](https://docs.slack.dev/reference/methods/blocks.validate/)
+for targeted synthetic probes when available. It accepts exactly one of
+`blocks`, `message`, or `view`; each is a JSON-encoded value. Validate the full
+receiving message/view as well as a standalone block, because parent rules can
+differ. Capture sanitized request JSON, the response's `ok` value, error pointer
+and constraint, and the date. A successful HTTP status alone is not validation.
+Use [Block Kit Builder](https://app.slack.com/block-kit-builder) for visual review;
+record visual checks separately from schema checks.
+
+If docs and the validator disagree, isolate the smallest example and check
+rollout/context differences. The spec's existing policy uses the stricter
+confirmed rule, and the validator where documentation is silent. Record the
+conflict and the chosen rule in the spec changelog; do not guess a limit or turn
+an authentication, rate-limit, or service failure into a validation rule. If a
+probe cannot be completed, state that limitation rather than calling it tested.
+Keep ordinary conformance tests deterministic and offline. Live probing is
+maintenance evidence, not a network dependency for contributors' test suites.
+
+## 2. Decide the change's scope
+
+| Change | Shared contract work | Implementation work |
+| --- | --- | --- |
+| New block/element/object | Model type and role membership, valid fixtures, capability mapping, applicable limits/vocabulary/invalid cases | Typed public construction, parent acceptance, serialization, validation, exports and supported SDK/parsing integration in every language |
+| New field on an existing type | Model field; fixtures exercising both supplied and omitted forms; new rules if needed | Native parameter/setter/getter and applicable parse path; retain existing construction and defaults |
+| New enum/icon/surface value | Model enum or vocabulary registry; valid placement and invalid boundary cases | Update generated/native vocabularies and role/surface validation |
+| Corrected limit or structural rule | Evidence, limit leaf when scalar, valid boundary and invalid cases, compatibility note | Regenerate constants; implement contextual rule logic in every language |
+| Higher-level helper | Reuse registered primitives; document whether it adds a shared wire capability or is an explicitly covered helper | Native helper API, expansion/order/validation tests and docs in every language |
+
+Do not implement a new modeled field solely through an extension map, Go `Set`,
+raw JSON, unchecked casts, or validation bypasses. Those escape hatches do not
+establish first-class support. A helper that expands to several blocks must still
+obey the receiving surface and block-count limits after expansion.
+
+## 3. Update the shared contract first
+
+### Model, limits and vocabulary
+
+Edit `spec/model.json` for the type/field definition, including the existing
+package/name conventions, wire name/type, role interfaces, field kind and child
+type, required/default/coercion behavior, descriptions, rule descriptions and
+Slack link. Model prose should explain the wire contract without promising one
+language's SDK behavior to every language.
+
+Check all parents that should accept the new type. A matching `type` string is
+not enough: image blocks and image elements share a discriminator but have
+different roles. A new field kind or interface also needs support in every
+consumer of the model. Do not hide an unsupported kind behind a generic map.
+
+Put stable scalar bounds in `spec/limits.json` and refer to their dotted paths
+from the model. Every scalar leaf needs an invalid case whose `constraint`
+exactly matches that path. Use the established inclusive/exclusive conventions;
+requiredness and contextual rules remain structural checks unless the registry
+already represents the constraint. Put Slack icon names and surface block types
+in `spec/vocabulary.json`. Python, TypeScript and Go maintain native vocabulary
+tables with equality tests; Java, C# and Ruby generate them.
+
+### Valid fixtures and capabilities
+
+1. Add canonical JSON under `spec/fixtures/valid/` in the relevant domain.
+2. Register its relative ID, description, exact `slack_docs` URL and spec `since`
+   version in `spec/manifest.json`.
+3. Add or extend the capability's fixture list in `spec/coverage.json`. A field
+   addition usually extends an existing capability; a new JSON-producing type
+   normally needs a capability. A supporting object can be exercised nested in
+   a fixture, but its public export still needs a mapping.
+4. Add a minimal construction, an optional-field example, and relevant boundary
+   or nested-context cases. Reuse fixtures when they cover the behavior clearly.
+
+Shared fixtures compare parsed JSON: object order/whitespace is irrelevant,
+array order and values are significant. Pin explicit IDs and visibility/default
+fields where the [documented language divergences](https://github.com/nicklambourne/slackblocks/blob/master/spec/PRINCIPLES.md#documented-policies-and-intentional-divergences)
+require it. For example, Python generates an omitted `block_id`; other current
+implementations omit it. Do not rewrite legacy defaults to make a fixture pass.
+
+### Invalid cases and boundaries
+
+Add cases to `spec/fixtures/invalid/manifest.json` with a unique ID, normative
+category, constraint path and description. The allowed categories are
+`length-exceeded`, `out-of-range`, `mutually-exclusive`, `type-mismatch`,
+`missing-required`, and `invalid-usage`. Follow existing category semantics;
+missing, empty and wrong-type values can have different outcomes.
+
+For each rule, cover acceptance and rejection: at/beyond a maximum, at/below a
+minimum, missing required data, invalid combinations, wrong child role and wrong
+surface. Isolate the intended failure so another invalid field does not decide
+the error first. Use astral-plane characters for text boundaries: shared limits
+count Unicode code points, not bytes or UTF-16 units. Also test omitted versus
+false/zero/empty values where they are meaningful.
+
+Keep parent-specific rules local to that context. Existing examples include
+pending task cards being allowed inside plans, message-wide markdown/data-table
+text totals, and ordinary tables allowing ragged rows while data tables require
+rectangular rows. A generic rule must not accidentally remove valid behavior
+from another component.
+
+## 4. Implement native APIs in every language
+
+Use the nearby implementation of the same kind as a guide. Public names, casing,
+construction and error types follow the language; wire output and error category
+follow the spec. Extend serialization and any already-supported parsing path,
+typed accessors, equality/copy behavior and public exports as appropriate.
+
+| Language | Main places to change | Conformance and public API checks |
+| --- | --- | --- |
+| Python | `python/slackblocks/` domain modules, `__init__.py`, type annotations, `_surfaces.py` and other contextual validation | `python/test/conformance/valid_constructions.py`, `test_conformance.py`, `test_capabilities.py`, limits/vocabulary tests; unit and docs tests |
+| TypeScript | `typescript/src/fluent/`, `validation.ts`, `index.ts`, underlying domain/legacy helpers where the feature is exposed | `typescript/test/conformance.test.ts`, fluent/type/validation tests and package checks; test both public paths when both expose the capability |
+| Go | Domain constructors/coercions, `validation.go`, `fields.go`, `internal/builder_methods.json`, and generator role/type mappings | `go/conformance_test.go`, `invalid_conformance_test.go`, `capabilities_test.go`, typed API and SDK integration tests |
+| Java | Shared model/generator plus handwritten `internal/Validator.java`, supporting roles/SDK serialization where needed | `java/src/test/java/io/github/nicklambourne/slackblocks/`: conformance, invalid cases, `CapabilityRegistryTest`, typed getters and SDK tests |
+| C# | Shared model/generator plus handwritten core/validation/supporting types under `csharp/src/Slackblocks/` | `csharp/tests/Slackblocks.Tests/`: `FixtureDriver`, conformance, invalid cases, `CapabilityTests`, API and snippet tests |
+| Ruby | Shared model/generator plus `ruby/lib/slackblocks/value.rb`, `validator.rb`, supporting types/helpers | `ruby/test/valid_constructions.rb`, `invalid_cases.rb`, `registry_test.rb`; `ruby/conformance/capabilities.json`, RBS/Steep consumer checks and installed-gem tests |
+
+Each harness must attempt every registered fixture/case through its public API.
+Extend its construction mapping or driver; do not deserialize the expected JSON
+and return it as the implementation result. Ensure the new public symbol is
+included in export discovery and capability mapping, with no stale exclusions.
+Add native tests for behavior the shared corpus cannot express, such as type
+checking, builder reuse, immutable updates, equality and foreign-SDK handoff.
+
+Check the installed upstream SDK/type packages, especially TypeScript
+`@slack/types`, Go `slack-go/slack` and the Java Slack SDK. If a released Slack
+feature precedes SDK support, use the package's established typed adapter or
+structural extension pattern and test actual serialization/handoff. A dependency
+upgrade must preserve supported runtimes. Record a genuine blocker; do not cast
+away type errors, silently drop fields, or advertise an unsupported integration.
+
+### Regenerate after handwritten model consumers are updated
+
+From the repository root, with the [development tools installed](./contributing.mdx#run-the-checks)
+and JDK 21 or newer selected for Java formatting:
+
+```bash
+python3 python/generator/generate_limits.py
+(cd go && go generate ./...)
+python3 java/generator/generate_models.py --check-go
+(cd java && ./mvnw spotless:apply)
+python3 csharp/generator/generate_models.py
+python3 ruby/generator/generate_models.py
+python3 ruby/generator/generate_models.py --check
+```
+
+Update Go's constructor/method registry first: Java's `--check-go` compares it
+with the model and should fail on disagreement. C# also consumes helpers from the
+Java generator. Review Go generator role/type mappings when adding a type, not
+just its method list. TypeScript reads the shared limits directly; it has no
+separate limits-generation command.
+
+Commit generated source, constants, Ruby RBS and reference metadata with their
+inputs. Never fix a generated file alone. Review `git status --short` as well as
+`git diff --check` so new and stale outputs are visible. After committing or
+staging the intended results, rerun generation: there must be no further source
+diff or unexplained untracked output. Generation does not implement every rule;
+contextual validators still need handwritten changes and tests.
+
+## 5. Verify the complete change
+
+Run the [language checks](./contributing.mdx#run-the-checks) for **all maintained
+implementations** after any shared contract change, including their unit,
+conformance, typing/lint, coverage and package checks. Use the current workflow
+commands for additional gates rather than reducing checks to a single example:
+
+- Python: `.github/workflows/unit-tests.yml`, type/lint/format and package workflows.
+- TypeScript: `.github/workflows/typescript.yml`.
+- Go: `.github/workflows/go.yml`.
+- Java: `.github/workflows/java.yml`; Java 17 compatibility and the newer-JDK quality gates.
+- C#: `.github/workflows/dotnet.yml`.
+- Ruby: `.github/workflows/ruby.yml`; generated signatures, negative typing cases,
+  coverage and the package smoke test as well as unit/conformance tests.
+- Documentation: `.github/workflows/docs.yml`.
+
+Verify the affected CI jobs actually ran their checks; an irrelevant-path skip
+is not evidence. If a new input path is outside a workflow's filter, update that
+filter and preserve stable required check names. Actions use GitHub-provided
+runners under this repository's policy.
+
+All fixture IDs, scalar leaves, capability mappings and declared spec versions
+must agree with the registries. Discover IDs rather than increasing a hardcoded
+test count. Release skip lists must be empty. Existing harnesses hard-fail on
+nonempty lists: a temporary, explicitly tracked transition gap is incomplete
+work, not permission to merge a green-looking partial feature or release it.
+Do not weaken those assertions to finish a component.
+
+## 6. Document it where users will find it
+
+Update public API comments/docstrings, parameter types, requiredness, defaults,
+limits, validation failures and Slack links. Generated API prose comes from the
+model/generator; handwritten helpers need their own comments. Add or revise the
+relevant usage/cookbook page with native examples for every exposed language,
+and put reusable executable examples under `docs/examples/` where appropriate.
+Do not label support complete until a user can find and construct the feature.
+
+Generate and build the full docs site from the repository root:
+
+```bash
+pnpm --filter @slackblocks/docs build
+pnpm --filter @slackblocks/docs check:release-snapshots
+```
+
+The build generates API references and runs language, snippet, search, version
+and reference-rendering checks. Inspect the new reference entry and guide output
+as well: check actual parameter names, internal links and language selection.
+Update a reference generator's grouping/export discovery if a new kind would
+otherwise disappear from the site. Do not hand-edit generated reference pages.
+
+Change current docs only. Frozen `docs/versioned_docs/` and legacy snapshots
+represent earlier releases. Follow the outgoing-snapshot procedure in
+[RELEASING.md](https://github.com/nicklambourne/slackblocks/blob/master/RELEASING.md)
+before advancing the package version. If a snapshot must be made after feature
+docs have changed on a branch, generate it from the verified outgoing release's
+documentation; do not backdate the new feature into that snapshot.
+
+## 7. Record compatibility and release readiness
+
+Record wire/validation changes in `spec/CHANGELOG.md` and the affected package
+changelogs. Decide the spec version explicitly: a new capability, accepted value
+or changed validation contract needs a version decision; prose-only corrections
+do not change conformance. State whether existing caller code or previously
+accepted payloads are affected. Stricter validation and required constructor
+changes need compatibility review even if motivated by new Slack documentation.
+
+When the spec version changes, update `spec/manifest.json`,
+`spec/fixtures/invalid/manifest.json`, `spec/coverage.json`, the version in
+`spec/SPEC.md`, and each declaration:
+
+- Python: `python/slackblocks/__init__.py` (`SPEC_VERSION`).
+- TypeScript: `typescript/src/index.ts` (`specVersion`) and
+  `typescript/package.json` (`slackblocksSpecVersion`).
+- Go: `go/doc.go` (`SpecVersion`).
+- Java: `java/src/main/java/io/github/nicklambourne/slackblocks/Slackblocks.java`.
+- C#: `csharp/src/Slackblocks/SlackblocksInfo.cs`.
+- Ruby: `ruby/lib/slackblocks/version.rb` (`SPEC_VERSION`).
+
+Use the chosen spec version for new fixture `since` values; retain historical
+`since` values on existing fixtures. Spec and package versions serve different
+purposes. Packages publish together at one coordinated version; adding a feature
+does not authorize tagging or publishing. Release preparation and dispatch
+follow `RELEASING.md`.
+
+## Worked example: adding a second image source
+
+The existing `slack_file` support shows why a field addition needs more than a
+setter. Use it as a navigation example, not as an instruction to add it again:
+
+1. Find `ImageBlock`, `ImageElement` and `SlackFile` in `spec/model.json`. Both
+   image roles accept the object, and the public APIs retain URL construction.
+2. Read `blocks/image_block_slack_file`, `elements/image_slack_file_id` and
+   `elements/image_slack_file_url` in the valid manifest and fixture directory.
+   Their capability mappings extend `blocks.image` and `elements.image`; the
+   supporting Slack-file capability is covered by nested construction.
+3. Read `image-block-url-and-slack-file`, `image-block-missing-source`,
+   `image-url-and-slack-file` and `slack-file-id-malformed` in the invalid
+   manifest. The new source introduces exclusivity, required-source and ID
+   format rules with distinct categories.
+4. Follow those IDs through every language's construction/invalid harness,
+   generated fields, handwritten validation and native API tests.
+5. Check the image guide and generated reference for both source forms.
+
+For a genuinely new wire type, add its parent-role acceptance, vocabulary entry
+where it is a surface block, and public capability/export mapping as well.
+
+## PR evidence and completion checklist
+
+Copy this into the PR description and fill in the evidence. Keep it up to date
+when Slack documentation or the implementation changes during review.
+
+```markdown
+## Slack change
+- Reference and announcement URLs; date checked:
+- Fields, allowed parents/surfaces, defaults and constraints:
+- Validator/visual evidence; unresolved discrepancies or unavailable checks:
+- Compatibility impact; spec-version decision:
+
+## Implementation and verification
+- [ ] Shared model, limits/vocabulary, valid/invalid fixtures and capabilities agree.
+- [ ] Every maintained language exposes the native API and maps all new fixture IDs.
+- [ ] Public exports, supported parse paths and SDK integration are covered.
+- [ ] Positive/negative boundaries, Unicode and parent-context regressions pass.
+- [ ] Generation is reproducible; no missing/stale outputs or manual generated edits.
+- [ ] Language quality/package gates and full docs checks pass (commands/run links below).
+- [ ] All release skip lists are empty; no unrecorded capability exclusions.
+- [ ] Public comments/reference/guide examples describe the feature in every language.
+- [ ] Spec declarations, changelogs and version-history treatment are consistent.
+
+## Results
+- Per-language test/quality/package results:
+- Docs build, rendered-page check and CI run links:
+- Remaining work, if any (do not mark support complete):
+```

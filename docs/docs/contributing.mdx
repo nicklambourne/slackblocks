@@ -66,7 +66,7 @@ From `java/`:
 ./mvnw clean verify
 ```
 
-On JDK 21 or newer the Java build also runs google-java-format, Error Prone, and NullAway; on JDK 17 it compiles and tests only. The generated Java model comes from `spec/model.json`, the language-neutral model shared with the C# and Go generators. After changing that file or `spec/limits.json`, regenerate and format the sources from the repository root:
+On JDK 21 or newer the Java build also runs google-java-format, Error Prone, and NullAway; on JDK 17 it compiles and tests only. The generated Java model comes from `spec/model.json`, the language-neutral model also consumed by the C#, Ruby, and Go generators. After changing that file or `spec/limits.json`, regenerate and format the sources from the repository root:
 
 ```bash
 python3 java/generator/generate_models.py --check-go
@@ -101,18 +101,22 @@ bundle exec steep check --group=lib --group=consumer
 
 Ruby's model generator also writes limits, vocabulary, RBS signatures, and API reference metadata. Run it without `--check` after changing `spec/model.json`, `spec/limits.json`, or `spec/vocabulary.json`; CI verifies the checked-in output and tests the installed gem.
 
-All six conformance suites exercise every ID in `spec/manifest.json`. A checked-in `conformance/skiplist.txt` may document an intentional language gap, but unknown failures and stale skips fail the suite.
+All six conformance suites exercise every ID in `spec/manifest.json`. Released
+`conformance/skiplist.txt` files must be empty, and the harnesses assert this. A
+temporary transition gap remains incomplete work; it is not an exception to
+feature parity or permission to release.
 
 ## Add or change a Block Kit feature
 
-1. Add or update canonical JSON in `spec/fixtures/valid/`, register it in `spec/manifest.json`, and link the exact official Slack reference used to validate it.
-2. Map every new JSON-producing capability to at least one valid fixture in `spec/coverage.json`.
-3. Add invalid behavior to `spec/fixtures/invalid/manifest.json` when the feature introduces a validation rule. New Slack icon names and surface block types go in `spec/vocabulary.json`. Every scalar leaf in `spec/limits.json` must have a matching invalid case.
-4. Update `spec/limits.json` for shared scalar constraints.
-5. Implement the feature idiomatically in all six packages, or record a reason in the affected skip list.
-6. Add language-native tests and update the relevant guide or executable example.
+Follow [Adding or updating Block Kit support](./maintaining-block-kit.mdx) for the
+complete workflow: checking Slack's release/reference/validator evidence,
+updating the shared model and registries, implementing all native APIs,
+regenerating sources, testing boundaries and parent contexts, and updating docs
+and release metadata. The guide includes the per-language file map, generator
+commands, a worked example and a PR evidence checklist.
 
-When introducing a cross-language API, serialized JSON and validation outcomes are shared; public naming and construction style are language-native.
+Serialized JSON and validation categories are shared; public naming and
+construction style remain native to each language.
 
 ## Documentation
 

@@ -2,6 +2,11 @@
 
 Version 1.2.0 defines the language-neutral contract for slackblocks implementations.
 
+For the end-to-end maintenance workflow, follow
+[Adding or updating Block Kit support](../docs/docs/maintaining-block-kit.mdx),
+including official Slack evidence, native implementations, regeneration,
+conformance, documentation, and release readiness.
+
 ## Valid fixtures
 
 `fixtures/valid/` contains canonical Slack Block Kit JSON. Every entry in `manifest.json` must be constructed through an implementation's public API and compared as parsed JSON. Every harness enforces this generatively: each maps every manifest fixture ID to a construction through its public API and fails for unregistered IDs and for constructions whose rendered JSON differs from the fixture. Object key order and whitespace are not significant; array order and values are significant.
