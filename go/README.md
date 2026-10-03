@@ -1,5 +1,8 @@
 # slackblocks for Go
 
+[![Go](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv2%2F%40latest&query=%24.Version&label=Go&color=00ADD8&logo=go&logoColor=white)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2)
+[![Go CI](https://github.com/nicklambourne/slackblocks/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/go.yml)
+
 Build validated Slack Block Kit payloads with a fluent Go API that integrates
 directly with [`slack-go/slack`](https://github.com/slack-go/slack).
 
@@ -62,4 +65,4 @@ go get github.com/nicklambourne/slackblocks/go/v2
 
 This directory is part of the coordinated slackblocks monorepo. The Go module
 implements the same shared JSON fixtures and validation categories as the
-Python, TypeScript, and Java packages.
+other language packages.

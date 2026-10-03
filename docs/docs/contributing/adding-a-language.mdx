@@ -1,0 +1,480 @@
+---
+sidebar_position: 2
+slug: /contributing/new-language
+sidebar_label: Adding a language
+---
+
+# Adding a language implementation
+
+Use this workflow to take a new implementation from an API proposal to a
+maintained package. Completion means a language-native public API, the full
+shared contract, useful helpers, tested documentation, and working package and
+release integration. Passing the JSON fixtures is one part of that work.
+
+The maintained implementations are currently Python, TypeScript, Go, Java, C#,
+and Ruby. Recheck that list against the packages and coordinated release at the
+start of the project. A plan or an unfinished implementation does not add a
+language to the release set.
+
+Paths and commands below are relative to the repository root unless stated
+otherwise. Read [Contributing](./index.mdx),
+[the specification](https://github.com/nicklambourne/slackblocks/blob/master/spec/SPEC.md),
+[the implementation principles](https://github.com/nicklambourne/slackblocks/blob/master/spec/PRINCIPLES.md),
+and [ADR 0002](https://github.com/nicklambourne/slackblocks/blob/master/spec/ADR.md#adr-0002-shared-model-generated-apis-and-lockstep-releases)
+first. ADR 0002 permits idiomatic generated APIs and requires coordinated package
+versions. It supersedes the earlier decisions on those subjects in ADR 0001.
+
+## 1. Establish the baseline and parity inventory
+
+Start from current `master`. Record its commit, the shared spec version, package
+versions, actual published versions, and the proposed first release. A manifest
+version may still be unreleased; check tags and registries before choosing the
+next version. The new package joins a coordinated release rather than choosing
+an independent `0.1.0` or `1.0.0` version.
+
+Create a checked-in implementation plan with a parity inventory. Give each item
+an implementation location, test, documentation location, and status. Include:
+
+| Inventory | Source and required evidence |
+| --- | --- |
+| Types, fields and roles | Every type, interface, enum and field kind in `spec/model.json`; native names/types, parent membership, requiredness, defaults and coercions |
+| Wire contract | Every valid fixture in `spec/manifest.json`, constructed through the public API |
+| Validation | Every invalid case in `spec/fixtures/invalid/manifest.json`; every scalar leaf in `spec/limits.json`; vocabulary equality with `spec/vocabulary.json` |
+| Public coverage | Every capability in `spec/coverage.json`, plus independent discovery of public JSON-producing symbols and justified exclusions |
+| Supporting APIs and helpers | Styles, text conveniences, composition helpers, inspection/editing, JSON integration and any supported Slack SDK adapter |
+| User and maintainer experience | Installation, quick start, cookbook, API comments/reference, examples, development commands, compatibility policy, package checks and release setup |
+
+Compute inventory counts from the files; do not make today's totals the test
+oracle. Compare with Python's public exports and helpers as well as the newer
+implementations. The model and capability registry do not enumerate every
+useful convenience. For example, review `Accordion`, `AccordionSection`,
+`Paginator`, Python's `block_kit_builder_url`, `Workflow.from_url`, and `Color`
+utilities. Implement equivalent useful behavior using the new language's
+idioms, or record a specific reviewed reason for a difference. Historical aliases
+and deprecated APIs, such as Python's legacy attachment `Field`, need an explicit
+disposition; they need not be copied into a new API.
+
+Adding a language to the existing contract does not itself change the spec
+version. If the work discovers a missing capability or conflicting rule, resolve
+it through [Adding New Block Kit Features](./maintaining-block-kit.mdx)
+and update the existing implementations too. Do not change shared fixtures just
+to fit the new implementation.
+
+**Gate:** the plan covers the entire current contract, helpers and integration
+work, with no unexplained omissions.
+
+## 2. Review a native API before generating it at scale
+
+Choose conventions from the target ecosystem and demonstrate them in a small
+consumer project. Existing implementations supply behavioral evidence; their
+class hierarchies and naming are not templates for every language.
+
+Write down these decisions:
+
+| Decision | Questions to settle |
+| --- | --- |
+| Package and support policy | Package name/namespace ownership, minimum compiler/runtime, supported platforms, dependency policy, and how raising the minimum is treated |
+| Construction | Constructors, builders, keyword arguments or literals; required versus optional fields; text and collection conveniences; method chaining where idiomatic |
+| Value semantics | Ownership/mutation, equality, getters, copying and safe editing of nested values; whether invalid intermediate builders can escape |
+| Type system | Concrete values, parent-role types, enums, reserved-word/name collisions, aliases and discoverable public exports |
+| Future compatibility | How new enum variants, fields and role members affect callers, including exhaustive matches and source compatibility |
+| JSON and errors | Native encoder integration, when validation runs, error category/path access, optional parsing scope and checked extension behavior |
+
+Prototype plain/markdown text, a button in a section, a complete message, a table,
+nested rich text, a parent-sensitive task and a composition helper. Show
+construction, serialization, inspection, editing, an invalid input and normal
+error handling. Compile or execute the consumer against the public package
+boundary, using the minimum supported toolchain as well as current stable.
+
+Define missing, explicit null, false, zero, empty string and empty collection
+behavior separately. Document deliberate defaults. Python's auto-generated
+`block_id` and the existing message-response defaults are documented divergences
+in `spec/PRINCIPLES.md`; choose and document the new language's behavior rather
+than inheriting an accident from a port.
+
+If a Slack SDK adapter is appropriate, prove the downstream send path and its
+dependency/version requirements. SDK types can lag Slack: do not silently drop
+fields or rely on unchecked casts. A documented native JSON path can be the
+integration when the ecosystem has no suitable SDK. Keep HTTP clients, transport
+and framework dependencies outside the core unless the design specifically
+requires them.
+
+**Gate:** reviewers can judge representative real calls, type safety, errors and
+editing ergonomics before a generator repeats the design across every type.
+
+## 3. Build the package foundation and generation boundary
+
+Create the language directory with its manifest, public entry point, tests,
+README, changelog, license packaging, formatter/linter configuration and one
+repeatable local verification command. Declare package and spec versions
+separately, and test the exported spec version against `spec/manifest.json`.
+Choose the ecosystem's lockfile policy and test dependency resolution at the
+minimum supported toolchain.
+
+Decide which code is generated. Generation is appropriate when it produces a
+native API and removes repetitive maintenance; it is not mandatory. Handwritten
+and generated implementations meet the same contract.
+
+- Read the shared model directly. Do not derive the new API by parsing another
+  implementation's source.
+- Source scalar limits from `spec/limits.json`, either by bundling it or generating
+  checked-in constants. Generate or equality-test native vocabulary tables.
+- Use one resolved naming/type map for generated code, signatures and reference
+  metadata. Fail on unknown field kinds, unresolved roles and name collisions.
+- Keep contextual validation and helpers explicit; the model is not the whole
+  implementation. Document ownership of generated and handwritten files.
+- Make output deterministic, including formatting and file order. A check mode
+  must detect added, missing, changed and obsolete generated files. A plain
+  `git diff` can miss untracked output.
+- Check generated sources into Git. Users installing the package must not need
+  the monorepo, the generator's toolchain or files outside the package.
+
+Existing examples include `ruby/generator/generate_models.py` with `--check`,
+`java/generator/generate_models.py`, `csharp/generator/generate_models.py`, and
+`go/internal/generatebuilders/`. Adapt their contract handling to the chosen
+idiom; do not copy their language-specific assumptions.
+
+Keep registry publication disabled while the package is incomplete. Do not add
+it to the active coordinated release just to make the scaffold look complete.
+
+**Gate:** the prototype installs in a clean consumer, regeneration is repeatable,
+and a deliberate stale/missing generated output makes the check fail.
+
+## 4. Implement the complete behavior
+
+Cover every model kind and role, supporting values such as `RichTextStyle`, all
+payloads and the agreed helper inventory. Preserve exact wire names,
+discriminators, omission rules and ordering. Types sharing a wire discriminator
+can still have different roles: an image block and an image element are not
+interchangeable.
+
+Maintain a rule inventory linking each shared rule to its native validator and
+positive/negative tests. Use the spec and existing rule implementations together;
+resolve disagreements against the shared contract and official Slack evidence.
+Check both local values and their receiving parent:
+
+- Required fields, exclusive combinations, text kinds, numeric ranges and
+  allowed child roles.
+- Message, modal, App Home and attachment restrictions; expanded helper block
+  counts; aggregate payload text limits; modal submit requirements.
+- Rules that change with context, such as pending tasks accepted inside a plan
+  but rejected outside it. Validate at the point that knows the parent context.
+- Different structures with similar names: plain tables permit ragged rows;
+  data tables require rectangular rows.
+
+Count text limits in Unicode code points, not bytes, UTF-16 units or grapheme
+clusters. Preserve false and zero when supplied. Reject nonfinite JSON numbers;
+define integer/decimal representation and overflow behavior, and test precision
+boundaries so conversion cannot silently round a supported value.
+
+For each supported JSON ingress path, validate nested values and parent context
+as rigorously as native construction. Test serialization/reconstruction round
+trips and omitted defaults. State which payloads parsing supports; construction
+support does not imply a parser for arbitrary inbound Slack events. Any explicit
+extension/raw JSON facility must prevent collisions with modeled fields or the
+discriminator and cannot replace typed support for a modeled feature.
+
+Test helpers as APIs: ordering, empty inputs, page boundaries, IDs, labels,
+encoding and validation after expansion. Include native getters, safe editing,
+copy/ownership behavior and JSON protocol integration in the behavior tests.
+
+**Gate:** the full inventory is implemented with documented intentional
+differences and no modeled feature hidden behind raw JSON.
+
+## 5. Build an independent conformance harness
+
+Use the shared files as expected results, with explicit native construction code
+as the implementation under test. A serializer and parser generated from the
+same model can agree with each other while both are wrong.
+
+1. Discover the valid manifest IDs and canonical fixture files. Assert exact set
+   equality with the construction registry, detecting missing, duplicate and
+   stale registrations. Construct each fixture through public typed APIs; do not
+   load its JSON into a parser or extension map as a substitute. Compare parsed
+   JSON independently: object order and whitespace do not matter; array order,
+   keys and values do.
+2. Map every invalid-case ID to a public attempt and assert its exact normative
+   category: `length-exceeded`, `out-of-range`, `mutually-exclusive`,
+   `type-mismatch`, `missing-required` or `invalid-usage`. Isolate the intended
+   failure and test useful error paths. Error classes and prose remain native.
+3. If the type system prevents a runtime construction, exercise the corresponding
+   bad input through a checked public ingress boundary. Plan that boundary at
+   the API checkpoint. Compile-time rejection tests supplement the required
+   invalid-case category assertion; they do not silently replace it.
+4. Assert every scalar limit leaf has an invalid case with the matching
+   `constraint` path; compare generated/bundled limits and vocabulary to their
+   registries. Add positive boundary tests as well as the invalid corpus.
+5. Independently enumerate the real public API and map JSON-producing symbols to
+   shared capabilities. Name and justify helper/supporting-type exclusions and
+   test them separately. An export list emitted by the implementation generator
+   is insufficient on its own: also detect newly added handwritten exports.
+   Prove the guard catches an unmapped public producer.
+6. Assert the declared spec version and keep `conformance/skiplist.txt` empty.
+   The released harness must hard-fail on entries. Scope an early foundation
+   suite honestly until full conformance is implemented; do not weaken a full
+   conformance gate to make a partial stage appear complete.
+
+Useful references are `python/test/conformance/`,
+`typescript/test/conformance.test.ts`, `go/conformance_test.go`,
+`go/invalid_conformance_test.go`, and Ruby's separate
+`ruby/test/valid_constructions.rb`, `ruby/test/invalid_cases.rb` and
+`ruby/test/registry_test.rb`.
+
+**Gate:** all current fixture IDs, capabilities and limits are accounted for,
+with independent public API coverage and an empty skip list.
+
+## 6. Verify code quality and the installed package
+
+Conformance does not cover every language-specific failure. Add native unit and
+integration tests for ergonomics, validation branches, mutability/ownership,
+serialization, helpers and any promised SDK/framework integration. Use property
+or fuzz tests where they expose a concrete risk, such as recursive round trips
+or numeric conversion.
+
+Define required formatting, lint/static-analysis, type-checking, documentation
+and coverage commands. Measure handwritten validation/core/helper coverage
+separately so generated accessors cannot mask untested branches. Document the
+coverage scope and a meaningful threshold. Where compile-fail or negative type
+checks are used, assert the expected diagnostic with a passing companion case;
+an unrelated syntax/import error must not count as success.
+
+Build the actual distributable, inspect its file list and metadata, then install
+it in an external temporary consumer with no workspace/path override:
+
+- Verify package name/version, minimum runtime, dependencies, license, README,
+  documentation and any required type/signature/source files.
+- Ensure no runtime code resolves `../spec`, imports from the checkout, or
+  requires development tools. Exclude caches, credentials and build scratch.
+- Compile/run a realistic payload, native JSON encoding, error handling and
+  public types using only the installed artifact.
+- Test minimum and current supported toolchains, clean dependency resolution,
+  and relevant optional-feature combinations. For library ecosystems with
+  feature unification or consumer-selected dependencies, test those paths too.
+
+Use `ruby/bin/package-smoke` as one example of installation and type checking
+outside the checkout. Select equivalent ecosystem tools; parity means comparable
+assurance, not identical coverage percentages or dependencies.
+
+**Gate:** ordinary users can install the artifact and use its documented API
+without the repository or maintainer environment.
+
+## 7. Integrate continuous integration and maintenance
+
+Add a language workflow covering the minimum and current stable toolchains on
+Linux, macOS and Windows where supported. Record any narrower platform promise.
+Development/nightly versions can be informational; required checks must work on
+supported stable versions. Use GitHub-provided runners, following `AGENTS.md`.
+Pin Actions consistently with existing workflows and keep routine PR jobs free
+of publishing credentials.
+
+Run conformance, native tests, generation drift, quality/coverage, examples and
+package-consumer checks. Cache dependencies with keys that reflect toolchain and
+lockfile changes. Add dependency update configuration to `.github/dependabot.yml`
+for the new ecosystem when supported.
+
+Follow the change-detection convention in `.github/workflows/ruby.yml`: required
+check names still report on unrelated PRs; relevant work happens at step level.
+Include shared spec inputs, docs/examples, manifests, generator inputs and the
+workflow itself in filters. On a changed-file lookup failure, run checks rather
+than accidentally skipping them. Extend `.github/workflows/docs.yml` with the
+new source paths, toolchain and generator prerequisites.
+
+Update branch protection/rulesets to require the agreed stable checks once they
+exist. Test a relevant change and an unrelated change: inspect the actual jobs,
+steps and runner metadata, not just green skipped checks or YAML. Record the
+required matrix and local equivalents in the package README and contributor
+guide.
+
+**Gate:** CI exercises the delivered scope, required checks remain available,
+and contributors can reproduce them locally.
+
+## 8. Bring documentation to parity
+
+### Preserve release history first
+
+Before advancing the coordinated package version or adding the new language to
+current user docs, freeze the outgoing release as described in
+[RELEASING.md](https://github.com/nicklambourne/slackblocks/blob/master/RELEASING.md).
+Generate the outgoing API reference before taking the snapshot. If feature docs
+already changed on the implementation branch, generate the snapshot from the
+verified outgoing release sources. Do not copy the new language into a release
+that never contained it, or modify older frozen/legacy snapshots to advertise it.
+
+Current docs use the coordinated package version. Coordinate their integration
+with the version update and mark availability honestly while unreleased; do not
+tell users to install a registry version that does not exist.
+
+### Cover the user journey
+
+Add native installation and quick-start examples, a package README, root README
+example and language badges, compatibility/troubleshooting guidance, sending
+messages, cookbook and composition examples. Update every applicable
+language-switched section, including less obvious pages such as migration and
+validation guidance. Shared concepts can stay shared, but selecting the new
+language must not reveal empty content or another language's calls.
+
+Document public types, parameters, return values, defaults, validation errors,
+limits, role restrictions and Slack links in native comments/docstrings. Generate
+the API reference from the language's documentation tool or reviewed metadata;
+include handwritten helpers and public exports as well as model types. Compile
+or execute examples from the actual README/guide sources, not manually copied
+test strings. Add reusable examples under `docs/examples/` and compare common
+examples with `docs/examples/section_hello.json` where applicable.
+
+### Extend the complete site integration
+
+| Area | Files to review and extend |
+| --- | --- |
+| Language identity, routing and content | `docs/src/components/LanguageContext/index.tsx`, `LanguageContent/index.tsx`, `LanguageSelector/index.tsx` in the same components directory |
+| Version availability and labels | `docs/src/components/VersionSelector/index.tsx`, `docs/src/theme/DocVersionBadge/index.tsx`; new versions infer languages from their reference pages; preserve historical availability |
+| Navigation | `docs/src/theme/DocSidebar/index.tsx`, `DocBreadcrumbs/index.tsx`, `DocItem/Paginator/index.tsx`, `TOCItems/index.tsx` in the same theme directory |
+| Search | `docs/plugins/language-search-indexes.cjs`, `docs/src/theme/SearchBar/`, `docs/src/theme/SearchPage/` |
+| Site configuration and reference generation | `docs/docusaurus.config.ts` (versions, labels, syntax highlighting), `docs/package.json`, `docs/scripts/generate_*_reference.*`, `docs/scripts/reference_pages.mjs`, `docs/docs/reference/index.mdx` |
+| Regression guards | `docs/scripts/check_language_content.mjs`, `check_search_language.mjs`, `check_version_selector.mjs`, `check_release_snapshots.mjs` in the same scripts directory; add native snippet/reference-rendering checks to the build |
+| Maintainer instructions | Root `README.md`, `AGENTS.md`, `RELEASING.md`, `docs/docs/contributing/index.mdx`, this guide and `docs/docs/contributing/maintaining-block-kit.mdx`; update language maps in `spec/SPEC.md` and `spec/PRINCIPLES.md` |
+
+Search for existing language lists and patterns as a cross-check; this table is
+not a substitute for finding integration points added since it was written.
+Adapt routing names and reference groups deliberately instead of mechanically
+replacing another language's name.
+
+From the repository root, after installing the documented toolchains and workspace
+dependencies, run the following. Build the TypeScript package first so the docs'
+TypeScript consumer example can resolve its exported declarations on a clean checkout:
+
+```bash
+pnpm --filter @nicklambourne/slackblocks build
+pnpm --filter @slackblocks/docs build
+pnpm --filter @slackblocks/docs typecheck
+pnpm --filter @slackblocks/docs check:legacy-snapshots
+pnpm --filter @slackblocks/docs check:release-snapshots
+```
+
+Extend these gates for the new language. Inspect rendered signatures, required
+and optional parameters, links and helper entries. Exercise desktop/mobile
+language and version selectors, direct reference URLs, search filtering and
+navigation. Verify the new language is absent from versions predating its first
+release and that switching to an older version has a valid destination.
+
+**Gate:** a user can discover, learn and use the new language throughout the site,
+and the examples and reference are verified automatically.
+
+## 9. Prepare publishing and coordinated releases
+
+Treat release setup as implementation work, with actual publication a separate
+maintainer action. Extend
+[RELEASING.md](https://github.com/nicklambourne/slackblocks/blob/master/RELEASING.md)
+with concrete instructions for the chosen registry.
+
+### Package ownership and authentication
+
+Verify name/namespace ownership and registry metadata early. Check the registry's
+official documentation for first-publish rules, trusted publishing, signing,
+provenance and immutable-version behavior; record the links and date checked.
+Do not assume a pending publisher or bootstrap method works the same way in
+every registry.
+
+Document the exact GitHub environment, workflow filename, repository identity,
+required account settings, secret/variable names and credential scopes. Verify
+account-side setup with the maintainer when it is not inspectable from CI. Prefer
+trusted publishing where supported. If a first release needs a token, make the
+bootstrap mode explicit and scoped, and document how to revoke it after trusted
+publishing is verified. An authentication check is not evidence of publication.
+
+### Workflow and guard changes
+
+Build and validate on PRs without publishing. Add a tag-bound publisher with
+manual dispatch at the same tag, restricted write permissions, the intended
+environment and release concurrency protection. Verify the tag's format,
+version, commit, and agreement with coordinated package versions before any
+registry write. Test positive and negative guards, including wrong tag prefixes,
+version mismatches and dispatch from a branch.
+
+In `.github/workflows/coordinated-release.yml`, update all of:
+
+1. Relevant path filters and version extraction/equality checks.
+2. Changelog presence/date checks and readiness conditions.
+3. The complete tag list, existing-tag verification and atomic tag creation.
+4. The publisher dispatch matrix and failure monitoring.
+
+Audit existing publisher workflows and guard scripts, including
+`ruby/bin/verify-release`, for duplicated package-version lists. Extend the
+version check in `docs/docusaurus.config.ts`, package version constants/tests,
+release instructions, release notes and package-install examples too. Go derives
+its version from tags and its major module path; count packages, stored manifest
+versions, changelogs and tags separately.
+
+Keep the new publisher and coordinator activation gated until implementation,
+docs, package and account setup are ready. Test an attempted release of a partial
+train is rejected before tags or registry writes. When activating it, set every
+package to the chosen coordinated version, date every changelog consistently and
+update Java's reproducible-build timestamp. Follow the release guide's explicit
+publisher dispatch procedure; do not rely on a multi-tag push alone to start all
+publishers.
+
+### First publication and recovery
+
+At the approved release commit, run the coordinator and monitor every publisher,
+with particular attention to the new registry. Verify the exact version and
+metadata at the registry, native hosted API docs where applicable, its GitHub
+Release and a clean installation from the registry itself. Record artifact
+checksums/provenance where available; if publishing rebuilds the package, verify
+its source/toolchain inputs rather than claiming it uploaded a previously tested
+archive.
+
+Document registry-specific recovery. After an uncertain or failed upload, inspect
+registry state before retrying the failed publisher at the existing tag. Complete
+missing documentation/GitHub Release steps separately when the package is already
+published. Never move public tags or replace a successful artifact. A bad shipped
+artifact requires the next coordinated patch release.
+
+**Gate:** dry-run/package checks and account setup are evidenced, the coordinator
+covers every maintained package, and release/recovery steps are executable.
+
+## 10. Deliver a reviewable train and completion record
+
+The exact number of PRs can vary. Keep dependencies explicit, validate each
+stage's delivered scope and merge in dependency order. A useful split is:
+
+| Stage | Exit evidence |
+| --- | --- |
+| API design | Native consumer prototype, parity inventory, naming/default/error decisions and dependency/support policy reviewed |
+| Foundation | Package scaffold, generation, local checks and stable CI; prototype works as an installed package; publication disabled |
+| Complete contract | All types/roles/rules and conformance registries pass, independent export coverage, empty skip list |
+| Helper and quality parity | Agreed helpers, native behavior/negative tests, handwritten coverage and package consumers pass |
+| Documentation and versions | Correct outgoing snapshot, coordinated version preparation, full native docs/examples/site integration and guards pass |
+| Release integration | Publisher dry run, coordinator/version guards and account setup verified; activation only after the complete train is ready |
+
+Rebase on current `master` and rerun affected gates when the shared contract or
+release target changes. Perform a final audit against the original inventory;
+record remaining work rather than calling a partial stage full parity.
+
+Copy this completion record into the final PR or implementation plan:
+
+```markdown
+## Baseline and design
+- Baseline commit; spec version; proposed coordinated release:
+- Native API prototype and reviewed naming/default/error decisions:
+- Runtime/platform/dependency policy:
+- Parity inventory, helper decisions and intentional differences:
+
+## Completion evidence
+- [ ] All model types/fields/roles and contextual rules implemented natively.
+- [ ] Every valid/invalid ID, scalar limit, vocabulary and capability enforced.
+- [ ] Independent export/helper coverage and empty release skip list.
+- [ ] Native behavior, negative type/error, generation and quality gates pass.
+- [ ] Minimum/current toolchains and supported platform matrix pass.
+- [ ] Standalone artifact and external consumer checks pass.
+- [ ] Public comments, READMEs, guides, runnable examples and API reference complete.
+- [ ] Site language/search/version/navigation checks pass; history remains accurate.
+- [ ] CI filters, stable required checks and dependency maintenance configured.
+- [ ] All version/tag/changelog/publisher guards updated and tested.
+- [ ] Registry ownership, environment and authentication setup verified.
+- [ ] First-publish verification and partial-failure recovery documented.
+
+## Results and status
+- Commands, toolchain versions, coverage scope/results and CI run links:
+- Package/consumer and docs review evidence:
+- Outstanding work or unavailable checks:
+- Release status (prepared, authorized, published and verified):
+```
