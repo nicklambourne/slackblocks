@@ -8,15 +8,17 @@
 [![Go](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv2%2F%40latest&query=%24.Version&label=Go&color=00ADD8&logo=go&logoColor=white)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.nicklambourne/slackblocks?logo=apachemaven)](https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks)
 [![NuGet](https://img.shields.io/nuget/v/Slackblocks?logo=nuget)](https://www.nuget.org/packages/Slackblocks)
+[![RubyGems](https://img.shields.io/gem/v/slackblocks?logo=rubygems)](https://rubygems.org/gems/slackblocks)
 [![Downloads](https://static.pepy.tech/badge/slackblocks)](https://pepy.tech/project/slackblocks)
 [![Python CI](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
 [![TypeScript CI](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
 [![Go CI](https://github.com/nicklambourne/slackblocks/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
 [![Java CI](https://github.com/nicklambourne/slackblocks/actions/workflows/java.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/java.yml)
 [![.NET CI](https://github.com/nicklambourne/slackblocks/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/dotnet.yml)
+[![Ruby CI](https://github.com/nicklambourne/slackblocks/actions/workflows/ruby.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/ruby.yml)
 [![Docs](https://img.shields.io/badge/Docs-8A2BE2.svg)](https://nicklambourne.github.io/slackblocks)
 
-> **Build Slack messages in Python, TypeScript, Go, Java, or C# — without writing JSON by hand.**
+> **Build Slack messages in Python, TypeScript, Go, Java, C#, or Ruby — without writing JSON by hand.**
 
 Anyone who has built a non-trivial Slack message knows the drill: a wall of nested
 [Block Kit](https://docs.slack.dev/block-kit/) JSON, five levels deep, where a typo'd
@@ -34,11 +36,13 @@ your tests, rather than in production.
   out *before* hitting Slack's API.
 - **Typed** — full type hints and `py.typed` in Python, strict types in TypeScript,
   compile-checked concrete fluent builders in Go and Java, and typed constructors with
-  nullable annotations in C#.
+  nullable annotations in C#, and RBS signatures in Ruby.
 - **Plays well with established Slack clients** — unpack a `Message` straight into
   `client.chat_postMessage(**message)` with [`slack-sdk`](https://pypi.org/project/slack-sdk/),
   pass a payload directly to [`@slack/web-api`](https://www.npmjs.com/package/@slack/web-api),
-  pass Go block builders directly to [`slack-go/slack`](https://github.com/slack-go/slack), pass Java blocks directly to the [official Slack Java SDK](https://slack.dev/java-slack-sdk/), or serialize C# values with `System.Text.Json`.
+  pass Go block builders directly to [`slack-go/slack`](https://github.com/slack-go/slack),
+  pass Java blocks directly to the [official Slack Java SDK](https://slack.dev/java-slack-sdk/),
+  serialize C# values with `System.Text.Json`, or call `to_json` on Ruby values.
 - **One library, six languages** — the same blocks, validation rules, and version
   numbers in Python, TypeScript, Go, Java, C#, and Ruby. A shared conformance corpus keeps all six
   implementations emitting the same Slack JSON.
@@ -85,7 +89,7 @@ C# (.NET 8+):
 dotnet add package Slackblocks
 ```
 
-Ruby (3.3+, from the coordinated 2.5.0 release):
+Ruby (3.3+):
 
 ```bash
 gem install slackblocks
@@ -235,6 +239,41 @@ var message = new MessagePayload(
 // POST message.ToJson() to chat.postMessage with HttpClient and a bot token.
 ```
 
+And in Ruby:
+
+```ruby
+require "slackblocks"
+
+message = Slackblocks::MessagePayload.new(
+  channel: "#general",
+  text: "Build #482 passed", # plain-text fallback for notifications
+  blocks: [
+    Slackblocks::HeaderBlock.new(text: "Build #482 passed :white_check_mark:"),
+    Slackblocks::SectionBlock.new(
+      fields: [
+        "*Branch*\n`main`",
+        "*Author*\n@nick",
+        "*Duration*\n3m 12s",
+        "*Tests*\n1,247 passed"
+      ]
+    ),
+    Slackblocks::DividerBlock.new,
+    Slackblocks::ActionsBlock.new(
+      elements: [
+        Slackblocks::ButtonElement.new(
+          text: "View build", action_id: "view", url: "https://ci.example.com/482"
+        ),
+        Slackblocks::ButtonElement.new(
+          text: "Re-run", action_id: "rerun", value: "482", style: :primary
+        )
+      ]
+    )
+  ]
+)
+
+puts message.to_json
+```
+
 <p align="center">
   <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/usage/build_notification.png" alt="The build notification rendered in Slack" width="600px" />
 </p>
@@ -249,10 +288,10 @@ var message = new MessagePayload(
 - [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end
   recipes for build notifications, approval requests, modals, and more.
 - [API Reference](https://nicklambourne.github.io/slackblocks/reference) —
-  [Python](https://nicklambourne.github.io/slackblocks/reference/python) and
-  [TypeScript](https://nicklambourne.github.io/slackblocks/reference/typescript), and
-  [Go](https://nicklambourne.github.io/slackblocks/reference/go), and
-  [Java](https://nicklambourne.github.io/slackblocks/reference/java), and
+  [Python](https://nicklambourne.github.io/slackblocks/reference/python),
+  [TypeScript](https://nicklambourne.github.io/slackblocks/reference/typescript),
+  [Go](https://nicklambourne.github.io/slackblocks/reference/go),
+  [Java](https://nicklambourne.github.io/slackblocks/reference/java),
   [C#](https://nicklambourne.github.io/slackblocks/reference/csharp), and
   [Ruby](https://nicklambourne.github.io/slackblocks/reference/ruby).
 - [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/usage/migration) ·
@@ -303,10 +342,22 @@ cd ../java
 
 cd ../csharp
 dotnet test
+
+cd ../ruby
+bundle install
+bundle exec ruby -I test -e 'Dir[File.expand_path("test/*_test.rb")].sort.each { |path| require path }'
 ```
 
 For the full development guide — testing conventions, the conformance-fixture workflow,
 docstring style, and the release process — see the
 [Contributing page](https://nicklambourne.github.io/slackblocks/contributing).
+
+Adding a newly released Slack component or field? Follow the in-repo
+[Adding New Block Kit Features](docs/docs/contributing/maintaining-block-kit.mdx) for the shared
+contract, implementation, test, and documentation checklist.
+
+Adding a new language? Follow the in-repo
+[language implementation guide](docs/docs/contributing/adding-a-language.mdx) for native API
+design, parity, testing, documentation, packaging and release integration.
 
 Bug reports and feature requests: <https://github.com/nicklambourne/slackblocks/issues>.

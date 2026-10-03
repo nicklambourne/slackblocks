@@ -189,7 +189,7 @@ public final class HelloSlackblocks {
 
 Several slackblocks class names, such as `SectionBlock`, `HeaderBlock`, and `ButtonElement`, also exist in the Slack SDK's `com.slack.api.model.block` packages. Import slackblocks classes individually, as the examples on this site do. A file that combines `import com.slack.api.model.block.*;` with a slackblocks wildcard import fails to compile with a "reference to SectionBlock is ambiguous" error.
 
-Pin compatible 2.x updates with Maven's dependency-management facilities or your usual version catalog. slackblocks' Java artifact uses the same release number as the Python, TypeScript, and Go packages.
+Pin compatible 2.x updates with Maven's dependency-management facilities or your usual version catalog. slackblocks' Java artifact uses the same release number as every other language package.
 
 </Java>
 <CSharp>
@@ -234,12 +234,12 @@ using Blocks = Slackblocks.Blocks;
 var block = new Blocks.SectionBlock(text: "Hello, world!");
 ```
 
-The NuGet package version moves in lockstep with the Python, TypeScript, Go, and Java packages. A floating version such as `2.*` accepts compatible 2.x updates.
+The NuGet package version moves in lockstep with every other language package. A floating version such as `2.*` accepts compatible 2.x updates.
 
 </CSharp>
 <Ruby>
 
-Install the gem from RubyGems after the coordinated Ruby release. MRI Ruby 3.3 or newer is required.
+Install the gem from RubyGems. MRI Ruby 3.3 or newer is required.
 
 ```bash
 gem install slackblocks
@@ -248,7 +248,7 @@ gem install slackblocks
 Or add it to your `Gemfile`:
 
 ```ruby
-gem "slackblocks", "~> 2.6"
+gem "slackblocks", "~> 2.5"
 ```
 
 The runtime uses Ruby and the default `json` gem. It does not install a Slack transport client.

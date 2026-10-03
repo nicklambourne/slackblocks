@@ -5,7 +5,7 @@
 
 Validated, immutable Slack Block Kit construction for .NET 8 and newer.
 
-The NuGet package uses the same version as the Python, TypeScript, Go, and Java packages and is released only as part of the coordinated slackblocks release train.
+The NuGet package shares each coordinated release version with the other language packages.
 
 ## Installation
 
