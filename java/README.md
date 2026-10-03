@@ -5,7 +5,7 @@
 
 Validated, fluent Slack Block Kit construction for Java 17 and newer.
 
-The Java artifact uses the same version as the Python, TypeScript, and Go packages and is released only as part of the coordinated slackblocks release train.
+The Java artifact shares each coordinated release version with the other language packages.
 
 ## Installation
 

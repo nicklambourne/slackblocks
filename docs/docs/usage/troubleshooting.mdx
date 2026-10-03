@@ -329,7 +329,7 @@ if errors.As(err, &validation) {
 }
 ```
 
-Categories are identical across Python, TypeScript, Go, Java, and C#: `length-exceeded`, `out-of-range`, `mutually-exclusive`, `type-mismatch`, `missing-required`, and `invalid-usage`.
+Categories are identical across all six languages: `length-exceeded`, `out-of-range`, `mutually-exclusive`, `type-mismatch`, `missing-required`, and `invalid-usage`.
 
 ## How many blocks can a payload contain?
 
@@ -353,7 +353,7 @@ Marshal the completed `Object` with `encoding/json`, then paste it into Slack's 
 
 - A fluent API that coerces strings to the right text object and exposes only the fields each block supports.
 - Validation before the request is sent, with a stable `ErrorCategory` and field path in every `ValidationError`.
-- The newer Block Kit shapes (tables, cards, carousels, charts, plans) and the same JSON as the Python, TypeScript, Java, and C# packages.
+- The newer Block Kit shapes (tables, cards, carousels, charts, plans) and the same JSON as the other language packages.
 
 Use whichever you find more ergonomic; they produce equivalent JSON.
 
@@ -511,7 +511,7 @@ Yes. Construction is synchronous and free of side effects. Build values before a
 
 ## How does this differ from the block types in a client library such as SlackNet?
 
-A client library's block classes describe the JSON shape for that client. slackblocks adds validation before the request is sent, with a stable `ErrorCategory` and field path in every `ValidationException`, the newer Block Kit shapes (tables, cards, carousels, charts, plans), and the same JSON as the Python, TypeScript, Go, and Java packages, with no dependencies beyond .NET. Use slackblocks to build the payload, and `HttpClient` or your client library to send it.
+A client library's block classes describe the JSON shape for that client. slackblocks adds validation before the request is sent, with a stable `ErrorCategory` and field path in every `ValidationException`, the newer Block Kit shapes (tables, cards, carousels, charts, plans), and the same JSON as the other language packages, with no dependencies beyond .NET. Use slackblocks to build the payload, and `HttpClient` or your client library to send it.
 
 ## Where do I report bugs or request features?
 
