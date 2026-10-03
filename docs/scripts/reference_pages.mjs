@@ -1,10 +1,10 @@
 // Renders a generated API reference model as one MDX page per API area.
 //
-// The Java reference (javadoc, through java-reference/ReferenceDoclet.java) and the C# reference
-// (reflection and XML documentation, through csharp-reference/) both produce the same JSON model:
-// types with Markdown documentation, enum constants, and members with signatures, parameters,
-// return values, and exceptions. Links to other API types are written as [`Name`](ref:Name), or
-// javadoc:Name for the Java doclet, and resolved here to their page and anchor.
+// Java (javadoc through java-reference/ReferenceDoclet.java), C# (reflection and XML
+// documentation through csharp-reference/), and Ruby (model-derived metadata) all produce
+// the same JSON model: types with Markdown documentation, constants, and members with
+// signatures, parameters, return values, and exceptions. Links to other API types are
+// written as [`Name`](ref:Name), or javadoc:Name for the Java doclet, and resolved here.
 
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
