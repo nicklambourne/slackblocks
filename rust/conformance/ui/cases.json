@@ -1,0 +1,7 @@
+{
+  "markdown_button": {"code": "E0277", "contains": "PlainTextInput"},
+  "context_divider": {"code": "E0277", "contains": "ContextElement"},
+  "input_button": {"code": "E0277", "contains": "InputElement"},
+  "private_field": {"code": "E0616", "contains": "private"},
+  "moved_builder": {"code": "E0382", "contains": "moved"}
+}

@@ -215,7 +215,7 @@ def generate(model, full=True):
             if k=='text':s.append(f'crate::rules::coerce_text(map.get_mut("{f["wire"]}"), "{f.get("coerce", "plain_text")}");')
             if k=='textList':s.append(f'if let Some(Value::Array(vs))=map.get_mut("{f["wire"]}") {{ for v in vs {{ crate::rules::coerce_text(Some(v),"{f.get("coerce", "plain_text")}"); }} }}')
             if n=='PlanBlock' and id=='tasks':s.append('crate::rules::restore_tasks(map.get_mut("tasks"));')
-            s.append(f'let {id} = wire::field::<{typ}>(&mut map,"{f["wire"]}",path,false)?;')
+            s.append(f'let {id} = wire::field::<{typ}>(&mut map,"{f["wire"]}",path)?;')
         s += [f'{b} {{']
         for f in fs:
             id=ident(f['wire']);v=id

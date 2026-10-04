@@ -6,8 +6,9 @@ on:
     paths:
       - "rust/**"
       - "spec/**"
-      - "docs/examples/rust/**"
-      - "docs/examples/section_hello.json"
+      - "docs/**"
+      - "README.md"
+      - ".github/dependabot.yml"
       - ".github/workflows/rust.yml"
   pull_request:
   workflow_dispatch:
@@ -36,7 +37,7 @@ jobs:
             exit 0
           fi
           files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
-          if [ -z "$files" ] || grep -qE '^(rust/|spec/|docs/examples/rust/|docs/examples/section_hello\.json$|\.github/workflows/rust\.yml$)' <<<"$files"; then
+          if [ -z "$files" ] || grep -qE '^(rust/|spec/|docs/|README\.md$|\.github/dependabot\.yml$|\.github/workflows/rust\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -64,6 +65,17 @@ jobs:
       - name: Install the supported Rust toolchain
         if: needs.changes.outputs.relevant == 'true'
         run: rustup toolchain install "${{ matrix.toolchain }}" --profile minimal
+      - name: Cache Rust dependencies and build outputs
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            rust/target
+          key: rust-${{ runner.os }}-${{ matrix.toolchain }}-${{ hashFiles('rust/Cargo.lock') }}
+          restore-keys: rust-${{ runner.os }}-${{ matrix.toolchain }}-
       - name: Run unit, integration and documentation tests
         if: needs.changes.outputs.relevant == 'true'
         run: |
@@ -90,6 +102,17 @@ jobs:
           rustup toolchain install stable 1.85.0 --profile minimal --component rustfmt,clippy
           rustup default stable
           echo "RUSTFMT=$(rustup which --toolchain 1.85.0 rustfmt)" >> "$GITHUB_ENV"
+      - name: Cache Rust dependencies and build outputs
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            rust/target
+          key: rust-${{ runner.os }}-quality-${{ hashFiles('rust/Cargo.lock') }}
+          restore-keys: rust-${{ runner.os }}-quality-
       - name: Verify generated sources, lints, tests, and rustdoc
         if: needs.changes.outputs.relevant == 'true'
         run: rust/bin/check
@@ -100,3 +123,9 @@ jobs:
           python3 rust/bin/check-package.py --toolchain stable
           python3 rust/bin/check-package.py --toolchain 1.85.0 --lower-bounds
           python3 rust/bin/check-package.py --toolchain 1.85.0 --json-features
+      - name: Enforce overall and handwritten line and region coverage
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          rustup component add llvm-tools-preview --toolchain stable
+          cargo +stable install cargo-llvm-cov --version 0.9.1 --locked
+          python3 rust/bin/check-coverage.py

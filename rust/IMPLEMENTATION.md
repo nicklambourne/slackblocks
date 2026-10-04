@@ -334,3 +334,31 @@ has a mutation test for an unregistered handwritten helper. Stable and 1.85.0
 workspace tests, strict Clippy/rustdoc, generator freshness and extracted archive
 consumers pass. Foundation CI ran actual test steps on GitHub-provided Ubuntu,
 macOS and Windows runners (run 37199485683), plus MSRV and package gates.
+
+## Implementation evidence — helpers and quality PR
+
+All agreed helpers are implemented as native Rust APIs: `Accordion` and
+`AccordionSection`, consuming `Paginator` builders/iterators, borrowed
+`BuilderPayload` previews, `Workflow::from_url`, and checked `AttachmentColor`.
+The core still depends only on Serde and serde_json. Historical Python-only
+attachment `Field` remains the documented legacy exclusion.
+
+Native tests exercise every concrete value's getters, editing, field setters,
+collection append/replacement, reserved extensions and checked ingress. All role
+members and vocabulary variants round-trip. Properties cover Unicode codepoint
+limits, integer precision, clone/edit independence and pagination partitioning.
+Five compile-fail cases verify their exact diagnostic codes and relevant type
+names on both MSRV and stable, after a passing companion. Archive tests include
+handwritten helper/validation tests and feature-unified fresh consumers.
+
+Pinned cargo-llvm-cov 0.9.1 reports 96.07% lines / 92.81% regions overall and
+97.85% lines / 96.38% regions for handwritten production code. All four 90% gates
+are enforced separately; generated code is included in the overall denominator.
+The only production exclusions contain module declarations/re-exports/constants
+and no executable regions. No difficult rule branches are excluded.
+
+The public source audit now also records enum variants, public fields, associated
+constants and direct root declarations. Integer conversions are explicit Rust
+implementations so the AST audit can inspect them without expanding macros.
+The wire parser's unused required-field branch was removed: builder finalization
+is the single required-field validation point for both native and JSON ingress.

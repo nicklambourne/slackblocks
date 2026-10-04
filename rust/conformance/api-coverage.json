@@ -11,11 +11,13 @@
   "AreaChartBuilder": "Consuming construction/editing API for AreaChart; shared contract and native editing tests",
   "Attachment": "Shared capability messages.attachment: independent native constructors and checked ingress",
   "AttachmentBuilder": "Consuming construction/editing API for Attachment; shared contract and native editing tests",
+  "AttachmentColor": "Handwritten helper: helper and property tests, archive consumer, native examples and compile-time role gates",
   "AxisConfig": "Shared capability objects.axis_config: independent native constructors and checked ingress",
   "AxisConfigBuilder": "Consuming construction/editing API for AxisConfig; shared contract and native editing tests",
   "BarChart": "Shared capability blocks.data_visualization: independent native constructors and checked ingress",
   "BarChartBuilder": "Consuming construction/editing API for BarChart; shared contract and native editing tests",
   "Block": "Typed role union; fixture serialization, checked ingress, and compile-time role tests",
+  "BuilderPayload": "Handwritten helper: helper and property tests, archive consumer, native examples and compile-time role gates",
   "ButtonElement": "Shared capability elements.button: independent native constructors and checked ingress",
   "ButtonElementBuilder": "Consuming construction/editing API for ButtonElement; shared contract and native editing tests",
   "ButtonStyle": "Supporting API: native foundation/helper tests; not an independent shared capability",
@@ -118,6 +120,8 @@
   "NumberInputElementBuilder": "Consuming construction/editing API for NumberInputElement; shared contract and native editing tests",
   "OverflowElement": "Shared capability elements.overflow: independent native constructors and checked ingress",
   "OverflowElementBuilder": "Consuming construction/editing API for OverflowElement; shared contract and native editing tests",
+  "Paginator": "Handwritten helper: helper and property tests, archive consumer, native examples and compile-time role gates",
+  "PaginatorBuilder": "Handwritten helper: helper and property tests, archive consumer, native examples and compile-time role gates",
   "PieChart": "Shared capability blocks.data_visualization: independent native constructors and checked ingress",
   "PieChartBuilder": "Consuming construction/editing API for PieChart; shared contract and native editing tests",
   "PlainText": "Shared capability objects.plain_text: independent native constructors and checked ingress",
@@ -206,5 +210,6 @@
   "Workflow": "Shared capability objects.workflow: independent native constructors and checked ingress",
   "WorkflowBuilder": "Consuming construction/editing API for Workflow; shared contract and native editing tests",
   "WorkflowButtonElement": "Shared capability elements.workflow_button: independent native constructors and checked ingress",
-  "WorkflowButtonElementBuilder": "Consuming construction/editing API for WorkflowButtonElement; shared contract and native editing tests"
+  "WorkflowButtonElementBuilder": "Consuming construction/editing API for WorkflowButtonElement; shared contract and native editing tests",
+  "block_kit_builder_url": "Handwritten helper: helper and property tests, archive consumer, native examples and compile-time role gates"
 }

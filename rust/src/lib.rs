@@ -5,14 +5,18 @@
 mod components;
 mod error;
 mod generated;
+mod helpers;
 mod number;
 mod rules;
 mod style;
 mod text_input;
 mod wire;
 
-pub use components::{Accordion, AccordionSection, AccordionSectionBuilder};
+pub use components::{
+    Accordion, AccordionSection, AccordionSectionBuilder, Paginator, PaginatorBuilder,
+};
 pub use error::{ErrorCategory, ValidationError};
+pub use helpers::{AttachmentColor, BuilderPayload, block_kit_builder_url};
 pub use number::JsonNumber;
 pub use style::RichTextStyle;
 pub use text_input::{PlainTextInput, TextInput};

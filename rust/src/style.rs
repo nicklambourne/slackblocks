@@ -95,13 +95,13 @@ impl FromWire for RichTextStyle {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
         let value = Self {
-            bold: wire::field(&mut map, "bold", path, false)?,
-            client_highlight: wire::field(&mut map, "client_highlight", path, false)?,
-            code: wire::field(&mut map, "code", path, false)?,
-            highlight: wire::field(&mut map, "highlight", path, false)?,
-            italic: wire::field(&mut map, "italic", path, false)?,
-            strike: wire::field(&mut map, "strike", path, false)?,
-            unlink: wire::field(&mut map, "unlink", path, false)?,
+            bold: wire::field(&mut map, "bold", path)?,
+            client_highlight: wire::field(&mut map, "client_highlight", path)?,
+            code: wire::field(&mut map, "code", path)?,
+            highlight: wire::field(&mut map, "highlight", path)?,
+            italic: wire::field(&mut map, "italic", path)?,
+            strike: wire::field(&mut map, "strike", path)?,
+            unlink: wire::field(&mut map, "unlink", path)?,
         };
         if let Some(key) = map.keys().next() {
             return Err(wire::mismatch(

@@ -15,7 +15,11 @@
     "fn block_id (mut self , id : impl Into < String >) -> Self",
     "fn blocks < I , T > (mut self , blocks : I) -> Self where I : IntoIterator < Item = T > , T : Into < Block > ,",
     "fn build (self) -> Result < AccordionSection , ValidationError >",
-    "fn expanded (mut self , expanded : bool) -> Self"
+    "fn expanded (mut self , expanded : bool) -> Self",
+    "fn has_header_divider (mut self , divider : bool) -> Self",
+    "fn icon (mut self , icon : crate :: ImageElement) -> Self",
+    "fn subtitle (mut self , subtitle : impl Into < crate :: TextInput >) -> Self",
+    "fn width (mut self , width : ContainerWidth) -> Self"
   ],
   "ActionsBlock": [
     "fn block_id (& self) -> Option < & str >",
@@ -66,7 +70,12 @@
     "impl Serialize",
     "impl TryFrom < Value >",
     "impl std :: fmt :: Display",
-    "impl std :: str :: FromStr"
+    "impl std :: str :: FromStr",
+    "variant Default ",
+    "variant Error ",
+    "variant Info ",
+    "variant Success ",
+    "variant Warning "
   ],
   "AreaChart": [
     "fn axis_config (& self) -> & AxisConfig",
@@ -109,6 +118,22 @@
     "fn extension (mut self , key : impl Into < String > , value : impl Into < Value >) -> Self",
     "fn fallback (mut self , value : impl Into < String >) -> Self",
     "impl Default"
+  ],
+  "AttachmentColor": [
+    "const BLACK: Self",
+    "const BLUE: Self",
+    "const DANGER: Self",
+    "const GOOD: Self",
+    "const GREEN: Self",
+    "const ORANGE: Self",
+    "const PURPLE: Self",
+    "const RED: Self",
+    "const WARNING: Self",
+    "const YELLOW: Self",
+    "fn as_str (& self) -> & str",
+    "impl serde :: Deserialize < 'de >",
+    "impl std :: fmt :: Display",
+    "impl std :: str :: FromStr"
   ],
   "AxisConfig": [
     "fn builder () -> AxisConfigBuilder",
@@ -178,7 +203,45 @@
     "impl From < VideoBlock >",
     "impl FromWire",
     "impl Serialize",
-    "impl TryFrom < Value >"
+    "impl TryFrom < Value >",
+    "variant Actions (Box < ActionsBlock >)",
+    "variant Alert (Box < AlertBlock >)",
+    "variant Card (Box < CardBlock >)",
+    "variant Carousel (Box < CarouselBlock >)",
+    "variant Container (Box < ContainerBlock >)",
+    "variant Context (Box < ContextBlock >)",
+    "variant ContextActions (Box < ContextActionsBlock >)",
+    "variant DataTable (Box < DataTableBlock >)",
+    "variant DataVisualization (Box < DataVisualizationBlock >)",
+    "variant Divider (Box < DividerBlock >)",
+    "variant File (Box < FileBlock >)",
+    "variant Header (Box < HeaderBlock >)",
+    "variant Image (Box < ImageBlock >)",
+    "variant Input (Box < InputBlock >)",
+    "variant Markdown (Box < MarkdownBlock >)",
+    "variant Plan (Box < PlanBlock >)",
+    "variant RichText (Box < RichTextBlock >)",
+    "variant Section (Box < SectionBlock >)",
+    "variant Table (Box < TableBlock >)",
+    "variant TaskCard (Box < TaskCardBlock >)",
+    "variant Video (Box < VideoBlock >)"
+  ],
+  "BuilderPayload": [
+    "impl From < & 'a Block >",
+    "impl From < & 'a HomeTabView >",
+    "impl From < & 'a MessagePayload >",
+    "impl From < & 'a MessageResponse >",
+    "impl From < & 'a ModalView >",
+    "impl From < & 'a WebhookMessage >",
+    "impl From < & 'a [Block] >",
+    "variant Block (& 'a Block)",
+    "variant Blocks (& 'a [Block])",
+    "variant Home (& 'a HomeTabView)",
+    "variant Message (& 'a MessagePayload)",
+    "variant Modal (& 'a ModalView)",
+    "variant Raw (& 'a Map < String , Value >)",
+    "variant Response (& 'a MessageResponse)",
+    "variant Webhook (& 'a WebhookMessage)"
   ],
   "ButtonElement": [
     "fn accessibility_label (& self) -> Option < & str >",
@@ -221,7 +284,9 @@
     "impl Serialize",
     "impl TryFrom < Value >",
     "impl std :: fmt :: Display",
-    "impl std :: str :: FromStr"
+    "impl std :: str :: FromStr",
+    "variant Danger ",
+    "variant Primary "
   ],
   "CardBlock": [
     "fn actions (& self) -> Option < & [ButtonElement] >",
@@ -358,7 +423,11 @@
     "impl From < PieChart >",
     "impl FromWire",
     "impl Serialize",
-    "impl TryFrom < Value >"
+    "impl TryFrom < Value >",
+    "variant Area (AreaChart)",
+    "variant Bar (BarChart)",
+    "variant Line (LineChart)",
+    "variant Pie (PieChart)"
   ],
   "ChartSegment": [
     "fn builder () -> ChartSegmentBuilder",
@@ -415,7 +484,10 @@
     "impl Serialize",
     "impl TryFrom < Value >",
     "impl std :: fmt :: Display",
-    "impl std :: str :: FromStr"
+    "impl std :: str :: FromStr",
+    "variant Center ",
+    "variant Left ",
+    "variant Right "
   ],
   "ColumnSettings": [
     "fn align (& self) -> Option < ColumnAlign >",
@@ -513,7 +585,11 @@
     "impl Serialize",
     "impl TryFrom < Value >",
     "impl std :: fmt :: Display",
-    "impl std :: str :: FromStr"
+    "impl std :: str :: FromStr",
+    "variant Full ",
+    "variant Narrow ",
+    "variant Standard ",
+    "variant Wide "
   ],
   "ContextActionsBlock": [
     "fn block_id (& self) -> Option < & str >",
@@ -541,7 +617,9 @@
     "impl From < IconButtonElement >",
     "impl FromWire",
     "impl Serialize",
-    "impl TryFrom < Value >"
+    "impl TryFrom < Value >",
+    "variant FeedbackButtons (Box < FeedbackButtonsElement >)",
+    "variant IconButton (Box < IconButtonElement >)"
   ],
   "ContextBlock": [
     "fn block_id (& self) -> Option < & str >",
@@ -570,7 +648,10 @@
     "impl From < PlainText >",
     "impl FromWire",
     "impl Serialize",
-    "impl TryFrom < Value >"
+    "impl TryFrom < Value >",
+    "variant ImageElement (ImageElement)",
+    "variant MarkdownText (MarkdownText)",
+    "variant PlainText (PlainText)"
   ],
   "ConversationFilter": [
     "fn builder () -> ConversationFilterBuilder",
@@ -745,7 +826,10 @@
     "impl From < RichTextBlock >",
     "impl FromWire",
     "impl Serialize",
-    "impl TryFrom < Value >"
+    "impl TryFrom < Value >",
+    "variant RawNumber (RawNumber)",
+    "variant RawText (RawText)",
+    "variant RichText (RichTextBlock)"
   ],
   "DataVisualizationBlock": [
     "fn block_id (& self) -> Option < & str >",
@@ -889,7 +973,34 @@
     "impl From < WorkflowButtonElement >",
     "impl FromWire",
     "impl Serialize",
-    "impl TryFrom < Value >"
+    "impl TryFrom < Value >",
+    "variant Button (Box < ButtonElement >)",
+    "variant ChannelMultiSelect (Box < ChannelMultiSelectElement >)",
+    "variant ChannelSelect (Box < ChannelSelectElement >)",
+    "variant Checkboxes (Box < CheckboxesElement >)",
+    "variant ConversationMultiSelect (Box < ConversationMultiSelectElement >)",
+    "variant ConversationSelect (Box < ConversationSelectElement >)",
+    "variant DatePicker (Box < DatePickerElement >)",
+    "variant DateTimePicker (Box < DateTimePickerElement >)",
+    "variant EmailInput (Box < EmailInputElement >)",
+    "variant ExternalMultiSelect (Box < ExternalMultiSelectElement >)",
+    "variant ExternalSelect (Box < ExternalSelectElement >)",
+    "variant FeedbackButtons (Box < FeedbackButtonsElement >)",
+    "variant FileInput (Box < FileInputElement >)",
+    "variant IconButton (Box < IconButtonElement >)",
+    "variant Image (Box < ImageElement >)",
+    "variant NumberInput (Box < NumberInputElement >)",
+    "variant Overflow (Box < OverflowElement >)",
+    "variant PlainTextInput (Box < PlainTextInputElement >)",
+    "variant RadioButtons (Box < RadioButtonsElement >)",
+    "variant RichTextInput (Box < RichTextInputElement >)",
+    "variant StaticMultiSelect (Box < StaticMultiSelectElement >)",
+    "variant StaticSelect (Box < StaticSelectElement >)",
+    "variant TimePicker (Box < TimePickerElement >)",
+    "variant UrlInput (Box < UrlInputElement >)",
+    "variant UserMultiSelect (Box < UserMultiSelectElement >)",
+    "variant UserSelect (Box < UserSelectElement >)",
+    "variant WorkflowButton (Box < WorkflowButtonElement >)"
   ],
   "EmailInputElement": [
     "fn action_id (& self) -> Option < & str >",
@@ -922,7 +1033,13 @@
   ],
   "ErrorCategory": [
     "const fn as_str (self) -> & 'static str",
-    "impl fmt :: Display"
+    "impl fmt :: Display",
+    "variant InvalidUsage ",
+    "variant LengthExceeded ",
+    "variant MissingRequired ",
+    "variant MutuallyExclusive ",
+    "variant OutOfRange ",
+    "variant TypeMismatch "
   ],
   "ExternalMultiSelectElement": [
     "fn action_id (& self) -> Option < & str >",
@@ -1165,7 +1282,8 @@
     "impl Serialize",
     "impl TryFrom < Value >",
     "impl std :: fmt :: Display",
-    "impl std :: str :: FromStr"
+    "impl std :: str :: FromStr",
+    "variant Trash "
   ],
   "ImageBlock": [
     "fn alt_text (& self) -> & str",
@@ -1272,7 +1390,28 @@
     "impl From < UserSelectElement >",
     "impl FromWire",
     "impl Serialize",
-    "impl TryFrom < Value >"
+    "impl TryFrom < Value >",
+    "variant ChannelMultiSelect (Box < ChannelMultiSelectElement >)",
+    "variant ChannelSelect (Box < ChannelSelectElement >)",
+    "variant Checkboxes (Box < CheckboxesElement >)",
+    "variant ConversationMultiSelect (Box < ConversationMultiSelectElement >)",
+    "variant ConversationSelect (Box < ConversationSelectElement >)",
+    "variant DatePicker (Box < DatePickerElement >)",
+    "variant DateTimePicker (Box < DateTimePickerElement >)",
+    "variant EmailInput (Box < EmailInputElement >)",
+    "variant ExternalMultiSelect (Box < ExternalMultiSelectElement >)",
+    "variant ExternalSelect (Box < ExternalSelectElement >)",
+    "variant FileInput (Box < FileInputElement >)",
+    "variant NumberInput (Box < NumberInputElement >)",
+    "variant PlainTextInput (Box < PlainTextInputElement >)",
+    "variant RadioButtons (Box < RadioButtonsElement >)",
+    "variant RichTextInput (Box < RichTextInputElement >)",
+    "variant StaticMultiSelect (Box < StaticMultiSelectElement >)",
+    "variant StaticSelect (Box < StaticSelectElement >)",
+    "variant TimePicker (Box < TimePickerElement >)",
+    "variant UrlInput (Box < UrlInputElement >)",
+    "variant UserMultiSelect (Box < UserMultiSelectElement >)",
+    "variant UserSelect (Box < UserSelectElement >)"
   ],
   "InputParameter": [
     "fn builder () -> InputParameterBuilder",
@@ -1295,6 +1434,14 @@
   "JsonNumber": [
     "fn as_number (& self) -> & Number",
     "impl Deserialize < 'de >",
+    "impl From < i16 >",
+    "impl From < i32 >",
+    "impl From < i64 >",
+    "impl From < i8 >",
+    "impl From < u16 >",
+    "impl From < u32 >",
+    "impl From < u64 >",
+    "impl From < u8 >",
     "impl FromWire",
     "impl Serialize",
     "impl TryFrom < Number >",
@@ -1534,6 +1681,23 @@
     "fn options < I , T > (mut self , values : I) -> Self where I : IntoIterator < Item = T > , T : Into < SelectOption > ,",
     "impl Default"
   ],
+  "Paginator": [
+    "const fn page (& self) -> usize",
+    "const fn page_count (& self) -> usize",
+    "fn blocks (& self) -> & [Block]",
+    "fn builder < I , T > (action_id_prefix : impl Into < String > , blocks : I) -> PaginatorBuilder where I : IntoIterator < Item = T > , T : Into < Block > ,",
+    "fn render (& self) -> Vec < Block >",
+    "impl IntoIterator"
+  ],
+  "PaginatorBuilder": [
+    "fn block_id (mut self , id : impl Into < String >) -> Self",
+    "fn build (self) -> Result < Paginator , ValidationError >",
+    "fn next_text (mut self , text : impl Into < String >) -> Self",
+    "fn page (mut self , page : usize) -> Self",
+    "fn page_size (mut self , size : usize) -> Self",
+    "fn previous_text (mut self , text : impl Into < String >) -> Self",
+    "fn show_page_indicator (mut self , show : bool) -> Self"
+  ],
   "PieChart": [
     "fn builder () -> PieChartBuilder",
     "fn extensions (& self) -> & Map < String , Value >",
@@ -1707,7 +1871,9 @@
     "impl Serialize",
     "impl TryFrom < Value >",
     "impl std :: fmt :: Display",
-    "impl std :: str :: FromStr"
+    "impl std :: str :: FromStr",
+    "variant Ephemeral ",
+    "variant InChannel "
   ],
   "RichTextBlock": [
     "fn block_id (& self) -> Option < & str >",
@@ -1737,7 +1903,11 @@
     "impl From < RichTextSection >",
     "impl FromWire",
     "impl Serialize",
-    "impl TryFrom < Value >"
+    "impl TryFrom < Value >",
+    "variant CodeBlock (RichTextCodeBlock)",
+    "variant List (RichTextList)",
+    "variant Quote (RichTextQuote)",
+    "variant Section (RichTextSection)"
   ],
   "RichTextChannel": [
     "fn builder () -> RichTextChannelBuilder",
@@ -1891,7 +2061,9 @@
     "impl Serialize",
     "impl TryFrom < Value >",
     "impl std :: fmt :: Display",
-    "impl std :: str :: FromStr"
+    "impl std :: str :: FromStr",
+    "variant Bullet ",
+    "variant Ordered "
   ],
   "RichTextQuote": [
     "fn border (& self) -> Option < i64 >",
@@ -1940,7 +2112,13 @@
     "impl From < RichTextUserGroup >",
     "impl FromWire",
     "impl Serialize",
-    "impl TryFrom < Value >"
+    "impl TryFrom < Value >",
+    "variant Channel (RichTextChannel)",
+    "variant Emoji (RichTextEmoji)",
+    "variant Link (RichTextLink)",
+    "variant Text (RichTextText)",
+    "variant User (RichTextUser)",
+    "variant UserGroup (RichTextUserGroup)"
   ],
   "RichTextStyle": [
     "fn bold (mut self , value : bool) -> Self",
@@ -2237,7 +2415,9 @@
     "impl From < RichTextBlock >",
     "impl FromWire",
     "impl Serialize",
-    "impl TryFrom < Value >"
+    "impl TryFrom < Value >",
+    "variant RawText (RawText)",
+    "variant RichText (RichTextBlock)"
   ],
   "TaskCardBlock": [
     "fn block_id (& self) -> Option < & str >",
@@ -2279,7 +2459,11 @@
     "impl Serialize",
     "impl TryFrom < Value >",
     "impl std :: fmt :: Display",
-    "impl std :: str :: FromStr"
+    "impl std :: str :: FromStr",
+    "variant Complete ",
+    "variant Error ",
+    "variant InProgress ",
+    "variant Pending "
   ],
   "Text": [
     "impl Deserialize < 'de >",
@@ -2287,7 +2471,9 @@
     "impl From < PlainText >",
     "impl FromWire",
     "impl Serialize",
-    "impl TryFrom < Value >"
+    "impl TryFrom < Value >",
+    "variant Markdown (MarkdownText)",
+    "variant Plain (PlainText)"
   ],
   "TextInput": [
     "impl From < & str >",
@@ -2553,6 +2739,7 @@
   "Workflow": [
     "fn builder () -> WorkflowBuilder",
     "fn extensions (& self) -> & Map < String , Value >",
+    "fn from_url (url : impl Into < String > , parameters : impl IntoIterator < Item = InputParameter > ,) -> Result < Self , ValidationError >",
     "fn into_builder (self) -> WorkflowBuilder",
     "fn trigger (& self) -> & Trigger",
     "impl Deserialize < 'de >",
@@ -2594,5 +2781,8 @@
     "fn text (mut self , value : impl Into < PlainTextInput >) -> Self",
     "fn workflow (mut self , value : impl Into < Workflow >) -> Self",
     "impl Default"
+  ],
+  "block_kit_builder_url": [
+    "fn block_kit_builder_url < 'a > (payload : impl Into < BuilderPayload < 'a > > , team_id : Option < & str > ,) -> Result < String , serde_json :: Error >"
   ]
 }
