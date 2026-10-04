@@ -26,6 +26,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Verify seven-language release activation, tags and commit
+        working-directory: .
+        run: python3 .github/scripts/verify-release.py publisher --language typescript
 
       - name: Install pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
@@ -53,19 +59,6 @@ jobs:
           package=$(node -p "require('./typescript/package.json').version")
           if [ "$tag" != "$package" ]; then
             echo "::error::Tag '$tag' does not match package version '$package'."
-            exit 1
-          fi
-
-      - name: Verify coordinated package versions
-        run: |
-          set -euo pipefail
-          typescript_version=$(node -p "require('./typescript/package.json').version")
-          python_version=$(python3 -c "import tomllib; print(tomllib.load(open('python/pyproject.toml', 'rb'))['project']['version'])")
-          java_version=$(node -e "const text = require('fs').readFileSync('java/pom.xml', 'utf8'); const match = text.match(/<artifactId>slackblocks<\/artifactId>\s*<version>([^<]+)<\/version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
-          csharp_version=$(node -e "const text = require('fs').readFileSync('csharp/src/Slackblocks/Slackblocks.csproj', 'utf8'); const match = text.match(/<Version>([^<]+)<\/Version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
-          ruby_version=$(node -e "const text = require('fs').readFileSync('ruby/lib/slackblocks/version.rb', 'utf8'); const match = text.match(/^  VERSION = \"([^\"]+)\"$/m); if (!match) process.exit(1); process.stdout.write(match[1]);")
-          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ] || [ "$python_version" != "$csharp_version" ] || [ "$python_version" != "$ruby_version" ]; then
-            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version, C#=$csharp_version, Ruby=$ruby_version."
             exit 1
           fi
 

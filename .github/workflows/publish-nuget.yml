@@ -32,6 +32,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Verify seven-language release activation, tags and commit
+        working-directory: .
+        run: python3 .github/scripts/verify-release.py publisher --language csharp
 
       - name: Install .NET
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
@@ -39,24 +45,6 @@ jobs:
           dotnet-version: |
             8.0.x
             10.0.x
-
-      - name: Verify coordinated version and release tag
-        run: |
-          set -euo pipefail
-          tag="${GITHUB_REF_NAME#csharp/v}"
-          python_version=$(node -e "const text = require('fs').readFileSync('python/pyproject.toml', 'utf8'); const match = text.match(/^version = \"([^\"]+)\"$/m); if (!match) process.exit(1); process.stdout.write(match[1]);")
-          typescript_version=$(node -p "require('./typescript/package.json').version")
-          java_version=$(node -e "const text = require('fs').readFileSync('java/pom.xml', 'utf8'); const match = text.match(/<artifactId>slackblocks<\/artifactId>\s*<version>([^<]+)<\/version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
-          csharp_version=$(node -e "const text = require('fs').readFileSync('csharp/src/Slackblocks/Slackblocks.csproj', 'utf8'); const match = text.match(/<Version>([^<]+)<\/Version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
-          ruby_version=$(node -e "const text = require('fs').readFileSync('ruby/lib/slackblocks/version.rb', 'utf8'); const match = text.match(/^  VERSION = \"([^\"]+)\"$/m); if (!match) process.exit(1); process.stdout.write(match[1]);")
-          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ] || [ "$python_version" != "$csharp_version" ] || [ "$python_version" != "$ruby_version" ]; then
-            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version, C#=$csharp_version, Ruby=$ruby_version."
-            exit 1
-          fi
-          if [ "$tag" != "$csharp_version" ]; then
-            echo "::error::C# tag '$tag' does not match coordinated package version '$csharp_version'."
-            exit 1
-          fi
 
       - name: Run checks
         working-directory: csharp

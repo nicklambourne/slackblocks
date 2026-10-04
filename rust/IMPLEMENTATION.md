@@ -44,7 +44,7 @@ The registry checks will derive exact ID sets rather than freeze audit totals.
 | Public API coverage | explicit facade, independent `syn` audit | mutation guard | public symbol inventory | complete |
 | MSRV/platform/package | Cargo and hosted CI | MSRV/stable, archive and fresh consumers | package README | complete |
 | Docs and root README | current guides, site registries and badges | extracted snippets/site guards | all current pages | complete |
-| Coordinated release | Rust publisher and seven-language guards | positive/negative dry runs | releasing and recovery guide | planned; activation disabled |
+| Coordinated release | Rust publisher and seven-language guards | positive/negative dry runs | releasing and recovery guide | prepared; activation disabled |
 
 The following reviewed design remains the contract for this train. References to
 29 September observations are historical; use the baseline above when executing.
@@ -396,3 +396,35 @@ Browser verification also passed Rust selection, the current-only Rust version
 selector, a saved Rust preference on the six-language 2.5.0 quick start, and
 current API headings/breadcrumbs. No historical snapshot was edited to achieve
 that routing.
+
+
+## Implementation evidence — release integration PR
+
+Every publisher now delegates coordinated-version and activation decisions to
+`.github/scripts/verify-release.py`; Ruby's existing command remains a thin
+compatibility entry point. The coordinator accounts for six stored versions,
+seven changelogs and seven annotated tags, checks own-package lockfile entries,
+and rejects dispatch while Rust has `publish = false`. Go's module remains `/v2`.
+All existing language support floors remain unchanged.
+
+The Rust publisher builds on PRs without credentials. Its protected publishing
+job rechecks master ancestry, clean state, all tags, registry absence and artifact
+identity before requesting a token. Bootstrap is explicit, restricted to the
+first 2.6.0 version and an absent crate; later trusted publishing has no token
+fallback. Cargo packaging is pinned to 1.85.0 and the publish job requires a
+byte-identical reproduction of the tested artifact. The dry-run tool activates
+only an extracted temporary manifest and cannot upload a crate.
+
+Twenty-four read-only guard tests use isolated Git repositories and fake registry
+responses. They cover valid coordinated/publisher flows, disabled activation,
+wrong refs/versions, lockfiles, Go major, empty/undated/inconsistent notes, Java's
+timestamp, partial/mismatched/lightweight tags, dirty/unmerged commits,
+authentication policy, artifact metadata/checksum/reproduction/missing files,
+registry errors and duplicate versions. Actionlint and Python tooling checks pass.
+
+`RELEASING.md` records the exact environment/workflow identity, first-publish
+account setup, scoped bootstrap secret and revocation, later trusted publishing,
+registry-installed consumer and docs.rs checks, and partial-failure recovery.
+Registry ownership, environment setup, branch protection, release activation,
+actual publication and installed-registry verification remain explicit future
+gates; no claim of completing them is made by this unmerged train.

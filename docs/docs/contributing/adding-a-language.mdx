@@ -398,7 +398,10 @@ In `.github/workflows/coordinated-release.yml`, update all of:
 4. The publisher dispatch matrix and failure monitoring.
 
 Audit existing publisher workflows and guard scripts, including
-`ruby/bin/verify-release`, for duplicated package-version lists. Extend the
+`.github/scripts/verify-release.py` and the compatibility entry point
+`ruby/bin/verify-release`, for package-version and activation coverage. The shared
+guard is invoked by every publisher, so extend its registry and tests as well as
+the coordinator’s matrix and atomic tag list. Extend the
 version check in `docs/docusaurus.config.ts`, package version constants/tests,
 release instructions, release notes and package-install examples too. Go derives
 its version from tags and its major module path; count packages, stored manifest
@@ -511,3 +514,11 @@ Copy this completion record into the final PR or implementation plan:
 - Update each package’s own lockfile entry when advancing coordinated versions
   (including Ruby’s `Gemfile.lock`). Run existing-language snippet harnesses as
   well as the new language’s checks; shared guide headings can affect extraction.
+
+- Test release preflight with isolated Git refs and fake registry responses, then
+  run the native package publish dry run without credentials. Cover disabled
+  activation, missing/partial tags, dated notes, dirty or unmerged commits,
+  duplicate versions and registry errors. Keep source activation unchanged.
+- If Cargo republishes from source, pin the packaging toolchain and compare its
+  reproduced archive to the tested artifact before authentication. A successful
+  archive download alone does not prove Cargo will publish those contents.
