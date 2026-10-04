@@ -4,7 +4,7 @@ namespace Slackblocks;
 public static class SlackblocksInfo
 {
     /// <summary>The package version, kept in lockstep with every slackblocks language.</summary>
-    public const string Version = "2.5.0";
+    public const string Version = "2.6.0";
 
     /// <summary>The shared language-neutral specification this package implements.</summary>
     public const string SpecVersion = "1.2.0";

@@ -18,7 +18,9 @@ export default function LanguageContent({ children }: PropsWithChildren) {
                 ? "csharp"
                 : child.type === Ruby
                   ? "ruby"
-                  : null;
+                  : child.type === Rust
+                    ? "rust"
+                    : null;
     if (!childLanguage) return null;
 
     return (
@@ -56,5 +58,9 @@ export function CSharp({ children }: PropsWithChildren) {
 }
 
 export function Ruby({ children }: PropsWithChildren) {
+  return <>{children}</>;
+}
+
+export function Rust({ children }: PropsWithChildren) {
   return <>{children}</>;
 }

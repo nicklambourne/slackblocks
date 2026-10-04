@@ -4,10 +4,17 @@
 2. Serialized output must be semantically identical for every shared valid fixture.
 3. Validation outcomes must agree on rejection and error category; concrete error types and messages are language-specific.
 4. Feature gaps must be explicit in a checked-in conformance skip list.
-5. Every implementation must declare the spec version it conforms to: Python exports `slackblocks.SPEC_VERSION`, TypeScript `specVersion`, Go `slackblocks.SpecVersion`, Java `Slackblocks.SPEC_VERSION`, C# `SlackblocksInfo.SpecVersion`, and Ruby `Slackblocks::SPEC_VERSION`. Every conformance harness asserts the declared version matches `manifest.json`.
+5. Every implementation must declare the spec version it conforms to: Python exports `slackblocks.SPEC_VERSION`, TypeScript `specVersion`, Go `slackblocks.SpecVersion`, Java `Slackblocks.SPEC_VERSION`, C# `SlackblocksInfo.SpecVersion`, Ruby `Slackblocks::SPEC_VERSION`, and Rust `slackblocks::SPEC_VERSION`. Every conformance harness asserts the declared version matches `manifest.json`.
 
 ## Documented policies and intentional divergences
 
-- **Character limits count Unicode code points** in every implementation. Python's `len` counts code points natively; TypeScript counts them explicitly rather than UTF-16 units, Go uses `utf8.RuneCountInString`, Java `String.codePointCount`, C# `string.EnumerateRunes`, and Ruby `String#length`. The corpus pins this with astral-plane emoji fixtures at and beyond the limits.
-- **`block_id` defaulting diverges deliberately.** Python auto-generates a UUID `block_id` when one is not supplied (long-standing behavior that downstream users rely on), while TypeScript, Go, Java, C#, and Ruby omit `block_id` entirely when unset. Shared fixtures therefore pin explicit `block_id` values so every implementation renders identical JSON. This divergence is intentional and preserved for backwards compatibility.
-- **Message response defaults diverge deliberately.** Go, Java, C#, and Ruby `MessageResponse` values default `response_type` to `in_channel` and `replace_original` to `false`; the legacy TypeScript response helper defaults `responseType` to `in_channel`; Python omits `response_type` unless the response is marked ephemeral, and Slack treats an omitted `response_type` as ephemeral. Shared fixtures set `response_type` explicitly, and callers that need a specific visibility should always set it.
+- **Character limits count Unicode code points** in every implementation. Python's `len` counts code points natively; TypeScript counts them explicitly rather than UTF-16 units, Go uses `utf8.RuneCountInString`, Java `String.codePointCount`, C# `string.EnumerateRunes`, Ruby `String#length`, and Rust `str::chars().count()`. The corpus pins this with astral-plane emoji fixtures at and beyond the limits.
+- **`block_id` defaulting diverges deliberately.** Python auto-generates a UUID `block_id` when one is not supplied (long-standing behavior that downstream users rely on), while TypeScript, Go, Java, C#, Ruby, and Rust omit `block_id` entirely when unset. Shared fixtures therefore pin explicit `block_id` values so every implementation renders identical JSON. This divergence is intentional and preserved for backwards compatibility.
+- **Message response defaults diverge deliberately.** Go, Java, C#, Ruby, and Rust `MessageResponse` values default `response_type` to `in_channel` and `replace_original` to `false`; the legacy TypeScript response helper defaults `responseType` to `in_channel`; Python omits `response_type` unless the response is marked ephemeral, and Slack treats an omitted `response_type` as ephemeral. Shared fixtures set `response_type` explicitly, and callers that need a specific visibility should always set it.
+
+- **Rust uses owned, checked values.** Consuming builders return `Result`; private
+  fields and borrowed getters preserve validation after construction. Typed role
+  conversions reject unsupported children at compile time. Checked Serde ingress
+  and `TryFrom<Value>` validate runtime inputs. `clone().into_builder()` supports
+  editing, and `clear_*()` omits defaults explicitly. Role/vocabulary enums are
+  non-exhaustive. The first Rust version is the coordinated, unreleased 2.6.0.

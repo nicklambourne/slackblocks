@@ -1,4 +1,4 @@
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
 
 # Troubleshooting & FAQ
 
@@ -329,7 +329,7 @@ if errors.As(err, &validation) {
 }
 ```
 
-Categories are identical across all six languages: `length-exceeded`, `out-of-range`, `mutually-exclusive`, `type-mismatch`, `missing-required`, and `invalid-usage`.
+Categories are identical across all seven languages: `length-exceeded`, `out-of-range`, `mutually-exclusive`, `type-mismatch`, `missing-required`, and `invalid-usage`.
 
 ## How many blocks can a payload contain?
 
@@ -555,4 +555,64 @@ Yes. Values are immutable and the library makes no network calls; use any asynch
 Use the [repository issue tracker](https://github.com/nicklambourne/slackblocks/issues).
 
 </Ruby>
+<Rust>
+
+## Why does an argument fail to compile?
+
+Child roles are enums with `From` conversions for supported concrete values.
+A `DividerBlock` cannot become a `ContextElement`, and a markdown value cannot
+be used for a button's plain-text label. Use the field's documented argument
+type; do not replace modeled fields with extensions.
+
+## Why did a builder move?
+
+Setters consume and return the builder. Chain them or reassign the returned value.
+Built values have private fields and borrowed getters. Use
+`value.clone().into_builder()` to edit a copy, or `value.into_builder()` to move it.
+
+## What does a validation error contain?
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    match HeaderBlock::builder().text("").build() {
+        Ok(_) => panic!("empty headers must fail"),
+        Err(error) => {
+            assert_eq!(error.category(), ErrorCategory::LengthExceeded);
+            eprintln!(
+                "{} at {}: {}",
+                error.category(),
+                error.path(),
+                error.message()
+            );
+        }
+    }
+    Ok(())
+}
+```
+
+Categories and field paths are structured. `serde_json::from_str::<Block>()`
+also validates, but returns a Serde error; use `Block::try_from(Value)` when you
+need the original `ValidationError`. Parsing supports modeled outbound values,
+not arbitrary incoming Slack events.
+
+## Why are a missing field and `false` different?
+
+Optional fields use `Option`. Missing or explicit null modeled fields are omitted
+on checked ingress; supplied `false`, `0`, empty strings and empty collections
+remain present when that field permits them. Fresh builders use documented
+model defaults. Parsing and `into_builder()` preserve omissions; `clear_*()`
+omits an optional field even when its builder has a default.
+
+## Text, numbers and previews
+
+String coercion is field-specific: a section string becomes markdown, a header
+string becomes plain text. Set fallback `text` on messages. String limits count
+Unicode code points. `JsonNumber` preserves signed/unsigned 64-bit integers and
+accepts finite floats; unsupported precision and NaN/infinity are rejected.
+Use `block_kit_builder_url` to preview blocks without sending them.
+
+
+</Rust>
 </LanguageContent>

@@ -1,0 +1,108 @@
+---
+sidebar_position: 7
+toc_max_heading_level: 2
+---
+
+# Validation And Errors
+
+This page documents the public Go API for validation and errors. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.
+
+## ErrorCategory
+
+ErrorCategory identifies a language-neutral conformance error category.
+
+```go
+type ErrorCategory string
+```
+
+## InvalidUsage
+
+InvalidUsage reports a structurally invalid combination of values.
+
+```go
+const InvalidUsage ErrorCategory = "invalid-usage"
+```
+
+Related types: [`ErrorCategory`](/reference/go/errors#errorcategory).
+
+## LengthExceeded
+
+LengthExceeded reports a value outside an allowed length bound.
+
+```go
+const LengthExceeded ErrorCategory = "length-exceeded"
+```
+
+Related types: [`ErrorCategory`](/reference/go/errors#errorcategory).
+
+## MissingRequired
+
+MissingRequired reports an absent value required by Slack's schema.
+
+```go
+const MissingRequired ErrorCategory = "missing-required"
+```
+
+Related types: [`ErrorCategory`](/reference/go/errors#errorcategory).
+
+## MutuallyExclusive
+
+MutuallyExclusive reports fields that cannot be used together.
+
+```go
+const MutuallyExclusive ErrorCategory = "mutually-exclusive"
+```
+
+Related types: [`ErrorCategory`](/reference/go/errors#errorcategory).
+
+## OutOfRange
+
+OutOfRange reports a numeric value outside its allowed range.
+
+```go
+const OutOfRange ErrorCategory = "out-of-range"
+```
+
+Related types: [`ErrorCategory`](/reference/go/errors#errorcategory).
+
+## TypeMismatch
+
+TypeMismatch reports a value with an unexpected wire type.
+
+```go
+const TypeMismatch ErrorCategory = "type-mismatch"
+```
+
+Related types: [`ErrorCategory`](/reference/go/errors#errorcategory).
+
+## Validate
+
+Validate recursively checks a Slack wire object.
+
+```go
+func Validate(object Object) error
+```
+
+Related types: [`Object`](/reference/go/core#object).
+
+## ValidationError
+
+ValidationError reports why a completed Slack object is invalid.
+
+```go
+type ValidationError struct {
+	Category	ErrorCategory
+	Path		string
+	Detail		string
+}
+```
+
+Related types: [`ErrorCategory`](/reference/go/errors#errorcategory).
+
+## ValidationError.Error
+
+```go
+func (e *ValidationError) Error() string
+```
+
+Related types: [`ValidationError`](/reference/go/errors#validationerror).

@@ -117,3 +117,5 @@ node_modules/
 /docs/docs/reference/csharp/
 /docs/scripts/csharp-reference/bin/
 /docs/scripts/csharp-reference/obj/
+
+/docs/docs/reference/rust/

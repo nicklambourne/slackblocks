@@ -9,6 +9,8 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.nicklambourne/slackblocks?logo=apachemaven)](https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks)
 [![NuGet](https://img.shields.io/nuget/v/Slackblocks?logo=nuget)](https://www.nuget.org/packages/Slackblocks)
 [![RubyGems](https://img.shields.io/gem/v/slackblocks?logo=rubygems)](https://rubygems.org/gems/slackblocks)
+[![Rust MSRV](https://img.shields.io/badge/Rust-1.85%2B-b7410e?logo=rust)](rust/README.md)
+[![crates.io](https://img.shields.io/badge/crates.io-2.6.0%20unreleased-b7410e?logo=rust)](rust/README.md)
 [![Downloads](https://static.pepy.tech/badge/slackblocks)](https://pepy.tech/project/slackblocks)
 [![Python CI](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
 [![TypeScript CI](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
@@ -16,9 +18,10 @@
 [![Java CI](https://github.com/nicklambourne/slackblocks/actions/workflows/java.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/java.yml)
 [![.NET CI](https://github.com/nicklambourne/slackblocks/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/dotnet.yml)
 [![Ruby CI](https://github.com/nicklambourne/slackblocks/actions/workflows/ruby.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/ruby.yml)
+[![Rust CI](https://github.com/nicklambourne/slackblocks/actions/workflows/rust.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/rust.yml)
 [![Docs](https://img.shields.io/badge/Docs-8A2BE2.svg)](https://nicklambourne.github.io/slackblocks)
 
-> **Build Slack messages in Python, TypeScript, Go, Java, C#, or Ruby — without writing JSON by hand.**
+> **Build Slack messages in Python, TypeScript, Go, Java, C#, Ruby, or Rust — without writing JSON by hand.**
 
 Anyone who has built a non-trivial Slack message knows the drill: a wall of nested
 [Block Kit](https://docs.slack.dev/block-kit/) JSON, five levels deep, where a typo'd
@@ -36,21 +39,20 @@ your tests, rather than in production.
   out *before* hitting Slack's API.
 - **Typed** — full type hints and `py.typed` in Python, strict types in TypeScript,
   compile-checked concrete fluent builders in Go and Java, and typed constructors with
-  nullable annotations in C#, and RBS signatures in Ruby.
+  nullable annotations in C#, RBS signatures in Ruby, and consuming builders with typed role enums in Rust.
 - **Plays well with established Slack clients** — unpack a `Message` straight into
   `client.chat_postMessage(**message)` with [`slack-sdk`](https://pypi.org/project/slack-sdk/),
   pass a payload directly to [`@slack/web-api`](https://www.npmjs.com/package/@slack/web-api),
   pass Go block builders directly to [`slack-go/slack`](https://github.com/slack-go/slack),
   pass Java blocks directly to the [official Slack Java SDK](https://slack.dev/java-slack-sdk/),
-  serialize C# values with `System.Text.Json`, or call `to_json` on Ruby values.
-- **One library, six languages** — the same blocks, validation rules, and version
-  numbers in Python, TypeScript, Go, Java, C#, and Ruby. A shared conformance corpus keeps all six
-  implementations emitting the same Slack JSON.
+  serialize C# values with `System.Text.Json`, call `to_json` on Ruby values, or use Serde with Rust values.
+- **One contract across seven implementations** — the same blocks, validation rules, and version
+  numbers in Python, TypeScript, Go, Java, C#, Ruby, and Rust. A shared conformance corpus keeps the implementations emitting the same Slack JSON.
 - **Everything Block Kit ships today** — all current blocks and elements, rich text,
   modals and Home tabs, and the 2025 block families (tables, cards, carousels, charts).
 - **Light** — zero runtime dependencies in Python, a self-contained ESM module on npm,
   one direct Go dependency (`slack-go/slack`), Java integration through the official Slack model interfaces,
-  no dependencies beyond .NET itself in C#, and only Ruby's default JSON gem in Ruby.
+  no dependencies beyond .NET itself in C#, Ruby's default JSON gem, and Serde/serde_json in Rust.
 
 ## Installation
 
@@ -94,6 +96,20 @@ Ruby (3.3+):
 ```bash
 gem install slackblocks
 ```
+
+Rust (1.85+, edition 2024; **2.6.0 unreleased**):
+
+Rust publication is being prepared. From an application beside a checkout of
+this repository containing Rust support:
+
+```bash
+cargo add slackblocks --path ../slackblocks/rust
+cargo add serde_json
+```
+
+The existing six registry packages are released at 2.5.0. Source manifests are
+preparing coordinated 2.6.0; the installation commands above use published
+packages except for the explicit Rust path dependency.
 
 ## Quickstart
 
@@ -278,12 +294,33 @@ puts message.to_json
   <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/usage/build_notification.png" alt="The build notification rendered in Slack" width="600px" />
 </p>
 
+
+The same validated construction in Rust uses consuming builders and native errors:
+
+```rust
+use slackblocks::{HeaderBlock, MessagePayload, SectionBlock};
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let message = MessagePayload::builder("C01234567")
+        .text("Build #482 passed")
+        .block(HeaderBlock::builder().text("Build #482 passed").build()?)
+        .block(SectionBlock::builder().fields(["*Branch*\n`main`", "*Status*\nPassed"]).build()?)
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+Values own their data, getters borrow, and `clone().into_builder()` supports
+editing without mutating the original. See the [Rust package guide](rust/README.md)
+and [Rust API reference](https://nicklambourne.github.io/slackblocks/reference/rust).
+
 ## Documentation
 
 - **Full docs:** <https://nicklambourne.github.io/slackblocks/>
 - [Installation](https://nicklambourne.github.io/slackblocks/usage/installation)
 - [Using Blocks](https://nicklambourne.github.io/slackblocks/usage/using_blocks) — every
-  block type with code in all six languages, the JSON it produces, and screenshots.
+  block type with code in all seven languages, the JSON it produces, and screenshots.
 - [Sending Messages](https://nicklambourne.github.io/slackblocks/usage/sending_messages)
 - [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end
   recipes for build notifications, approval requests, modals, and more.
@@ -308,7 +345,7 @@ puts message.to_json
 - [`csharp/`](csharp/) — the .NET package (`Slackblocks` on NuGet).
 - [`ruby/`](ruby/) — the Ruby gem (`slackblocks` on RubyGems from 2.5.0).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
-  and capability coverage that all six implementations are tested against.
+  and capability coverage that all seven implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.
 
 ## Licensing

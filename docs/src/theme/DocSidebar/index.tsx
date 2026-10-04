@@ -105,6 +105,7 @@ function filterUsage(
       (child) =>
         child.type !== "link" ||
         language === "python" ||
+        language === "rust" ||
         !child.docId ||
         !NON_PYTHON_HIDDEN_DOCS.has(child.docId),
     )
@@ -185,7 +186,8 @@ function filterReference(
       !isLanguageReference(child, "go") &&
       !isLanguageReference(child, "java") &&
       !isLanguageReference(child, "csharp") &&
-      !isLanguageReference(child, "ruby"),
+      !isLanguageReference(child, "ruby") &&
+      !isLanguageReference(child, "rust"),
   );
 
   return {

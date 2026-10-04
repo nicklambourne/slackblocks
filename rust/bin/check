@@ -11,3 +11,4 @@ cargo +stable run --manifest-path rust/Cargo.toml --example api_checkpoint --loc
 RUSTDOCFLAGS='-D warnings' cargo +stable doc --manifest-path rust/Cargo.toml --no-deps --locked
 python3 rust/bin/check-ui.py --toolchain stable
 python3 rust/bin/check-ui.py --toolchain 1.85.0
+RUST_GUIDE_TOOLCHAIN=1.85.0 python3 docs/scripts/check_rust_guide_snippets.py

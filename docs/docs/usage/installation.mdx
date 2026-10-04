@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
 
 # Installation
 
@@ -269,4 +269,45 @@ puts message.to_json
 Uninstall with `gem uninstall slackblocks`.
 
 </Ruby>
+<Rust>
+
+## Install from the checkout
+
+Rust 1.85 or newer is required. The crate uses edition 2024, Serde and serde_json.
+Rust support targets the unreleased coordinated 2.6.0 version; crates.io
+publication is disabled until the release setup is reviewed.
+
+For an application beside the repository checkout:
+
+```sh
+cargo add slackblocks --path ../slackblocks/rust
+cargo add serde_json
+```
+
+The equivalent dependency is `slackblocks = { path = "../slackblocks/rust" }`.
+The package includes generated sources; application builds do not require Python
+or the shared specification directory. After the first registry release, use
+`cargo add slackblocks` and your normal Cargo version policy.
+
+## Verify construction and serialization
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let message = MessagePayload::builder("C01234567")
+        .text("Hello from slackblocks!")
+        .block(SectionBlock::builder().text("Hello, world!").build()?)
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+Run the example with `cargo run`. Remove the dependency with `cargo remove slackblocks`.
+See [Compatibility](compatibility) for the MSRV and [Migration](migration) for
+Rust naming and editing conventions. HTTP clients are application dependencies.
+
+
+</Rust>
 </LanguageContent>

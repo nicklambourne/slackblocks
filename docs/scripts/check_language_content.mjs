@@ -20,6 +20,9 @@ for (const file of await markdownFiles(docsRoot)) {
   const blocks = source.match(/<LanguageContent>[\s\S]*?<\/LanguageContent>/g) ?? [];
   blocks.forEach((block, index) => {
     const relative = path.relative(docsRoot, file);
+    assert.match(block, /<Python>/, `${relative} LanguageContent #${index + 1} has no Python variant`);
+    assert.match(block, /<TypeScript>/, `${relative} LanguageContent #${index + 1} has no TypeScript variant`);
+    assert.match(block, /<Rust>/, `${relative} LanguageContent #${index + 1} has no Rust variant`);
     assert.match(block, /<Go>/, `${relative} LanguageContent #${index + 1} has no Go variant`);
     assert.match(block, /<Java>/, `${relative} LanguageContent #${index + 1} has no Java variant`);
     assert.match(block, /<Ruby>/, `${relative} LanguageContent #${index + 1} has no Ruby variant`);
@@ -27,4 +30,4 @@ for (const file of await markdownFiles(docsRoot)) {
   });
 }
 
-console.log("Every language-switched documentation section includes Go, Java, C#, and Ruby content.");
+console.log("Every language-switched documentation section includes all seven language variants.");
