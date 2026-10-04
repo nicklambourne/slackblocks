@@ -14,8 +14,8 @@ USING_BLOCKS = REPO_ROOT / "docs/docs/usage/using_blocks.mdx"
 
 # Block sections in using_blocks.mdx whose Python snippet cannot be executed
 # and compared against one JSON tab by this harness. Higher-level components
-# are TypeScript-only and have multiple examples rather than one block plus
-# one JSON tab; their payloads are covered by the TypeScript component tests.
+# have multiple examples rather than one block plus one JSON tab; other
+# implementations exercise their native helpers in their component tests.
 EXCLUDED_SECTIONS: set[str] = {"Higher-Level Components"}
 
 PYTHON_FENCE = re.compile(r"```python\n(.*?)```", re.DOTALL)
