@@ -1,0 +1,102 @@
+name: Rust
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "rust/**"
+      - "spec/**"
+      - "docs/examples/rust/**"
+      - "docs/examples/section_hello.json"
+      - ".github/workflows/rust.yml"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rust-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect relevant Rust changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Compare changed files against Rust workflow scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ] || grep -qE '^(rust/|spec/|docs/examples/rust/|docs/examples/section_hello\.json$|\.github/workflows/rust\.yml$)' <<<"$files"; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  test:
+    needs: changes
+    name: Rust tests (${{ matrix.os }}, ${{ matrix.toolchain }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-latest, toolchain: "1.85.0"}
+          - {os: ubuntu-latest, toolchain: stable}
+          - {os: macos-latest, toolchain: stable}
+          - {os: windows-latest, toolchain: stable}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out repository
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Install the supported Rust toolchain
+        if: needs.changes.outputs.relevant == 'true'
+        run: rustup toolchain install "${{ matrix.toolchain }}" --profile minimal
+      - name: Run unit, integration and documentation tests
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          cargo +${{ matrix.toolchain }} test --manifest-path rust/Cargo.toml --workspace --all-targets --locked
+          cargo +${{ matrix.toolchain }} test --manifest-path rust/Cargo.toml --workspace --doc --locked
+          cargo +${{ matrix.toolchain }} run --manifest-path rust/Cargo.toml --example api_checkpoint --locked
+
+  quality:
+    needs: changes
+    name: Rust quality and package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Install Python for generation and archive checks
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      - name: Install Rust tooling
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          rustup toolchain install stable 1.85.0 --profile minimal --component rustfmt,clippy
+          rustup default stable
+          echo "RUSTFMT=$(rustup which --toolchain 1.85.0 rustfmt)" >> "$GITHUB_ENV"
+      - name: Verify generated sources, lints, tests, and rustdoc
+        if: needs.changes.outputs.relevant == 'true'
+        run: rust/bin/check
+      - name: Verify archive and fresh consumers on minimum and stable Rust
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          python3 rust/bin/check-package.py --toolchain 1.85.0
+          python3 rust/bin/check-package.py --toolchain stable
+          python3 rust/bin/check-package.py --toolchain 1.85.0 --lower-bounds
+          python3 rust/bin/check-package.py --toolchain 1.85.0 --json-features
