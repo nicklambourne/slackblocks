@@ -7,7 +7,8 @@ Rust 2024; minimum supported Rust version (MSRV) 1.85. Values own their data,
 builders consume themselves, getters borrow, and invalid input returns
 `ValidationError`. The core depends only on Serde and serde_json.
 
-This foundation is a scoped API checkpoint. It does not claim full conformance.
+All shared model types are implemented. Independent native examples and checked
+JSON ingress cover every shared valid fixture and invalid case.
 See [the implementation plan](https://github.com/nicklambourne/slackblocks/blob/master/rust/IMPLEMENTATION.md) for the train and acceptance evidence.
 
 ## Development
