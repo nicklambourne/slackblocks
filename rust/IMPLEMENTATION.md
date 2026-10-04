@@ -428,3 +428,10 @@ registry-installed consumer and docs.rs checks, and partial-failure recovery.
 Registry ownership, environment setup, branch protection, release activation,
 actual publication and installed-registry verification remain explicit future
 gates; no claim of completing them is made by this unmerged train.
+
+The native Cargo publish dry run passed locally from the standalone archive.
+Preparation and a second clean Cargo package operation produced byte-identical
+artifacts (verified at commit `62ffc47`). No registry upload was performed.
+Documentation PR #391 passed every CI check, including the existing languages'
+full test matrices after correcting the own-gem lockfile entry and shared-guide
+heading extraction. All older docs snapshots remain unchanged from the baseline.
