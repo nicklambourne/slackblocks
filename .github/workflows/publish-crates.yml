@@ -18,7 +18,7 @@ permissions:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -78,10 +78,30 @@ jobs:
             rust/dist/release.json
           if-no-files-found: error
 
+  artifact:
+    name: Verify Rust release artifact
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the same commit on a fresh runner
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Download the tested artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: rust-crate
+          path: rust/dist
+      - name: Install the exact packaging toolchain
+        run: rustup toolchain install 1.85.0 --profile minimal
+      - name: Verify downloaded bytes and reproduce the crate without credentials
+        run: python3 rust/bin/release.py verify
+
   publish:
     name: Publish to crates.io
     if: github.event_name != 'pull_request'
-    needs: build
+    needs: [build, artifact]
     runs-on: ubuntu-latest
     environment:
       name: crates-io

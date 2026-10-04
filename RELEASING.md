@@ -225,7 +225,8 @@ a release or establish registry ownership.
 
 The build job uses Cargo **1.85.0** to prepare the distributable and uploads the
 `.crate` plus `release.json` containing its commit, version, toolchain, auth mode
-and SHA-256. The protected publish job downloads that same run's artifact,
+and SHA-256. A second job downloads and reproduces it on a fresh runner on every
+PR, without registry credentials. The protected publish job downloads that same run’s artifact,
 checks all metadata and the checksum, then reproduces the archive with the exact
 packaging toolchain. A byte mismatch stops publication before authentication.
 Cargo's final publish uses the same clean checkout, lockfile and toolchain;

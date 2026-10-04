@@ -358,7 +358,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("release.py verify", rust)
         self.assertLess(rust.index("release.py verify"), rust.index("crates-io-auth-action@"))
         self.assertIn("--no-verify", rust)
-        self.assertIn("if: github.event_name != 'pull_request'\n    needs: build", rust)
+        self.assertIn("if: github.event_name != 'pull_request'\n    needs: [build, artifact]", rust)
         self.assertNotIn("secrets.", rust.split("  publish:")[0])
         self.assertNotIn("id-token: write", rust.split("  publish:")[0])
         coordinator = (ROOT / ".github/workflows/coordinated-release.yml").read_text()

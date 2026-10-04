@@ -435,3 +435,8 @@ artifacts (verified at commit `62ffc47`). No registry upload was performed.
 Documentation PR #391 passed every CI check, including the existing languages'
 full test matrices after correcting the own-gem lockfile entry and shared-guide
 heading extraction. All older docs snapshots remain unchanged from the baseline.
+
+PR CI also downloads and reproduces the archive on a fresh GitHub runner without
+credentials, exercising the artifact handoff before the protected publisher is
+ever enabled. Superseded PR validation may be canceled; actual tag releases may
+not be interrupted by a newer run.
