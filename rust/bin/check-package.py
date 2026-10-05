@@ -60,7 +60,7 @@ serde = "{serde_version}"
 serde_json = {{ version = "{json_version}"{features} }}
 ''')
     main=(source/'examples/api_checkpoint.rs').read_text()
-    main=main.replace('    let option =', ''''    for literal in ["1.2345678901234567890123456789", "18446744073709551617", "1e-400", "1e400"] {
+    main=main.replace('    let option =', '''    for literal in ["1.2345678901234567890123456789", "18446744073709551617", "1e-400", "1e400"] {
         assert!(serde_json::from_str::<JsonNumber>(literal).is_err(), "{literal}");
         assert!(serde_json::from_slice::<JsonNumber>(literal.as_bytes()).is_err(), "{literal}");
     }
