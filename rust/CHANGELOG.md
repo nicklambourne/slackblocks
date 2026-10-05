@@ -15,5 +15,6 @@
   attachment colors and Block Kit Builder preview URLs.
 - Full shared conformance, independent public API auditing, property tests,
   diagnostic-specific compile-fail checks and separate production coverage gates.
+- Require explicit API editing outcomes and execute sending tests in `rust/bin/check`.
 - Runnable Slack Morphism and reqwest sending examples, tested against local HTTP
   servers on minimum and stable Rust; transport dependencies remain application-owned.

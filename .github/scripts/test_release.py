@@ -36,6 +36,7 @@ FILES = [
     "ruby/Gemfile.lock",
     "rust/Cargo.toml",
     "rust/Cargo.lock",
+    "rust/integrations/Cargo.lock",
 ]
 
 
@@ -164,7 +165,12 @@ class ReleaseTests(unittest.TestCase):
             release.validate(self.root, VERSION)
 
     def test_own_lockfiles_must_match(self):
-        for name in ("python/uv.lock", "ruby/Gemfile.lock", "rust/Cargo.lock"):
+        for name in (
+            "python/uv.lock",
+            "ruby/Gemfile.lock",
+            "rust/Cargo.lock",
+            "rust/integrations/Cargo.lock",
+        ):
             path = self.root / name
             original = path.read_text()
             path.write_text(original.replace(VERSION, "9.9.9"))

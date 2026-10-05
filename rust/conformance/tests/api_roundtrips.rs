@@ -41,135 +41,76 @@ fn actions_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.elements()), expected["elements"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .elements(vec![Element::from(
-            CheckboxesElement::builder()
-                .action_id("actionId-0")
-                .options(vec![
-                    SelectOption::builder()
-                        .text(MarkdownText::builder().text("*a*").build()?)
-                        .value("a")
-                        .description(PlainText::builder().text("*a*").build()?)
-                        .build()?,
-                    SelectOption::builder()
-                        .text(MarkdownText::builder().text("*b*").build()?)
-                        .value("b")
-                        .description(PlainText::builder().text("*b*").build()?)
-                        .build()?,
-                    SelectOption::builder()
-                        .text(MarkdownText::builder().text("*c*").build()?)
-                        .value("c")
-                        .description(PlainText::builder().text("*c*").build()?)
-                        .build()?,
-                ])
-                .build()?,
-        )])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .elements(vec![Element::from(
+                CheckboxesElement::builder()
+                    .action_id("actionId-0")
+                    .options(vec![
+                        SelectOption::builder()
+                            .text(MarkdownText::builder().text("*a*").build()?)
+                            .value("a")
+                            .description(PlainText::builder().text("*a*").build()?)
+                            .build()?,
+                        SelectOption::builder()
+                            .text(MarkdownText::builder().text("*b*").build()?)
+                            .value("b")
+                            .description(PlainText::builder().text("*b*").build()?)
+                            .build()?,
+                        SelectOption::builder()
+                            .text(MarkdownText::builder().text("*c*").build()?)
+                            .value("c")
+                            .description(PlainText::builder().text("*c*").build()?)
+                            .build()?,
+                    ])
+                    .build()?,
+            )])
+            .build()?;
         assert_eq!(
             wire(edited)["elements"],
-            Value::Array(vec![Value::Object(
-                [
-                    ("type".into(), Value::from("checkboxes")),
-                    ("action_id".into(), Value::from("actionId-0")),
-                    (
-                        "options".into(),
-                        Value::Array(vec![
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("mrkdwn")),
-                                                ("text".into(), Value::from("*a*"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("a")),
-                                    (
-                                        "description".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("*a*"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    )
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("mrkdwn")),
-                                                ("text".into(), Value::from("*b*"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("b")),
-                                    (
-                                        "description".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("*b*"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    )
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("mrkdwn")),
-                                                ("text".into(), Value::from("*c*"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("c")),
-                                    (
-                                        "description".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("*c*"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    )
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ])
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([
+                {
+                    "type": "checkboxes",
+                    "action_id": "actionId-0",
+                    "options": [
+                        {
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*a*"
+                            },
+                            "value": "a",
+                            "description": {
+                                "type": "plain_text",
+                                "text": "*a*"
+                            }
+                        },
+                        {
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*b*"
+                            },
+                            "value": "b",
+                            "description": {
+                                "type": "plain_text",
+                                "text": "*b*"
+                            }
+                        },
+                        {
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*c*"
+                            },
+                            "value": "c",
+                            "description": {
+                                "type": "plain_text",
+                                "text": "*c*"
+                            }
+                        }
+                    ]
+                }
+            ])
         );
     }
     let appended = original
@@ -198,114 +139,58 @@ fn actions_block_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["elements"].as_array().unwrap().len(),
+            expected["elements"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["elements"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("checkboxes")),
-                    ("action_id".into(), Value::from("actionId-0")),
-                    (
-                        "options".into(),
-                        Value::Array(vec![
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("mrkdwn")),
-                                                ("text".into(), Value::from("*a*"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("a")),
-                                    (
-                                        "description".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("*a*"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    )
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("mrkdwn")),
-                                                ("text".into(), Value::from("*b*"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("b")),
-                                    (
-                                        "description".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("*b*"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    )
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("mrkdwn")),
-                                                ("text".into(), Value::from("*c*"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("c")),
-                                    (
-                                        "description".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("*c*"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    )
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ])
-                    )
+            &json!({
+                "type": "checkboxes",
+                "action_id": "actionId-0",
+                "options": [
+                    {
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*a*"
+                        },
+                        "value": "a",
+                        "description": {
+                            "type": "plain_text",
+                            "text": "*a*"
+                        }
+                    },
+                    {
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*b*"
+                        },
+                        "value": "b",
+                        "description": {
+                            "type": "plain_text",
+                            "text": "*b*"
+                        }
+                    },
+                    {
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*c*"
+                        },
+                        "value": "c",
+                        "description": {
+                            "type": "plain_text",
+                            "text": "*c*"
+                        }
+                    }
                 ]
-                .into_iter()
-                .collect()
-            )
+            })
         );
     }
     let mut invalid = expected.clone();
-    invalid["elements"] = Value::Object([].into_iter().collect());
+    invalid["elements"] = json!({});
     assert!(ActionsBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("elements");
@@ -314,15 +199,16 @@ fn actions_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -344,7 +230,7 @@ fn actions_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ActionsBlock::try_from(Value::Null).is_err());
-    assert!(ActionsBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(ActionsBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ActionsBlock::try_from(wrong).is_err());
@@ -371,33 +257,23 @@ fn alert_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .text(
-            MarkdownText::builder()
-                .text("The work is mysterious and important.")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text(
+                MarkdownText::builder()
+                    .text("The work is mysterious and important.")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["text"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("mrkdwn")),
-                    (
-                        "text".into(),
-                        Value::from("The work is mysterious and important.")
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "mrkdwn", "text": "The work is mysterious and important."})
         );
     }
     let mut invalid = expected.clone();
-    invalid["text"] = Value::Array(vec![]);
+    invalid["text"] = json!([]);
     assert!(AlertBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("text");
@@ -406,15 +282,16 @@ fn alert_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.level()),
         expected.get("level").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .level(AlertLevel::Info)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .level(AlertLevel::Info)
+            .build()?;
         assert_eq!(wire(edited)["level"], Value::from("info"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_level().build() {
+    {
+        let edited = original.clone().into_builder().clear_level().build()?;
         assert!(wire(edited).get("level").is_none());
     }
     let mut invalid = expected.clone();
@@ -424,15 +301,16 @@ fn alert_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -454,7 +332,7 @@ fn alert_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(AlertBlock::try_from(Value::Null).is_err());
-    assert!(AlertBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(AlertBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(AlertBlock::try_from(wrong).is_err());
@@ -507,207 +385,156 @@ fn card_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.hero_image()),
         expected.get("hero_image").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .hero_image(
-            ImageElement::builder()
-                .image_url("https://picsum.photos/400/300")
-                .alt_text("Sample hero image")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .hero_image(
+                ImageElement::builder()
+                    .image_url("https://picsum.photos/400/300")
+                    .alt_text("Sample hero image")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["hero_image"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("image")),
-                    (
-                        "image_url".into(),
-                        Value::from("https://picsum.photos/400/300")
-                    ),
-                    ("alt_text".into(), Value::from("Sample hero image"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "image", "image_url": "https://picsum.photos/400/300", "alt_text": "Sample hero image"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_hero_image().build() {
+    {
+        let edited = original.clone().into_builder().clear_hero_image().build()?;
         assert!(wire(edited).get("hero_image").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["hero_image"] = Value::Array(vec![]);
+    invalid["hero_image"] = json!([]);
     assert!(CardBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.icon()),
         expected.get("icon").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .icon(
-            ImageElement::builder()
-                .image_url("https://picsum.photos/400/300")
-                .alt_text("Sample hero image")
-                .build()?,
-        )
-        .build()
     {
-        assert_eq!(
-            wire(edited)["icon"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("image")),
-                    (
-                        "image_url".into(),
-                        Value::from("https://picsum.photos/400/300")
-                    ),
-                    ("alt_text".into(), Value::from("Sample hero image"))
-                ]
-                .into_iter()
-                .collect()
+        let error = (original
+            .clone()
+            .into_builder()
+            .icon(
+                ImageElement::builder()
+                    .image_url("https://picsum.photos/400/300")
+                    .alt_text("Sample hero image")
+                    .build()?,
             )
-        );
+            .build())
+        .expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MutuallyExclusive);
+        assert_eq!(error.path(), "CardBlock");
     }
-    if let Ok(edited) = original.clone().into_builder().clear_icon().build() {
+    {
+        let edited = original.clone().into_builder().clear_icon().build()?;
         assert!(wire(edited).get("icon").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["icon"] = Value::Array(vec![]);
+    invalid["icon"] = json!([]);
     assert!(CardBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.title()),
         expected.get("title").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .title(MarkdownText::builder().text("Lumon Industries").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .title(MarkdownText::builder().text("Lumon Industries").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["title"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("mrkdwn")),
-                    ("text".into(), Value::from("Lumon Industries"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "mrkdwn", "text": "Lumon Industries"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_title().build() {
+    {
+        let edited = original.clone().into_builder().clear_title().build()?;
         assert!(wire(edited).get("title").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["title"] = Value::Array(vec![]);
+    invalid["title"] = json!([]);
     assert!(CardBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.subtitle()),
         expected.get("subtitle").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .subtitle(
-            MarkdownText::builder()
-                .text("Committed to work-life balance")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .subtitle(
+                MarkdownText::builder()
+                    .text("Committed to work-life balance")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["subtitle"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("mrkdwn")),
-                    ("text".into(), Value::from("Committed to work-life balance"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "mrkdwn", "text": "Committed to work-life balance"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_subtitle().build() {
+    {
+        let edited = original.clone().into_builder().clear_subtitle().build()?;
         assert!(wire(edited).get("subtitle").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["subtitle"] = Value::Array(vec![]);
+    invalid["subtitle"] = json!([]);
     assert!(CardBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.body()),
         expected.get("body").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .body(
-            MarkdownText::builder()
-                .text("Please enjoy each card equally.")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .body(
+                MarkdownText::builder()
+                    .text("Please enjoy each card equally.")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["body"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("mrkdwn")),
-                    (
-                        "text".into(),
-                        Value::from("Please enjoy each card equally.")
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "mrkdwn", "text": "Please enjoy each card equally."})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_body().build() {
+    {
+        let edited = original.clone().into_builder().clear_body().build()?;
         assert!(wire(edited).get("body").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["body"] = Value::Array(vec![]);
+    invalid["body"] = json!([]);
     assert!(CardBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.actions()),
         expected.get("actions").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .actions(vec![
-            ButtonElement::builder()
-                .text(PlainText::builder().text("Action Button").build()?)
-                .action_id("button_action")
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .actions(vec![
+                ButtonElement::builder()
+                    .text(PlainText::builder().text("Action Button").build()?)
+                    .action_id("button_action")
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["actions"],
-            Value::Array(vec![Value::Object(
-                [
-                    ("type".into(), Value::from("button")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Action Button"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("action_id".into(), Value::from("button_action"))
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Action Button"
+                    },
+                    "action_id": "button_action"
+                }
+            ])
         );
     }
     let appended = original
@@ -720,113 +547,94 @@ fn card_block_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["actions"].as_array().unwrap().len(),
+            expected["actions"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["actions"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("button")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Action Button"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("action_id".into(), Value::from("button_action"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Action Button"
+                },
+                "action_id": "button_action"
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_actions().build() {
+    {
+        let edited = original.clone().into_builder().clear_actions().build()?;
         assert!(wire(edited).get("actions").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["actions"] = Value::Object([].into_iter().collect());
+    invalid["actions"] = json!({});
     assert!(CardBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.slack_icon()),
         expected.get("slack_icon").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .slack_icon(SlackIcon::builder().name("bot").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .slack_icon(SlackIcon::builder().name("bot").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["slack_icon"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("icon")),
-                    ("name".into(), Value::from("bot"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "icon", "name": "bot"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_slack_icon().build() {
+    {
+        let edited = original.clone().into_builder().clear_slack_icon().build()?;
         assert!(wire(edited).get("slack_icon").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["slack_icon"] = Value::Array(vec![]);
+    invalid["slack_icon"] = json!([]);
     assert!(CardBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.subtext()),
         expected.get("subtext").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .subtext(
-            MarkdownText::builder()
-                .text("A card assembled by slackblocks.")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .subtext(
+                MarkdownText::builder()
+                    .text("A card assembled by slackblocks.")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["subtext"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("mrkdwn")),
-                    (
-                        "text".into(),
-                        Value::from("A card assembled by slackblocks.")
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "mrkdwn", "text": "A card assembled by slackblocks."})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_subtext().build() {
+    {
+        let edited = original.clone().into_builder().clear_subtext().build()?;
         assert!(wire(edited).get("subtext").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["subtext"] = Value::Array(vec![]);
+    invalid["subtext"] = json!([]);
     assert!(CardBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -848,7 +656,7 @@ fn card_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(CardBlock::try_from(Value::Null).is_err());
-    assert!(CardBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(CardBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(CardBlock::try_from(wrong).is_err());
@@ -879,62 +687,40 @@ fn carousel_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.elements()), expected["elements"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .elements(vec![
-            CardBlock::builder()
-                .block_id("card_1")
-                .title(MarkdownText::builder().text("First result").build()?)
-                .build()?,
-            CardBlock::builder()
-                .block_id("card_2")
-                .title(MarkdownText::builder().text("Second result").build()?)
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .elements(vec![
+                CardBlock::builder()
+                    .block_id("card_1")
+                    .title(MarkdownText::builder().text("First result").build()?)
+                    .build()?,
+                CardBlock::builder()
+                    .block_id("card_2")
+                    .title(MarkdownText::builder().text("Second result").build()?)
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["elements"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("card")),
-                        ("block_id".into(), Value::from("card_1")),
-                        (
-                            "title".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("mrkdwn")),
-                                    ("text".into(), Value::from("First result"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        )
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("card")),
-                        ("block_id".into(), Value::from("card_2")),
-                        (
-                            "title".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("mrkdwn")),
-                                    ("text".into(), Value::from("Second result"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        )
-                    ]
-                    .into_iter()
-                    .collect()
-                )
+            json!([
+                {
+                    "type": "card",
+                    "block_id": "card_1",
+                    "title": {
+                        "type": "mrkdwn",
+                        "text": "First result"
+                    }
+                },
+                {
+                    "type": "card",
+                    "block_id": "card_2",
+                    "title": {
+                        "type": "mrkdwn",
+                        "text": "Second result"
+                    }
+                }
             ])
         );
     }
@@ -948,33 +734,20 @@ fn carousel_block_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["elements"].as_array().unwrap().len(),
+            expected["elements"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["elements"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("card")),
-                    ("block_id".into(), Value::from("card_1")),
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("First result"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"type": "card", "block_id": "card_1", "title": {"type": "mrkdwn", "text": "First result"}})
         );
     }
     let mut invalid = expected.clone();
-    invalid["elements"] = Value::Object([].into_iter().collect());
+    invalid["elements"] = json!({});
     assert!(CarouselBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("elements");
@@ -983,15 +756,16 @@ fn carousel_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -1013,7 +787,7 @@ fn carousel_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(CarouselBlock::try_from(Value::Null).is_err());
-    assert!(CarouselBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(CarouselBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(CarouselBlock::try_from(wrong).is_err());
@@ -1054,42 +828,33 @@ fn container_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.child_blocks()), expected["child_blocks"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .child_blocks(vec![Block::from(
-            SectionBlock::builder()
-                .block_id("child_1")
-                .text(
-                    MarkdownText::builder()
-                        .text("All systems operational.")
-                        .build()?,
-                )
-                .build()?,
-        )])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .child_blocks(vec![Block::from(
+                SectionBlock::builder()
+                    .block_id("child_1")
+                    .text(
+                        MarkdownText::builder()
+                            .text("All systems operational.")
+                            .build()?,
+                    )
+                    .build()?,
+            )])
+            .build()?;
         assert_eq!(
             wire(edited)["child_blocks"],
-            Value::Array(vec![Value::Object(
-                [
-                    ("type".into(), Value::from("section")),
-                    ("block_id".into(), Value::from("child_1")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("All systems operational."))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([
+                {
+                    "type": "section",
+                    "block_id": "child_1",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "All systems operational."
+                    }
+                }
+            ])
         );
     }
     let appended = original
@@ -1106,33 +871,27 @@ fn container_block_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["child_blocks"].as_array().unwrap().len(),
+            expected["child_blocks"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["child_blocks"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("section")),
-                    ("block_id".into(), Value::from("child_1")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("All systems operational."))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "type": "section",
+                "block_id": "child_1",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "All systems operational."
+                }
+            })
         );
     }
     let mut invalid = expected.clone();
-    invalid["child_blocks"] = Value::Object([].into_iter().collect());
+    invalid["child_blocks"] = json!({});
     assert!(ContainerBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("child_blocks");
@@ -1141,29 +900,25 @@ fn container_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.title()),
         expected.get("title").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .title(PlainText::builder().text("Deployment summary").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .title(PlainText::builder().text("Deployment summary").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["title"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Deployment summary"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Deployment summary"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_title().build() {
-        assert!(wire(edited).get("title").is_none());
+    {
+        let error = (original.clone().into_builder().clear_title().build())
+            .expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MissingRequired);
+        assert_eq!(error.path(), "ContainerBlock");
     }
     let mut invalid = expected.clone();
-    invalid["title"] = Value::Array(vec![]);
+    invalid["title"] = json!([]);
     assert!(ContainerBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.rich_text_title()),
@@ -1172,114 +927,95 @@ fn container_block_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .rich_text_title(
-            RichTextBlock::builder()
-                .block_id("plan_output")
-                .elements(vec![RichTextBlockElement::from(
-                    RichTextSection::builder()
-                        .elements(vec![RichTextSectionElement::from(
-                            RichTextText::builder()
-                                .text("Profile data loaded")
-                                .build()?,
-                        )])
-                        .build()?,
-                )])
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .rich_text_title(
+                RichTextBlock::builder()
+                    .block_id("plan_output")
+                    .elements(vec![RichTextBlockElement::from(
+                        RichTextSection::builder()
+                            .elements(vec![RichTextSectionElement::from(
+                                RichTextText::builder()
+                                    .text("Profile data loaded")
+                                    .build()?,
+                            )])
+                            .build()?,
+                    )])
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["rich_text_title"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("rich_text")),
-                    ("block_id".into(), Value::from("plan_output")),
-                    (
-                        "elements".into(),
-                        Value::Array(vec![Value::Object(
-                            [
-                                ("type".into(), Value::from("rich_text_section")),
-                                (
-                                    "elements".into(),
-                                    Value::Array(vec![Value::Object(
-                                        [
-                                            ("type".into(), Value::from("text")),
-                                            ("text".into(), Value::from("Profile data loaded"))
-                                        ]
-                                        .into_iter()
-                                        .collect()
-                                    )])
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )])
-                    )
+            json!({
+                "type": "rich_text",
+                "block_id": "plan_output",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Profile data loaded"
+                            }
+                        ]
+                    }
                 ]
-                .into_iter()
-                .collect()
-            )
+            })
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_rich_text_title()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_rich_text_title()
+            .build()?;
         assert!(wire(edited).get("rich_text_title").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["rich_text_title"] = Value::Array(vec![]);
+    invalid["rich_text_title"] = json!([]);
     assert!(ContainerBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.subtitle()),
         expected.get("subtitle").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .subtitle(
-            MarkdownText::builder()
-                .text("Production is healthy")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .subtitle(
+                MarkdownText::builder()
+                    .text("Production is healthy")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["subtitle"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("mrkdwn")),
-                    ("text".into(), Value::from("Production is healthy"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "mrkdwn", "text": "Production is healthy"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_subtitle().build() {
+    {
+        let edited = original.clone().into_builder().clear_subtitle().build()?;
         assert!(wire(edited).get("subtitle").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["subtitle"] = Value::Array(vec![]);
+    invalid["subtitle"] = json!([]);
     assert!(ContainerBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.width()),
         expected.get("width").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .width(ContainerWidth::Standard)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .width(ContainerWidth::Standard)
+            .build()?;
         assert_eq!(wire(edited)["width"], Value::from("standard"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_width().build() {
+    {
+        let edited = original.clone().into_builder().clear_width().build()?;
         assert!(wire(edited).get("width").is_none());
     }
     let mut invalid = expected.clone();
@@ -1289,38 +1025,28 @@ fn container_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.icon()),
         expected.get("icon").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .icon(
-            ImageElement::builder()
-                .image_url("https://picsum.photos/400/300")
-                .alt_text("Sample hero image")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .icon(
+                ImageElement::builder()
+                    .image_url("https://picsum.photos/400/300")
+                    .alt_text("Sample hero image")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["icon"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("image")),
-                    (
-                        "image_url".into(),
-                        Value::from("https://picsum.photos/400/300")
-                    ),
-                    ("alt_text".into(), Value::from("Sample hero image"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "image", "image_url": "https://picsum.photos/400/300", "alt_text": "Sample hero image"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_icon().build() {
+    {
+        let edited = original.clone().into_builder().clear_icon().build()?;
         assert!(wire(edited).get("icon").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["icon"] = Value::Array(vec![]);
+    invalid["icon"] = json!([]);
     assert!(ContainerBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.is_collapsible()),
@@ -1329,20 +1055,20 @@ fn container_block_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .is_collapsible(false)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .is_collapsible(false)
+            .build()?;
         assert_eq!(wire(edited)["is_collapsible"], Value::from(false));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_is_collapsible()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_is_collapsible()
+            .build()?;
         assert!(wire(edited).get("is_collapsible").is_none());
     }
     let mut invalid = expected.clone();
@@ -1355,20 +1081,20 @@ fn container_block_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .default_collapsed(false)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .default_collapsed(false)
+            .build()?;
         assert_eq!(wire(edited)["default_collapsed"], Value::from(false));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_default_collapsed()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_default_collapsed()
+            .build()?;
         assert!(wire(edited).get("default_collapsed").is_none());
     }
     let mut invalid = expected.clone();
@@ -1381,20 +1107,20 @@ fn container_block_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .has_header_divider(true)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .has_header_divider(true)
+            .build()?;
         assert_eq!(wire(edited)["has_header_divider"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_has_header_divider()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_has_header_divider()
+            .build()?;
         assert!(wire(edited).get("has_header_divider").is_none());
     }
     let mut invalid = expected.clone();
@@ -1404,15 +1130,16 @@ fn container_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -1434,7 +1161,7 @@ fn container_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ContainerBlock::try_from(Value::Null).is_err());
-    assert!(ContainerBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(ContainerBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ContainerBlock::try_from(wrong).is_err());
@@ -1474,90 +1201,54 @@ fn context_actions_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.elements()), expected["elements"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .elements(vec![ContextActionsElement::from(
-            FeedbackButtonsElement::builder()
-                .positive_button(
-                    FeedbackButton::builder()
-                        .text(PlainText::builder().text("Good").build()?)
-                        .value("positive_feedback")
-                        .accessibility_label("Mark this response as good")
-                        .build()?,
-                )
-                .negative_button(
-                    FeedbackButton::builder()
-                        .text(PlainText::builder().text("Bad").build()?)
-                        .value("negative_feedback")
-                        .accessibility_label("Mark this response as bad")
-                        .build()?,
-                )
-                .action_id("feedback_buttons_1")
-                .build()?,
-        )])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .elements(vec![ContextActionsElement::from(
+                FeedbackButtonsElement::builder()
+                    .positive_button(
+                        FeedbackButton::builder()
+                            .text(PlainText::builder().text("Good").build()?)
+                            .value("positive_feedback")
+                            .accessibility_label("Mark this response as good")
+                            .build()?,
+                    )
+                    .negative_button(
+                        FeedbackButton::builder()
+                            .text(PlainText::builder().text("Bad").build()?)
+                            .value("negative_feedback")
+                            .accessibility_label("Mark this response as bad")
+                            .build()?,
+                    )
+                    .action_id("feedback_buttons_1")
+                    .build()?,
+            )])
+            .build()?;
         assert_eq!(
             wire(edited)["elements"],
-            Value::Array(vec![Value::Object(
-                [
-                    ("type".into(), Value::from("feedback_buttons")),
-                    (
-                        "positive_button".into(),
-                        Value::Object(
-                            [
-                                (
-                                    "text".into(),
-                                    Value::Object(
-                                        [
-                                            ("type".into(), Value::from("plain_text")),
-                                            ("text".into(), Value::from("Good"))
-                                        ]
-                                        .into_iter()
-                                        .collect()
-                                    )
-                                ),
-                                ("value".into(), Value::from("positive_feedback")),
-                                (
-                                    "accessibility_label".into(),
-                                    Value::from("Mark this response as good")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "negative_button".into(),
-                        Value::Object(
-                            [
-                                (
-                                    "text".into(),
-                                    Value::Object(
-                                        [
-                                            ("type".into(), Value::from("plain_text")),
-                                            ("text".into(), Value::from("Bad"))
-                                        ]
-                                        .into_iter()
-                                        .collect()
-                                    )
-                                ),
-                                ("value".into(), Value::from("negative_feedback")),
-                                (
-                                    "accessibility_label".into(),
-                                    Value::from("Mark this response as bad")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("action_id".into(), Value::from("feedback_buttons_1"))
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([
+                {
+                    "type": "feedback_buttons",
+                    "positive_button": {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Good"
+                        },
+                        "value": "positive_feedback",
+                        "accessibility_label": "Mark this response as good"
+                    },
+                    "negative_button": {
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Bad"
+                        },
+                        "value": "negative_feedback",
+                        "accessibility_label": "Mark this response as bad"
+                    },
+                    "action_id": "feedback_buttons_1"
+                }
+            ])
         );
     }
     let appended = original
@@ -1583,72 +1274,39 @@ fn context_actions_block_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["elements"].as_array().unwrap().len(),
+            expected["elements"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["elements"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("feedback_buttons")),
-                    (
-                        "positive_button".into(),
-                        Value::Object(
-                            [
-                                (
-                                    "text".into(),
-                                    Value::Object(
-                                        [
-                                            ("type".into(), Value::from("plain_text")),
-                                            ("text".into(), Value::from("Good"))
-                                        ]
-                                        .into_iter()
-                                        .collect()
-                                    )
-                                ),
-                                ("value".into(), Value::from("positive_feedback")),
-                                (
-                                    "accessibility_label".into(),
-                                    Value::from("Mark this response as good")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "negative_button".into(),
-                        Value::Object(
-                            [
-                                (
-                                    "text".into(),
-                                    Value::Object(
-                                        [
-                                            ("type".into(), Value::from("plain_text")),
-                                            ("text".into(), Value::from("Bad"))
-                                        ]
-                                        .into_iter()
-                                        .collect()
-                                    )
-                                ),
-                                ("value".into(), Value::from("negative_feedback")),
-                                (
-                                    "accessibility_label".into(),
-                                    Value::from("Mark this response as bad")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("action_id".into(), Value::from("feedback_buttons_1"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "type": "feedback_buttons",
+                "positive_button": {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Good"
+                    },
+                    "value": "positive_feedback",
+                    "accessibility_label": "Mark this response as good"
+                },
+                "negative_button": {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Bad"
+                    },
+                    "value": "negative_feedback",
+                    "accessibility_label": "Mark this response as bad"
+                },
+                "action_id": "feedback_buttons_1"
+            })
         );
     }
     let mut invalid = expected.clone();
-    invalid["elements"] = Value::Object([].into_iter().collect());
+    invalid["elements"] = json!({});
     assert!(ContextActionsBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("elements");
@@ -1657,15 +1315,16 @@ fn context_actions_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -1687,7 +1346,7 @@ fn context_actions_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ContextActionsBlock::try_from(Value::Null).is_err());
-    assert!(ContextActionsBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(ContextActionsBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ContextActionsBlock::try_from(wrong).is_err());
@@ -1711,24 +1370,17 @@ fn context_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.elements()), expected["elements"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .elements(vec![ContextElement::from(
-            MarkdownText::builder().text("Hello, world!").build()?,
-        )])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .elements(vec![ContextElement::from(
+                MarkdownText::builder().text("Hello, world!").build()?,
+            )])
+            .build()?;
         assert_eq!(
             wire(edited)["elements"],
-            Value::Array(vec![Value::Object(
-                [
-                    ("type".into(), Value::from("mrkdwn")),
-                    ("text".into(), Value::from("Hello, world!"))
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([{"type": "mrkdwn", "text": "Hello, world!"}])
         );
     }
     let appended = original
@@ -1736,22 +1388,20 @@ fn context_block_editing_and_ingress() -> Result<(), ValidationError> {
         .into_builder()
         .element(MarkdownText::builder().text("Hello, world!").build()?)
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["elements"].as_array().unwrap().len(),
+            expected["elements"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["elements"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("mrkdwn")),
-                    ("text".into(), Value::from("Hello, world!"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"type": "mrkdwn", "text": "Hello, world!"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["elements"] = Value::Object([].into_iter().collect());
+    invalid["elements"] = json!({});
     assert!(ContextBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("elements");
@@ -1760,15 +1410,16 @@ fn context_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -1790,7 +1441,7 @@ fn context_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ContextBlock::try_from(Value::Null).is_err());
-    assert!(ContextBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(ContextBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ContextBlock::try_from(wrong).is_err());
@@ -1824,51 +1475,27 @@ fn data_table_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.rows()), expected["rows"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .rows(vec![
-            vec![
-                DataTableCell::from(RawText::builder().text("Name").build()?),
-                DataTableCell::from(RawText::builder().text("Score").build()?),
-            ],
-            vec![
-                DataTableCell::from(RawText::builder().text("Alice").build()?),
-                DataTableCell::from(RawNumber::builder().value(42_i64).text("42").build()?),
-            ],
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .rows(vec![
+                vec![
+                    DataTableCell::from(RawText::builder().text("Name").build()?),
+                    DataTableCell::from(RawText::builder().text("Score").build()?),
+                ],
+                vec![
+                    DataTableCell::from(RawText::builder().text("Alice").build()?),
+                    DataTableCell::from(RawNumber::builder().value(42_i64).text("42").build()?),
+                ],
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["rows"],
             Value::Array(vec![
+                json!([{"type": "raw_text", "text": "Name"}, {"type": "raw_text", "text": "Score"}]),
                 Value::Array(vec![
-                    Value::Object(
-                        [
-                            ("type".into(), Value::from("raw_text")),
-                            ("text".into(), Value::from("Name"))
-                        ]
-                        .into_iter()
-                        .collect()
-                    ),
-                    Value::Object(
-                        [
-                            ("type".into(), Value::from("raw_text")),
-                            ("text".into(), Value::from("Score"))
-                        ]
-                        .into_iter()
-                        .collect()
-                    )
-                ]),
-                Value::Array(vec![
-                    Value::Object(
-                        [
-                            ("type".into(), Value::from("raw_text")),
-                            ("text".into(), Value::from("Alice"))
-                        ]
-                        .into_iter()
-                        .collect()
-                    ),
+                    json!({"type": "raw_text", "text": "Alice"}),
                     Value::Object(
                         [
                             ("type".into(), Value::from("raw_number")),
@@ -1882,50 +1509,34 @@ fn data_table_block_editing_and_ingress() -> Result<(), ValidationError> {
             ])
         );
     }
-    if let Ok(value) = original
-        .clone()
-        .into_builder()
-        .row(vec![
-            DataTableCell::from(RawText::builder().text("Name").build()?),
-            DataTableCell::from(RawText::builder().text("Score").build()?),
-        ])
-        .build()
     {
+        let value = original
+            .clone()
+            .into_builder()
+            .row(vec![
+                DataTableCell::from(RawText::builder().text("Name").build()?),
+                DataTableCell::from(RawText::builder().text("Score").build()?),
+            ])
+            .build()?;
+        assert_eq!(value.rows().len(), original.rows().len() + 1);
         assert_eq!(
             wire(value)["rows"].as_array().unwrap().last().unwrap(),
-            &Value::Array(vec![
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("raw_text")),
-                        ("text".into(), Value::from("Name"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("raw_text")),
-                        ("text".into(), Value::from("Score"))
-                    ]
-                    .into_iter()
-                    .collect()
-                )
-            ])
+            &json!([{"type": "raw_text", "text": "Name"}, {"type": "raw_text", "text": "Score"}])
         );
     }
     let mut invalid = expected.clone();
-    invalid["rows"] = Value::Object([].into_iter().collect());
+    invalid["rows"] = json!({});
     assert!(DataTableBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("rows");
     assert!(DataTableBlock::try_from(missing).is_err());
     assert_eq!(wire(original.caption()), expected["caption"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .caption("Team scores")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .caption("Team scores")
+            .build()?;
         assert_eq!(wire(edited)["caption"], Value::from("Team scores"));
     }
     let mut invalid = expected.clone();
@@ -1938,10 +1549,12 @@ fn data_table_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.page_size()),
         expected.get("page_size").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().page_size(5_i64).build() {
+    {
+        let edited = original.clone().into_builder().page_size(5_i64).build()?;
         assert_eq!(wire(edited)["page_size"], serde_json::json!(5));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_page_size().build() {
+    {
+        let edited = original.clone().into_builder().clear_page_size().build()?;
         assert!(wire(edited).get("page_size").is_none());
     }
     let mut invalid = expected.clone();
@@ -1954,23 +1567,23 @@ fn data_table_block_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .row_header_column_index(0_i64)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .row_header_column_index(0_i64)
+            .build()?;
         assert_eq!(
             wire(edited)["row_header_column_index"],
             serde_json::json!(0)
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_row_header_column_index()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_row_header_column_index()
+            .build()?;
         assert!(wire(edited).get("row_header_column_index").is_none());
     }
     let mut invalid = expected.clone();
@@ -1980,15 +1593,16 @@ fn data_table_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -2010,7 +1624,7 @@ fn data_table_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(DataTableBlock::try_from(Value::Null).is_err());
-    assert!(DataTableBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(DataTableBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(DataTableBlock::try_from(wrong).is_err());
@@ -2055,12 +1669,12 @@ fn data_visualization_block_editing_and_ingress() -> Result<(), ValidationError>
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.title()), expected["title"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .title("Daily Active Users")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .title("Daily Active Users")
+            .build()?;
         assert_eq!(wire(edited)["title"], Value::from("Daily Active Users"));
     }
     let mut invalid = expected.clone();
@@ -2070,31 +1684,31 @@ fn data_visualization_block_editing_and_ingress() -> Result<(), ValidationError>
     missing.as_object_mut().unwrap().remove("title");
     assert!(DataVisualizationBlock::try_from(missing).is_err());
     assert_eq!(wire(original.chart()), expected["chart"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .chart(
-            AreaChart::builder()
-                .series(vec![
-                    DataSeries::builder()
-                        .name("Free Tier")
-                        .data(vec![
-                            DataPoint::builder().label("Mon").value(12000_i64).build()?,
-                            DataPoint::builder().label("Tue").value(13500_i64).build()?,
-                        ])
-                        .build()?,
-                ])
-                .axis_config(
-                    AxisConfig::builder()
-                        .categories(vec![String::from("Mon"), String::from("Tue")])
-                        .x_label("Day")
-                        .y_label("Users")
-                        .build()?,
-                )
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .chart(
+                AreaChart::builder()
+                    .series(vec![
+                        DataSeries::builder()
+                            .name("Free Tier")
+                            .data(vec![
+                                DataPoint::builder().label("Mon").value(12000_i64).build()?,
+                                DataPoint::builder().label("Tue").value(13500_i64).build()?,
+                            ])
+                            .build()?,
+                    ])
+                    .axis_config(
+                        AxisConfig::builder()
+                            .categories(vec![String::from("Mon"), String::from("Tue")])
+                            .x_label("Day")
+                            .y_label("Users")
+                            .build()?,
+                    )
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["chart"],
             Value::Object(
@@ -2133,18 +1747,7 @@ fn data_visualization_block_editing_and_ingress() -> Result<(), ValidationError>
                     ),
                     (
                         "axis_config".into(),
-                        Value::Object(
-                            [
-                                (
-                                    "categories".into(),
-                                    Value::Array(vec![Value::from("Mon"), Value::from("Tue")])
-                                ),
-                                ("x_label".into(), Value::from("Day")),
-                                ("y_label".into(), Value::from("Users"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
+                        json!({"categories": ["Mon", "Tue"], "x_label": "Day", "y_label": "Users"})
                     )
                 ]
                 .into_iter()
@@ -2153,7 +1756,7 @@ fn data_visualization_block_editing_and_ingress() -> Result<(), ValidationError>
         );
     }
     let mut invalid = expected.clone();
-    invalid["chart"] = Value::Array(vec![]);
+    invalid["chart"] = json!([]);
     assert!(DataVisualizationBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("chart");
@@ -2162,15 +1765,16 @@ fn data_visualization_block_editing_and_ingress() -> Result<(), ValidationError>
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -2192,7 +1796,7 @@ fn data_visualization_block_editing_and_ingress() -> Result<(), ValidationError>
             .is_err()
     );
     assert!(DataVisualizationBlock::try_from(Value::Null).is_err());
-    assert!(DataVisualizationBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(DataVisualizationBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(DataVisualizationBlock::try_from(wrong).is_err());
@@ -2214,15 +1818,16 @@ fn divider_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -2244,7 +1849,7 @@ fn divider_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(DividerBlock::try_from(Value::Null).is_err());
-    assert!(DividerBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(DividerBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(DividerBlock::try_from(wrong).is_err());
@@ -2267,12 +1872,12 @@ fn file_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.external_id()), expected["external_id"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .external_id("external_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .external_id("external_id")
+            .build()?;
         assert_eq!(wire(edited)["external_id"], Value::from("external_id"));
     }
     let mut invalid = expected.clone();
@@ -2282,7 +1887,8 @@ fn file_block_editing_and_ingress() -> Result<(), ValidationError> {
     missing.as_object_mut().unwrap().remove("external_id");
     assert!(FileBlock::try_from(missing).is_err());
     assert_eq!(wire(original.source()), expected["source"]);
-    if let Ok(edited) = original.clone().into_builder().source("remote").build() {
+    {
+        let edited = original.clone().into_builder().source("remote").build()?;
         assert_eq!(wire(edited)["source"], Value::from("remote"));
     }
     let mut invalid = expected.clone();
@@ -2295,15 +1901,16 @@ fn file_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -2325,7 +1932,7 @@ fn file_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(FileBlock::try_from(Value::Null).is_err());
-    assert!(FileBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(FileBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(FileBlock::try_from(wrong).is_err());
@@ -2347,12 +1954,12 @@ fn header_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .text(PlainText::builder().text("😀".repeat(150)).build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text(PlainText::builder().text("😀".repeat(150)).build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["text"],
             Value::Object(
@@ -2366,7 +1973,7 @@ fn header_block_editing_and_ingress() -> Result<(), ValidationError> {
         );
     }
     let mut invalid = expected.clone();
-    invalid["text"] = Value::Array(vec![]);
+    invalid["text"] = json!([]);
     assert!(HeaderBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("text");
@@ -2375,15 +1982,16 @@ fn header_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -2405,7 +2013,7 @@ fn header_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(HeaderBlock::try_from(Value::Null).is_err());
-    assert!(HeaderBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(HeaderBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(HeaderBlock::try_from(wrong).is_err());
@@ -2432,19 +2040,22 @@ fn image_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.image_url()),
         expected.get("image_url").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .image_url("https://api.slack.com/img/blocks/bkb_template_images/beagle.png")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .image_url("https://api.slack.com/img/blocks/bkb_template_images/beagle.png")
+            .build()?;
         assert_eq!(
             wire(edited)["image_url"],
             Value::from("https://api.slack.com/img/blocks/bkb_template_images/beagle.png")
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_image_url().build() {
-        assert!(wire(edited).get("image_url").is_none());
+    {
+        let error = (original.clone().into_builder().clear_image_url().build())
+            .expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MissingRequired);
+        assert_eq!(error.path(), "ImageBlock");
     }
     let mut invalid = expected.clone();
     invalid["image_url"] = Value::from(false);
@@ -2453,38 +2064,30 @@ fn image_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.slack_file()),
         expected.get("slack_file").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .slack_file(
-            SlackFile::builder()
-                .url("https://files.slack.com/files-pri/T0123456-F0123ABC456/kitten.png")
-                .build()?,
-        )
-        .build()
     {
-        assert_eq!(
-            wire(edited)["slack_file"],
-            Value::Object(
-                [(
-                    "url".into(),
-                    Value::from(
-                        "https://files.slack.com/files-pri/T0123456-F0123ABC456/kitten.png"
-                    )
-                )]
-                .into_iter()
-                .collect()
+        let error = (original
+            .clone()
+            .into_builder()
+            .slack_file(
+                SlackFile::builder()
+                    .url("https://files.slack.com/files-pri/T0123456-F0123ABC456/kitten.png")
+                    .build()?,
             )
-        );
+            .build())
+        .expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MutuallyExclusive);
+        assert_eq!(error.path(), "ImageBlock");
     }
-    if let Ok(edited) = original.clone().into_builder().clear_slack_file().build() {
+    {
+        let edited = original.clone().into_builder().clear_slack_file().build()?;
         assert!(wire(edited).get("slack_file").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["slack_file"] = Value::Array(vec![]);
+    invalid["slack_file"] = json!([]);
     assert!(ImageBlock::try_from(invalid).is_err());
     assert_eq!(wire(original.alt_text()), expected["alt_text"]);
-    if let Ok(edited) = original.clone().into_builder().alt_text("image1").build() {
+    {
+        let edited = original.clone().into_builder().alt_text("image1").build()?;
         assert_eq!(wire(edited)["alt_text"], Value::from("image1"));
     }
     let mut invalid = expected.clone();
@@ -2497,43 +2100,38 @@ fn image_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.title()),
         expected.get("title").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .title(PlainText::builder().text("image1").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .title(PlainText::builder().text("image1").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["title"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("image1"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "image1"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_title().build() {
+    {
+        let edited = original.clone().into_builder().clear_title().build()?;
         assert!(wire(edited).get("title").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["title"] = Value::Array(vec![]);
+    invalid["title"] = json!([]);
     assert!(ImageBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -2555,7 +2153,7 @@ fn image_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ImageBlock::try_from(Value::Null).is_err());
-    assert!(ImageBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(ImageBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ImageBlock::try_from(wrong).is_err());
@@ -2584,56 +2182,41 @@ fn input_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.label()), expected["label"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .label(PlainText::builder().text("Label").emoji(true).build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .label(PlainText::builder().text("Label").emoji(true).build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["label"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Label")),
-                    ("emoji".into(), Value::from(true))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Label", "emoji": true})
         );
     }
     let mut invalid = expected.clone();
-    invalid["label"] = Value::Array(vec![]);
+    invalid["label"] = json!([]);
     assert!(InputBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("label");
     assert!(InputBlock::try_from(missing).is_err());
     assert_eq!(wire(original.element()), expected["element"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .element(
-            PlainTextInputElement::builder()
-                .action_id("action")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .element(
+                PlainTextInputElement::builder()
+                    .action_id("action")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["element"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text_input")),
-                    ("action_id".into(), Value::from("action"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text_input", "action_id": "action"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["element"] = Value::Array(vec![]);
+    invalid["element"] = json!([]);
     assert!(InputBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("element");
@@ -2645,20 +2228,20 @@ fn input_block_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .dispatch_action(true)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .dispatch_action(true)
+            .build()?;
         assert_eq!(wire(edited)["dispatch_action"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_dispatch_action()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_dispatch_action()
+            .build()?;
         assert!(wire(edited).get("dispatch_action").is_none());
     }
     let mut invalid = expected.clone();
@@ -2668,15 +2251,16 @@ fn input_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -2686,39 +2270,34 @@ fn input_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.hint()),
         expected.get("hint").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .hint(PlainText::builder().text("Hint").emoji(true).build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .hint(PlainText::builder().text("Hint").emoji(true).build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["hint"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Hint")),
-                    ("emoji".into(), Value::from(true))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Hint", "emoji": true})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_hint().build() {
+    {
+        let edited = original.clone().into_builder().clear_hint().build()?;
         assert!(wire(edited).get("hint").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["hint"] = Value::Array(vec![]);
+    invalid["hint"] = json!([]);
     assert!(InputBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.optional()),
         expected.get("optional").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().optional(true).build() {
+    {
+        let edited = original.clone().into_builder().optional(true).build()?;
         assert_eq!(wire(edited)["optional"], Value::from(true));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_optional().build() {
+    {
+        let edited = original.clone().into_builder().clear_optional().build()?;
         assert!(wire(edited).get("optional").is_none());
     }
     let mut invalid = expected.clone();
@@ -2740,7 +2319,7 @@ fn input_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(InputBlock::try_from(Value::Null).is_err());
-    assert!(InputBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(InputBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(InputBlock::try_from(wrong).is_err());
@@ -2762,12 +2341,12 @@ fn markdown_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .text("**Hello**, _world_!")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text("**Hello**, _world_!")
+            .build()?;
         assert_eq!(wire(edited)["text"], Value::from("**Hello**, _world_!"));
     }
     let mut invalid = expected.clone();
@@ -2780,15 +2359,16 @@ fn markdown_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -2810,7 +2390,7 @@ fn markdown_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(MarkdownBlock::try_from(Value::Null).is_err());
-    assert!(MarkdownBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(MarkdownBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(MarkdownBlock::try_from(wrong).is_err());
@@ -2858,12 +2438,12 @@ fn plan_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.title()), expected["title"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .title("Thinking completed")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .title("Thinking completed")
+            .build()?;
         assert_eq!(wire(edited)["title"], Value::from("Thinking completed"));
     }
     let mut invalid = expected.clone();
@@ -2878,96 +2458,65 @@ fn plan_block_editing_and_ingress() -> Result<(), ValidationError> {
         task.as_object_mut().unwrap().remove("type");
     }
     assert_eq!(tasks, expected["tasks"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .tasks(vec![
-            TaskCardBlock::builder()
-                .task_id("call_001")
-                .title("Fetched user profile information")
-                .status(TaskStatus::Complete)
-                .output(
-                    RichTextBlock::builder()
-                        .block_id("plan_output")
-                        .elements(vec![RichTextBlockElement::from(
-                            RichTextSection::builder()
-                                .elements(vec![RichTextSectionElement::from(
-                                    RichTextText::builder()
-                                        .text("Profile data loaded")
-                                        .build()?,
-                                )])
-                                .build()?,
-                        )])
-                        .build()?,
-                )
-                .build()?,
-            TaskCardBlock::builder()
-                .task_id("call_002")
-                .title("Checked user permissions")
-                .status(TaskStatus::Pending)
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .tasks(vec![
+                TaskCardBlock::builder()
+                    .task_id("call_001")
+                    .title("Fetched user profile information")
+                    .status(TaskStatus::Complete)
+                    .output(
+                        RichTextBlock::builder()
+                            .block_id("plan_output")
+                            .elements(vec![RichTextBlockElement::from(
+                                RichTextSection::builder()
+                                    .elements(vec![RichTextSectionElement::from(
+                                        RichTextText::builder()
+                                            .text("Profile data loaded")
+                                            .build()?,
+                                    )])
+                                    .build()?,
+                            )])
+                            .build()?,
+                    )
+                    .build()?,
+                TaskCardBlock::builder()
+                    .task_id("call_002")
+                    .title("Checked user permissions")
+                    .status(TaskStatus::Pending)
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["tasks"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        ("task_id".into(), Value::from("call_001")),
-                        (
-                            "title".into(),
-                            Value::from("Fetched user profile information")
-                        ),
-                        ("status".into(), Value::from("complete")),
-                        (
-                            "output".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("rich_text")),
-                                    ("block_id".into(), Value::from("plan_output")),
-                                    (
-                                        "elements".into(),
-                                        Value::Array(vec![Value::Object(
-                                            [
-                                                ("type".into(), Value::from("rich_text_section")),
-                                                (
-                                                    "elements".into(),
-                                                    Value::Array(vec![Value::Object(
-                                                        [
-                                                            ("type".into(), Value::from("text")),
-                                                            (
-                                                                "text".into(),
-                                                                Value::from("Profile data loaded")
-                                                            )
-                                                        ]
-                                                        .into_iter()
-                                                        .collect()
-                                                    )])
-                                                )
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )])
-                                    )
+            json!([
+                {
+                    "task_id": "call_001",
+                    "title": "Fetched user profile information",
+                    "status": "complete",
+                    "output": {
+                        "type": "rich_text",
+                        "block_id": "plan_output",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Profile data loaded"
+                                    }
                                 ]
-                                .into_iter()
-                                .collect()
-                            )
-                        )
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("task_id".into(), Value::from("call_002")),
-                        ("title".into(), Value::from("Checked user permissions")),
-                        ("status".into(), Value::from("pending"))
-                    ]
-                    .into_iter()
-                    .collect()
-                )
+                            }
+                        ]
+                    }
+                },
+                {
+                    "task_id": "call_002",
+                    "title": "Checked user permissions",
+                    "status": "pending"
+                }
             ])
         );
     }
@@ -2996,61 +2545,14 @@ fn plan_block_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
-        let json = wire(value);
-        assert_eq!(
-            json["tasks"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("task_id".into(), Value::from("call_001")),
-                    (
-                        "title".into(),
-                        Value::from("Fetched user profile information")
-                    ),
-                    ("status".into(), Value::from("complete")),
-                    (
-                        "output".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("rich_text")),
-                                ("block_id".into(), Value::from("plan_output")),
-                                (
-                                    "elements".into(),
-                                    Value::Array(vec![Value::Object(
-                                        [
-                                            ("type".into(), Value::from("rich_text_section")),
-                                            (
-                                                "elements".into(),
-                                                Value::Array(vec![Value::Object(
-                                                    [
-                                                        ("type".into(), Value::from("text")),
-                                                        (
-                                                            "text".into(),
-                                                            Value::from("Profile data loaded")
-                                                        )
-                                                    ]
-                                                    .into_iter()
-                                                    .collect()
-                                                )])
-                                            )
-                                        ]
-                                        .into_iter()
-                                        .collect()
-                                    )])
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
-        );
+    {
+        let error =
+            (appended).expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::InvalidUsage);
+        assert_eq!(error.path(), "PlanBlock.tasks");
     }
     let mut invalid = expected.clone();
-    invalid["tasks"] = Value::Object([].into_iter().collect());
+    invalid["tasks"] = json!({});
     assert!(PlanBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("tasks");
@@ -3059,15 +2561,16 @@ fn plan_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -3089,7 +2592,7 @@ fn plan_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(PlanBlock::try_from(Value::Null).is_err());
-    assert!(PlanBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(PlanBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(PlanBlock::try_from(wrong).is_err());
@@ -3119,40 +2622,23 @@ fn rich_text_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.elements()), expected["elements"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .elements(vec![RichTextBlockElement::from(
-            RichTextSection::builder()
-                .elements(vec![RichTextSectionElement::from(
-                    RichTextText::builder()
-                        .text("Profile data loaded")
-                        .build()?,
-                )])
-                .build()?,
-        )])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .elements(vec![RichTextBlockElement::from(
+                RichTextSection::builder()
+                    .elements(vec![RichTextSectionElement::from(
+                        RichTextText::builder()
+                            .text("Profile data loaded")
+                            .build()?,
+                    )])
+                    .build()?,
+            )])
+            .build()?;
         assert_eq!(
             wire(edited)["elements"],
-            Value::Array(vec![Value::Object(
-                [
-                    ("type".into(), Value::from("rich_text_section")),
-                    (
-                        "elements".into(),
-                        Value::Array(vec![Value::Object(
-                            [
-                                ("type".into(), Value::from("text")),
-                                ("text".into(), Value::from("Profile data loaded"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )])
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([{"type": "rich_text_section", "elements": [{"type": "text", "text": "Profile data loaded"}]}])
         );
     }
     let appended = original
@@ -3168,32 +2654,20 @@ fn rich_text_block_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["elements"].as_array().unwrap().len(),
+            expected["elements"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["elements"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("rich_text_section")),
-                    (
-                        "elements".into(),
-                        Value::Array(vec![Value::Object(
-                            [
-                                ("type".into(), Value::from("text")),
-                                ("text".into(), Value::from("Profile data loaded"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )])
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"type": "rich_text_section", "elements": [{"type": "text", "text": "Profile data loaded"}]})
         );
     }
     let mut invalid = expected.clone();
-    invalid["elements"] = Value::Object([].into_iter().collect());
+    invalid["elements"] = json!({});
     assert!(RichTextBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("elements");
@@ -3202,15 +2676,16 @@ fn rich_text_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("plan_output")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("plan_output")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("plan_output"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -3232,7 +2707,7 @@ fn rich_text_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RichTextBlock::try_from(Value::Null).is_err());
-    assert!(RichTextBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(RichTextBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RichTextBlock::try_from(wrong).is_err());
@@ -3261,68 +2736,44 @@ fn section_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.text()),
         expected.get("text").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .text(
-            MarkdownText::builder()
-                .text("I like pretty colours")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text(
+                MarkdownText::builder()
+                    .text("I like pretty colours")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["text"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("mrkdwn")),
-                    ("text".into(), Value::from("I like pretty colours"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "mrkdwn", "text": "I like pretty colours"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_text().build() {
+    {
+        let edited = original.clone().into_builder().clear_text().build()?;
         assert!(wire(edited).get("text").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["text"] = Value::Array(vec![]);
+    invalid["text"] = json!([]);
     assert!(SectionBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.fields()),
         expected.get("fields").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .fields(vec![
-            TextInput::from(MarkdownText::builder().text("Are you").build()?),
-            TextInput::from(PlainText::builder().text("There?").emoji(true).build()?),
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .fields(vec![
+                TextInput::from(MarkdownText::builder().text("Are you").build()?),
+                TextInput::from(PlainText::builder().text("There?").emoji(true).build()?),
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["fields"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("mrkdwn")),
-                        ("text".into(), Value::from("Are you"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("plain_text")),
-                        ("text".into(), Value::from("There?")),
-                        ("emoji".into(), Value::from(true))
-                    ]
-                    .into_iter()
-                    .collect()
-                )
-            ])
+            json!([{"type": "mrkdwn", "text": "Are you"}, {"type": "plain_text", "text": "There?", "emoji": true}])
         );
     }
     let appended = original
@@ -3330,83 +2781,73 @@ fn section_block_editing_and_ingress() -> Result<(), ValidationError> {
         .into_builder()
         .field(MarkdownText::builder().text("Are you").build()?)
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["fields"].as_array().unwrap().len(),
+            expected["fields"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["fields"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("mrkdwn")),
-                    ("text".into(), Value::from("Are you"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"type": "mrkdwn", "text": "Are you"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_fields().build() {
+    {
+        let edited = original.clone().into_builder().clear_fields().build()?;
         assert!(wire(edited).get("fields").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["fields"] = Value::Object([].into_iter().collect());
+    invalid["fields"] = json!({});
     assert!(SectionBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.accessory()),
         expected.get("accessory").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .accessory(
-            ButtonElement::builder()
-                .text(PlainText::builder().text("Action Button").build()?)
-                .action_id("button_action")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .accessory(
+                ButtonElement::builder()
+                    .text(PlainText::builder().text("Action Button").build()?)
+                    .action_id("button_action")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["accessory"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("button")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Action Button"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("action_id".into(), Value::from("button_action"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Action Button"
+                },
+                "action_id": "button_action"
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_accessory().build() {
+    {
+        let edited = original.clone().into_builder().clear_accessory().build()?;
         assert!(wire(edited).get("accessory").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["accessory"] = Value::Array(vec![]);
+    invalid["accessory"] = json!([]);
     assert!(SectionBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id_0")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id_0")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id_0"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -3428,7 +2869,7 @@ fn section_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(SectionBlock::try_from(Value::Null).is_err());
-    assert!(SectionBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(SectionBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(SectionBlock::try_from(wrong).is_err());
@@ -3495,192 +2936,126 @@ fn table_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.rows()), expected["rows"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .rows(vec![
-            vec![
-                TableCell::from(RawText::builder().text("Header A").build()?),
-                TableCell::from(RawText::builder().text("Header B").build()?),
-            ],
-            vec![
-                TableCell::from(RawText::builder().text("Data 1A").build()?),
-                TableCell::from(
-                    RichTextBlock::builder()
-                        .elements(vec![RichTextBlockElement::from(
-                            RichTextSection::builder()
-                                .elements(vec![RichTextSectionElement::from(
-                                    RichTextLink::builder()
-                                        .url("https://slack.com")
-                                        .text("Data 1B")
-                                        .build()?,
-                                )])
-                                .build()?,
-                        )])
-                        .build()?,
-                ),
-            ],
-            vec![
-                TableCell::from(RawText::builder().text("Data 2A").build()?),
-                TableCell::from(
-                    RichTextBlock::builder()
-                        .elements(vec![RichTextBlockElement::from(
-                            RichTextSection::builder()
-                                .elements(vec![RichTextSectionElement::from(
-                                    RichTextLink::builder()
-                                        .url("https://slack.com")
-                                        .text("Data 2B")
-                                        .build()?,
-                                )])
-                                .build()?,
-                        )])
-                        .build()?,
-                ),
-            ],
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .rows(vec![
+                vec![
+                    TableCell::from(RawText::builder().text("Header A").build()?),
+                    TableCell::from(RawText::builder().text("Header B").build()?),
+                ],
+                vec![
+                    TableCell::from(RawText::builder().text("Data 1A").build()?),
+                    TableCell::from(
+                        RichTextBlock::builder()
+                            .elements(vec![RichTextBlockElement::from(
+                                RichTextSection::builder()
+                                    .elements(vec![RichTextSectionElement::from(
+                                        RichTextLink::builder()
+                                            .url("https://slack.com")
+                                            .text("Data 1B")
+                                            .build()?,
+                                    )])
+                                    .build()?,
+                            )])
+                            .build()?,
+                    ),
+                ],
+                vec![
+                    TableCell::from(RawText::builder().text("Data 2A").build()?),
+                    TableCell::from(
+                        RichTextBlock::builder()
+                            .elements(vec![RichTextBlockElement::from(
+                                RichTextSection::builder()
+                                    .elements(vec![RichTextSectionElement::from(
+                                        RichTextLink::builder()
+                                            .url("https://slack.com")
+                                            .text("Data 2B")
+                                            .build()?,
+                                    )])
+                                    .build()?,
+                            )])
+                            .build()?,
+                    ),
+                ],
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["rows"],
-            Value::Array(vec![
-                Value::Array(vec![
-                    Value::Object(
-                        [
-                            ("type".into(), Value::from("raw_text")),
-                            ("text".into(), Value::from("Header A"))
+            json!([
+                [
+                    {
+                        "type": "raw_text",
+                        "text": "Header A"
+                    },
+                    {
+                        "type": "raw_text",
+                        "text": "Header B"
+                    }
+                ],
+                [
+                    {
+                        "type": "raw_text",
+                        "text": "Data 1A"
+                    },
+                    {
+                        "type": "rich_text",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "link",
+                                        "url": "https://slack.com",
+                                        "text": "Data 1B"
+                                    }
+                                ]
+                            }
                         ]
-                        .into_iter()
-                        .collect()
-                    ),
-                    Value::Object(
-                        [
-                            ("type".into(), Value::from("raw_text")),
-                            ("text".into(), Value::from("Header B"))
+                    }
+                ],
+                [
+                    {
+                        "type": "raw_text",
+                        "text": "Data 2A"
+                    },
+                    {
+                        "type": "rich_text",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "link",
+                                        "url": "https://slack.com",
+                                        "text": "Data 2B"
+                                    }
+                                ]
+                            }
                         ]
-                        .into_iter()
-                        .collect()
-                    )
-                ]),
-                Value::Array(vec![
-                    Value::Object(
-                        [
-                            ("type".into(), Value::from("raw_text")),
-                            ("text".into(), Value::from("Data 1A"))
-                        ]
-                        .into_iter()
-                        .collect()
-                    ),
-                    Value::Object(
-                        [
-                            ("type".into(), Value::from("rich_text")),
-                            (
-                                "elements".into(),
-                                Value::Array(vec![Value::Object(
-                                    [
-                                        ("type".into(), Value::from("rich_text_section")),
-                                        (
-                                            "elements".into(),
-                                            Value::Array(vec![Value::Object(
-                                                [
-                                                    ("type".into(), Value::from("link")),
-                                                    (
-                                                        "url".into(),
-                                                        Value::from("https://slack.com")
-                                                    ),
-                                                    ("text".into(), Value::from("Data 1B"))
-                                                ]
-                                                .into_iter()
-                                                .collect()
-                                            )])
-                                        )
-                                    ]
-                                    .into_iter()
-                                    .collect()
-                                )])
-                            )
-                        ]
-                        .into_iter()
-                        .collect()
-                    )
-                ]),
-                Value::Array(vec![
-                    Value::Object(
-                        [
-                            ("type".into(), Value::from("raw_text")),
-                            ("text".into(), Value::from("Data 2A"))
-                        ]
-                        .into_iter()
-                        .collect()
-                    ),
-                    Value::Object(
-                        [
-                            ("type".into(), Value::from("rich_text")),
-                            (
-                                "elements".into(),
-                                Value::Array(vec![Value::Object(
-                                    [
-                                        ("type".into(), Value::from("rich_text_section")),
-                                        (
-                                            "elements".into(),
-                                            Value::Array(vec![Value::Object(
-                                                [
-                                                    ("type".into(), Value::from("link")),
-                                                    (
-                                                        "url".into(),
-                                                        Value::from("https://slack.com")
-                                                    ),
-                                                    ("text".into(), Value::from("Data 2B"))
-                                                ]
-                                                .into_iter()
-                                                .collect()
-                                            )])
-                                        )
-                                    ]
-                                    .into_iter()
-                                    .collect()
-                                )])
-                            )
-                        ]
-                        .into_iter()
-                        .collect()
-                    )
-                ])
+                    }
+                ]
             ])
         );
     }
-    if let Ok(value) = original
-        .clone()
-        .into_builder()
-        .row(vec![
-            TableCell::from(RawText::builder().text("Header A").build()?),
-            TableCell::from(RawText::builder().text("Header B").build()?),
-        ])
-        .build()
     {
+        let value = original
+            .clone()
+            .into_builder()
+            .row(vec![
+                TableCell::from(RawText::builder().text("Header A").build()?),
+                TableCell::from(RawText::builder().text("Header B").build()?),
+            ])
+            .build()?;
+        assert_eq!(value.rows().len(), original.rows().len() + 1);
         assert_eq!(
             wire(value)["rows"].as_array().unwrap().last().unwrap(),
-            &Value::Array(vec![
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("raw_text")),
-                        ("text".into(), Value::from("Header A"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("raw_text")),
-                        ("text".into(), Value::from("Header B"))
-                    ]
-                    .into_iter()
-                    .collect()
-                )
-            ])
+            &json!([{"type": "raw_text", "text": "Header A"}, {"type": "raw_text", "text": "Header B"}])
         );
     }
     let mut invalid = expected.clone();
-    invalid["rows"] = Value::Object([].into_iter().collect());
+    invalid["rows"] = json!({});
     assert!(TableBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("rows");
@@ -3692,31 +3067,20 @@ fn table_block_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .column_settings(vec![
-            ColumnSettings::builder().is_wrapped(true).build()?,
-            ColumnSettings::builder()
-                .align(ColumnAlign::Right)
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .column_settings(vec![
+                ColumnSettings::builder().is_wrapped(true).build()?,
+                ColumnSettings::builder()
+                    .align(ColumnAlign::Right)
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["column_settings"],
-            Value::Array(vec![
-                Value::Object(
-                    [("is_wrapped".into(), Value::from(true))]
-                        .into_iter()
-                        .collect()
-                ),
-                Value::Object(
-                    [("align".into(), Value::from("right"))]
-                        .into_iter()
-                        .collect()
-                )
-            ])
+            json!([{"is_wrapped": true}, {"align": "right"}])
         );
     }
     let appended = original
@@ -3724,41 +3088,43 @@ fn table_block_editing_and_ingress() -> Result<(), ValidationError> {
         .into_builder()
         .column_setting(ColumnSettings::builder().is_wrapped(true).build()?)
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["column_settings"].as_array().unwrap().len(),
+            expected["column_settings"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["column_settings"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [("is_wrapped".into(), Value::from(true))]
-                    .into_iter()
-                    .collect()
-            )
+            &json!({"is_wrapped": true})
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_column_settings()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_column_settings()
+            .build()?;
         assert!(wire(edited).get("column_settings").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["column_settings"] = Value::Object([].into_iter().collect());
+    invalid["column_settings"] = json!({});
     assert!(TableBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -3780,7 +3146,7 @@ fn table_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(TableBlock::try_from(Value::Null).is_err());
-    assert!(TableBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(TableBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(TableBlock::try_from(wrong).is_err());
@@ -3828,7 +3194,12 @@ fn task_card_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.task_id()), expected["task_id"]);
-    if let Ok(edited) = original.clone().into_builder().task_id("call_001").build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .task_id("call_001")
+            .build()?;
         assert_eq!(wire(edited)["task_id"], Value::from("call_001"));
     }
     let mut invalid = expected.clone();
@@ -3838,12 +3209,12 @@ fn task_card_block_editing_and_ingress() -> Result<(), ValidationError> {
     missing.as_object_mut().unwrap().remove("task_id");
     assert!(TaskCardBlock::try_from(missing).is_err());
     assert_eq!(wire(original.title()), expected["title"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .title("Fetched user profile information")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .title("Fetched user profile information")
+            .build()?;
         assert_eq!(
             wire(edited)["title"],
             Value::from("Fetched user profile information")
@@ -3859,166 +3230,132 @@ fn task_card_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.details()),
         expected.get("details").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .details(
-            RichTextBlock::builder()
-                .block_id("plan_output")
-                .elements(vec![RichTextBlockElement::from(
-                    RichTextSection::builder()
-                        .elements(vec![RichTextSectionElement::from(
-                            RichTextText::builder()
-                                .text("Profile data loaded")
-                                .build()?,
-                        )])
-                        .build()?,
-                )])
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .details(
+                RichTextBlock::builder()
+                    .block_id("plan_output")
+                    .elements(vec![RichTextBlockElement::from(
+                        RichTextSection::builder()
+                            .elements(vec![RichTextSectionElement::from(
+                                RichTextText::builder()
+                                    .text("Profile data loaded")
+                                    .build()?,
+                            )])
+                            .build()?,
+                    )])
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["details"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("rich_text")),
-                    ("block_id".into(), Value::from("plan_output")),
-                    (
-                        "elements".into(),
-                        Value::Array(vec![Value::Object(
-                            [
-                                ("type".into(), Value::from("rich_text_section")),
-                                (
-                                    "elements".into(),
-                                    Value::Array(vec![Value::Object(
-                                        [
-                                            ("type".into(), Value::from("text")),
-                                            ("text".into(), Value::from("Profile data loaded"))
-                                        ]
-                                        .into_iter()
-                                        .collect()
-                                    )])
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )])
-                    )
+            json!({
+                "type": "rich_text",
+                "block_id": "plan_output",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Profile data loaded"
+                            }
+                        ]
+                    }
                 ]
-                .into_iter()
-                .collect()
-            )
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_details().build() {
+    {
+        let edited = original.clone().into_builder().clear_details().build()?;
         assert!(wire(edited).get("details").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["details"] = Value::Array(vec![]);
+    invalid["details"] = json!([]);
     assert!(TaskCardBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.output()),
         expected.get("output").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .output(
-            RichTextBlock::builder()
-                .block_id("plan_output")
-                .elements(vec![RichTextBlockElement::from(
-                    RichTextSection::builder()
-                        .elements(vec![RichTextSectionElement::from(
-                            RichTextText::builder()
-                                .text("Profile data loaded")
-                                .build()?,
-                        )])
-                        .build()?,
-                )])
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .output(
+                RichTextBlock::builder()
+                    .block_id("plan_output")
+                    .elements(vec![RichTextBlockElement::from(
+                        RichTextSection::builder()
+                            .elements(vec![RichTextSectionElement::from(
+                                RichTextText::builder()
+                                    .text("Profile data loaded")
+                                    .build()?,
+                            )])
+                            .build()?,
+                    )])
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["output"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("rich_text")),
-                    ("block_id".into(), Value::from("plan_output")),
-                    (
-                        "elements".into(),
-                        Value::Array(vec![Value::Object(
-                            [
-                                ("type".into(), Value::from("rich_text_section")),
-                                (
-                                    "elements".into(),
-                                    Value::Array(vec![Value::Object(
-                                        [
-                                            ("type".into(), Value::from("text")),
-                                            ("text".into(), Value::from("Profile data loaded"))
-                                        ]
-                                        .into_iter()
-                                        .collect()
-                                    )])
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )])
-                    )
+            json!({
+                "type": "rich_text",
+                "block_id": "plan_output",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Profile data loaded"
+                            }
+                        ]
+                    }
                 ]
-                .into_iter()
-                .collect()
-            )
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_output().build() {
+    {
+        let edited = original.clone().into_builder().clear_output().build()?;
         assert!(wire(edited).get("output").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["output"] = Value::Array(vec![]);
+    invalid["output"] = json!([]);
     assert!(TaskCardBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.sources()),
         expected.get("sources").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .sources(vec![
-            UrlSource::builder()
-                .url("https://weather.com/")
-                .text("weather.com")
-                .build()?,
-            UrlSource::builder()
-                .url("https://www.accuweather.com/")
-                .text("accuweather.com")
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .sources(vec![
+                UrlSource::builder()
+                    .url("https://weather.com/")
+                    .text("weather.com")
+                    .build()?,
+                UrlSource::builder()
+                    .url("https://www.accuweather.com/")
+                    .text("accuweather.com")
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["sources"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("url")),
-                        ("url".into(), Value::from("https://weather.com/")),
-                        ("text".into(), Value::from("weather.com"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("url")),
-                        ("url".into(), Value::from("https://www.accuweather.com/")),
-                        ("text".into(), Value::from("accuweather.com"))
-                    ]
-                    .into_iter()
-                    .collect()
-                )
+            json!([
+                {
+                    "type": "url",
+                    "url": "https://weather.com/",
+                    "text": "weather.com"
+                },
+                {
+                    "type": "url",
+                    "url": "https://www.accuweather.com/",
+                    "text": "accuweather.com"
+                }
             ])
         );
     }
@@ -4032,34 +3369,32 @@ fn task_card_block_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["sources"].as_array().unwrap().len(),
+            expected["sources"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["sources"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("url")),
-                    ("url".into(), Value::from("https://weather.com/")),
-                    ("text".into(), Value::from("weather.com"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"type": "url", "url": "https://weather.com/", "text": "weather.com"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_sources().build() {
+    {
+        let edited = original.clone().into_builder().clear_sources().build()?;
         assert!(wire(edited).get("sources").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["sources"] = Value::Object([].into_iter().collect());
+    invalid["sources"] = json!({});
     assert!(TaskCardBlock::try_from(invalid).is_err());
     assert_eq!(wire(original.status()), expected["status"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .status(TaskStatus::Complete)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .status(TaskStatus::Complete)
+            .build()?;
         assert_eq!(wire(edited)["status"], Value::from("complete"));
     }
     let mut invalid = expected.clone();
@@ -4072,15 +3407,16 @@ fn task_card_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .block_id("fake_block_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .block_id("fake_block_id")
+            .build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("fake_block_id"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -4102,7 +3438,7 @@ fn task_card_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(TaskCardBlock::try_from(Value::Null).is_err());
-    assert!(TaskCardBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(TaskCardBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(TaskCardBlock::try_from(wrong).is_err());
@@ -4132,7 +3468,8 @@ fn video_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.alt_text()), expected["alt_text"]);
-    if let Ok(edited) = original.clone().into_builder().alt_text("alt").build() {
+    {
+        let edited = original.clone().into_builder().alt_text("alt").build()?;
         assert_eq!(wire(edited)["alt_text"], Value::from("alt"));
     }
     let mut invalid = expected.clone();
@@ -4142,12 +3479,12 @@ fn video_block_editing_and_ingress() -> Result<(), ValidationError> {
     missing.as_object_mut().unwrap().remove("alt_text");
     assert!(VideoBlock::try_from(missing).is_err());
     assert_eq!(wire(original.thumbnail_url()), expected["thumbnail_url"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .thumbnail_url("https://example.com/t.png")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .thumbnail_url("https://example.com/t.png")
+            .build()?;
         assert_eq!(
             wire(edited)["thumbnail_url"],
             Value::from("https://example.com/t.png")
@@ -4160,37 +3497,30 @@ fn video_block_editing_and_ingress() -> Result<(), ValidationError> {
     missing.as_object_mut().unwrap().remove("thumbnail_url");
     assert!(VideoBlock::try_from(missing).is_err());
     assert_eq!(wire(original.title()), expected["title"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .title(PlainText::builder().text("Title").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .title(PlainText::builder().text("Title").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["title"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Title"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Title"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["title"] = Value::Array(vec![]);
+    invalid["title"] = json!([]);
     assert!(VideoBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("title");
     assert!(VideoBlock::try_from(missing).is_err());
     assert_eq!(wire(original.video_url()), expected["video_url"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .video_url("https://example.com/v.mp4")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .video_url("https://example.com/v.mp4")
+            .build()?;
         assert_eq!(
             wire(edited)["video_url"],
             Value::from("https://example.com/v.mp4")
@@ -4206,10 +3536,12 @@ fn video_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.block_id()),
         expected.get("block_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().block_id("b1").build() {
+    {
+        let edited = original.clone().into_builder().block_id("b1").build()?;
         assert_eq!(wire(edited)["block_id"], Value::from("b1"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_block_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_block_id().build()?;
         assert!(wire(edited).get("block_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -4219,10 +3551,20 @@ fn video_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.author_name()),
         expected.get("author_name").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().author_name("Slack").build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .author_name("Slack")
+            .build()?;
         assert_eq!(wire(edited)["author_name"], Value::from("Slack"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_author_name().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_author_name()
+            .build()?;
         assert!(wire(edited).get("author_name").is_none());
     }
     let mut invalid = expected.clone();
@@ -4232,29 +3574,27 @@ fn video_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.description()),
         expected.get("description").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .description(PlainText::builder().text("A short intro").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .description(PlainText::builder().text("A short intro").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["description"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("A short intro"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "A short intro"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_description().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_description()
+            .build()?;
         assert!(wire(edited).get("description").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["description"] = Value::Array(vec![]);
+    invalid["description"] = json!([]);
     assert!(VideoBlock::try_from(invalid).is_err());
     assert_eq!(
         wire(original.provider_icon_url()),
@@ -4263,23 +3603,23 @@ fn video_block_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .provider_icon_url("https://example.com/icon.png")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .provider_icon_url("https://example.com/icon.png")
+            .build()?;
         assert_eq!(
             wire(edited)["provider_icon_url"],
             Value::from("https://example.com/icon.png")
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_provider_icon_url()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_provider_icon_url()
+            .build()?;
         assert!(wire(edited).get("provider_icon_url").is_none());
     }
     let mut invalid = expected.clone();
@@ -4292,20 +3632,20 @@ fn video_block_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .provider_name("YouTube")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .provider_name("YouTube")
+            .build()?;
         assert_eq!(wire(edited)["provider_name"], Value::from("YouTube"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_provider_name()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_provider_name()
+            .build()?;
         assert!(wire(edited).get("provider_name").is_none());
     }
     let mut invalid = expected.clone();
@@ -4315,18 +3655,19 @@ fn video_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.title_url()),
         expected.get("title_url").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .title_url("https://example.com")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .title_url("https://example.com")
+            .build()?;
         assert_eq!(
             wire(edited)["title_url"],
             Value::from("https://example.com")
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_title_url().build() {
+    {
+        let edited = original.clone().into_builder().clear_title_url().build()?;
         assert!(wire(edited).get("title_url").is_none());
     }
     let mut invalid = expected.clone();
@@ -4348,7 +3689,7 @@ fn video_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(VideoBlock::try_from(Value::Null).is_err());
-    assert!(VideoBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(VideoBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(VideoBlock::try_from(wrong).is_err());
@@ -4372,26 +3713,19 @@ fn button_element_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .text(PlainText::builder().text("Action Button").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text(PlainText::builder().text("Action Button").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["text"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Action Button"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Action Button"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["text"] = Value::Array(vec![]);
+    invalid["text"] = json!([]);
     assert!(ButtonElement::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("text");
@@ -4400,15 +3734,16 @@ fn button_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("button_action")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("button_action")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("button_action"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -4418,15 +3753,16 @@ fn button_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.url()),
         expected.get("url").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .url("https://ndl.im/")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .url("https://ndl.im/")
+            .build()?;
         assert_eq!(wire(edited)["url"], Value::from("https://ndl.im/"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_url().build() {
+    {
+        let edited = original.clone().into_builder().clear_url().build()?;
         assert!(wire(edited).get("url").is_none());
     }
     let mut invalid = expected.clone();
@@ -4436,10 +3772,12 @@ fn button_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.value()),
         expected.get("value").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().value("click_me").build() {
+    {
+        let edited = original.clone().into_builder().value("click_me").build()?;
         assert_eq!(wire(edited)["value"], Value::from("click_me"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_value().build() {
+    {
+        let edited = original.clone().into_builder().clear_value().build()?;
         assert!(wire(edited).get("value").is_none());
     }
     let mut invalid = expected.clone();
@@ -4449,15 +3787,16 @@ fn button_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.style()),
         expected.get("style").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .style(ButtonStyle::Primary)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .style(ButtonStyle::Primary)
+            .build()?;
         assert_eq!(wire(edited)["style"], Value::from("primary"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_style().build() {
+    {
+        let edited = original.clone().into_builder().clear_style().build()?;
         assert!(wire(edited).get("style").is_none());
     }
     let mut invalid = expected.clone();
@@ -4467,85 +3806,51 @@ fn button_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(ButtonElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.accessibility_label()),
@@ -4554,20 +3859,20 @@ fn button_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .accessibility_label("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .accessibility_label("sample")
+            .build()?;
         assert_eq!(wire(edited)["accessibility_label"], Value::from("sample"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_accessibility_label()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_accessibility_label()
+            .build()?;
         assert!(wire(edited).get("accessibility_label").is_none());
     }
     let mut invalid = expected.clone();
@@ -4589,7 +3894,7 @@ fn button_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ButtonElement::try_from(Value::Null).is_err());
-    assert!(ButtonElement::try_from(Value::Array(vec![])).is_err());
+    assert!(ButtonElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ButtonElement::try_from(wrong).is_err());
@@ -4617,18 +3922,19 @@ fn channel_multi_select_element_editing_and_ingress() -> Result<(), ValidationEr
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("multi_channels_select")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("multi_channels_select")
+            .build()?;
         assert_eq!(
             wire(edited)["action_id"],
             Value::from("multi_channels_select")
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -4641,123 +3947,91 @@ fn channel_multi_select_element_editing_and_ingress() -> Result<(), ValidationEr
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_channels(vec![String::from("sample")])
-        .build()
     {
-        assert_eq!(
-            wire(edited)["initial_channels"],
-            Value::Array(vec![Value::from("sample")])
-        );
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_channels(vec![String::from("sample")])
+            .build()?;
+        assert_eq!(wire(edited)["initial_channels"], json!(["sample"]));
     }
     let appended = original
         .clone()
         .into_builder()
         .initial_channel("sample")
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
+        assert_eq!(
+            json["initial_channels"].as_array().unwrap().len(),
+            expected["initial_channels"].as_array().map_or(0, Vec::len) + 1
+        );
         assert_eq!(
             json["initial_channels"].as_array().unwrap().last().unwrap(),
             &Value::from("sample")
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_channels()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_channels()
+            .build()?;
         assert!(wire(edited).get("initial_channels").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["initial_channels"] = Value::Object([].into_iter().collect());
+    invalid["initial_channels"] = json!({});
     assert!(ChannelMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(ChannelMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.max_selected_items()),
@@ -4766,20 +4040,20 @@ fn channel_multi_select_element_editing_and_ingress() -> Result<(), ValidationEr
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .max_selected_items(1_i64)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .max_selected_items(1_i64)
+            .build()?;
         assert_eq!(wire(edited)["max_selected_items"], serde_json::json!(1));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_max_selected_items()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_max_selected_items()
+            .build()?;
         assert!(wire(edited).get("max_selected_items").is_none());
     }
     let mut invalid = expected.clone();
@@ -4792,15 +4066,20 @@ fn channel_multi_select_element_editing_and_ingress() -> Result<(), ValidationEr
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -4810,29 +4089,27 @@ fn channel_multi_select_element_editing_and_ingress() -> Result<(), ValidationEr
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Select channels").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Select channels").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Select channels"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Select channels"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(ChannelMultiSelectElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -4853,7 +4130,7 @@ fn channel_multi_select_element_editing_and_ingress() -> Result<(), ValidationEr
             .is_err()
     );
     assert!(ChannelMultiSelectElement::try_from(Value::Null).is_err());
-    assert!(ChannelMultiSelectElement::try_from(Value::Array(vec![])).is_err());
+    assert!(ChannelMultiSelectElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ChannelMultiSelectElement::try_from(wrong).is_err());
@@ -4878,15 +4155,16 @@ fn channel_select_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("channels_select")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("channels_select")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("channels_select"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -4899,20 +4177,20 @@ fn channel_select_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_channel("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_channel("sample")
+            .build()?;
         assert_eq!(wire(edited)["initial_channel"], Value::from("sample"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_channel()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_channel()
+            .build()?;
         assert!(wire(edited).get("initial_channel").is_none());
     }
     let mut invalid = expected.clone();
@@ -4925,20 +4203,20 @@ fn channel_select_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .response_url_enabled(true)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .response_url_enabled(true)
+            .build()?;
         assert_eq!(wire(edited)["response_url_enabled"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_response_url_enabled()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_response_url_enabled()
+            .build()?;
         assert!(wire(edited).get("response_url_enabled").is_none());
     }
     let mut invalid = expected.clone();
@@ -4948,85 +4226,51 @@ fn channel_select_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(ChannelSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -5035,15 +4279,20 @@ fn channel_select_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -5053,29 +4302,27 @@ fn channel_select_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Select a channel").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Select a channel").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Select a channel"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Select a channel"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(ChannelSelectElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -5093,7 +4340,7 @@ fn channel_select_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ChannelSelectElement::try_from(Value::Null).is_err());
-    assert!(ChannelSelectElement::try_from(Value::Array(vec![])).is_err());
+    assert!(ChannelSelectElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ChannelSelectElement::try_from(wrong).is_err());
@@ -5133,133 +4380,80 @@ fn checkboxes_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("actionId-0")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("actionId-0")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("actionId-0"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
     invalid["action_id"] = Value::from(false);
     assert!(CheckboxesElement::try_from(invalid).is_err());
     assert_eq!(wire(original.options()), expected["options"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .options(vec![
-            SelectOption::builder()
-                .text(MarkdownText::builder().text("*a*").build()?)
-                .value("a")
-                .description(PlainText::builder().text("*a*").build()?)
-                .build()?,
-            SelectOption::builder()
-                .text(MarkdownText::builder().text("*b*").build()?)
-                .value("b")
-                .description(PlainText::builder().text("*b*").build()?)
-                .build()?,
-            SelectOption::builder()
-                .text(MarkdownText::builder().text("*c*").build()?)
-                .value("c")
-                .description(PlainText::builder().text("*c*").build()?)
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .options(vec![
+                SelectOption::builder()
+                    .text(MarkdownText::builder().text("*a*").build()?)
+                    .value("a")
+                    .description(PlainText::builder().text("*a*").build()?)
+                    .build()?,
+                SelectOption::builder()
+                    .text(MarkdownText::builder().text("*b*").build()?)
+                    .value("b")
+                    .description(PlainText::builder().text("*b*").build()?)
+                    .build()?,
+                SelectOption::builder()
+                    .text(MarkdownText::builder().text("*c*").build()?)
+                    .value("c")
+                    .description(PlainText::builder().text("*c*").build()?)
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["options"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("mrkdwn")),
-                                    ("text".into(), Value::from("*a*"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("a")),
-                        (
-                            "description".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("*a*"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        )
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("mrkdwn")),
-                                    ("text".into(), Value::from("*b*"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("b")),
-                        (
-                            "description".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("*b*"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        )
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("mrkdwn")),
-                                    ("text".into(), Value::from("*c*"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("c")),
-                        (
-                            "description".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("*c*"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        )
-                    ]
-                    .into_iter()
-                    .collect()
-                )
+            json!([
+                {
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*a*"
+                    },
+                    "value": "a",
+                    "description": {
+                        "type": "plain_text",
+                        "text": "*a*"
+                    }
+                },
+                {
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*b*"
+                    },
+                    "value": "b",
+                    "description": {
+                        "type": "plain_text",
+                        "text": "*b*"
+                    }
+                },
+                {
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*c*"
+                    },
+                    "value": "c",
+                    "description": {
+                        "type": "plain_text",
+                        "text": "*c*"
+                    }
+                }
             ])
         );
     }
@@ -5274,43 +4468,30 @@ fn checkboxes_element_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["options"].as_array().unwrap().len(),
+            expected["options"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["options"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("a")),
-                    (
-                        "description".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*a*"
+                },
+                "value": "a",
+                "description": {
+                    "type": "plain_text",
+                    "text": "*a*"
+                }
+            })
         );
     }
     let mut invalid = expected.clone();
-    invalid["options"] = Value::Object([].into_iter().collect());
+    invalid["options"] = json!({});
     assert!(CheckboxesElement::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("options");
@@ -5322,37 +4503,20 @@ fn checkboxes_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_options(vec![
-            SelectOption::builder()
-                .text(PlainText::builder().text("A").build()?)
-                .value("A")
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_options(vec![
+                SelectOption::builder()
+                    .text(PlainText::builder().text("A").build()?)
+                    .value("A")
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["initial_options"],
-            Value::Array(vec![Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("A"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("A"))
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([{"text": {"type": "plain_text", "text": "A"}, "value": "A"}])
         );
     }
     let appended = original
@@ -5365,124 +4529,78 @@ fn checkboxes_element_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["initial_options"].as_array().unwrap().len(),
+            expected["initial_options"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["initial_options"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("A"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("A"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"text": {"type": "plain_text", "text": "A"}, "value": "A"})
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_options()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_options()
+            .build()?;
         assert!(wire(edited).get("initial_options").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["initial_options"] = Value::Object([].into_iter().collect());
+    invalid["initial_options"] = json!({});
     assert!(CheckboxesElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(CheckboxesElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -5491,15 +4609,20 @@ fn checkboxes_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -5521,7 +4644,7 @@ fn checkboxes_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(CheckboxesElement::try_from(Value::Null).is_err());
-    assert!(CheckboxesElement::try_from(Value::Array(vec![])).is_err());
+    assert!(CheckboxesElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(CheckboxesElement::try_from(wrong).is_err());
@@ -5549,18 +4672,19 @@ fn conversation_multi_select_element_editing_and_ingress() -> Result<(), Validat
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("multi_conversations_select")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("multi_conversations_select")
+            .build()?;
         assert_eq!(
             wire(edited)["action_id"],
             Value::from("multi_conversations_select")
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -5573,23 +4697,21 @@ fn conversation_multi_select_element_editing_and_ingress() -> Result<(), Validat
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_conversations(vec![String::from("sample")])
-        .build()
     {
-        assert_eq!(
-            wire(edited)["initial_conversations"],
-            Value::Array(vec![Value::from("sample")])
-        );
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_conversations(vec![String::from("sample")])
+            .build()?;
+        assert_eq!(wire(edited)["initial_conversations"], json!(["sample"]));
     }
     let appended = original
         .clone()
         .into_builder()
         .initial_conversation("sample")
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
             json["initial_conversations"]
@@ -5600,16 +4722,16 @@ fn conversation_multi_select_element_editing_and_ingress() -> Result<(), Validat
             &Value::from("sample")
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_conversations()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_conversations()
+            .build()?;
         assert!(wire(edited).get("initial_conversations").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["initial_conversations"] = Value::Object([].into_iter().collect());
+    invalid["initial_conversations"] = json!({});
     assert!(ConversationMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.default_to_current_conversation()),
@@ -5618,23 +4740,23 @@ fn conversation_multi_select_element_editing_and_ingress() -> Result<(), Validat
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .default_to_current_conversation(true)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .default_to_current_conversation(true)
+            .build()?;
         assert_eq!(
             wire(edited)["default_to_current_conversation"],
             Value::from(true)
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_default_to_current_conversation()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_default_to_current_conversation()
+            .build()?;
         assert!(
             wire(edited)
                 .get("default_to_current_conversation")
@@ -5648,121 +4770,78 @@ fn conversation_multi_select_element_editing_and_ingress() -> Result<(), Validat
         wire(original.filter()),
         expected.get("filter").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .filter(
-            ConversationFilter::builder()
-                .include(vec![String::from("public"), String::from("mpim")])
-                .exclude_bot_users(true)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .filter(
+                ConversationFilter::builder()
+                    .include(vec![String::from("public"), String::from("mpim")])
+                    .exclude_bot_users(true)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["filter"],
-            Value::Object(
-                [
-                    (
-                        "include".into(),
-                        Value::Array(vec![Value::from("public"), Value::from("mpim")])
-                    ),
-                    ("exclude_bot_users".into(), Value::from(true))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"include": ["public", "mpim"], "exclude_bot_users": true})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_filter().build() {
+    {
+        let edited = original.clone().into_builder().clear_filter().build()?;
         assert!(wire(edited).get("filter").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["filter"] = Value::Array(vec![]);
+    invalid["filter"] = json!([]);
     assert!(ConversationMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(ConversationMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.max_selected_items()),
@@ -5771,20 +4850,20 @@ fn conversation_multi_select_element_editing_and_ingress() -> Result<(), Validat
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .max_selected_items(1_i64)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .max_selected_items(1_i64)
+            .build()?;
         assert_eq!(wire(edited)["max_selected_items"], serde_json::json!(1));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_max_selected_items()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_max_selected_items()
+            .build()?;
         assert!(wire(edited).get("max_selected_items").is_none());
     }
     let mut invalid = expected.clone();
@@ -5797,15 +4876,20 @@ fn conversation_multi_select_element_editing_and_ingress() -> Result<(), Validat
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -5815,29 +4899,27 @@ fn conversation_multi_select_element_editing_and_ingress() -> Result<(), Validat
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Select conversations").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Select conversations").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Select conversations"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Select conversations"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(ConversationMultiSelectElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -5858,7 +4940,7 @@ fn conversation_multi_select_element_editing_and_ingress() -> Result<(), Validat
             .is_err()
     );
     assert!(ConversationMultiSelectElement::try_from(Value::Null).is_err());
-    assert!(ConversationMultiSelectElement::try_from(Value::Array(vec![])).is_err());
+    assert!(ConversationMultiSelectElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ConversationMultiSelectElement::try_from(wrong).is_err());
@@ -5890,18 +4972,19 @@ fn conversation_select_element_editing_and_ingress() -> Result<(), ValidationErr
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("conversations_select")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("conversations_select")
+            .build()?;
         assert_eq!(
             wire(edited)["action_id"],
             Value::from("conversations_select")
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -5914,20 +4997,20 @@ fn conversation_select_element_editing_and_ingress() -> Result<(), ValidationErr
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_conversation("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_conversation("sample")
+            .build()?;
         assert_eq!(wire(edited)["initial_conversation"], Value::from("sample"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_conversation()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_conversation()
+            .build()?;
         assert!(wire(edited).get("initial_conversation").is_none());
     }
     let mut invalid = expected.clone();
@@ -5940,23 +5023,23 @@ fn conversation_select_element_editing_and_ingress() -> Result<(), ValidationErr
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .default_to_current_conversation(true)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .default_to_current_conversation(true)
+            .build()?;
         assert_eq!(
             wire(edited)["default_to_current_conversation"],
             Value::from(true)
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_default_to_current_conversation()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_default_to_current_conversation()
+            .build()?;
         assert!(
             wire(edited)
                 .get("default_to_current_conversation")
@@ -5970,37 +5053,28 @@ fn conversation_select_element_editing_and_ingress() -> Result<(), ValidationErr
         wire(original.filter()),
         expected.get("filter").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .filter(
-            ConversationFilter::builder()
-                .include(vec![String::from("public"), String::from("mpim")])
-                .exclude_bot_users(true)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .filter(
+                ConversationFilter::builder()
+                    .include(vec![String::from("public"), String::from("mpim")])
+                    .exclude_bot_users(true)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["filter"],
-            Value::Object(
-                [
-                    (
-                        "include".into(),
-                        Value::Array(vec![Value::from("public"), Value::from("mpim")])
-                    ),
-                    ("exclude_bot_users".into(), Value::from(true))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"include": ["public", "mpim"], "exclude_bot_users": true})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_filter().build() {
+    {
+        let edited = original.clone().into_builder().clear_filter().build()?;
         assert!(wire(edited).get("filter").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["filter"] = Value::Array(vec![]);
+    invalid["filter"] = json!([]);
     assert!(ConversationSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.response_url_enabled()),
@@ -6009,20 +5083,20 @@ fn conversation_select_element_editing_and_ingress() -> Result<(), ValidationErr
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .response_url_enabled(true)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .response_url_enabled(true)
+            .build()?;
         assert_eq!(wire(edited)["response_url_enabled"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_response_url_enabled()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_response_url_enabled()
+            .build()?;
         assert!(wire(edited).get("response_url_enabled").is_none());
     }
     let mut invalid = expected.clone();
@@ -6032,85 +5106,51 @@ fn conversation_select_element_editing_and_ingress() -> Result<(), ValidationErr
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(ConversationSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -6119,15 +5159,20 @@ fn conversation_select_element_editing_and_ingress() -> Result<(), ValidationErr
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -6137,33 +5182,31 @@ fn conversation_select_element_editing_and_ingress() -> Result<(), ValidationErr
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(
-            PlainText::builder()
-                .text("Select one conversation")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(
+                PlainText::builder()
+                    .text("Select one conversation")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Select one conversation"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Select one conversation"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(ConversationSelectElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -6184,7 +5227,7 @@ fn conversation_select_element_editing_and_ingress() -> Result<(), ValidationErr
             .is_err()
     );
     assert!(ConversationSelectElement::try_from(Value::Null).is_err());
-    assert!(ConversationSelectElement::try_from(Value::Array(vec![])).is_err());
+    assert!(ConversationSelectElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ConversationSelectElement::try_from(wrong).is_err());
@@ -6210,15 +5253,16 @@ fn date_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("datepicker")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("datepicker")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("datepicker"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -6228,15 +5272,20 @@ fn date_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.initial_date()),
         expected.get("initial_date").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_date("1970-01-01")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_date("1970-01-01")
+            .build()?;
         assert_eq!(wire(edited)["initial_date"], Value::from("1970-01-01"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_initial_date().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_date()
+            .build()?;
         assert!(wire(edited).get("initial_date").is_none());
     }
     let mut invalid = expected.clone();
@@ -6246,85 +5295,51 @@ fn date_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(DatePickerElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -6333,15 +5348,20 @@ fn date_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -6351,29 +5371,27 @@ fn date_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Pick a date").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Pick a date").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Pick a date"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Pick a date"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(DatePickerElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -6391,7 +5409,7 @@ fn date_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(DatePickerElement::try_from(Value::Null).is_err());
-    assert!(DatePickerElement::try_from(Value::Array(vec![])).is_err());
+    assert!(DatePickerElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(DatePickerElement::try_from(wrong).is_err());
@@ -6416,15 +5434,16 @@ fn date_time_picker_element_editing_and_ingress() -> Result<(), ValidationError>
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("datetime_picker")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("datetime_picker")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("datetime_picker"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -6437,23 +5456,23 @@ fn date_time_picker_element_editing_and_ingress() -> Result<(), ValidationError>
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_date_time(1628633830_i64)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_date_time(1628633830_i64)
+            .build()?;
         assert_eq!(
             wire(edited)["initial_date_time"],
             serde_json::json!(1628633830)
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_date_time()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_date_time()
+            .build()?;
         assert!(wire(edited).get("initial_date_time").is_none());
     }
     let mut invalid = expected.clone();
@@ -6463,85 +5482,51 @@ fn date_time_picker_element_editing_and_ingress() -> Result<(), ValidationError>
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(DateTimePickerElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -6550,15 +5535,20 @@ fn date_time_picker_element_editing_and_ingress() -> Result<(), ValidationError>
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -6580,7 +5570,7 @@ fn date_time_picker_element_editing_and_ingress() -> Result<(), ValidationError>
             .is_err()
     );
     assert!(DateTimePickerElement::try_from(Value::Null).is_err());
-    assert!(DateTimePickerElement::try_from(Value::Array(vec![])).is_err());
+    assert!(DateTimePickerElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(DateTimePickerElement::try_from(wrong).is_err());
@@ -6605,15 +5595,16 @@ fn email_input_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("email_input")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("email_input")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("email_input"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -6626,20 +5617,20 @@ fn email_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_value("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_value("sample")
+            .build()?;
         assert_eq!(wire(edited)["initial_value"], Value::from("sample"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_value()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_value()
+            .build()?;
         assert!(wire(edited).get("initial_value").is_none());
     }
     let mut invalid = expected.clone();
@@ -6652,38 +5643,31 @@ fn email_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .dispatch_action_config(
-            DispatchActionConfiguration::builder()
-                .trigger_actions_on(vec![String::from("on_character_entered")])
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .dispatch_action_config(
+                DispatchActionConfiguration::builder()
+                    .trigger_actions_on(vec![String::from("on_character_entered")])
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["dispatch_action_config"],
-            Value::Object(
-                [(
-                    "trigger_actions_on".into(),
-                    Value::Array(vec![Value::from("on_character_entered")])
-                )]
-                .into_iter()
-                .collect()
-            )
+            json!({"trigger_actions_on": ["on_character_entered"]})
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_dispatch_action_config()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_dispatch_action_config()
+            .build()?;
         assert!(wire(edited).get("dispatch_action_config").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["dispatch_action_config"] = Value::Array(vec![]);
+    invalid["dispatch_action_config"] = json!([]);
     assert!(EmailInputElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -6692,15 +5676,20 @@ fn email_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -6710,29 +5699,27 @@ fn email_input_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Enter your email").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Enter your email").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Enter your email"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Enter your email"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(EmailInputElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -6750,7 +5737,7 @@ fn email_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(EmailInputElement::try_from(Value::Null).is_err());
-    assert!(EmailInputElement::try_from(Value::Array(vec![])).is_err());
+    assert!(EmailInputElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(EmailInputElement::try_from(wrong).is_err());
@@ -6779,18 +5766,19 @@ fn external_multi_select_element_editing_and_ingress() -> Result<(), ValidationE
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("multi_external_select")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("multi_external_select")
+            .build()?;
         assert_eq!(
             wire(edited)["action_id"],
             Value::from("multi_external_select")
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -6803,20 +5791,20 @@ fn external_multi_select_element_editing_and_ingress() -> Result<(), ValidationE
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .min_query_length(3_i64)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .min_query_length(3_i64)
+            .build()?;
         assert_eq!(wire(edited)["min_query_length"], serde_json::json!(3));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_min_query_length()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_min_query_length()
+            .build()?;
         assert!(wire(edited).get("min_query_length").is_none());
     }
     let mut invalid = expected.clone();
@@ -6829,49 +5817,33 @@ fn external_multi_select_element_editing_and_ingress() -> Result<(), ValidationE
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_options(vec![
-            SelectOption::builder()
-                .text(MarkdownText::builder().text("*a*").build()?)
-                .value("a")
-                .description(PlainText::builder().text("*a*").build()?)
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_options(vec![
+                SelectOption::builder()
+                    .text(MarkdownText::builder().text("*a*").build()?)
+                    .value("a")
+                    .description(PlainText::builder().text("*a*").build()?)
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["initial_options"],
-            Value::Array(vec![Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("a")),
-                    (
-                        "description".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([
+                {
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*a*"
+                    },
+                    "value": "a",
+                    "description": {
+                        "type": "plain_text",
+                        "text": "*a*"
+                    }
+                }
+            ])
         );
     }
     let appended = original
@@ -6885,135 +5857,88 @@ fn external_multi_select_element_editing_and_ingress() -> Result<(), ValidationE
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["initial_options"].as_array().unwrap().len(),
+            expected["initial_options"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["initial_options"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("a")),
-                    (
-                        "description".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*a*"
+                },
+                "value": "a",
+                "description": {
+                    "type": "plain_text",
+                    "text": "*a*"
+                }
+            })
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_options()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_options()
+            .build()?;
         assert!(wire(edited).get("initial_options").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["initial_options"] = Value::Object([].into_iter().collect());
+    invalid["initial_options"] = json!({});
     assert!(ExternalMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(ExternalMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.max_selected_items()),
@@ -7022,20 +5947,20 @@ fn external_multi_select_element_editing_and_ingress() -> Result<(), ValidationE
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .max_selected_items(1_i64)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .max_selected_items(1_i64)
+            .build()?;
         assert_eq!(wire(edited)["max_selected_items"], serde_json::json!(1));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_max_selected_items()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_max_selected_items()
+            .build()?;
         assert!(wire(edited).get("max_selected_items").is_none());
     }
     let mut invalid = expected.clone();
@@ -7048,15 +5973,20 @@ fn external_multi_select_element_editing_and_ingress() -> Result<(), ValidationE
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -7066,29 +5996,27 @@ fn external_multi_select_element_editing_and_ingress() -> Result<(), ValidationE
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Select items").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Select items").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Select items"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Select items"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(ExternalMultiSelectElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -7109,7 +6037,7 @@ fn external_multi_select_element_editing_and_ingress() -> Result<(), ValidationE
             .is_err()
     );
     assert!(ExternalMultiSelectElement::try_from(Value::Null).is_err());
-    assert!(ExternalMultiSelectElement::try_from(Value::Array(vec![])).is_err());
+    assert!(ExternalMultiSelectElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ExternalMultiSelectElement::try_from(wrong).is_err());
@@ -7135,15 +6063,16 @@ fn external_select_element_editing_and_ingress() -> Result<(), ValidationError> 
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("external_select")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("external_select")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("external_select"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -7156,20 +6085,20 @@ fn external_select_element_editing_and_ingress() -> Result<(), ValidationError> 
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .min_query_length(4_i64)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .min_query_length(4_i64)
+            .build()?;
         assert_eq!(wire(edited)["min_query_length"], serde_json::json!(4));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_min_query_length()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_min_query_length()
+            .build()?;
         assert!(wire(edited).get("min_query_length").is_none());
     }
     let mut invalid = expected.clone();
@@ -7182,145 +6111,93 @@ fn external_select_element_editing_and_ingress() -> Result<(), ValidationError> 
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_option(
-            SelectOption::builder()
-                .text(MarkdownText::builder().text("*a*").build()?)
-                .value("a")
-                .description(PlainText::builder().text("*a*").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_option(
+                SelectOption::builder()
+                    .text(MarkdownText::builder().text("*a*").build()?)
+                    .value("a")
+                    .description(PlainText::builder().text("*a*").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["initial_option"],
-            Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("a")),
-                    (
-                        "description".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*a*"
+                },
+                "value": "a",
+                "description": {
+                    "type": "plain_text",
+                    "text": "*a*"
+                }
+            })
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_option()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_option()
+            .build()?;
         assert!(wire(edited).get("initial_option").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["initial_option"] = Value::Array(vec![]);
+    invalid["initial_option"] = json!([]);
     assert!(ExternalSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(ExternalSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -7329,15 +6206,20 @@ fn external_select_element_editing_and_ingress() -> Result<(), ValidationError> 
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -7347,29 +6229,27 @@ fn external_select_element_editing_and_ingress() -> Result<(), ValidationError> 
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Select one item").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Select one item").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Select one item"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Select one item"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(ExternalSelectElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -7387,7 +6267,7 @@ fn external_select_element_editing_and_ingress() -> Result<(), ValidationError> 
             .is_err()
     );
     assert!(ExternalSelectElement::try_from(Value::Null).is_err());
-    assert!(ExternalSelectElement::try_from(Value::Array(vec![])).is_err());
+    assert!(ExternalSelectElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ExternalSelectElement::try_from(wrong).is_err());
@@ -7428,46 +6308,32 @@ fn feedback_buttons_element_editing_and_ingress() -> Result<(), ValidationError>
         wire(original.positive_button()),
         expected["positive_button"]
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .positive_button(
-            FeedbackButton::builder()
-                .text(PlainText::builder().text("Good").build()?)
-                .value("positive_feedback")
-                .accessibility_label("Mark this response as good")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .positive_button(
+                FeedbackButton::builder()
+                    .text(PlainText::builder().text("Good").build()?)
+                    .value("positive_feedback")
+                    .accessibility_label("Mark this response as good")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["positive_button"],
-            Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Good"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("positive_feedback")),
-                    (
-                        "accessibility_label".into(),
-                        Value::from("Mark this response as good")
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "text": {
+                    "type": "plain_text",
+                    "text": "Good"
+                },
+                "value": "positive_feedback",
+                "accessibility_label": "Mark this response as good"
+            })
         );
     }
     let mut invalid = expected.clone();
-    invalid["positive_button"] = Value::Array(vec![]);
+    invalid["positive_button"] = json!([]);
     assert!(FeedbackButtonsElement::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("positive_button");
@@ -7476,46 +6342,32 @@ fn feedback_buttons_element_editing_and_ingress() -> Result<(), ValidationError>
         wire(original.negative_button()),
         expected["negative_button"]
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .negative_button(
-            FeedbackButton::builder()
-                .text(PlainText::builder().text("Bad").build()?)
-                .value("negative_feedback")
-                .accessibility_label("Mark this response as bad")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .negative_button(
+                FeedbackButton::builder()
+                    .text(PlainText::builder().text("Bad").build()?)
+                    .value("negative_feedback")
+                    .accessibility_label("Mark this response as bad")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["negative_button"],
-            Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Bad"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("negative_feedback")),
-                    (
-                        "accessibility_label".into(),
-                        Value::from("Mark this response as bad")
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "text": {
+                    "type": "plain_text",
+                    "text": "Bad"
+                },
+                "value": "negative_feedback",
+                "accessibility_label": "Mark this response as bad"
+            })
         );
     }
     let mut invalid = expected.clone();
-    invalid["negative_button"] = Value::Array(vec![]);
+    invalid["negative_button"] = json!([]);
     assert!(FeedbackButtonsElement::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("negative_button");
@@ -7524,15 +6376,16 @@ fn feedback_buttons_element_editing_and_ingress() -> Result<(), ValidationError>
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("feedback_buttons_1")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("feedback_buttons_1")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("feedback_buttons_1"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -7554,7 +6407,7 @@ fn feedback_buttons_element_editing_and_ingress() -> Result<(), ValidationError>
             .is_err()
     );
     assert!(FeedbackButtonsElement::try_from(Value::Null).is_err());
-    assert!(FeedbackButtonsElement::try_from(Value::Array(vec![])).is_err());
+    assert!(FeedbackButtonsElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(FeedbackButtonsElement::try_from(wrong).is_err());
@@ -7580,18 +6433,19 @@ fn file_input_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("file_input_action_id_1")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("file_input_action_id_1")
+            .build()?;
         assert_eq!(
             wire(edited)["action_id"],
             Value::from("file_input_action_id_1")
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -7601,39 +6455,44 @@ fn file_input_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.filetypes()),
         expected.get("filetypes").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .filetypes(vec![String::from("jpg"), String::from("png")])
-        .build()
     {
-        assert_eq!(
-            wire(edited)["filetypes"],
-            Value::Array(vec![Value::from("jpg"), Value::from("png")])
-        );
+        let edited = original
+            .clone()
+            .into_builder()
+            .filetypes(vec![String::from("jpg"), String::from("png")])
+            .build()?;
+        assert_eq!(wire(edited)["filetypes"], json!(["jpg", "png"]));
     }
     let appended = original.clone().into_builder().filetype("jpg").build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
+        assert_eq!(
+            json["filetypes"].as_array().unwrap().len(),
+            expected["filetypes"].as_array().map_or(0, Vec::len) + 1
+        );
         assert_eq!(
             json["filetypes"].as_array().unwrap().last().unwrap(),
             &Value::from("jpg")
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_filetypes().build() {
+    {
+        let edited = original.clone().into_builder().clear_filetypes().build()?;
         assert!(wire(edited).get("filetypes").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["filetypes"] = Value::Object([].into_iter().collect());
+    invalid["filetypes"] = json!({});
     assert!(FileInputElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.max_files()),
         expected.get("max_files").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().max_files(5_i64).build() {
+    {
+        let edited = original.clone().into_builder().max_files(5_i64).build()?;
         assert_eq!(wire(edited)["max_files"], serde_json::json!(5));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_max_files().build() {
+    {
+        let edited = original.clone().into_builder().clear_max_files().build()?;
         assert!(wire(edited).get("max_files").is_none());
     }
     let mut invalid = expected.clone();
@@ -7655,7 +6514,7 @@ fn file_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(FileInputElement::try_from(Value::Null).is_err());
-    assert!(FileInputElement::try_from(Value::Array(vec![])).is_err());
+    assert!(FileInputElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(FileInputElement::try_from(wrong).is_err());
@@ -7679,37 +6538,30 @@ fn icon_button_element_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .text(PlainText::builder().text("Delete").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text(PlainText::builder().text("Delete").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["text"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Delete"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Delete"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["text"] = Value::Array(vec![]);
+    invalid["text"] = json!([]);
     assert!(IconButtonElement::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("text");
     assert!(IconButtonElement::try_from(missing).is_err());
     assert_eq!(wire(original.icon()), expected["icon"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .icon(IconButtonIcon::Trash)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .icon(IconButtonIcon::Trash)
+            .build()?;
         assert_eq!(wire(edited)["icon"], Value::from("trash"));
     }
     let mut invalid = expected.clone();
@@ -7722,15 +6574,16 @@ fn icon_button_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("delete_button")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("delete_button")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("delete_button"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -7740,10 +6593,16 @@ fn icon_button_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.value()),
         expected.get("value").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().value("delete_item").build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .value("delete_item")
+            .build()?;
         assert_eq!(wire(edited)["value"], Value::from("delete_item"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_value().build() {
+    {
+        let edited = original.clone().into_builder().clear_value().build()?;
         assert!(wire(edited).get("value").is_none());
     }
     let mut invalid = expected.clone();
@@ -7753,85 +6612,51 @@ fn icon_button_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(IconButtonElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.accessibility_label()),
@@ -7840,20 +6665,20 @@ fn icon_button_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .accessibility_label("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .accessibility_label("sample")
+            .build()?;
         assert_eq!(wire(edited)["accessibility_label"], Value::from("sample"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_accessibility_label()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_accessibility_label()
+            .build()?;
         assert!(wire(edited).get("accessibility_label").is_none());
     }
     let mut invalid = expected.clone();
@@ -7866,23 +6691,21 @@ fn icon_button_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .visible_to_user_ids(vec![String::from("sample")])
-        .build()
     {
-        assert_eq!(
-            wire(edited)["visible_to_user_ids"],
-            Value::Array(vec![Value::from("sample")])
-        );
+        let edited = original
+            .clone()
+            .into_builder()
+            .visible_to_user_ids(vec![String::from("sample")])
+            .build()?;
+        assert_eq!(wire(edited)["visible_to_user_ids"], json!(["sample"]));
     }
     let appended = original
         .clone()
         .into_builder()
         .visible_to_user_id("sample")
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
             json["visible_to_user_ids"]
@@ -7893,16 +6716,16 @@ fn icon_button_element_editing_and_ingress() -> Result<(), ValidationError> {
             &Value::from("sample")
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_visible_to_user_ids()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_visible_to_user_ids()
+            .build()?;
         assert!(wire(edited).get("visible_to_user_ids").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["visible_to_user_ids"] = Value::Object([].into_iter().collect());
+    invalid["visible_to_user_ids"] = json!({});
     assert!(IconButtonElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -7920,7 +6743,7 @@ fn icon_button_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(IconButtonElement::try_from(Value::Null).is_err());
-    assert!(IconButtonElement::try_from(Value::Array(vec![])).is_err());
+    assert!(IconButtonElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(IconButtonElement::try_from(wrong).is_err());
@@ -7942,12 +6765,12 @@ fn image_element_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.alt_text()), expected["alt_text"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .alt_text("Sample hero image")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .alt_text("Sample hero image")
+            .build()?;
         assert_eq!(wire(edited)["alt_text"], Value::from("Sample hero image"));
     }
     let mut invalid = expected.clone();
@@ -7960,19 +6783,22 @@ fn image_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.image_url()),
         expected.get("image_url").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .image_url("https://picsum.photos/400/300")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .image_url("https://picsum.photos/400/300")
+            .build()?;
         assert_eq!(
             wire(edited)["image_url"],
             Value::from("https://picsum.photos/400/300")
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_image_url().build() {
-        assert!(wire(edited).get("image_url").is_none());
+    {
+        let error = (original.clone().into_builder().clear_image_url().build())
+            .expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MissingRequired);
+        assert_eq!(error.path(), "ImageElement");
     }
     let mut invalid = expected.clone();
     invalid["image_url"] = Value::from(false);
@@ -7981,26 +6807,22 @@ fn image_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.slack_file()),
         expected.get("slack_file").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .slack_file(SlackFile::builder().id("F0123ABC456").build()?)
-        .build()
     {
-        assert_eq!(
-            wire(edited)["slack_file"],
-            Value::Object(
-                [("id".into(), Value::from("F0123ABC456"))]
-                    .into_iter()
-                    .collect()
-            )
-        );
+        let error = (original
+            .clone()
+            .into_builder()
+            .slack_file(SlackFile::builder().id("F0123ABC456").build()?)
+            .build())
+        .expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MutuallyExclusive);
+        assert_eq!(error.path(), "ImageElement");
     }
-    if let Ok(edited) = original.clone().into_builder().clear_slack_file().build() {
+    {
+        let edited = original.clone().into_builder().clear_slack_file().build()?;
         assert!(wire(edited).get("slack_file").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["slack_file"] = Value::Array(vec![]);
+    invalid["slack_file"] = json!([]);
     assert!(ImageElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -8018,7 +6840,7 @@ fn image_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ImageElement::try_from(Value::Null).is_err());
-    assert!(ImageElement::try_from(Value::Array(vec![])).is_err());
+    assert!(ImageElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ImageElement::try_from(wrong).is_err());
@@ -8043,15 +6865,16 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("number_input")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("number_input")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("number_input"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -8061,12 +6884,12 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.is_decimal_allowed()),
         expected["is_decimal_allowed"]
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .is_decimal_allowed(false)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .is_decimal_allowed(false)
+            .build()?;
         assert_eq!(wire(edited)["is_decimal_allowed"], Value::from(false));
     }
     let mut invalid = expected.clone();
@@ -8085,20 +6908,20 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_value("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_value("sample")
+            .build()?;
         assert_eq!(wire(edited)["initial_value"], Value::from("sample"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_value()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_value()
+            .build()?;
         assert!(wire(edited).get("initial_value").is_none());
     }
     let mut invalid = expected.clone();
@@ -8108,10 +6931,12 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.min_value()),
         expected.get("min_value").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().min_value(1.0_f64).build() {
+    {
+        let edited = original.clone().into_builder().min_value(1.0_f64).build()?;
         assert_eq!(wire(edited)["min_value"], serde_json::json!(1.0));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_min_value().build() {
+    {
+        let edited = original.clone().into_builder().clear_min_value().build()?;
         assert!(wire(edited).get("min_value").is_none());
     }
     let mut invalid = expected.clone();
@@ -8121,10 +6946,12 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.max_value()),
         expected.get("max_value").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().max_value(1.0_f64).build() {
+    {
+        let edited = original.clone().into_builder().max_value(1.0_f64).build()?;
         assert_eq!(wire(edited)["max_value"], serde_json::json!(1.0));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_max_value().build() {
+    {
+        let edited = original.clone().into_builder().clear_max_value().build()?;
         assert!(wire(edited).get("max_value").is_none());
     }
     let mut invalid = expected.clone();
@@ -8137,38 +6964,31 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .dispatch_action_config(
-            DispatchActionConfiguration::builder()
-                .trigger_actions_on(vec![String::from("on_character_entered")])
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .dispatch_action_config(
+                DispatchActionConfiguration::builder()
+                    .trigger_actions_on(vec![String::from("on_character_entered")])
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["dispatch_action_config"],
-            Value::Object(
-                [(
-                    "trigger_actions_on".into(),
-                    Value::Array(vec![Value::from("on_character_entered")])
-                )]
-                .into_iter()
-                .collect()
-            )
+            json!({"trigger_actions_on": ["on_character_entered"]})
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_dispatch_action_config()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_dispatch_action_config()
+            .build()?;
         assert!(wire(edited).get("dispatch_action_config").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["dispatch_action_config"] = Value::Array(vec![]);
+    invalid["dispatch_action_config"] = json!([]);
     assert!(NumberInputElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -8177,15 +6997,20 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -8195,29 +7020,27 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("*a*").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("*a*").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("*a*"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "*a*"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(NumberInputElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -8235,7 +7058,7 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(NumberInputElement::try_from(Value::Null).is_err());
-    assert!(NumberInputElement::try_from(Value::Array(vec![])).is_err());
+    assert!(NumberInputElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(NumberInputElement::try_from(wrong).is_err());
@@ -8273,97 +7096,65 @@ fn overflow_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("overflow")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("overflow")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("overflow"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
     invalid["action_id"] = Value::from(false);
     assert!(OverflowElement::try_from(invalid).is_err());
     assert_eq!(wire(original.options()), expected["options"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .options(vec![
-            SelectOption::builder()
-                .text(PlainText::builder().text("A").build()?)
-                .value("A")
-                .build()?,
-            SelectOption::builder()
-                .text(PlainText::builder().text("B").build()?)
-                .value("B")
-                .build()?,
-            SelectOption::builder()
-                .text(PlainText::builder().text("C").build()?)
-                .value("C")
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .options(vec![
+                SelectOption::builder()
+                    .text(PlainText::builder().text("A").build()?)
+                    .value("A")
+                    .build()?,
+                SelectOption::builder()
+                    .text(PlainText::builder().text("B").build()?)
+                    .value("B")
+                    .build()?,
+                SelectOption::builder()
+                    .text(PlainText::builder().text("C").build()?)
+                    .value("C")
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["options"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("A"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("A"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("B"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("B"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("C"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("C"))
-                    ]
-                    .into_iter()
-                    .collect()
-                )
+            json!([
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "A"
+                    },
+                    "value": "A"
+                },
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "B"
+                    },
+                    "value": "B"
+                },
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "C"
+                    },
+                    "value": "C"
+                }
             ])
         );
     }
@@ -8377,32 +7168,20 @@ fn overflow_element_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["options"].as_array().unwrap().len(),
+            expected["options"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["options"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("A"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("A"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"text": {"type": "plain_text", "text": "A"}, "value": "A"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["options"] = Value::Object([].into_iter().collect());
+    invalid["options"] = json!({});
     assert!(OverflowElement::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("options");
@@ -8411,85 +7190,51 @@ fn overflow_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(OverflowElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -8507,7 +7252,7 @@ fn overflow_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(OverflowElement::try_from(Value::Null).is_err());
-    assert!(OverflowElement::try_from(Value::Array(vec![])).is_err());
+    assert!(OverflowElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(OverflowElement::try_from(wrong).is_err());
@@ -8532,10 +7277,16 @@ fn plain_text_input_element_editing_and_ingress() -> Result<(), ValidationError>
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().action_id("action").build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("action")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("action"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -8548,20 +7299,20 @@ fn plain_text_input_element_editing_and_ingress() -> Result<(), ValidationError>
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_value("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_value("sample")
+            .build()?;
         assert_eq!(wire(edited)["initial_value"], Value::from("sample"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_value()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_value()
+            .build()?;
         assert!(wire(edited).get("initial_value").is_none());
     }
     let mut invalid = expected.clone();
@@ -8571,10 +7322,12 @@ fn plain_text_input_element_editing_and_ingress() -> Result<(), ValidationError>
         wire(original.multiline()),
         expected.get("multiline").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().multiline(true).build() {
+    {
+        let edited = original.clone().into_builder().multiline(true).build()?;
         assert_eq!(wire(edited)["multiline"], Value::from(true));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_multiline().build() {
+    {
+        let edited = original.clone().into_builder().clear_multiline().build()?;
         assert!(wire(edited).get("multiline").is_none());
     }
     let mut invalid = expected.clone();
@@ -8584,10 +7337,12 @@ fn plain_text_input_element_editing_and_ingress() -> Result<(), ValidationError>
         wire(original.min_length()),
         expected.get("min_length").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().min_length(1_i64).build() {
+    {
+        let edited = original.clone().into_builder().min_length(1_i64).build()?;
         assert_eq!(wire(edited)["min_length"], serde_json::json!(1));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_min_length().build() {
+    {
+        let edited = original.clone().into_builder().clear_min_length().build()?;
         assert!(wire(edited).get("min_length").is_none());
     }
     let mut invalid = expected.clone();
@@ -8597,10 +7352,12 @@ fn plain_text_input_element_editing_and_ingress() -> Result<(), ValidationError>
         wire(original.max_length()),
         expected.get("max_length").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().max_length(1_i64).build() {
+    {
+        let edited = original.clone().into_builder().max_length(1_i64).build()?;
         assert_eq!(wire(edited)["max_length"], serde_json::json!(1));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_max_length().build() {
+    {
+        let edited = original.clone().into_builder().clear_max_length().build()?;
         assert!(wire(edited).get("max_length").is_none());
     }
     let mut invalid = expected.clone();
@@ -8613,38 +7370,31 @@ fn plain_text_input_element_editing_and_ingress() -> Result<(), ValidationError>
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .dispatch_action_config(
-            DispatchActionConfiguration::builder()
-                .trigger_actions_on(vec![String::from("on_character_entered")])
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .dispatch_action_config(
+                DispatchActionConfiguration::builder()
+                    .trigger_actions_on(vec![String::from("on_character_entered")])
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["dispatch_action_config"],
-            Value::Object(
-                [(
-                    "trigger_actions_on".into(),
-                    Value::Array(vec![Value::from("on_character_entered")])
-                )]
-                .into_iter()
-                .collect()
-            )
+            json!({"trigger_actions_on": ["on_character_entered"]})
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_dispatch_action_config()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_dispatch_action_config()
+            .build()?;
         assert!(wire(edited).get("dispatch_action_config").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["dispatch_action_config"] = Value::Array(vec![]);
+    invalid["dispatch_action_config"] = json!([]);
     assert!(PlainTextInputElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -8653,15 +7403,20 @@ fn plain_text_input_element_editing_and_ingress() -> Result<(), ValidationError>
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -8671,29 +7426,27 @@ fn plain_text_input_element_editing_and_ingress() -> Result<(), ValidationError>
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Enter your plain text").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Enter your plain text").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Enter your plain text"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Enter your plain text"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(PlainTextInputElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -8711,7 +7464,7 @@ fn plain_text_input_element_editing_and_ingress() -> Result<(), ValidationError>
             .is_err()
     );
     assert!(PlainTextInputElement::try_from(Value::Null).is_err());
-    assert!(PlainTextInputElement::try_from(Value::Array(vec![])).is_err());
+    assert!(PlainTextInputElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(PlainTextInputElement::try_from(wrong).is_err());
@@ -8755,97 +7508,65 @@ fn radio_buttons_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("radio_buttons")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("radio_buttons")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("radio_buttons"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
     invalid["action_id"] = Value::from(false);
     assert!(RadioButtonsElement::try_from(invalid).is_err());
     assert_eq!(wire(original.options()), expected["options"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .options(vec![
-            SelectOption::builder()
-                .text(PlainText::builder().text("A").build()?)
-                .value("A")
-                .build()?,
-            SelectOption::builder()
-                .text(PlainText::builder().text("B").build()?)
-                .value("B")
-                .build()?,
-            SelectOption::builder()
-                .text(PlainText::builder().text("C").build()?)
-                .value("C")
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .options(vec![
+                SelectOption::builder()
+                    .text(PlainText::builder().text("A").build()?)
+                    .value("A")
+                    .build()?,
+                SelectOption::builder()
+                    .text(PlainText::builder().text("B").build()?)
+                    .value("B")
+                    .build()?,
+                SelectOption::builder()
+                    .text(PlainText::builder().text("C").build()?)
+                    .value("C")
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["options"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("A"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("A"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("B"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("B"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("C"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("C"))
-                    ]
-                    .into_iter()
-                    .collect()
-                )
+            json!([
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "A"
+                    },
+                    "value": "A"
+                },
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "B"
+                    },
+                    "value": "B"
+                },
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "C"
+                    },
+                    "value": "C"
+                }
             ])
         );
     }
@@ -8859,32 +7580,20 @@ fn radio_buttons_element_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["options"].as_array().unwrap().len(),
+            expected["options"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["options"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("A"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("A"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"text": {"type": "plain_text", "text": "A"}, "value": "A"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["options"] = Value::Object([].into_iter().collect());
+    invalid["options"] = json!({});
     assert!(RadioButtonsElement::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("options");
@@ -8896,133 +7605,82 @@ fn radio_buttons_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_option(
-            SelectOption::builder()
-                .text(PlainText::builder().text("A").build()?)
-                .value("A")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_option(
+                SelectOption::builder()
+                    .text(PlainText::builder().text("A").build()?)
+                    .value("A")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["initial_option"],
-            Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("A"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("A"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"text": {"type": "plain_text", "text": "A"}, "value": "A"})
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_option()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_option()
+            .build()?;
         assert!(wire(edited).get("initial_option").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["initial_option"] = Value::Array(vec![]);
+    invalid["initial_option"] = json!([]);
     assert!(RadioButtonsElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(RadioButtonsElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -9031,15 +7689,20 @@ fn radio_buttons_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -9061,7 +7724,7 @@ fn radio_buttons_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RadioButtonsElement::try_from(Value::Null).is_err());
-    assert!(RadioButtonsElement::try_from(Value::Array(vec![])).is_err());
+    assert!(RadioButtonsElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RadioButtonsElement::try_from(wrong).is_err());
@@ -9095,12 +7758,12 @@ fn rich_text_input_element_editing_and_ingress() -> Result<(), ValidationError> 
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.action_id()), expected["action_id"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("action_id")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("action_id")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("action_id"));
     }
     let mut invalid = expected.clone();
@@ -9116,64 +7779,50 @@ fn rich_text_input_element_editing_and_ingress() -> Result<(), ValidationError> 
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_value(
-            RichTextBlock::builder()
-                .elements(vec![RichTextBlockElement::from(
-                    RichTextSection::builder()
-                        .elements(vec![RichTextSectionElement::from(
-                            RichTextText::builder().text("I'm rich").build()?,
-                        )])
-                        .build()?,
-                )])
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_value(
+                RichTextBlock::builder()
+                    .elements(vec![RichTextBlockElement::from(
+                        RichTextSection::builder()
+                            .elements(vec![RichTextSectionElement::from(
+                                RichTextText::builder().text("I'm rich").build()?,
+                            )])
+                            .build()?,
+                    )])
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["initial_value"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("rich_text")),
-                    (
-                        "elements".into(),
-                        Value::Array(vec![Value::Object(
-                            [
-                                ("type".into(), Value::from("rich_text_section")),
-                                (
-                                    "elements".into(),
-                                    Value::Array(vec![Value::Object(
-                                        [
-                                            ("type".into(), Value::from("text")),
-                                            ("text".into(), Value::from("I'm rich"))
-                                        ]
-                                        .into_iter()
-                                        .collect()
-                                    )])
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )])
-                    )
+            json!({
+                "type": "rich_text",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm rich"
+                            }
+                        ]
+                    }
                 ]
-                .into_iter()
-                .collect()
-            )
+            })
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_value()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_value()
+            .build()?;
         assert!(wire(edited).get("initial_value").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["initial_value"] = Value::Array(vec![]);
+    invalid["initial_value"] = json!([]);
     assert!(RichTextInputElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.dispatch_action_config()),
@@ -9182,38 +7831,31 @@ fn rich_text_input_element_editing_and_ingress() -> Result<(), ValidationError> 
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .dispatch_action_config(
-            DispatchActionConfiguration::builder()
-                .trigger_actions_on(vec![String::from("on_character_entered")])
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .dispatch_action_config(
+                DispatchActionConfiguration::builder()
+                    .trigger_actions_on(vec![String::from("on_character_entered")])
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["dispatch_action_config"],
-            Value::Object(
-                [(
-                    "trigger_actions_on".into(),
-                    Value::Array(vec![Value::from("on_character_entered")])
-                )]
-                .into_iter()
-                .collect()
-            )
+            json!({"trigger_actions_on": ["on_character_entered"]})
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_dispatch_action_config()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_dispatch_action_config()
+            .build()?;
         assert!(wire(edited).get("dispatch_action_config").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["dispatch_action_config"] = Value::Array(vec![]);
+    invalid["dispatch_action_config"] = json!([]);
     assert!(RichTextInputElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -9222,15 +7864,20 @@ fn rich_text_input_element_editing_and_ingress() -> Result<(), ValidationError> 
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(false).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(false)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(false));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -9240,38 +7887,38 @@ fn rich_text_input_element_editing_and_ingress() -> Result<(), ValidationError> 
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Hello").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Hello").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Hello"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Hello"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(RichTextInputElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.min_lines()),
         expected.get("min_lines").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().min_lines(1_i64).build() {
+    {
+        let edited = original.clone().into_builder().min_lines(1_i64).build()?;
         assert_eq!(wire(edited)["min_lines"], serde_json::json!(1));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_min_lines().build() {
+    {
+        let edited = original.clone().into_builder().clear_min_lines().build()?;
         assert!(wire(edited).get("min_lines").is_none());
     }
     let mut invalid = expected.clone();
@@ -9281,10 +7928,12 @@ fn rich_text_input_element_editing_and_ingress() -> Result<(), ValidationError> 
         wire(original.max_lines()),
         expected.get("max_lines").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().max_lines(1_i64).build() {
+    {
+        let edited = original.clone().into_builder().max_lines(1_i64).build()?;
         assert_eq!(wire(edited)["max_lines"], serde_json::json!(1));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_max_lines().build() {
+    {
+        let edited = original.clone().into_builder().clear_max_lines().build()?;
         assert!(wire(edited).get("max_lines").is_none());
     }
     let mut invalid = expected.clone();
@@ -9306,7 +7955,7 @@ fn rich_text_input_element_editing_and_ingress() -> Result<(), ValidationError> 
             .is_err()
     );
     assert!(RichTextInputElement::try_from(Value::Null).is_err());
-    assert!(RichTextInputElement::try_from(Value::Array(vec![])).is_err());
+    assert!(RichTextInputElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RichTextInputElement::try_from(wrong).is_err());
@@ -9344,18 +7993,19 @@ fn static_multi_select_element_editing_and_ingress() -> Result<(), ValidationErr
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("multi_static_select")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("multi_static_select")
+            .build()?;
         assert_eq!(
             wire(edited)["action_id"],
             Value::from("multi_static_select")
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -9365,60 +8015,38 @@ fn static_multi_select_element_editing_and_ingress() -> Result<(), ValidationErr
         wire(original.options()),
         expected.get("options").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .options(vec![
-            SelectOption::builder()
-                .text(PlainText::builder().text("A").build()?)
-                .value("A")
-                .build()?,
-            SelectOption::builder()
-                .text(PlainText::builder().text("B").build()?)
-                .value("B")
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .options(vec![
+                SelectOption::builder()
+                    .text(PlainText::builder().text("A").build()?)
+                    .value("A")
+                    .build()?,
+                SelectOption::builder()
+                    .text(PlainText::builder().text("B").build()?)
+                    .value("B")
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["options"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("A"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("A"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("B"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("B"))
-                    ]
-                    .into_iter()
-                    .collect()
-                )
+            json!([
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "A"
+                    },
+                    "value": "A"
+                },
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "B"
+                    },
+                    "value": "B"
+                }
             ])
         );
     }
@@ -9432,35 +8060,24 @@ fn static_multi_select_element_editing_and_ingress() -> Result<(), ValidationErr
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["options"].as_array().unwrap().len(),
+            expected["options"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["options"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("A"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("A"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"text": {"type": "plain_text", "text": "A"}, "value": "A"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_options().build() {
+    {
+        let edited = original.clone().into_builder().clear_options().build()?;
         assert!(wire(edited).get("options").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["options"] = Value::Object([].into_iter().collect());
+    invalid["options"] = json!({});
     assert!(StaticMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.option_groups()),
@@ -9469,109 +8086,33 @@ fn static_multi_select_element_editing_and_ingress() -> Result<(), ValidationErr
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .option_groups(vec![
-            SelectOptionGroup::builder()
-                .label(PlainText::builder().text("Group A").build()?)
-                .options(vec![
-                    SelectOption::builder()
-                        .text(PlainText::builder().text("A").build()?)
-                        .value("A")
-                        .build()?,
-                    SelectOption::builder()
-                        .text(PlainText::builder().text("B").build()?)
-                        .value("B")
-                        .build()?,
-                    SelectOption::builder()
-                        .text(PlainText::builder().text("C").build()?)
-                        .value("C")
-                        .build()?,
-                ])
-                .build()?,
-        ])
-        .build()
     {
-        assert_eq!(
-            wire(edited)["option_groups"],
-            Value::Array(vec![Value::Object(
-                [
-                    (
-                        "label".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Group A"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "options".into(),
-                        Value::Array(vec![
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("A"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("A"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("B"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("B"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("C"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("C"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ])
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )])
-        );
+        let error = (original
+            .clone()
+            .into_builder()
+            .option_groups(vec![
+                SelectOptionGroup::builder()
+                    .label(PlainText::builder().text("Group A").build()?)
+                    .options(vec![
+                        SelectOption::builder()
+                            .text(PlainText::builder().text("A").build()?)
+                            .value("A")
+                            .build()?,
+                        SelectOption::builder()
+                            .text(PlainText::builder().text("B").build()?)
+                            .value("B")
+                            .build()?,
+                        SelectOption::builder()
+                            .text(PlainText::builder().text("C").build()?)
+                            .value("C")
+                            .build()?,
+                    ])
+                    .build()?,
+            ])
+            .build())
+        .expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MutuallyExclusive);
+        assert_eq!(error.path(), "StaticMultiSelectElement");
     }
     let appended = original
         .clone()
@@ -9596,98 +8137,22 @@ fn static_multi_select_element_editing_and_ingress() -> Result<(), ValidationErr
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
-        let json = wire(value);
-        assert_eq!(
-            json["option_groups"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "label".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Group A"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "options".into(),
-                        Value::Array(vec![
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("A"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("A"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("B"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("B"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("C"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("C"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ])
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
-        );
-    }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_option_groups()
-        .build()
     {
+        let error =
+            (appended).expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MutuallyExclusive);
+        assert_eq!(error.path(), "StaticMultiSelectElement");
+    }
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_option_groups()
+            .build()?;
         assert!(wire(edited).get("option_groups").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["option_groups"] = Value::Object([].into_iter().collect());
+    invalid["option_groups"] = json!({});
     assert!(StaticMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.initial_options()),
@@ -9696,49 +8161,33 @@ fn static_multi_select_element_editing_and_ingress() -> Result<(), ValidationErr
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_options(vec![
-            SelectOption::builder()
-                .text(MarkdownText::builder().text("*a*").build()?)
-                .value("a")
-                .description(PlainText::builder().text("*a*").build()?)
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_options(vec![
+                SelectOption::builder()
+                    .text(MarkdownText::builder().text("*a*").build()?)
+                    .value("a")
+                    .description(PlainText::builder().text("*a*").build()?)
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["initial_options"],
-            Value::Array(vec![Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("a")),
-                    (
-                        "description".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([
+                {
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*a*"
+                    },
+                    "value": "a",
+                    "description": {
+                        "type": "plain_text",
+                        "text": "*a*"
+                    }
+                }
+            ])
         );
     }
     let appended = original
@@ -9752,135 +8201,88 @@ fn static_multi_select_element_editing_and_ingress() -> Result<(), ValidationErr
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["initial_options"].as_array().unwrap().len(),
+            expected["initial_options"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["initial_options"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("a")),
-                    (
-                        "description".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*a*"
+                },
+                "value": "a",
+                "description": {
+                    "type": "plain_text",
+                    "text": "*a*"
+                }
+            })
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_options()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_options()
+            .build()?;
         assert!(wire(edited).get("initial_options").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["initial_options"] = Value::Object([].into_iter().collect());
+    invalid["initial_options"] = json!({});
     assert!(StaticMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(StaticMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.max_selected_items()),
@@ -9889,20 +8291,20 @@ fn static_multi_select_element_editing_and_ingress() -> Result<(), ValidationErr
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .max_selected_items(1_i64)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .max_selected_items(1_i64)
+            .build()?;
         assert_eq!(wire(edited)["max_selected_items"], serde_json::json!(1));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_max_selected_items()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_max_selected_items()
+            .build()?;
         assert!(wire(edited).get("max_selected_items").is_none());
     }
     let mut invalid = expected.clone();
@@ -9915,15 +8317,20 @@ fn static_multi_select_element_editing_and_ingress() -> Result<(), ValidationErr
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -9933,29 +8340,27 @@ fn static_multi_select_element_editing_and_ingress() -> Result<(), ValidationErr
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Select one or more").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Select one or more").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Select one or more"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Select one or more"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(StaticMultiSelectElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -9976,7 +8381,7 @@ fn static_multi_select_element_editing_and_ingress() -> Result<(), ValidationErr
             .is_err()
     );
     assert!(StaticMultiSelectElement::try_from(Value::Null).is_err());
-    assert!(StaticMultiSelectElement::try_from(Value::Array(vec![])).is_err());
+    assert!(StaticMultiSelectElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(StaticMultiSelectElement::try_from(wrong).is_err());
@@ -10015,15 +8420,16 @@ fn static_select_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("static_select")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("static_select")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("static_select"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -10033,82 +8439,49 @@ fn static_select_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.options()),
         expected.get("options").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .options(vec![
-            SelectOption::builder()
-                .text(PlainText::builder().text("A").build()?)
-                .value("A")
-                .build()?,
-            SelectOption::builder()
-                .text(PlainText::builder().text("B").build()?)
-                .value("B")
-                .build()?,
-            SelectOption::builder()
-                .text(PlainText::builder().text("C").build()?)
-                .value("C")
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .options(vec![
+                SelectOption::builder()
+                    .text(PlainText::builder().text("A").build()?)
+                    .value("A")
+                    .build()?,
+                SelectOption::builder()
+                    .text(PlainText::builder().text("B").build()?)
+                    .value("B")
+                    .build()?,
+                SelectOption::builder()
+                    .text(PlainText::builder().text("C").build()?)
+                    .value("C")
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["options"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("A"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("A"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("B"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("B"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("C"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("C"))
-                    ]
-                    .into_iter()
-                    .collect()
-                )
+            json!([
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "A"
+                    },
+                    "value": "A"
+                },
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "B"
+                    },
+                    "value": "B"
+                },
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "C"
+                    },
+                    "value": "C"
+                }
             ])
         );
     }
@@ -10122,35 +8495,24 @@ fn static_select_element_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["options"].as_array().unwrap().len(),
+            expected["options"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["options"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("A"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("A"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"text": {"type": "plain_text", "text": "A"}, "value": "A"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_options().build() {
+    {
+        let edited = original.clone().into_builder().clear_options().build()?;
         assert!(wire(edited).get("options").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["options"] = Value::Object([].into_iter().collect());
+    invalid["options"] = json!({});
     assert!(StaticSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.option_groups()),
@@ -10159,109 +8521,33 @@ fn static_select_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .option_groups(vec![
-            SelectOptionGroup::builder()
-                .label(PlainText::builder().text("Group A").build()?)
-                .options(vec![
-                    SelectOption::builder()
-                        .text(PlainText::builder().text("A").build()?)
-                        .value("A")
-                        .build()?,
-                    SelectOption::builder()
-                        .text(PlainText::builder().text("B").build()?)
-                        .value("B")
-                        .build()?,
-                    SelectOption::builder()
-                        .text(PlainText::builder().text("C").build()?)
-                        .value("C")
-                        .build()?,
-                ])
-                .build()?,
-        ])
-        .build()
     {
-        assert_eq!(
-            wire(edited)["option_groups"],
-            Value::Array(vec![Value::Object(
-                [
-                    (
-                        "label".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Group A"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "options".into(),
-                        Value::Array(vec![
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("A"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("A"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("B"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("B"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("C"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("C"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ])
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )])
-        );
+        let error = (original
+            .clone()
+            .into_builder()
+            .option_groups(vec![
+                SelectOptionGroup::builder()
+                    .label(PlainText::builder().text("Group A").build()?)
+                    .options(vec![
+                        SelectOption::builder()
+                            .text(PlainText::builder().text("A").build()?)
+                            .value("A")
+                            .build()?,
+                        SelectOption::builder()
+                            .text(PlainText::builder().text("B").build()?)
+                            .value("B")
+                            .build()?,
+                        SelectOption::builder()
+                            .text(PlainText::builder().text("C").build()?)
+                            .value("C")
+                            .build()?,
+                    ])
+                    .build()?,
+            ])
+            .build())
+        .expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MutuallyExclusive);
+        assert_eq!(error.path(), "StaticSelectElement");
     }
     let appended = original
         .clone()
@@ -10286,98 +8572,22 @@ fn static_select_element_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
-        let json = wire(value);
-        assert_eq!(
-            json["option_groups"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "label".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Group A"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "options".into(),
-                        Value::Array(vec![
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("A"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("A"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("B"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("B"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("plain_text")),
-                                                ("text".into(), Value::from("C"))
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    ),
-                                    ("value".into(), Value::from("C"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ])
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
-        );
-    }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_option_groups()
-        .build()
     {
+        let error =
+            (appended).expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MutuallyExclusive);
+        assert_eq!(error.path(), "StaticSelectElement");
+    }
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_option_groups()
+            .build()?;
         assert!(wire(edited).get("option_groups").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["option_groups"] = Value::Object([].into_iter().collect());
+    invalid["option_groups"] = json!({});
     assert!(StaticSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.initial_option()),
@@ -10386,145 +8596,93 @@ fn static_select_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_option(
-            SelectOption::builder()
-                .text(MarkdownText::builder().text("*a*").build()?)
-                .value("a")
-                .description(PlainText::builder().text("*a*").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_option(
+                SelectOption::builder()
+                    .text(MarkdownText::builder().text("*a*").build()?)
+                    .value("a")
+                    .description(PlainText::builder().text("*a*").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["initial_option"],
-            Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("a")),
-                    (
-                        "description".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("*a*"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*a*"
+                },
+                "value": "a",
+                "description": {
+                    "type": "plain_text",
+                    "text": "*a*"
+                }
+            })
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_option()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_option()
+            .build()?;
         assert!(wire(edited).get("initial_option").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["initial_option"] = Value::Array(vec![]);
+    invalid["initial_option"] = json!([]);
     assert!(StaticSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(StaticSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -10533,15 +8691,20 @@ fn static_select_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -10551,29 +8714,27 @@ fn static_select_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Select one item").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Select one item").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Select one item"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Select one item"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(StaticSelectElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -10591,7 +8752,7 @@ fn static_select_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(StaticSelectElement::try_from(Value::Null).is_err());
-    assert!(StaticSelectElement::try_from(Value::Array(vec![])).is_err());
+    assert!(StaticSelectElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(StaticSelectElement::try_from(wrong).is_err());
@@ -10618,15 +8779,16 @@ fn time_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("timepicker")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("timepicker")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("timepicker"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -10636,15 +8798,20 @@ fn time_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.initial_time()),
         expected.get("initial_time").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_time("12:00")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_time("12:00")
+            .build()?;
         assert_eq!(wire(edited)["initial_time"], Value::from("12:00"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_initial_time().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_time()
+            .build()?;
         assert!(wire(edited).get("initial_time").is_none());
     }
     let mut invalid = expected.clone();
@@ -10654,15 +8821,16 @@ fn time_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.timezone()),
         expected.get("timezone").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .timezone("Australia/Sydney")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .timezone("Australia/Sydney")
+            .build()?;
         assert_eq!(wire(edited)["timezone"], Value::from("Australia/Sydney"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_timezone().build() {
+    {
+        let edited = original.clone().into_builder().clear_timezone().build()?;
         assert!(wire(edited).get("timezone").is_none());
     }
     let mut invalid = expected.clone();
@@ -10672,85 +8840,51 @@ fn time_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(TimePickerElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -10759,15 +8893,20 @@ fn time_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -10777,29 +8916,27 @@ fn time_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Select your time").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Select your time").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Select your time"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Select your time"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(TimePickerElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -10817,7 +8954,7 @@ fn time_picker_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(TimePickerElement::try_from(Value::Null).is_err());
-    assert!(TimePickerElement::try_from(Value::Array(vec![])).is_err());
+    assert!(TimePickerElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(TimePickerElement::try_from(wrong).is_err());
@@ -10841,15 +8978,16 @@ fn url_input_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("url_text_input")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("url_text_input")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("url_text_input"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -10862,20 +9000,20 @@ fn url_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_value("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_value("sample")
+            .build()?;
         assert_eq!(wire(edited)["initial_value"], Value::from("sample"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_value()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_value()
+            .build()?;
         assert!(wire(edited).get("initial_value").is_none());
     }
     let mut invalid = expected.clone();
@@ -10888,38 +9026,31 @@ fn url_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .dispatch_action_config(
-            DispatchActionConfiguration::builder()
-                .trigger_actions_on(vec![String::from("on_character_entered")])
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .dispatch_action_config(
+                DispatchActionConfiguration::builder()
+                    .trigger_actions_on(vec![String::from("on_character_entered")])
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["dispatch_action_config"],
-            Value::Object(
-                [(
-                    "trigger_actions_on".into(),
-                    Value::Array(vec![Value::from("on_character_entered")])
-                )]
-                .into_iter()
-                .collect()
-            )
+            json!({"trigger_actions_on": ["on_character_entered"]})
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_dispatch_action_config()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_dispatch_action_config()
+            .build()?;
         assert!(wire(edited).get("dispatch_action_config").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["dispatch_action_config"] = Value::Array(vec![]);
+    invalid["dispatch_action_config"] = json!([]);
     assert!(UrlInputElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -10928,15 +9059,20 @@ fn url_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -10946,29 +9082,27 @@ fn url_input_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("*a*").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("*a*").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("*a*"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "*a*"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(UrlInputElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -10986,7 +9120,7 @@ fn url_input_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(UrlInputElement::try_from(Value::Null).is_err());
-    assert!(UrlInputElement::try_from(Value::Array(vec![])).is_err());
+    assert!(UrlInputElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(UrlInputElement::try_from(wrong).is_err());
@@ -11022,15 +9156,16 @@ fn user_multi_select_element_editing_and_ingress() -> Result<(), ValidationError
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("multi_users_select")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("multi_users_select")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("multi_users_select"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -11043,18 +9178,18 @@ fn user_multi_select_element_editing_and_ingress() -> Result<(), ValidationError
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_users(vec![
-            String::from("U064B5H1309"),
-            String::from("U063JR973UP"),
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_users(vec![
+                String::from("U064B5H1309"),
+                String::from("U063JR973UP"),
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["initial_users"],
-            Value::Array(vec![Value::from("U064B5H1309"), Value::from("U063JR973UP")])
+            json!(["U064B5H1309", "U063JR973UP"])
         );
     }
     let appended = original
@@ -11062,107 +9197,78 @@ fn user_multi_select_element_editing_and_ingress() -> Result<(), ValidationError
         .into_builder()
         .initial_user("U064B5H1309")
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
+        assert_eq!(
+            json["initial_users"].as_array().unwrap().len(),
+            expected["initial_users"].as_array().map_or(0, Vec::len) + 1
+        );
         assert_eq!(
             json["initial_users"].as_array().unwrap().last().unwrap(),
             &Value::from("U064B5H1309")
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_initial_users()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_users()
+            .build()?;
         assert!(wire(edited).get("initial_users").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["initial_users"] = Value::Object([].into_iter().collect());
+    invalid["initial_users"] = json!({});
     assert!(UserMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(UserMultiSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.max_selected_items()),
@@ -11171,20 +9277,20 @@ fn user_multi_select_element_editing_and_ingress() -> Result<(), ValidationError
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .max_selected_items(1_i64)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .max_selected_items(1_i64)
+            .build()?;
         assert_eq!(wire(edited)["max_selected_items"], serde_json::json!(1));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_max_selected_items()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_max_selected_items()
+            .build()?;
         assert!(wire(edited).get("max_selected_items").is_none());
     }
     let mut invalid = expected.clone();
@@ -11197,15 +9303,20 @@ fn user_multi_select_element_editing_and_ingress() -> Result<(), ValidationError
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -11215,33 +9326,31 @@ fn user_multi_select_element_editing_and_ingress() -> Result<(), ValidationError
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(
-            PlainText::builder()
-                .text("Select one or more users")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(
+                PlainText::builder()
+                    .text("Select one or more users")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Select one or more users"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Select one or more users"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(UserMultiSelectElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -11259,7 +9368,7 @@ fn user_multi_select_element_editing_and_ingress() -> Result<(), ValidationError
             .is_err()
     );
     assert!(UserMultiSelectElement::try_from(Value::Null).is_err());
-    assert!(UserMultiSelectElement::try_from(Value::Array(vec![])).is_err());
+    assert!(UserMultiSelectElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(UserMultiSelectElement::try_from(wrong).is_err());
@@ -11284,15 +9393,16 @@ fn user_select_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.action_id()),
         expected.get("action_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("users_select")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("users_select")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("users_select"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_action_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_action_id().build()?;
         assert!(wire(edited).get("action_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -11302,15 +9412,20 @@ fn user_select_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.initial_user()),
         expected.get("initial_user").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .initial_user("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .initial_user("sample")
+            .build()?;
         assert_eq!(wire(edited)["initial_user"], Value::from("sample"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_initial_user().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_initial_user()
+            .build()?;
         assert!(wire(edited).get("initial_user").is_none());
     }
     let mut invalid = expected.clone();
@@ -11320,85 +9435,51 @@ fn user_select_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(UserSelectElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.focus_on_load()),
@@ -11407,15 +9488,20 @@ fn user_select_element_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().focus_on_load(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .focus_on_load(true)
+            .build()?;
         assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_focus_on_load()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_focus_on_load()
+            .build()?;
         assert!(wire(edited).get("focus_on_load").is_none());
     }
     let mut invalid = expected.clone();
@@ -11425,29 +9511,27 @@ fn user_select_element_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.placeholder()),
         expected.get("placeholder").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .placeholder(PlainText::builder().text("Select one user").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .placeholder(PlainText::builder().text("Select one user").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["placeholder"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Select one user"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Select one user"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_placeholder().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_placeholder()
+            .build()?;
         assert!(wire(edited).get("placeholder").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["placeholder"] = Value::Array(vec![]);
+    invalid["placeholder"] = json!([]);
     assert!(UserSelectElement::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -11465,7 +9549,7 @@ fn user_select_element_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(UserSelectElement::try_from(Value::Null).is_err());
-    assert!(UserSelectElement::try_from(Value::Array(vec![])).is_err());
+    assert!(UserSelectElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(UserSelectElement::try_from(wrong).is_err());
@@ -11484,45 +9568,58 @@ fn workflow_button_element_editing_and_ingress() -> Result<(), ValidationError> 
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .text(PlainText::builder().text("Run Your Workflow").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text(PlainText::builder().text("Run Your Workflow").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["text"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Run Your Workflow"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Run Your Workflow"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["text"] = Value::Array(vec![]);
+    invalid["text"] = json!([]);
     assert!(WorkflowButtonElement::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("text");
     assert!(WorkflowButtonElement::try_from(missing).is_err());
     assert_eq!(wire(original.workflow()), expected["workflow"]);
-    if let Ok(edited)=original.clone().into_builder().workflow(Workflow::builder().trigger(Trigger::builder().url("https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c").customizable_input_parameters(vec![InputParameter::builder().name("name_a").value("value_a").build()?,InputParameter::builder().name("name_b").value("value_b").build()?]).build()?).build()?).build() { assert_eq!(wire(edited)["workflow"],Value::Object([("trigger".into(),Value::Object([("url".into(),Value::from("https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c")),("customizable_input_parameters".into(),Value::Array(vec![Value::Object([("name".into(),Value::from("name_a")),("value".into(),Value::from("value_a"))].into_iter().collect()),Value::Object([("name".into(),Value::from("name_b")),("value".into(),Value::from("value_b"))].into_iter().collect())]))].into_iter().collect()))].into_iter().collect())); }
+    {
+        let edited = original.clone().into_builder().workflow(Workflow::builder().trigger(Trigger::builder().url("https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c").customizable_input_parameters(vec![InputParameter::builder().name("name_a").value("value_a").build()?,InputParameter::builder().name("name_b").value("value_b").build()?]).build()?).build()?).build()?;
+        assert_eq!(
+            wire(edited)["workflow"],
+            json!({
+                "trigger": {
+                    "url": "https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c",
+                    "customizable_input_parameters": [
+                        {
+                            "name": "name_a",
+                            "value": "value_a"
+                        },
+                        {
+                            "name": "name_b",
+                            "value": "value_b"
+                        }
+                    ]
+                }
+            })
+        );
+    }
     let mut invalid = expected.clone();
-    invalid["workflow"] = Value::Array(vec![]);
+    invalid["workflow"] = json!([]);
     assert!(WorkflowButtonElement::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("workflow");
     assert!(WorkflowButtonElement::try_from(missing).is_err());
     assert_eq!(wire(original.action_id()), expected["action_id"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .action_id("run_workflow")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .action_id("run_workflow")
+            .build()?;
         assert_eq!(wire(edited)["action_id"], Value::from("run_workflow"));
     }
     let mut invalid = expected.clone();
@@ -11535,99 +9632,66 @@ fn workflow_button_element_editing_and_ingress() -> Result<(), ValidationError> 
         wire(original.confirm()),
         expected.get("confirm").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(
-            ConfirmationDialogue::builder()
-                .title(PlainText::builder().text("Maybe?").build()?)
-                .text(
-                    PlainText::builder()
-                        .text("Would you like to play checkers?")
-                        .build()?,
-                )
-                .confirm(PlainText::builder().text("Yes").build()?)
-                .deny(PlainText::builder().text("Nope!").build()?)
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(
+                ConfirmationDialogue::builder()
+                    .title(PlainText::builder().text("Maybe?").build()?)
+                    .text(
+                        PlainText::builder()
+                            .text("Would you like to play checkers?")
+                            .build()?,
+                    )
+                    .confirm(PlainText::builder().text("Yes").build()?)
+                    .deny(PlainText::builder().text("Nope!").build()?)
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    (
-                        "title".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Maybe?"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                (
-                                    "text".into(),
-                                    Value::from("Would you like to play checkers?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "confirm".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Yes"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    (
-                        "deny".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("Nope!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "title": {
+                    "type": "plain_text",
+                    "text": "Maybe?"
+                },
+                "text": {
+                    "type": "plain_text",
+                    "text": "Would you like to play checkers?"
+                },
+                "confirm": {
+                    "type": "plain_text",
+                    "text": "Yes"
+                },
+                "deny": {
+                    "type": "plain_text",
+                    "text": "Nope!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_confirm().build() {
+    {
+        let edited = original.clone().into_builder().clear_confirm().build()?;
         assert!(wire(edited).get("confirm").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(WorkflowButtonElement::try_from(invalid).is_err());
     assert_eq!(
         wire(original.style()),
         expected.get("style").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .style(ButtonStyle::Primary)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .style(ButtonStyle::Primary)
+            .build()?;
         assert_eq!(wire(edited)["style"], Value::from("primary"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_style().build() {
+    {
+        let edited = original.clone().into_builder().clear_style().build()?;
         assert!(wire(edited).get("style").is_none());
     }
     let mut invalid = expected.clone();
@@ -11640,20 +9704,20 @@ fn workflow_button_element_editing_and_ingress() -> Result<(), ValidationError> 
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .accessibility_label("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .accessibility_label("sample")
+            .build()?;
         assert_eq!(wire(edited)["accessibility_label"], Value::from("sample"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_accessibility_label()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_accessibility_label()
+            .build()?;
         assert!(wire(edited).get("accessibility_label").is_none());
     }
     let mut invalid = expected.clone();
@@ -11675,7 +9739,7 @@ fn workflow_button_element_editing_and_ingress() -> Result<(), ValidationError> 
             .is_err()
     );
     assert!(WorkflowButtonElement::try_from(Value::Null).is_err());
-    assert!(WorkflowButtonElement::try_from(Value::Array(vec![])).is_err());
+    assert!(WorkflowButtonElement::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(WorkflowButtonElement::try_from(wrong).is_err());
@@ -11711,20 +9775,20 @@ fn area_chart_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.series()), expected["series"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .series(vec![
-            DataSeries::builder()
-                .name("Free Tier")
-                .data(vec![
-                    DataPoint::builder().label("Mon").value(12000_i64).build()?,
-                    DataPoint::builder().label("Tue").value(13500_i64).build()?,
-                ])
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .series(vec![
+                DataSeries::builder()
+                    .name("Free Tier")
+                    .data(vec![
+                        DataPoint::builder().label("Mon").value(12000_i64).build()?,
+                        DataPoint::builder().label("Tue").value(13500_i64).build()?,
+                    ])
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["series"],
             Value::Array(vec![Value::Object(
@@ -11770,77 +9834,38 @@ fn area_chart_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
-        let json = wire(value);
-        assert_eq!(
-            json["series"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("name".into(), Value::from("Free Tier")),
-                    (
-                        "data".into(),
-                        Value::Array(vec![
-                            Value::Object(
-                                [
-                                    ("label".into(), Value::from("Mon")),
-                                    ("value".into(), serde_json::json!(12000))
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    ("label".into(), Value::from("Tue")),
-                                    ("value".into(), serde_json::json!(13500))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ])
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
-        );
+    {
+        let error =
+            (appended).expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::InvalidUsage);
+        assert_eq!(error.path(), "AreaChart.series");
     }
     let mut invalid = expected.clone();
-    invalid["series"] = Value::Object([].into_iter().collect());
+    invalid["series"] = json!({});
     assert!(AreaChart::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("series");
     assert!(AreaChart::try_from(missing).is_err());
     assert_eq!(wire(original.axis_config()), expected["axis_config"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .axis_config(
-            AxisConfig::builder()
-                .categories(vec![String::from("Mon"), String::from("Tue")])
-                .x_label("Day")
-                .y_label("Users")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .axis_config(
+                AxisConfig::builder()
+                    .categories(vec![String::from("Mon"), String::from("Tue")])
+                    .x_label("Day")
+                    .y_label("Users")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["axis_config"],
-            Value::Object(
-                [
-                    (
-                        "categories".into(),
-                        Value::Array(vec![Value::from("Mon"), Value::from("Tue")])
-                    ),
-                    ("x_label".into(), Value::from("Day")),
-                    ("y_label".into(), Value::from("Users"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"categories": ["Mon", "Tue"], "x_label": "Day", "y_label": "Users"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["axis_config"] = Value::Array(vec![]);
+    invalid["axis_config"] = json!([]);
     assert!(AreaChart::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("axis_config");
@@ -11861,7 +9886,7 @@ fn area_chart_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(AreaChart::try_from(Value::Null).is_err());
-    assert!(AreaChart::try_from(Value::Array(vec![])).is_err());
+    assert!(AreaChart::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(AreaChart::try_from(wrong).is_err());
@@ -11884,27 +9909,23 @@ fn axis_config_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.categories()), expected["categories"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .categories(vec![String::from("Mon"), String::from("Tue")])
-        .build()
     {
-        assert_eq!(
-            wire(edited)["categories"],
-            Value::Array(vec![Value::from("Mon"), Value::from("Tue")])
-        );
+        let edited = original
+            .clone()
+            .into_builder()
+            .categories(vec![String::from("Mon"), String::from("Tue")])
+            .build()?;
+        assert_eq!(wire(edited)["categories"], json!(["Mon", "Tue"]));
     }
     let appended = original.clone().into_builder().category("Mon").build();
-    if let Ok(value) = appended {
-        let json = wire(value);
-        assert_eq!(
-            json["categories"].as_array().unwrap().last().unwrap(),
-            &Value::from("Mon")
-        );
+    {
+        let error =
+            (appended).expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::InvalidUsage);
+        assert_eq!(error.path(), "AxisConfig.categories");
     }
     let mut invalid = expected.clone();
-    invalid["categories"] = Value::Object([].into_iter().collect());
+    invalid["categories"] = json!({});
     assert!(AxisConfig::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("categories");
@@ -11913,10 +9934,12 @@ fn axis_config_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.x_label()),
         expected.get("x_label").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().x_label("Day").build() {
+    {
+        let edited = original.clone().into_builder().x_label("Day").build()?;
         assert_eq!(wire(edited)["x_label"], Value::from("Day"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_x_label().build() {
+    {
+        let edited = original.clone().into_builder().clear_x_label().build()?;
         assert!(wire(edited).get("x_label").is_none());
     }
     let mut invalid = expected.clone();
@@ -11926,10 +9949,12 @@ fn axis_config_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.y_label()),
         expected.get("y_label").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().y_label("Users").build() {
+    {
+        let edited = original.clone().into_builder().y_label("Users").build()?;
         assert_eq!(wire(edited)["y_label"], Value::from("Users"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_y_label().build() {
+    {
+        let edited = original.clone().into_builder().clear_y_label().build()?;
         assert!(wire(edited).get("y_label").is_none());
     }
     let mut invalid = expected.clone();
@@ -11951,7 +9976,7 @@ fn axis_config_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(AxisConfig::try_from(Value::Null).is_err());
-    assert!(AxisConfig::try_from(Value::Array(vec![])).is_err());
+    assert!(AxisConfig::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -11990,26 +10015,26 @@ fn bar_chart_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.series()), expected["series"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .series(vec![
-            DataSeries::builder()
-                .name("Pies")
-                .data(vec![
-                    DataPoint::builder()
-                        .label("Pumpkin")
-                        .value(70_i64)
-                        .build()?,
-                    DataPoint::builder()
-                        .label("Blueberry")
-                        .value(90_i64)
-                        .build()?,
-                ])
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .series(vec![
+                DataSeries::builder()
+                    .name("Pies")
+                    .data(vec![
+                        DataPoint::builder()
+                            .label("Pumpkin")
+                            .value(70_i64)
+                            .build()?,
+                        DataPoint::builder()
+                            .label("Blueberry")
+                            .value(90_i64)
+                            .build()?,
+                    ])
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["series"],
             Value::Array(vec![Value::Object(
@@ -12061,77 +10086,38 @@ fn bar_chart_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
-        let json = wire(value);
-        assert_eq!(
-            json["series"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("name".into(), Value::from("Pies")),
-                    (
-                        "data".into(),
-                        Value::Array(vec![
-                            Value::Object(
-                                [
-                                    ("label".into(), Value::from("Pumpkin")),
-                                    ("value".into(), serde_json::json!(70))
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    ("label".into(), Value::from("Blueberry")),
-                                    ("value".into(), serde_json::json!(90))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ])
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
-        );
+    {
+        let error =
+            (appended).expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::InvalidUsage);
+        assert_eq!(error.path(), "BarChart.series");
     }
     let mut invalid = expected.clone();
-    invalid["series"] = Value::Object([].into_iter().collect());
+    invalid["series"] = json!({});
     assert!(BarChart::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("series");
     assert!(BarChart::try_from(missing).is_err());
     assert_eq!(wire(original.axis_config()), expected["axis_config"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .axis_config(
-            AxisConfig::builder()
-                .categories(vec![String::from("Pumpkin"), String::from("Blueberry")])
-                .x_label("Pies")
-                .y_label("Tastiness")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .axis_config(
+                AxisConfig::builder()
+                    .categories(vec![String::from("Pumpkin"), String::from("Blueberry")])
+                    .x_label("Pies")
+                    .y_label("Tastiness")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["axis_config"],
-            Value::Object(
-                [
-                    (
-                        "categories".into(),
-                        Value::Array(vec![Value::from("Pumpkin"), Value::from("Blueberry")])
-                    ),
-                    ("x_label".into(), Value::from("Pies")),
-                    ("y_label".into(), Value::from("Tastiness"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"categories": ["Pumpkin", "Blueberry"], "x_label": "Pies", "y_label": "Tastiness"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["axis_config"] = Value::Array(vec![]);
+    invalid["axis_config"] = json!([]);
     assert!(BarChart::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("axis_config");
@@ -12152,7 +10138,7 @@ fn bar_chart_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(BarChart::try_from(Value::Null).is_err());
-    assert!(BarChart::try_from(Value::Array(vec![])).is_err());
+    assert!(BarChart::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(BarChart::try_from(wrong).is_err());
@@ -12174,7 +10160,8 @@ fn chart_segment_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.label()), expected["label"]);
-    if let Ok(edited) = original.clone().into_builder().label("Kit Kat").build() {
+    {
+        let edited = original.clone().into_builder().label("Kit Kat").build()?;
         assert_eq!(wire(edited)["label"], Value::from("Kit Kat"));
     }
     let mut invalid = expected.clone();
@@ -12184,7 +10171,8 @@ fn chart_segment_editing_and_ingress() -> Result<(), ValidationError> {
     missing.as_object_mut().unwrap().remove("label");
     assert!(ChartSegment::try_from(missing).is_err());
     assert_eq!(wire(original.value()), expected["value"]);
-    if let Ok(edited) = original.clone().into_builder().value(45_i64).build() {
+    {
+        let edited = original.clone().into_builder().value(45_i64).build()?;
         assert_eq!(wire(edited)["value"], serde_json::json!(45));
     }
     let mut invalid = expected.clone();
@@ -12209,7 +10197,7 @@ fn chart_segment_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ChartSegment::try_from(Value::Null).is_err());
-    assert!(ChartSegment::try_from(Value::Array(vec![])).is_err());
+    assert!(ChartSegment::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -12228,15 +10216,16 @@ fn column_settings_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.align()),
         expected.get("align").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .align(ColumnAlign::Right)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .align(ColumnAlign::Right)
+            .build()?;
         assert_eq!(wire(edited)["align"], Value::from("right"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_align().build() {
+    {
+        let edited = original.clone().into_builder().clear_align().build()?;
         assert!(wire(edited).get("align").is_none());
     }
     let mut invalid = expected.clone();
@@ -12246,10 +10235,12 @@ fn column_settings_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.is_wrapped()),
         expected.get("is_wrapped").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().is_wrapped(true).build() {
+    {
+        let edited = original.clone().into_builder().is_wrapped(true).build()?;
         assert_eq!(wire(edited)["is_wrapped"], Value::from(true));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_is_wrapped().build() {
+    {
+        let edited = original.clone().into_builder().clear_is_wrapped().build()?;
         assert!(wire(edited).get("is_wrapped").is_none());
     }
     let mut invalid = expected.clone();
@@ -12271,7 +10262,7 @@ fn column_settings_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ColumnSettings::try_from(Value::Null).is_err());
-    assert!(ColumnSettings::try_from(Value::Array(vec![])).is_err());
+    assert!(ColumnSettings::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -12296,108 +10287,77 @@ fn confirmation_dialogue_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.title()), expected["title"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .title(PlainText::builder().text("Maybe?").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .title(PlainText::builder().text("Maybe?").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["title"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Maybe?"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Maybe?"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["title"] = Value::Array(vec![]);
+    invalid["title"] = json!([]);
     assert!(ConfirmationDialogue::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("title");
     assert!(ConfirmationDialogue::try_from(missing).is_err());
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .text(
-            PlainText::builder()
-                .text("Would you like to play checkers?")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text(
+                PlainText::builder()
+                    .text("Would you like to play checkers?")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["text"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    (
-                        "text".into(),
-                        Value::from("Would you like to play checkers?")
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Would you like to play checkers?"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["text"] = Value::Array(vec![]);
+    invalid["text"] = json!([]);
     assert!(ConfirmationDialogue::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("text");
     assert!(ConfirmationDialogue::try_from(missing).is_err());
     assert_eq!(wire(original.confirm()), expected["confirm"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .confirm(PlainText::builder().text("Yes").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .confirm(PlainText::builder().text("Yes").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["confirm"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Yes"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Yes"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["confirm"] = Value::Array(vec![]);
+    invalid["confirm"] = json!([]);
     assert!(ConfirmationDialogue::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("confirm");
     assert!(ConfirmationDialogue::try_from(missing).is_err());
     assert_eq!(wire(original.deny()), expected["deny"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .deny(PlainText::builder().text("Nope!").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .deny(PlainText::builder().text("Nope!").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["deny"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Nope!"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Nope!"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["deny"] = Value::Array(vec![]);
+    invalid["deny"] = json!([]);
     assert!(ConfirmationDialogue::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("deny");
@@ -12406,15 +10366,16 @@ fn confirmation_dialogue_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.style()),
         expected.get("style").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .style(ButtonStyle::Primary)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .style(ButtonStyle::Primary)
+            .build()?;
         assert_eq!(wire(edited)["style"], Value::from("primary"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_style().build() {
+    {
+        let edited = original.clone().into_builder().clear_style().build()?;
         assert!(wire(edited).get("style").is_none());
     }
     let mut invalid = expected.clone();
@@ -12436,7 +10397,7 @@ fn confirmation_dialogue_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ConfirmationDialogue::try_from(Value::Null).is_err());
-    assert!(ConfirmationDialogue::try_from(Value::Array(vec![])).is_err());
+    assert!(ConfirmationDialogue::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -12458,34 +10419,37 @@ fn conversation_filter_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.include()),
         expected.get("include").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .include(vec![String::from("public"), String::from("mpim")])
-        .build()
     {
-        assert_eq!(
-            wire(edited)["include"],
-            Value::Array(vec![Value::from("public"), Value::from("mpim")])
-        );
+        let edited = original
+            .clone()
+            .into_builder()
+            .include(vec![String::from("public"), String::from("mpim")])
+            .build()?;
+        assert_eq!(wire(edited)["include"], json!(["public", "mpim"]));
     }
     let appended = original
         .clone()
         .into_builder()
         .add_include("public")
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
+        assert_eq!(
+            json["include"].as_array().unwrap().len(),
+            expected["include"].as_array().map_or(0, Vec::len) + 1
+        );
         assert_eq!(
             json["include"].as_array().unwrap().last().unwrap(),
             &Value::from("public")
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_include().build() {
+    {
+        let edited = original.clone().into_builder().clear_include().build()?;
         assert!(wire(edited).get("include").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["include"] = Value::Object([].into_iter().collect());
+    invalid["include"] = json!({});
     assert!(ConversationFilter::try_from(invalid).is_err());
     assert_eq!(
         wire(original.exclude_external_shared_channels()),
@@ -12494,23 +10458,23 @@ fn conversation_filter_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .exclude_external_shared_channels(true)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .exclude_external_shared_channels(true)
+            .build()?;
         assert_eq!(
             wire(edited)["exclude_external_shared_channels"],
             Value::from(true)
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_exclude_external_shared_channels()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_exclude_external_shared_channels()
+            .build()?;
         assert!(
             wire(edited)
                 .get("exclude_external_shared_channels")
@@ -12527,20 +10491,20 @@ fn conversation_filter_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .exclude_bot_users(true)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .exclude_bot_users(true)
+            .build()?;
         assert_eq!(wire(edited)["exclude_bot_users"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_exclude_bot_users()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_exclude_bot_users()
+            .build()?;
         assert!(wire(edited).get("exclude_bot_users").is_none());
     }
     let mut invalid = expected.clone();
@@ -12562,7 +10526,7 @@ fn conversation_filter_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ConversationFilter::try_from(Value::Null).is_err());
-    assert!(ConversationFilter::try_from(Value::Array(vec![])).is_err());
+    assert!(ConversationFilter::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -12578,7 +10542,8 @@ fn data_point_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.label()), expected["label"]);
-    if let Ok(edited) = original.clone().into_builder().label("Mon").build() {
+    {
+        let edited = original.clone().into_builder().label("Mon").build()?;
         assert_eq!(wire(edited)["label"], Value::from("Mon"));
     }
     let mut invalid = expected.clone();
@@ -12588,7 +10553,8 @@ fn data_point_editing_and_ingress() -> Result<(), ValidationError> {
     missing.as_object_mut().unwrap().remove("label");
     assert!(DataPoint::try_from(missing).is_err());
     assert_eq!(wire(original.value()), expected["value"]);
-    if let Ok(edited) = original.clone().into_builder().value(12000_i64).build() {
+    {
+        let edited = original.clone().into_builder().value(12000_i64).build()?;
         assert_eq!(wire(edited)["value"], serde_json::json!(12000));
     }
     let mut invalid = expected.clone();
@@ -12613,7 +10579,7 @@ fn data_point_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(DataPoint::try_from(Value::Null).is_err());
-    assert!(DataPoint::try_from(Value::Array(vec![])).is_err());
+    assert!(DataPoint::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -12635,7 +10601,8 @@ fn data_series_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.name()), expected["name"]);
-    if let Ok(edited) = original.clone().into_builder().name("Free Tier").build() {
+    {
+        let edited = original.clone().into_builder().name("Free Tier").build()?;
         assert_eq!(wire(edited)["name"], Value::from("Free Tier"));
     }
     let mut invalid = expected.clone();
@@ -12645,15 +10612,15 @@ fn data_series_editing_and_ingress() -> Result<(), ValidationError> {
     missing.as_object_mut().unwrap().remove("name");
     assert!(DataSeries::try_from(missing).is_err());
     assert_eq!(wire(original.data()), expected["data"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .data(vec![
-            DataPoint::builder().label("Mon").value(12000_i64).build()?,
-            DataPoint::builder().label("Tue").value(13500_i64).build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .data(vec![
+                DataPoint::builder().label("Mon").value(12000_i64).build()?,
+                DataPoint::builder().label("Tue").value(13500_i64).build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["data"],
             Value::Array(vec![
@@ -12681,8 +10648,13 @@ fn data_series_editing_and_ingress() -> Result<(), ValidationError> {
         .into_builder()
         .point(DataPoint::builder().label("Mon").value(12000_i64).build()?)
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
+        assert_eq!(
+            json["data"].as_array().unwrap().len(),
+            expected["data"].as_array().map_or(0, Vec::len) + 1
+        );
         assert_eq!(
             json["data"].as_array().unwrap().last().unwrap(),
             &Value::Object(
@@ -12696,7 +10668,7 @@ fn data_series_editing_and_ingress() -> Result<(), ValidationError> {
         );
     }
     let mut invalid = expected.clone();
-    invalid["data"] = Value::Object([].into_iter().collect());
+    invalid["data"] = json!({});
     assert!(DataSeries::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("data");
@@ -12717,7 +10689,7 @@ fn data_series_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(DataSeries::try_from(Value::Null).is_err());
-    assert!(DataSeries::try_from(Value::Array(vec![])).is_err());
+    assert!(DataSeries::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -12744,15 +10716,15 @@ fn dispatch_action_configuration_editing_and_ingress() -> Result<(), ValidationE
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .trigger_actions_on(vec![String::from("on_character_entered")])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .trigger_actions_on(vec![String::from("on_character_entered")])
+            .build()?;
         assert_eq!(
             wire(edited)["trigger_actions_on"],
-            Value::Array(vec![Value::from("on_character_entered")])
+            json!(["on_character_entered"])
         );
     }
     let appended = original
@@ -12760,7 +10732,8 @@ fn dispatch_action_configuration_editing_and_ingress() -> Result<(), ValidationE
         .into_builder()
         .trigger_action("on_character_entered")
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
             json["trigger_actions_on"]
@@ -12771,16 +10744,21 @@ fn dispatch_action_configuration_editing_and_ingress() -> Result<(), ValidationE
             &Value::from("on_character_entered")
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_trigger_actions_on()
-        .build()
     {
-        assert!(wire(edited).get("trigger_actions_on").is_none());
+        let error = (original
+            .clone()
+            .into_builder()
+            .clear_trigger_actions_on()
+            .build())
+        .expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MissingRequired);
+        assert_eq!(
+            error.path(),
+            "DispatchActionConfiguration.trigger_actions_on"
+        );
     }
     let mut invalid = expected.clone();
-    invalid["trigger_actions_on"] = Value::Object([].into_iter().collect());
+    invalid["trigger_actions_on"] = json!({});
     assert!(DispatchActionConfiguration::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -12801,7 +10779,7 @@ fn dispatch_action_configuration_editing_and_ingress() -> Result<(), ValidationE
             .is_err()
     );
     assert!(DispatchActionConfiguration::try_from(Value::Null).is_err());
-    assert!(DispatchActionConfiguration::try_from(Value::Array(vec![])).is_err());
+    assert!(DispatchActionConfiguration::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -12821,37 +10799,30 @@ fn feedback_button_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .text(PlainText::builder().text("Good").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text(PlainText::builder().text("Good").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["text"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Good"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Good"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["text"] = Value::Array(vec![]);
+    invalid["text"] = json!([]);
     assert!(FeedbackButton::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("text");
     assert!(FeedbackButton::try_from(missing).is_err());
     assert_eq!(wire(original.value()), expected["value"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .value("positive_feedback")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .value("positive_feedback")
+            .build()?;
         assert_eq!(wire(edited)["value"], Value::from("positive_feedback"));
     }
     let mut invalid = expected.clone();
@@ -12867,23 +10838,23 @@ fn feedback_button_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .accessibility_label("Mark this response as good")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .accessibility_label("Mark this response as good")
+            .build()?;
         assert_eq!(
             wire(edited)["accessibility_label"],
             Value::from("Mark this response as good")
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_accessibility_label()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_accessibility_label()
+            .build()?;
         assert!(wire(edited).get("accessibility_label").is_none());
     }
     let mut invalid = expected.clone();
@@ -12905,7 +10876,7 @@ fn feedback_button_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(FeedbackButton::try_from(Value::Null).is_err());
-    assert!(FeedbackButton::try_from(Value::Array(vec![])).is_err());
+    assert!(FeedbackButton::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -12924,7 +10895,8 @@ fn input_parameter_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.name()), expected["name"]);
-    if let Ok(edited) = original.clone().into_builder().name("name_a").build() {
+    {
+        let edited = original.clone().into_builder().name("name_a").build()?;
         assert_eq!(wire(edited)["name"], Value::from("name_a"));
     }
     let mut invalid = expected.clone();
@@ -12934,7 +10906,8 @@ fn input_parameter_editing_and_ingress() -> Result<(), ValidationError> {
     missing.as_object_mut().unwrap().remove("name");
     assert!(InputParameter::try_from(missing).is_err());
     assert_eq!(wire(original.value()), expected["value"]);
-    if let Ok(edited) = original.clone().into_builder().value("value_a").build() {
+    {
+        let edited = original.clone().into_builder().value("value_a").build()?;
         assert_eq!(wire(edited)["value"], Value::from("value_a"));
     }
     let mut invalid = expected.clone();
@@ -12959,7 +10932,7 @@ fn input_parameter_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(InputParameter::try_from(Value::Null).is_err());
-    assert!(InputParameter::try_from(Value::Array(vec![])).is_err());
+    assert!(InputParameter::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -13011,39 +10984,39 @@ fn line_chart_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.series()), expected["series"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .series(vec![
-            DataSeries::builder()
-                .name("Website")
-                .data(vec![
-                    DataPoint::builder()
-                        .label("Week 1")
-                        .value(32000_i64)
-                        .build()?,
-                    DataPoint::builder()
-                        .label("Week 2")
-                        .value(35000_i64)
-                        .build()?,
-                ])
-                .build()?,
-            DataSeries::builder()
-                .name("In-store")
-                .data(vec![
-                    DataPoint::builder()
-                        .label("Week 1")
-                        .value(28000_i64)
-                        .build()?,
-                    DataPoint::builder()
-                        .label("Week 2")
-                        .value(31000_i64)
-                        .build()?,
-                ])
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .series(vec![
+                DataSeries::builder()
+                    .name("Website")
+                    .data(vec![
+                        DataPoint::builder()
+                            .label("Week 1")
+                            .value(32000_i64)
+                            .build()?,
+                        DataPoint::builder()
+                            .label("Week 2")
+                            .value(35000_i64)
+                            .build()?,
+                    ])
+                    .build()?,
+                DataSeries::builder()
+                    .name("In-store")
+                    .data(vec![
+                        DataPoint::builder()
+                            .label("Week 1")
+                            .value(28000_i64)
+                            .build()?,
+                        DataPoint::builder()
+                            .label("Week 2")
+                            .value(31000_i64)
+                            .build()?,
+                    ])
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["series"],
             Value::Array(vec![
@@ -13125,77 +11098,38 @@ fn line_chart_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
-        let json = wire(value);
-        assert_eq!(
-            json["series"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("name".into(), Value::from("Website")),
-                    (
-                        "data".into(),
-                        Value::Array(vec![
-                            Value::Object(
-                                [
-                                    ("label".into(), Value::from("Week 1")),
-                                    ("value".into(), serde_json::json!(32000))
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    ("label".into(), Value::from("Week 2")),
-                                    ("value".into(), serde_json::json!(35000))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ])
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
-        );
+    {
+        let error =
+            (appended).expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::InvalidUsage);
+        assert_eq!(error.path(), "LineChart.series");
     }
     let mut invalid = expected.clone();
-    invalid["series"] = Value::Object([].into_iter().collect());
+    invalid["series"] = json!({});
     assert!(LineChart::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("series");
     assert!(LineChart::try_from(missing).is_err());
     assert_eq!(wire(original.axis_config()), expected["axis_config"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .axis_config(
-            AxisConfig::builder()
-                .categories(vec![String::from("Week 1"), String::from("Week 2")])
-                .x_label("Week")
-                .y_label("Paper Sales (USD)")
-                .build()?,
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .axis_config(
+                AxisConfig::builder()
+                    .categories(vec![String::from("Week 1"), String::from("Week 2")])
+                    .x_label("Week")
+                    .y_label("Paper Sales (USD)")
+                    .build()?,
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["axis_config"],
-            Value::Object(
-                [
-                    (
-                        "categories".into(),
-                        Value::Array(vec![Value::from("Week 1"), Value::from("Week 2")])
-                    ),
-                    ("x_label".into(), Value::from("Week")),
-                    ("y_label".into(), Value::from("Paper Sales (USD)"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"categories": ["Week 1", "Week 2"], "x_label": "Week", "y_label": "Paper Sales (USD)"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["axis_config"] = Value::Array(vec![]);
+    invalid["axis_config"] = json!([]);
     assert!(LineChart::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("axis_config");
@@ -13216,7 +11150,7 @@ fn line_chart_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(LineChart::try_from(Value::Null).is_err());
-    assert!(LineChart::try_from(Value::Array(vec![])).is_err());
+    assert!(LineChart::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(LineChart::try_from(wrong).is_err());
@@ -13235,12 +11169,12 @@ fn markdown_text_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .text("I like pretty colours")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text("I like pretty colours")
+            .build()?;
         assert_eq!(wire(edited)["text"], Value::from("I like pretty colours"));
     }
     let mut invalid = expected.clone();
@@ -13253,10 +11187,12 @@ fn markdown_text_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.verbatim()),
         expected.get("verbatim").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().verbatim(true).build() {
+    {
+        let edited = original.clone().into_builder().verbatim(true).build()?;
         assert_eq!(wire(edited)["verbatim"], Value::from(true));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_verbatim().build() {
+    {
+        let edited = original.clone().into_builder().clear_verbatim().build()?;
         assert!(wire(edited).get("verbatim").is_none());
     }
     let mut invalid = expected.clone();
@@ -13278,7 +11214,7 @@ fn markdown_text_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(MarkdownText::try_from(Value::Null).is_err());
-    assert!(MarkdownText::try_from(Value::Array(vec![])).is_err());
+    assert!(MarkdownText::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(MarkdownText::try_from(wrong).is_err());
@@ -13301,32 +11237,26 @@ fn select_option_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .text(MarkdownText::builder().text("*a*").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text(MarkdownText::builder().text("*a*").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["text"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("mrkdwn")),
-                    ("text".into(), Value::from("*a*"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "mrkdwn", "text": "*a*"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["text"] = Value::Array(vec![]);
+    invalid["text"] = json!([]);
     assert!(SelectOption::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("text");
     assert!(SelectOption::try_from(missing).is_err());
     assert_eq!(wire(original.value()), expected["value"]);
-    if let Ok(edited) = original.clone().into_builder().value("a").build() {
+    {
+        let edited = original.clone().into_builder().value("a").build()?;
         assert_eq!(wire(edited)["value"], Value::from("a"));
     }
     let mut invalid = expected.clone();
@@ -13339,38 +11269,38 @@ fn select_option_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.description()),
         expected.get("description").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .description(PlainText::builder().text("*a*").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .description(PlainText::builder().text("*a*").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["description"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("*a*"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "*a*"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_description().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_description()
+            .build()?;
         assert!(wire(edited).get("description").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["description"] = Value::Array(vec![]);
+    invalid["description"] = json!([]);
     assert!(SelectOption::try_from(invalid).is_err());
     assert_eq!(
         wire(original.url()),
         expected.get("url").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().url("sample").build() {
+    {
+        let edited = original.clone().into_builder().url("sample").build()?;
         assert_eq!(wire(edited)["url"], Value::from("sample"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_url().build() {
+    {
+        let edited = original.clone().into_builder().clear_url().build()?;
         assert!(wire(edited).get("url").is_none());
     }
     let mut invalid = expected.clone();
@@ -13392,7 +11322,7 @@ fn select_option_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(SelectOption::try_from(Value::Null).is_err());
-    assert!(SelectOption::try_from(Value::Array(vec![])).is_err());
+    assert!(SelectOption::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -13424,107 +11354,67 @@ fn select_option_group_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.label()), expected["label"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .label(PlainText::builder().text("Group A").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .label(PlainText::builder().text("Group A").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["label"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Group A"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Group A"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["label"] = Value::Array(vec![]);
+    invalid["label"] = json!([]);
     assert!(SelectOptionGroup::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("label");
     assert!(SelectOptionGroup::try_from(missing).is_err());
     assert_eq!(wire(original.options()), expected["options"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .options(vec![
-            SelectOption::builder()
-                .text(PlainText::builder().text("A").build()?)
-                .value("A")
-                .build()?,
-            SelectOption::builder()
-                .text(PlainText::builder().text("B").build()?)
-                .value("B")
-                .build()?,
-            SelectOption::builder()
-                .text(PlainText::builder().text("C").build()?)
-                .value("C")
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .options(vec![
+                SelectOption::builder()
+                    .text(PlainText::builder().text("A").build()?)
+                    .value("A")
+                    .build()?,
+                SelectOption::builder()
+                    .text(PlainText::builder().text("B").build()?)
+                    .value("B")
+                    .build()?,
+                SelectOption::builder()
+                    .text(PlainText::builder().text("C").build()?)
+                    .value("C")
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["options"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("A"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("A"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("B"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("B"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("plain_text")),
-                                    ("text".into(), Value::from("C"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ),
-                        ("value".into(), Value::from("C"))
-                    ]
-                    .into_iter()
-                    .collect()
-                )
+            json!([
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "A"
+                    },
+                    "value": "A"
+                },
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "B"
+                    },
+                    "value": "B"
+                },
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": "C"
+                    },
+                    "value": "C"
+                }
             ])
         );
     }
@@ -13538,32 +11428,20 @@ fn select_option_group_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["options"].as_array().unwrap().len(),
+            expected["options"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["options"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("plain_text")),
-                                ("text".into(), Value::from("A"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    ),
-                    ("value".into(), Value::from("A"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"text": {"type": "plain_text", "text": "A"}, "value": "A"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["options"] = Value::Object([].into_iter().collect());
+    invalid["options"] = json!({});
     assert!(SelectOptionGroup::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("options");
@@ -13584,7 +11462,7 @@ fn select_option_group_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(SelectOptionGroup::try_from(Value::Null).is_err());
-    assert!(SelectOptionGroup::try_from(Value::Array(vec![])).is_err());
+    assert!(SelectOptionGroup::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -13619,29 +11497,29 @@ fn pie_chart_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.segments()), expected["segments"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .segments(vec![
-            ChartSegment::builder()
-                .label("Kit Kat")
-                .value(45_i64)
-                .build()?,
-            ChartSegment::builder()
-                .label("Twix")
-                .value(28_i64)
-                .build()?,
-            ChartSegment::builder()
-                .label("Crunch")
-                .value(18_i64)
-                .build()?,
-            ChartSegment::builder()
-                .label("Milky Way")
-                .value(9_i64)
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .segments(vec![
+                ChartSegment::builder()
+                    .label("Kit Kat")
+                    .value(45_i64)
+                    .build()?,
+                ChartSegment::builder()
+                    .label("Twix")
+                    .value(28_i64)
+                    .build()?,
+                ChartSegment::builder()
+                    .label("Crunch")
+                    .value(18_i64)
+                    .build()?,
+                ChartSegment::builder()
+                    .label("Milky Way")
+                    .value(9_i64)
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["segments"],
             Value::Array(vec![
@@ -13690,8 +11568,13 @@ fn pie_chart_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
+        assert_eq!(
+            json["segments"].as_array().unwrap().len(),
+            expected["segments"].as_array().map_or(0, Vec::len) + 1
+        );
         assert_eq!(
             json["segments"].as_array().unwrap().last().unwrap(),
             &Value::Object(
@@ -13705,7 +11588,7 @@ fn pie_chart_editing_and_ingress() -> Result<(), ValidationError> {
         );
     }
     let mut invalid = expected.clone();
-    invalid["segments"] = Value::Object([].into_iter().collect());
+    invalid["segments"] = json!({});
     assert!(PieChart::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("segments");
@@ -13726,7 +11609,7 @@ fn pie_chart_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(PieChart::try_from(Value::Null).is_err());
-    assert!(PieChart::try_from(Value::Array(vec![])).is_err());
+    assert!(PieChart::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(PieChart::try_from(wrong).is_err());
@@ -13745,7 +11628,8 @@ fn plain_text_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original.clone().into_builder().text("*a*").build() {
+    {
+        let edited = original.clone().into_builder().text("*a*").build()?;
         assert_eq!(wire(edited)["text"], Value::from("*a*"));
     }
     let mut invalid = expected.clone();
@@ -13758,10 +11642,12 @@ fn plain_text_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.emoji()),
         expected.get("emoji").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().emoji(true).build() {
+    {
+        let edited = original.clone().into_builder().emoji(true).build()?;
         assert_eq!(wire(edited)["emoji"], Value::from(true));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_emoji().build() {
+    {
+        let edited = original.clone().into_builder().clear_emoji().build()?;
         assert!(wire(edited).get("emoji").is_none());
     }
     let mut invalid = expected.clone();
@@ -13783,7 +11669,7 @@ fn plain_text_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(PlainText::try_from(Value::Null).is_err());
-    assert!(PlainText::try_from(Value::Array(vec![])).is_err());
+    assert!(PlainText::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(PlainText::try_from(wrong).is_err());
@@ -13802,7 +11688,8 @@ fn raw_number_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.value()), expected["value"]);
-    if let Ok(edited) = original.clone().into_builder().value(42_i64).build() {
+    {
+        let edited = original.clone().into_builder().value(42_i64).build()?;
         assert_eq!(wire(edited)["value"], serde_json::json!(42));
     }
     let mut invalid = expected.clone();
@@ -13812,7 +11699,8 @@ fn raw_number_editing_and_ingress() -> Result<(), ValidationError> {
     missing.as_object_mut().unwrap().remove("value");
     assert!(RawNumber::try_from(missing).is_err());
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original.clone().into_builder().text("42").build() {
+    {
+        let edited = original.clone().into_builder().text("42").build()?;
         assert_eq!(wire(edited)["text"], Value::from("42"));
     }
     let mut invalid = expected.clone();
@@ -13837,7 +11725,7 @@ fn raw_number_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RawNumber::try_from(Value::Null).is_err());
-    assert!(RawNumber::try_from(Value::Array(vec![])).is_err());
+    assert!(RawNumber::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RawNumber::try_from(wrong).is_err());
@@ -13856,7 +11744,8 @@ fn raw_text_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original.clone().into_builder().text("Name").build() {
+    {
+        let edited = original.clone().into_builder().text("Name").build()?;
         assert_eq!(wire(edited)["text"], Value::from("Name"));
     }
     let mut invalid = expected.clone();
@@ -13881,7 +11770,7 @@ fn raw_text_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RawText::try_from(Value::Null).is_err());
-    assert!(RawText::try_from(Value::Array(vec![])).is_err());
+    assert!(RawText::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RawText::try_from(wrong).is_err());
@@ -13911,12 +11800,12 @@ fn rich_text_channel_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.channel_id()), expected["channel_id"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .channel_id("C0261C65XNY")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .channel_id("C0261C65XNY")
+            .build()?;
         assert_eq!(wire(edited)["channel_id"], Value::from("C0261C65XNY"));
     }
     let mut invalid = expected.clone();
@@ -13929,41 +11818,38 @@ fn rich_text_channel_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.style()),
         expected.get("style").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .style(
-            RichTextStyle::new()
-                .bold(true)
-                .italic(false)
-                .strike(true)
-                .highlight(true)
-                .client_highlight(true)
-                .unlink(false),
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .style(
+                RichTextStyle::new()
+                    .bold(true)
+                    .italic(false)
+                    .strike(true)
+                    .highlight(true)
+                    .client_highlight(true)
+                    .unlink(false),
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["style"],
-            Value::Object(
-                [
-                    ("bold".into(), Value::from(true)),
-                    ("italic".into(), Value::from(false)),
-                    ("strike".into(), Value::from(true)),
-                    ("highlight".into(), Value::from(true)),
-                    ("client_highlight".into(), Value::from(true)),
-                    ("unlink".into(), Value::from(false))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "bold": true,
+                "italic": false,
+                "strike": true,
+                "highlight": true,
+                "client_highlight": true,
+                "unlink": false
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_style().build() {
+    {
+        let edited = original.clone().into_builder().clear_style().build()?;
         assert!(wire(edited).get("style").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["style"] = Value::Array(vec![]);
+    invalid["style"] = json!([]);
     assert!(RichTextChannel::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -13981,7 +11867,7 @@ fn rich_text_channel_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RichTextChannel::try_from(Value::Null).is_err());
-    assert!(RichTextChannel::try_from(Value::Array(vec![])).is_err());
+    assert!(RichTextChannel::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RichTextChannel::try_from(wrong).is_err());
@@ -14007,29 +11893,19 @@ fn rich_text_code_block_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.elements()), expected["elements"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .elements(vec![RichTextSectionElement::from(
-            RichTextText::builder()
-                .text("\ndef hello_world():\n    print('hello, world')")
-                .build()?,
-        )])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .elements(vec![RichTextSectionElement::from(
+                RichTextText::builder()
+                    .text("\ndef hello_world():\n    print('hello, world')")
+                    .build()?,
+            )])
+            .build()?;
         assert_eq!(
             wire(edited)["elements"],
-            Value::Array(vec![Value::Object(
-                [
-                    ("type".into(), Value::from("text")),
-                    (
-                        "text".into(),
-                        Value::from("\ndef hello_world():\n    print('hello, world')")
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([{"type": "text", "text": "\ndef hello_world():\n    print('hello, world')"}])
         );
     }
     let appended = original
@@ -14041,25 +11917,20 @@ fn rich_text_code_block_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["elements"].as_array().unwrap().len(),
+            expected["elements"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["elements"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("text")),
-                    (
-                        "text".into(),
-                        Value::from("\ndef hello_world():\n    print('hello, world')")
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"type": "text", "text": "\ndef hello_world():\n    print('hello, world')"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["elements"] = Value::Object([].into_iter().collect());
+    invalid["elements"] = json!({});
     assert!(RichTextCodeBlock::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("elements");
@@ -14068,10 +11939,12 @@ fn rich_text_code_block_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.border()),
         expected.get("border").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().border(0_i64).build() {
+    {
+        let edited = original.clone().into_builder().border(0_i64).build()?;
         assert_eq!(wire(edited)["border"], serde_json::json!(0));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_border().build() {
+    {
+        let edited = original.clone().into_builder().clear_border().build()?;
         assert!(wire(edited).get("border").is_none());
     }
     let mut invalid = expected.clone();
@@ -14093,7 +11966,7 @@ fn rich_text_code_block_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RichTextCodeBlock::try_from(Value::Null).is_err());
-    assert!(RichTextCodeBlock::try_from(Value::Array(vec![])).is_err());
+    assert!(RichTextCodeBlock::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RichTextCodeBlock::try_from(wrong).is_err());
@@ -14112,7 +11985,8 @@ fn rich_text_emoji_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.name()), expected["name"]);
-    if let Ok(edited) = original.clone().into_builder().name("wave").build() {
+    {
+        let edited = original.clone().into_builder().name("wave").build()?;
         assert_eq!(wire(edited)["name"], Value::from("wave"));
     }
     let mut invalid = expected.clone();
@@ -14125,10 +11999,12 @@ fn rich_text_emoji_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.skin_tone()),
         expected.get("skin_tone").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().skin_tone(1_i64).build() {
+    {
+        let edited = original.clone().into_builder().skin_tone(1_i64).build()?;
         assert_eq!(wire(edited)["skin_tone"], serde_json::json!(1));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_skin_tone().build() {
+    {
+        let edited = original.clone().into_builder().clear_skin_tone().build()?;
         assert!(wire(edited).get("skin_tone").is_none());
     }
     let mut invalid = expected.clone();
@@ -14150,7 +12026,7 @@ fn rich_text_emoji_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RichTextEmoji::try_from(Value::Null).is_err());
-    assert!(RichTextEmoji::try_from(Value::Array(vec![])).is_err());
+    assert!(RichTextEmoji::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RichTextEmoji::try_from(wrong).is_err());
@@ -14180,12 +12056,12 @@ fn rich_text_link_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.url()), expected["url"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .url("https://slack.com")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .url("https://slack.com")
+            .build()?;
         assert_eq!(wire(edited)["url"], Value::from("https://slack.com"));
     }
     let mut invalid = expected.clone();
@@ -14198,10 +12074,12 @@ fn rich_text_link_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.text()),
         expected.get("text").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().text("Data 1B").build() {
+    {
+        let edited = original.clone().into_builder().text("Data 1B").build()?;
         assert_eq!(wire(edited)["text"], Value::from("Data 1B"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_text().build() {
+    {
+        let edited = original.clone().into_builder().clear_text().build()?;
         assert!(wire(edited).get("text").is_none());
     }
     let mut invalid = expected.clone();
@@ -14211,46 +12089,40 @@ fn rich_text_link_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.style()),
         expected.get("style").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .style(
-            RichTextStyle::new()
-                .bold(true)
-                .italic(false)
-                .strike(true)
-                .code(true),
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .style(
+                RichTextStyle::new()
+                    .bold(true)
+                    .italic(false)
+                    .strike(true)
+                    .code(true),
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["style"],
-            Value::Object(
-                [
-                    ("bold".into(), Value::from(true)),
-                    ("italic".into(), Value::from(false)),
-                    ("strike".into(), Value::from(true)),
-                    ("code".into(), Value::from(true))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"bold": true, "italic": false, "strike": true, "code": true})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_style().build() {
+    {
+        let edited = original.clone().into_builder().clear_style().build()?;
         assert!(wire(edited).get("style").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["style"] = Value::Array(vec![]);
+    invalid["style"] = json!([]);
     assert!(RichTextLink::try_from(invalid).is_err());
     assert_eq!(
         wire(original.r#unsafe()),
         expected.get("unsafe").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().r#unsafe(false).build() {
+    {
+        let edited = original.clone().into_builder().r#unsafe(false).build()?;
         assert_eq!(wire(edited)["unsafe"], Value::from(false));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_unsafe().build() {
+    {
+        let edited = original.clone().into_builder().clear_unsafe().build()?;
         assert!(wire(edited).get("unsafe").is_none());
     }
     let mut invalid = expected.clone();
@@ -14272,7 +12144,7 @@ fn rich_text_link_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RichTextLink::try_from(Value::Null).is_err());
-    assert!(RichTextLink::try_from(Value::Array(vec![])).is_err());
+    assert!(RichTextLink::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RichTextLink::try_from(wrong).is_err());
@@ -14313,12 +12185,12 @@ fn rich_text_list_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.style()), expected["style"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .style(RichTextListStyle::Bullet)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .style(RichTextListStyle::Bullet)
+            .build()?;
         assert_eq!(wire(edited)["style"], Value::from("bullet"));
     }
     let mut invalid = expected.clone();
@@ -14328,85 +12200,58 @@ fn rich_text_list_editing_and_ingress() -> Result<(), ValidationError> {
     missing.as_object_mut().unwrap().remove("style");
     assert!(RichTextList::try_from(missing).is_err());
     assert_eq!(wire(original.elements()), expected["elements"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .elements(vec![
-            RichTextSection::builder()
-                .elements(vec![RichTextSectionElement::from(
-                    RichTextText::builder().text("Oh").build()?,
-                )])
-                .build()?,
-            RichTextSection::builder()
-                .elements(vec![RichTextSectionElement::from(
-                    RichTextText::builder().text("Hi").build()?,
-                )])
-                .build()?,
-            RichTextSection::builder()
-                .elements(vec![RichTextSectionElement::from(
-                    RichTextText::builder().text("Mark").build()?,
-                )])
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .elements(vec![
+                RichTextSection::builder()
+                    .elements(vec![RichTextSectionElement::from(
+                        RichTextText::builder().text("Oh").build()?,
+                    )])
+                    .build()?,
+                RichTextSection::builder()
+                    .elements(vec![RichTextSectionElement::from(
+                        RichTextText::builder().text("Hi").build()?,
+                    )])
+                    .build()?,
+                RichTextSection::builder()
+                    .elements(vec![RichTextSectionElement::from(
+                        RichTextText::builder().text("Mark").build()?,
+                    )])
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["elements"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("rich_text_section")),
-                        (
-                            "elements".into(),
-                            Value::Array(vec![Value::Object(
-                                [
-                                    ("type".into(), Value::from("text")),
-                                    ("text".into(), Value::from("Oh"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )])
-                        )
+            json!([
+                {
+                    "type": "rich_text_section",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "Oh"
+                        }
                     ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("rich_text_section")),
-                        (
-                            "elements".into(),
-                            Value::Array(vec![Value::Object(
-                                [
-                                    ("type".into(), Value::from("text")),
-                                    ("text".into(), Value::from("Hi"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )])
-                        )
+                },
+                {
+                    "type": "rich_text_section",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "Hi"
+                        }
                     ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("rich_text_section")),
-                        (
-                            "elements".into(),
-                            Value::Array(vec![Value::Object(
-                                [
-                                    ("type".into(), Value::from("text")),
-                                    ("text".into(), Value::from("Mark"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )])
-                        )
+                },
+                {
+                    "type": "rich_text_section",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "Mark"
+                        }
                     ]
-                    .into_iter()
-                    .collect()
-                )
+                }
             ])
         );
     }
@@ -14421,32 +12266,20 @@ fn rich_text_list_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["elements"].as_array().unwrap().len(),
+            expected["elements"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["elements"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("rich_text_section")),
-                    (
-                        "elements".into(),
-                        Value::Array(vec![Value::Object(
-                            [
-                                ("type".into(), Value::from("text")),
-                                ("text".into(), Value::from("Oh"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )])
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"type": "rich_text_section", "elements": [{"type": "text", "text": "Oh"}]})
         );
     }
     let mut invalid = expected.clone();
-    invalid["elements"] = Value::Object([].into_iter().collect());
+    invalid["elements"] = json!({});
     assert!(RichTextList::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("elements");
@@ -14455,10 +12288,12 @@ fn rich_text_list_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.indent()),
         expected.get("indent").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().indent(0_i64).build() {
+    {
+        let edited = original.clone().into_builder().indent(0_i64).build()?;
         assert_eq!(wire(edited)["indent"], serde_json::json!(0));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_indent().build() {
+    {
+        let edited = original.clone().into_builder().clear_indent().build()?;
         assert!(wire(edited).get("indent").is_none());
     }
     let mut invalid = expected.clone();
@@ -14468,10 +12303,12 @@ fn rich_text_list_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.offset()),
         expected.get("offset").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().offset(0_i64).build() {
+    {
+        let edited = original.clone().into_builder().offset(0_i64).build()?;
         assert_eq!(wire(edited)["offset"], serde_json::json!(0));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_offset().build() {
+    {
+        let edited = original.clone().into_builder().clear_offset().build()?;
         assert!(wire(edited).get("offset").is_none());
     }
     let mut invalid = expected.clone();
@@ -14481,10 +12318,12 @@ fn rich_text_list_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.border()),
         expected.get("border").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().border(1_i64).build() {
+    {
+        let edited = original.clone().into_builder().border(1_i64).build()?;
         assert_eq!(wire(edited)["border"], serde_json::json!(1));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_border().build() {
+    {
+        let edited = original.clone().into_builder().clear_border().build()?;
         assert!(wire(edited).get("border").is_none());
     }
     let mut invalid = expected.clone();
@@ -14506,7 +12345,7 @@ fn rich_text_list_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RichTextList::try_from(Value::Null).is_err());
-    assert!(RichTextList::try_from(Value::Array(vec![])).is_err());
+    assert!(RichTextList::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RichTextList::try_from(wrong).is_err());
@@ -14532,29 +12371,19 @@ fn rich_text_quote_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.elements()), expected["elements"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .elements(vec![RichTextSectionElement::from(
-            RichTextText::builder()
-                .text("Great and good are seldom the same man")
-                .build()?,
-        )])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .elements(vec![RichTextSectionElement::from(
+                RichTextText::builder()
+                    .text("Great and good are seldom the same man")
+                    .build()?,
+            )])
+            .build()?;
         assert_eq!(
             wire(edited)["elements"],
-            Value::Array(vec![Value::Object(
-                [
-                    ("type".into(), Value::from("text")),
-                    (
-                        "text".into(),
-                        Value::from("Great and good are seldom the same man")
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([{"type": "text", "text": "Great and good are seldom the same man"}])
         );
     }
     let appended = original
@@ -14566,25 +12395,20 @@ fn rich_text_quote_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["elements"].as_array().unwrap().len(),
+            expected["elements"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["elements"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("text")),
-                    (
-                        "text".into(),
-                        Value::from("Great and good are seldom the same man")
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"type": "text", "text": "Great and good are seldom the same man"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["elements"] = Value::Object([].into_iter().collect());
+    invalid["elements"] = json!({});
     assert!(RichTextQuote::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("elements");
@@ -14593,10 +12417,12 @@ fn rich_text_quote_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.border()),
         expected.get("border").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().border(1_i64).build() {
+    {
+        let edited = original.clone().into_builder().border(1_i64).build()?;
         assert_eq!(wire(edited)["border"], serde_json::json!(1));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_border().build() {
+    {
+        let edited = original.clone().into_builder().clear_border().build()?;
         assert!(wire(edited).get("border").is_none());
     }
     let mut invalid = expected.clone();
@@ -14618,7 +12444,7 @@ fn rich_text_quote_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RichTextQuote::try_from(Value::Null).is_err());
-    assert!(RichTextQuote::try_from(Value::Array(vec![])).is_err());
+    assert!(RichTextQuote::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RichTextQuote::try_from(wrong).is_err());
@@ -14643,26 +12469,19 @@ fn rich_text_section_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.elements()), expected["elements"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .elements(vec![RichTextSectionElement::from(
-            RichTextText::builder()
-                .text("Profile data loaded")
-                .build()?,
-        )])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .elements(vec![RichTextSectionElement::from(
+                RichTextText::builder()
+                    .text("Profile data loaded")
+                    .build()?,
+            )])
+            .build()?;
         assert_eq!(
             wire(edited)["elements"],
-            Value::Array(vec![Value::Object(
-                [
-                    ("type".into(), Value::from("text")),
-                    ("text".into(), Value::from("Profile data loaded"))
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([{"type": "text", "text": "Profile data loaded"}])
         );
     }
     let appended = original
@@ -14674,22 +12493,20 @@ fn rich_text_section_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["elements"].as_array().unwrap().len(),
+            expected["elements"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["elements"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("text")),
-                    ("text".into(), Value::from("Profile data loaded"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"type": "text", "text": "Profile data loaded"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["elements"] = Value::Object([].into_iter().collect());
+    invalid["elements"] = json!({});
     assert!(RichTextSection::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("elements");
@@ -14710,7 +12527,7 @@ fn rich_text_section_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RichTextSection::try_from(Value::Null).is_err());
-    assert!(RichTextSection::try_from(Value::Array(vec![])).is_err());
+    assert!(RichTextSection::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RichTextSection::try_from(wrong).is_err());
@@ -14732,12 +12549,12 @@ fn rich_text_text_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .text("Profile data loaded")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text("Profile data loaded")
+            .build()?;
         assert_eq!(wire(edited)["text"], Value::from("Profile data loaded"));
     }
     let mut invalid = expected.clone();
@@ -14750,22 +12567,20 @@ fn rich_text_text_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.style()),
         expected.get("style").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .style(RichTextStyle::new().bold(true))
-        .build()
     {
-        assert_eq!(
-            wire(edited)["style"],
-            Value::Object([("bold".into(), Value::from(true))].into_iter().collect())
-        );
+        let edited = original
+            .clone()
+            .into_builder()
+            .style(RichTextStyle::new().bold(true))
+            .build()?;
+        assert_eq!(wire(edited)["style"], json!({"bold": true}));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_style().build() {
+    {
+        let edited = original.clone().into_builder().clear_style().build()?;
         assert!(wire(edited).get("style").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["style"] = Value::Array(vec![]);
+    invalid["style"] = json!([]);
     assert!(RichTextText::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -14783,7 +12598,7 @@ fn rich_text_text_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RichTextText::try_from(Value::Null).is_err());
-    assert!(RichTextText::try_from(Value::Array(vec![])).is_err());
+    assert!(RichTextText::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RichTextText::try_from(wrong).is_err());
@@ -14813,7 +12628,12 @@ fn rich_text_user_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.user_id()), expected["user_id"]);
-    if let Ok(edited) = original.clone().into_builder().user_id("DR36TNNLA").build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .user_id("DR36TNNLA")
+            .build()?;
         assert_eq!(wire(edited)["user_id"], Value::from("DR36TNNLA"));
     }
     let mut invalid = expected.clone();
@@ -14826,41 +12646,38 @@ fn rich_text_user_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.style()),
         expected.get("style").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .style(
-            RichTextStyle::new()
-                .bold(true)
-                .italic(false)
-                .strike(true)
-                .highlight(true)
-                .client_highlight(true)
-                .unlink(false),
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .style(
+                RichTextStyle::new()
+                    .bold(true)
+                    .italic(false)
+                    .strike(true)
+                    .highlight(true)
+                    .client_highlight(true)
+                    .unlink(false),
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["style"],
-            Value::Object(
-                [
-                    ("bold".into(), Value::from(true)),
-                    ("italic".into(), Value::from(false)),
-                    ("strike".into(), Value::from(true)),
-                    ("highlight".into(), Value::from(true)),
-                    ("client_highlight".into(), Value::from(true)),
-                    ("unlink".into(), Value::from(false))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "bold": true,
+                "italic": false,
+                "strike": true,
+                "highlight": true,
+                "client_highlight": true,
+                "unlink": false
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_style().build() {
+    {
+        let edited = original.clone().into_builder().clear_style().build()?;
         assert!(wire(edited).get("style").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["style"] = Value::Array(vec![]);
+    invalid["style"] = json!([]);
     assert!(RichTextUser::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -14878,7 +12695,7 @@ fn rich_text_user_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RichTextUser::try_from(Value::Null).is_err());
-    assert!(RichTextUser::try_from(Value::Array(vec![])).is_err());
+    assert!(RichTextUser::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RichTextUser::try_from(wrong).is_err());
@@ -14908,12 +12725,12 @@ fn rich_text_user_group_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.usergroup_id()), expected["usergroup_id"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .usergroup_id("C01RGRU0RUK")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .usergroup_id("C01RGRU0RUK")
+            .build()?;
         assert_eq!(wire(edited)["usergroup_id"], Value::from("C01RGRU0RUK"));
     }
     let mut invalid = expected.clone();
@@ -14926,41 +12743,38 @@ fn rich_text_user_group_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.style()),
         expected.get("style").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .style(
-            RichTextStyle::new()
-                .bold(true)
-                .italic(false)
-                .strike(true)
-                .highlight(true)
-                .client_highlight(true)
-                .unlink(false),
-        )
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .style(
+                RichTextStyle::new()
+                    .bold(true)
+                    .italic(false)
+                    .strike(true)
+                    .highlight(true)
+                    .client_highlight(true)
+                    .unlink(false),
+            )
+            .build()?;
         assert_eq!(
             wire(edited)["style"],
-            Value::Object(
-                [
-                    ("bold".into(), Value::from(true)),
-                    ("italic".into(), Value::from(false)),
-                    ("strike".into(), Value::from(true)),
-                    ("highlight".into(), Value::from(true)),
-                    ("client_highlight".into(), Value::from(true)),
-                    ("unlink".into(), Value::from(false))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({
+                "bold": true,
+                "italic": false,
+                "strike": true,
+                "highlight": true,
+                "client_highlight": true,
+                "unlink": false
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_style().build() {
+    {
+        let edited = original.clone().into_builder().clear_style().build()?;
         assert!(wire(edited).get("style").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["style"] = Value::Array(vec![]);
+    invalid["style"] = json!([]);
     assert!(RichTextUserGroup::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -14978,7 +12792,7 @@ fn rich_text_user_group_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(RichTextUserGroup::try_from(Value::Null).is_err());
-    assert!(RichTextUserGroup::try_from(Value::Array(vec![])).is_err());
+    assert!(RichTextUserGroup::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(RichTextUserGroup::try_from(wrong).is_err());
@@ -15002,10 +12816,14 @@ fn slack_file_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.id()),
         expected.get("id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().id("F0123ABC456").build() {
-        assert_eq!(wire(edited)["id"], Value::from("F0123ABC456"));
+    {
+        let error = (original.clone().into_builder().id("F0123ABC456").build())
+            .expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MutuallyExclusive);
+        assert_eq!(error.path(), "SlackFile");
     }
-    if let Ok(edited) = original.clone().into_builder().clear_id().build() {
+    {
+        let edited = original.clone().into_builder().clear_id().build()?;
         assert!(wire(edited).get("id").is_none());
     }
     let mut invalid = expected.clone();
@@ -15015,19 +12833,22 @@ fn slack_file_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.url()),
         expected.get("url").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .url("https://files.slack.com/files-pri/T0123456-F0123ABC456/kitten.png")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .url("https://files.slack.com/files-pri/T0123456-F0123ABC456/kitten.png")
+            .build()?;
         assert_eq!(
             wire(edited)["url"],
             Value::from("https://files.slack.com/files-pri/T0123456-F0123ABC456/kitten.png")
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_url().build() {
-        assert!(wire(edited).get("url").is_none());
+    {
+        let error = (original.clone().into_builder().clear_url().build())
+            .expect_err("this edit violates a field dependency or uniqueness rule");
+        assert_eq!(error.category(), ErrorCategory::MutuallyExclusive);
+        assert_eq!(error.path(), "SlackFile");
     }
     let mut invalid = expected.clone();
     invalid["url"] = Value::from(false);
@@ -15048,7 +12869,7 @@ fn slack_file_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(SlackFile::try_from(Value::Null).is_err());
-    assert!(SlackFile::try_from(Value::Array(vec![])).is_err());
+    assert!(SlackFile::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -15064,7 +12885,8 @@ fn slack_icon_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.name()), expected["name"]);
-    if let Ok(edited) = original.clone().into_builder().name("bot").build() {
+    {
+        let edited = original.clone().into_builder().name("bot").build()?;
         assert_eq!(wire(edited)["name"], Value::from("bot"));
     }
     let mut invalid = expected.clone();
@@ -15089,7 +12911,7 @@ fn slack_icon_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(SlackIcon::try_from(Value::Null).is_err());
-    assert!(SlackIcon::try_from(Value::Array(vec![])).is_err());
+    assert!(SlackIcon::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(SlackIcon::try_from(wrong).is_err());
@@ -15120,12 +12942,12 @@ fn trigger_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.url()), expected["url"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .url("https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .url("https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c")
+            .build()?;
         assert_eq!(
             wire(edited)["url"],
             Value::from(
@@ -15146,41 +12968,24 @@ fn trigger_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .customizable_input_parameters(vec![
-            InputParameter::builder()
-                .name("name_a")
-                .value("value_a")
-                .build()?,
-            InputParameter::builder()
-                .name("name_b")
-                .value("value_b")
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .customizable_input_parameters(vec![
+                InputParameter::builder()
+                    .name("name_a")
+                    .value("value_a")
+                    .build()?,
+                InputParameter::builder()
+                    .name("name_b")
+                    .value("value_b")
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["customizable_input_parameters"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        ("name".into(), Value::from("name_a")),
-                        ("value".into(), Value::from("value_a"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("name".into(), Value::from("name_b")),
-                        ("value".into(), Value::from("value_b"))
-                    ]
-                    .into_iter()
-                    .collect()
-                )
-            ])
+            json!([{"name": "name_a", "value": "value_a"}, {"name": "name_b", "value": "value_b"}])
         );
     }
     let appended = original
@@ -15193,7 +12998,8 @@ fn trigger_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
             json["customizable_input_parameters"]
@@ -15201,26 +13007,19 @@ fn trigger_editing_and_ingress() -> Result<(), ValidationError> {
                 .unwrap()
                 .last()
                 .unwrap(),
-            &Value::Object(
-                [
-                    ("name".into(), Value::from("name_a")),
-                    ("value".into(), Value::from("value_a"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"name": "name_a", "value": "value_a"})
         );
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_customizable_input_parameters()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_customizable_input_parameters()
+            .build()?;
         assert!(wire(edited).get("customizable_input_parameters").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["customizable_input_parameters"] = Value::Object([].into_iter().collect());
+    invalid["customizable_input_parameters"] = json!({});
     assert!(Trigger::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -15238,7 +13037,7 @@ fn trigger_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(Trigger::try_from(Value::Null).is_err());
-    assert!(Trigger::try_from(Value::Array(vec![])).is_err());
+    assert!(Trigger::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -15257,12 +13056,12 @@ fn url_source_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.url()), expected["url"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .url("https://weather.com/")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .url("https://weather.com/")
+            .build()?;
         assert_eq!(wire(edited)["url"], Value::from("https://weather.com/"));
     }
     let mut invalid = expected.clone();
@@ -15272,7 +13071,12 @@ fn url_source_editing_and_ingress() -> Result<(), ValidationError> {
     missing.as_object_mut().unwrap().remove("url");
     assert!(UrlSource::try_from(missing).is_err());
     assert_eq!(wire(original.text()), expected["text"]);
-    if let Ok(edited) = original.clone().into_builder().text("weather.com").build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .text("weather.com")
+            .build()?;
         assert_eq!(wire(edited)["text"], Value::from("weather.com"));
     }
     let mut invalid = expected.clone();
@@ -15297,7 +13101,7 @@ fn url_source_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(UrlSource::try_from(Value::Null).is_err());
-    assert!(UrlSource::try_from(Value::Array(vec![])).is_err());
+    assert!(UrlSource::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(UrlSource::try_from(wrong).is_err());
@@ -15332,30 +13136,47 @@ fn workflow_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.trigger()), expected["trigger"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .trigger(
-            Trigger::builder()
-                .url("https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c")
-                .customizable_input_parameters(vec![
-                    InputParameter::builder()
-                        .name("name_a")
-                        .value("value_a")
-                        .build()?,
-                    InputParameter::builder()
-                        .name("name_b")
-                        .value("value_b")
-                        .build()?,
-                ])
-                .build()?,
-        )
-        .build()
     {
-        assert_eq!(wire(edited)["trigger"],Value::Object([("url".into(),Value::from("https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c")),("customizable_input_parameters".into(),Value::Array(vec![Value::Object([("name".into(),Value::from("name_a")),("value".into(),Value::from("value_a"))].into_iter().collect()),Value::Object([("name".into(),Value::from("name_b")),("value".into(),Value::from("value_b"))].into_iter().collect())]))].into_iter().collect()));
+        let edited = original
+            .clone()
+            .into_builder()
+            .trigger(
+                Trigger::builder()
+                    .url(
+                        "https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c",
+                    )
+                    .customizable_input_parameters(vec![
+                        InputParameter::builder()
+                            .name("name_a")
+                            .value("value_a")
+                            .build()?,
+                        InputParameter::builder()
+                            .name("name_b")
+                            .value("value_b")
+                            .build()?,
+                    ])
+                    .build()?,
+            )
+            .build()?;
+        assert_eq!(
+            wire(edited)["trigger"],
+            json!({
+                "url": "https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c",
+                "customizable_input_parameters": [
+                    {
+                        "name": "name_a",
+                        "value": "value_a"
+                    },
+                    {
+                        "name": "name_b",
+                        "value": "value_b"
+                    }
+                ]
+            })
+        );
     }
     let mut invalid = expected.clone();
-    invalid["trigger"] = Value::Array(vec![]);
+    invalid["trigger"] = json!([]);
     assert!(Workflow::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("trigger");
@@ -15376,7 +13197,7 @@ fn workflow_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(Workflow::try_from(Value::Null).is_err());
-    assert!(Workflow::try_from(Value::Array(vec![])).is_err());
+    assert!(Workflow::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -15405,74 +13226,52 @@ fn attachment_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.blocks()), expected["blocks"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .blocks(vec![
-            Block::from(
-                SectionBlock::builder()
-                    .block_id("fake_block_id_0")
-                    .text(
-                        MarkdownText::builder()
-                            .text("I like pretty colours")
-                            .build()?,
-                    )
-                    .build()?,
-            ),
-            Block::from(
-                SectionBlock::builder()
-                    .block_id("fake_block_id_1")
-                    .text(
-                        MarkdownText::builder()
-                            .text("I don't like pretty colours")
-                            .build()?,
-                    )
-                    .build()?,
-            ),
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .blocks(vec![
+                Block::from(
+                    SectionBlock::builder()
+                        .block_id("fake_block_id_0")
+                        .text(
+                            MarkdownText::builder()
+                                .text("I like pretty colours")
+                                .build()?,
+                        )
+                        .build()?,
+                ),
+                Block::from(
+                    SectionBlock::builder()
+                        .block_id("fake_block_id_1")
+                        .text(
+                            MarkdownText::builder()
+                                .text("I don't like pretty colours")
+                                .build()?,
+                        )
+                        .build()?,
+                ),
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["blocks"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("section")),
-                        ("block_id".into(), Value::from("fake_block_id_0")),
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("mrkdwn")),
-                                    ("text".into(), Value::from("I like pretty colours"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        )
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("section")),
-                        ("block_id".into(), Value::from("fake_block_id_1")),
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("mrkdwn")),
-                                    ("text".into(), Value::from("I don't like pretty colours"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        )
-                    ]
-                    .into_iter()
-                    .collect()
-                )
+            json!([
+                {
+                    "type": "section",
+                    "block_id": "fake_block_id_0",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "I like pretty colours"
+                    }
+                },
+                {
+                    "type": "section",
+                    "block_id": "fake_block_id_1",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "I don't like pretty colours"
+                    }
+                }
             ])
         );
     }
@@ -15490,33 +13289,27 @@ fn attachment_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["blocks"].as_array().unwrap().len(),
+            expected["blocks"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["blocks"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("section")),
-                    ("block_id".into(), Value::from("fake_block_id_0")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("I like pretty colours"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "type": "section",
+                "block_id": "fake_block_id_0",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "I like pretty colours"
+                }
+            })
         );
     }
     let mut invalid = expected.clone();
-    invalid["blocks"] = Value::Object([].into_iter().collect());
+    invalid["blocks"] = json!({});
     assert!(Attachment::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("blocks");
@@ -15525,10 +13318,12 @@ fn attachment_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.color()),
         expected.get("color").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().color("#8800ff").build() {
+    {
+        let edited = original.clone().into_builder().color("#8800ff").build()?;
         assert_eq!(wire(edited)["color"], Value::from("#8800ff"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_color().build() {
+    {
+        let edited = original.clone().into_builder().clear_color().build()?;
         assert!(wire(edited).get("color").is_none());
     }
     let mut invalid = expected.clone();
@@ -15538,15 +13333,16 @@ fn attachment_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.fallback()),
         expected.get("fallback").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .fallback("Colours preference")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .fallback("Colours preference")
+            .build()?;
         assert_eq!(wire(edited)["fallback"], Value::from("Colours preference"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_fallback().build() {
+    {
+        let edited = original.clone().into_builder().clear_fallback().build()?;
         assert!(wire(edited).get("fallback").is_none());
     }
     let mut invalid = expected.clone();
@@ -15568,7 +13364,7 @@ fn attachment_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(Attachment::try_from(Value::Null).is_err());
-    assert!(Attachment::try_from(Value::Array(vec![])).is_err());
+    assert!(Attachment::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -15591,38 +13387,20 @@ fn home_tab_view_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.blocks()), expected["blocks"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .blocks(vec![Block::from(
-            SectionBlock::builder()
-                .block_id("fake_id")
-                .text(MarkdownText::builder().text("Example Block").build()?)
-                .build()?,
-        )])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .blocks(vec![Block::from(
+                SectionBlock::builder()
+                    .block_id("fake_id")
+                    .text(MarkdownText::builder().text("Example Block").build()?)
+                    .build()?,
+            )])
+            .build()?;
         assert_eq!(
             wire(edited)["blocks"],
-            Value::Array(vec![Value::Object(
-                [
-                    ("type".into(), Value::from("section")),
-                    ("block_id".into(), Value::from("fake_id")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("Example Block"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([{"type": "section", "block_id": "fake_id", "text": {"type": "mrkdwn", "text": "Example Block"}}])
         );
     }
     let appended = original
@@ -15635,33 +13413,20 @@ fn home_tab_view_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["blocks"].as_array().unwrap().len(),
+            expected["blocks"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["blocks"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("section")),
-                    ("block_id".into(), Value::from("fake_id")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("Example Block"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"type": "section", "block_id": "fake_id", "text": {"type": "mrkdwn", "text": "Example Block"}})
         );
     }
     let mut invalid = expected.clone();
-    invalid["blocks"] = Value::Object([].into_iter().collect());
+    invalid["blocks"] = json!({});
     assert!(HomeTabView::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("blocks");
@@ -15673,20 +13438,20 @@ fn home_tab_view_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .private_metadata("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .private_metadata("sample")
+            .build()?;
         assert_eq!(wire(edited)["private_metadata"], Value::from("sample"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_private_metadata()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_private_metadata()
+            .build()?;
         assert!(wire(edited).get("private_metadata").is_none());
     }
     let mut invalid = expected.clone();
@@ -15696,15 +13461,20 @@ fn home_tab_view_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.callback_id()),
         expected.get("callback_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .callback_id("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .callback_id("sample")
+            .build()?;
         assert_eq!(wire(edited)["callback_id"], Value::from("sample"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_callback_id().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_callback_id()
+            .build()?;
         assert!(wire(edited).get("callback_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -15714,15 +13484,20 @@ fn home_tab_view_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.external_id()),
         expected.get("external_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .external_id("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .external_id("sample")
+            .build()?;
         assert_eq!(wire(edited)["external_id"], Value::from("sample"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_external_id().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_external_id()
+            .build()?;
         assert!(wire(edited).get("external_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -15744,7 +13519,7 @@ fn home_tab_view_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(HomeTabView::try_from(Value::Null).is_err());
-    assert!(HomeTabView::try_from(Value::Array(vec![])).is_err());
+    assert!(HomeTabView::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(HomeTabView::try_from(wrong).is_err());
@@ -15774,12 +13549,12 @@ fn message_payload_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.channel()), expected["channel"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .channel("#slackblocks")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .channel("#slackblocks")
+            .build()?;
         assert_eq!(wire(edited)["channel"], Value::from("#slackblocks"));
     }
     let mut invalid = expected.clone();
@@ -15792,38 +13567,29 @@ fn message_payload_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.blocks()),
         expected.get("blocks").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .blocks(vec![Block::from(
-            SectionBlock::builder()
-                .block_id("fake_block_id")
-                .text(MarkdownText::builder().text("Hello, world!").build()?)
-                .build()?,
-        )])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .blocks(vec![Block::from(
+                SectionBlock::builder()
+                    .block_id("fake_block_id")
+                    .text(MarkdownText::builder().text("Hello, world!").build()?)
+                    .build()?,
+            )])
+            .build()?;
         assert_eq!(
             wire(edited)["blocks"],
-            Value::Array(vec![Value::Object(
-                [
-                    ("type".into(), Value::from("section")),
-                    ("block_id".into(), Value::from("fake_block_id")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("Hello, world!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([
+                {
+                    "type": "section",
+                    "block_id": "fake_block_id",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Hello, world!"
+                    }
+                }
+            ])
         );
     }
     let appended = original
@@ -15836,88 +13602,69 @@ fn message_payload_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["blocks"].as_array().unwrap().len(),
+            expected["blocks"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["blocks"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("section")),
-                    ("block_id".into(), Value::from("fake_block_id")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("Hello, world!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "type": "section",
+                "block_id": "fake_block_id",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "Hello, world!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_blocks().build() {
+    {
+        let edited = original.clone().into_builder().clear_blocks().build()?;
         assert!(wire(edited).get("blocks").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["blocks"] = Value::Object([].into_iter().collect());
+    invalid["blocks"] = json!({});
     assert!(MessagePayload::try_from(invalid).is_err());
     assert_eq!(
         wire(original.attachments()),
         expected.get("attachments").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .attachments(vec![
-            Attachment::builder()
-                .blocks(vec![Block::from(
-                    SectionBlock::builder()
-                        .block_id("block1")
-                        .text(MarkdownText::builder().text("Hello, world!").build()?)
-                        .build()?,
-                )])
-                .color("#000000")
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .attachments(vec![
+                Attachment::builder()
+                    .blocks(vec![Block::from(
+                        SectionBlock::builder()
+                            .block_id("block1")
+                            .text(MarkdownText::builder().text("Hello, world!").build()?)
+                            .build()?,
+                    )])
+                    .color("#000000")
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["attachments"],
-            Value::Array(vec![Value::Object(
-                [
-                    (
-                        "blocks".into(),
-                        Value::Array(vec![Value::Object(
-                            [
-                                ("type".into(), Value::from("section")),
-                                ("block_id".into(), Value::from("block1")),
-                                (
-                                    "text".into(),
-                                    Value::Object(
-                                        [
-                                            ("type".into(), Value::from("mrkdwn")),
-                                            ("text".into(), Value::from("Hello, world!"))
-                                        ]
-                                        .into_iter()
-                                        .collect()
-                                    )
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )])
-                    ),
-                    ("color".into(), Value::from("#000000"))
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([
+                {
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "block_id": "block1",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "Hello, world!"
+                            }
+                        }
+                    ],
+                    "color": "#000000"
+                }
+            ])
         );
     }
     let appended = original
@@ -15935,55 +13682,51 @@ fn message_payload_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["attachments"].as_array().unwrap().len(),
+            expected["attachments"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["attachments"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "blocks".into(),
-                        Value::Array(vec![Value::Object(
-                            [
-                                ("type".into(), Value::from("section")),
-                                ("block_id".into(), Value::from("block1")),
-                                (
-                                    "text".into(),
-                                    Value::Object(
-                                        [
-                                            ("type".into(), Value::from("mrkdwn")),
-                                            ("text".into(), Value::from("Hello, world!"))
-                                        ]
-                                        .into_iter()
-                                        .collect()
-                                    )
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )])
-                    ),
-                    ("color".into(), Value::from("#000000"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "blocks": [
+                    {
+                        "type": "section",
+                        "block_id": "block1",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "Hello, world!"
+                        }
+                    }
+                ],
+                "color": "#000000"
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_attachments().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_attachments()
+            .build()?;
         assert!(wire(edited).get("attachments").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["attachments"] = Value::Object([].into_iter().collect());
+    invalid["attachments"] = json!({});
     assert!(MessagePayload::try_from(invalid).is_err());
     assert_eq!(
         wire(original.text()),
         expected.get("text").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().text("").build() {
+    {
+        let edited = original.clone().into_builder().text("").build()?;
         assert_eq!(wire(edited)["text"], Value::from(""));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_text().build() {
+    {
+        let edited = original.clone().into_builder().clear_text().build()?;
         assert!(wire(edited).get("text").is_none());
     }
     let mut invalid = expected.clone();
@@ -15993,10 +13736,12 @@ fn message_payload_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.mrkdwn()),
         expected.get("mrkdwn").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().mrkdwn(true).build() {
+    {
+        let edited = original.clone().into_builder().mrkdwn(true).build()?;
         assert_eq!(wire(edited)["mrkdwn"], Value::from(true));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_mrkdwn().build() {
+    {
+        let edited = original.clone().into_builder().clear_mrkdwn().build()?;
         assert!(wire(edited).get("mrkdwn").is_none());
     }
     let mut invalid = expected.clone();
@@ -16006,10 +13751,20 @@ fn message_payload_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.unfurl_links()),
         expected.get("unfurl_links").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().unfurl_links(false).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .unfurl_links(false)
+            .build()?;
         assert_eq!(wire(edited)["unfurl_links"], Value::from(false));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_unfurl_links().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_unfurl_links()
+            .build()?;
         assert!(wire(edited).get("unfurl_links").is_none());
     }
     let mut invalid = expected.clone();
@@ -16019,10 +13774,20 @@ fn message_payload_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.unfurl_media()),
         expected.get("unfurl_media").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().unfurl_media(false).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .unfurl_media(false)
+            .build()?;
         assert_eq!(wire(edited)["unfurl_media"], Value::from(false));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_unfurl_media().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_unfurl_media()
+            .build()?;
         assert!(wire(edited).get("unfurl_media").is_none());
     }
     let mut invalid = expected.clone();
@@ -16032,35 +13797,23 @@ fn message_payload_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.metadata()),
         expected.get("metadata").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .metadata(
-            match Value::Object(
-                [("future".into(), Value::from(false))]
-                    .into_iter()
-                    .collect(),
-            ) {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .metadata(match json!({"future": false}) {
                 Value::Object(map) => map,
                 _ => unreachable!(),
-            },
-        )
-        .build()
-    {
-        assert_eq!(
-            wire(edited)["metadata"],
-            Value::Object(
-                [("future".into(), Value::from(false))]
-                    .into_iter()
-                    .collect()
-            )
-        );
+            })
+            .build()?;
+        assert_eq!(wire(edited)["metadata"], json!({"future": false}));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_metadata().build() {
+    {
+        let edited = original.clone().into_builder().clear_metadata().build()?;
         assert!(wire(edited).get("metadata").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["metadata"] = Value::Array(vec![]);
+    invalid["metadata"] = json!([]);
     assert!(MessagePayload::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -16078,7 +13831,7 @@ fn message_payload_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(MessagePayload::try_from(Value::Null).is_err());
-    assert!(MessagePayload::try_from(Value::Array(vec![])).is_err());
+    assert!(MessagePayload::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -16108,38 +13861,29 @@ fn message_response_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.blocks()),
         expected.get("blocks").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .blocks(vec![Block::from(
-            SectionBlock::builder()
-                .block_id("fake_block_id")
-                .text(MarkdownText::builder().text("Hello, world!").build()?)
-                .build()?,
-        )])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .blocks(vec![Block::from(
+                SectionBlock::builder()
+                    .block_id("fake_block_id")
+                    .text(MarkdownText::builder().text("Hello, world!").build()?)
+                    .build()?,
+            )])
+            .build()?;
         assert_eq!(
             wire(edited)["blocks"],
-            Value::Array(vec![Value::Object(
-                [
-                    ("type".into(), Value::from("section")),
-                    ("block_id".into(), Value::from("fake_block_id")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("Hello, world!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([
+                {
+                    "type": "section",
+                    "block_id": "fake_block_id",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Hello, world!"
+                    }
+                }
+            ])
         );
     }
     let appended = original
@@ -16152,131 +13896,93 @@ fn message_response_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["blocks"].as_array().unwrap().len(),
+            expected["blocks"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["blocks"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("section")),
-                    ("block_id".into(), Value::from("fake_block_id")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("Hello, world!"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "type": "section",
+                "block_id": "fake_block_id",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "Hello, world!"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_blocks().build() {
+    {
+        let edited = original.clone().into_builder().clear_blocks().build()?;
         assert!(wire(edited).get("blocks").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["blocks"] = Value::Object([].into_iter().collect());
+    invalid["blocks"] = json!({});
     assert!(MessageResponse::try_from(invalid).is_err());
     assert_eq!(
         wire(original.attachments()),
         expected.get("attachments").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .attachments(vec![
-            Attachment::builder()
-                .blocks(vec![
-                    Block::from(
-                        SectionBlock::builder()
-                            .block_id("fake_block_id_0")
-                            .text(
-                                MarkdownText::builder()
-                                    .text("I like pretty colours")
-                                    .build()?,
-                            )
-                            .build()?,
-                    ),
-                    Block::from(
-                        SectionBlock::builder()
-                            .block_id("fake_block_id_1")
-                            .text(
-                                MarkdownText::builder()
-                                    .text("I don't like pretty colours")
-                                    .build()?,
-                            )
-                            .build()?,
-                    ),
-                ])
-                .color("#8800ff")
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .attachments(vec![
+                Attachment::builder()
+                    .blocks(vec![
+                        Block::from(
+                            SectionBlock::builder()
+                                .block_id("fake_block_id_0")
+                                .text(
+                                    MarkdownText::builder()
+                                        .text("I like pretty colours")
+                                        .build()?,
+                                )
+                                .build()?,
+                        ),
+                        Block::from(
+                            SectionBlock::builder()
+                                .block_id("fake_block_id_1")
+                                .text(
+                                    MarkdownText::builder()
+                                        .text("I don't like pretty colours")
+                                        .build()?,
+                                )
+                                .build()?,
+                        ),
+                    ])
+                    .color("#8800ff")
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["attachments"],
-            Value::Array(vec![Value::Object(
-                [
-                    (
-                        "blocks".into(),
-                        Value::Array(vec![
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("section")),
-                                    ("block_id".into(), Value::from("fake_block_id_0")),
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("mrkdwn")),
-                                                (
-                                                    "text".into(),
-                                                    Value::from("I like pretty colours")
-                                                )
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    )
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("section")),
-                                    ("block_id".into(), Value::from("fake_block_id_1")),
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("mrkdwn")),
-                                                (
-                                                    "text".into(),
-                                                    Value::from("I don't like pretty colours")
-                                                )
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    )
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ])
-                    ),
-                    ("color".into(), Value::from("#8800ff"))
-                ]
-                .into_iter()
-                .collect()
-            )])
+            json!([
+                {
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "block_id": "fake_block_id_0",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "I like pretty colours"
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "block_id": "fake_block_id_1",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "I don't like pretty colours"
+                            }
+                        }
+                    ],
+                    "color": "#8800ff"
+                }
+            ])
         );
     }
     let appended = original
@@ -16310,82 +14016,59 @@ fn message_response_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["attachments"].as_array().unwrap().len(),
+            expected["attachments"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["attachments"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    (
-                        "blocks".into(),
-                        Value::Array(vec![
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("section")),
-                                    ("block_id".into(), Value::from("fake_block_id_0")),
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("mrkdwn")),
-                                                (
-                                                    "text".into(),
-                                                    Value::from("I like pretty colours")
-                                                )
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    )
-                                ]
-                                .into_iter()
-                                .collect()
-                            ),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("section")),
-                                    ("block_id".into(), Value::from("fake_block_id_1")),
-                                    (
-                                        "text".into(),
-                                        Value::Object(
-                                            [
-                                                ("type".into(), Value::from("mrkdwn")),
-                                                (
-                                                    "text".into(),
-                                                    Value::from("I don't like pretty colours")
-                                                )
-                                            ]
-                                            .into_iter()
-                                            .collect()
-                                        )
-                                    )
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        ])
-                    ),
-                    ("color".into(), Value::from("#8800ff"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "blocks": [
+                    {
+                        "type": "section",
+                        "block_id": "fake_block_id_0",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "I like pretty colours"
+                        }
+                    },
+                    {
+                        "type": "section",
+                        "block_id": "fake_block_id_1",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "I don't like pretty colours"
+                        }
+                    }
+                ],
+                "color": "#8800ff"
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_attachments().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_attachments()
+            .build()?;
         assert!(wire(edited).get("attachments").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["attachments"] = Value::Object([].into_iter().collect());
+    invalid["attachments"] = json!({});
     assert!(MessageResponse::try_from(invalid).is_err());
     assert_eq!(
         wire(original.text()),
         expected.get("text").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().text("").build() {
+    {
+        let edited = original.clone().into_builder().text("").build()?;
         assert_eq!(wire(edited)["text"], Value::from(""));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_text().build() {
+    {
+        let edited = original.clone().into_builder().clear_text().build()?;
         assert!(wire(edited).get("text").is_none());
     }
     let mut invalid = expected.clone();
@@ -16395,10 +14078,12 @@ fn message_response_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.mrkdwn()),
         expected.get("mrkdwn").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().mrkdwn(true).build() {
+    {
+        let edited = original.clone().into_builder().mrkdwn(true).build()?;
         assert_eq!(wire(edited)["mrkdwn"], Value::from(true));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_mrkdwn().build() {
+    {
+        let edited = original.clone().into_builder().clear_mrkdwn().build()?;
         assert!(wire(edited).get("mrkdwn").is_none());
     }
     let mut invalid = expected.clone();
@@ -16411,20 +14096,20 @@ fn message_response_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .replace_original(false)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .replace_original(false)
+            .build()?;
         assert_eq!(wire(edited)["replace_original"], Value::from(false));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_replace_original()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_replace_original()
+            .build()?;
         assert!(wire(edited).get("replace_original").is_none());
     }
     let mut invalid = expected.clone();
@@ -16437,20 +14122,20 @@ fn message_response_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .response_type(ResponseType::Ephemeral)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .response_type(ResponseType::Ephemeral)
+            .build()?;
         assert_eq!(wire(edited)["response_type"], Value::from("ephemeral"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_response_type()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_response_type()
+            .build()?;
         assert!(wire(edited).get("response_type").is_none());
     }
     let mut invalid = expected.clone();
@@ -16472,7 +14157,7 @@ fn message_response_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(MessageResponse::try_from(Value::Null).is_err());
-    assert!(MessageResponse::try_from(Value::Array(vec![])).is_err());
+    assert!(MessageResponse::try_from(json!([])).is_err());
     Ok(())
 }
 
@@ -16515,108 +14200,75 @@ fn modal_view_editing_and_ingress() -> Result<(), ValidationError> {
     assert_eq!(original.clone().into_builder().build()?, original);
     assert_eq!(wire(original.extensions()), json!({}));
     assert_eq!(wire(original.title()), expected["title"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .title(PlainText::builder().text("Hello, world!").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .title(PlainText::builder().text("Hello, world!").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["title"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Hello, world!"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Hello, world!"})
         );
     }
     let mut invalid = expected.clone();
-    invalid["title"] = Value::Array(vec![]);
+    invalid["title"] = json!([]);
     assert!(ModalView::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("title");
     assert!(ModalView::try_from(missing).is_err());
     assert_eq!(wire(original.blocks()), expected["blocks"]);
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .blocks(vec![
-            Block::from(
-                SectionBlock::builder()
-                    .block_id("1")
-                    .text(
-                        MarkdownText::builder()
-                            .text("first section block")
-                            .build()?,
-                    )
-                    .build()?,
-            ),
-            Block::from(DividerBlock::builder().block_id("2").build()?),
-            Block::from(
-                SectionBlock::builder()
-                    .block_id("3")
-                    .text(
-                        MarkdownText::builder()
-                            .text("second section block")
-                            .build()?,
-                    )
-                    .build()?,
-            ),
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .blocks(vec![
+                Block::from(
+                    SectionBlock::builder()
+                        .block_id("1")
+                        .text(
+                            MarkdownText::builder()
+                                .text("first section block")
+                                .build()?,
+                        )
+                        .build()?,
+                ),
+                Block::from(DividerBlock::builder().block_id("2").build()?),
+                Block::from(
+                    SectionBlock::builder()
+                        .block_id("3")
+                        .text(
+                            MarkdownText::builder()
+                                .text("second section block")
+                                .build()?,
+                        )
+                        .build()?,
+                ),
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["blocks"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("section")),
-                        ("block_id".into(), Value::from("1")),
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("mrkdwn")),
-                                    ("text".into(), Value::from("first section block"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        )
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("divider")),
-                        ("block_id".into(), Value::from("2"))
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("section")),
-                        ("block_id".into(), Value::from("3")),
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("mrkdwn")),
-                                    ("text".into(), Value::from("second section block"))
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        )
-                    ]
-                    .into_iter()
-                    .collect()
-                )
+            json!([
+                {
+                    "type": "section",
+                    "block_id": "1",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "first section block"
+                    }
+                },
+                {
+                    "type": "divider",
+                    "block_id": "2"
+                },
+                {
+                    "type": "section",
+                    "block_id": "3",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "second section block"
+                    }
+                }
             ])
         );
     }
@@ -16634,33 +14286,20 @@ fn modal_view_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["blocks"].as_array().unwrap().len(),
+            expected["blocks"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["blocks"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("section")),
-                    ("block_id".into(), Value::from("1")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                ("text".into(), Value::from("first section block"))
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({"type": "section", "block_id": "1", "text": {"type": "mrkdwn", "text": "first section block"}})
         );
     }
     let mut invalid = expected.clone();
-    invalid["blocks"] = Value::Object([].into_iter().collect());
+    invalid["blocks"] = json!({});
     assert!(ModalView::try_from(invalid).is_err());
     let mut missing = expected.clone();
     missing.as_object_mut().unwrap().remove("blocks");
@@ -16669,57 +14308,45 @@ fn modal_view_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.close()),
         expected.get("close").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .close(PlainText::builder().text("Close button").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .close(PlainText::builder().text("Close button").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["close"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Close button"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Close button"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_close().build() {
+    {
+        let edited = original.clone().into_builder().clear_close().build()?;
         assert!(wire(edited).get("close").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["close"] = Value::Array(vec![]);
+    invalid["close"] = json!([]);
     assert!(ModalView::try_from(invalid).is_err());
     assert_eq!(
         wire(original.submit()),
         expected.get("submit").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .submit(PlainText::builder().text("Submit button").build()?)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .submit(PlainText::builder().text("Submit button").build()?)
+            .build()?;
         assert_eq!(
             wire(edited)["submit"],
-            Value::Object(
-                [
-                    ("type".into(), Value::from("plain_text")),
-                    ("text".into(), Value::from("Submit button"))
-                ]
-                .into_iter()
-                .collect()
-            )
+            json!({"type": "plain_text", "text": "Submit button"})
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_submit().build() {
+    {
+        let edited = original.clone().into_builder().clear_submit().build()?;
         assert!(wire(edited).get("submit").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["submit"] = Value::Array(vec![]);
+    invalid["submit"] = json!([]);
     assert!(ModalView::try_from(invalid).is_err());
     assert_eq!(
         wire(original.private_metadata()),
@@ -16728,20 +14355,20 @@ fn modal_view_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .private_metadata("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .private_metadata("sample")
+            .build()?;
         assert_eq!(wire(edited)["private_metadata"], Value::from("sample"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_private_metadata()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_private_metadata()
+            .build()?;
         assert!(wire(edited).get("private_metadata").is_none());
     }
     let mut invalid = expected.clone();
@@ -16751,15 +14378,20 @@ fn modal_view_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.callback_id()),
         expected.get("callback_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .callback_id("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .callback_id("sample")
+            .build()?;
         assert_eq!(wire(edited)["callback_id"], Value::from("sample"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_callback_id().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_callback_id()
+            .build()?;
         assert!(wire(edited).get("callback_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -16772,15 +14404,20 @@ fn modal_view_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().clear_on_close(true).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_on_close(true)
+            .build()?;
         assert_eq!(wire(edited)["clear_on_close"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_clear_on_close()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_clear_on_close()
+            .build()?;
         assert!(wire(edited).get("clear_on_close").is_none());
     }
     let mut invalid = expected.clone();
@@ -16793,20 +14430,20 @@ fn modal_view_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .notify_on_close(true)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .notify_on_close(true)
+            .build()?;
         assert_eq!(wire(edited)["notify_on_close"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_notify_on_close()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_notify_on_close()
+            .build()?;
         assert!(wire(edited).get("notify_on_close").is_none());
     }
     let mut invalid = expected.clone();
@@ -16816,15 +14453,20 @@ fn modal_view_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.external_id()),
         expected.get("external_id").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .external_id("sample")
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .external_id("sample")
+            .build()?;
         assert_eq!(wire(edited)["external_id"], Value::from("sample"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_external_id().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_external_id()
+            .build()?;
         assert!(wire(edited).get("external_id").is_none());
     }
     let mut invalid = expected.clone();
@@ -16837,20 +14479,20 @@ fn modal_view_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .submit_disabled(true)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .submit_disabled(true)
+            .build()?;
         assert_eq!(wire(edited)["submit_disabled"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_submit_disabled()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_submit_disabled()
+            .build()?;
         assert!(wire(edited).get("submit_disabled").is_none());
     }
     let mut invalid = expected.clone();
@@ -16872,7 +14514,7 @@ fn modal_view_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(ModalView::try_from(Value::Null).is_err());
-    assert!(ModalView::try_from(Value::Array(vec![])).is_err());
+    assert!(ModalView::try_from(json!([])).is_err());
     let mut wrong = expected;
     wrong["type"] = json!("not-a-tag");
     assert!(ModalView::try_from(wrong).is_err());
@@ -16910,16 +14552,10 @@ fn webhook_message_editing_and_ingress() -> Result<(), ValidationError> {
         .delete_original(true)
         .unfurl_links(true)
         .unfurl_media(true)
-        .metadata(
-            match Value::Object(
-                [("sender".into(), Value::from("Walt"))]
-                    .into_iter()
-                    .collect(),
-            ) {
-                Value::Object(map) => map,
-                _ => unreachable!(),
-            },
-        )
+        .metadata(match json!({"sender": "Walt"}) {
+            Value::Object(map) => map,
+            _ => unreachable!(),
+        })
         .build()?;
     let expected = wire(&original);
     assert_eq!(WebhookMessage::try_from(expected.clone())?, original);
@@ -16933,84 +14569,52 @@ fn webhook_message_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.blocks()),
         expected.get("blocks").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .blocks(vec![
-            Block::from(
-                SectionBlock::builder()
-                    .block_id("fake_block_id")
-                    .text(
-                        MarkdownText::builder()
-                            .text("You wouldn't do ol' Hook in now, would you, lad?")
-                            .build()?,
-                    )
-                    .build()?,
-            ),
-            Block::from(
-                SectionBlock::builder()
-                    .block_id("fake_block_id")
-                    .text(
-                        MarkdownText::builder()
-                            .text("Well, all right... if you... say you're a codfish.")
-                            .build()?,
-                    )
-                    .build()?,
-            ),
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .blocks(vec![
+                Block::from(
+                    SectionBlock::builder()
+                        .block_id("fake_block_id")
+                        .text(
+                            MarkdownText::builder()
+                                .text("You wouldn't do ol' Hook in now, would you, lad?")
+                                .build()?,
+                        )
+                        .build()?,
+                ),
+                Block::from(
+                    SectionBlock::builder()
+                        .block_id("fake_block_id")
+                        .text(
+                            MarkdownText::builder()
+                                .text("Well, all right... if you... say you're a codfish.")
+                                .build()?,
+                        )
+                        .build()?,
+                ),
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["blocks"],
-            Value::Array(vec![
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("section")),
-                        ("block_id".into(), Value::from("fake_block_id")),
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("mrkdwn")),
-                                    (
-                                        "text".into(),
-                                        Value::from(
-                                            "You wouldn't do ol' Hook in now, would you, lad?"
-                                        )
-                                    )
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        )
-                    ]
-                    .into_iter()
-                    .collect()
-                ),
-                Value::Object(
-                    [
-                        ("type".into(), Value::from("section")),
-                        ("block_id".into(), Value::from("fake_block_id")),
-                        (
-                            "text".into(),
-                            Value::Object(
-                                [
-                                    ("type".into(), Value::from("mrkdwn")),
-                                    (
-                                        "text".into(),
-                                        Value::from(
-                                            "Well, all right... if you... say you're a codfish."
-                                        )
-                                    )
-                                ]
-                                .into_iter()
-                                .collect()
-                            )
-                        )
-                    ]
-                    .into_iter()
-                    .collect()
-                )
+            json!([
+                {
+                    "type": "section",
+                    "block_id": "fake_block_id",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "You wouldn't do ol' Hook in now, would you, lad?"
+                    }
+                },
+                {
+                    "type": "section",
+                    "block_id": "fake_block_id",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Well, all right... if you... say you're a codfish."
+                    }
+                }
             ])
         );
     }
@@ -17028,87 +14632,67 @@ fn webhook_message_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["blocks"].as_array().unwrap().len(),
+            expected["blocks"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["blocks"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [
-                    ("type".into(), Value::from("section")),
-                    ("block_id".into(), Value::from("fake_block_id")),
-                    (
-                        "text".into(),
-                        Value::Object(
-                            [
-                                ("type".into(), Value::from("mrkdwn")),
-                                (
-                                    "text".into(),
-                                    Value::from("You wouldn't do ol' Hook in now, would you, lad?")
-                                )
-                            ]
-                            .into_iter()
-                            .collect()
-                        )
-                    )
-                ]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "type": "section",
+                "block_id": "fake_block_id",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "You wouldn't do ol' Hook in now, would you, lad?"
+                }
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_blocks().build() {
+    {
+        let edited = original.clone().into_builder().clear_blocks().build()?;
         assert!(wire(edited).get("blocks").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["blocks"] = Value::Object([].into_iter().collect());
+    invalid["blocks"] = json!({});
     assert!(WebhookMessage::try_from(invalid).is_err());
     assert_eq!(
         wire(original.attachments()),
         expected.get("attachments").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .attachments(vec![
-            Attachment::builder()
-                .blocks(vec![Block::from(
-                    SectionBlock::builder()
-                        .block_id("fake_block_id")
-                        .text(MarkdownText::builder().text("I'M A CODFISH!").build()?)
-                        .build()?,
-                )])
-                .build()?,
-        ])
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .attachments(vec![
+                Attachment::builder()
+                    .blocks(vec![Block::from(
+                        SectionBlock::builder()
+                            .block_id("fake_block_id")
+                            .text(MarkdownText::builder().text("I'M A CODFISH!").build()?)
+                            .build()?,
+                    )])
+                    .build()?,
+            ])
+            .build()?;
         assert_eq!(
             wire(edited)["attachments"],
-            Value::Array(vec![Value::Object(
-                [(
-                    "blocks".into(),
-                    Value::Array(vec![Value::Object(
-                        [
-                            ("type".into(), Value::from("section")),
-                            ("block_id".into(), Value::from("fake_block_id")),
-                            (
-                                "text".into(),
-                                Value::Object(
-                                    [
-                                        ("type".into(), Value::from("mrkdwn")),
-                                        ("text".into(), Value::from("I'M A CODFISH!"))
-                                    ]
-                                    .into_iter()
-                                    .collect()
-                                )
-                            )
-                        ]
-                        .into_iter()
-                        .collect()
-                    )])
-                )]
-                .into_iter()
-                .collect()
-            )])
+            json!([
+                {
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "block_id": "fake_block_id",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "I'M A CODFISH!"
+                            }
+                        }
+                    ]
+                }
+            ])
         );
     }
     let appended = original
@@ -17125,52 +14709,50 @@ fn webhook_message_editing_and_ingress() -> Result<(), ValidationError> {
                 .build()?,
         )
         .build();
-    if let Ok(value) = appended {
+    {
+        let value = appended?;
         let json = wire(value);
         assert_eq!(
+            json["attachments"].as_array().unwrap().len(),
+            expected["attachments"].as_array().map_or(0, Vec::len) + 1
+        );
+        assert_eq!(
             json["attachments"].as_array().unwrap().last().unwrap(),
-            &Value::Object(
-                [(
-                    "blocks".into(),
-                    Value::Array(vec![Value::Object(
-                        [
-                            ("type".into(), Value::from("section")),
-                            ("block_id".into(), Value::from("fake_block_id")),
-                            (
-                                "text".into(),
-                                Value::Object(
-                                    [
-                                        ("type".into(), Value::from("mrkdwn")),
-                                        ("text".into(), Value::from("I'M A CODFISH!"))
-                                    ]
-                                    .into_iter()
-                                    .collect()
-                                )
-                            )
-                        ]
-                        .into_iter()
-                        .collect()
-                    )])
-                )]
-                .into_iter()
-                .collect()
-            )
+            &json!({
+                "blocks": [
+                    {
+                        "type": "section",
+                        "block_id": "fake_block_id",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "I'M A CODFISH!"
+                        }
+                    }
+                ]
+            })
         );
     }
-    if let Ok(edited) = original.clone().into_builder().clear_attachments().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_attachments()
+            .build()?;
         assert!(wire(edited).get("attachments").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["attachments"] = Value::Object([].into_iter().collect());
+    invalid["attachments"] = json!({});
     assert!(WebhookMessage::try_from(invalid).is_err());
     assert_eq!(
         wire(original.text()),
         expected.get("text").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().text("sample").build() {
+    {
+        let edited = original.clone().into_builder().text("sample").build()?;
         assert_eq!(wire(edited)["text"], Value::from("sample"));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_text().build() {
+    {
+        let edited = original.clone().into_builder().clear_text().build()?;
         assert!(wire(edited).get("text").is_none());
     }
     let mut invalid = expected.clone();
@@ -17183,20 +14765,20 @@ fn webhook_message_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .response_type(ResponseType::Ephemeral)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .response_type(ResponseType::Ephemeral)
+            .build()?;
         assert_eq!(wire(edited)["response_type"], Value::from("ephemeral"));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_response_type()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_response_type()
+            .build()?;
         assert!(wire(edited).get("response_type").is_none());
     }
     let mut invalid = expected.clone();
@@ -17209,20 +14791,20 @@ fn webhook_message_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .replace_original(true)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .replace_original(true)
+            .build()?;
         assert_eq!(wire(edited)["replace_original"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_replace_original()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_replace_original()
+            .build()?;
         assert!(wire(edited).get("replace_original").is_none());
     }
     let mut invalid = expected.clone();
@@ -17235,20 +14817,20 @@ fn webhook_message_editing_and_ingress() -> Result<(), ValidationError> {
             .cloned()
             .unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .delete_original(true)
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .delete_original(true)
+            .build()?;
         assert_eq!(wire(edited)["delete_original"], Value::from(true));
     }
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .clear_delete_original()
-        .build()
     {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_delete_original()
+            .build()?;
         assert!(wire(edited).get("delete_original").is_none());
     }
     let mut invalid = expected.clone();
@@ -17258,10 +14840,20 @@ fn webhook_message_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.unfurl_links()),
         expected.get("unfurl_links").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().unfurl_links(false).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .unfurl_links(false)
+            .build()?;
         assert_eq!(wire(edited)["unfurl_links"], Value::from(false));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_unfurl_links().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_unfurl_links()
+            .build()?;
         assert!(wire(edited).get("unfurl_links").is_none());
     }
     let mut invalid = expected.clone();
@@ -17271,10 +14863,20 @@ fn webhook_message_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.unfurl_media()),
         expected.get("unfurl_media").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original.clone().into_builder().unfurl_media(false).build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .unfurl_media(false)
+            .build()?;
         assert_eq!(wire(edited)["unfurl_media"], Value::from(false));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_unfurl_media().build() {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .clear_unfurl_media()
+            .build()?;
         assert!(wire(edited).get("unfurl_media").is_none());
     }
     let mut invalid = expected.clone();
@@ -17284,35 +14886,23 @@ fn webhook_message_editing_and_ingress() -> Result<(), ValidationError> {
         wire(original.metadata()),
         expected.get("metadata").cloned().unwrap_or(Value::Null)
     );
-    if let Ok(edited) = original
-        .clone()
-        .into_builder()
-        .metadata(
-            match Value::Object(
-                [("sender".into(), Value::from("Walt"))]
-                    .into_iter()
-                    .collect(),
-            ) {
+    {
+        let edited = original
+            .clone()
+            .into_builder()
+            .metadata(match json!({"sender": "Walt"}) {
                 Value::Object(map) => map,
                 _ => unreachable!(),
-            },
-        )
-        .build()
-    {
-        assert_eq!(
-            wire(edited)["metadata"],
-            Value::Object(
-                [("sender".into(), Value::from("Walt"))]
-                    .into_iter()
-                    .collect()
-            )
-        );
+            })
+            .build()?;
+        assert_eq!(wire(edited)["metadata"], json!({"sender": "Walt"}));
     }
-    if let Ok(edited) = original.clone().into_builder().clear_metadata().build() {
+    {
+        let edited = original.clone().into_builder().clear_metadata().build()?;
         assert!(wire(edited).get("metadata").is_none());
     }
     let mut invalid = expected.clone();
-    invalid["metadata"] = Value::Array(vec![]);
+    invalid["metadata"] = json!([]);
     assert!(WebhookMessage::try_from(invalid).is_err());
     let extended = original
         .clone()
@@ -17330,6 +14920,6 @@ fn webhook_message_editing_and_ingress() -> Result<(), ValidationError> {
             .is_err()
     );
     assert!(WebhookMessage::try_from(Value::Null).is_err());
-    assert!(WebhookMessage::try_from(Value::Array(vec![])).is_err());
+    assert!(WebhookMessage::try_from(json!([])).is_err());
     Ok(())
 }

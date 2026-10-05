@@ -64,6 +64,7 @@ def validate(root, requested=None, strict=False):
     for label, path, key in (
         ("Python", "python/uv.lock", "package"),
         ("Rust", "rust/Cargo.lock", "package"),
+        ("Rust integrations", "rust/integrations/Cargo.lock", "package"),
     ):
         own = [
             package["version"]
