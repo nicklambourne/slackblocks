@@ -1261,7 +1261,8 @@ module ValidConstructions
         unfurl_links: false,
         unfurl_media: false,
         metadata: {
-          "sender" => "Walt"
+          "sender" => "Walt",
+          "event_payload" => {"type" => "markdown", "items" => [{"type" => "data_table"}, {"type" => "markdown", "text" => "x" * 12001}]}
         }
       )
     },

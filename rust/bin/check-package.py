@@ -60,11 +60,12 @@ serde = "{serde_version}"
 serde_json = {{ version = "{json_version}"{features} }}
 ''')
     main=(source/'examples/api_checkpoint.rs').read_text()
-    if args.json_features:
-        main=main.replace('    let option =', '''    let too_precise: serde_json::Number = serde_json::from_str("1.2345678901234567890123456789")?;
-    assert!(JsonNumber::try_from(too_precise).is_err());
-    let exact: serde_json::Number = serde_json::from_str("1e3")?;
-    assert!(JsonNumber::try_from(exact).is_ok());
+    main=main.replace('    let option =', ''''    for literal in ["1.2345678901234567890123456789", "18446744073709551617", "1e-400", "1e400"] {
+        assert!(serde_json::from_str::<JsonNumber>(literal).is_err(), "{literal}");
+        assert!(serde_json::from_slice::<JsonNumber>(literal.as_bytes()).is_err(), "{literal}");
+    }
+    let exact: JsonNumber = serde_json::from_str("1e3")?;
+    assert_eq!(exact.as_number().as_f64(), Some(1000.0));
     let option =''')
     (consumer/'src/main.rs').write_text(main)
     run(['run'],consumer)  # Deliberately fresh resolution: no lockfile or workspace override.

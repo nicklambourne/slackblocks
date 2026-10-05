@@ -134,6 +134,10 @@ func constructFixture(value any, fixtureID string) (any, error) {
 		if builder == nil {
 			object := slackblocks.Object{}
 			for key, nested := range typed {
+				if key == "metadata" {
+					object[key] = nested
+					continue
+				}
 				constructed, err := constructFixture(nested, fixtureID)
 				if err != nil {
 					return nil, err
@@ -144,6 +148,11 @@ func constructFixture(value any, fixtureID string) (any, error) {
 		}
 		for key, nested := range typed {
 			if key == "type" {
+				continue
+			}
+			// Metadata is application JSON, not a graph of Block Kit builders.
+			if key == "metadata" {
+				builder.Set(key, nested)
 				continue
 			}
 			constructed, err := constructFixture(nested, fixtureID)

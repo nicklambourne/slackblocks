@@ -1501,16 +1501,7 @@ pub const VALID: &[ValidCase] = &[
                 .replace_original(true)
                 .unfurl_links(false)
                 .unfurl_media(false)
-                .metadata(
-                    match Value::Object(
-                        [("sender".into(), Value::from("Walt"))]
-                            .into_iter()
-                            .collect(),
-                    ) {
-                        Value::Object(map) => map,
-                        _ => unreachable!(),
-                    },
-                )
+                .metadata(serde_json::json!({"sender":"Walt", "event_payload":{"type":"markdown", "items":[{"type":"data_table"}, {"type":"markdown", "text":"x".repeat(12001)}]}}).as_object().unwrap().clone())
                 .build()?;
             Ok(serde_json::to_value(value).unwrap())
         },

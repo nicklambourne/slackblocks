@@ -1085,7 +1085,14 @@ internal static partial class Validator
         // Slack limits markdown block text and data table cell text across the whole message.
         var markdownTotal = 0;
         var dataTableTotal = 0;
-        AddMessageTotals(value, ref markdownTotal, ref dataTableTotal);
+        AddMessageTotals(value["blocks"], ref markdownTotal, ref dataTableTotal);
+        if (value["attachments"] is JsonArray messageAttachments)
+        {
+            foreach (var attachment in messageAttachments)
+            {
+                AddMessageTotals(ObjectAt(attachment, path)["blocks"], ref markdownTotal, ref dataTableTotal);
+            }
+        }
         if (markdownTotal > SlackLimits.MarkdownTotalTextMaxLength)
         {
             Fail(ErrorCategory.LengthExceeded, path, $"markdown text totals {markdownTotal}, exceeding maximum {SlackLimits.MarkdownTotalTextMaxLength}");
@@ -1107,12 +1114,8 @@ internal static partial class Validator
             case JsonObject obj when ObjectType(obj) == "data_table":
                 dataTableTotal += TextCharacterCount(obj["rows"]);
                 break;
-            case JsonObject obj:
-                foreach (var (_, nested) in obj)
-                {
-                    AddMessageTotals(nested, ref markdownTotal, ref dataTableTotal);
-                }
-
+            case JsonObject obj when ObjectType(obj) == "container":
+                AddMessageTotals(obj["child_blocks"], ref markdownTotal, ref dataTableTotal);
                 break;
             case JsonArray array:
                 foreach (var item in array)

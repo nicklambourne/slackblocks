@@ -48,6 +48,29 @@ class GeneratorTests(unittest.TestCase):
         self.assertIn("SectionBlock", [t["name"] for t in roles["Block"]])
         self.assertIn("PlainTextInputElement", [t["name"] for t in roles["Element"]])
 
+    def test_unknown_limit_reference_fails(self):
+        button = next(t for t in self.model["types"] if t["name"] == "ButtonElement")
+        button["fields"][0]["limits"] = "button.misspelled"
+        with self.assertRaisesRegex(ValueError, "Unresolved limits for ButtonElement.text"):
+            generate.generate(self.model)
+
+    def test_incompatible_limit_kind_fails(self):
+        button = next(t for t in self.model["types"] if t["name"] == "ButtonElement")
+        button["fields"][0]["limits"] = "actions.elements"
+        with self.assertRaisesRegex(ValueError, "Incompatible limits for ButtonElement.text"):
+            generate.generate(self.model)
+
+    def test_empty_and_negative_length_bounds_fail(self):
+        limits = json.loads((HERE.parents[1] / "spec/limits.json").read_text())
+        for bounds, message in [
+            ({}, "Unresolved limits"),
+            ({"max_length": -1}, "Negative length limit"),
+        ]:
+            with self.subTest(bounds=bounds):
+                limits["button"]["text"] = bounds
+                with self.assertRaisesRegex(ValueError, message):
+                    generate.resolve(self.model, limits)
+
     def test_stale_and_missing_outputs_fail(self):
         # Exercise the real command without modifying the checked-out generated files.
         import os

@@ -159,7 +159,8 @@ module Slackblocks
     def self.message(wire, path)
       surface(wire["blocks"] || [], "message", "#{path}.blocks")
       totals = {"markdown" => 0, "data_table" => 0}
-      tally(wire, totals)
+      tally(wire["blocks"], totals)
+      (wire["attachments"] || []).each { |attachment| tally(attachment["blocks"], totals) }
       if totals["markdown"] > limit("markdown.total_text.max_length")
         fail!("length-exceeded", path, "message markdown total exceeded")
       end
@@ -175,8 +176,8 @@ module Slackblocks
           totals["markdown"] += node.fetch("text").length
         elsif node["type"] == "data_table"
           totals["data_table"] += characters(node.fetch("rows"))
-        else
-          node.each_value { |child| tally(child, totals) }
+        elsif node["type"] == "container"
+          tally(node["child_blocks"], totals)
         end
       when Array
         node.each { |child| tally(child, totals) }

@@ -63,7 +63,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 - Extensions preserve unknown JSON but reject empty keys, modeled fields and
   `type` collisions. `BuilderPayload::Raw` is an explicit unvalidated preview input.
 - `JsonNumber` preserves `i64`/`u64` integers and finite floating-point values;
-  unsupported precision and nonfinite inputs are rejected. Text lengths count
+  unsupported precision and nonfinite inputs are rejected. The crate enables
+  serde_json’s `arbitrary_precision` feature to check original JSON literals before
+  narrowing them to the supported numeric range. A caller-supplied value already
+  rounded before conversion cannot recover its original literal. Text lengths count
   Unicode code points.
 
 ## Helpers and transport

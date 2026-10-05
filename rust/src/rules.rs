@@ -1,7 +1,10 @@
 //! Handwritten contextual rules. Typed values remain the public representation;
-//! temporary wire views let aggregate rules follow nested Slack keys uniformly.
+//! aggregate traversal borrows modeled children and keeps arbitrary JSON opaque.
 use crate::generated::{HOME_BLOCKS, ICONS, LIMITS, MESSAGE_BLOCKS, MODAL_BLOCKS};
-use crate::{ErrorCategory as C, TaskCardBlock, ValidationError};
+use crate::{
+    Attachment, Block, DataTableBlock, DataTableCell, ErrorCategory as C, RichTextBlockElement,
+    RichTextSectionElement, RichTextStyle, TaskCardBlock, TaskStatus, Text, ValidationError,
+};
 use serde::ser::SerializeSeq;
 use serde::{Serialize, Serializer};
 use serde_json::Value;
@@ -16,16 +19,13 @@ fn limit(key: &str) -> i64 {
         .expect("generated limit key exists")
         .1
 }
-fn bound(key: &str) -> Option<i64> {
-    LIMITS.iter().find(|(k, _)| *k == key).map(|(_, v)| *v)
-}
 fn chars(v: &Value) -> usize {
     v.as_str().map_or(0, |s| s.chars().count())
 }
 fn array(v: &Value) -> &[Value] {
     v.as_array().map_or(&[], Vec::as_slice)
 }
-fn length(v: &Value, key: &str, path: &str) -> Result<(), ValidationError> {
+fn wire_length(v: &Value, key: &str, path: &str) -> Result<(), ValidationError> {
     if chars(v) > limit(key) as usize {
         return Err(fail(
             C::LengthExceeded,
@@ -35,67 +35,43 @@ fn length(v: &Value, key: &str, path: &str) -> Result<(), ValidationError> {
     }
     Ok(())
 }
-fn text_length(v: &Value, key: &str, path: &str) -> Result<(), ValidationError> {
-    length(&v["text"], key, path)
-}
-
-pub(crate) fn limits(v: &Value, prefix: &str, path: &str) -> Result<(), ValidationError> {
-    let (len, suffixes) = if let Some(items) = v.as_array() {
-        (Some(items.len()), ["min_items", "max_items"])
-    } else {
-        (
-            v.as_str()
-                .or_else(|| v.get("text").and_then(Value::as_str))
-                .map(|s| s.chars().count()),
-            ["min_length", "max_length"],
-        )
-    };
-    if let Some(len) = len {
-        for (i, suffix) in suffixes.iter().enumerate() {
-            if let Some(n) = bound(&format!("{prefix}.{suffix}")) {
-                if (i == 0 && len < (n as usize)) || (i == 1 && len > (n as usize)) {
-                    return Err(fail(
-                        C::LengthExceeded,
-                        path,
-                        &format!("outside {prefix}.{suffix} ({n})"),
-                    ));
-                }
-            }
-        }
-    }
-    if let Some(value) = v.as_f64() {
-        for suffix in ["min", "max", "exclusive_min", "exclusive_max"] {
-            if let Some(n) = bound(&format!("{prefix}.{suffix}")) {
-                let n = n as f64;
-                let invalid = match suffix {
-                    "min" => value < n,
-                    "max" => value > n,
-                    "exclusive_min" => value <= n,
-                    _ => value >= n,
-                };
-                if invalid {
-                    return Err(fail(
-                        C::OutOfRange,
-                        path,
-                        &format!("outside {prefix}.{suffix}"),
-                    ));
-                }
-            }
-        }
+pub(crate) fn length(
+    len: usize,
+    min: Option<usize>,
+    max: Option<usize>,
+    path: &str,
+) -> Result<(), ValidationError> {
+    if min.is_some_and(|min| len < min) || max.is_some_and(|max| len > max) {
+        return Err(fail(C::LengthExceeded, path, "length outside field bounds"));
     }
     Ok(())
 }
-
-pub(crate) fn style(value: &Value, allowed: &[&str], path: &str) -> Result<(), ValidationError> {
-    if let Some(map) = value.as_object() {
-        for key in map.keys() {
-            if !allowed.contains(&key.as_str()) {
-                return Err(fail(
-                    C::TypeMismatch,
-                    &format!("{path}.{key}"),
-                    "style is not allowed on this element",
-                ));
-            }
+pub(crate) fn text_len(text: &Text) -> usize {
+    match text {
+        Text::Plain(v) => v.text().chars().count(),
+        Text::Markdown(v) => v.text().chars().count(),
+    }
+}
+pub(crate) fn style(
+    value: &RichTextStyle,
+    allowed: &[&str],
+    path: &str,
+) -> Result<(), ValidationError> {
+    for (key, value) in [
+        ("bold", value.is_bold()),
+        ("italic", value.is_italic()),
+        ("strike", value.is_strike()),
+        ("code", value.is_code()),
+        ("highlight", value.is_highlight()),
+        ("client_highlight", value.is_client_highlight()),
+        ("unlink", value.is_unlink()),
+    ] {
+        if value.is_some() && !allowed.contains(&key) {
+            return Err(fail(
+                C::TypeMismatch,
+                &format!("{path}.{key}"),
+                "style is not allowed on this element",
+            ));
         }
     }
     Ok(())
@@ -117,16 +93,18 @@ pub(crate) fn restore_tasks(value: Option<&mut Value>) {
         }
     }
 }
+struct PlanTask<'a>(&'a TaskCardBlock);
+impl Serialize for PlanTask<'_> {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        self.0.serialize_value(serializer, false)
+    }
+}
 pub(crate) struct PlanTasks<'a>(pub(crate) &'a [TaskCardBlock]);
 impl Serialize for PlanTasks<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut seq = serializer.serialize_seq(Some(self.0.len()))?;
         for task in self.0 {
-            let mut value = serde_json::to_value(task).map_err(serde::ser::Error::custom)?;
-            if let Some(map) = value.as_object_mut() {
-                map.remove("type");
-            }
-            seq.serialize_element(&value)?;
+            seq.serialize_element(&PlanTask(task))?;
         }
         seq.end()
     }
@@ -141,21 +119,6 @@ pub(crate) fn validate(kind: &str, v: &Value, path: &str) -> Result<(), Validati
                 return Err(fail(C::TypeMismatch, &at("name"), "unknown Slack icon"));
             }
         }
-        "Attachment" => {
-            if let Some(color) = v["color"].as_str() {
-                let hex = color
-                    .strip_prefix('#')
-                    .is_some_and(|s| s.len() == 6 && s.bytes().all(|c| c.is_ascii_hexdigit()));
-                if !hex && !["good", "warning", "danger"].contains(&color) {
-                    return Err(fail(
-                        C::TypeMismatch,
-                        &at("color"),
-                        "expected a semantic color or six-digit hex color",
-                    ));
-                }
-            }
-            surface(array(&v["blocks"]), "message", &at("blocks"))?;
-        }
         "SectionBlock" => {
             if !has("text") && array(&v["fields"]).is_empty() {
                 return Err(fail(C::MissingRequired, path, "expected text or fields"));
@@ -166,13 +129,6 @@ pub(crate) fn validate(kind: &str, v: &Value, path: &str) -> Result<(), Validati
                     &at("fields"),
                     "fields cannot be empty",
                 ));
-            }
-            for (i, field) in array(&v["fields"]).iter().enumerate() {
-                text_length(
-                    field,
-                    "section.fields.item_max_length",
-                    &format!("{path}.fields[{i}].text"),
-                )?;
             }
         }
         "StaticSelectElement" | "StaticMultiSelectElement" => {
@@ -287,11 +243,11 @@ pub(crate) fn validate(kind: &str, v: &Value, path: &str) -> Result<(), Validati
                 }
             }
         }
-        "TableBlock" | "DataTableBlock" => table(v, path, kind == "DataTableBlock")?,
+        "TableBlock" => table(v, path)?,
         "AxisConfig" => {
             let categories = array(&v["categories"]);
             for (i, cat) in categories.iter().enumerate() {
-                length(
+                wire_length(
                     cat,
                     "data_visualization.category_label.max_length",
                     &format!("{path}.categories[{i}]"),
@@ -325,44 +281,72 @@ pub(crate) fn validate(kind: &str, v: &Value, path: &str) -> Result<(), Validati
                 }
             }
         }
-        "MessagePayload" | "MessageResponse" | "WebhookMessage" => {
-            surface(array(&v["blocks"]), "message", &at("blocks"))?;
-            let (markdown, data_table) = totals(v);
-            if markdown > limit("markdown.total_text.max_length") as usize {
-                return Err(fail(
-                    C::LengthExceeded,
-                    path,
-                    "message markdown total exceeded",
-                ));
-            }
-            if data_table > limit("data_table.total_content.max_length") as usize {
-                return Err(fail(
-                    C::LengthExceeded,
-                    path,
-                    "message table total exceeded",
-                ));
-            }
-        }
-        "ModalView" | "HomeTabView" => {
-            let modal = kind == "ModalView";
-            surface(
-                array(&v["blocks"]),
-                if modal { "modal" } else { "home" },
-                &at("blocks"),
-            )?;
-            if modal && !has("submit") && array(&v["blocks"]).iter().any(|b| b["type"] == "input") {
-                return Err(fail(
-                    C::MissingRequired,
-                    &at("submit"),
-                    "modal inputs require a submit label",
-                ));
-            }
-        }
         _ => {}
     }
     Ok(())
 }
-fn surface(blocks: &[Value], name: &str, path: &str) -> Result<(), ValidationError> {
+pub(crate) fn attachment(value: &Attachment, path: &str) -> Result<(), ValidationError> {
+    if let Some(color) = value.color() {
+        let hex = color
+            .strip_prefix('#')
+            .is_some_and(|s| s.len() == 6 && s.bytes().all(|c| c.is_ascii_hexdigit()));
+        if !hex && !["good", "warning", "danger"].contains(&color) {
+            return Err(fail(
+                C::TypeMismatch,
+                &format!("{path}.color"),
+                "expected a semantic color or six-digit hex color",
+            ));
+        }
+    }
+    surface(value.blocks(), "message", &format!("{path}.blocks"))
+}
+
+pub(crate) fn message(
+    blocks: &[Block],
+    attachments: &[Attachment],
+    path: &str,
+) -> Result<(), ValidationError> {
+    surface(blocks, "message", &format!("{path}.blocks"))?;
+    let (markdown, data_table) = blocks
+        .iter()
+        .chain(attachments.iter().flat_map(Attachment::blocks))
+        .map(totals)
+        .fold((0, 0), |(a, b), (c, d)| (a + c, b + d));
+    if markdown > limit("markdown.total_text.max_length") as usize {
+        return Err(fail(
+            C::LengthExceeded,
+            path,
+            "message markdown total exceeded",
+        ));
+    }
+    if data_table > limit("data_table.total_content.max_length") as usize {
+        return Err(fail(
+            C::LengthExceeded,
+            path,
+            "message table total exceeded",
+        ));
+    }
+    Ok(())
+}
+
+pub(crate) fn view(
+    blocks: &[Block],
+    name: &str,
+    has_submit: bool,
+    path: &str,
+) -> Result<(), ValidationError> {
+    surface(blocks, name, &format!("{path}.blocks"))?;
+    if name == "modal" && !has_submit && blocks.iter().any(|b| matches!(b, Block::Input(_))) {
+        return Err(fail(
+            C::MissingRequired,
+            &format!("{path}.submit"),
+            "modal inputs require a submit label",
+        ));
+    }
+    Ok(())
+}
+
+fn surface(blocks: &[Block], name: &str, path: &str) -> Result<(), ValidationError> {
     let allowed = match name {
         "modal" => MODAL_BLOCKS,
         "home" => HOME_BLOCKS,
@@ -370,7 +354,7 @@ fn surface(blocks: &[Value], name: &str, path: &str) -> Result<(), ValidationErr
     };
     for (i, block) in blocks.iter().enumerate() {
         let path = format!("{path}[{i}]");
-        if !allowed.contains(&block["type"].as_str().unwrap_or("")) {
+        if !allowed.contains(&block.wire_type()) {
             return Err(fail(
                 C::TypeMismatch,
                 &format!("{path}.type"),
@@ -381,111 +365,139 @@ fn surface(blocks: &[Value], name: &str, path: &str) -> Result<(), ValidationErr
     }
     Ok(())
 }
-fn standalone_task(value: &Value, path: &str) -> Result<(), ValidationError> {
-    match value {
-        Value::Object(map) => {
-            if value["type"] == "task_card" && value["status"] == "pending" {
-                return Err(fail(
-                    C::TypeMismatch,
-                    &format!("{path}.status"),
-                    "pending tasks are plan-only",
-                ));
-            }
-            for (key, value) in map {
-                if key == "tasks" && map.get("type").and_then(Value::as_str) == Some("plan") {
-                    continue;
-                }
-                standalone_task(value, &format!("{path}.{key}"))?;
+
+fn standalone_task(block: &Block, path: &str) -> Result<(), ValidationError> {
+    match block {
+        Block::TaskCard(task) if task.status() == TaskStatus::Pending => {
+            return Err(fail(
+                C::TypeMismatch,
+                &format!("{path}.status"),
+                "pending tasks are plan-only",
+            ));
+        }
+        Block::Container(container) => {
+            for (i, child) in container.child_blocks().iter().enumerate() {
+                standalone_task(child, &format!("{path}.child_blocks[{i}]"))?;
             }
         }
-        Value::Array(vs) => {
-            for (i, v) in vs.iter().enumerate() {
-                standalone_task(v, &format!("{path}[{i}]"))?;
-            }
-        }
+        // Plan entries may be pending. Other block types cannot contain task cards.
         _ => {}
     }
     Ok(())
 }
-fn characters(value: &Value) -> usize {
-    match value {
-        Value::Array(vs) => vs.iter().map(characters).sum(),
-        Value::Object(map) => map
+
+fn totals(block: &Block) -> (usize, usize) {
+    match block {
+        Block::Markdown(value) => (value.text().chars().count(), 0),
+        Block::DataTable(value) => (0, table_characters(value.rows())),
+        Block::Container(value) => value
+            .child_blocks()
             .iter()
-            .map(|(k, v)| {
-                if k == "text" && v.is_string() {
-                    chars(v)
-                } else {
-                    characters(v)
-                }
-            })
-            .sum(),
-        _ => 0,
-    }
-}
-fn totals(value: &Value) -> (usize, usize) {
-    match value {
-        Value::Object(map) if value["type"] == "markdown" => (chars(&map["text"]), 0),
-        Value::Object(map) if value["type"] == "data_table" => (0, characters(&map["rows"])),
-        Value::Object(map) => sum_totals(map.values()),
-        Value::Array(vs) => sum_totals(vs.iter()),
+            .map(totals)
+            .fold((0, 0), |(a, b), (c, d)| (a + c, b + d)),
         _ => (0, 0),
     }
 }
-fn sum_totals<'a>(vs: impl Iterator<Item = &'a Value>) -> (usize, usize) {
-    vs.map(totals).fold((0, 0), |(a, b), (c, d)| (a + c, b + d))
+
+fn table_characters(rows: &[Vec<DataTableCell>]) -> usize {
+    rows.iter()
+        .flatten()
+        .map(|cell| match cell {
+            DataTableCell::RawText(v) => v.text().chars().count(),
+            DataTableCell::RawNumber(v) => v.text().chars().count(),
+            DataTableCell::RichText(v) => v
+                .elements()
+                .iter()
+                .map(|element| match element {
+                    RichTextBlockElement::Section(v) => inline_characters(v.elements()),
+                    RichTextBlockElement::Quote(v) => inline_characters(v.elements()),
+                    RichTextBlockElement::CodeBlock(v) => inline_characters(v.elements()),
+                    RichTextBlockElement::List(v) => v
+                        .elements()
+                        .iter()
+                        .map(|v| inline_characters(v.elements()))
+                        .sum(),
+                })
+                .sum(),
+        })
+        .sum()
 }
-fn table(v: &Value, path: &str, data: bool) -> Result<(), ValidationError> {
-    let rows = array(&v["rows"]);
-    let max = limit(if data {
-        "data_table.columns.max_items"
-    } else {
-        "table.columns.max_items"
-    }) as usize;
-    for (i, row) in rows.iter().enumerate() {
-        let cells = array(row);
+
+fn inline_characters(elements: &[RichTextSectionElement]) -> usize {
+    elements
+        .iter()
+        .map(|element| match element {
+            RichTextSectionElement::Text(v) => v.text().chars().count(),
+            RichTextSectionElement::Link(v) => v.text().unwrap_or_default().chars().count(),
+            _ => 0,
+        })
+        .sum()
+}
+
+pub(crate) fn data_table(value: &DataTableBlock, path: &str) -> Result<(), ValidationError> {
+    let rows = value.rows();
+    for (i, cells) in rows.iter().enumerate() {
         let p = format!("{path}.rows[{i}]");
-        if cells.len() > max || (data && cells.is_empty()) {
+        if cells.is_empty() || cells.len() > limit("data_table.columns.max_items") as usize {
             return Err(fail(C::LengthExceeded, &p, "invalid column count"));
         }
-        if data && cells.len() != array(&rows[0]).len() {
+        if cells.len() != rows[0].len() {
             return Err(fail(
                 C::InvalidUsage,
                 &p,
                 "data table rows must be rectangular",
             ));
         }
-        if data {
-            for (j, cell) in cells.iter().enumerate() {
-                let p = format!("{p}[{j}]");
-                if i == 0 && cell["type"] == "rich_text" {
+        for (j, cell) in cells.iter().enumerate() {
+            let p = format!("{p}[{j}]");
+            match cell {
+                DataTableCell::RichText(_) if i == 0 => {
                     return Err(fail(C::TypeMismatch, &p, "header cells must be raw"));
                 }
-                if (cell["type"] == "raw_text" || cell["type"] == "raw_number")
-                    && cell["text"] == ""
-                {
+                DataTableCell::RawText(v) if v.text().is_empty() => {
                     return Err(fail(
                         C::LengthExceeded,
                         &format!("{p}.text"),
                         "empty data table cell",
                     ));
                 }
+                DataTableCell::RawNumber(v) if v.text().is_empty() => {
+                    return Err(fail(
+                        C::LengthExceeded,
+                        &format!("{p}.text"),
+                        "empty data table cell",
+                    ));
+                }
+                _ => {}
             }
         }
     }
-    if data && v.get("column_settings").is_some() {
+    if value.extensions().contains_key("column_settings") {
         return Err(fail(
             C::InvalidUsage,
             &format!("{path}.column_settings"),
             "unsupported data table field",
         ));
     }
-    if data && characters(&v["rows"]) > limit("data_table.content.max_length") as usize {
+    if table_characters(rows) > limit("data_table.content.max_length") as usize {
         return Err(fail(
             C::LengthExceeded,
             &format!("{path}.rows"),
             "table text total exceeded",
         ));
+    }
+    Ok(())
+}
+
+fn table(v: &Value, path: &str) -> Result<(), ValidationError> {
+    for (i, row) in array(&v["rows"]).iter().enumerate() {
+        if array(row).len() > limit("table.columns.max_items") as usize {
+            return Err(fail(
+                C::LengthExceeded,
+                &format!("{path}.rows[{i}]"),
+                "invalid column count",
+            ));
+        }
     }
     Ok(())
 }

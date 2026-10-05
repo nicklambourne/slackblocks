@@ -190,7 +190,97 @@ def leaves(d, p=""):
     return out
 
 
-def resolve(model):
+def field_bounds(field, registry, owner):
+    """Resolve a limit prefix before emission; unknown bounds must not disable checks."""
+    prefix = field.get("limits")
+    if not prefix:
+        return {}
+    bounds = registry
+    for part in prefix.split("."):
+        bounds = bounds.get(part) if isinstance(bounds, dict) else None
+    kind = field["kind"]
+    allowed = {
+        "string": {"min_length", "max_length"},
+        "text": {"min_length", "max_length"},
+        "list": {"min_items", "max_items"},
+        "rows": {"min_items", "max_items"},
+        "textList": {"min_items", "max_items", "item_max_length"},
+        "stringList": {"min_items", "max_items", "item_max_length"},
+        "int": {"min", "max", "exclusive_min", "exclusive_max"},
+        "long": {"min", "max", "exclusive_min", "exclusive_max"},
+        "double": {"min", "max", "exclusive_min", "exclusive_max"},
+        "number": {"min", "max", "exclusive_min", "exclusive_max"},
+    }.get(kind, set())
+    if not isinstance(bounds, dict) or not bounds:
+        raise ValueError(f"Unresolved limits for {owner}.{field['wire']}: {prefix}")
+    if not bounds.keys() <= allowed or any(type(v) is not int for v in bounds.values()):
+        raise ValueError(f"Incompatible limits for {owner}.{field['wire']} ({kind}): {prefix}")
+    if kind not in {"int", "long", "double", "number"} and any(v < 0 for v in bounds.values()):
+        raise ValueError(f"Negative length limit for {owner}.{field['wire']}: {prefix}")
+    return bounds
+
+
+def emit_field_validation(owner, field, registry):
+    bounds = field_bounds(field, registry, owner)
+    if not bounds:
+        return []
+    wire = field["wire"]
+    field_id = ident(wire)
+    kind = field["kind"]
+    s = (
+        [f"{{ let v = &value.{field_id};"]
+        if field.get("required")
+        else [f"if let Some(v) = &value.{field_id} {{"]
+    )
+    if kind in {"string", "text", "list", "rows", "textList", "stringList"}:
+        if kind == "string":
+            measure = "v.chars().count()"
+        elif kind == "text":
+            measure = (
+                "v.text().chars().count()"
+                if field["type"] == "PlainText"
+                else "crate::rules::text_len(v)"
+            )
+        else:
+            measure = "v.len()"
+        suffix = "length" if kind in {"string", "text"} else "items"
+        lower = f"Some({bounds['min_' + suffix]})" if "min_" + suffix in bounds else "None"
+        upper = f"Some({bounds['max_' + suffix]})" if "max_" + suffix in bounds else "None"
+        s.append(f'crate::rules::length({measure}, {lower}, {upper}, "{owner}.{wire}")?;')
+        if "item_max_length" in bounds:
+            item_measure = (
+                "crate::rules::text_len(item)"
+                if kind == "textList" and field["type"] == "Text"
+                else "item.text().chars().count()"
+                if kind == "textList"
+                else "item.chars().count()"
+            )
+            suffix = ".text" if kind == "textList" else ""
+            s.append(
+                f'for (i, item) in v.iter().enumerate() {{ crate::rules::length({item_measure}, None, Some({bounds["item_max_length"]}), &format!("{owner}.{wire}[{{i}}]{suffix}"))?; }}'
+            )
+    else:
+        measure = "*v"
+        if kind == "number":
+            measure = 'v.as_number().as_f64().expect("validated finite number")'
+        for bound, operator in [
+            ("min", "<"),
+            ("max", ">"),
+            ("exclusive_min", "<="),
+            ("exclusive_max", ">="),
+        ]:
+            if bound in bounds:
+                limit = str(bounds[bound]) + (".0" if kind in {"double", "number"} else "")
+                s.append(
+                    f'if {measure} {operator} {limit} {{ return Err(ValidationError::new(ErrorCategory::OutOfRange, "{owner}.{wire}", "number outside field bounds")); }}'
+                )
+    s.append("}")
+    return s
+
+
+def resolve(model, registry=None):
+    if registry is None:
+        registry = json.loads((ROOT / "spec/limits.json").read_text())
     by_name = {t["name"]: t for t in model["types"]}
     if len(by_name) != len(model["types"]):
         raise ValueError("Duplicate type")
@@ -204,6 +294,7 @@ def resolve(model):
         for f in t["fields"]:
             n = ident(f["wire"])
             rust_type(f)
+            field_bounds(f, registry, t["name"])
             if n in names or f["wire"] in wires:
                 raise ValueError(f"Duplicate field in {t['name']}")
             names.add(n)
@@ -320,7 +411,7 @@ def emit_setters(fs):
     return s
 
 
-def emit_model(t):
+def emit_model(t, registry):
     s = []
     n = name(t["name"])
     b = n + "Builder"
@@ -397,13 +488,16 @@ def emit_model(t):
     s += [
         "/// Borrows checked, unmodeled JSON extension fields.",
         "pub fn extensions(&self) -> &Map<String, Value> { &self.extensions }",
-        "fn serialize_value<S: Serializer>(&self, serializer: S, tagged: bool) -> Result<S::Ok, S::Error> {",
+        (
+            "pub(crate) fn serialize_value<S: Serializer>(&self, serializer: S, tagged: bool) -> Result<S::Ok, S::Error> {"
+            if n == "TaskCardBlock"
+            else "fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {"
+        ),
         "let mut map = serializer.serialize_map(None)?;",
     ]
     if t["wireType"]:
-        s.append(f'if tagged {{ map.serialize_entry("type", "{t["wireType"]}")?; }}')
-    else:
-        s.append("let _ = tagged;")
+        entry = f'map.serialize_entry("type", "{t["wireType"]}")?;'
+        s.append(f"if tagged {{ {entry} }}" if n == "TaskCardBlock" else entry)
     for f in fs:
         id = ident(f["wire"])
         expr = f"&self.{id}"
@@ -456,27 +550,58 @@ def emit_model(t):
         f"let value = {n} {{"
         + ",".join(ident(f["wire"]) for f in fs)
         + ",extensions:self.extensions};",
-        'let wire = serde_json::to_value(&value).map_err(|e| ValidationError::new(ErrorCategory::TypeMismatch,"'
-        + n
-        + '",e.to_string()))?;',
     ]
     if n in {"PlainText", "MarkdownText"}:
-        s.append(f'crate::rules::limits(&wire["text"], "text", "{n}.text")?;')
+        s += emit_field_validation(n, dict(fs[0], limits="text"), registry)
     for f in fs:
-        if f.get("limits"):
-            s.append(
-                f'if let Some(v) = wire.get("{f["wire"]}") {{ crate::rules::limits(v,"{f["limits"]}","{n}.{f["wire"]}")?; }}'
-            )
+        s += emit_field_validation(n, f, registry)
         if f["kind"] == "style":
             s.append(
-                f'if let Some(v) = wire.get("{f["wire"]}") {{ crate::rules::style(v, &{json.dumps(f["flags"])}, "{n}.{f["wire"]}")?; }}'
+                f'if let Some(v) = &value.{ident(f["wire"])} {{ crate::rules::style(v, &{json.dumps(f["flags"])}, "{n}.{f["wire"]}")?; }}'
             )
+    typed_rules = {
+        "Attachment": 'crate::rules::attachment(&value, "Attachment")?;',
+        "DataTableBlock": 'crate::rules::data_table(&value, "DataTableBlock")?;',
+        "ModalView": 'crate::rules::view(value.blocks(), "modal", value.submit().is_some(), "ModalView")?;',
+        "HomeTabView": 'crate::rules::view(value.blocks(), "home", false, "HomeTabView")?;',
+    }
+    if n in {"MessagePayload", "MessageResponse", "WebhookMessage"}:
+        s.append(
+            f'crate::rules::message(value.blocks().unwrap_or_default(), value.attachments().unwrap_or_default(), "{n}")?;'
+        )
+    elif n in typed_rules:
+        s.append(typed_rules[n])
+    elif n in {
+        "SlackIcon",
+        "SectionBlock",
+        "StaticSelectElement",
+        "StaticMultiSelectElement",
+        "CardBlock",
+        "ContainerBlock",
+        "ImageBlock",
+        "ImageElement",
+        "SlackFile",
+        "ConversationFilter",
+        "DispatchActionConfiguration",
+        "NumberInputElement",
+        "TableBlock",
+        "AxisConfig",
+        "ChartSegment",
+        "LineChart",
+        "BarChart",
+        "AreaChart",
+        "PlanBlock",
+    }:
+        s.append(
+            f'let wire = serde_json::to_value(&value).map_err(|e| ValidationError::new(ErrorCategory::TypeMismatch,"{n}",e.to_string()))?;'
+        )
+        s.append(f'crate::rules::validate("{t["name"]}",&wire,"{n}")?;')
+    tagged = ", true" if n == "TaskCardBlock" else ""
     s += [
-        f'crate::rules::validate("{t["name"]}",&wire,"{n}")?;',
         "Ok(value)",
         "}",
         "}",
-        f"impl Serialize for {n} {{ fn serialize<S: Serializer>(&self, s: S)->Result<S::Ok,S::Error> {{ self.serialize_value(s,true) }} }}",
+        f"impl Serialize for {n} {{ fn serialize<S: Serializer>(&self, s: S)->Result<S::Ok,S::Error> {{ self.serialize_value(s{tagged}) }} }}",
         f"impl FromWire for {n} {{ fn from_wire(value: Value, path: &str) -> Result<Self,ValidationError> {{",
         f'let mut map = wire::object(value,"{t["wireType"]}",path)?;',
     ]
@@ -512,8 +637,10 @@ def emit_model(t):
     return s
 
 
-def generate(model):
-    types, roles = resolve(model)
+def generate(model, registry=None):
+    if registry is None:
+        registry = json.loads((ROOT / "spec/limits.json").read_text())
+    types, roles = resolve(model, registry)
     s = [
         "// Generated from spec/model.json; edit the generator, not this file.",
         "use serde::{Serialize, Serializer, Deserialize, Deserializer};",
@@ -586,6 +713,10 @@ def generate(model):
             "}}}",
             serde_ingress(role),
         ]
+        if role == "Block":
+            s.append("impl Block { pub(crate) fn wire_type(&self) -> &'static str { match self {")
+            s += [f'Self::{variant(t["name"], role)}(_) => "{t["wireType"]}",' for t in members]
+            s.append("}}}")
         for t in members:
             n = name(t["name"])
             v = variant(t["name"], role)
@@ -596,7 +727,7 @@ def generate(model):
     for t in types:
         n = name(t["name"])
         exports += [n, n + "Builder"]
-        s += emit_model(t)
+        s += emit_model(t, registry)
     return "\n".join(s) + "\n", exports, types, roles
 
 

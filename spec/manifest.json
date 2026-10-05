@@ -459,7 +459,7 @@
     },
     {
       "id": "messages/webhook_message_basic",
-      "description": "Webhook Message Basic",
+      "description": "Webhook message with opaque application metadata, including unrelated Block Kit discriminator strings",
       "slack_docs": "https://docs.slack.dev/reference/methods/chat.postMessage/",
       "since": "1.0.0"
     },
