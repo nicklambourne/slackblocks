@@ -4,6 +4,8 @@ cd "$(dirname "$0")/../.."
 python3 rust/generator/generate.py --check
 python3 -m unittest discover -s rust/generator -p 'test_*.py'
 cargo +1.85.0 fmt --manifest-path rust/Cargo.toml --all -- --check
+cargo +1.85.0 fmt --manifest-path rust/integrations/Cargo.toml --all -- --check
+cargo +stable clippy --manifest-path rust/integrations/Cargo.toml --all-targets --locked -- -D warnings
 cargo +stable clippy --manifest-path rust/Cargo.toml --workspace --all-targets --locked -- -D warnings
 cargo +stable test --manifest-path rust/Cargo.toml --workspace --all-targets --locked
 cargo +stable test --manifest-path rust/Cargo.toml --workspace --doc --locked

@@ -84,6 +84,13 @@ requests and imposes no async runtime. Check Slack's JSON `ok`/`error` response 
 well as HTTP status. Python's deprecated legacy attachment `Field` is outside the
 shared contract and is deliberately not reproduced.
 
+Runnable [Slack Morphism and reqwest examples](https://github.com/nicklambourne/slackblocks/tree/master/rust/integrations)
+show authenticated delivery, Slack errors, bounded rate-limit retries and timeouts.
+The [sending guide](https://nicklambourne.github.io/slackblocks/usage/sending_messages?language=rust)
+displays their tested source. The separate application project and its lockfile
+are verified on Rust 1.85 and stable; HTTP and async dependencies stay outside the
+published crate. Tests use local mock servers and need no Slack credentials.
+
 ## Support and reference
 
 MSRV is 1.85.0; raising it requires an explicit compatibility decision and release
