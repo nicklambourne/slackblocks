@@ -95,6 +95,13 @@ def test_basic_webhook_message() -> None:
             unfurl_media=False,
             metadata={
                 "sender": "Walt",
+                "event_payload": {
+                    "type": "markdown",
+                    "items": [
+                        {"type": "data_table"},
+                        {"type": "markdown", "text": "x" * 12001},
+                    ],
+                },
             },
         )
     ) == fetch_sample("messages/webhook_message_basic.json")
