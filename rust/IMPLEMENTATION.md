@@ -321,3 +321,16 @@ The audit corrected enum compatibility, name collisions, inspection/editing, omi
    Stable required checks will be registered only after the workflow is on master.
 3. Keep the scoped API checkpoint executable in the package and exercise it on
    the minimum compiler before expanding generation.
+
+## Implementation evidence — contract PR
+
+The complete model is implemented: 89 concrete values, 11 role enums, 8 vocabulary
+ enums and all 15 field kinds. All 105 valid fixtures have checked-in native
+constructions independent of checked JSON ingress; both routes pass. All 167
+invalid cases reject with normative categories and nonempty paths/messages.
+Exact capability, scalar-leaf and vocabulary comparisons pass with no skips.
+The independent Syn audit inventories actual exports and method signatures and
+has a mutation test for an unregistered handwritten helper. Stable and 1.85.0
+workspace tests, strict Clippy/rustdoc, generator freshness and extracted archive
+consumers pass. Foundation CI ran actual test steps on GitHub-provided Ubuntu,
+macOS and Windows runners (run 37199485683), plus MSRV and package gates.

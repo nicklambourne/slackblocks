@@ -11,9 +11,6 @@ ROOT = Path(__file__).resolve().parents[2]
 RUST = ROOT / 'rust'
 KINDS = {'string','boolean','int','long','double','number','enum','map','style','object','list','rows','text','textList','stringList'}
 NAMES = {'Option':'SelectOption','OptionGroup':'SelectOptionGroup','Confirmation':'ConfirmationDialogue'}
-# The foundation intentionally exposes only this reviewed prototype and its
-# concrete dependencies. Full conformance is a later, separately reviewed stage.
-FOUNDATION = {'PlainText','MarkdownText','Option','ButtonElement','SectionBlock','MessagePayload','TableBlock','RichTextBlock','RichTextSection','RichTextText','RichTextList','TaskCardBlock','PlanBlock','ContainerBlock','HeaderBlock','DividerBlock','DataTableBlock','RawNumber','RawText'}
 BOXED = {'Block','Element','InputElement','ContextActionsElement'}
 SINGULAR = {'series':'series_entry','data':'point','categories':'category','trigger_actions_on':'trigger_action','child_blocks':'child_block','visible_to_user_ids':'visible_to_user_id'}
 KEYWORDS = {'type','match','ref','self','Self','super','crate','mod','use','pub','fn','struct','enum','impl','trait','where','move','async','await','dyn','unsafe','loop','in','as','const','static','return','yield','gen','try','abstract','final','override','priv','typeof','unsized','virtual','box','do','macro','become'}
@@ -60,7 +57,7 @@ def leaves(d,p=''):
         else:raise ValueError(f'Invalid scalar limit: {key}')
     return out
 
-def resolve(model, full=False):
+def resolve(model, full=True):
     by_name={t['name']:t for t in model['types']}
     if len(by_name)!=len(model['types']):raise ValueError('Duplicate type')
     all_names=[name(t['name']) for cat in ('types','interfaces','enums') for t in model[cat]]
@@ -78,7 +75,7 @@ def resolve(model, full=False):
             if f['kind']=='enum' and f['wire'] in t['defaults']:
                 enum=next(e for e in model['enums'] if e['name']==f['type'])
                 if t['defaults'][f['wire']] not in [c['wire'] for c in enum['constants']]:raise ValueError('Invalid enum default')
-    selected=set(by_name) if full else set(FOUNDATION)
+    selected=set(by_name)
     while True:
         more={f['type'] for t in selected for f in by_name[t]['fields'] if f.get('type') in by_name}
         if more<=selected:break
@@ -109,7 +106,7 @@ impl<'de> Deserialize<'de> for {n} {{
 }}
 '''
 
-def generate(model, full=False):
+def generate(model, full=True):
     types,roles=resolve(model,full)
     s=['// Generated from spec/model.json; edit the generator, not this file.','use serde::{Serialize, Serializer, Deserialize, Deserializer};','use serde::ser::SerializeMap;','use serde_json::{Map, Value};','use crate::{ErrorCategory, JsonNumber, PlainTextInput, TextInput, RichTextStyle, ValidationError};','use crate::wire::{self, FromWire};']
     exports=[]
@@ -231,7 +228,7 @@ def generate(model, full=False):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');args=parser.parse_args()
     model=json.loads((ROOT/'spec/model.json').read_text())
-    full=(RUST/'generator/full-contract').exists()
+    full=True
     source,exports,types,roles=generate(model,full)
     manifest=json.loads((ROOT/'spec/manifest.json').read_text())
     lim=leaves(json.loads((ROOT/'spec/limits.json').read_text()));voc=json.loads((ROOT/'spec/vocabulary.json').read_text())
