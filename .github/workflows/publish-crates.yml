@@ -2,12 +2,6 @@ name: Publish Rust Package
 
 on:
   pull_request:
-    paths:
-      - "rust/**"
-      - "spec/**"
-      - ".github/scripts/**"
-      - ".github/workflows/publish-crates.yml"
-      - ".github/workflows/coordinated-release.yml"
   push:
     tags:
       - "rust/v*"
@@ -21,8 +15,32 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  changes:
+    name: Detect relevant Rust release changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Compare changed files against Rust release scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ] || grep -qE '^(rust/|spec/|\.github/scripts/|\.github/workflows/(publish-crates|coordinated-release)\.yml$)' <<<"$files"; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
+
   build:
     name: Build and verify Rust release
+    needs: changes
+    if: needs.changes.outputs.relevant == 'true'
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.artifact.outputs.version }}
