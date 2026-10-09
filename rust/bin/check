@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+python3 rust/generator/generate.py --check
+python3 -m unittest discover -s rust/generator -p 'test_*.py'
+cargo +1.85.0 fmt --manifest-path rust/Cargo.toml --all -- --check
+cargo +stable clippy --manifest-path rust/Cargo.toml --workspace --all-targets --locked -- -D warnings
+cargo +stable test --manifest-path rust/Cargo.toml --workspace --all-targets --locked
+cargo +stable test --manifest-path rust/Cargo.toml --workspace --doc --locked
+cargo +stable run --manifest-path rust/Cargo.toml --example api_checkpoint --locked
+RUSTDOCFLAGS='-D warnings' cargo +stable doc --manifest-path rust/Cargo.toml --no-deps --locked
