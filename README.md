@@ -329,11 +329,12 @@ and [Rust API reference](https://nicklambourne.github.io/slackblocks/reference/r
   [TypeScript](https://nicklambourne.github.io/slackblocks/reference/typescript),
   [Go](https://nicklambourne.github.io/slackblocks/reference/go),
   [Java](https://nicklambourne.github.io/slackblocks/reference/java),
-  [C#](https://nicklambourne.github.io/slackblocks/reference/csharp), and
-  [Ruby](https://nicklambourne.github.io/slackblocks/reference/ruby).
+  [C#](https://nicklambourne.github.io/slackblocks/reference/csharp),
+  [Ruby](https://nicklambourne.github.io/slackblocks/reference/ruby), and
+  [Rust](https://nicklambourne.github.io/slackblocks/reference/rust).
 - [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/usage/migration) ·
   [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/usage/troubleshooting)
-- Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md) · [Go](go/CHANGELOG.md) · [Java](java/CHANGELOG.md) · [C#](csharp/CHANGELOG.md) · [Ruby](ruby/CHANGELOG.md)
+- Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md) · [Go](go/CHANGELOG.md) · [Java](java/CHANGELOG.md) · [C#](csharp/CHANGELOG.md) · [Ruby](ruby/CHANGELOG.md) · [Rust](rust/CHANGELOG.md)
 - [Roadmap](ROADMAP.md) — including the TypeScript legacy API removal planned for v3.0.
 
 ## Repository layout
@@ -344,6 +345,7 @@ and [Rust API reference](https://nicklambourne.github.io/slackblocks/reference/r
 - [`java/`](java/) — the Java artifact (`io.github.nicklambourne:slackblocks` on Maven Central).
 - [`csharp/`](csharp/) — the .NET package (`Slackblocks` on NuGet).
 - [`ruby/`](ruby/) — the Ruby gem (`slackblocks` on RubyGems from 2.5.0).
+- [`rust/`](rust/) — the Rust crate (`slackblocks`, prepared for unreleased 2.6.0).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
   and capability coverage that all seven implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.

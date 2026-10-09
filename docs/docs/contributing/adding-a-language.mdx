@@ -203,7 +203,7 @@ same model can agree with each other while both are wrong.
 2. Map every invalid-case ID to a public attempt and assert its exact normative
    category: `length-exceeded`, `out-of-range`, `mutually-exclusive`,
    `type-mismatch`, `missing-required` or `invalid-usage`. Isolate the intended
-   failure and test useful error paths. Error classes and prose remain native.
+   failure and assert representative complete error paths. Error classes and prose remain native.
 3. If the type system prevents a runtime construction, exercise the corresponding
    bad input through a checked public ingress boundary. Plan that boundary at
    the API checkpoint. Compile-time rejection tests supplement the required
@@ -236,7 +236,19 @@ Conformance does not cover every language-specific failure. Add native unit and
 integration tests for ergonomics, validation branches, mutability/ownership,
 serialization, helpers and any promised SDK/framework integration. Use property
 or fuzz tests where they expose a concrete risk, such as recursive round trips
-or numeric conversion.
+or numeric conversion. Every editing test must require its expected outcome:
+valid setters, appenders and clears must succeed; invalid combinations must
+assert the category and relevant path. Conditional assertions such as
+`if let Ok(...)` can silently skip regressions. Include compatible starting
+values for fields that depend on another field, and distinct values for append
+operations subject to uniqueness rules. Spot-check deliberate broken operations
+to confirm the behavior tests fail.
+
+Keep metadata and extension JSON opaque during Block Kit validation. Test maps
+containing unrelated `type`, `text`, `rows` and `tasks` keys through native
+construction and each parsing boundary. Check original numeric literals before
+any lossy conversion, including precision loss, underflow and overflow, in a
+fresh default-feature consumer as well as supported dependency feature modes.
 
 Define required formatting, lint/static-analysis, type-checking, documentation
 and coverage commands. Measure handwritten validation/core/helper coverage
@@ -275,7 +287,9 @@ Pin Actions consistently with existing workflows and keep routine PR jobs free
 of publishing credentials.
 
 Run conformance, native tests, generation drift, quality/coverage, examples and
-package-consumer checks. Cache dependencies with keys that reflect toolchain and
+package-consumer checks. The documented complete local check must execute
+separately resolved integration/example suites too; compiling them is insufficient.
+Cache dependencies with keys that reflect toolchain and
 lockfile changes. Add dependency update configuration to `.github/dependabot.yml`
 for the new ecosystem when supported.
 
@@ -476,6 +490,8 @@ Copy this completion record into the final PR or implementation plan:
 - [ ] Minimum/current toolchains and supported platform matrix pass.
 - [ ] Standalone artifact and external consumer checks pass.
 - [ ] Public comments, READMEs, guides, runnable examples and API reference complete.
+- [ ] Every language enumeration reviewed, including README reference/changelog/layout lists.
+- [ ] Every separately resolved example/integration project's own-package lock entry guarded.
 - [ ] Site language/search/version/navigation checks pass; history remains accurate.
 - [ ] CI filters, stable required checks and dependency maintenance configured.
 - [ ] All version/tag/changelog/publisher guards updated and tested.
@@ -500,6 +516,10 @@ Copy this completion record into the final PR or implementation plan:
 - Test minimum and current compilers, fresh dependency resolution, declared lower
   dependency bounds, and consumer-enabled dependency features. A workspace lock
   can hide downstream compatibility problems.
+- Exercise adversarial application JSON and numeric literals at every ingress
+  boundary. Keep application metadata outside modeled Block Kit traversals.
+  Assert success explicitly for valid edits and test conditional field dependencies
+  with both accepted and rejected combinations.
 - Audit associated constants, enum variants, public fields and methods as well as
   export names. Document handwritten conveniences alongside generated values.
 - A language-content guard must check every supported language, including the
@@ -519,7 +539,9 @@ Copy this completion record into the final PR or implementation plan:
   neither language tests nor platform support ran.
 
 - Update each package’s own lockfile entry when advancing coordinated versions
-  (including Ruby’s `Gemfile.lock`). Run existing-language snippet harnesses as
+  (including Ruby’s `Gemfile.lock` and both Rust Cargo workspaces). Include each
+  separately resolved integration/example project in preflight and prove stale
+  entries are rejected. Run existing-language snippet harnesses as
   well as the new language’s checks; shared guide headings can affect extraction.
 
 - Test release preflight with isolated Git refs and fake registry responses, then

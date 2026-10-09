@@ -71,12 +71,18 @@ jobs:
           path: |
             ~/.cargo/registry/index
             ~/.cargo/registry/cache
+            ~/.cargo/git/db
             rust/target
-          key: rust-${{ runner.os }}-release-${{ hashFiles('rust/Cargo.lock') }}
+            rust/integrations/target
+          key: rust-${{ runner.os }}-release-${{ hashFiles('rust/Cargo.lock', 'rust/integrations/Cargo.lock') }}
           restore-keys: rust-${{ runner.os }}-release-
+      # Rust quality and package owns these checks on PRs. Actual releases
+      # repeat them here so publication validation is self-contained.
       - name: Verify generated code, native API, conformance and documentation
+        if: github.event_name != 'pull_request'
         run: rust/bin/check
       - name: Verify standalone archives and fresh consumers
+        if: github.event_name != 'pull_request'
         run: |
           python rust/bin/check-package.py --toolchain 1.85.0
           python rust/bin/check-package.py --toolchain stable

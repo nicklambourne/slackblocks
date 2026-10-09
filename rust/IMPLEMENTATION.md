@@ -37,6 +37,36 @@ paths. A local illustrative benchmark (three samples, 2,000 nested messages per
 sample, release profile on the same machine) improved median construction plus
 serialization time from 47,992 µs to 22,696 µs. This is not a CI performance gate.
 
+### Test, documentation and CI corrections
+
+- Replace all 677 conditional API success branches with 659 required successes
+  and 18 explicit category/path failures. Add accepted counterparts for dependent
+  edits and distinct append values, and assert collection growth as well as the
+  appended value. Simplify 421 literal JSON expectations without consulting the
+  production generator or changing the independent native constructions.
+- Confirm three deliberate mutations fail their behavior tests: a broken
+  `ButtonElement::clear_url`, an ignored replacement setter and a no-op append.
+  Mutations run only in a scratch copy; none are retained in source.
+- Execute all 15 local HTTP integration tests in `rust/bin/check`.
+- Complete the root README reference/changelog/layout lists and guard the
+  own-crate version in both Cargo locks. Expand the new-language guide with these
+  lessons and adversarial ingress/explicit editing requirements.
+- On PRs, keep full quality and archive checks in **Rust quality and package**;
+  retain publisher release guards, native dry run and independent artifact
+  verification. Actual release runs remain self-contained. Cache both Cargo
+  workspaces. All workflow jobs continue to use GitHub-provided runners.
+
+Local verification passes: the complete Rust check, four archive/fresh-consumer
+modes (MSRV, stable, lower bounds and JSON features), 24 release-guard tests, the
+full docs build/typecheck and historical snapshot guards. The unchanged outgoing
+2.5.0 snapshot is preserved. Core coverage is 98.47% lines / 95.20% regions;
+handwritten coverage is 98.06% / 96.76%, exceeding both 90% gates. Python's complete
+unit/conformance/docs suite passes all 767 tests after updating its separate
+native webhook fixture construction.
+
+Remote CI evidence and final PR heads are recorded in the follow-up PRs. No
+implementation or publication is merged or activated by this remediation.
+
 ## API checkpoint evidence
 
 - 25 representative/supporting types and 8 receiving roles in the foundation.

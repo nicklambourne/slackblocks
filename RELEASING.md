@@ -197,9 +197,12 @@ a release or establish registry ownership.
    `serde_json`. Replace Rust's static unpublished badge with the live crates.io
    badge and add the live docs.rs link. Re-run extracted snippets, generated API
    checks and the complete documentation build before publication.
-6. Run the existing Rust matrix and quality/coverage checks. The release workflow
-   additionally checks extracted archives on MSRV/stable, minimum dependencies and
-   unified serde_json features, then exercises `cargo publish --dry-run` using a
+6. Run the existing Rust matrix and **Rust quality and package** checks. On PRs,
+   that quality job owns the full suite and extracted archives on MSRV/stable,
+   minimum dependencies and unified serde_json features. The publisher PR path
+   checks release guards, native publish dry run and independent artifact
+   verification; actual release runs repeat the full suite before authentication.
+   The publisher exercises `cargo publish --dry-run` using a
    disposable archive copy. That dry run activates only the temporary manifest;
    it never changes the source manifest or uploads a crate. Account configuration
    still requires a maintainer's verification. Register the Rust matrix/quality,
@@ -294,7 +297,10 @@ repeat the snapshot step for this train. Future releases follow the procedure be
    - `csharp/src/Slackblocks/SlackblocksInfo.cs` (`Version`; the C# tests verify
      that it matches the project)
    - `ruby/lib/slackblocks/version.rb` (`VERSION`) and the own-gem entries in `ruby/Gemfile.lock`
-   - `rust/Cargo.toml` (`package.version`) and the own-crate entry in `rust/Cargo.lock`
+   - `rust/Cargo.toml` (`package.version`) and the own-crate entries in both
+     `rust/Cargo.lock` and `rust/integrations/Cargo.lock`. Refresh each Cargo
+     workspace after changing the version, then run its checks with `--locked`;
+     the shared preflight rejects a stale entry in either lockfile.
    - the pinned versions in the installation examples of `README.md`,
      `java/README.md`, `docs/docs/quick-start.mdx`, and
      `docs/docs/usage/installation.mdx`
