@@ -1,7 +1,14 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Migrating from 1.x to 2.x
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
+
+# Migration
+
+<LanguageContent>
+<Python>
+
+## Upgrading Python from 1.x to 2.x
 
 `slackblocks 2.0` is a major version bump that focuses on cleaning up internal
 correctness issues, modernising the type-annotation surface, and adding several
@@ -251,3 +258,56 @@ If you hit a real upgrade problem, please [open an issue on
 GitHub](https://github.com/nicklambourne/slackblocks/issues/new) — include
 your Python version, your `slackblocks` version (old and new), and a
 minimal repro.
+
+</Python>
+<TypeScript>
+
+See [Installation](installation) and the [TypeScript API reference](../reference/typescript) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</TypeScript>
+<Go>
+
+See [Installation](installation) and the [Go API reference](../reference/go) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</Go>
+<Java>
+
+See [Installation](installation) and the [Java API reference](../reference/java) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</Java>
+<CSharp>
+
+See [Installation](installation) and the [C# API reference](../reference/csharp) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</CSharp>
+<Ruby>
+
+See [Installation](installation) and the [Ruby API reference](../reference/ruby) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</Ruby>
+<Rust>
+
+## Moving to the Rust API
+
+Rust support starts in 2.6.0; there is no previous Rust package API to migrate.
+When porting code from another implementation:
+
+- Use consuming snake_case builders and handle `build()` with `?` or `match`.
+- Use `SelectOption`, `SelectOptionGroup` and `ConfirmationDialogue`; names avoid
+  colliding with Rust's `Option` and describe their Slack roles.
+- Getters borrow values. Use `clone().into_builder()` to edit a copy, or move the
+  value into its builder when the old value is no longer needed.
+- Use concrete values and `From` conversions into role enums; strings coerce only
+  in text fields. Typed markdown is rejected in plain-only fields at compile time.
+- Serialize with Serde. HTTP clients and async runtimes stay in the application.
+- Block IDs are omitted unless supplied. `MessageResponse` follows shared model
+  defaults, and parsing preserves absent optional fields. Use `clear_*()` to
+  remove defaults explicitly.
+- Python's deprecated attachment `Field` and historical aliases are not copied;
+  the Rust API implements the shared model and documented helper inventory.
+
+See [Quick Start](../quick-start), [Compatibility](compatibility), and the
+[Rust API reference](../reference/rust) for complete signatures and error behavior.
+
+</Rust>
+</LanguageContent>

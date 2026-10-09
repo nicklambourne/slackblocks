@@ -122,3 +122,23 @@ assert.match(rubyText, /MRI Ruby 3\.3 or newer is required/);
 assert.doesNotMatch(rubyText, /Python 3\.10 or newer is required/);
 
 console.log("Search indexes are scoped to their selected languages.");
+
+const rustDocuments = await readDocuments("rust");
+const rustText = rustDocuments.map(({t}) => t).join("\n");
+const languages = new Map([
+  ["python", pythonDocuments], ["typescript", typescriptDocuments],
+  ["go", goDocuments], ["java", javaDocuments], ["csharp", csharpDocuments],
+  ["ruby", rubyDocuments], ["rust", rustDocuments],
+]);
+for (const [language, documents] of languages) {
+  for (const other of languages.keys()) {
+    if (other === language) continue;
+    assert.equal(documents.some(({u}) => u.includes(`/reference/${other}`)), false,
+      `${language} search leaked the ${other} API reference`);
+  }
+}
+assert.match(rustText, /Rust 1\.85 or newer is required/);
+assert.doesNotMatch(rustText, /MRI Ruby 3\.3 or newer is required/);
+assert.doesNotMatch(rustText, /Python 3\.10 or newer is required/);
+assert.ok(rustDocuments.some(({u}) => u.includes("/reference/rust")));
+assert.ok(rustDocuments.some(({u}) => u.endsWith("/usage/compatibility")));

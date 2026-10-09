@@ -3,7 +3,7 @@ sidebar_label: Quick Start
 sidebar_position: 2
 ---
 
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
 
 # Quick Start
 
@@ -213,6 +213,40 @@ puts message.to_json
 `text` is the plain-text fallback for notifications and accessibility. Values are validated when constructed, and `to_json` emits Slack-compatible JSON.
 
 </Ruby>
+<Rust>
+
+## Use the unreleased crate
+
+Rust 1.85 or newer is required; the crate uses edition 2024. Rust support is
+being prepared for 2.6.0 and is not yet published to crates.io. From an application
+beside a checkout containing this train:
+
+```sh
+cargo add slackblocks --path ../slackblocks/rust
+cargo add serde_json
+```
+
+## Build a message
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let message = MessagePayload::builder("C01234567")
+        .text("Hello from slackblocks!")
+        .block(SectionBlock::builder().text("Hello, world!").build()?)
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+Builders consume themselves and return `Result` from `build()`. Use `?` to
+propagate `ValidationError`. Built values own their data; getters borrow it.
+`text` on the message is Slack's notification and accessibility fallback.
+
+
+</Rust>
 </LanguageContent>
 
 ## Where to go next

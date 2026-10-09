@@ -118,6 +118,8 @@ export default function SearchBar({ handleSearchBarToggle, }) {
                         ? "C#"
                     : searchContext === "ruby"
                         ? "Ruby"
+                        : searchContext === "rust"
+                          ? "Rust"
                     : searchContext === "python"
                             ? "Python"
                             : normalizeContextByPath(detailedSearchContext, currentLocale).label

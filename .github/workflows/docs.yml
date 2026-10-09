@@ -14,6 +14,8 @@ on:
       - "java/**"
       - "csharp/**"
       - "ruby/**"
+      - "rust/**"
+      - "README.md"
       - "spec/**"
       - "package.json"
       - "pnpm-lock.yaml"
@@ -51,7 +53,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(docs/|python/|typescript/src/|typescript/package\.json$|typescript/tsconfig\.json$|typescript/tsconfig\.typedoc\.json$|go/|java/|csharp/|ruby/|spec/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/docs\.yml$)' <<<"$files"; then
+          if grep -qE '^(docs/|python/|typescript/src/|typescript/package\.json$|typescript/tsconfig\.json$|typescript/tsconfig\.typedoc\.json$|go/|java/|csharp/|ruby/|rust/|README\.md$|spec/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/docs\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -111,6 +113,11 @@ jobs:
         uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1
         with:
           ruby-version: "3.4"
+
+      - name: Install Rust for native reference and executable guide examples
+        run: |
+          rustup toolchain install stable 1.85.0 --profile minimal --component rustfmt
+          rustup default stable
 
       - name: Install JavaScript dependencies
         run: pnpm install --frozen-lockfile

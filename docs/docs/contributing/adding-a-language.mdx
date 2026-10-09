@@ -12,7 +12,7 @@ shared contract, useful helpers, tested documentation, and working package and
 release integration. Passing the JSON fixtures is one part of that work.
 
 The maintained implementations are currently Python, TypeScript, Go, Java, C#,
-and Ruby. Recheck that list against the packages and coordinated release at the
+Ruby, and the unreleased Rust 2.6.0 implementation. Recheck that list against the packages and coordinated release at the
 start of the project. A plan or an unfinished implementation does not add a
 language to the release set.
 
@@ -130,7 +130,7 @@ and generated implementations meet the same contract.
   the monorepo, the generator's toolchain or files outside the package.
 
 Existing examples include `ruby/generator/generate_models.py` with `--check`,
-`java/generator/generate_models.py`, `csharp/generator/generate_models.py`, and
+`java/generator/generate_models.py`, `csharp/generator/generate_models.py`, `rust/generator/generate.py`, and
 `go/internal/generatebuilders/`. Adapt their contract handling to the chosen
 idiom; do not copy their language-specific assumptions.
 
@@ -478,3 +478,36 @@ Copy this completion record into the final PR or implementation plan:
 - Outstanding work or unavailable checks:
 - Release status (prepared, authorized, published and verified):
 ```
+
+## Lessons verified while adding Rust
+
+- Keep a complete implementation distinct from registry activation. Record the
+  published release set separately from the source tree; Rust's train leaves
+  publication disabled and all release/account prerequisites explicit.
+- For Cargo, test the extracted `.crate` itself, then a fresh project depending
+  on that extracted directory. A path dependency on the checkout is not package
+  evidence. Keep monorepo-dependent conformance tools outside the archive.
+- Test minimum and current compilers, fresh dependency resolution, declared lower
+  dependency bounds, and consumer-enabled dependency features. A workspace lock
+  can hide downstream compatibility problems.
+- Audit associated constants, enum variants, public fields and methods as well as
+  export names. Document handwritten conveniences alongside generated values.
+- A language-content guard must check every supported language, including the
+  original one. This audit found an empty Python component panel and a Ruby
+  component example that instead demonstrated a plan block; both were corrected.
+- Compile the actual README/MDX snippets and compare block examples to their JSON
+  tabs. Keep names/metadata tied to generation, but derive handwritten API docs
+  from native comments or maintained descriptions with an exact export check.
+- Selecting a language unavailable in an older snapshot must lead to supported
+  current docs. Test stored preferences and direct historical URLs as well as
+  clicking the language selector. A new menu item alone does not establish parity.
+- Preserve the outgoing snapshot before touching current language panels or
+  package versions. Record its source commit, language set and tree digest.
+  Leave published installation examples honest while the next version is unreleased.
+- Wire required CI checks only after their stable names exist on the default
+  branch. Inspect actual steps and runner metadata; a green skipped job proves
+  neither language tests nor platform support ran.
+
+- Update each package’s own lockfile entry when advancing coordinated versions
+  (including Ruby’s `Gemfile.lock`). Run existing-language snippet harnesses as
+  well as the new language’s checks; shared guide headings can affect extraction.

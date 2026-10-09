@@ -1,4 +1,4 @@
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
 
 # API reference
 
@@ -33,4 +33,13 @@ Need the exact constructor parameter, property type, or validation category? The
 The [Ruby API reference](/reference/ruby) documents keyword constructors, immutable readers, RBS signatures, validation errors, and serialization methods for every public value and component.
 
 </Ruby>
+<Rust>
+
+The [Rust API reference](/reference/rust) covers every public value, consuming
+builder, role enum, helper and structured error. Signatures and comments are
+read from the actual Rust syntax; generated naming follows the shared model.
+Run `cargo doc --manifest-path rust/Cargo.toml --no-deps` for native rustdoc,
+including Serde and conversion trait implementations.
+
+</Rust>
 </LanguageContent>

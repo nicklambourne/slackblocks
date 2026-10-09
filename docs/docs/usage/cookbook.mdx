@@ -1,4 +1,4 @@
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
 
 # Recipe Book
 
@@ -6,12 +6,13 @@ End-to-end recipes for common Slack messaging patterns. Each example produces a 
 
 The reference docs cover *what* each class does in isolation; this page is for *how* to combine them into something useful.
 
-## Build status notification
-
-A typical CI/CD success or failure notification: header, summary fields, divider, contextual footer.
-
 <LanguageContent>
 <Python>
+
+## Build status notification
+
+A CI notification with summary fields and a contextual footer.
+
 
 ```python
 from slackblocks import (
@@ -60,210 +61,7 @@ def build_status_message(
     )
 ```
 
-</Python>
-<TypeScript>
 
-```ts
-import {
-  ContextBlock,
-  DividerBlock,
-  HeaderBlock,
-  Markdown,
-  Message,
-  SectionBlock,
-} from "@nicklambourne/slackblocks";
-
-function buildStatusMessage(input: {
-  channel: string;
-  project: string;
-  branch: string;
-  commit: string;
-  author: string;
-  duration: string;
-  passed: boolean;
-}) {
-  const icon = input.passed ? ":white_check_mark:" : ":x:";
-  const status = input.passed ? "passed" : "failed";
-
-  return Message()
-    .channel(input.channel)
-    .text(`Build ${status} for ${input.project}@${input.branch}`)
-    .blocks(
-      HeaderBlock().text(`${icon} ${input.project} build ${status}`),
-      SectionBlock().fields(
-        `*Branch*\n\`${input.branch}\``,
-        `*Commit*\n\`${input.commit.slice(0, 7)}\``,
-        `*Author*\n${input.author}`,
-        `*Duration*\n${input.duration}`,
-      ),
-      DividerBlock(),
-      ContextBlock().elements(
-        Markdown().text(`:calendar: Triggered by push to \`${input.branch}\``),
-      ),
-    )
-    .build();
-}
-```
-
-</TypeScript>
-<Go>
-
-```go
-package notifications
-
-import (
-    "fmt"
-
-    slackblocks "github.com/nicklambourne/slackblocks/go/v2"
-)
-
-func BuildStatusMessage(channel, project, branch, commit, author, duration string, passed bool) (slackblocks.Object, error) {
-    icon, status := ":x:", "failed"
-    if passed {
-        icon, status = ":white_check_mark:", "passed"
-    }
-
-    return slackblocks.NewMessage().
-        Channel(channel).
-        Text(fmt.Sprintf("Build %s for %s@%s", status, project, branch)).
-        Blocks(
-            slackblocks.NewHeaderBlock().Text(fmt.Sprintf("%s %s build %s", icon, project, status)),
-            slackblocks.NewSectionBlock().Fields(
-                fmt.Sprintf("*Branch*\n`%s`", branch),
-                fmt.Sprintf("*Commit*\n`%.7s`", commit),
-                fmt.Sprintf("*Author*\n%s", author),
-                fmt.Sprintf("*Duration*\n%s", duration),
-            ),
-            slackblocks.NewDividerBlock(),
-            slackblocks.NewContextBlock().Elements(
-                slackblocks.NewMarkdown().Text(fmt.Sprintf(":calendar: Triggered by push to `%s`", branch)),
-            ),
-        ).
-        Build()
-}
-```
-
-</Go>
-<Java>
-
-```java
-import io.github.nicklambourne.slackblocks.block.ContextBlock;
-import io.github.nicklambourne.slackblocks.block.DividerBlock;
-import io.github.nicklambourne.slackblocks.block.HeaderBlock;
-import io.github.nicklambourne.slackblocks.block.SectionBlock;
-import io.github.nicklambourne.slackblocks.object.MarkdownText;
-import io.github.nicklambourne.slackblocks.payload.MessagePayload;
-
-static MessagePayload buildStatusMessage(
-    String channel,
-    String project,
-    String branch,
-    String commit,
-    String author,
-    String duration,
-    boolean passed) {
-  String icon = passed ? ":white_check_mark:" : ":x:";
-  String status = passed ? "passed" : "failed";
-
-  return MessagePayload.builder()
-      .channel(channel)
-      .text("Build " + status + " for " + project + "@" + branch)
-      .blocks(
-          HeaderBlock.builder().text(icon + " " + project + " build " + status).build(),
-          SectionBlock.builder().markdownFields(
-              "*Branch*\n`" + branch + "`",
-              "*Commit*\n`" + commit.substring(0, Math.min(7, commit.length())) + "`",
-              "*Author*\n" + author,
-              "*Duration*\n" + duration).build(),
-          DividerBlock.builder().build(),
-          ContextBlock.builder().elements(
-              MarkdownText.of(":calendar: Triggered by push to `" + branch + "`")).build())
-      .build();
-}
-```
-
-</Java>
-<CSharp>
-
-```csharp
-using Slackblocks.Blocks;
-using Slackblocks.Objects;
-using Slackblocks.Payloads;
-
-static MessagePayload BuildStatusMessage(
-    string channel,
-    string project,
-    string branch,
-    string commit,
-    string author,
-    string duration,
-    bool passed)
-{
-    var icon = passed ? ":white_check_mark:" : ":x:";
-    var status = passed ? "passed" : "failed";
-
-    return new MessagePayload(
-        channel,
-        text: $"Build {status} for {project}@{branch}",
-        blocks:
-        [
-            new HeaderBlock($"{icon} {project} build {status}"),
-            new SectionBlock(fields:
-            [
-                $"*Branch*\n`{branch}`",
-                $"*Commit*\n`{commit[..Math.Min(7, commit.Length)]}`",
-                $"*Author*\n{author}",
-                $"*Duration*\n{duration}",
-            ]),
-            new DividerBlock(),
-            new ContextBlock([new MarkdownText($":calendar: Triggered by push to `{branch}`")]),
-        ]);
-}
-```
-
-</CSharp>
-<Ruby>
-
-Ruby values use keyword constructors. Complete messages serialize to Slack-shaped hashes through `as_json` and to JSON through `to_json`.
-
-```ruby
-require "slackblocks"
-
-message = Slackblocks::MessagePayload.new(
-  channel: "C01234567",
-  text: "Build passed for example/main",
-  blocks: [
-    Slackblocks::HeaderBlock.new(text: "Build passed"),
-    Slackblocks::SectionBlock.new(fields: ["*Branch*\n`main`", "*Status*\nPassed"]),
-    Slackblocks::DividerBlock.new,
-    Slackblocks::ContextBlock.new(elements: [Slackblocks::MarkdownText.new(text: "Triggered by a push")])
-  ]
-)
-puts message.to_json
-```
-
-For a simple approval request, use an action ID that your Slack interaction handler recognizes:
-
-```ruby
-require "slackblocks"
-
-message = Slackblocks::MessagePayload.new(
-  channel: "C01234567",
-  text: "Approval requested",
-  blocks: [
-    Slackblocks::SectionBlock.new(text: "Approve the deployment?"),
-    Slackblocks::ActionsBlock.new(elements: [
-      Slackblocks::ButtonElement.new(text: "Approve", action_id: "approve", value: "release-42")
-    ])
-  ]
-)
-puts message.to_json
-```
-
-Use `Slackblocks::ModalView.new(title: "Approval", blocks: [...])` for a modal. See [Payloads](../reference/ruby/payloads) and [Components](../reference/ruby/components) for more patterns.
-
-</Ruby>
-</LanguageContent>
 
 ![A build status notification rendered in Slack](/img/usage/build_notification.png)
 
@@ -623,3 +421,575 @@ except MutualExclusivityError as e:
 ```
 
 Existing `except InvalidUsageError` blocks continue to catch every subclass — the new types are purely additive.
+
+</Python>
+<TypeScript>
+
+## Build status notification
+
+
+
+```ts
+import {
+  ContextBlock,
+  DividerBlock,
+  HeaderBlock,
+  Markdown,
+  Message,
+  SectionBlock,
+} from "@nicklambourne/slackblocks";
+
+function buildStatusMessage(input: {
+  channel: string;
+  project: string;
+  branch: string;
+  commit: string;
+  author: string;
+  duration: string;
+  passed: boolean;
+}) {
+  const icon = input.passed ? ":white_check_mark:" : ":x:";
+  const status = input.passed ? "passed" : "failed";
+
+  return Message()
+    .channel(input.channel)
+    .text(`Build ${status} for ${input.project}@${input.branch}`)
+    .blocks(
+      HeaderBlock().text(`${icon} ${input.project} build ${status}`),
+      SectionBlock().fields(
+        `*Branch*\n\`${input.branch}\``,
+        `*Commit*\n\`${input.commit.slice(0, 7)}\``,
+        `*Author*\n${input.author}`,
+        `*Duration*\n${input.duration}`,
+      ),
+      DividerBlock(),
+      ContextBlock().elements(
+        Markdown().text(`:calendar: Triggered by push to \`${input.branch}\``),
+      ),
+    )
+    .build();
+}
+```
+
+
+
+![An illustrative build status notification in Slack](/img/usage/build_notification.png)
+
+</TypeScript>
+<Go>
+
+## Build status notification
+
+
+
+```go
+package notifications
+
+import (
+    "fmt"
+
+    slackblocks "github.com/nicklambourne/slackblocks/go/v2"
+)
+
+func BuildStatusMessage(channel, project, branch, commit, author, duration string, passed bool) (slackblocks.Object, error) {
+    icon, status := ":x:", "failed"
+    if passed {
+        icon, status = ":white_check_mark:", "passed"
+    }
+
+    return slackblocks.NewMessage().
+        Channel(channel).
+        Text(fmt.Sprintf("Build %s for %s@%s", status, project, branch)).
+        Blocks(
+            slackblocks.NewHeaderBlock().Text(fmt.Sprintf("%s %s build %s", icon, project, status)),
+            slackblocks.NewSectionBlock().Fields(
+                fmt.Sprintf("*Branch*\n`%s`", branch),
+                fmt.Sprintf("*Commit*\n`%.7s`", commit),
+                fmt.Sprintf("*Author*\n%s", author),
+                fmt.Sprintf("*Duration*\n%s", duration),
+            ),
+            slackblocks.NewDividerBlock(),
+            slackblocks.NewContextBlock().Elements(
+                slackblocks.NewMarkdown().Text(fmt.Sprintf(":calendar: Triggered by push to `%s`", branch)),
+            ),
+        ).
+        Build()
+}
+```
+
+
+
+![An illustrative build status notification in Slack](/img/usage/build_notification.png)
+
+</Go>
+<Java>
+
+## Build status notification
+
+
+
+```java
+import io.github.nicklambourne.slackblocks.block.ContextBlock;
+import io.github.nicklambourne.slackblocks.block.DividerBlock;
+import io.github.nicklambourne.slackblocks.block.HeaderBlock;
+import io.github.nicklambourne.slackblocks.block.SectionBlock;
+import io.github.nicklambourne.slackblocks.object.MarkdownText;
+import io.github.nicklambourne.slackblocks.payload.MessagePayload;
+
+static MessagePayload buildStatusMessage(
+    String channel,
+    String project,
+    String branch,
+    String commit,
+    String author,
+    String duration,
+    boolean passed) {
+  String icon = passed ? ":white_check_mark:" : ":x:";
+  String status = passed ? "passed" : "failed";
+
+  return MessagePayload.builder()
+      .channel(channel)
+      .text("Build " + status + " for " + project + "@" + branch)
+      .blocks(
+          HeaderBlock.builder().text(icon + " " + project + " build " + status).build(),
+          SectionBlock.builder().markdownFields(
+              "*Branch*\n`" + branch + "`",
+              "*Commit*\n`" + commit.substring(0, Math.min(7, commit.length())) + "`",
+              "*Author*\n" + author,
+              "*Duration*\n" + duration).build(),
+          DividerBlock.builder().build(),
+          ContextBlock.builder().elements(
+              MarkdownText.of(":calendar: Triggered by push to `" + branch + "`")).build())
+      .build();
+}
+```
+
+
+
+![An illustrative build status notification in Slack](/img/usage/build_notification.png)
+
+</Java>
+<CSharp>
+
+## Build status notification
+
+
+
+```csharp
+using Slackblocks.Blocks;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+static MessagePayload BuildStatusMessage(
+    string channel,
+    string project,
+    string branch,
+    string commit,
+    string author,
+    string duration,
+    bool passed)
+{
+    var icon = passed ? ":white_check_mark:" : ":x:";
+    var status = passed ? "passed" : "failed";
+
+    return new MessagePayload(
+        channel,
+        text: $"Build {status} for {project}@{branch}",
+        blocks:
+        [
+            new HeaderBlock($"{icon} {project} build {status}"),
+            new SectionBlock(fields:
+            [
+                $"*Branch*\n`{branch}`",
+                $"*Commit*\n`{commit[..Math.Min(7, commit.Length)]}`",
+                $"*Author*\n{author}",
+                $"*Duration*\n{duration}",
+            ]),
+            new DividerBlock(),
+            new ContextBlock([new MarkdownText($":calendar: Triggered by push to `{branch}`")]),
+        ]);
+}
+```
+
+
+
+![An illustrative build status notification in Slack](/img/usage/build_notification.png)
+
+</CSharp>
+<Ruby>
+
+## Build status notification
+
+
+
+Ruby values use keyword constructors. Complete messages serialize to Slack-shaped hashes through `as_json` and to JSON through `to_json`.
+
+```ruby
+require "slackblocks"
+
+message = Slackblocks::MessagePayload.new(
+  channel: "C01234567",
+  text: "Build passed for example/main",
+  blocks: [
+    Slackblocks::HeaderBlock.new(text: "Build passed"),
+    Slackblocks::SectionBlock.new(fields: ["*Branch*\n`main`", "*Status*\nPassed"]),
+    Slackblocks::DividerBlock.new,
+    Slackblocks::ContextBlock.new(elements: [Slackblocks::MarkdownText.new(text: "Triggered by a push")])
+  ]
+)
+puts message.to_json
+```
+
+For a simple approval request, use an action ID that your Slack interaction handler recognizes:
+
+```ruby
+require "slackblocks"
+
+message = Slackblocks::MessagePayload.new(
+  channel: "C01234567",
+  text: "Approval requested",
+  blocks: [
+    Slackblocks::SectionBlock.new(text: "Approve the deployment?"),
+    Slackblocks::ActionsBlock.new(elements: [
+      Slackblocks::ButtonElement.new(text: "Approve", action_id: "approve", value: "release-42")
+    ])
+  ]
+)
+puts message.to_json
+```
+
+Use `Slackblocks::ModalView.new(title: "Approval", blocks: [...])` for a modal. See [Payloads](../reference/ruby/payloads) and [Components](../reference/ruby/components) for more patterns.
+
+
+
+![An illustrative build status notification in Slack](/img/usage/build_notification.png)
+
+</Ruby>
+<Rust>
+
+Rust recipes use owned, validated values and propagate errors with `?`. Sending
+is a separate application concern; see [Sending Messages](sending_messages).
+
+## Build status notification
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let message = MessagePayload::builder("C01234567")
+        .text("Build passed for example/main")
+        .block(HeaderBlock::builder().text("Build passed").build()?)
+        .block(
+            SectionBlock::builder()
+                .fields(["*Branch*\n`main`", "*Status*\nPassed"])
+                .build()?,
+        )
+        .block(DividerBlock::builder().build()?)
+        .block(
+            ContextBlock::builder()
+                .element(MarkdownText::new("Triggered by a push")?)
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+
+![An illustrative build notification layout](/img/usage/build_notification.png)
+
+## Rich-formatted alert
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let rich = RichTextBlock::builder()
+        .element(
+            RichTextSection::builder()
+                .element(
+                    RichTextText::builder()
+                        .text("Deployment needs attention")
+                        .style(RichTextStyle::new().bold(true))
+                        .build()?,
+                )
+                .build()?,
+        )
+        .build()?;
+    let message = MessagePayload::builder("C01234567")
+        .text("Deployment needs attention")
+        .block(rich)
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+
+![An illustrative Slack rich-text layout](/img/usage/rich_text.png)
+
+## Confirmation modal
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let modal = ModalView::builder()
+        .title("Approval")
+        .submit("Approve")
+        .close("Cancel")
+        .block(
+            InputBlock::builder()
+                .label("Reason")
+                .element(
+                    PlainTextInputElement::builder()
+                        .action_id("reason")
+                        .build()?,
+                )
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&modal)?);
+    Ok(())
+}
+```
+
+Input blocks require a modal submit label. Put this view in a `views.open`
+request alongside the interaction's trigger ID.
+
+
+![An illustrative input field in a Slack modal](/img/usage/input.png)
+
+## Multi-column status report (table)
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let table = TableBlock::builder()
+        .rows([
+            vec![RawText::new("Service")?, RawText::new("Status")?],
+            vec![RawText::new("API")?, RawText::new("Healthy")?],
+        ])
+        .build()?;
+    println!("{}", serde_json::to_string(&table)?);
+    Ok(())
+}
+```
+
+Plain tables permit ragged rows; data tables require rectangular rows and raw
+header cells. `DataTableBlock` also checks its caption and text totals.
+
+
+![An illustrative Slack table layout](/img/usage/table.png)
+
+## Reusable accordion and pagination
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let details = AccordionSection::builder("Details")
+        .block(SectionBlock::builder().text("All checks passed").build()?)
+        .build()?;
+    let accordion = Accordion::new([details])?;
+    let page = Paginator::builder("builds", accordion)
+        .page_size(5)
+        .build()?;
+    let message = MessagePayload::builder("C01234567")
+        .text("Build details")
+        .blocks(page)
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+Pagination uses one-based pages. Navigation action IDs end in `.previous` or
+`.next`, and button values contain the destination page. Your interaction handler
+rebuilds the next page. The receiving message validates limits after expansion.
+
+
+
+
+## Approval request with action buttons
+
+Your interaction handler matches the action ID and reads the request ID from the button value.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let actions = ActionsBlock::builder()
+        .element(
+            ButtonElement::builder()
+                .text("Approve")
+                .action_id("approve")
+                .value("release-42")
+                .style(ButtonStyle::Primary)
+                .build()?,
+        )
+        .element(
+            ButtonElement::builder()
+                .text("Reject")
+                .action_id("reject")
+                .value("release-42")
+                .style(ButtonStyle::Danger)
+                .build()?,
+        )
+        .build()?;
+    let message = MessagePayload::builder("C01234567")
+        .text("Approval requested")
+        .block(
+            SectionBlock::builder()
+                .text("Approve this release?")
+                .build()?,
+        )
+        .block(actions)
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+
+## Threaded reply
+
+Threading is an unmodeled delivery option. Add the parent message timestamp as
+a checked extension, or set `thread_ts` on your HTTP/Slack request.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let reply = MessagePayload::builder("C01234567")
+        .extension("thread_ts", "1700000000.000100")
+        .text("30% complete")
+        .block(
+            SectionBlock::builder()
+                .text("Reticulating splines... 30% complete.")
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&reply)?);
+    Ok(())
+}
+```
+
+
+## Ephemeral slash-command response
+
+Set response visibility explicitly when it matters; return this JSON in your interaction handler.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let response = MessageResponse::builder()
+        .response_type(ResponseType::Ephemeral)
+        .block(
+            SectionBlock::builder()
+                .text("Searching... I will DM you when done.")
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&response)?);
+    Ok(())
+}
+```
+
+
+## Colored-bar attachment
+
+Attachments are a legacy Slack feature. `AttachmentColor` supports semantic colors, named constants and checked six-digit hex parsing.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let attachment = Attachment::builder()
+        .color(AttachmentColor::YELLOW)
+        .block(
+            SectionBlock::builder()
+                .text(":warning: Disk usage is at 87%.")
+                .build()?,
+        )
+        .build()?;
+    let message = MessagePayload::builder("C01234567")
+        .text("Disk usage warning")
+        .attachment(attachment)
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+
+## Preview a message in the browser
+
+The helper encodes UTF-8 JSON in a Builder URL without sending a request. It borrows blocks and payloads.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block: Block = SectionBlock::builder()
+        .text("Preview this message")
+        .build()?
+        .into();
+    println!("{}", block_kit_builder_url(&block, Some("T0123ABCD"))?);
+    Ok(())
+}
+```
+
+
+## Parse modeled Block Kit JSON
+
+Use `TryFrom<Value>` for structured validation errors. This parses modeled outbound shapes, not arbitrary inbound event envelopes.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let input =
+        serde_json::json!({"type":"section","text":{"type":"mrkdwn","text":"Checked input"}});
+    let block = Block::try_from(input)?;
+    match &block {
+        Block::Section(section) => assert!(section.text().is_some()),
+        _ => panic!("expected a section"),
+    }
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+
+## Workflow trigger shortcut
+
+Input parameters retain iterator order. An empty iterator omits the parameter list.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let workflow = Workflow::from_url(
+        "https://slack.com/shortcuts/Ft012KXZK1MZ/example",
+        [
+            InputParameter::builder()
+                .name("env")
+                .value("prod")
+                .build()?,
+            InputParameter::builder()
+                .name("retries")
+                .value("3")
+                .build()?,
+        ],
+    )?;
+    let button = WorkflowButtonElement::builder()
+        .text("Release")
+        .action_id("release")
+        .workflow(workflow)
+        .build()?;
+    println!("{}", serde_json::to_string(&button)?);
+    Ok(())
+}
+```
+
+See [Troubleshooting](troubleshooting) for typed error handling, omission rules and safe editing.
+
+</Rust>
+</LanguageContent>

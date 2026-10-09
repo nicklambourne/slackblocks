@@ -1,0 +1,2639 @@
+---
+sidebar_position: 2
+toc_max_heading_level: 3
+---
+
+# Elements
+
+This page documents the public C# API for elements, generated from the XML documentation of the compiled library. Values are immutable, constructors take named arguments and validate them, and read-only properties return what was passed.
+
+## ButtonElement
+
+An interactive button that sends a payload or opens a URL.
+
+- Required: `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/button-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement).
+
+### ButtonElement
+
+Creates and validates a [`ButtonElement`](/reference/csharp/elements#buttonelement).
+
+```csharp
+public ButtonElement(PlainText text, string? actionId = null, string? url = null, string? value = null, ButtonStyle? style = null, Confirmation? confirm = null, string? accessibilityLabel = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The button label. Required. Slack allows at most 75 characters. A string is sent as a `plain_text` text object. |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `url` | A URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload. Slack allows at most 3000 characters. |
+| `value` | The application-defined value sent in interaction payloads. Slack allows at most 2000 characters. |
+| `style` | The button's emphasis. Omit it for the default neutral style. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `accessibilityLabel` | The label read by screen readers in place of the visible text. Slack allows at most 75 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ButtonElement`](/reference/csharp/elements#buttonelement), [`ButtonStyle`](/reference/csharp/elements#buttonstyle), [`Confirmation`](/reference/csharp/objects#confirmation), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Text
+
+Gets the button label.
+
+```csharp
+public PlainText Text { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext), [`Text`](/reference/csharp/objects#text)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### Url
+
+Gets a URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? Url { get; }
+```
+
+### Value
+
+Gets the application-defined value sent in interaction payloads.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? Value { get; }
+```
+
+### Style
+
+Gets the button's emphasis. Omit it for the default neutral style.
+
+The value, or `null` when it was not set.
+
+```csharp
+public ButtonStyle? Style { get; }
+```
+
+**Related types:** [`ButtonStyle`](/reference/csharp/elements#buttonstyle)
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### AccessibilityLabel
+
+Gets the label read by screen readers in place of the visible text.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? AccessibilityLabel { get; }
+```
+
+## ButtonStyle
+
+Visual emphasis for buttons and confirmation dialogs.
+
+`ToWireValue()` returns the value Slack expects in JSON.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Primary` | `primary` | Green emphasis for the affirmative action. |
+| `Danger` | `danger` | Red emphasis for destructive actions. |
+
+## ChannelMultiSelectElement
+
+A menu for selecting multiple public channels.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### ChannelMultiSelectElement
+
+Creates and validates a [`ChannelMultiSelectElement`](/reference/csharp/elements#channelmultiselectelement).
+
+```csharp
+public ChannelMultiSelectElement(string? actionId = null, IEnumerable<string>? initialChannels = null, Confirmation? confirm = null, int? maxSelectedItems = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `initialChannels` | Channel IDs that are selected when the menu loads. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `maxSelectedItems` | The maximum number of items a user can select. Must be at least 1. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ChannelMultiSelectElement`](/reference/csharp/elements#channelmultiselectelement), [`Confirmation`](/reference/csharp/objects#confirmation), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### InitialChannels
+
+Gets channel IDs that are selected when the menu loads.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<string> InitialChannels { get; }
+```
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### MaxSelectedItems
+
+Gets the maximum number of items a user can select.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? MaxSelectedItems { get; }
+```
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## ChannelSelectElement
+
+A menu for selecting one public channel.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### ChannelSelectElement
+
+Creates and validates a [`ChannelSelectElement`](/reference/csharp/elements#channelselectelement).
+
+```csharp
+public ChannelSelectElement(string? actionId = null, string? initialChannel = null, bool? responseUrlEnabled = null, Confirmation? confirm = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `initialChannel` | The channel ID selected when the menu loads. |
+| `responseUrlEnabled` | Whether the selected conversation receives a response URL in the view submission payload. Only valid in modals. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ChannelSelectElement`](/reference/csharp/elements#channelselectelement), [`Confirmation`](/reference/csharp/objects#confirmation), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### InitialChannel
+
+Gets the channel ID selected when the menu loads.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? InitialChannel { get; }
+```
+
+### ResponseUrlEnabled
+
+Gets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? ResponseUrlEnabled { get; }
+```
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## CheckboxesElement
+
+A group of checkboxes.
+
+- Required: `options`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/checkboxes-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### CheckboxesElement
+
+Creates and validates a [`CheckboxesElement`](/reference/csharp/elements#checkboxeselement).
+
+```csharp
+public CheckboxesElement(string? actionId, IEnumerable<Option> options, IEnumerable<Option>? initialOptions = null, Confirmation? confirm = null, bool? focusOnLoad = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `options` | Selectable options in display order. Required. Must contain between 1 and 10 items. |
+| `initialOptions` | Options that are selected when the element loads. Each must match an option in the element. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`CheckboxesElement`](/reference/csharp/elements#checkboxeselement), [`Confirmation`](/reference/csharp/objects#confirmation), [`Option`](/reference/csharp/objects#option)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### Options
+
+Gets selectable options in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Option> Options { get; }
+```
+
+**Related types:** [`Option`](/reference/csharp/objects#option)
+
+### InitialOptions
+
+Gets options that are selected when the element loads. Each must match an option in the element.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Option> InitialOptions { get; }
+```
+
+**Related types:** [`Option`](/reference/csharp/objects#option)
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+## ConversationMultiSelectElement
+
+A menu for selecting multiple conversations.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### ConversationMultiSelectElement
+
+Creates and validates a [`ConversationMultiSelectElement`](/reference/csharp/elements#conversationmultiselectelement).
+
+```csharp
+public ConversationMultiSelectElement(string? actionId = null, IEnumerable<string>? initialConversations = null, bool? defaultToCurrentConversation = null, ConversationFilter? filter = null, Confirmation? confirm = null, int? maxSelectedItems = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `initialConversations` | Conversation IDs that are selected when the menu loads. |
+| `defaultToCurrentConversation` | Whether the menu pre-selects the conversation the user is viewing. |
+| `filter` | Which conversation types the menu offers. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `maxSelectedItems` | The maximum number of items a user can select. Must be at least 1. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`ConversationFilter`](/reference/csharp/objects#conversationfilter), [`ConversationMultiSelectElement`](/reference/csharp/elements#conversationmultiselectelement), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### InitialConversations
+
+Gets conversation IDs that are selected when the menu loads.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<string> InitialConversations { get; }
+```
+
+### DefaultToCurrentConversation
+
+Gets whether the menu pre-selects the conversation the user is viewing.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? DefaultToCurrentConversation { get; }
+```
+
+### Filter
+
+Gets which conversation types the menu offers.
+
+The value, or `null` when it was not set.
+
+```csharp
+public ConversationFilter? Filter { get; }
+```
+
+**Related types:** [`ConversationFilter`](/reference/csharp/objects#conversationfilter)
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### MaxSelectedItems
+
+Gets the maximum number of items a user can select.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? MaxSelectedItems { get; }
+```
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## ConversationSelectElement
+
+A menu for selecting one conversation.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### ConversationSelectElement
+
+Creates and validates a [`ConversationSelectElement`](/reference/csharp/elements#conversationselectelement).
+
+```csharp
+public ConversationSelectElement(string? actionId = null, string? initialConversation = null, bool? defaultToCurrentConversation = null, ConversationFilter? filter = null, bool? responseUrlEnabled = null, Confirmation? confirm = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `initialConversation` | The conversation ID selected when the menu loads. |
+| `defaultToCurrentConversation` | Whether the menu pre-selects the conversation the user is viewing. |
+| `filter` | Which conversation types the menu offers. |
+| `responseUrlEnabled` | Whether the selected conversation receives a response URL in the view submission payload. Only valid in modals. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`ConversationFilter`](/reference/csharp/objects#conversationfilter), [`ConversationSelectElement`](/reference/csharp/elements#conversationselectelement), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### InitialConversation
+
+Gets the conversation ID selected when the menu loads.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? InitialConversation { get; }
+```
+
+### DefaultToCurrentConversation
+
+Gets whether the menu pre-selects the conversation the user is viewing.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? DefaultToCurrentConversation { get; }
+```
+
+### Filter
+
+Gets which conversation types the menu offers.
+
+The value, or `null` when it was not set.
+
+```csharp
+public ConversationFilter? Filter { get; }
+```
+
+**Related types:** [`ConversationFilter`](/reference/csharp/objects#conversationfilter)
+
+### ResponseUrlEnabled
+
+Gets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? ResponseUrlEnabled { get; }
+```
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## DatePickerElement
+
+A calendar date picker.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### DatePickerElement
+
+Creates and validates a [`DatePickerElement`](/reference/csharp/elements#datepickerelement).
+
+```csharp
+public DatePickerElement(string? actionId = null, string? initialDate = null, Confirmation? confirm = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `initialDate` | The initially selected date, formatted as YYYY-MM-DD. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`DatePickerElement`](/reference/csharp/elements#datepickerelement), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### InitialDate
+
+Gets the initially selected date, formatted as YYYY-MM-DD.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? InitialDate { get; }
+```
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## DateTimePickerElement
+
+A combined date and time picker.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/datetime-picker-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### DateTimePickerElement
+
+Creates and validates a [`DateTimePickerElement`](/reference/csharp/elements#datetimepickerelement).
+
+```csharp
+public DateTimePickerElement(string? actionId = null, long? initialDateTime = null, Confirmation? confirm = null, bool? focusOnLoad = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `initialDateTime` | The initially selected moment as a UNIX timestamp in seconds. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`DateTimePickerElement`](/reference/csharp/elements#datetimepickerelement)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### InitialDateTime
+
+Gets the initially selected moment as a UNIX timestamp in seconds.
+
+The value, or `null` when it was not set.
+
+```csharp
+public long? InitialDateTime { get; }
+```
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+## EmailInputElement
+
+A single-line input that accepts an email address.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/email-input-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### EmailInputElement
+
+Creates and validates a [`EmailInputElement`](/reference/csharp/elements#emailinputelement).
+
+```csharp
+public EmailInputElement(string? actionId = null, string? initialValue = null, DispatchActionConfiguration? dispatchActionConfig = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `initialValue` | The value present when the input loads. |
+| `dispatchActionConfig` | Which user interactions send a block_actions payload. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/csharp/objects#dispatchactionconfiguration), [`EmailInputElement`](/reference/csharp/elements#emailinputelement), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### InitialValue
+
+Gets the value present when the input loads.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? InitialValue { get; }
+```
+
+### DispatchActionConfig
+
+Gets which user interactions send a block_actions payload.
+
+The value, or `null` when it was not set.
+
+```csharp
+public DispatchActionConfiguration? DispatchActionConfig { get; }
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/csharp/objects#dispatchactionconfiguration)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## ExternalMultiSelectElement
+
+A menu for selecting multiple options loaded from your app.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### ExternalMultiSelectElement
+
+Creates and validates a [`ExternalMultiSelectElement`](/reference/csharp/elements#externalmultiselectelement).
+
+```csharp
+public ExternalMultiSelectElement(string? actionId = null, int? minQueryLength = null, IEnumerable<Option>? initialOptions = null, Confirmation? confirm = null, int? maxSelectedItems = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `minQueryLength` | How many characters the user must type before Slack queries your options endpoint. |
+| `initialOptions` | Options that are selected when the element loads. Each must match an option in the element. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `maxSelectedItems` | The maximum number of items a user can select. Must be at least 1. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`ExternalMultiSelectElement`](/reference/csharp/elements#externalmultiselectelement), [`Option`](/reference/csharp/objects#option), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### MinQueryLength
+
+Gets how many characters the user must type before Slack queries your options endpoint.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? MinQueryLength { get; }
+```
+
+### InitialOptions
+
+Gets options that are selected when the element loads. Each must match an option in the element.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Option> InitialOptions { get; }
+```
+
+**Related types:** [`Option`](/reference/csharp/objects#option)
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### MaxSelectedItems
+
+Gets the maximum number of items a user can select.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? MaxSelectedItems { get; }
+```
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## ExternalSelectElement
+
+A menu for selecting one option loaded from your app.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### ExternalSelectElement
+
+Creates and validates a [`ExternalSelectElement`](/reference/csharp/elements#externalselectelement).
+
+```csharp
+public ExternalSelectElement(string? actionId = null, int? minQueryLength = null, Option? initialOption = null, Confirmation? confirm = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `minQueryLength` | How many characters the user must type before Slack queries your options endpoint. |
+| `initialOption` | The option selected when the element loads. It must match an option in the element. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`ExternalSelectElement`](/reference/csharp/elements#externalselectelement), [`Option`](/reference/csharp/objects#option), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### MinQueryLength
+
+Gets how many characters the user must type before Slack queries your options endpoint.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? MinQueryLength { get; }
+```
+
+### InitialOption
+
+Gets the option selected when the element loads. It must match an option in the element.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Option? InitialOption { get; }
+```
+
+**Related types:** [`Option`](/reference/csharp/objects#option)
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## FeedbackButtonsElement
+
+A pair of thumbs-up and thumbs-down feedback buttons.
+
+- Required: `positiveButton`, `negativeButton`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+Implements [`IContextActionsElement`](/reference/csharp/blocks#icontextactionselement), [`IElement`](/reference/csharp/elements#ielement).
+
+### FeedbackButtonsElement
+
+Creates and validates a [`FeedbackButtonsElement`](/reference/csharp/elements#feedbackbuttonselement).
+
+```csharp
+public FeedbackButtonsElement(FeedbackButton positiveButton, FeedbackButton negativeButton, string? actionId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `positiveButton` | The button for positive feedback. Required. |
+| `negativeButton` | The button for negative feedback. Required. |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`FeedbackButton`](/reference/csharp/objects#feedbackbutton), [`FeedbackButtonsElement`](/reference/csharp/elements#feedbackbuttonselement)
+
+### PositiveButton
+
+Gets the button for positive feedback.
+
+```csharp
+public FeedbackButton PositiveButton { get; }
+```
+
+**Related types:** [`FeedbackButton`](/reference/csharp/objects#feedbackbutton)
+
+### NegativeButton
+
+Gets the button for negative feedback.
+
+```csharp
+public FeedbackButton NegativeButton { get; }
+```
+
+**Related types:** [`FeedbackButton`](/reference/csharp/objects#feedbackbutton)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+## FileInputElement
+
+An input that lets users upload files.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/file-input-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### FileInputElement
+
+Creates and validates a [`FileInputElement`](/reference/csharp/elements#fileinputelement).
+
+```csharp
+public FileInputElement(string? actionId = null, IEnumerable<string>? filetypes = null, int? maxFiles = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `filetypes` | Accepted file extensions, such as pdf or png. |
+| `maxFiles` | The maximum number of files a user can upload. Must be between 1 and 10. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`FileInputElement`](/reference/csharp/elements#fileinputelement)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### Filetypes
+
+Gets accepted file extensions, such as pdf or png.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<string> Filetypes { get; }
+```
+
+### MaxFiles
+
+Gets the maximum number of files a user can upload.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? MaxFiles { get; }
+```
+
+## IconButtonElement
+
+A button that shows an icon instead of text.
+
+- Required: `text`, `icon`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element).
+
+Implements [`IContextActionsElement`](/reference/csharp/blocks#icontextactionselement), [`IElement`](/reference/csharp/elements#ielement).
+
+### IconButtonElement
+
+Creates and validates a [`IconButtonElement`](/reference/csharp/elements#iconbuttonelement).
+
+```csharp
+public IconButtonElement(PlainText text, IconButtonIcon? icon = null, string? actionId = null, string? value = null, Confirmation? confirm = null, string? accessibilityLabel = null, IEnumerable<string>? visibleToUserIds = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The text used as the button's accessible name. Required. A string is sent as a `plain_text` text object. |
+| `icon` | The icon shown on the button. Required. |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `value` | The application-defined value sent in interaction payloads. Slack allows at most 2000 characters. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `accessibilityLabel` | The label read by screen readers in place of the visible text. Slack allows at most 75 characters. |
+| `visibleToUserIds` | The IDs of users who can see this button. Slack allows at most 10 items. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`IconButtonElement`](/reference/csharp/elements#iconbuttonelement), [`IconButtonIcon`](/reference/csharp/elements#iconbuttonicon), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Text
+
+Gets the text used as the button's accessible name.
+
+```csharp
+public PlainText Text { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext), [`Text`](/reference/csharp/objects#text)
+
+### Icon
+
+Gets the icon shown on the button.
+
+```csharp
+public IconButtonIcon? Icon { get; }
+```
+
+**Related types:** [`IconButtonIcon`](/reference/csharp/elements#iconbuttonicon)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### Value
+
+Gets the application-defined value sent in interaction payloads.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? Value { get; }
+```
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### AccessibilityLabel
+
+Gets the label read by screen readers in place of the visible text.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? AccessibilityLabel { get; }
+```
+
+### VisibleToUserIds
+
+Gets the IDs of users who can see this button.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<string> VisibleToUserIds { get; }
+```
+
+## IconButtonIcon
+
+Icons supported by icon buttons.
+
+`ToWireValue()` returns the value Slack expects in JSON.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Trash` | `trash` | A trash can, for delete actions. |
+
+## IElement
+
+A validated interactive, visual, or input element nested inside a Slack block.
+
+Implemented by [`ButtonElement`](/reference/csharp/elements#buttonelement), [`ChannelMultiSelectElement`](/reference/csharp/elements#channelmultiselectelement), [`ChannelSelectElement`](/reference/csharp/elements#channelselectelement), [`CheckboxesElement`](/reference/csharp/elements#checkboxeselement), [`ConversationMultiSelectElement`](/reference/csharp/elements#conversationmultiselectelement), [`ConversationSelectElement`](/reference/csharp/elements#conversationselectelement), [`DatePickerElement`](/reference/csharp/elements#datepickerelement), [`DateTimePickerElement`](/reference/csharp/elements#datetimepickerelement), [`EmailInputElement`](/reference/csharp/elements#emailinputelement), [`ExternalMultiSelectElement`](/reference/csharp/elements#externalmultiselectelement), [`ExternalSelectElement`](/reference/csharp/elements#externalselectelement), [`FeedbackButtonsElement`](/reference/csharp/elements#feedbackbuttonselement), [`FileInputElement`](/reference/csharp/elements#fileinputelement), [`IconButtonElement`](/reference/csharp/elements#iconbuttonelement), [`ImageElement`](/reference/csharp/elements#imageelement), [`NumberInputElement`](/reference/csharp/elements#numberinputelement), [`OverflowElement`](/reference/csharp/elements#overflowelement), [`PlainTextInputElement`](/reference/csharp/elements#plaintextinputelement), [`RadioButtonsElement`](/reference/csharp/elements#radiobuttonselement), [`RichTextInputElement`](/reference/csharp/elements#richtextinputelement), [`StaticMultiSelectElement`](/reference/csharp/elements#staticmultiselectelement), [`StaticSelectElement`](/reference/csharp/elements#staticselectelement), [`TimePickerElement`](/reference/csharp/elements#timepickerelement), [`UrlInputElement`](/reference/csharp/elements#urlinputelement), [`UserMultiSelectElement`](/reference/csharp/elements#usermultiselectelement), [`UserSelectElement`](/reference/csharp/elements#userselectelement), [`WorkflowButtonElement`](/reference/csharp/elements#workflowbuttonelement).
+
+## IInputElement
+
+An element that can be placed in an input block.
+
+Implemented by [`ChannelMultiSelectElement`](/reference/csharp/elements#channelmultiselectelement), [`ChannelSelectElement`](/reference/csharp/elements#channelselectelement), [`CheckboxesElement`](/reference/csharp/elements#checkboxeselement), [`ConversationMultiSelectElement`](/reference/csharp/elements#conversationmultiselectelement), [`ConversationSelectElement`](/reference/csharp/elements#conversationselectelement), [`DatePickerElement`](/reference/csharp/elements#datepickerelement), [`DateTimePickerElement`](/reference/csharp/elements#datetimepickerelement), [`EmailInputElement`](/reference/csharp/elements#emailinputelement), [`ExternalMultiSelectElement`](/reference/csharp/elements#externalmultiselectelement), [`ExternalSelectElement`](/reference/csharp/elements#externalselectelement), [`FileInputElement`](/reference/csharp/elements#fileinputelement), [`NumberInputElement`](/reference/csharp/elements#numberinputelement), [`PlainTextInputElement`](/reference/csharp/elements#plaintextinputelement), [`RadioButtonsElement`](/reference/csharp/elements#radiobuttonselement), [`RichTextInputElement`](/reference/csharp/elements#richtextinputelement), [`StaticMultiSelectElement`](/reference/csharp/elements#staticmultiselectelement), [`StaticSelectElement`](/reference/csharp/elements#staticselectelement), [`TimePickerElement`](/reference/csharp/elements#timepickerelement), [`UrlInputElement`](/reference/csharp/elements#urlinputelement), [`UserMultiSelectElement`](/reference/csharp/elements#usermultiselectelement), [`UserSelectElement`](/reference/csharp/elements#userselectelement).
+
+## ImageElement
+
+An image displayed inside a section, context, or card.
+
+- Required: `altText`.
+- Provide exactly one of an image URL or a Slack file.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/image-element).
+
+Implements [`IContextElement`](/reference/csharp/blocks#icontextelement), [`IElement`](/reference/csharp/elements#ielement).
+
+### ImageElement
+
+Creates and validates a [`ImageElement`](/reference/csharp/elements#imageelement).
+
+```csharp
+public ImageElement(string altText, string? imageUrl = null, SlackFile? slackFile = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `altText` | A plain-text summary of the image or video for assistive technology. Required. Slack allows at most 2000 characters. |
+| `imageUrl` | The publicly accessible URL of the image. Cannot be combined with a Slack file. Slack allows at most 3000 characters. |
+| `slackFile` | A file hosted in Slack as the image source. Cannot be combined with an image URL. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ImageElement`](/reference/csharp/elements#imageelement), [`SlackFile`](/reference/csharp/objects#slackfile)
+
+### AltText
+
+Gets a plain-text summary of the image or video for assistive technology.
+
+```csharp
+public string AltText { get; }
+```
+
+### ImageUrl
+
+Gets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ImageUrl { get; }
+```
+
+### SlackFile
+
+Gets a file hosted in Slack as the image source. Cannot be combined with an image URL.
+
+The value, or `null` when it was not set.
+
+```csharp
+public SlackFile? SlackFile { get; }
+```
+
+**Related types:** [`SlackFile`](/reference/csharp/objects#slackfile)
+
+## NumberInputElement
+
+An input that accepts whole or decimal numbers.
+
+- Required: `isDecimalAllowed`.
+- The minimum value cannot exceed the maximum value.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/number-input-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### NumberInputElement
+
+Creates and validates a [`NumberInputElement`](/reference/csharp/elements#numberinputelement).
+
+```csharp
+public NumberInputElement(string? actionId = null, bool? isDecimalAllowed = null, string? initialValue = null, double? minValue = null, double? maxValue = null, DispatchActionConfiguration? dispatchActionConfig = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `isDecimalAllowed` | Whether the input accepts decimal numbers. Required. |
+| `initialValue` | The number present when the input loads, as a string such as 42 or 3.5. |
+| `minValue` | The smallest accepted number. |
+| `maxValue` | The largest accepted number. |
+| `dispatchActionConfig` | Which user interactions send a block_actions payload. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/csharp/objects#dispatchactionconfiguration), [`NumberInputElement`](/reference/csharp/elements#numberinputelement), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### IsDecimalAllowed
+
+Gets whether the input accepts decimal numbers.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? IsDecimalAllowed { get; }
+```
+
+### InitialValue
+
+Gets the number present when the input loads, as a string such as 42 or 3.5.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? InitialValue { get; }
+```
+
+### MinValue
+
+Gets the smallest accepted number.
+
+The value, or `null` when it was not set.
+
+```csharp
+public double? MinValue { get; }
+```
+
+### MaxValue
+
+Gets the largest accepted number.
+
+The value, or `null` when it was not set.
+
+```csharp
+public double? MaxValue { get; }
+```
+
+### DispatchActionConfig
+
+Gets which user interactions send a block_actions payload.
+
+The value, or `null` when it was not set.
+
+```csharp
+public DispatchActionConfiguration? DispatchActionConfig { get; }
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/csharp/objects#dispatchactionconfiguration)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## OverflowElement
+
+A compact menu of up to five options.
+
+- Required: `options`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/overflow-menu-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement).
+
+### OverflowElement
+
+Creates and validates a [`OverflowElement`](/reference/csharp/elements#overflowelement).
+
+```csharp
+public OverflowElement(string? actionId, IEnumerable<Option> options, Confirmation? confirm = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `options` | Selectable options in display order. Required. Must contain between 1 and 5 items. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`Option`](/reference/csharp/objects#option), [`OverflowElement`](/reference/csharp/elements#overflowelement)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### Options
+
+Gets selectable options in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Option> Options { get; }
+```
+
+**Related types:** [`Option`](/reference/csharp/objects#option)
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+## PlainTextInputElement
+
+A single-line or multi-line free-text input.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### PlainTextInputElement
+
+Creates and validates a [`PlainTextInputElement`](/reference/csharp/elements#plaintextinputelement).
+
+```csharp
+public PlainTextInputElement(string? actionId = null, string? initialValue = null, bool? multiline = null, int? minLength = null, int? maxLength = null, DispatchActionConfiguration? dispatchActionConfig = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `initialValue` | The value present when the input loads. |
+| `multiline` | Whether the input is a multi-line text area. |
+| `minLength` | The minimum number of characters the user must enter. Must be between 0 and 3000. |
+| `maxLength` | The maximum number of characters the user can enter. Must be between 1 and 3000. |
+| `dispatchActionConfig` | Which user interactions send a block_actions payload. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/csharp/objects#dispatchactionconfiguration), [`PlainText`](/reference/csharp/objects#plaintext), [`PlainTextInputElement`](/reference/csharp/elements#plaintextinputelement)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### InitialValue
+
+Gets the value present when the input loads.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? InitialValue { get; }
+```
+
+### Multiline
+
+Gets whether the input is a multi-line text area.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? Multiline { get; }
+```
+
+### MinLength
+
+Gets the minimum number of characters the user must enter.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? MinLength { get; }
+```
+
+### MaxLength
+
+Gets the maximum number of characters the user can enter.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? MaxLength { get; }
+```
+
+### DispatchActionConfig
+
+Gets which user interactions send a block_actions payload.
+
+The value, or `null` when it was not set.
+
+```csharp
+public DispatchActionConfiguration? DispatchActionConfig { get; }
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/csharp/objects#dispatchactionconfiguration)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## RadioButtonsElement
+
+A group of radio buttons.
+
+- Required: `options`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/radio-button-group-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### RadioButtonsElement
+
+Creates and validates a [`RadioButtonsElement`](/reference/csharp/elements#radiobuttonselement).
+
+```csharp
+public RadioButtonsElement(string? actionId, IEnumerable<Option> options, Option? initialOption = null, Confirmation? confirm = null, bool? focusOnLoad = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `options` | Selectable options in display order. Required. Must contain between 1 and 10 items. |
+| `initialOption` | The option selected when the element loads. It must match an option in the element. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`Option`](/reference/csharp/objects#option), [`RadioButtonsElement`](/reference/csharp/elements#radiobuttonselement)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### Options
+
+Gets selectable options in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Option> Options { get; }
+```
+
+**Related types:** [`Option`](/reference/csharp/objects#option)
+
+### InitialOption
+
+Gets the option selected when the element loads. It must match an option in the element.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Option? InitialOption { get; }
+```
+
+**Related types:** [`Option`](/reference/csharp/objects#option)
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+## RichTextInputElement
+
+An input that accepts formatted rich text.
+
+- Required: `actionId`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/rich-text-input-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### RichTextInputElement
+
+Creates and validates a [`RichTextInputElement`](/reference/csharp/elements#richtextinputelement).
+
+```csharp
+public RichTextInputElement(string actionId, RichTextBlock? initialValue = null, DispatchActionConfiguration? dispatchActionConfig = null, bool? focusOnLoad = null, PlainText? placeholder = null, int? minLines = null, int? maxLines = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters. |
+| `initialValue` | The rich text present when the input loads. |
+| `dispatchActionConfig` | Which user interactions send a block_actions payload. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `minLines` | The minimum visible height of the input, in lines. Must be between 1 and 100. |
+| `maxLines` | The maximum visible height of the input, in lines. Must be between 1 and 100. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/csharp/objects#dispatchactionconfiguration), [`PlainText`](/reference/csharp/objects#plaintext), [`RichTextBlock`](/reference/csharp/blocks#richtextblock), [`RichTextInputElement`](/reference/csharp/elements#richtextinputelement)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```csharp
+public string ActionId { get; }
+```
+
+### InitialValue
+
+Gets the rich text present when the input loads.
+
+The value, or `null` when it was not set.
+
+```csharp
+public RichTextBlock? InitialValue { get; }
+```
+
+**Related types:** [`RichTextBlock`](/reference/csharp/blocks#richtextblock)
+
+### DispatchActionConfig
+
+Gets which user interactions send a block_actions payload.
+
+The value, or `null` when it was not set.
+
+```csharp
+public DispatchActionConfiguration? DispatchActionConfig { get; }
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/csharp/objects#dispatchactionconfiguration)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### MinLines
+
+Gets the minimum visible height of the input, in lines.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? MinLines { get; }
+```
+
+### MaxLines
+
+Gets the maximum visible height of the input, in lines.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? MaxLines { get; }
+```
+
+## StaticMultiSelectElement
+
+A menu for selecting multiple options defined in the payload.
+
+- Use options or option groups, not both.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### StaticMultiSelectElement
+
+Creates and validates a [`StaticMultiSelectElement`](/reference/csharp/elements#staticmultiselectelement).
+
+```csharp
+public StaticMultiSelectElement(string? actionId = null, IEnumerable<Option>? options = null, IEnumerable<OptionGroup>? optionGroups = null, IEnumerable<Option>? initialOptions = null, Confirmation? confirm = null, int? maxSelectedItems = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `options` | Selectable options in display order. Slack allows at most 100 items. |
+| `optionGroups` | Labelled groups of options in display order. Cannot be combined with ungrouped options. Slack allows at most 100 items. |
+| `initialOptions` | Options that are selected when the element loads. Each must match an option in the element. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `maxSelectedItems` | The maximum number of items a user can select. Must be at least 1. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`Option`](/reference/csharp/objects#option), [`OptionGroup`](/reference/csharp/objects#optiongroup), [`PlainText`](/reference/csharp/objects#plaintext), [`StaticMultiSelectElement`](/reference/csharp/elements#staticmultiselectelement)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### Options
+
+Gets selectable options in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Option> Options { get; }
+```
+
+**Related types:** [`Option`](/reference/csharp/objects#option)
+
+### OptionGroups
+
+Gets labelled groups of options in display order. Cannot be combined with ungrouped options.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<OptionGroup> OptionGroups { get; }
+```
+
+**Related types:** [`OptionGroup`](/reference/csharp/objects#optiongroup)
+
+### InitialOptions
+
+Gets options that are selected when the element loads. Each must match an option in the element.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Option> InitialOptions { get; }
+```
+
+**Related types:** [`Option`](/reference/csharp/objects#option)
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### MaxSelectedItems
+
+Gets the maximum number of items a user can select.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? MaxSelectedItems { get; }
+```
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## StaticSelectElement
+
+A menu for selecting one option defined in the payload.
+
+- Use options or option groups, not both.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### StaticSelectElement
+
+Creates and validates a [`StaticSelectElement`](/reference/csharp/elements#staticselectelement).
+
+```csharp
+public StaticSelectElement(string? actionId = null, IEnumerable<Option>? options = null, IEnumerable<OptionGroup>? optionGroups = null, Option? initialOption = null, Confirmation? confirm = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `options` | Selectable options in display order. Slack allows at most 100 items. |
+| `optionGroups` | Labelled groups of options in display order. Cannot be combined with ungrouped options. Slack allows at most 100 items. |
+| `initialOption` | The option selected when the element loads. It must match an option in the element. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`Option`](/reference/csharp/objects#option), [`OptionGroup`](/reference/csharp/objects#optiongroup), [`PlainText`](/reference/csharp/objects#plaintext), [`StaticSelectElement`](/reference/csharp/elements#staticselectelement)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### Options
+
+Gets selectable options in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Option> Options { get; }
+```
+
+**Related types:** [`Option`](/reference/csharp/objects#option)
+
+### OptionGroups
+
+Gets labelled groups of options in display order. Cannot be combined with ungrouped options.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<OptionGroup> OptionGroups { get; }
+```
+
+**Related types:** [`OptionGroup`](/reference/csharp/objects#optiongroup)
+
+### InitialOption
+
+Gets the option selected when the element loads. It must match an option in the element.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Option? InitialOption { get; }
+```
+
+**Related types:** [`Option`](/reference/csharp/objects#option)
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## TimePickerElement
+
+A time-of-day picker.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### TimePickerElement
+
+Creates and validates a [`TimePickerElement`](/reference/csharp/elements#timepickerelement).
+
+```csharp
+public TimePickerElement(string? actionId = null, string? initialTime = null, string? timezone = null, Confirmation? confirm = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `initialTime` | The initially selected time, formatted as HH:mm in 24-hour time. |
+| `timezone` | The IANA time zone used to display the time, such as Australia/Brisbane. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`PlainText`](/reference/csharp/objects#plaintext), [`TimePickerElement`](/reference/csharp/elements#timepickerelement)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### InitialTime
+
+Gets the initially selected time, formatted as HH:mm in 24-hour time.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? InitialTime { get; }
+```
+
+### Timezone
+
+Gets the IANA time zone used to display the time, such as Australia/Brisbane.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? Timezone { get; }
+```
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## UrlInputElement
+
+A single-line input that accepts a URL.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/url-input-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### UrlInputElement
+
+Creates and validates a [`UrlInputElement`](/reference/csharp/elements#urlinputelement).
+
+```csharp
+public UrlInputElement(string? actionId = null, string? initialValue = null, DispatchActionConfiguration? dispatchActionConfig = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `initialValue` | The value present when the input loads. |
+| `dispatchActionConfig` | Which user interactions send a block_actions payload. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/csharp/objects#dispatchactionconfiguration), [`PlainText`](/reference/csharp/objects#plaintext), [`UrlInputElement`](/reference/csharp/elements#urlinputelement)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### InitialValue
+
+Gets the value present when the input loads.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? InitialValue { get; }
+```
+
+### DispatchActionConfig
+
+Gets which user interactions send a block_actions payload.
+
+The value, or `null` when it was not set.
+
+```csharp
+public DispatchActionConfiguration? DispatchActionConfig { get; }
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/csharp/objects#dispatchactionconfiguration)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## UserMultiSelectElement
+
+A menu for selecting multiple workspace users.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### UserMultiSelectElement
+
+Creates and validates a [`UserMultiSelectElement`](/reference/csharp/elements#usermultiselectelement).
+
+```csharp
+public UserMultiSelectElement(string? actionId = null, IEnumerable<string>? initialUsers = null, Confirmation? confirm = null, int? maxSelectedItems = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `initialUsers` | User IDs that are selected when the menu loads. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `maxSelectedItems` | The maximum number of items a user can select. Must be at least 1. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`PlainText`](/reference/csharp/objects#plaintext), [`UserMultiSelectElement`](/reference/csharp/elements#usermultiselectelement)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### InitialUsers
+
+Gets user IDs that are selected when the menu loads.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<string> InitialUsers { get; }
+```
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### MaxSelectedItems
+
+Gets the maximum number of items a user can select.
+
+The value, or `null` when it was not set.
+
+```csharp
+public int? MaxSelectedItems { get; }
+```
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## UserSelectElement
+
+A menu for selecting one workspace user.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement), [`IInputElement`](/reference/csharp/elements#iinputelement).
+
+### UserSelectElement
+
+Creates and validates a [`UserSelectElement`](/reference/csharp/elements#userselectelement).
+
+```csharp
+public UserSelectElement(string? actionId = null, string? initialUser = null, Confirmation? confirm = null, bool? focusOnLoad = null, PlainText? placeholder = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters. |
+| `initialUser` | The user ID selected when the menu loads. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `focusOnLoad` | Whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation), [`PlainText`](/reference/csharp/objects#plaintext), [`UserSelectElement`](/reference/csharp/elements#userselectelement)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### InitialUser
+
+Gets the user ID selected when the menu loads.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? InitialUser { get; }
+```
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### FocusOnLoad
+
+Gets whether the element receives focus when the view opens. Only one element per view may do so.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? FocusOnLoad { get; }
+```
+
+### Placeholder
+
+Gets the placeholder text shown before a value is chosen.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Placeholder { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+## WorkflowButtonElement
+
+A button that starts a workflow through a link trigger.
+
+- Required: `text`, `workflow`, `actionId`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element).
+
+Implements [`IElement`](/reference/csharp/elements#ielement).
+
+### WorkflowButtonElement
+
+Creates and validates a [`WorkflowButtonElement`](/reference/csharp/elements#workflowbuttonelement).
+
+```csharp
+public WorkflowButtonElement(PlainText text, Workflow workflow, string? actionId = null, Confirmation? confirm = null, ButtonStyle? style = null, string? accessibilityLabel = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The button label. Required. Slack allows at most 75 characters. A string is sent as a `plain_text` text object. |
+| `workflow` | The workflow started when the button is clicked. Required. |
+| `actionId` | The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required. Slack allows at most 255 characters. |
+| `confirm` | A confirmation dialog shown before the action is sent. |
+| `style` | The button's emphasis. Omit it for the default neutral style. |
+| `accessibilityLabel` | The label read by screen readers in place of the visible text. Slack allows at most 75 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ButtonStyle`](/reference/csharp/elements#buttonstyle), [`Confirmation`](/reference/csharp/objects#confirmation), [`PlainText`](/reference/csharp/objects#plaintext), [`Workflow`](/reference/csharp/objects#workflow), [`WorkflowButtonElement`](/reference/csharp/elements#workflowbuttonelement)
+
+### Text
+
+Gets the button label.
+
+```csharp
+public PlainText Text { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext), [`Text`](/reference/csharp/objects#text)
+
+### Workflow
+
+Gets the workflow started when the button is clicked.
+
+```csharp
+public Workflow Workflow { get; }
+```
+
+**Related types:** [`Workflow`](/reference/csharp/objects#workflow)
+
+### ActionId
+
+Gets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ActionId { get; }
+```
+
+### Confirm
+
+Gets a confirmation dialog shown before the action is sent.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Confirmation? Confirm { get; }
+```
+
+**Related types:** [`Confirmation`](/reference/csharp/objects#confirmation)
+
+### Style
+
+Gets the button's emphasis. Omit it for the default neutral style.
+
+The value, or `null` when it was not set.
+
+```csharp
+public ButtonStyle? Style { get; }
+```
+
+**Related types:** [`ButtonStyle`](/reference/csharp/elements#buttonstyle)
+
+### AccessibilityLabel
+
+Gets the label read by screen readers in place of the visible text.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? AccessibilityLabel { get; }
+```

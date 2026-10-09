@@ -144,3 +144,103 @@ pub fn inventory(source: &Path) -> Value {
     }
     json!(result)
 }
+
+fn doc(attributes: &[syn::Attribute]) -> String {
+    attributes
+        .iter()
+        .filter_map(|attribute| {
+            if !attribute.path().is_ident("doc") {
+                return None;
+            }
+            let syn::Meta::NameValue(value) = &attribute.meta else {
+                return None;
+            };
+            let syn::Expr::Lit(literal) = &value.value else {
+                return None;
+            };
+            let syn::Lit::Str(text) = &literal.lit else {
+                return None;
+            };
+            Some(text.value().trim().to_owned())
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+fn signature(sig: &syn::Signature) -> String {
+    let function: syn::ItemFn = syn::parse_quote!(#sig {});
+    let file = syn::File {
+        shebang: None,
+        attrs: vec![],
+        items: vec![Item::Fn(function)],
+    };
+    let formatted = prettyplease::unparse(&file);
+    formatted[..formatted.rfind('{').expect("function has a body")]
+        .trim_end()
+        .to_owned()
+}
+/// Extract actual public Rust documentation and signatures for the site renderer.
+/// This uses the stable Rust syntax tree, not unstable rustdoc JSON or regex parsing.
+pub fn documentation(source: &Path) -> Value {
+    let names = inventory(source);
+    let mut result: BTreeMap<String, Value> = names
+        .as_object()
+        .unwrap()
+        .keys()
+        .map(|name| {
+            (
+                name.clone(),
+                json!({"name":name,"doc":"","see":[],"constants":[],"members":[]}),
+            )
+        })
+        .collect();
+    let mut files = Vec::new();
+    sources(source, &mut files);
+    for file in files {
+        for item in file.items {
+            match item {
+                Item::Struct(item) => {
+                    if let Some(entry) = result.get_mut(&item.ident.to_string()) {
+                        entry["doc"] = json!(doc(&item.attrs));
+                    }
+                }
+                Item::Enum(item) => {
+                    if let Some(entry) = result.get_mut(&item.ident.to_string()) {
+                        entry["doc"] = json!(doc(&item.attrs));
+                        for variant in item.variants {
+                            entry["constants"].as_array_mut().unwrap().push(json!({"name":variant.ident.to_string(),"wire":variant.fields.to_token_stream().to_string(),"doc":doc(&variant.attrs)}));
+                        }
+                    }
+                }
+                Item::Impl(item) if item.trait_.is_none() => {
+                    let syn::Type::Path(p) = *item.self_ty else {
+                        continue;
+                    };
+                    let name = p.path.segments.last().unwrap().ident.to_string();
+                    let Some(entry) = result.get_mut(&name) else {
+                        continue;
+                    };
+                    for member in item.items {
+                        match member {
+                            syn::ImplItem::Fn(f) if public(&f.vis)=>entry["members"].as_array_mut().unwrap().push(json!({"name":f.sig.ident.to_string(),"signature":signature(&f.sig),"doc":doc(&f.attrs),"params":[],"returns":"","throws":[]})),
+                            syn::ImplItem::Const(c) if public(&c.vis)=>entry["constants"].as_array_mut().unwrap().push(json!({"name":c.ident.to_string(),"wire":c.ty.to_token_stream().to_string(),"doc":doc(&c.attrs)})),
+                            _=>(),
+                        }
+                    }
+                }
+                Item::Fn(f) if public(&f.vis) => {
+                    if let Some(entry) = result.get_mut(&f.sig.ident.to_string()) {
+                        entry["doc"] = json!(doc(&f.attrs));
+                        entry["members"].as_array_mut().unwrap().push(json!({"name":f.sig.ident.to_string(),"signature":signature(&f.sig),"doc":"","params":[],"returns":"","throws":[]}));
+                    }
+                }
+                Item::Const(c) if public(&c.vis) => {
+                    if let Some(entry) = result.get_mut(&c.ident.to_string()) {
+                        entry["doc"] = json!(doc(&c.attrs));
+                    }
+                }
+                _ => (),
+            }
+        }
+    }
+    json!({"types":result.into_values().collect::<Vec<_>>()})
+}

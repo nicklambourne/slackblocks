@@ -1,7 +1,12 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
+
 # Compatibility
+
+<LanguageContent>
+<Python>
 
 This page documents which Python versions are supported by each `slackblocks` release line, so you can choose the right line for your runtime.
 
@@ -72,3 +77,51 @@ Bugfix releases on existing lines may continue past these dates on a best-effort
 
 For an upgrade walkthrough from `1.x` to `2.x`, see the
 [Migration Guide](migration).
+
+</Python>
+<TypeScript>
+
+See [Installation](installation) and the [TypeScript API reference](../reference/typescript) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</TypeScript>
+<Go>
+
+See [Installation](installation) and the [Go API reference](../reference/go) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</Go>
+<Java>
+
+See [Installation](installation) and the [Java API reference](../reference/java) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</Java>
+<CSharp>
+
+See [Installation](installation) and the [C# API reference](../reference/csharp) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</CSharp>
+<Ruby>
+
+See [Installation](installation) and the [Ruby API reference](../reference/ruby) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</Ruby>
+<Rust>
+
+## Rust support policy
+
+Rust support begins with coordinated version 2.6.0 (currently unreleased).
+The crate uses edition 2024 with MSRV 1.85.0. CI tests the MSRV and current stable
+on Linux, plus current stable on macOS and Windows. Raising the MSRV requires
+an explicit compatibility decision and release notes; dependency updates alone
+must not narrow supported versions.
+
+Runtime dependencies use compatible Serde/serde_json version requirements.
+The checked-in lockfile fixes development builds. Package checks also resolve
+fresh consumer dependencies, declared lower bounds, and the consumer-enabled
+`arbitrary_precision` and `preserve_order` serde_json features.
+
+Role/vocabulary enums are `#[non_exhaustive]`; include a wildcard match arm so
+new Slack variants can be added. Private fields and validated builders preserve
+invariants. No earlier Rust release line exists to migrate from.
+
+</Rust>
+</LanguageContent>

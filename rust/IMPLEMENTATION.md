@@ -38,12 +38,12 @@ The registry checks will derive exact ID sets rather than freeze audit totals.
 
 | Item | Implementation | Tests | Documentation | Status |
 | --- | --- | --- | --- | --- |
-| Types/fields/roles/defaults | `src/generated/`, generator naming map | API checkpoint then conformance | rustdoc/reference | in progress |
-| Validation and checked ingress | `src/wire.rs`, `src/rules.rs` | invalid corpus, boundary/presence tests | errors/validation guide | in progress |
-| Helpers and native editing | consuming builders and `src/components.rs` | helper, ownership, property tests | cookbook and examples | planned |
-| Public API coverage | explicit facade, independent `syn` audit | mutation guard | public symbol inventory | planned |
-| MSRV/platform/package | Cargo and hosted CI | MSRV/stable, archive and fresh consumers | package README | in progress |
-| Docs and root README | current guides, site registries and badges | extracted snippets/site guards | all current pages | planned |
+| Types/fields/roles/defaults | `src/generated/`, generator naming map | API checkpoint then conformance | rustdoc/reference | complete |
+| Validation and checked ingress | `src/wire.rs`, `src/rules.rs` | invalid corpus, boundary/presence tests | errors/validation guide | complete |
+| Helpers and native editing | consuming builders and `src/components.rs` | helper, ownership, property tests | cookbook and examples | complete |
+| Public API coverage | explicit facade, independent `syn` audit | mutation guard | public symbol inventory | complete |
+| MSRV/platform/package | Cargo and hosted CI | MSRV/stable, archive and fresh consumers | package README | complete |
+| Docs and root README | current guides, site registries and badges | extracted snippets/site guards | all current pages | complete |
 | Coordinated release | Rust publisher and seven-language guards | positive/negative dry runs | releasing and recovery guide | planned; activation disabled |
 
 The following reviewed design remains the contract for this train. References to
@@ -59,7 +59,7 @@ The following reviewed design remains the contract for this train. References to
 
 Add a Rust `slackblocks` crate with a native, typed API and parity across the shared Slack contract, useful composition helpers, validation, documentation, testing, packaging, and releases. Rust ownership, enums, builders, iterators, `Result`, Serde, and rustdoc should determine its API. Existing language implementations supply behavioral evidence, not a class hierarchy to translate mechanically.
 
-The audit used the six-language 2.5.0 source at commit `a94480c` in [the historical six-language audit checkout](the historical six-language audit checkout). That checkout includes the documentation changes in [PR #378](https://github.com/nicklambourne/slackblocks/pull/378), which was still open when audited. The main local checkout is older and must not supply the implementation baseline. Rebase implementation on current master and incorporate the final #378 result.
+The audit used the six-language 2.5.0 source at commit `a94480c` in [the historical six-language audit commit](https://github.com/nicklambourne/slackblocks/commit/a94480c). That checkout includes the documentation changes in [PR #378](https://github.com/nicklambourne/slackblocks/pull/378), which was still open when audited. The main local checkout is older and must not supply the implementation baseline. Rebase implementation on current master and incorporate the final #378 result.
 
 | Registry at spec 1.2.0 | Observed coverage |
 | --- | --- |
@@ -362,3 +362,37 @@ constants and direct root declarations. Integer conversions are explicit Rust
 implementations so the AST audit can inspect them without expanding macros.
 The wire parser's unused required-field branch was removed: builder finalization
 is the single required-field validation point for both native and JSON ingress.
+
+
+## Implementation evidence — documentation PR
+
+The source manifests now agree on 2.6.0, with seven undated Unreleased changelog
+sections. Existing registry installation examples remain at published 2.5.0;
+Rust documents an explicit checkout dependency until activation. Root and package
+READMEs include Rust examples, MSRV/CI badges and an honest unpublished status.
+
+Before changing versions or current content, the six-language 2.5.0 docs were
+regenerated at baseline `00bfaa72bbcea31063cafdac8750ccac09665c3d` and frozen.
+Its 70-file snapshot SHA-256 (sorted relative path, NUL, contents, NUL) is
+`463d579ba0def189fd1c531cde2d5d5e18e36deb46e6abff97e7961de0319f1a`.
+It contains no Rust reference. All older snapshots remain unchanged and the
+22-version legacy immutability guard passes.
+
+Syn extracts documentation and native signatures from all 213 actual public
+exports. The site verifies complete headings and rendered anchors. Forty Rust
+README, guide and reusable examples execute on stable and MSRV; all 21 block
+examples and the shared reusable example match their independently documented
+JSON. The packaged README doctest and fresh minimum-dependency archive consumer
+pass. Strict Clippy/rustdoc and the MSRV all-feature workspace tests pass.
+
+The guide audit corrected every-language panel coverage, a missing Python helper
+explanation, a Ruby helper example that showed the wrong feature, language-leaking
+cookbook content, stale language counts, missing reusable Rust example and
+historical version navigation. The adding-a-language guide records these checks
+for the next implementation. The docs pipeline verifies all seven API references,
+search isolation, version selectors, previews and historical routes.
+
+Browser verification also passed Rust selection, the current-only Rust version
+selector, a saved Rust preference on the six-language 2.5.0 quick start, and
+current API headings/breadcrumbs. No historical snapshot was edited to achieve
+that routing.

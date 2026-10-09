@@ -11,7 +11,7 @@ import { useHistory, useLocation } from "@docusaurus/router";
 import { useAllDocsData } from "@docusaurus/plugin-content-docs/client";
 import legacyManifest from "@site/legacy/manifest.json";
 
-export type Language = "python" | "typescript" | "go" | "java" | "csharp" | "ruby";
+export type Language = "python" | "typescript" | "go" | "java" | "csharp" | "ruby" | "rust";
 
 type LanguageContextValue = {
   language: Language;
@@ -38,13 +38,14 @@ function isLanguage(value: string | null): value is Language {
     value === "go" ||
     value === "java" ||
     value === "csharp" ||
-    value === "ruby"
+    value === "ruby" ||
+    value === "rust"
   );
 }
 
 function referenceLanguage(pathname: string): Language | null {
   const language =
-    pathname.match(/\/reference\/(python|typescript|go|java|csharp|ruby)(?:\/|$)/)?.[1] ?? null;
+    pathname.match(/\/reference\/(python|typescript|go|java|csharp|ruby|rust)(?:\/|$)/)?.[1] ?? null;
   return isLanguage(language) ? language : null;
 }
 
@@ -54,7 +55,7 @@ function languagePath(
   docPaths: ReadonlySet<string>,
 ): string {
   const referenceMatch = pathname.match(
-    /^(.*\/reference\/)(python|typescript|go|java|csharp|ruby)(\/.*)?$/,
+    /^(.*\/reference\/)(python|typescript|go|java|csharp|ruby|rust)(\/.*)?$/,
   );
   if (referenceMatch) {
     if (referenceMatch[2] === language) return pathname;
@@ -76,13 +77,13 @@ function latestLanguagePath(
   docPaths: ReadonlySet<string>,
 ): string {
   const legacyMatch = pathname.match(
-    /^(.*)\/v\d+\.\d+\.\d+(?=\/|$)(.*)$/,
+    /^(.*)\/v?\d+\.\d+\.\d+(?=\/|$)(.*)$/,
   );
   const latestPathname = legacyMatch
     ? `${legacyMatch[1]}${legacyMatch[2] || "/"}`
     : pathname;
   const historicalReference = latestPathname.match(
-    /^(.*\/reference)\/(?!python(?:\/|$)|typescript(?:\/|$)|go(?:\/|$)|java(?:\/|$)|csharp(?:\/|$)|ruby(?:\/|$))[^/]+(?:\/.*)?$/,
+    /^(.*\/reference)\/(?!python(?:\/|$)|typescript(?:\/|$)|go(?:\/|$)|java(?:\/|$)|csharp(?:\/|$)|ruby(?:\/|$)|rust(?:\/|$))[^/]+(?:\/.*)?$/,
   );
 
   return historicalReference
@@ -123,7 +124,13 @@ export function LanguageProvider({ children }: PropsWithChildren) {
     // Once ?language= has been applied, drop it so shared URLs don't keep it.
     search.delete("language");
     const nextSearch = search.toString();
-    const pathname = languagePath(location.pathname, nextLanguage, docPaths);
+    const version = Object.values(allDocsData).flatMap(data => data.versions)
+      .find(version => version.docs.some(doc => doc.path === location.pathname));
+    const supported = !version || version.name === "current" || version.docs
+      .some(doc => doc.id.startsWith(`reference/${nextLanguage}/`));
+    const pathname = supported || legacyVersion
+      ? languagePath(location.pathname, nextLanguage, docPaths)
+      : latestLanguagePath(location.pathname, nextLanguage, docPaths);
     if (pathname !== location.pathname || queryLanguage !== null) {
       history.replace({
         pathname,
@@ -138,7 +145,7 @@ export function LanguageProvider({ children }: PropsWithChildren) {
     if (!legacyVersion && isLanguage(queryLanguage)) {
       window.localStorage.setItem(STORAGE_KEY, queryLanguage);
     }
-  }, [docPaths, history, location.hash, location.pathname, location.search]);
+  }, [allDocsData, docPaths, history, location.hash, location.pathname, location.search]);
 
   const selectLanguage = useCallback(
     (nextLanguage: Language) => {

@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
 
 # Using Blocks
 
@@ -45,6 +45,11 @@ For constructors, typed properties, and validation errors, see the [C# API refer
 For keyword constructors, immutable values, and validation errors, see the [Ruby API reference](../reference/ruby). Interactive controls are in [Elements](../reference/ruby/elements). The Ruby snippets below produce the same payloads shown in the JSON tabs.
 
 </Ruby>
+<Rust>
+
+For consuming builders, borrowed getters and structured errors, see the [Rust API reference](../reference/rust). These runnable examples produce the JSON shown in each tab. All examples use edition 2024 and Rust 1.85 or newer.
+
+</Rust>
 </LanguageContent>
 
 ## Section Block
@@ -161,6 +166,37 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = SectionBlock::builder()
+        .block_id("fake_block_id")
+        .text(
+            MarkdownText::builder()
+                .text("This is a section block with a checkbox accessory.")
+                .build()?,
+        )
+        .accessory(
+            CheckboxesElement::builder()
+                .options(vec![SelectOption::from(
+                    SelectOption::builder()
+                        .text(MarkdownText::builder().text("*Your Only Option*").build()?)
+                        .value("option_one")
+                        .build()?,
+                )])
+                .action_id("checkboxes-action")
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -342,6 +378,45 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = RichTextBlock::builder()
+        .block_id("fake_block_id")
+        .elements(vec![RichTextBlockElement::from(
+            RichTextSection::builder()
+                .elements(vec![
+                    RichTextSectionElement::from(
+                        RichTextText::builder()
+                            .text("You 'bout to witness hip-hop in its most purest\n")
+                            .style(RichTextStyle::new().bold(true))
+                            .build()?,
+                    ),
+                    RichTextSectionElement::from(
+                        RichTextText::builder()
+                            .text("Most rawest form, flow almost flawless\n")
+                            .style(RichTextStyle::new().strike(true))
+                            .build()?,
+                    ),
+                    RichTextSectionElement::from(
+                        RichTextText::builder()
+                            .text("Most hardest, most honest known artist\n")
+                            .style(RichTextStyle::new().italic(true))
+                            .build()?,
+                    ),
+                ])
+                .build()?,
+        )])
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -461,6 +536,26 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = HeaderBlock::builder()
+        .block_id("fake_block_id")
+        .text(
+            PlainText::builder()
+                .text("This is a header block")
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -565,6 +660,22 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = MarkdownBlock::builder()
+        .block_id("fake_block_id")
+        .text("**Hello!** Markdown blocks support _GitHub-flavored_ syntax.")
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -679,6 +790,24 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = ImageBlock::builder()
+        .block_id("fake_block_id")
+        .image_url("https://api.slack.com/img/blocks/bkb_template_images/beagle.png")
+        .alt_text("a beagle")
+        .title(PlainText::builder().text("dog").build()?)
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -802,6 +931,29 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = InputBlock::builder()
+        .block_id("fake_block_id")
+        .label(PlainText::builder().text("Label").emoji(true).build()?)
+        .element(
+            PlainTextInputElement::builder()
+                .action_id("action")
+                .build()?,
+        )
+        .hint(PlainText::builder().text("Hint").emoji(true).build()?)
+        .optional(true)
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -899,6 +1051,19 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = DividerBlock::builder().block_id("fake_block_id").build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -990,6 +1155,23 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = FileBlock::builder()
+        .external_id("external_id")
+        .source("remote")
+        .block_id("fake_block_id")
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -1089,6 +1271,24 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = ContextBlock::builder()
+        .block_id("fake_block_id")
+        .elements(vec![ContextElement::from(
+            MarkdownText::builder().text("Hello, world!").build()?,
+        )])
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -1255,6 +1455,49 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = ActionsBlock::builder()
+        .block_id("fake_block_id")
+        .elements(vec![Element::from(
+            CheckboxesElement::builder()
+                .action_id("actionId-0")
+                .options(vec![
+                    SelectOption::from(
+                        SelectOption::builder()
+                            .text(MarkdownText::builder().text("*a*").build()?)
+                            .value("a")
+                            .description(PlainText::builder().text("*a*").build()?)
+                            .build()?,
+                    ),
+                    SelectOption::from(
+                        SelectOption::builder()
+                            .text(MarkdownText::builder().text("*b*").build()?)
+                            .value("b")
+                            .description(PlainText::builder().text("*b*").build()?)
+                            .build()?,
+                    ),
+                    SelectOption::from(
+                        SelectOption::builder()
+                            .text(MarkdownText::builder().text("*c*").build()?)
+                            .value("c")
+                            .description(PlainText::builder().text("*c*").build()?)
+                            .build()?,
+                    ),
+                ])
+                .build()?,
+        )])
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -1552,6 +1795,79 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = TableBlock::builder()
+        .block_id("fake_block_id")
+        .rows(vec![
+            vec![
+                TableCell::from(
+                    RichTextBlock::builder()
+                        .elements(vec![RichTextBlockElement::from(
+                            RichTextSection::builder()
+                                .elements(vec![RichTextSectionElement::from(
+                                    RichTextText::builder()
+                                        .text("Header 1")
+                                        .style(RichTextStyle::new().bold(true))
+                                        .build()?,
+                                )])
+                                .build()?,
+                        )])
+                        .build()?,
+                ),
+                TableCell::from(
+                    RichTextBlock::builder()
+                        .elements(vec![RichTextBlockElement::from(
+                            RichTextSection::builder()
+                                .elements(vec![RichTextSectionElement::from(
+                                    RichTextText::builder()
+                                        .text("Header 2")
+                                        .style(RichTextStyle::new().bold(true))
+                                        .build()?,
+                                )])
+                                .build()?,
+                        )])
+                        .build()?,
+                ),
+            ],
+            vec![
+                TableCell::from(RawText::builder().text("Datum 1").build()?),
+                TableCell::from(
+                    RichTextBlock::builder()
+                        .elements(vec![RichTextBlockElement::from(
+                            RichTextSection::builder()
+                                .elements(vec![RichTextSectionElement::from(
+                                    RichTextLink::builder()
+                                        .url("https://slack.com")
+                                        .text("Datum 2")
+                                        .build()?,
+                                )])
+                                .build()?,
+                        )])
+                        .build()?,
+                ),
+            ],
+        ])
+        .column_settings(vec![
+            ColumnSettings::from(
+                ColumnSettings::builder()
+                    .align(ColumnAlign::Right)
+                    .is_wrapped(true)
+                    .build()?,
+            ),
+            ColumnSettings::from(ColumnSettings::builder().align(ColumnAlign::Left).build()?),
+        ])
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -1750,6 +2066,31 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = VideoBlock::builder()
+        .block_id("fake_block_id")
+        .alt_text("Use the Events API to create a dynamic App Home")
+        .thumbnail_url("https://i.ytimg.com/vi/8876OZV_Yy0/hqdefault.jpg")
+        .title(
+            PlainText::builder()
+                .text("Use the Events API to create a dynamic App Home")
+                .build()?,
+        )
+        .video_url("https://www.youtube.com/embed/8876OZV_Yy0?feature=oembed&autoplay=1")
+        .description(PlainText::builder().text("Slack sure is nifty!").build()?)
+        .title_url("https://www.youtube.com/watch?v=8876OZV_Yy0")
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -1868,6 +2209,27 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = AlertBlock::builder()
+        .block_id("fake_block_id")
+        .text(
+            MarkdownText::builder()
+                .text("The deployment needs attention.")
+                .build()?,
+        )
+        .level(AlertLevel::Warning)
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -1988,6 +2350,34 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = CardBlock::builder()
+        .block_id("fake_block_id")
+        .title(MarkdownText::builder().text("Build complete").build()?)
+        .body(
+            MarkdownText::builder()
+                .text("Version 2.1.0 is ready to deploy.")
+                .build()?,
+        )
+        .actions(vec![ButtonElement::from(
+            ButtonElement::builder()
+                .text(PlainText::builder().text("Open build").build()?)
+                .action_id("open_build")
+                .build()?,
+        )])
+        .slack_icon(SlackIcon::builder().name("rocket").build()?)
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -2121,6 +2511,35 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = CarouselBlock::builder()
+        .block_id("fake_block_id")
+        .elements(vec![
+            CardBlock::from(
+                CardBlock::builder()
+                    .block_id("card_1")
+                    .title(MarkdownText::builder().text("First result").build()?)
+                    .build()?,
+            ),
+            CardBlock::from(
+                CardBlock::builder()
+                    .block_id("card_2")
+                    .title(MarkdownText::builder().text("Second result").build()?)
+                    .build()?,
+            ),
+        ])
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -2268,6 +2687,36 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = ContainerBlock::builder()
+        .block_id("fake_block_id")
+        .title(PlainText::builder().text("Deployment summary").build()?)
+        .child_blocks(vec![Block::from(
+            SectionBlock::builder()
+                .block_id("child_1")
+                .text(
+                    MarkdownText::builder()
+                        .text("All systems operational.")
+                        .build()?,
+                )
+                .build()?,
+        )])
+        .width(ContainerWidth::Standard)
+        .is_collapsible(false)
+        .default_collapsed(false)
+        .has_header_divider(true)
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -2411,6 +2860,38 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = ContextActionsBlock::builder()
+        .block_id("fake_block_id")
+        .elements(vec![ContextActionsElement::from(
+            FeedbackButtonsElement::builder()
+                .positive_button(
+                    FeedbackButton::builder()
+                        .text(PlainText::builder().text("Good").build()?)
+                        .value("positive")
+                        .build()?,
+                )
+                .negative_button(
+                    FeedbackButton::builder()
+                        .text(PlainText::builder().text("Bad").build()?)
+                        .value("negative")
+                        .build()?,
+                )
+                .action_id("response_feedback")
+                .build()?,
+        )])
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -2552,6 +3033,34 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = DataTableBlock::builder()
+        .block_id("fake_block_id")
+        .rows(vec![
+            vec![
+                DataTableCell::from(RawText::builder().text("Name").build()?),
+                DataTableCell::from(RawText::builder().text("Score").build()?),
+            ],
+            vec![
+                DataTableCell::from(RawText::builder().text("Alice").build()?),
+                DataTableCell::from(RawNumber::builder().value(42_i64).text("42").build()?),
+            ],
+        ])
+        .page_size(5_i64)
+        .caption("Team scores")
+        .row_header_column_index(0_i64)
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -2700,6 +3209,30 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = DataVisualizationBlock::builder()
+        .block_id("fake_block_id")
+        .title("Incidents by severity")
+        .chart(
+            PieChart::builder()
+                .segments(vec![
+                    ChartSegment::from(ChartSegment::builder().label("High").value(3_i64).build()?),
+                    ChartSegment::from(ChartSegment::builder().label("Low").value(12_i64).build()?),
+                ])
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -2829,6 +3362,30 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = TaskCardBlock::builder()
+        .block_id("fake_block_id")
+        .task_id("weather_1")
+        .title("Fetch weather data")
+        .sources(vec![UrlSource::from(
+            UrlSource::builder()
+                .url("https://weather.com/")
+                .text("weather.com")
+                .build()?,
+        )])
+        .status(TaskStatus::Complete)
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -2959,6 +3516,38 @@ puts block.to_json
 ```
 
 </Ruby>
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let block = PlanBlock::builder()
+        .block_id("fake_block_id")
+        .title("Release plan")
+        .tasks(vec![
+            TaskCardBlock::from(
+                TaskCardBlock::builder()
+                    .task_id("test")
+                    .title("Run the test suite")
+                    .status(TaskStatus::Complete)
+                    .build()?,
+            ),
+            TaskCardBlock::from(
+                TaskCardBlock::builder()
+                    .task_id("deploy")
+                    .title("Deploy the release")
+                    .status(TaskStatus::Pending)
+                    .build()?,
+            ),
+        ])
+        .build()?;
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
 </LanguageContent>
 
 </TabItem>
@@ -2993,6 +3582,16 @@ puts block.to_json
 </Tabs>
 
 <LanguageContent>
+<Python>
+
+## Higher-Level Components
+
+Compose ordinary Python block lists and `ContainerBlock` values for reusable
+layouts. Python does not currently expose the named `Paginator` and `Accordion`
+helpers shown for other languages. Use `block_kit_builder_url` for preview links;
+see [Utilities](../reference/python/builder) and [Blocks](../reference/python/blocks).
+
+</Python>
 <TypeScript>
 
 ## Higher-Level Components
@@ -3214,12 +3813,28 @@ Accordion sections use Slack-native collapsible containers and need no applicati
 
 <Ruby>
 
+## Higher-Level Components
+
+Accordion sections render as collapsible containers. Pagination returns an array
+of ordinary blocks; the receiving message validates the expanded result.
+
 ```ruby
 require "slackblocks"
 include Slackblocks
-block = PlanBlock.new(title: "Release plan", tasks: [TaskCardBlock.new(task_id: "task-1", title: "Run checks", status: :complete)])
-puts block.to_json
+section = AccordionSection.create(
+  title: "Checks", blocks: [SectionBlock.new(text: "All checks passed.")]
+)
+blocks = Accordion.create(sections: [section])
+page = Paginator.create(action_id_prefix: "builds", blocks: blocks, page_size: 5)
+puts JSON.generate(page.map(&:as_json))
 ```
 
+See [Components](../reference/ruby/components) for navigation labels and page options.
+
 </Ruby>
+<Rust>
+
+The Rust API also provides `Accordion`, `AccordionSection`, `Paginator`, `Workflow::from_url`, attachment colors and `block_kit_builder_url`. See the [recipe book](cookbook) and [components reference](../reference/rust/components) for native examples.
+
+</Rust>
 </LanguageContent>

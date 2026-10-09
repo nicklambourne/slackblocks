@@ -48,6 +48,10 @@ if (!rubyVersion) {
   throw new Error("Could not read the Ruby gem version");
 }
 
+const rustManifest = readFileSync(new URL("../rust/Cargo.toml", import.meta.url), "utf8");
+const rustVersion = rustManifest.match(/^version = "([^"]+)"$/m)?.[1];
+if (!rustVersion) throw new Error("Could not read the Rust crate version");
+
 const legacyManifest = JSON.parse(
   readFileSync(new URL("./legacy/manifest.json", import.meta.url), "utf8"),
 ) as {
@@ -113,10 +117,11 @@ if (
   typescriptPackage.version !== pythonVersion ||
   javaVersion !== pythonVersion ||
   csharpVersion !== pythonVersion ||
-  rubyVersion !== pythonVersion
+  rubyVersion !== pythonVersion ||
+  rustVersion !== pythonVersion
 ) {
   throw new Error(
-    `Package versions must match: Python is ${pythonVersion}, TypeScript is ${typescriptPackage.version}, Java is ${javaVersion}, C# is ${csharpVersion}, Ruby is ${rubyVersion}`,
+    `Package versions must match: Python is ${pythonVersion}, TypeScript is ${typescriptPackage.version}, Java is ${javaVersion}, C# is ${csharpVersion}, Ruby is ${rubyVersion}, Rust is ${rustVersion}`,
   );
 }
 
@@ -201,7 +206,7 @@ function legacyTypeScriptRedirect(path: string): string | undefined {
 
 const config: Config = {
   title: "slackblocks",
-  tagline: "Validated Slack Block Kit construction for Python, TypeScript, Go, Java, C#, and Ruby",
+  tagline: "Validated Slack Block Kit construction for Python, TypeScript, Go, Java, C#, Ruby, and Rust",
   favicon: "img/sb.png",
   url: "https://nicklambourne.github.io",
   baseUrl: "/slackblocks/",
@@ -237,7 +242,7 @@ const config: Config = {
           versions: {
             current: {
               badge: false,
-              label: pythonVersion,
+              label: `${pythonVersion} (Unreleased)`,
               path: "",
             },
             ...legacyVersionConfiguration,
@@ -348,7 +353,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.vsDark,
-      additionalLanguages: ["python", "typescript", "go", "java", "csharp", "ruby", "json", "toml"],
+      additionalLanguages: ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "json", "toml"],
     },
     navbar: {
       title: "slackblocks",

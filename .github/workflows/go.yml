@@ -98,6 +98,10 @@ jobs:
 
       - name: Run staticcheck
         if: needs.changes.outputs.relevant == 'true' && matrix.go-version == 'stable'
+        env:
+          # v0.8.1 cannot decode Go 1.27.2 export data. Keep runtime tests on stable;
+          # remove this analyzer-only pin when a compatible Staticcheck is available.
+          GOTOOLCHAIN: go1.26.9
         run: go run honnef.co/go/tools/cmd/staticcheck@v0.8.1 ./...
 
       - name: Run tests

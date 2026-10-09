@@ -1,0 +1,74 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Compatibility
+
+This page documents which Python versions are supported by each `slackblocks` release line, so you can choose the right line for your runtime.
+
+Each row in the table maps a major `slackblocks` release line to the oldest Python interpreter that can run it. **Minimum Python** means that version or any newer supported Python version—not that the release only works on that one version. The status in parentheses tells you whether the line receives current feature development or maintenance fixes only.
+
+Start with the Python version used by your application or deployment environment, then choose the newest `slackblocks` line whose minimum requirement it meets. For example, Python 3.9 requires `slackblocks` 1.x, while Python 3.10 and newer can use 2.x.
+
+## Support matrix
+
+| `slackblocks` version | Minimum Python | Notes |
+| --- | --- | --- |
+| `1.x` (maintenance) | 3.8.1 | The last release line to support Python 3.8 and 3.9. |
+| `2.x` (current) | 3.10 | Modern typing (`X \| Y`, `list[X]`), dataclasses with `slots`, `match` statements, and other Python 3.10+ features used internally. |
+
+If you cannot upgrade Python, pin to the appropriate major version:
+
+<Tabs>
+<TabItem value={"pip-requirements-txt"} label={"pip (`requirements.txt`)"}>
+
+```text
+slackblocks>=1,<2     # Python 3.8/3.9 friendly
+slackblocks>=2,<3     # Python 3.10+ only
+```
+
+
+</TabItem>
+<TabItem value={"poetry-pyproject-toml"} label={"poetry (`pyproject.toml`)"}>
+
+```toml
+slackblocks = "^1"    # Python 3.8/3.9 friendly
+slackblocks = "^2"    # Python 3.10+ only
+```
+
+
+</TabItem>
+<TabItem value={"uv-pyproject-toml"} label={"uv (`pyproject.toml`)"}>
+
+```toml
+"slackblocks>=1,<2"   # Python 3.8/3.9 friendly
+"slackblocks>=2,<3"   # Python 3.10+ only
+```
+
+
+</TabItem>
+</Tabs>
+
+## Why we move forward
+
+`slackblocks` follows the upstream Python release cycle. Once a Python version reaches its [official end-of-life](https://devguide.python.org/versions/), it stops receiving security patches, and we prefer not to ship new feature work targeting unmaintained runtimes.
+
+| Python version | EOL date |
+| --- | --- |
+| 3.8 | 2024-10-07 |
+| 3.9 | 2025-10-31 |
+| 3.10 | 2026-10 |
+| 3.11 | 2027-10 |
+| 3.12 | 2028-10 |
+| 3.13 | 2029-10 |
+| 3.14 | 2030-10 |
+
+Bugfix releases on existing lines may continue past these dates on a best-effort basis, but new feature work will target supported Pythons.
+
+## Choosing a version
+
+- **You're on Python 3.8 or 3.9**: install the latest `1.x`.
+- **You're on Python 3.10 or newer**: install the current `2.x` release line.
+- **You're starting a new project on a modern Python**: prefer `2.x` to take advantage of the improved typing surface.
+
+For an upgrade walkthrough from `1.x` to `2.x`, see the
+[Migration Guide](migration).

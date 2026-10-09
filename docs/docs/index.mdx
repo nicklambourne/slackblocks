@@ -3,7 +3,7 @@ sidebar_label: Welcome
 sidebar_position: 1
 ---
 
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
 
 # Welcome to `slackblocks`!
 
@@ -11,14 +11,14 @@ import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@si
   <img width="30%" src="/slackblocks/img/sb.png" alt="slackblocks logo" />
 </p>
 
-`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, C#, and Ruby — without writing JSON by hand.
+`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, C#, Ruby, and Rust — without writing JSON by hand.
 
 It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control. `slackblocks` gives you:
 
-- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, C#, and Ruby.
+- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, C#, Ruby, and Rust.
 - **Validation as you build** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
 - **Drop-in compatibility** with established Slack SDKs and clients and their plain JSON payloads.
-- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, C# depends on nothing beyond .NET, and Ruby uses the default `json` gem.
+- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, C# depends on nothing beyond .NET, Ruby uses the default `json` gem, and Rust depends only on Serde and serde_json.
 
 ## Quick Start
 
@@ -224,6 +224,30 @@ Ruby offers immutable keyword-constructed values for every shared block, element
 [`ValidationError`](reference/ruby/errors#validationerror) exposes a category and field path. Every value has `as_json` for a detached Slack hash and `to_json` for encoded JSON.
 
 </Ruby>
+<Rust>
+
+Rust uses owned values with consuming builders, borrowed getters and native
+`Result` errors. Rust support targets unreleased 2.6.0; see [Installation](usage/installation).
+
+### Objects, elements and blocks
+
+[Composition objects](reference/rust/objects), [elements](reference/rust/elements)
+and [blocks](reference/rust/blocks) compose through typed role enums. Names are
+explicit where needed: `SelectOption`, `SelectOptionGroup` and `ConfirmationDialogue`.
+
+### Payloads and utilities
+
+[Payloads](reference/rust/payloads) cover messages, interaction responses, webhooks,
+modals and Home tabs. [Components](reference/rust/components) include pagination,
+accordion sections, workflow shortcuts, attachment colors and preview URLs.
+
+### Validation and JSON
+
+`build()` returns `Result<T, ValidationError>`. Serde serializes validated values;
+checked deserialization and `TryFrom<Value>` apply the same validation. Clone a
+value and call `into_builder()` to edit it without changing the original.
+
+</Rust>
 </LanguageContent>
 
 ## Guides
@@ -288,4 +312,16 @@ Ruby offers immutable keyword-constructed values for every shared block, element
 - [Contributing](contributing)
 
 </Ruby>
+<Rust>
+
+- [Installation](usage/installation)
+- [Using Blocks](usage/using_blocks)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook)
+- [Troubleshooting](usage/troubleshooting)
+- [Compatibility](usage/compatibility)
+- [Migration](usage/migration)
+- [Contributing](contributing)
+
+</Rust>
 </LanguageContent>

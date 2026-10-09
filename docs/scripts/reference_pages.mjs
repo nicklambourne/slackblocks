@@ -10,7 +10,7 @@ import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 export function anchor(name) {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, "");
+  return name.toLowerCase().replace(/[^a-z0-9_]+/g, "");
 }
 
 function resolveLinks(markdown, typeLinks) {
@@ -72,7 +72,7 @@ function memberSection(member, typeLinks, overloaded, fence, preserveMemberNames
  * @param {boolean} [options.preserveMemberNames] retain method spelling for Ruby
  * @returns {Promise<number>} the number of documented types
  */
-export async function writeReferencePages({ reference, domains, domainFor, language, fence, outputRoot, introduction, index, preserveMemberNames = false }) {
+export async function writeReferencePages({ reference, domains, domainFor, language, fence, outputRoot, introduction, index, preserveMemberNames = false, constantValueLabel = "Slack value" }) {
   const byDomain = new Map(domains.map((domain) => [domain.slug, []]));
   for (const type of reference.types) {
     const domain = domainFor(type);
@@ -97,7 +97,7 @@ export async function writeReferencePages({ reference, domains, domainFor, langu
       output += `${resolveLinks(type.doc || `Public ${type.name} API.`, typeLinks)}\n\n`;
       for (const see of type.see) output += `See the [${see.label}](${see.url}).\n\n`;
       if (type.constants.length) {
-        output += "| Constant | Slack value | Meaning |\n| --- | --- | --- |\n";
+        output += `| Constant | ${constantValueLabel} | Meaning |\n| --- | --- | --- |\n`;
         for (const constant of type.constants) {
           output += `| \`${constant.name}\` | \`${constant.wire}\` | ${resolveLinks(constant.doc, typeLinks)} |\n`;
         }

@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
 
 # Sending Messages
 
@@ -567,4 +567,51 @@ client.chat_postMessage(**message.as_json.transform_keys(&:to_sym))
 `as_json` returns a fresh hash, so a client may modify it without changing the message. For an incoming webhook, construct `Slackblocks::WebhookMessage` and send its `to_json` as an `application/json` request body. Use `MessageResponse` for interaction responses, `ModalView` for modals, and `HomeTabView` for App Home.
 
 </Ruby>
+<Rust>
+
+## Serialize a complete payload
+
+The Rust crate builds validated payloads and makes no network requests. Serialize
+with Serde, then send the JSON through your application's HTTP or Slack client.
+This executable example writes the body that can be submitted to `chat.postMessage`:
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let message = MessagePayload::builder("C01234567")
+        .text("Deployment complete")
+        .block(
+            SectionBlock::builder()
+                .text("Deployment complete")
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+Save the output as `message.json`. For a manual request, set `SLACK_BOT_TOKEN`
+in your environment and use:
+
+```sh
+curl --fail-with-body https://slack.com/api/chat.postMessage \
+  -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+  -H 'Content-Type: application/json; charset=utf-8' \
+  --data-binary @message.json
+```
+
+Check both the HTTP status and Slack's JSON `ok`/`error` response. Do not print or
+commit the token. A successful local build validates the documented Block Kit
+contract; permissions, channel membership and delivery remain Slack concerns.
+
+Use `WebhookMessage` for an incoming webhook and `MessageResponse` for a slash
+command or interaction response. Wrap a serialized `ModalView` under `view` with
+its `trigger_id` for `views.open`; wrap `HomeTabView` with `user_id` for
+`views.publish`. These are request envelopes, separate from the view itself.
+The owned values are `Send + Sync` and can be used with your chosen async client.
+
+
+</Rust>
 </LanguageContent>

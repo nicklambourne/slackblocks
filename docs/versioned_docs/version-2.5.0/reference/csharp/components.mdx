@@ -1,0 +1,100 @@
+---
+sidebar_position: 5
+toc_max_heading_level: 3
+---
+
+# Components
+
+This page documents the public C# API for components, generated from the XML documentation of the compiled library. Values are immutable, constructors take named arguments and validate them, and read-only properties return what was passed.
+
+Components return ordinary `IReadOnlyList<IBlock>` values that spread into any block collection. The application remains responsible for delivery and interaction handling.
+
+## Accordion
+
+A stack of independently collapsible sections, each a Slack container block.
+
+Build the sections with `AccordionSection.Create`. The result is an ordinary list of blocks that can be combined with other blocks, for example `blocks: [header, ..Accordion.Create(sections)]`.
+
+### Create
+
+Combines accordion sections into a list of blocks.
+
+```csharp
+public static IReadOnlyList<IBlock> Create(IEnumerable<ContainerBlock> sections)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `sections` | Sections created by `AccordionSection.Create`, in display order. |
+
+**Returns:** The sections as blocks.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | There are no sections, or a section is not a collapsible container. |
+
+**Related types:** [`ContainerBlock`](/reference/csharp/blocks#containerblock), [`IBlock`](/reference/csharp/blocks#iblock)
+
+## AccordionSection
+
+Creates one collapsible accordion section.
+
+### Create
+
+Creates a collapsible container block for use in an [`Accordion`](/reference/csharp/components#accordion).
+
+```csharp
+public static ContainerBlock Create(PlainText title, IEnumerable<IBlock> blocks, Text? subtitle = null, ImageElement? icon = null, bool expanded = false, ContainerWidth width = ContainerWidth.Standard, bool hasHeaderDivider = false, string? blockId = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | Heading shown whether the section is expanded or collapsed. |
+| `blocks` | Blocks revealed when the section is expanded. |
+| `subtitle` | Supporting text below the heading. A string is sent as `mrkdwn`. |
+| `icon` | Image shown beside the heading. |
+| `expanded` | Whether the section starts expanded. |
+| `width` | Container width. |
+| `hasHeaderDivider` | Whether a divider separates the heading from the content. |
+| `blockId` | Block identifier for the container. |
+
+**Returns:** A validated collapsible [`ContainerBlock`](/reference/csharp/blocks#containerblock).
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The section breaks a Block Kit rule. |
+
+**Related types:** [`ContainerBlock`](/reference/csharp/blocks#containerblock), [`ContainerWidth`](/reference/csharp/blocks#containerwidth), [`IBlock`](/reference/csharp/blocks#iblock), [`ImageElement`](/reference/csharp/elements#imageelement), [`PlainText`](/reference/csharp/objects#plaintext), [`Text`](/reference/csharp/objects#text)
+
+## Paginator
+
+Selects one page of blocks and adds standard navigation controls.
+
+The result is an ordinary list of blocks. When there is more than one page it ends with an optional `Page N of M` context block and an actions block holding previous and next buttons. Button action identifiers are `{actionIdPrefix}.previous` and `{actionIdPrefix}.next`, and their values carry the one-based page number to show.
+
+### Create
+
+Builds one page of `blocks` with navigation.
+
+```csharp
+public static IReadOnlyList<IBlock> Create(string actionIdPrefix, IEnumerable<IBlock> blocks, int page = 1, int pageSize = 5, string previousText = "Previous", string nextText = "Next", bool showPageIndicator = true, string? blockId = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionIdPrefix` | Prefix for the navigation buttons' action identifiers. |
+| `blocks` | Every block across all pages, in display order. |
+| `page` | The one-based page to show. |
+| `pageSize` | How many blocks each page shows. |
+| `previousText` | Label of the previous-page button. |
+| `nextText` | Label of the next-page button. |
+| `showPageIndicator` | Whether to add a `Page N of M` context block. |
+| `blockId` | Block identifier for the navigation actions block. |
+
+**Returns:** The blocks for the requested page, followed by the navigation blocks when needed.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | There are no blocks, the prefix is empty, or the page or page size is out of range. |
+
+**Related types:** [`IBlock`](/reference/csharp/blocks#iblock)
