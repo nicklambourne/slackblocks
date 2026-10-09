@@ -12,6 +12,7 @@ on:
       - "docs/examples/section_hello.json"
       - "README.md"
       - ".github/workflows/java.yml"
+      - ".github/scripts/check-java-bundle.py"
   pull_request:
   workflow_dispatch:
 
@@ -44,7 +45,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(java/|spec/|go/internal/builder_methods\.json$|docs/docs/|docs/examples/java/|docs/examples/section_hello\.json$|README\.md$|\.github/workflows/java\.yml$)' <<<"$files"; then
+          if grep -qE '^(java/|spec/|go/internal/builder_methods\.json$|docs/docs/|docs/examples/java/|docs/examples/section_hello\.json$|README\.md$|\.github/workflows/java\.yml$|\.github/scripts/check-java-bundle\.py$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -144,12 +145,18 @@ jobs:
           gpg-private-key: ${{ steps.key.outputs.private-key }}
           gpg-passphrase-env-var: MAVEN_GPG_PASSPHRASE
 
-      - name: Build and sign the release bundle without deploying
+      - name: Install Python for the local Central bundle check
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: Build and inspect the signed bundle using a local mock Central server
         if: needs.changes.outputs.relevant == 'true'
         working-directory: java
         env:
           MAVEN_GPG_PASSPHRASE: ${{ steps.key.outputs.passphrase }}
-        run: ./mvnw -B -ntp -Prelease -DskipTests clean verify
+        run: python ../.github/scripts/check-java-bundle.py
 
       - name: Verify every artifact is signed
         if: needs.changes.outputs.relevant == 'true'
