@@ -347,10 +347,24 @@ final class FluentDriver {
   private Map<String, Object> plainMap(JsonObject object, String path) throws Exception {
     Map<String, Object> result = new LinkedHashMap<>();
     for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
-      result.put(
-          entry.getKey(), build(entry.getValue(), Object.class, path + "." + entry.getKey()));
+      result.put(entry.getKey(), plainValue(entry.getValue(), path + "." + entry.getKey()));
     }
     return result;
+  }
+
+  // A map field is application JSON; its discriminator-like keys are not model types.
+  private Object plainValue(JsonElement json, String path) throws Exception {
+    if (json.isJsonObject()) {
+      return plainMap(json.getAsJsonObject(), path);
+    }
+    if (json.isJsonArray()) {
+      List<Object> result = new ArrayList<>();
+      for (JsonElement item : json.getAsJsonArray()) {
+        result.add(plainValue(item, path + "[]"));
+      }
+      return result;
+    }
+    return scalar(json);
   }
 
   private static Object scalar(JsonElement json) {

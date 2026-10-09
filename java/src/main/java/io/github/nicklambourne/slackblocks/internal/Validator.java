@@ -1066,7 +1066,12 @@ public final class Validator {
     }
     // Slack limits markdown block text and data table cell text across the whole message.
     int[] totals = new int[2];
-    addMessageTotals(value, totals);
+    addMessageTotals(value.get("blocks"), totals);
+    if (value.get("attachments") instanceof List<?> attachments) {
+      for (Object attachment : attachments) {
+        addMessageTotals(objectAt(attachment, path).get("blocks"), totals);
+      }
+    }
     if (totals[0] > SlackLimits.MARKDOWN_TOTAL_TEXT_MAX_LENGTH) {
       fail(
           ErrorCategory.LENGTH_EXCEEDED,
@@ -1097,10 +1102,8 @@ public final class Validator {
         totals[0] += text.codePointCount(0, text.length());
       } else if ("data_table".equals(type)) {
         totals[1] += textCharacterCount(map.get("rows"));
-      } else {
-        for (Object nested : map.values()) {
-          addMessageTotals(nested, totals);
-        }
+      } else if ("container".equals(type)) {
+        addMessageTotals(map.get("child_blocks"), totals);
       }
     } else if (value instanceof List<?> list) {
       for (Object item : list) {

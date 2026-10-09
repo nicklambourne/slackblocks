@@ -35,9 +35,8 @@ proptest! {
     }
 }
 
-#[cfg(feature = "json-features")]
 #[test]
-fn feature_unification_rejects_rounding_and_keeps_exact_decimal_values() {
+fn numeric_ingress_rejects_rounding_and_keeps_exact_decimal_values() {
     for text in [
         "1.2345678901234567890123456789",
         "18446744073709551617",

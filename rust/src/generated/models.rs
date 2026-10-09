@@ -591,6 +591,33 @@ impl<'de> Deserialize<'de> for Block {
     }
 }
 
+impl Block {
+    pub(crate) fn wire_type(&self) -> &'static str {
+        match self {
+            Self::Actions(_) => "actions",
+            Self::Alert(_) => "alert",
+            Self::Card(_) => "card",
+            Self::Carousel(_) => "carousel",
+            Self::Container(_) => "container",
+            Self::ContextActions(_) => "context_actions",
+            Self::Context(_) => "context",
+            Self::DataTable(_) => "data_table",
+            Self::DataVisualization(_) => "data_visualization",
+            Self::Divider(_) => "divider",
+            Self::File(_) => "file",
+            Self::Header(_) => "header",
+            Self::Image(_) => "image",
+            Self::Input(_) => "input",
+            Self::Markdown(_) => "markdown",
+            Self::Plan(_) => "plan",
+            Self::RichText(_) => "rich_text",
+            Self::Section(_) => "section",
+            Self::Table(_) => "table",
+            Self::TaskCard(_) => "task_card",
+            Self::Video(_) => "video",
+        }
+    }
+}
 impl From<ActionsBlock> for Block {
     fn from(value: ActionsBlock) -> Self {
         Self::Actions(Box::new(value))
@@ -1783,15 +1810,9 @@ impl ActionsBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "actions")?;
-        }
+        map.serialize_entry("type", "actions")?;
         map.serialize_entry("elements", &self.elements)?;
         if let Some(value) = &self.block_id {
             map.serialize_entry("block_id", value)?;
@@ -1849,22 +1870,19 @@ impl ActionsBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "ActionsBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("elements") {
-            crate::rules::limits(v, "actions.elements", "ActionsBlock.elements")?;
+        {
+            let v = &value.elements;
+            crate::rules::length(v.len(), None, Some(25), "ActionsBlock.elements")?;
         }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "ActionsBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "ActionsBlock.block_id")?;
         }
-        crate::rules::validate("ActionsBlock", &wire, "ActionsBlock")?;
         Ok(value)
     }
 }
 impl Serialize for ActionsBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ActionsBlock {
@@ -1952,15 +1970,9 @@ impl AlertBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "alert")?;
-        }
+        map.serialize_entry("type", "alert")?;
         map.serialize_entry("text", &self.text)?;
         if let Some(value) = &self.level {
             map.serialize_entry("level", value)?;
@@ -2030,22 +2042,24 @@ impl AlertBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "AlertBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("text") {
-            crate::rules::limits(v, "alert.text", "AlertBlock.text")?;
+        {
+            let v = &value.text;
+            crate::rules::length(
+                crate::rules::text_len(v),
+                None,
+                Some(200),
+                "AlertBlock.text",
+            )?;
         }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "AlertBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "AlertBlock.block_id")?;
         }
-        crate::rules::validate("AlertBlock", &wire, "AlertBlock")?;
         Ok(value)
     }
 }
 impl Serialize for AlertBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for AlertBlock {
@@ -2184,15 +2198,9 @@ impl CardBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "card")?;
-        }
+        map.serialize_entry("type", "card")?;
         if let Some(value) = &self.hero_image {
             map.serialize_entry("hero_image", value)?;
         }
@@ -2386,34 +2394,49 @@ impl CardBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
+        if let Some(v) = &value.title {
+            crate::rules::length(
+                crate::rules::text_len(v),
+                None,
+                Some(150),
+                "CardBlock.title",
+            )?;
+        }
+        if let Some(v) = &value.subtitle {
+            crate::rules::length(
+                crate::rules::text_len(v),
+                None,
+                Some(150),
+                "CardBlock.subtitle",
+            )?;
+        }
+        if let Some(v) = &value.body {
+            crate::rules::length(crate::rules::text_len(v), None, Some(200), "CardBlock.body")?;
+        }
+        if let Some(v) = &value.actions {
+            crate::rules::length(v.len(), None, Some(3), "CardBlock.actions")?;
+        }
+        if let Some(v) = &value.subtext {
+            crate::rules::length(
+                crate::rules::text_len(v),
+                None,
+                Some(200),
+                "CardBlock.subtext",
+            )?;
+        }
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "CardBlock.block_id")?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(ErrorCategory::TypeMismatch, "CardBlock", e.to_string())
         })?;
-        if let Some(v) = wire.get("title") {
-            crate::rules::limits(v, "card.title", "CardBlock.title")?;
-        }
-        if let Some(v) = wire.get("subtitle") {
-            crate::rules::limits(v, "card.subtitle", "CardBlock.subtitle")?;
-        }
-        if let Some(v) = wire.get("body") {
-            crate::rules::limits(v, "card.body", "CardBlock.body")?;
-        }
-        if let Some(v) = wire.get("actions") {
-            crate::rules::limits(v, "card.actions", "CardBlock.actions")?;
-        }
-        if let Some(v) = wire.get("subtext") {
-            crate::rules::limits(v, "card.subtext", "CardBlock.subtext")?;
-        }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "CardBlock.block_id")?;
-        }
         crate::rules::validate("CardBlock", &wire, "CardBlock")?;
         Ok(value)
     }
 }
 impl Serialize for CardBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for CardBlock {
@@ -2511,15 +2534,9 @@ impl CarouselBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "carousel")?;
-        }
+        map.serialize_entry("type", "carousel")?;
         map.serialize_entry("elements", &self.elements)?;
         if let Some(value) = &self.block_id {
             map.serialize_entry("block_id", value)?;
@@ -2577,22 +2594,19 @@ impl CarouselBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "CarouselBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("elements") {
-            crate::rules::limits(v, "carousel.elements", "CarouselBlock.elements")?;
+        {
+            let v = &value.elements;
+            crate::rules::length(v.len(), Some(1), Some(10), "CarouselBlock.elements")?;
         }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "CarouselBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "CarouselBlock.block_id")?;
         }
-        crate::rules::validate("CarouselBlock", &wire, "CarouselBlock")?;
         Ok(value)
     }
 }
 impl Serialize for CarouselBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for CarouselBlock {
@@ -2736,15 +2750,9 @@ impl ContainerBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "container")?;
-        }
+        map.serialize_entry("type", "container")?;
         map.serialize_entry("child_blocks", &self.child_blocks)?;
         if let Some(value) = &self.title {
             map.serialize_entry("title", value)?;
@@ -2946,28 +2954,44 @@ impl ContainerBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
+        {
+            let v = &value.child_blocks;
+            crate::rules::length(v.len(), Some(1), Some(10), "ContainerBlock.child_blocks")?;
+        }
+        if let Some(v) = &value.title {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
+                "ContainerBlock.title",
+            )?;
+        }
+        if let Some(v) = &value.subtitle {
+            crate::rules::length(
+                crate::rules::text_len(v),
+                None,
+                Some(150),
+                "ContainerBlock.subtitle",
+            )?;
+        }
+        if let Some(v) = &value.block_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "ContainerBlock.block_id",
+            )?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(ErrorCategory::TypeMismatch, "ContainerBlock", e.to_string())
         })?;
-        if let Some(v) = wire.get("child_blocks") {
-            crate::rules::limits(v, "container.child_blocks", "ContainerBlock.child_blocks")?;
-        }
-        if let Some(v) = wire.get("title") {
-            crate::rules::limits(v, "container.title", "ContainerBlock.title")?;
-        }
-        if let Some(v) = wire.get("subtitle") {
-            crate::rules::limits(v, "container.subtitle", "ContainerBlock.subtitle")?;
-        }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "ContainerBlock.block_id")?;
-        }
         crate::rules::validate("ContainerBlock", &wire, "ContainerBlock")?;
         Ok(value)
     }
 }
 impl Serialize for ContainerBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ContainerBlock {
@@ -3065,15 +3089,9 @@ impl ContextActionsBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "context_actions")?;
-        }
+        map.serialize_entry("type", "context_actions")?;
         map.serialize_entry("elements", &self.elements)?;
         if let Some(value) = &self.block_id {
             map.serialize_entry("block_id", value)?;
@@ -3135,30 +3153,24 @@ impl ContextActionsBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "ContextActionsBlock",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("elements") {
-            crate::rules::limits(
-                v,
-                "context_actions.elements",
-                "ContextActionsBlock.elements",
+        {
+            let v = &value.elements;
+            crate::rules::length(v.len(), None, Some(5), "ContextActionsBlock.elements")?;
+        }
+        if let Some(v) = &value.block_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "ContextActionsBlock.block_id",
             )?;
         }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "ContextActionsBlock.block_id")?;
-        }
-        crate::rules::validate("ContextActionsBlock", &wire, "ContextActionsBlock")?;
         Ok(value)
     }
 }
 impl Serialize for ContextActionsBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ContextActionsBlock {
@@ -3238,15 +3250,9 @@ impl ContextBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "context")?;
-        }
+        map.serialize_entry("type", "context")?;
         map.serialize_entry("elements", &self.elements)?;
         if let Some(value) = &self.block_id {
             map.serialize_entry("block_id", value)?;
@@ -3304,22 +3310,19 @@ impl ContextBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "ContextBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("elements") {
-            crate::rules::limits(v, "context.elements", "ContextBlock.elements")?;
+        {
+            let v = &value.elements;
+            crate::rules::length(v.len(), None, Some(10), "ContextBlock.elements")?;
         }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "ContextBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "ContextBlock.block_id")?;
         }
-        crate::rules::validate("ContextBlock", &wire, "ContextBlock")?;
         Ok(value)
     }
 }
 impl Serialize for ContextBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ContextBlock {
@@ -3423,15 +3426,9 @@ impl DataTableBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "data_table")?;
-        }
+        map.serialize_entry("type", "data_table")?;
         map.serialize_entry("rows", &self.rows)?;
         map.serialize_entry("caption", &self.caption)?;
         if let Some(value) = &self.page_size {
@@ -3546,32 +3543,50 @@ impl DataTableBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "DataTableBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("rows") {
-            crate::rules::limits(v, "data_table.rows", "DataTableBlock.rows")?;
+        {
+            let v = &value.rows;
+            crate::rules::length(v.len(), Some(2), Some(201), "DataTableBlock.rows")?;
         }
-        if let Some(v) = wire.get("page_size") {
-            crate::rules::limits(v, "data_table.page_size", "DataTableBlock.page_size")?;
+        if let Some(v) = &value.page_size {
+            if *v < 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "DataTableBlock.page_size",
+                    "number outside field bounds",
+                ));
+            }
+            if *v > 100 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "DataTableBlock.page_size",
+                    "number outside field bounds",
+                ));
+            }
         }
-        if let Some(v) = wire.get("row_header_column_index") {
-            crate::rules::limits(
-                v,
-                "data_table.row_header_column_index",
-                "DataTableBlock.row_header_column_index",
+        if let Some(v) = &value.row_header_column_index {
+            if *v < 0 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "DataTableBlock.row_header_column_index",
+                    "number outside field bounds",
+                ));
+            }
+        }
+        if let Some(v) = &value.block_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "DataTableBlock.block_id",
             )?;
         }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "DataTableBlock.block_id")?;
-        }
-        crate::rules::validate("DataTableBlock", &wire, "DataTableBlock")?;
+        crate::rules::data_table(&value, "DataTableBlock")?;
         Ok(value)
     }
 }
 impl Serialize for DataTableBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for DataTableBlock {
@@ -3666,15 +3681,9 @@ impl DataVisualizationBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "data_visualization")?;
-        }
+        map.serialize_entry("type", "data_visualization")?;
         map.serialize_entry("title", &self.title)?;
         map.serialize_entry("chart", &self.chart)?;
         if let Some(value) = &self.block_id {
@@ -3732,30 +3741,29 @@ impl DataVisualizationBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "DataVisualizationBlock",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("title") {
-            crate::rules::limits(
-                v,
-                "data_visualization.title",
+        {
+            let v = &value.title;
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(50),
                 "DataVisualizationBlock.title",
             )?;
         }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "DataVisualizationBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "DataVisualizationBlock.block_id",
+            )?;
         }
-        crate::rules::validate("DataVisualizationBlock", &wire, "DataVisualizationBlock")?;
         Ok(value)
     }
 }
 impl Serialize for DataVisualizationBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for DataVisualizationBlock {
@@ -3829,15 +3837,9 @@ impl DividerBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "divider")?;
-        }
+        map.serialize_entry("type", "divider")?;
         if let Some(value) = &self.block_id {
             map.serialize_entry("block_id", value)?;
         }
@@ -3875,19 +3877,15 @@ impl DividerBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "DividerBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "DividerBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "DividerBlock.block_id")?;
         }
-        crate::rules::validate("DividerBlock", &wire, "DividerBlock")?;
         Ok(value)
     }
 }
 impl Serialize for DividerBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for DividerBlock {
@@ -3973,15 +3971,9 @@ impl FileBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "file")?;
-        }
+        map.serialize_entry("type", "file")?;
         map.serialize_entry("external_id", &self.external_id)?;
         map.serialize_entry("source", &self.source)?;
         if let Some(value) = &self.block_id {
@@ -4039,19 +4031,15 @@ impl FileBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "FileBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "FileBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "FileBlock.block_id")?;
         }
-        crate::rules::validate("FileBlock", &wire, "FileBlock")?;
         Ok(value)
     }
 }
 impl Serialize for FileBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for FileBlock {
@@ -4136,15 +4124,9 @@ impl HeaderBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "header")?;
-        }
+        map.serialize_entry("type", "header")?;
         map.serialize_entry("text", &self.text)?;
         if let Some(value) = &self.block_id {
             map.serialize_entry("block_id", value)?;
@@ -4195,22 +4177,24 @@ impl HeaderBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "HeaderBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("text") {
-            crate::rules::limits(v, "header.text", "HeaderBlock.text")?;
+        {
+            let v = &value.text;
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
+                "HeaderBlock.text",
+            )?;
         }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "HeaderBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "HeaderBlock.block_id")?;
         }
-        crate::rules::validate("HeaderBlock", &wire, "HeaderBlock")?;
         Ok(value)
     }
 }
 impl Serialize for HeaderBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for HeaderBlock {
@@ -4315,15 +4299,9 @@ impl ImageBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "image")?;
-        }
+        map.serialize_entry("type", "image")?;
         if let Some(value) = &self.image_url {
             map.serialize_entry("image_url", value)?;
         }
@@ -4421,28 +4399,34 @@ impl ImageBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
+        if let Some(v) = &value.image_url {
+            crate::rules::length(v.chars().count(), None, Some(3000), "ImageBlock.image_url")?;
+        }
+        {
+            let v = &value.alt_text;
+            crate::rules::length(v.chars().count(), None, Some(2000), "ImageBlock.alt_text")?;
+        }
+        if let Some(v) = &value.title {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(2000),
+                "ImageBlock.title",
+            )?;
+        }
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "ImageBlock.block_id")?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(ErrorCategory::TypeMismatch, "ImageBlock", e.to_string())
         })?;
-        if let Some(v) = wire.get("image_url") {
-            crate::rules::limits(v, "image.image_url", "ImageBlock.image_url")?;
-        }
-        if let Some(v) = wire.get("alt_text") {
-            crate::rules::limits(v, "image.alt_text", "ImageBlock.alt_text")?;
-        }
-        if let Some(v) = wire.get("title") {
-            crate::rules::limits(v, "image.title", "ImageBlock.title")?;
-        }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "ImageBlock.block_id")?;
-        }
         crate::rules::validate("ImageBlock", &wire, "ImageBlock")?;
         Ok(value)
     }
 }
 impl Serialize for ImageBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ImageBlock {
@@ -4561,15 +4545,9 @@ impl InputBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "input")?;
-        }
+        map.serialize_entry("type", "input")?;
         map.serialize_entry("label", &self.label)?;
         map.serialize_entry("element", &self.element)?;
         if let Some(value) = &self.dispatch_action {
@@ -4687,25 +4665,32 @@ impl InputBlockBuilder {
             optional,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "InputBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("label") {
-            crate::rules::limits(v, "input.label", "InputBlock.label")?;
+        {
+            let v = &value.label;
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(2000),
+                "InputBlock.label",
+            )?;
         }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "InputBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "InputBlock.block_id")?;
         }
-        if let Some(v) = wire.get("hint") {
-            crate::rules::limits(v, "input.hint", "InputBlock.hint")?;
+        if let Some(v) = &value.hint {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(2000),
+                "InputBlock.hint",
+            )?;
         }
-        crate::rules::validate("InputBlock", &wire, "InputBlock")?;
         Ok(value)
     }
 }
 impl Serialize for InputBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for InputBlock {
@@ -4795,15 +4780,9 @@ impl MarkdownBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "markdown")?;
-        }
+        map.serialize_entry("type", "markdown")?;
         map.serialize_entry("text", &self.text)?;
         if let Some(value) = &self.block_id {
             map.serialize_entry("block_id", value)?;
@@ -4849,22 +4828,19 @@ impl MarkdownBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "MarkdownBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("text") {
-            crate::rules::limits(v, "markdown.text", "MarkdownBlock.text")?;
+        {
+            let v = &value.text;
+            crate::rules::length(v.chars().count(), None, Some(12000), "MarkdownBlock.text")?;
         }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "MarkdownBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "MarkdownBlock.block_id")?;
         }
-        crate::rules::validate("MarkdownBlock", &wire, "MarkdownBlock")?;
         Ok(value)
     }
 }
 impl Serialize for MarkdownBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for MarkdownBlock {
@@ -4952,15 +4928,9 @@ impl PlanBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "plan")?;
-        }
+        map.serialize_entry("type", "plan")?;
         map.serialize_entry("title", &self.title)?;
         map.serialize_entry("tasks", &crate::rules::PlanTasks(&self.tasks))?;
         if let Some(value) = &self.block_id {
@@ -5028,22 +4998,23 @@ impl PlanBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
+        {
+            let v = &value.tasks;
+            crate::rules::length(v.len(), None, Some(50), "PlanBlock.tasks")?;
+        }
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "PlanBlock.block_id")?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(ErrorCategory::TypeMismatch, "PlanBlock", e.to_string())
         })?;
-        if let Some(v) = wire.get("tasks") {
-            crate::rules::limits(v, "plan.tasks", "PlanBlock.tasks")?;
-        }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "PlanBlock.block_id")?;
-        }
         crate::rules::validate("PlanBlock", &wire, "PlanBlock")?;
         Ok(value)
     }
 }
 impl Serialize for PlanBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for PlanBlock {
@@ -5126,15 +5097,9 @@ impl RichTextBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "rich_text")?;
-        }
+        map.serialize_entry("type", "rich_text")?;
         map.serialize_entry("elements", &self.elements)?;
         if let Some(value) = &self.block_id {
             map.serialize_entry("block_id", value)?;
@@ -5192,19 +5157,15 @@ impl RichTextBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "RichTextBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "RichTextBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "RichTextBlock.block_id")?;
         }
-        crate::rules::validate("RichTextBlock", &wire, "RichTextBlock")?;
         Ok(value)
     }
 }
 impl Serialize for RichTextBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RichTextBlock {
@@ -5300,15 +5261,9 @@ impl SectionBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "section")?;
-        }
+        map.serialize_entry("type", "section")?;
         if let Some(value) = &self.text {
             map.serialize_entry("text", value)?;
         }
@@ -5419,25 +5374,38 @@ impl SectionBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
+        if let Some(v) = &value.text {
+            crate::rules::length(
+                crate::rules::text_len(v),
+                None,
+                Some(3000),
+                "SectionBlock.text",
+            )?;
+        }
+        if let Some(v) = &value.fields {
+            crate::rules::length(v.len(), None, Some(10), "SectionBlock.fields")?;
+            for (i, item) in v.iter().enumerate() {
+                crate::rules::length(
+                    crate::rules::text_len(item),
+                    None,
+                    Some(2000),
+                    &format!("SectionBlock.fields[{i}].text"),
+                )?;
+            }
+        }
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "SectionBlock.block_id")?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(ErrorCategory::TypeMismatch, "SectionBlock", e.to_string())
         })?;
-        if let Some(v) = wire.get("text") {
-            crate::rules::limits(v, "section.text", "SectionBlock.text")?;
-        }
-        if let Some(v) = wire.get("fields") {
-            crate::rules::limits(v, "section.fields", "SectionBlock.fields")?;
-        }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "SectionBlock.block_id")?;
-        }
         crate::rules::validate("SectionBlock", &wire, "SectionBlock")?;
         Ok(value)
     }
 }
 impl Serialize for SectionBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for SectionBlock {
@@ -5535,15 +5503,9 @@ impl TableBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "table")?;
-        }
+        map.serialize_entry("type", "table")?;
         map.serialize_entry("rows", &self.rows)?;
         if let Some(value) = &self.column_settings {
             map.serialize_entry("column_settings", value)?;
@@ -5641,25 +5603,26 @@ impl TableBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
+        {
+            let v = &value.rows;
+            crate::rules::length(v.len(), None, Some(100), "TableBlock.rows")?;
+        }
+        if let Some(v) = &value.column_settings {
+            crate::rules::length(v.len(), None, Some(20), "TableBlock.column_settings")?;
+        }
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "TableBlock.block_id")?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(ErrorCategory::TypeMismatch, "TableBlock", e.to_string())
         })?;
-        if let Some(v) = wire.get("rows") {
-            crate::rules::limits(v, "table.rows", "TableBlock.rows")?;
-        }
-        if let Some(v) = wire.get("column_settings") {
-            crate::rules::limits(v, "table.column_settings", "TableBlock.column_settings")?;
-        }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "TableBlock.block_id")?;
-        }
         crate::rules::validate("TableBlock", &wire, "TableBlock")?;
         Ok(value)
     }
 }
 impl Serialize for TableBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for TableBlock {
@@ -5782,7 +5745,7 @@ impl TaskCardBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
+    pub(crate) fn serialize_value<S: Serializer>(
         &self,
         serializer: S,
         tagged: bool,
@@ -5913,13 +5876,9 @@ impl TaskCardBlockBuilder {
             block_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "TaskCardBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "TaskCardBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "TaskCardBlock.block_id")?;
         }
-        crate::rules::validate("TaskCardBlock", &wire, "TaskCardBlock")?;
         Ok(value)
     }
 }
@@ -6079,15 +6038,9 @@ impl VideoBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "video")?;
-        }
+        map.serialize_entry("type", "video")?;
         map.serialize_entry("alt_text", &self.alt_text)?;
         map.serialize_entry("thumbnail_url", &self.thumbnail_url)?;
         map.serialize_entry("title", &self.title)?;
@@ -6255,46 +6208,71 @@ impl VideoBlockBuilder {
             title_url,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "VideoBlock", e.to_string())
-        })?;
-        if let Some(v) = wire.get("alt_text") {
-            crate::rules::limits(v, "video.alt_text", "VideoBlock.alt_text")?;
+        {
+            let v = &value.alt_text;
+            crate::rules::length(v.chars().count(), None, Some(2000), "VideoBlock.alt_text")?;
         }
-        if let Some(v) = wire.get("thumbnail_url") {
-            crate::rules::limits(v, "video.thumbnail_url", "VideoBlock.thumbnail_url")?;
+        {
+            let v = &value.thumbnail_url;
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(3000),
+                "VideoBlock.thumbnail_url",
+            )?;
         }
-        if let Some(v) = wire.get("title") {
-            crate::rules::limits(v, "video.title", "VideoBlock.title")?;
+        {
+            let v = &value.title;
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(200),
+                "VideoBlock.title",
+            )?;
         }
-        if let Some(v) = wire.get("video_url") {
-            crate::rules::limits(v, "video.video_url", "VideoBlock.video_url")?;
+        {
+            let v = &value.video_url;
+            crate::rules::length(v.chars().count(), None, Some(3000), "VideoBlock.video_url")?;
         }
-        if let Some(v) = wire.get("block_id") {
-            crate::rules::limits(v, "block_id", "VideoBlock.block_id")?;
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "VideoBlock.block_id")?;
         }
-        if let Some(v) = wire.get("author_name") {
-            crate::rules::limits(v, "video.author_name", "VideoBlock.author_name")?;
+        if let Some(v) = &value.author_name {
+            crate::rules::length(v.chars().count(), None, Some(50), "VideoBlock.author_name")?;
         }
-        if let Some(v) = wire.get("description") {
-            crate::rules::limits(v, "video.description", "VideoBlock.description")?;
+        if let Some(v) = &value.description {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(200),
+                "VideoBlock.description",
+            )?;
         }
-        if let Some(v) = wire.get("provider_icon_url") {
-            crate::rules::limits(v, "video.provider_icon_url", "VideoBlock.provider_icon_url")?;
+        if let Some(v) = &value.provider_icon_url {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(2000),
+                "VideoBlock.provider_icon_url",
+            )?;
         }
-        if let Some(v) = wire.get("provider_name") {
-            crate::rules::limits(v, "video.provider_name", "VideoBlock.provider_name")?;
+        if let Some(v) = &value.provider_name {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(50),
+                "VideoBlock.provider_name",
+            )?;
         }
-        if let Some(v) = wire.get("title_url") {
-            crate::rules::limits(v, "video.title_url", "VideoBlock.title_url")?;
+        if let Some(v) = &value.title_url {
+            crate::rules::length(v.chars().count(), None, Some(2000), "VideoBlock.title_url")?;
         }
-        crate::rules::validate("VideoBlock", &wire, "VideoBlock")?;
         Ok(value)
     }
 }
 impl Serialize for VideoBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for VideoBlock {
@@ -6432,15 +6410,9 @@ impl ButtonElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "button")?;
-        }
+        map.serialize_entry("type", "button")?;
         map.serialize_entry("text", &self.text)?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
@@ -6578,35 +6550,43 @@ impl ButtonElementBuilder {
             accessibility_label,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "ButtonElement", e.to_string())
-        })?;
-        if let Some(v) = wire.get("text") {
-            crate::rules::limits(v, "button.text", "ButtonElement.text")?;
+        {
+            let v = &value.text;
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(75),
+                "ButtonElement.text",
+            )?;
         }
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "ButtonElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "ButtonElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("url") {
-            crate::rules::limits(v, "button.url", "ButtonElement.url")?;
+        if let Some(v) = &value.url {
+            crate::rules::length(v.chars().count(), None, Some(3000), "ButtonElement.url")?;
         }
-        if let Some(v) = wire.get("value") {
-            crate::rules::limits(v, "button.value", "ButtonElement.value")?;
+        if let Some(v) = &value.value {
+            crate::rules::length(v.chars().count(), None, Some(2000), "ButtonElement.value")?;
         }
-        if let Some(v) = wire.get("accessibility_label") {
-            crate::rules::limits(
-                v,
-                "button.accessibility_label",
+        if let Some(v) = &value.accessibility_label {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(75),
                 "ButtonElement.accessibility_label",
             )?;
         }
-        crate::rules::validate("ButtonElement", &wire, "ButtonElement")?;
         Ok(value)
     }
 }
 impl Serialize for ButtonElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ButtonElement {
@@ -6729,15 +6709,9 @@ impl ChannelMultiSelectElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "multi_channels_select")?;
-        }
+        map.serialize_entry("type", "multi_channels_select")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -6879,41 +6853,37 @@ impl ChannelMultiSelectElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "ChannelMultiSelectElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "ChannelMultiSelectElement.action_id")?;
-        }
-        if let Some(v) = wire.get("max_selected_items") {
-            crate::rules::limits(
-                v,
-                "multi_select.max_selected_items",
-                "ChannelMultiSelectElement.max_selected_items",
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "ChannelMultiSelectElement.action_id",
             )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(
-                v,
-                "select.placeholder",
+        if let Some(v) = &value.max_selected_items {
+            if *v < 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "ChannelMultiSelectElement.max_selected_items",
+                    "number outside field bounds",
+                ));
+            }
+        }
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
                 "ChannelMultiSelectElement.placeholder",
             )?;
         }
-        crate::rules::validate(
-            "ChannelMultiSelectElement",
-            &wire,
-            "ChannelMultiSelectElement",
-        )?;
         Ok(value)
     }
 }
 impl Serialize for ChannelMultiSelectElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ChannelMultiSelectElement {
@@ -7034,15 +7004,9 @@ impl ChannelSelectElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "channels_select")?;
-        }
+        map.serialize_entry("type", "channels_select")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -7172,26 +7136,28 @@ impl ChannelSelectElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "ChannelSelectElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "ChannelSelectElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "ChannelSelectElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(v, "select.placeholder", "ChannelSelectElement.placeholder")?;
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
+                "ChannelSelectElement.placeholder",
+            )?;
         }
-        crate::rules::validate("ChannelSelectElement", &wire, "ChannelSelectElement")?;
         Ok(value)
     }
 }
 impl Serialize for ChannelSelectElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ChannelSelectElement {
@@ -7304,15 +7270,9 @@ impl CheckboxesElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "checkboxes")?;
-        }
+        map.serialize_entry("type", "checkboxes")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -7435,26 +7395,24 @@ impl CheckboxesElementBuilder {
             focus_on_load,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "CheckboxesElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "CheckboxesElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "CheckboxesElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("options") {
-            crate::rules::limits(v, "checkboxes.options", "CheckboxesElement.options")?;
+        {
+            let v = &value.options;
+            crate::rules::length(v.len(), Some(1), Some(10), "CheckboxesElement.options")?;
         }
-        crate::rules::validate("CheckboxesElement", &wire, "CheckboxesElement")?;
         Ok(value)
     }
 }
 impl Serialize for CheckboxesElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for CheckboxesElement {
@@ -7588,15 +7546,9 @@ impl ConversationMultiSelectElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "multi_conversations_select")?;
-        }
+        map.serialize_entry("type", "multi_conversations_select")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -7770,41 +7722,37 @@ impl ConversationMultiSelectElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "ConversationMultiSelectElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "ConversationMultiSelectElement.action_id")?;
-        }
-        if let Some(v) = wire.get("max_selected_items") {
-            crate::rules::limits(
-                v,
-                "multi_select.max_selected_items",
-                "ConversationMultiSelectElement.max_selected_items",
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "ConversationMultiSelectElement.action_id",
             )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(
-                v,
-                "select.placeholder",
+        if let Some(v) = &value.max_selected_items {
+            if *v < 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "ConversationMultiSelectElement.max_selected_items",
+                    "number outside field bounds",
+                ));
+            }
+        }
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
                 "ConversationMultiSelectElement.placeholder",
             )?;
         }
-        crate::rules::validate(
-            "ConversationMultiSelectElement",
-            &wire,
-            "ConversationMultiSelectElement",
-        )?;
         Ok(value)
     }
 }
 impl Serialize for ConversationMultiSelectElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ConversationMultiSelectElement {
@@ -7947,15 +7895,9 @@ impl ConversationSelectElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "conversations_select")?;
-        }
+        map.serialize_entry("type", "conversations_select")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -8117,34 +8059,28 @@ impl ConversationSelectElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "ConversationSelectElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "ConversationSelectElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "ConversationSelectElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(
-                v,
-                "select.placeholder",
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
                 "ConversationSelectElement.placeholder",
             )?;
         }
-        crate::rules::validate(
-            "ConversationSelectElement",
-            &wire,
-            "ConversationSelectElement",
-        )?;
         Ok(value)
     }
 }
 impl Serialize for ConversationSelectElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ConversationSelectElement {
@@ -8262,15 +8198,9 @@ impl DatePickerElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "datepicker")?;
-        }
+        map.serialize_entry("type", "datepicker")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -8384,30 +8314,28 @@ impl DatePickerElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "DatePickerElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "DatePickerElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "DatePickerElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(
-                v,
-                "date_picker.placeholder",
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
                 "DatePickerElement.placeholder",
             )?;
         }
-        crate::rules::validate("DatePickerElement", &wire, "DatePickerElement")?;
         Ok(value)
     }
 }
 impl Serialize for DatePickerElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for DatePickerElement {
@@ -8510,15 +8438,9 @@ impl DateTimePickerElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "datetimepicker")?;
-        }
+        map.serialize_entry("type", "datetimepicker")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -8605,23 +8527,20 @@ impl DateTimePickerElementBuilder {
             focus_on_load,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "DateTimePickerElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "DateTimePickerElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "DateTimePickerElement.action_id",
+            )?;
         }
-        crate::rules::validate("DateTimePickerElement", &wire, "DateTimePickerElement")?;
         Ok(value)
     }
 }
 impl Serialize for DateTimePickerElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for DateTimePickerElement {
@@ -8729,15 +8648,9 @@ impl EmailInputElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "email_text_input")?;
-        }
+        map.serialize_entry("type", "email_text_input")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -8851,30 +8764,28 @@ impl EmailInputElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "EmailInputElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "EmailInputElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "EmailInputElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(
-                v,
-                "email_input.placeholder",
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
                 "EmailInputElement.placeholder",
             )?;
         }
-        crate::rules::validate("EmailInputElement", &wire, "EmailInputElement")?;
         Ok(value)
     }
 }
 impl Serialize for EmailInputElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for EmailInputElement {
@@ -9002,15 +8913,9 @@ impl ExternalMultiSelectElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "multi_external_select")?;
-        }
+        map.serialize_entry("type", "multi_external_select")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -9168,41 +9073,37 @@ impl ExternalMultiSelectElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "ExternalMultiSelectElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "ExternalMultiSelectElement.action_id")?;
-        }
-        if let Some(v) = wire.get("max_selected_items") {
-            crate::rules::limits(
-                v,
-                "multi_select.max_selected_items",
-                "ExternalMultiSelectElement.max_selected_items",
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "ExternalMultiSelectElement.action_id",
             )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(
-                v,
-                "select.placeholder",
+        if let Some(v) = &value.max_selected_items {
+            if *v < 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "ExternalMultiSelectElement.max_selected_items",
+                    "number outside field bounds",
+                ));
+            }
+        }
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
                 "ExternalMultiSelectElement.placeholder",
             )?;
         }
-        crate::rules::validate(
-            "ExternalMultiSelectElement",
-            &wire,
-            "ExternalMultiSelectElement",
-        )?;
         Ok(value)
     }
 }
 impl Serialize for ExternalMultiSelectElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ExternalMultiSelectElement {
@@ -9325,15 +9226,9 @@ impl ExternalSelectElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "external_select")?;
-        }
+        map.serialize_entry("type", "external_select")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -9463,26 +9358,28 @@ impl ExternalSelectElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "ExternalSelectElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "ExternalSelectElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "ExternalSelectElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(v, "select.placeholder", "ExternalSelectElement.placeholder")?;
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
+                "ExternalSelectElement.placeholder",
+            )?;
         }
-        crate::rules::validate("ExternalSelectElement", &wire, "ExternalSelectElement")?;
         Ok(value)
     }
 }
 impl Serialize for ExternalSelectElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ExternalSelectElement {
@@ -9579,15 +9476,9 @@ impl FeedbackButtonsElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "feedback_buttons")?;
-        }
+        map.serialize_entry("type", "feedback_buttons")?;
         map.serialize_entry("positive_button", &self.positive_button)?;
         map.serialize_entry("negative_button", &self.negative_button)?;
         if let Some(value) = &self.action_id {
@@ -9651,23 +9542,20 @@ impl FeedbackButtonsElementBuilder {
             action_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "FeedbackButtonsElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "FeedbackButtonsElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "FeedbackButtonsElement.action_id",
+            )?;
         }
-        crate::rules::validate("FeedbackButtonsElement", &wire, "FeedbackButtonsElement")?;
         Ok(value)
     }
 }
 impl Serialize for FeedbackButtonsElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for FeedbackButtonsElement {
@@ -9757,15 +9645,9 @@ impl FileInputElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "file_input")?;
-        }
+        map.serialize_entry("type", "file_input")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -9849,26 +9731,36 @@ impl FileInputElementBuilder {
             max_files,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "FileInputElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "FileInputElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "FileInputElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("max_files") {
-            crate::rules::limits(v, "file_input.max_files", "FileInputElement.max_files")?;
+        if let Some(v) = &value.max_files {
+            if *v < 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "FileInputElement.max_files",
+                    "number outside field bounds",
+                ));
+            }
+            if *v > 10 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "FileInputElement.max_files",
+                    "number outside field bounds",
+                ));
+            }
         }
-        crate::rules::validate("FileInputElement", &wire, "FileInputElement")?;
         Ok(value)
     }
 }
 impl Serialize for FileInputElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for FileInputElement {
@@ -9990,15 +9882,9 @@ impl IconButtonElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "icon_button")?;
-        }
+        map.serialize_entry("type", "icon_button")?;
         map.serialize_entry("text", &self.text)?;
         map.serialize_entry("icon", &self.icon)?;
         if let Some(value) = &self.action_id {
@@ -10141,40 +10027,44 @@ impl IconButtonElementBuilder {
             visible_to_user_ids,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "IconButtonElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "IconButtonElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "IconButtonElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("value") {
-            crate::rules::limits(v, "icon_button.value", "IconButtonElement.value")?;
+        if let Some(v) = &value.value {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(2000),
+                "IconButtonElement.value",
+            )?;
         }
-        if let Some(v) = wire.get("accessibility_label") {
-            crate::rules::limits(
-                v,
-                "icon_button.accessibility_label",
+        if let Some(v) = &value.accessibility_label {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(75),
                 "IconButtonElement.accessibility_label",
             )?;
         }
-        if let Some(v) = wire.get("visible_to_user_ids") {
-            crate::rules::limits(
-                v,
-                "icon_button.visible_to_user_ids",
+        if let Some(v) = &value.visible_to_user_ids {
+            crate::rules::length(
+                v.len(),
+                None,
+                Some(10),
                 "IconButtonElement.visible_to_user_ids",
             )?;
         }
-        crate::rules::validate("IconButtonElement", &wire, "IconButtonElement")?;
         Ok(value)
     }
 }
 impl Serialize for IconButtonElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for IconButtonElement {
@@ -10277,15 +10167,9 @@ impl ImageElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "image")?;
-        }
+        map.serialize_entry("type", "image")?;
         map.serialize_entry("alt_text", &self.alt_text)?;
         if let Some(value) = &self.image_url {
             map.serialize_entry("image_url", value)?;
@@ -10350,22 +10234,28 @@ impl ImageElementBuilder {
             slack_file,
             extensions: self.extensions,
         };
+        {
+            let v = &value.alt_text;
+            crate::rules::length(v.chars().count(), None, Some(2000), "ImageElement.alt_text")?;
+        }
+        if let Some(v) = &value.image_url {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(3000),
+                "ImageElement.image_url",
+            )?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(ErrorCategory::TypeMismatch, "ImageElement", e.to_string())
         })?;
-        if let Some(v) = wire.get("alt_text") {
-            crate::rules::limits(v, "image_element.alt_text", "ImageElement.alt_text")?;
-        }
-        if let Some(v) = wire.get("image_url") {
-            crate::rules::limits(v, "image_element.image_url", "ImageElement.image_url")?;
-        }
         crate::rules::validate("ImageElement", &wire, "ImageElement")?;
         Ok(value)
     }
 }
 impl Serialize for ImageElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ImageElement {
@@ -10495,15 +10385,9 @@ impl NumberInputElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "number_input")?;
-        }
+        map.serialize_entry("type", "number_input")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -10675,6 +10559,22 @@ impl NumberInputElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "NumberInputElement.action_id",
+            )?;
+        }
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
+                "NumberInputElement.placeholder",
+            )?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(
                 ErrorCategory::TypeMismatch,
@@ -10682,23 +10582,13 @@ impl NumberInputElementBuilder {
                 e.to_string(),
             )
         })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "NumberInputElement.action_id")?;
-        }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(
-                v,
-                "number_input.placeholder",
-                "NumberInputElement.placeholder",
-            )?;
-        }
         crate::rules::validate("NumberInputElement", &wire, "NumberInputElement")?;
         Ok(value)
     }
 }
 impl Serialize for NumberInputElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for NumberInputElement {
@@ -10800,15 +10690,9 @@ impl OverflowElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "overflow")?;
-        }
+        map.serialize_entry("type", "overflow")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -10883,26 +10767,24 @@ impl OverflowElementBuilder {
             confirm,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "OverflowElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "OverflowElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "OverflowElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("options") {
-            crate::rules::limits(v, "overflow.options", "OverflowElement.options")?;
+        {
+            let v = &value.options;
+            crate::rules::length(v.len(), Some(1), Some(5), "OverflowElement.options")?;
         }
-        crate::rules::validate("OverflowElement", &wire, "OverflowElement")?;
         Ok(value)
     }
 }
 impl Serialize for OverflowElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for OverflowElement {
@@ -11032,15 +10914,9 @@ impl PlainTextInputElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "plain_text_input")?;
-        }
+        map.serialize_entry("type", "plain_text_input")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -11202,44 +11078,60 @@ impl PlainTextInputElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "PlainTextInputElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "PlainTextInputElement.action_id")?;
-        }
-        if let Some(v) = wire.get("min_length") {
-            crate::rules::limits(
-                v,
-                "plain_text_input.min_length",
-                "PlainTextInputElement.min_length",
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "PlainTextInputElement.action_id",
             )?;
         }
-        if let Some(v) = wire.get("max_length") {
-            crate::rules::limits(
-                v,
-                "plain_text_input.max_length",
-                "PlainTextInputElement.max_length",
-            )?;
+        if let Some(v) = &value.min_length {
+            if *v < 0 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "PlainTextInputElement.min_length",
+                    "number outside field bounds",
+                ));
+            }
+            if *v > 3000 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "PlainTextInputElement.min_length",
+                    "number outside field bounds",
+                ));
+            }
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(
-                v,
-                "plain_text_input.placeholder",
+        if let Some(v) = &value.max_length {
+            if *v < 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "PlainTextInputElement.max_length",
+                    "number outside field bounds",
+                ));
+            }
+            if *v > 3000 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "PlainTextInputElement.max_length",
+                    "number outside field bounds",
+                ));
+            }
+        }
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
                 "PlainTextInputElement.placeholder",
             )?;
         }
-        crate::rules::validate("PlainTextInputElement", &wire, "PlainTextInputElement")?;
         Ok(value)
     }
 }
 impl Serialize for PlainTextInputElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for PlainTextInputElement {
@@ -11357,15 +11249,9 @@ impl RadioButtonsElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "radio_buttons")?;
-        }
+        map.serialize_entry("type", "radio_buttons")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -11476,26 +11362,24 @@ impl RadioButtonsElementBuilder {
             focus_on_load,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "RadioButtonsElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "RadioButtonsElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "RadioButtonsElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("options") {
-            crate::rules::limits(v, "radio_buttons.options", "RadioButtonsElement.options")?;
+        {
+            let v = &value.options;
+            crate::rules::length(v.len(), Some(1), Some(10), "RadioButtonsElement.options")?;
         }
-        crate::rules::validate("RadioButtonsElement", &wire, "RadioButtonsElement")?;
         Ok(value)
     }
 }
 impl Serialize for RadioButtonsElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RadioButtonsElement {
@@ -11621,15 +11505,9 @@ impl RichTextInputElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "rich_text_input")?;
-        }
+        map.serialize_entry("type", "rich_text_input")?;
         map.serialize_entry("action_id", &self.action_id)?;
         if let Some(value) = &self.initial_value {
             map.serialize_entry("initial_value", value)?;
@@ -11768,44 +11646,61 @@ impl RichTextInputElementBuilder {
             max_lines,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "RichTextInputElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "RichTextInputElement.action_id")?;
+        {
+            let v = &value.action_id;
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "RichTextInputElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(
-                v,
-                "rich_text_input.placeholder",
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
                 "RichTextInputElement.placeholder",
             )?;
         }
-        if let Some(v) = wire.get("min_lines") {
-            crate::rules::limits(
-                v,
-                "rich_text_input.min_lines",
-                "RichTextInputElement.min_lines",
-            )?;
+        if let Some(v) = &value.min_lines {
+            if *v < 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextInputElement.min_lines",
+                    "number outside field bounds",
+                ));
+            }
+            if *v > 100 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextInputElement.min_lines",
+                    "number outside field bounds",
+                ));
+            }
         }
-        if let Some(v) = wire.get("max_lines") {
-            crate::rules::limits(
-                v,
-                "rich_text_input.max_lines",
-                "RichTextInputElement.max_lines",
-            )?;
+        if let Some(v) = &value.max_lines {
+            if *v < 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextInputElement.max_lines",
+                    "number outside field bounds",
+                ));
+            }
+            if *v > 100 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextInputElement.max_lines",
+                    "number outside field bounds",
+                ));
+            }
         }
-        crate::rules::validate("RichTextInputElement", &wire, "RichTextInputElement")?;
         Ok(value)
     }
 }
 impl Serialize for RichTextInputElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RichTextInputElement {
@@ -11945,15 +11840,9 @@ impl StaticMultiSelectElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "multi_static_select")?;
-        }
+        map.serialize_entry("type", "multi_static_select")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -12149,6 +12038,42 @@ impl StaticMultiSelectElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "StaticMultiSelectElement.action_id",
+            )?;
+        }
+        if let Some(v) = &value.options {
+            crate::rules::length(v.len(), None, Some(100), "StaticMultiSelectElement.options")?;
+        }
+        if let Some(v) = &value.option_groups {
+            crate::rules::length(
+                v.len(),
+                None,
+                Some(100),
+                "StaticMultiSelectElement.option_groups",
+            )?;
+        }
+        if let Some(v) = &value.max_selected_items {
+            if *v < 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "StaticMultiSelectElement.max_selected_items",
+                    "number outside field bounds",
+                ));
+            }
+        }
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
+                "StaticMultiSelectElement.placeholder",
+            )?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(
                 ErrorCategory::TypeMismatch,
@@ -12156,33 +12081,6 @@ impl StaticMultiSelectElementBuilder {
                 e.to_string(),
             )
         })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "StaticMultiSelectElement.action_id")?;
-        }
-        if let Some(v) = wire.get("options") {
-            crate::rules::limits(v, "select.options", "StaticMultiSelectElement.options")?;
-        }
-        if let Some(v) = wire.get("option_groups") {
-            crate::rules::limits(
-                v,
-                "select.option_groups",
-                "StaticMultiSelectElement.option_groups",
-            )?;
-        }
-        if let Some(v) = wire.get("max_selected_items") {
-            crate::rules::limits(
-                v,
-                "multi_select.max_selected_items",
-                "StaticMultiSelectElement.max_selected_items",
-            )?;
-        }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(
-                v,
-                "select.placeholder",
-                "StaticMultiSelectElement.placeholder",
-            )?;
-        }
         crate::rules::validate(
             "StaticMultiSelectElement",
             &wire,
@@ -12193,7 +12091,7 @@ impl StaticMultiSelectElementBuilder {
 }
 impl Serialize for StaticMultiSelectElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for StaticMultiSelectElement {
@@ -12326,15 +12224,9 @@ impl StaticSelectElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "static_select")?;
-        }
+        map.serialize_entry("type", "static_select")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -12502,6 +12394,33 @@ impl StaticSelectElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "StaticSelectElement.action_id",
+            )?;
+        }
+        if let Some(v) = &value.options {
+            crate::rules::length(v.len(), None, Some(100), "StaticSelectElement.options")?;
+        }
+        if let Some(v) = &value.option_groups {
+            crate::rules::length(
+                v.len(),
+                None,
+                Some(100),
+                "StaticSelectElement.option_groups",
+            )?;
+        }
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
+                "StaticSelectElement.placeholder",
+            )?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(
                 ErrorCategory::TypeMismatch,
@@ -12509,29 +12428,13 @@ impl StaticSelectElementBuilder {
                 e.to_string(),
             )
         })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "StaticSelectElement.action_id")?;
-        }
-        if let Some(v) = wire.get("options") {
-            crate::rules::limits(v, "select.options", "StaticSelectElement.options")?;
-        }
-        if let Some(v) = wire.get("option_groups") {
-            crate::rules::limits(
-                v,
-                "select.option_groups",
-                "StaticSelectElement.option_groups",
-            )?;
-        }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(v, "select.placeholder", "StaticSelectElement.placeholder")?;
-        }
         crate::rules::validate("StaticSelectElement", &wire, "StaticSelectElement")?;
         Ok(value)
     }
 }
 impl Serialize for StaticSelectElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for StaticSelectElement {
@@ -12654,15 +12557,9 @@ impl TimePickerElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "timepicker")?;
-        }
+        map.serialize_entry("type", "timepicker")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -12792,30 +12689,28 @@ impl TimePickerElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "TimePickerElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "TimePickerElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "TimePickerElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(
-                v,
-                "time_picker.placeholder",
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
                 "TimePickerElement.placeholder",
             )?;
         }
-        crate::rules::validate("TimePickerElement", &wire, "TimePickerElement")?;
         Ok(value)
     }
 }
 impl Serialize for TimePickerElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for TimePickerElement {
@@ -12928,15 +12823,9 @@ impl UrlInputElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "url_text_input")?;
-        }
+        map.serialize_entry("type", "url_text_input")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -13047,26 +12936,28 @@ impl UrlInputElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "UrlInputElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "UrlInputElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "UrlInputElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(v, "url_input.placeholder", "UrlInputElement.placeholder")?;
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
+                "UrlInputElement.placeholder",
+            )?;
         }
-        crate::rules::validate("UrlInputElement", &wire, "UrlInputElement")?;
         Ok(value)
     }
 }
 impl Serialize for UrlInputElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for UrlInputElement {
@@ -13186,15 +13077,9 @@ impl UserMultiSelectElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "multi_users_select")?;
-        }
+        map.serialize_entry("type", "multi_users_select")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -13336,37 +13221,37 @@ impl UserMultiSelectElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "UserMultiSelectElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "UserMultiSelectElement.action_id")?;
-        }
-        if let Some(v) = wire.get("max_selected_items") {
-            crate::rules::limits(
-                v,
-                "multi_select.max_selected_items",
-                "UserMultiSelectElement.max_selected_items",
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "UserMultiSelectElement.action_id",
             )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(
-                v,
-                "select.placeholder",
+        if let Some(v) = &value.max_selected_items {
+            if *v < 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "UserMultiSelectElement.max_selected_items",
+                    "number outside field bounds",
+                ));
+            }
+        }
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
                 "UserMultiSelectElement.placeholder",
             )?;
         }
-        crate::rules::validate("UserMultiSelectElement", &wire, "UserMultiSelectElement")?;
         Ok(value)
     }
 }
 impl Serialize for UserMultiSelectElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for UserMultiSelectElement {
@@ -13479,15 +13364,9 @@ impl UserSelectElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "users_select")?;
-        }
+        map.serialize_entry("type", "users_select")?;
         if let Some(value) = &self.action_id {
             map.serialize_entry("action_id", value)?;
         }
@@ -13601,26 +13480,28 @@ impl UserSelectElementBuilder {
             placeholder,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "UserSelectElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "UserSelectElement.action_id")?;
+        if let Some(v) = &value.action_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "UserSelectElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("placeholder") {
-            crate::rules::limits(v, "select.placeholder", "UserSelectElement.placeholder")?;
+        if let Some(v) = &value.placeholder {
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(150),
+                "UserSelectElement.placeholder",
+            )?;
         }
-        crate::rules::validate("UserSelectElement", &wire, "UserSelectElement")?;
         Ok(value)
     }
 }
 impl Serialize for UserSelectElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for UserSelectElement {
@@ -13739,15 +13620,9 @@ impl WorkflowButtonElement {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "workflow_button")?;
-        }
+        map.serialize_entry("type", "workflow_button")?;
         map.serialize_entry("text", &self.text)?;
         map.serialize_entry("workflow", &self.workflow)?;
         map.serialize_entry("action_id", &self.action_id)?;
@@ -13855,33 +13730,38 @@ impl WorkflowButtonElementBuilder {
             accessibility_label,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "WorkflowButtonElement",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("text") {
-            crate::rules::limits(v, "workflow_button.text", "WorkflowButtonElement.text")?;
+        {
+            let v = &value.text;
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(75),
+                "WorkflowButtonElement.text",
+            )?;
         }
-        if let Some(v) = wire.get("action_id") {
-            crate::rules::limits(v, "action_id", "WorkflowButtonElement.action_id")?;
+        {
+            let v = &value.action_id;
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "WorkflowButtonElement.action_id",
+            )?;
         }
-        if let Some(v) = wire.get("accessibility_label") {
-            crate::rules::limits(
-                v,
-                "workflow_button.accessibility_label",
+        if let Some(v) = &value.accessibility_label {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(75),
                 "WorkflowButtonElement.accessibility_label",
             )?;
         }
-        crate::rules::validate("WorkflowButtonElement", &wire, "WorkflowButtonElement")?;
         Ok(value)
     }
 }
 impl Serialize for WorkflowButtonElement {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for WorkflowButtonElement {
@@ -13970,15 +13850,9 @@ impl AreaChart {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "area")?;
-        }
+        map.serialize_entry("type", "area")?;
         map.serialize_entry("series", &self.series)?;
         map.serialize_entry("axis_config", &self.axis_config)?;
         for (key, value) in &self.extensions {
@@ -14027,19 +13901,20 @@ impl AreaChartBuilder {
             axis_config,
             extensions: self.extensions,
         };
+        {
+            let v = &value.series;
+            crate::rules::length(v.len(), Some(1), Some(12), "AreaChart.series")?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(ErrorCategory::TypeMismatch, "AreaChart", e.to_string())
         })?;
-        if let Some(v) = wire.get("series") {
-            crate::rules::limits(v, "data_visualization.series", "AreaChart.series")?;
-        }
         crate::rules::validate("AreaChart", &wire, "AreaChart")?;
         Ok(value)
     }
 }
 impl Serialize for AreaChart {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for AreaChart {
@@ -14127,13 +14002,8 @@ impl AxisConfig {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("categories", &self.categories)?;
         if let Some(value) = &self.x_label {
             map.serialize_entry("x_label", value)?;
@@ -14210,25 +14080,26 @@ impl AxisConfigBuilder {
             y_label,
             extensions: self.extensions,
         };
+        {
+            let v = &value.categories;
+            crate::rules::length(v.len(), Some(1), Some(20), "AxisConfig.categories")?;
+        }
+        if let Some(v) = &value.x_label {
+            crate::rules::length(v.chars().count(), None, Some(50), "AxisConfig.x_label")?;
+        }
+        if let Some(v) = &value.y_label {
+            crate::rules::length(v.chars().count(), None, Some(50), "AxisConfig.y_label")?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(ErrorCategory::TypeMismatch, "AxisConfig", e.to_string())
         })?;
-        if let Some(v) = wire.get("categories") {
-            crate::rules::limits(v, "data_visualization.categories", "AxisConfig.categories")?;
-        }
-        if let Some(v) = wire.get("x_label") {
-            crate::rules::limits(v, "data_visualization.axis_label", "AxisConfig.x_label")?;
-        }
-        if let Some(v) = wire.get("y_label") {
-            crate::rules::limits(v, "data_visualization.axis_label", "AxisConfig.y_label")?;
-        }
         crate::rules::validate("AxisConfig", &wire, "AxisConfig")?;
         Ok(value)
     }
 }
 impl Serialize for AxisConfig {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for AxisConfig {
@@ -14310,15 +14181,9 @@ impl BarChart {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "bar")?;
-        }
+        map.serialize_entry("type", "bar")?;
         map.serialize_entry("series", &self.series)?;
         map.serialize_entry("axis_config", &self.axis_config)?;
         for (key, value) in &self.extensions {
@@ -14367,19 +14232,20 @@ impl BarChartBuilder {
             axis_config,
             extensions: self.extensions,
         };
+        {
+            let v = &value.series;
+            crate::rules::length(v.len(), Some(1), Some(12), "BarChart.series")?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(ErrorCategory::TypeMismatch, "BarChart", e.to_string())
         })?;
-        if let Some(v) = wire.get("series") {
-            crate::rules::limits(v, "data_visualization.series", "BarChart.series")?;
-        }
         crate::rules::validate("BarChart", &wire, "BarChart")?;
         Ok(value)
     }
 }
 impl Serialize for BarChart {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for BarChart {
@@ -14459,13 +14325,8 @@ impl ChartSegment {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("label", &self.label)?;
         map.serialize_entry("value", &self.value)?;
         for (key, value) in &self.extensions {
@@ -14504,19 +14365,20 @@ impl ChartSegmentBuilder {
             value,
             extensions: self.extensions,
         };
+        {
+            let v = &value.label;
+            crate::rules::length(v.chars().count(), None, Some(20), "ChartSegment.label")?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(ErrorCategory::TypeMismatch, "ChartSegment", e.to_string())
         })?;
-        if let Some(v) = wire.get("label") {
-            crate::rules::limits(v, "data_visualization.segment.label", "ChartSegment.label")?;
-        }
         crate::rules::validate("ChartSegment", &wire, "ChartSegment")?;
         Ok(value)
     }
 }
 impl Serialize for ChartSegment {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ChartSegment {
@@ -14596,13 +14458,8 @@ impl ColumnSettings {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         if let Some(value) = &self.align {
             map.serialize_entry("align", value)?;
         }
@@ -14655,16 +14512,12 @@ impl ColumnSettingsBuilder {
             is_wrapped,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "ColumnSettings", e.to_string())
-        })?;
-        crate::rules::validate("ColumnSettings", &wire, "ColumnSettings")?;
         Ok(value)
     }
 }
 impl Serialize for ColumnSettings {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ColumnSettings {
@@ -14768,13 +14621,8 @@ impl ConfirmationDialogue {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("title", &self.title)?;
         map.serialize_entry("text", &self.text)?;
         map.serialize_entry("confirm", &self.confirm)?;
@@ -14874,32 +14722,48 @@ impl ConfirmationDialogueBuilder {
             style,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "ConfirmationDialogue",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("title") {
-            crate::rules::limits(v, "confirmation.title", "ConfirmationDialogue.title")?;
+        {
+            let v = &value.title;
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(100),
+                "ConfirmationDialogue.title",
+            )?;
         }
-        if let Some(v) = wire.get("text") {
-            crate::rules::limits(v, "confirmation.text", "ConfirmationDialogue.text")?;
+        {
+            let v = &value.text;
+            crate::rules::length(
+                crate::rules::text_len(v),
+                None,
+                Some(300),
+                "ConfirmationDialogue.text",
+            )?;
         }
-        if let Some(v) = wire.get("confirm") {
-            crate::rules::limits(v, "confirmation.confirm", "ConfirmationDialogue.confirm")?;
+        {
+            let v = &value.confirm;
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(30),
+                "ConfirmationDialogue.confirm",
+            )?;
         }
-        if let Some(v) = wire.get("deny") {
-            crate::rules::limits(v, "confirmation.deny", "ConfirmationDialogue.deny")?;
+        {
+            let v = &value.deny;
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(30),
+                "ConfirmationDialogue.deny",
+            )?;
         }
-        crate::rules::validate("Confirmation", &wire, "ConfirmationDialogue")?;
         Ok(value)
     }
 }
 impl Serialize for ConfirmationDialogue {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ConfirmationDialogue {
@@ -14997,13 +14861,8 @@ impl ConversationFilter {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         if let Some(value) = &self.include {
             map.serialize_entry("include", value)?;
         }
@@ -15089,6 +14948,9 @@ impl ConversationFilterBuilder {
             exclude_bot_users,
             extensions: self.extensions,
         };
+        if let Some(v) = &value.include {
+            crate::rules::length(v.len(), Some(1), None, "ConversationFilter.include")?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(
                 ErrorCategory::TypeMismatch,
@@ -15096,20 +14958,13 @@ impl ConversationFilterBuilder {
                 e.to_string(),
             )
         })?;
-        if let Some(v) = wire.get("include") {
-            crate::rules::limits(
-                v,
-                "conversation_filter.include",
-                "ConversationFilter.include",
-            )?;
-        }
         crate::rules::validate("ConversationFilter", &wire, "ConversationFilter")?;
         Ok(value)
     }
 }
 impl Serialize for ConversationFilter {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ConversationFilter {
@@ -15192,13 +15047,8 @@ impl DataPoint {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("label", &self.label)?;
         map.serialize_entry("value", &self.value)?;
         for (key, value) in &self.extensions {
@@ -15237,19 +15087,16 @@ impl DataPointBuilder {
             value,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "DataPoint", e.to_string())
-        })?;
-        if let Some(v) = wire.get("label") {
-            crate::rules::limits(v, "data_visualization.point_label", "DataPoint.label")?;
+        {
+            let v = &value.label;
+            crate::rules::length(v.chars().count(), None, Some(20), "DataPoint.label")?;
         }
-        crate::rules::validate("DataPoint", &wire, "DataPoint")?;
         Ok(value)
     }
 }
 impl Serialize for DataPoint {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for DataPoint {
@@ -15329,13 +15176,8 @@ impl DataSeries {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("name", &self.name)?;
         map.serialize_entry("data", &self.data)?;
         for (key, value) in &self.extensions {
@@ -15384,22 +15226,20 @@ impl DataSeriesBuilder {
             data,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "DataSeries", e.to_string())
-        })?;
-        if let Some(v) = wire.get("name") {
-            crate::rules::limits(v, "data_visualization.series_name", "DataSeries.name")?;
+        {
+            let v = &value.name;
+            crate::rules::length(v.chars().count(), None, Some(20), "DataSeries.name")?;
         }
-        if let Some(v) = wire.get("data") {
-            crate::rules::limits(v, "data_visualization.data", "DataSeries.data")?;
+        {
+            let v = &value.data;
+            crate::rules::length(v.len(), Some(1), Some(20), "DataSeries.data")?;
         }
-        crate::rules::validate("DataSeries", &wire, "DataSeries")?;
         Ok(value)
     }
 }
 impl Serialize for DataSeries {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for DataSeries {
@@ -15471,13 +15311,8 @@ impl DispatchActionConfiguration {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         if let Some(value) = &self.trigger_actions_on {
             map.serialize_entry("trigger_actions_on", value)?;
         }
@@ -15531,6 +15366,14 @@ impl DispatchActionConfigurationBuilder {
             trigger_actions_on,
             extensions: self.extensions,
         };
+        if let Some(v) = &value.trigger_actions_on {
+            crate::rules::length(
+                v.len(),
+                Some(1),
+                Some(2),
+                "DispatchActionConfiguration.trigger_actions_on",
+            )?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(
                 ErrorCategory::TypeMismatch,
@@ -15538,13 +15381,6 @@ impl DispatchActionConfigurationBuilder {
                 e.to_string(),
             )
         })?;
-        if let Some(v) = wire.get("trigger_actions_on") {
-            crate::rules::limits(
-                v,
-                "dispatch_action_configuration.trigger_actions_on",
-                "DispatchActionConfiguration.trigger_actions_on",
-            )?;
-        }
         crate::rules::validate(
             "DispatchActionConfiguration",
             &wire,
@@ -15555,7 +15391,7 @@ impl DispatchActionConfigurationBuilder {
 }
 impl Serialize for DispatchActionConfiguration {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for DispatchActionConfiguration {
@@ -15641,13 +15477,8 @@ impl FeedbackButton {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("text", &self.text)?;
         map.serialize_entry("value", &self.value)?;
         if let Some(value) = &self.accessibility_label {
@@ -15710,29 +15541,33 @@ impl FeedbackButtonBuilder {
             accessibility_label,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "FeedbackButton", e.to_string())
-        })?;
-        if let Some(v) = wire.get("text") {
-            crate::rules::limits(v, "feedback_button.text", "FeedbackButton.text")?;
+        {
+            let v = &value.text;
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(75),
+                "FeedbackButton.text",
+            )?;
         }
-        if let Some(v) = wire.get("value") {
-            crate::rules::limits(v, "feedback_button.value", "FeedbackButton.value")?;
+        {
+            let v = &value.value;
+            crate::rules::length(v.chars().count(), None, Some(2000), "FeedbackButton.value")?;
         }
-        if let Some(v) = wire.get("accessibility_label") {
-            crate::rules::limits(
-                v,
-                "feedback_button.accessibility_label",
+        if let Some(v) = &value.accessibility_label {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(75),
                 "FeedbackButton.accessibility_label",
             )?;
         }
-        crate::rules::validate("FeedbackButton", &wire, "FeedbackButton")?;
         Ok(value)
     }
 }
 impl Serialize for FeedbackButton {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for FeedbackButton {
@@ -15815,13 +15650,8 @@ impl InputParameter {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("name", &self.name)?;
         map.serialize_entry("value", &self.value)?;
         for (key, value) in &self.extensions {
@@ -15860,16 +15690,12 @@ impl InputParameterBuilder {
             value,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "InputParameter", e.to_string())
-        })?;
-        crate::rules::validate("InputParameter", &wire, "InputParameter")?;
         Ok(value)
     }
 }
 impl Serialize for InputParameter {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for InputParameter {
@@ -15949,15 +15775,9 @@ impl LineChart {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "line")?;
-        }
+        map.serialize_entry("type", "line")?;
         map.serialize_entry("series", &self.series)?;
         map.serialize_entry("axis_config", &self.axis_config)?;
         for (key, value) in &self.extensions {
@@ -16006,19 +15826,20 @@ impl LineChartBuilder {
             axis_config,
             extensions: self.extensions,
         };
+        {
+            let v = &value.series;
+            crate::rules::length(v.len(), Some(1), Some(12), "LineChart.series")?;
+        }
         let wire = serde_json::to_value(&value).map_err(|e| {
             ValidationError::new(ErrorCategory::TypeMismatch, "LineChart", e.to_string())
         })?;
-        if let Some(v) = wire.get("series") {
-            crate::rules::limits(v, "data_visualization.series", "LineChart.series")?;
-        }
         crate::rules::validate("LineChart", &wire, "LineChart")?;
         Ok(value)
     }
 }
 impl Serialize for LineChart {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for LineChart {
@@ -16105,15 +15926,9 @@ impl MarkdownText {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "mrkdwn")?;
-        }
+        map.serialize_entry("type", "mrkdwn")?;
         map.serialize_entry("text", &self.text)?;
         if let Some(value) = &self.verbatim {
             map.serialize_entry("verbatim", value)?;
@@ -16159,17 +15974,16 @@ impl MarkdownTextBuilder {
             verbatim,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "MarkdownText", e.to_string())
-        })?;
-        crate::rules::limits(&wire["text"], "text", "MarkdownText.text")?;
-        crate::rules::validate("MarkdownText", &wire, "MarkdownText")?;
+        {
+            let v = &value.text;
+            crate::rules::length(v.chars().count(), Some(1), Some(3000), "MarkdownText.text")?;
+        }
         Ok(value)
     }
 }
 impl Serialize for MarkdownText {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for MarkdownText {
@@ -16265,13 +16079,8 @@ impl SelectOption {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("text", &self.text)?;
         map.serialize_entry("value", &self.value)?;
         if let Some(value) = &self.description {
@@ -16355,28 +16164,36 @@ impl SelectOptionBuilder {
             url,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "SelectOption", e.to_string())
-        })?;
-        if let Some(v) = wire.get("text") {
-            crate::rules::limits(v, "option.text", "SelectOption.text")?;
+        {
+            let v = &value.text;
+            crate::rules::length(
+                crate::rules::text_len(v),
+                None,
+                Some(75),
+                "SelectOption.text",
+            )?;
         }
-        if let Some(v) = wire.get("value") {
-            crate::rules::limits(v, "option.value", "SelectOption.value")?;
+        {
+            let v = &value.value;
+            crate::rules::length(v.chars().count(), None, Some(150), "SelectOption.value")?;
         }
-        if let Some(v) = wire.get("description") {
-            crate::rules::limits(v, "option.description", "SelectOption.description")?;
+        if let Some(v) = &value.description {
+            crate::rules::length(
+                crate::rules::text_len(v),
+                None,
+                Some(75),
+                "SelectOption.description",
+            )?;
         }
-        if let Some(v) = wire.get("url") {
-            crate::rules::limits(v, "option.url", "SelectOption.url")?;
+        if let Some(v) = &value.url {
+            crate::rules::length(v.chars().count(), None, Some(3000), "SelectOption.url")?;
         }
-        crate::rules::validate("Option", &wire, "SelectOption")?;
         Ok(value)
     }
 }
 impl Serialize for SelectOption {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for SelectOption {
@@ -16462,13 +16279,8 @@ impl SelectOptionGroup {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("label", &self.label)?;
         map.serialize_entry("options", &self.options)?;
         for (key, value) in &self.extensions {
@@ -16522,26 +16334,25 @@ impl SelectOptionGroupBuilder {
             options,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "SelectOptionGroup",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("label") {
-            crate::rules::limits(v, "option_group.label", "SelectOptionGroup.label")?;
+        {
+            let v = &value.label;
+            crate::rules::length(
+                v.text().chars().count(),
+                None,
+                Some(75),
+                "SelectOptionGroup.label",
+            )?;
         }
-        if let Some(v) = wire.get("options") {
-            crate::rules::limits(v, "option_group.options", "SelectOptionGroup.options")?;
+        {
+            let v = &value.options;
+            crate::rules::length(v.len(), Some(1), Some(100), "SelectOptionGroup.options")?;
         }
-        crate::rules::validate("OptionGroup", &wire, "SelectOptionGroup")?;
         Ok(value)
     }
 }
 impl Serialize for SelectOptionGroup {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for SelectOptionGroup {
@@ -16614,15 +16425,9 @@ impl PieChart {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "pie")?;
-        }
+        map.serialize_entry("type", "pie")?;
         map.serialize_entry("segments", &self.segments)?;
         for (key, value) in &self.extensions {
             map.serialize_entry(key, value)?;
@@ -16665,19 +16470,16 @@ impl PieChartBuilder {
             segments,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "PieChart", e.to_string())
-        })?;
-        if let Some(v) = wire.get("segments") {
-            crate::rules::limits(v, "data_visualization.segments", "PieChart.segments")?;
+        {
+            let v = &value.segments;
+            crate::rules::length(v.len(), Some(1), Some(12), "PieChart.segments")?;
         }
-        crate::rules::validate("PieChart", &wire, "PieChart")?;
         Ok(value)
     }
 }
 impl Serialize for PieChart {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for PieChart {
@@ -16762,15 +16564,9 @@ impl PlainText {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "plain_text")?;
-        }
+        map.serialize_entry("type", "plain_text")?;
         map.serialize_entry("text", &self.text)?;
         if let Some(value) = &self.emoji {
             map.serialize_entry("emoji", value)?;
@@ -16816,17 +16612,16 @@ impl PlainTextBuilder {
             emoji,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "PlainText", e.to_string())
-        })?;
-        crate::rules::limits(&wire["text"], "text", "PlainText.text")?;
-        crate::rules::validate("PlainText", &wire, "PlainText")?;
+        {
+            let v = &value.text;
+            crate::rules::length(v.chars().count(), Some(1), Some(3000), "PlainText.text")?;
+        }
         Ok(value)
     }
 }
 impl Serialize for PlainText {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for PlainText {
@@ -16906,15 +16701,9 @@ impl RawNumber {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "raw_number")?;
-        }
+        map.serialize_entry("type", "raw_number")?;
         map.serialize_entry("value", &self.value)?;
         map.serialize_entry("text", &self.text)?;
         for (key, value) in &self.extensions {
@@ -16953,16 +16742,12 @@ impl RawNumberBuilder {
             text,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "RawNumber", e.to_string())
-        })?;
-        crate::rules::validate("RawNumber", &wire, "RawNumber")?;
         Ok(value)
     }
 }
 impl Serialize for RawNumber {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RawNumber {
@@ -17041,15 +16826,9 @@ impl RawText {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "raw_text")?;
-        }
+        map.serialize_entry("type", "raw_text")?;
         map.serialize_entry("text", &self.text)?;
         for (key, value) in &self.extensions {
             map.serialize_entry(key, value)?;
@@ -17080,16 +16859,12 @@ impl RawTextBuilder {
             text,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "RawText", e.to_string())
-        })?;
-        crate::rules::validate("RawText", &wire, "RawText")?;
         Ok(value)
     }
 }
 impl Serialize for RawText {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RawText {
@@ -17167,15 +16942,9 @@ impl RichTextChannel {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "channel")?;
-        }
+        map.serialize_entry("type", "channel")?;
         map.serialize_entry("channel_id", &self.channel_id)?;
         if let Some(value) = &self.style {
             map.serialize_entry("style", value)?;
@@ -17225,14 +16994,7 @@ impl RichTextChannelBuilder {
             style,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "RichTextChannel",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("style") {
+        if let Some(v) = &value.style {
             crate::rules::style(
                 v,
                 &[
@@ -17246,13 +17008,12 @@ impl RichTextChannelBuilder {
                 "RichTextChannel.style",
             )?;
         }
-        crate::rules::validate("RichTextChannel", &wire, "RichTextChannel")?;
         Ok(value)
     }
 }
 impl Serialize for RichTextChannel {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RichTextChannel {
@@ -17332,15 +17093,9 @@ impl RichTextCodeBlock {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "rich_text_preformatted")?;
-        }
+        map.serialize_entry("type", "rich_text_preformatted")?;
         map.serialize_entry("elements", &self.elements)?;
         if let Some(value) = &self.border {
             map.serialize_entry("border", value)?;
@@ -17402,27 +17157,28 @@ impl RichTextCodeBlockBuilder {
             border,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "RichTextCodeBlock",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("border") {
-            crate::rules::limits(
-                v,
-                "rich_text_preformatted.border",
-                "RichTextCodeBlock.border",
-            )?;
+        if let Some(v) = &value.border {
+            if *v < 0 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextCodeBlock.border",
+                    "number outside field bounds",
+                ));
+            }
+            if *v > 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextCodeBlock.border",
+                    "number outside field bounds",
+                ));
+            }
         }
-        crate::rules::validate("RichTextCodeBlock", &wire, "RichTextCodeBlock")?;
         Ok(value)
     }
 }
 impl Serialize for RichTextCodeBlock {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RichTextCodeBlock {
@@ -17502,15 +17258,9 @@ impl RichTextEmoji {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "emoji")?;
-        }
+        map.serialize_entry("type", "emoji")?;
         map.serialize_entry("name", &self.name)?;
         if let Some(value) = &self.skin_tone {
             map.serialize_entry("skin_tone", value)?;
@@ -17556,16 +17306,12 @@ impl RichTextEmojiBuilder {
             skin_tone,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "RichTextEmoji", e.to_string())
-        })?;
-        crate::rules::validate("RichTextEmoji", &wire, "RichTextEmoji")?;
         Ok(value)
     }
 }
 impl Serialize for RichTextEmoji {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RichTextEmoji {
@@ -17661,15 +17407,9 @@ impl RichTextLink {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "link")?;
-        }
+        map.serialize_entry("type", "link")?;
         map.serialize_entry("url", &self.url)?;
         if let Some(value) = &self.text {
             map.serialize_entry("text", value)?;
@@ -17749,23 +17489,19 @@ impl RichTextLinkBuilder {
             r#unsafe,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "RichTextLink", e.to_string())
-        })?;
-        if let Some(v) = wire.get("style") {
+        if let Some(v) = &value.style {
             crate::rules::style(
                 v,
                 &["bold", "italic", "strike", "code"],
                 "RichTextLink.style",
             )?;
         }
-        crate::rules::validate("RichTextLink", &wire, "RichTextLink")?;
         Ok(value)
     }
 }
 impl Serialize for RichTextLink {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RichTextLink {
@@ -17873,15 +17609,9 @@ impl RichTextList {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "rich_text_list")?;
-        }
+        map.serialize_entry("type", "rich_text_list")?;
         map.serialize_entry("style", &self.style)?;
         map.serialize_entry("elements", &self.elements)?;
         if let Some(value) = &self.indent {
@@ -17981,25 +17711,53 @@ impl RichTextListBuilder {
             border,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "RichTextList", e.to_string())
-        })?;
-        if let Some(v) = wire.get("indent") {
-            crate::rules::limits(v, "rich_text_list.indent", "RichTextList.indent")?;
+        if let Some(v) = &value.indent {
+            if *v < 0 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextList.indent",
+                    "number outside field bounds",
+                ));
+            }
+            if *v > 8 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextList.indent",
+                    "number outside field bounds",
+                ));
+            }
         }
-        if let Some(v) = wire.get("offset") {
-            crate::rules::limits(v, "rich_text_list.offset", "RichTextList.offset")?;
+        if let Some(v) = &value.offset {
+            if *v < 0 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextList.offset",
+                    "number outside field bounds",
+                ));
+            }
         }
-        if let Some(v) = wire.get("border") {
-            crate::rules::limits(v, "rich_text_list.border", "RichTextList.border")?;
+        if let Some(v) = &value.border {
+            if *v < 0 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextList.border",
+                    "number outside field bounds",
+                ));
+            }
+            if *v > 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextList.border",
+                    "number outside field bounds",
+                ));
+            }
         }
-        crate::rules::validate("RichTextList", &wire, "RichTextList")?;
         Ok(value)
     }
 }
 impl Serialize for RichTextList {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RichTextList {
@@ -18085,15 +17843,9 @@ impl RichTextQuote {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "rich_text_quote")?;
-        }
+        map.serialize_entry("type", "rich_text_quote")?;
         map.serialize_entry("elements", &self.elements)?;
         if let Some(value) = &self.border {
             map.serialize_entry("border", value)?;
@@ -18151,19 +17903,28 @@ impl RichTextQuoteBuilder {
             border,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "RichTextQuote", e.to_string())
-        })?;
-        if let Some(v) = wire.get("border") {
-            crate::rules::limits(v, "rich_text_quote.border", "RichTextQuote.border")?;
+        if let Some(v) = &value.border {
+            if *v < 0 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextQuote.border",
+                    "number outside field bounds",
+                ));
+            }
+            if *v > 1 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "RichTextQuote.border",
+                    "number outside field bounds",
+                ));
+            }
         }
-        crate::rules::validate("RichTextQuote", &wire, "RichTextQuote")?;
         Ok(value)
     }
 }
 impl Serialize for RichTextQuote {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RichTextQuote {
@@ -18235,15 +17996,9 @@ impl RichTextSection {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "rich_text_section")?;
-        }
+        map.serialize_entry("type", "rich_text_section")?;
         map.serialize_entry("elements", &self.elements)?;
         for (key, value) in &self.extensions {
             map.serialize_entry(key, value)?;
@@ -18286,20 +18041,12 @@ impl RichTextSectionBuilder {
             elements,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "RichTextSection",
-                e.to_string(),
-            )
-        })?;
-        crate::rules::validate("RichTextSection", &wire, "RichTextSection")?;
         Ok(value)
     }
 }
 impl Serialize for RichTextSection {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RichTextSection {
@@ -18384,15 +18131,9 @@ impl RichTextText {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "text")?;
-        }
+        map.serialize_entry("type", "text")?;
         map.serialize_entry("text", &self.text)?;
         if let Some(value) = &self.style {
             map.serialize_entry("style", value)?;
@@ -18438,23 +18179,19 @@ impl RichTextTextBuilder {
             style,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "RichTextText", e.to_string())
-        })?;
-        if let Some(v) = wire.get("style") {
+        if let Some(v) = &value.style {
             crate::rules::style(
                 v,
                 &["bold", "italic", "strike", "code"],
                 "RichTextText.style",
             )?;
         }
-        crate::rules::validate("RichTextText", &wire, "RichTextText")?;
         Ok(value)
     }
 }
 impl Serialize for RichTextText {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RichTextText {
@@ -18534,15 +18271,9 @@ impl RichTextUser {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "user")?;
-        }
+        map.serialize_entry("type", "user")?;
         map.serialize_entry("user_id", &self.user_id)?;
         if let Some(value) = &self.style {
             map.serialize_entry("style", value)?;
@@ -18588,10 +18319,7 @@ impl RichTextUserBuilder {
             style,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "RichTextUser", e.to_string())
-        })?;
-        if let Some(v) = wire.get("style") {
+        if let Some(v) = &value.style {
             crate::rules::style(
                 v,
                 &[
@@ -18605,13 +18333,12 @@ impl RichTextUserBuilder {
                 "RichTextUser.style",
             )?;
         }
-        crate::rules::validate("RichTextUser", &wire, "RichTextUser")?;
         Ok(value)
     }
 }
 impl Serialize for RichTextUser {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RichTextUser {
@@ -18691,15 +18418,9 @@ impl RichTextUserGroup {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "usergroup")?;
-        }
+        map.serialize_entry("type", "usergroup")?;
         map.serialize_entry("usergroup_id", &self.usergroup_id)?;
         if let Some(value) = &self.style {
             map.serialize_entry("style", value)?;
@@ -18749,14 +18470,7 @@ impl RichTextUserGroupBuilder {
             style,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "RichTextUserGroup",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("style") {
+        if let Some(v) = &value.style {
             crate::rules::style(
                 v,
                 &[
@@ -18770,13 +18484,12 @@ impl RichTextUserGroupBuilder {
                 "RichTextUserGroup.style",
             )?;
         }
-        crate::rules::validate("RichTextUserGroup", &wire, "RichTextUserGroup")?;
         Ok(value)
     }
 }
 impl Serialize for RichTextUserGroup {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for RichTextUserGroup {
@@ -18856,13 +18569,8 @@ impl SlackFile {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         if let Some(value) = &self.id {
             map.serialize_entry("id", value)?;
         }
@@ -18924,7 +18632,7 @@ impl SlackFileBuilder {
 }
 impl Serialize for SlackFile {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for SlackFile {
@@ -18996,15 +18704,9 @@ impl SlackIcon {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "icon")?;
-        }
+        map.serialize_entry("type", "icon")?;
         map.serialize_entry("name", &self.name)?;
         for (key, value) in &self.extensions {
             map.serialize_entry(key, value)?;
@@ -19044,7 +18746,7 @@ impl SlackIconBuilder {
 }
 impl Serialize for SlackIcon {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for SlackIcon {
@@ -19122,13 +18824,8 @@ impl Trigger {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("url", &self.url)?;
         if let Some(value) = &self.customizable_input_parameters {
             map.serialize_entry("customizable_input_parameters", value)?;
@@ -19190,16 +18887,12 @@ impl TriggerBuilder {
             customizable_input_parameters,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "Trigger", e.to_string())
-        })?;
-        crate::rules::validate("Trigger", &wire, "Trigger")?;
         Ok(value)
     }
 }
 impl Serialize for Trigger {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for Trigger {
@@ -19280,15 +18973,9 @@ impl UrlSource {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "url")?;
-        }
+        map.serialize_entry("type", "url")?;
         map.serialize_entry("url", &self.url)?;
         map.serialize_entry("text", &self.text)?;
         for (key, value) in &self.extensions {
@@ -19327,16 +19014,12 @@ impl UrlSourceBuilder {
             text,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "UrlSource", e.to_string())
-        })?;
-        crate::rules::validate("UrlSource", &wire, "UrlSource")?;
         Ok(value)
     }
 }
 impl Serialize for UrlSource {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for UrlSource {
@@ -19408,13 +19091,8 @@ impl Workflow {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("trigger", &self.trigger)?;
         for (key, value) in &self.extensions {
             map.serialize_entry(key, value)?;
@@ -19445,16 +19123,12 @@ impl WorkflowBuilder {
             trigger,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "Workflow", e.to_string())
-        })?;
-        crate::rules::validate("Workflow", &wire, "Workflow")?;
         Ok(value)
     }
 }
 impl Serialize for Workflow {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for Workflow {
@@ -19540,13 +19214,8 @@ impl Attachment {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("blocks", &self.blocks)?;
         if let Some(value) = &self.color {
             map.serialize_entry("color", value)?;
@@ -19621,16 +19290,13 @@ impl AttachmentBuilder {
             fallback,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "Attachment", e.to_string())
-        })?;
-        crate::rules::validate("Attachment", &wire, "Attachment")?;
+        crate::rules::attachment(&value, "Attachment")?;
         Ok(value)
     }
 }
 impl Serialize for Attachment {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for Attachment {
@@ -19728,15 +19394,9 @@ impl HomeTabView {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "home")?;
-        }
+        map.serialize_entry("type", "home")?;
         map.serialize_entry("blocks", &self.blocks)?;
         if let Some(value) = &self.private_metadata {
             map.serialize_entry("private_metadata", value)?;
@@ -19826,28 +19486,41 @@ impl HomeTabViewBuilder {
             external_id,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "HomeTabView", e.to_string())
-        })?;
-        if let Some(v) = wire.get("blocks") {
-            crate::rules::limits(v, "view.blocks", "HomeTabView.blocks")?;
+        {
+            let v = &value.blocks;
+            crate::rules::length(v.len(), None, Some(100), "HomeTabView.blocks")?;
         }
-        if let Some(v) = wire.get("private_metadata") {
-            crate::rules::limits(v, "view.private_metadata", "HomeTabView.private_metadata")?;
+        if let Some(v) = &value.private_metadata {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(3000),
+                "HomeTabView.private_metadata",
+            )?;
         }
-        if let Some(v) = wire.get("callback_id") {
-            crate::rules::limits(v, "view.callback_id", "HomeTabView.callback_id")?;
+        if let Some(v) = &value.callback_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "HomeTabView.callback_id",
+            )?;
         }
-        if let Some(v) = wire.get("external_id") {
-            crate::rules::limits(v, "view.external_id", "HomeTabView.external_id")?;
+        if let Some(v) = &value.external_id {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(255),
+                "HomeTabView.external_id",
+            )?;
         }
-        crate::rules::validate("HomeTabView", &wire, "HomeTabView")?;
+        crate::rules::view(value.blocks(), "home", false, "HomeTabView")?;
         Ok(value)
     }
 }
 impl Serialize for HomeTabView {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for HomeTabView {
@@ -19979,13 +19652,8 @@ impl MessagePayload {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         map.serialize_entry("channel", &self.channel)?;
         if let Some(value) = &self.blocks {
             map.serialize_entry("blocks", value)?;
@@ -20156,25 +19824,27 @@ impl MessagePayloadBuilder {
             metadata,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "MessagePayload", e.to_string())
-        })?;
-        if let Some(v) = wire.get("channel") {
-            crate::rules::limits(v, "message.channel", "MessagePayload.channel")?;
+        {
+            let v = &value.channel;
+            crate::rules::length(v.chars().count(), Some(1), None, "MessagePayload.channel")?;
         }
-        if let Some(v) = wire.get("blocks") {
-            crate::rules::limits(v, "message.blocks", "MessagePayload.blocks")?;
+        if let Some(v) = &value.blocks {
+            crate::rules::length(v.len(), None, Some(50), "MessagePayload.blocks")?;
         }
-        if let Some(v) = wire.get("attachments") {
-            crate::rules::limits(v, "message.attachments", "MessagePayload.attachments")?;
+        if let Some(v) = &value.attachments {
+            crate::rules::length(v.len(), None, Some(100), "MessagePayload.attachments")?;
         }
-        crate::rules::validate("MessagePayload", &wire, "MessagePayload")?;
+        crate::rules::message(
+            value.blocks().unwrap_or_default(),
+            value.attachments().unwrap_or_default(),
+            "MessagePayload",
+        )?;
         Ok(value)
     }
 }
 impl Serialize for MessagePayload {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for MessagePayload {
@@ -20298,13 +19968,8 @@ impl MessageResponse {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         if let Some(value) = &self.blocks {
             map.serialize_entry("blocks", value)?;
         }
@@ -20450,26 +20115,23 @@ impl MessageResponseBuilder {
             response_type,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(
-                ErrorCategory::TypeMismatch,
-                "MessageResponse",
-                e.to_string(),
-            )
-        })?;
-        if let Some(v) = wire.get("blocks") {
-            crate::rules::limits(v, "message.blocks", "MessageResponse.blocks")?;
+        if let Some(v) = &value.blocks {
+            crate::rules::length(v.len(), None, Some(50), "MessageResponse.blocks")?;
         }
-        if let Some(v) = wire.get("attachments") {
-            crate::rules::limits(v, "message.attachments", "MessageResponse.attachments")?;
+        if let Some(v) = &value.attachments {
+            crate::rules::length(v.len(), None, Some(100), "MessageResponse.attachments")?;
         }
-        crate::rules::validate("MessageResponse", &wire, "MessageResponse")?;
+        crate::rules::message(
+            value.blocks().unwrap_or_default(),
+            value.attachments().unwrap_or_default(),
+            "MessageResponse",
+        )?;
         Ok(value)
     }
 }
 impl Serialize for MessageResponse {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for MessageResponse {
@@ -20621,15 +20283,9 @@ impl ModalView {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        if tagged {
-            map.serialize_entry("type", "modal")?;
-        }
+        map.serialize_entry("type", "modal")?;
         map.serialize_entry("title", &self.title)?;
         map.serialize_entry("blocks", &self.blocks)?;
         if let Some(value) = &self.close {
@@ -20824,37 +20480,46 @@ impl ModalViewBuilder {
             submit_disabled,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "ModalView", e.to_string())
-        })?;
-        if let Some(v) = wire.get("title") {
-            crate::rules::limits(v, "view.title", "ModalView.title")?;
+        {
+            let v = &value.title;
+            crate::rules::length(v.text().chars().count(), None, Some(24), "ModalView.title")?;
         }
-        if let Some(v) = wire.get("blocks") {
-            crate::rules::limits(v, "view.blocks", "ModalView.blocks")?;
+        {
+            let v = &value.blocks;
+            crate::rules::length(v.len(), None, Some(100), "ModalView.blocks")?;
         }
-        if let Some(v) = wire.get("close") {
-            crate::rules::limits(v, "view.close", "ModalView.close")?;
+        if let Some(v) = &value.close {
+            crate::rules::length(v.text().chars().count(), None, Some(24), "ModalView.close")?;
         }
-        if let Some(v) = wire.get("submit") {
-            crate::rules::limits(v, "view.submit", "ModalView.submit")?;
+        if let Some(v) = &value.submit {
+            crate::rules::length(v.text().chars().count(), None, Some(24), "ModalView.submit")?;
         }
-        if let Some(v) = wire.get("private_metadata") {
-            crate::rules::limits(v, "view.private_metadata", "ModalView.private_metadata")?;
+        if let Some(v) = &value.private_metadata {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(3000),
+                "ModalView.private_metadata",
+            )?;
         }
-        if let Some(v) = wire.get("callback_id") {
-            crate::rules::limits(v, "view.callback_id", "ModalView.callback_id")?;
+        if let Some(v) = &value.callback_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "ModalView.callback_id")?;
         }
-        if let Some(v) = wire.get("external_id") {
-            crate::rules::limits(v, "view.external_id", "ModalView.external_id")?;
+        if let Some(v) = &value.external_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "ModalView.external_id")?;
         }
-        crate::rules::validate("ModalView", &wire, "ModalView")?;
+        crate::rules::view(
+            value.blocks(),
+            "modal",
+            value.submit().is_some(),
+            "ModalView",
+        )?;
         Ok(value)
     }
 }
 impl Serialize for ModalView {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for ModalView {
@@ -21009,13 +20674,8 @@ impl WebhookMessage {
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
     }
-    fn serialize_value<S: Serializer>(
-        &self,
-        serializer: S,
-        tagged: bool,
-    ) -> Result<S::Ok, S::Error> {
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        let _ = tagged;
         if let Some(value) = &self.blocks {
             map.serialize_entry("blocks", value)?;
         }
@@ -21209,22 +20869,23 @@ impl WebhookMessageBuilder {
             metadata,
             extensions: self.extensions,
         };
-        let wire = serde_json::to_value(&value).map_err(|e| {
-            ValidationError::new(ErrorCategory::TypeMismatch, "WebhookMessage", e.to_string())
-        })?;
-        if let Some(v) = wire.get("blocks") {
-            crate::rules::limits(v, "message.blocks", "WebhookMessage.blocks")?;
+        if let Some(v) = &value.blocks {
+            crate::rules::length(v.len(), None, Some(50), "WebhookMessage.blocks")?;
         }
-        if let Some(v) = wire.get("attachments") {
-            crate::rules::limits(v, "message.attachments", "WebhookMessage.attachments")?;
+        if let Some(v) = &value.attachments {
+            crate::rules::length(v.len(), None, Some(100), "WebhookMessage.attachments")?;
         }
-        crate::rules::validate("WebhookMessage", &wire, "WebhookMessage")?;
+        crate::rules::message(
+            value.blocks().unwrap_or_default(),
+            value.attachments().unwrap_or_default(),
+            "WebhookMessage",
+        )?;
         Ok(value)
     }
 }
 impl Serialize for WebhookMessage {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        self.serialize_value(s, true)
+        self.serialize_value(s)
     }
 }
 impl FromWire for WebhookMessage {

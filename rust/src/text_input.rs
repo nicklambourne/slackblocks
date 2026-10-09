@@ -75,3 +75,15 @@ impl TextInput {
         }
     }
 }
+
+impl From<&String> for PlainTextInput {
+    fn from(value: &String) -> Self {
+        value.as_str().into()
+    }
+}
+
+impl From<&String> for TextInput {
+    fn from(value: &String) -> Self {
+        value.as_str().into()
+    }
+}

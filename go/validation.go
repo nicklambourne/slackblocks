@@ -1117,7 +1117,16 @@ func validateMessageCollections(object Object, path string) error {
 			return err
 		}
 	}
-	markdown, tableContent := messageTotals(object)
+	markdown, tableContent := messageTotals(object["blocks"])
+	if attachments, ok := object["attachments"].([]any); ok {
+		for _, raw := range attachments {
+			if attachment, ok := raw.(Object); ok {
+				nestedMarkdown, nestedContent := messageTotals(attachment["blocks"])
+				markdown += nestedMarkdown
+				tableContent += nestedContent
+			}
+		}
+	}
 	if markdown > limitMarkdownTotalTextMaxLength {
 		return validationError(LengthExceeded, path, "markdown block text totals %d characters, exceeding maximum %d", markdown, limitMarkdownTotalTextMaxLength)
 	}
@@ -1127,8 +1136,7 @@ func validateMessageCollections(object Object, path string) error {
 	return nil
 }
 
-// messageTotals counts the markdown block text and data table cell text anywhere in a message,
-// including attachment blocks and container children.
+// messageTotals visits modeled blocks and container children, keeping application JSON opaque.
 func messageTotals(value any) (markdown, tableContent int) {
 	switch typed := value.(type) {
 	case Object:
@@ -1139,10 +1147,8 @@ func messageTotals(value any) (markdown, tableContent int) {
 		case "data_table":
 			return 0, textCharacterCount(typed["rows"])
 		}
-		for _, nested := range typed {
-			nestedMarkdown, nestedContent := messageTotals(nested)
-			markdown += nestedMarkdown
-			tableContent += nestedContent
+		if objectType(typed) == "container" {
+			return messageTotals(typed["child_blocks"])
 		}
 	case []any:
 		for _, nested := range typed {

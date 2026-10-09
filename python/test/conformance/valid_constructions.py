@@ -657,7 +657,13 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
         replace_original=True,
         unfurl_links=False,
         unfurl_media=False,
-        metadata={"sender": "Walt"},
+        metadata={
+            "sender": "Walt",
+            "event_payload": {
+                "type": "markdown",
+                "items": [{"type": "data_table"}, {"type": "markdown", "text": "x" * 12001}],
+            },
+        },
     ),
     "messages/webhook_message_delete": lambda: WebhookMessage(
         attachments=[

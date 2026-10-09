@@ -177,3 +177,16 @@ func TestRelaxedRulesKeepTheirDocumentedLimits(t *testing.T) {
 	).Build()
 	assertValidationError(t, err, slackblocks.InvalidUsage, "rows[1]")
 }
+
+// Application event payloads may use names that also occur in Block Kit JSON.
+func TestMessageTotalsExcludeApplicationMetadata(t *testing.T) {
+	metadata := slackblocks.Object{"event_payload": slackblocks.Object{
+		"type": "markdown", "text": strings.Repeat("x", 12001),
+	}}
+	if _, err := slackblocks.NewWebhookMessage().Metadata(metadata).Build(); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := slackblocks.NewMessage().Channel("C123").Metadata(metadata).Build(); err != nil {
+		t.Fatal(err)
+	}
+}

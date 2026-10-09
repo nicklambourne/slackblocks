@@ -8,6 +8,35 @@
 - PR train is unmerged; publication and release activation remain disabled.
 - Followed `docs/docs/contributing/adding-a-language.mdx`, including an API checkpoint before bulk generation.
 
+## Implementation review — 5 October 2026
+
+The follow-up audit identified opaque-JSON traversal, numeric ingress, conditional
+API assertions, unresolved limit references, integration execution, and release/
+documentation omissions. Remediation is appended to the unmerged train.
+
+### Validation and generator corrections
+
+- Walk typed Block Kit children for message totals, surface checks, pending tasks
+  and rich-text table contents. Metadata and extension maps stay application JSON.
+- Keep numeric literals intact with Serde's `arbitrary_precision` feature before
+  applying `JsonNumber` range checks; exercise string, byte and extracted-package
+  ingress with default features as well as feature unification.
+- Reject unresolved and incompatible generator limit references. Emit scalar
+  validation directly and serialize tagless plan tasks through a borrowed adapter.
+- Accept borrowed `String` values in both contextual text input types.
+- Extend the shared webhook fixture with adversarial application metadata; correct
+  the same aggregate-counting error in Go, Java, C# and Ruby. The shared contract
+  and language support floors are unchanged.
+- Separate generator readability cleanup was checked for byte-identical output.
+
+Verification: Rust MSRV workspace tests and stable Clippy, ten generator tests,
+Python conformance (288 tests), Ruby (419), Java verify, C# (339 on each target),
+Go tests and TypeScript (399) pass. Six dedicated Rust regressions cover opaque
+maps, numeric ingress, borrowed text, table character boundaries and nested error
+paths. A local illustrative benchmark (three samples, 2,000 nested messages per
+sample, release profile on the same machine) improved median construction plus
+serialization time from 47,992 µs to 22,696 µs. This is not a CI performance gate.
+
 ## API checkpoint evidence
 
 - 25 representative/supporting types and 8 receiving roles in the foundation.

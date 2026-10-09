@@ -1736,6 +1736,7 @@
     "impl Default"
   ],
   "PlainTextInput": [
+    "impl From < & String >",
     "impl From < & str >",
     "impl From < PlainText >",
     "impl From < String >"
@@ -2476,6 +2477,7 @@
     "variant Plain (PlainText)"
   ],
   "TextInput": [
+    "impl From < & String >",
     "impl From < & str >",
     "impl From < MarkdownText >",
     "impl From < PlainText >",

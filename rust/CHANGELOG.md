@@ -4,6 +4,10 @@
 
 ## [2.6.0] — Unreleased
 
+- Keep application metadata outside message-wide Block Kit text totals.
+- Reject lossy JSON number literals, validate limit references during generation,
+  simplify typed validation/plan serialization, and accept borrowed string arguments.
+
 - Prepare the native Rust implementation for the coordinated 2.6.0 release.
 - Publication remains disabled while implementation and registry setup are reviewed.
 
