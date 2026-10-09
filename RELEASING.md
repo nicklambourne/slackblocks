@@ -206,7 +206,7 @@ change. Preparing or merging release files does not create tags or publish packa
    workflow reports skipped checks on unrelated PRs so required check names do
    not leave those PRs waiting indefinitely. Verify actual test steps and GitHub
    runner metadata.
-6. After a separately authorized release, dispatch **Coordinated Release** from
+6. Once the release is authorized, dispatch **Coordinated Release** from
    `master` with version `2.6.0`. It creates all seven annotated tags atomically and
    monitors all seven publishers. Approve `crates-io` if its reviewer policy
    requires approval. The Rust publisher uses the token only after release guards

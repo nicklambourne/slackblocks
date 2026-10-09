@@ -2,7 +2,7 @@
 
 ## Release readiness — 9 October 2026
 
-The implementation train is being merged and a separate 2.6.0 readiness change
+The implementation train has been merged and this separate 2.6.0 readiness change
 activates crates.io publication, uses the maintainer-configured `CRATES_IO_TOKEN`
 for first and later releases, dates all seven changelogs consistently, and updates
 the release documentation and installation examples. The environment and secret
