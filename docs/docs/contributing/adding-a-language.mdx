@@ -97,7 +97,14 @@ dependency/version requirements. SDK types can lag Slack: do not silently drop
 fields or rely on unchecked casts. A documented native JSON path can be the
 integration when the ecosystem has no suitable SDK. Keep HTTP clients, transport
 and framework dependencies outside the core unless the design specifically
-requires them.
+requires them. Provide a runnable example using an established SDK when available,
+and a native HTTP client alternative. Exercise the displayed source against a
+local mock server: preserve the full payload, check authentication and API/HTTP
+errors, and prove bounded rate-limit retries. Serialization plus a curl command
+alone does not prove a native sending integration. Verify the client dependencies
+on the supported minimum compiler independently of the core package; record any
+separate requirements. State whether testing used mock servers or a real Slack
+workspace.
 
 **Gate:** reviewers can judge representative real calls, type safety, errors and
 editing ergonomics before a generator repeats the design across every type.

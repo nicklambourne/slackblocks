@@ -119,6 +119,15 @@ The checked-in lockfile fixes development builds. Package checks also resolve
 fresh consumer dependencies, declared lower bounds, and the consumer-enabled
 `arbitrary_precision` and `preserve_order` serde_json features.
 
+The optional sending examples have a separate application manifest and lockfile
+in `rust/integrations`. Slack Morphism 2.29.0 and reqwest 0.13.5 are tested there on
+Rust 1.85 and stable. Resolver 3 and `rust-version = "1.85"` select compatible
+transitive dependencies, including older Serde helpers and ICU releases where
+newer versions require a newer compiler. The mock server is pinned to wiremock
+0.6.2 because later versions use Rust 1.88 syntax without declaring that minimum.
+These are application/test requirements and never enter the core crate's
+manifest or lockfile. A dependency update must pass the same compiler matrix.
+
 Role/vocabulary enums are `#[non_exhaustive]`; include a wildcard match arm so
 new Slack variants can be added. Private fields and validated builders preserve
 invariants. No earlier Rust release line exists to migrate from.

@@ -34,7 +34,7 @@ with tempfile.TemporaryDirectory(prefix='slackblocks-rust-package-',dir=scratch)
         names={str(Path(n).relative_to(f'slackblocks-{version}')) for n in tar.getnames()}
         required={'Cargo.toml','README.md','LICENSE','LICENSE.BSD-3-Clause','CHANGELOG.md','src/lib.rs','examples/api_checkpoint.rs'}
         if not required<=names:raise SystemExit(f'Missing archive files: {required-names}')
-        forbidden=[n for n in names if n.startswith(('generator/','conformance/','generated/','bin/')) or '/Volumes/' in n]
+        forbidden=[n for n in names if n.startswith(('generator/','conformance/','generated/','bin/','integrations/')) or '/Volumes/' in n]
         if forbidden:raise SystemExit(f'Unexpected archive files: {forbidden}')
         tar.extractall(tmp,filter='data')
     source=tmp/f'slackblocks-{version}'

@@ -10,14 +10,27 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 files = [ROOT / "README.md", ROOT / "rust/README.md"] + sorted((ROOT / "docs/docs").rglob("*.mdx"))
+# Sending snippets are compiled and exercised by the separate HTTP integration
+# project. Keep literal code in MDX so future versioned snapshots remain frozen.
+integration_examples = {
+    f"rust/integrations/examples/{name}.rs" for name in ("reqwest", "slack_morphism")
+}
+seen_integrations = set()
 cases = []
 for file in files:
     if "reference" in file.parts:
         continue
     source = file.read_text()
-    snippets = list(re.finditer(r"```rust\n([\s\S]*?)\n```", source))
+    snippets = list(re.finditer(r'```rust(?: title="([^"]+)")?\n([\s\S]*?)\n```', source))
     for match in snippets:
-        code = match[1]
+        title, code = match[1], match[2]
+        if title in integration_examples:
+            assert file == ROOT / "docs/docs/usage/sending_messages.mdx"
+            assert title not in seen_integrations, f"Duplicate sending example: {title}"
+            assert code == (ROOT / title).read_text().rstrip(), f"Sending example drift: {title}"
+            seen_integrations.add(title)
+            continue
+        assert title is None, f"Unexpected Rust snippet title: {title}"
         assert "fn main(" in code, f"{file}: Rust examples must be standalone and executable"
         expected = None
         if file.name == "using_blocks.mdx":
@@ -28,6 +41,7 @@ for file in files:
             assert payload, f"{heading[1]}: missing independently documented JSON"
             expected = json.loads(payload[1])
         cases.append((f"snippet_{len(cases)}", str(file.relative_to(ROOT)), code, expected))
+assert seen_integrations == integration_examples, "Missing tested sending examples"
 assert cases and any(expected is not None for _, _, _, expected in cases)
 # Every concrete block guide must have an executable Rust/JSON pair.
 blocks = (ROOT / "docs/docs/usage/using_blocks.mdx").read_text()
@@ -92,5 +106,5 @@ serde_json = "1.0.145"
                 f"{file} {name}: Rust differs from documented JSON"
             )
 print(
-    f"Executed {len(cases)} Rust README/guide/reusable examples on {toolchain}; every block example matches its JSON tab."
+    f"Executed {len(cases)} Rust README/guide/reusable examples on {toolchain}; every block example matches its JSON tab; {len(seen_integrations)} sending snippets match their separately tested source."
 )

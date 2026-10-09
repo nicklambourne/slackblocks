@@ -44,6 +44,7 @@ The registry checks will derive exact ID sets rather than freeze audit totals.
 | Public API coverage | explicit facade, independent `syn` audit | mutation guard | public symbol inventory | complete |
 | MSRV/platform/package | Cargo and hosted CI | MSRV/stable, archive and fresh consumers | package README | complete |
 | Docs and root README | current guides, site registries and badges | extracted snippets/site guards | all current pages | complete |
+| Sending integrations | separate `integrations/` application; Slack Morphism and reqwest | real local HTTP, payload preservation, errors, retries, TLS, MSRV/stable | sending guide matches tested examples byte for byte | implemented; see CI evidence |
 | Coordinated release | Rust publisher and seven-language guards | positive/negative dry runs | releasing and recovery guide | prepared; activation disabled |
 
 The following reviewed design remains the contract for this train. References to

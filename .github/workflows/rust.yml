@@ -74,7 +74,8 @@ jobs:
             ~/.cargo/registry/cache
             ~/.cargo/git/db
             rust/target
-          key: rust-${{ runner.os }}-${{ matrix.toolchain }}-${{ hashFiles('rust/Cargo.lock') }}
+            rust/integrations/target
+          key: rust-${{ runner.os }}-${{ matrix.toolchain }}-${{ hashFiles('rust/Cargo.lock', 'rust/integrations/Cargo.lock') }}
           restore-keys: rust-${{ runner.os }}-${{ matrix.toolchain }}-
       - name: Run unit, integration and documentation tests
         if: needs.changes.outputs.relevant == 'true'
@@ -82,6 +83,10 @@ jobs:
           cargo +${{ matrix.toolchain }} test --manifest-path rust/Cargo.toml --workspace --all-targets --locked
           cargo +${{ matrix.toolchain }} test --manifest-path rust/Cargo.toml --workspace --doc --locked
           cargo +${{ matrix.toolchain }} run --manifest-path rust/Cargo.toml --example api_checkpoint --locked
+
+      - name: Test runnable Slack Morphism and reqwest integrations locally
+        if: needs.changes.outputs.relevant == 'true'
+        run: cargo +${{ matrix.toolchain }} test --manifest-path rust/integrations/Cargo.toml --all-targets --locked
 
   quality:
     needs: changes
@@ -111,7 +116,8 @@ jobs:
             ~/.cargo/registry/cache
             ~/.cargo/git/db
             rust/target
-          key: rust-${{ runner.os }}-quality-${{ hashFiles('rust/Cargo.lock') }}
+            rust/integrations/target
+          key: rust-${{ runner.os }}-quality-${{ hashFiles('rust/Cargo.lock', 'rust/integrations/Cargo.lock') }}
           restore-keys: rust-${{ runner.os }}-quality-
       - name: Verify generated sources, lints, tests, and rustdoc
         if: needs.changes.outputs.relevant == 'true'
