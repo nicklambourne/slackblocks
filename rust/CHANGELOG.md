@@ -2,14 +2,15 @@
 
 ## [Unreleased]
 
-## [2.6.0] — Unreleased
+## [2.6.0] — 2026-10-09
 
 - Keep application metadata outside message-wide Block Kit text totals.
 - Reject lossy JSON number literals, validate limit references during generation,
   simplify typed validation/plan serialization, and accept borrowed string arguments.
 
-- Prepare the native Rust implementation for the coordinated 2.6.0 release.
-- Publication remains disabled while implementation and registry setup are reviewed.
+- Introduce the native Rust implementation in coordinated release 2.6.0.
+- Add crates.io publishing with explicit API-token or trusted authentication,
+  verified artifacts and coordinated release guards.
 
 - Native convenience APIs for pagination, accordion sections, workflow triggers,
   attachment colors and Block Kit Builder preview URLs.

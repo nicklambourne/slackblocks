@@ -7,12 +7,15 @@ The Python (`slackblocks` on PyPI), TypeScript
 packages are released together and always carry the same version
 number.
 
-**Current preparation state:** six languages are published at 2.5.0. The source
-train targets 2.6.0 and adds Rust, but Rust's `publish = false` disables release
-activation. The coordinator and every publisher now run a shared preflight that
-blocks a partial six-language 2.6.0 release. PR validation and package dry runs
-remain available without credentials. Complete [Rust activation](#rust-activation-and-first-publication)
-before dispatching any 2.6.0 publisher. No account setup is implied by these files.
+**Current preparation state:** 2.6.0 adds Rust to the coordinated release. All
+seven changelogs are dated 2026-10-09 and the Rust library is enabled for crates.io.
+The `crates-io` environment and `CRATES_IO_TOKEN` secret were verified to exist on
+9 October 2026; the maintainer confirmed new-crate and existing-crate publishing
+scopes. The environment permits `rust/v*` tags. These checks do not prove registry
+authorization or publication. Release tags and registry uploads remain a separate
+maintainer action; use the [first-publication checklist](#rust-activation-and-first-publication).
+If the release date changes before publication, update all seven changelogs and
+Java's reproducible-build timestamp together.
 
 The recommended entry point is the **Coordinated Release** workflow in GitHub
 Actions. Run it from `master` with one `X.Y.Z` input; it validates the shared
@@ -36,7 +39,7 @@ Releases are triggered by pushing tags:
 | `java/vX.Y.Z` | [`.github/workflows/publish-java.yml`](.github/workflows/publish-java.yml) | `io.github.nicklambourne:slackblocks` to Maven Central |
 | `csharp/vX.Y.Z` | [`.github/workflows/publish-nuget.yml`](.github/workflows/publish-nuget.yml) | `Slackblocks` to NuGet |
 | `ruby/vX.Y.Z` | [`.github/workflows/publish-rubygems.yml`](.github/workflows/publish-rubygems.yml) | `slackblocks` to RubyGems |
-| `rust/vX.Y.Z` | [`.github/workflows/publish-crates.yml`](.github/workflows/publish-crates.yml) | `slackblocks` to crates.io; disabled until activation |
+| `rust/vX.Y.Z` | [`.github/workflows/publish-crates.yml`](.github/workflows/publish-crates.yml) | `slackblocks` to crates.io |
 
 Plain `v*` tags (used by the pre-monorepo 1.x/2.0 releases) no longer trigger
 anything.
@@ -157,72 +160,67 @@ These must be in place before the workflows can publish:
 
 ## Rust activation and first publication
 
-The implementation train leaves publishing disabled. The following is a separate,
-reviewable release-readiness change; merging an implementation PR does not authorize
-a release or establish registry ownership.
+The implementation train kept publication disabled until this release-readiness
+change. Preparing or merging release files does not create tags or publish packages.
 
-1. Recheck availability of `slackblocks` on crates.io. The name was absent on
-   4 October 2026, which does not reserve it. Sign in with the intended maintainer
-   account and verify its email. Do not publish a placeholder crate to reserve it.
-2. Create the GitHub environment `crates-io`. Restrict deployment refs to
-   `rust/v*` and configure the intended reviewer policy. The workflow identity is
-   repository `nicklambourne/slackblocks`, file **`publish-crates.yml`**, environment
-   **`crates-io`**. The protected publish job is separate from PR/build validation;
-   PR jobs have neither registry secrets nor `id-token: write`.
-3. The initial publication needs an API token because trusted publishing currently
-   requires an existing crate. Create a short-lived token with permission to
-   publish a new crate, restricted to `slackblocks`; save it only as the environment
-   secret **`CRATES_IO_BOOTSTRAP_TOKEN`**. Verify current controls using the official
-   [token guidance](https://blog.rust-lang.org/2023/06/23/improved-api-tokens-for-crates-io/)
-   and [trusted publishing documentation](https://crates.io/docs/trusted-publishing).
-   Never place credentials in source, command arguments or release notes.
-4. In a release-readiness PR, change only the library's `publish = false` to
-   `publish = ["crates-io"]` in `rust/Cargo.toml`. The conformance crate stays
-   unpublished. Keep the checked-in first-release policy:
+1. Recheck availability of `slackblocks` on crates.io immediately before the first
+   publication. The crate was absent on 9 October 2026; that does not reserve the
+   name. The publishing account must have a verified email. For subsequent
+   releases, confirm the intended account still owns the crate.
+2. Keep the GitHub environment **`crates-io`** restricted to deployment tags
+   **`rust/v*`**, with the intended reviewer policy. The workflow identity is
+   repository **`nicklambourne/slackblocks`**, file **`publish-crates.yml`**,
+   environment **`crates-io`**. PR jobs receive neither registry secrets nor
+   `id-token: write`.
+3. The selected authentication mode uses the environment secret **`CRATES_IO_TOKEN`**
+   for the first publication and later releases. Its scopes must allow creating
+   the `slackblocks` crate and publishing new versions of that crate. Track its
+   expiry and rotate it in the environment when needed. Never put the token in
+   source, command arguments or release notes. See the official
+   [token guidance](https://blog.rust-lang.org/2023/06/23/improved-api-tokens-for-crates-io/).
+   The library's explicit release configuration is:
 
    ```toml
+   [package]
+   publish = ["crates-io"]
+
    [package.metadata.slackblocks-release]
-   authentication = "bootstrap"
-   bootstrap-version = "2.6.0"
+   authentication = "token"
    ```
 
-   Bootstrap is allowed only for 2.6.0 while the crate is absent. There is no
-   automatic token fallback when OIDC fails. All other release prerequisites below
-   must be completed in the same reviewed state: seven dated changelogs, Java's
-   reproducible timestamp, matching versions/lockfiles and green checks.
-5. The outgoing six-language 2.5.0 documentation is already frozen; **do not
-   create it again**. Remove the current docs `Unreleased` label when the release
-   is ready. Update registry installation snippets across root/package READMEs
-   and guides to 2.6.0, including Rust's `cargo add slackblocks@2.6.0` alongside
-   `serde_json`. Replace Rust's static unpublished badge with the live crates.io
-   badge and add the live docs.rs link. Re-run extracted snippets, generated API
-   checks and the complete documentation build before publication.
-6. Run the existing Rust matrix and **Rust quality and package** checks. On PRs,
-   that quality job owns the full suite and extracted archives on MSRV/stable,
-   minimum dependencies and unified serde_json features. The publisher PR path
-   checks release guards, native publish dry run and independent artifact
-   verification; actual release runs repeat the full suite before authentication.
-   The publisher exercises `cargo publish --dry-run` using a
-   disposable archive copy. That dry run activates only the temporary manifest;
-   it never changes the source manifest or uploads a crate. Account configuration
-   still requires a maintainer's verification. Register the Rust matrix/quality,
-   release-build and docs checks in branch protection once their workflows exist
-   on the default branch; verify actual test steps and GitHub runner metadata.
-7. After a separately authorized merge/release, dispatch **Coordinated Release**
-   from `master`. It creates all seven annotated tags atomically and monitors all
-   seven publishers. Approve `crates-io` if configured. Rust authenticates only
-   after its release guards and artifact comparison pass.
-8. Verify the exact version on crates.io and its rustdoc build on docs.rs. Compile
+   The conformance and transport integration packages stay unpublished. There is
+   no automatic token fallback if trusted publishing is selected. Both modes
+   reject an existing target version, including a yanked version.
+4. Keep all stored versions and lockfiles aligned at 2.6.0, date all seven
+   changelogs consistently and match Java's reproducible timestamp to that date.
+   The outgoing six-language 2.5.0 documentation is already frozen; **do not
+   create it again**. The release-readiness change updates current installation
+   examples, release labels, crates.io badges and docs.rs links for 2.6.0.
+5. Run the Rust matrix and **Rust quality and package** checks, extracted guide
+   snippets, generated API checks and the full documentation build. PR validation
+   exercises Cargo's native publish dry run and independently reproduces the
+   archive without credentials. Actual publication repeats the build, package and
+   consumer checks before authentication. Register the Rust matrix/quality and
+   release-build checks in branch protection once their workflows exist on master;
+   preserve the existing required docs and other-language checks. Verify actual
+   test steps and GitHub runner metadata.
+6. After a separately authorized release, dispatch **Coordinated Release** from
+   `master` with version `2.6.0`. It creates all seven annotated tags atomically and
+   monitors all seven publishers. Approve `crates-io` if its reviewer policy
+   requires approval. The Rust publisher uses the token only after release guards
+   and artifact comparisons pass.
+7. Verify the exact version on crates.io and its rustdoc build on docs.rs. Compile
    and execute a fresh consumer with `slackblocks = "=2.6.0"` on MSRV and stable,
-   with no path/patch override. Confirm package contents and a representative
+   without a path or patch override. Confirm package contents and a representative
    serialized payload. Record the run URL, registry version, checksum and docs.rs
    result. A dry run cannot substitute for this installed-registry check.
-9. Configure the crate's trusted publisher for the exact repository, workflow and
-   environment in step 2. Revoke the bootstrap API token and delete its environment
-   secret. In a follow-up readiness change, set `authentication = "trusted"` and
-   remove `bootstrap-version`. The pinned official authentication action obtains
-   and revokes a short-lived credential. The next coordinated release must use
-   trusted mode; test its credential exchange when that authorized release runs.
+8. Trusted publishing is an optional later migration. It currently requires an
+   existing published crate; see the [official documentation](https://crates.io/docs/trusted-publishing).
+   Configure the crate's trusted publisher with the exact repository, workflow
+   and environment from step 2, then change `authentication = "trusted"` in a
+   reviewed PR. Verify the credential exchange in the authorized release workflow
+   before revoking the API token and deleting `CRATES_IO_TOKEN`. Until that
+   migration, subsequent releases continue using the explicit token mode.
 
 ### Rust artifact identity and recovery
 
@@ -239,9 +237,9 @@ already passed verification. It does not bypass the release/artifact guards.
 Registry errors fail closed. An existing target version is never uploaded again,
 even if yanked. If crates.io already has the version, verify its checksum against
 the recorded artifact, complete the installed-consumer/docs.rs checks, and create
-a missing GitHub Release from the existing tag separately. Do not re-run bootstrap
-against an existing crate. If only GitHub Release creation failed, re-run that
-failed job, rather than the successful publishing job. Never move the tags.
+a missing GitHub Release from the existing tag separately. If only GitHub Release
+creation failed, re-run that failed job, rather than the successful publishing job.
+Never move the tags.
 
 Useful read-only/local checks (Python 3.11+, plus the documented Rust toolchains):
 
@@ -254,8 +252,8 @@ python3 rust/bin/check-publish-dry-run.py
 These commands neither activate publishing nor create tags. The Cargo dry run
 requires a clean committed checkout; use the PR workflow for the exact proposed
 commit. Run the guard's dispatch/publisher modes only when testing a concrete
-release ref; those modes are also read-only but intentionally reject this disabled
-train.
+release ref; those modes are also read-only and enforce master ancestry, release
+metadata and the complete tag set.
 
 ## Coordinated release procedure
 

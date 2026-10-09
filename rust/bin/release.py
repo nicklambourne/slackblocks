@@ -26,19 +26,9 @@ def authentication(root):
     policy = package["metadata"]["slackblocks-release"]
     mode = policy["authentication"]
     preflight.require(
-        mode in ("bootstrap", "trusted"),
-        "Choose explicit bootstrap or trusted authentication",
+        mode in ("token", "trusted"),
+        "Choose explicit token or trusted authentication",
     )
-    if mode == "bootstrap":
-        preflight.require(
-            package["version"] == policy.get("bootstrap-version") == "2.6.0",
-            "Bootstrap is limited to the first Rust release, 2.6.0",
-        )
-    else:
-        preflight.require(
-            "bootstrap-version" not in policy,
-            "Remove bootstrap configuration before trusted publishing",
-        )
     return mode
 
 
@@ -55,16 +45,12 @@ def check_registry(version, mode, opener=urllib.request.urlopen):
             if error.code != 404:
                 raise
         data = None
-    if mode == "bootstrap":
-        preflight.require(
-            data is None,
-            "The crate already exists; verify ownership and activate trusted publishing instead of bootstrap",
-        )
-    else:
+    if mode == "trusted":
         preflight.require(
             data is not None,
             "Trusted publishing requires the existing crate and configured publisher",
         )
+    if data is not None:
         preflight.require(
             not any(v["num"] == version for v in data["versions"]),
             "This crate version is already published; recover a missing GitHub Release separately",

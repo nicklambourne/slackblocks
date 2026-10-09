@@ -5,7 +5,7 @@ in lockstep with the Python, TypeScript, and Go packages.
 
 ## [Unreleased]
 
-## [2.6.0] — Unreleased
+## [2.6.0] — 2026-10-09
 
 - Keep application metadata outside message-wide Block Kit text totals.
 

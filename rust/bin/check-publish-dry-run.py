@@ -42,7 +42,7 @@ with tempfile.TemporaryDirectory(prefix="slackblocks-publish-dry-run-", dir=scra
     source = directory / f"slackblocks-{version}"
     manifest = source / "Cargo.toml"
     # Cargo correctly rejects publish=false even for dry runs. Only this extracted
-    # temporary manifest is activated; the source manifest and uploaded archive stay disabled.
+    # temporary manifest is activated when necessary; the source manifest is unchanged.
     manifest.write_text(
         re.sub(
             r"^publish = false$",
