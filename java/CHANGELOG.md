@@ -9,7 +9,8 @@ in lockstep with the Python, TypeScript, and Go packages.
 
 - Keep application metadata outside message-wide Block Kit text totals.
 
-- Prepare coordinated 2.6.0 with the native Rust implementation; existing language support floors are unchanged.
+- Release alongside the new native Rust implementation; supported language versions are unchanged.
+- Update the Slack Java SDK to 1.52.0.
 
 ## [2.5.0] — 2026-09-28
 
