@@ -1,6 +1,17 @@
 # Rust implementation and integration audit
 
-## Current baseline
+## Release readiness — 9 October 2026
+
+The implementation train has been merged and this separate 2.6.0 readiness change
+activates crates.io publication, uses the maintainer-configured `CRATES_IO_TOKEN`
+for first and later releases, dates all seven changelogs consistently, and updates
+the release documentation and installation examples. The environment and secret
+name are verified; no token value was read and no registry write was attempted.
+Earlier preparation records below describe the state before this activation.
+Actual tags, registry uploads and installed-registry verification remain separate
+release steps in `../RELEASING.md`.
+
+## Starting baseline — 4 October 2026
 
 - Started 4 October 2026 from `00bfaa72bbcea31063cafdac8750ccac09665c3d`.
 - Six published languages at 2.5.0; shared spec 1.2.0; proposed coordinated release 2.6.0.
@@ -334,9 +345,19 @@ At final readiness, enable the crate only for crates.io, enable the coordinator'
 
 Current crates.io documentation requires a previously published crate before configuring trusted publishing. The initial publication therefore needs an API token. This was rechecked in the [current official trusted-publishing documentation source](https://github.com/rust-lang/crates.io/blob/main/svelte/src/routes/docs/trusted-publishing/%2Bpage.svelte), rather than relying only on the 2025 announcement. Revalidate this prerequisite before activation.
 
-For the first real coordinated release, an owner with a verified crates.io account supplies an expiring token with the minimum available new-crate publishing permissions to the protected GitHub environment. Verify that the selected scope supports creation of a new crate; an existing-crate-only token may not. Use a separately gated bootstrap mode. Environment review follows the owner's configured rules; do not require a reviewer policy that has not been configured. Never put token values in files, logs or plan documents.
+For the first real coordinated release, an owner with a verified crates.io account
+supplies a scoped API token to the `crates-io` GitHub environment as
+`CRATES_IO_TOKEN`. The maintainer selected explicit token authentication for both
+new-crate creation and later versions on 9 October 2026. The publisher uses
+`authentication = "token"`; both token and trusted modes reject an already
+published version. No token value belongs in files, logs or plan documents.
 
-After that first publish, configure the trusted publisher for `nicklambourne/slackblocks`, workflow `publish-crates.yml`, and environment `crates-io`. Verify an OIDC exchange from the intended workflow/environment, then revoke the bootstrap token, remove its secret and disable the bootstrap path. Use the [official crates.io authentication action](https://github.com/rust-lang/crates-io-auth-action) for subsequent releases. An auth-only check does not prove that a future version has published; record its scope honestly. The bootstrap mode must not become an automatic fallback when OIDC fails.
+Trusted publishing remains available after the first publication. To migrate,
+configure the publisher for `nicklambourne/slackblocks`, workflow
+`publish-crates.yml`, environment `crates-io`, and select
+`authentication = "trusted"` in a reviewed change. Verify the OIDC exchange, then
+revoke the API token and remove its secret. The official authentication action is
+already wired for this explicit mode, with no automatic token fallback.
 
 Retain a tested failure-recovery route until the first version is verified. If an upload response is uncertain, inspect registry state before any retry. Cargo packages from source when publishing: validate the same clean tagged commit, toolchain, lockfile and package file contents that were reviewed, and record archive metadata/checksums. Do not claim a prebuilt artifact was uploaded if the workflow rebuilt it.
 
@@ -458,7 +479,7 @@ current API headings/breadcrumbs. No historical snapshot was edited to achieve
 that routing.
 
 
-## Implementation evidence — release integration PR
+## Implementation evidence — release integration PR before activation
 
 Every publisher now delegates coordinated-version and activation decisions to
 `.github/scripts/verify-release.py`; Ruby's existing command remains a thin

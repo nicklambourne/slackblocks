@@ -1,12 +1,13 @@
 # slackblocks for Rust
 
 [![Rust MSRV](https://img.shields.io/badge/Rust-1.85%2B-b7410e?logo=rust)](https://nicklambourne.github.io/slackblocks/usage/compatibility?language=rust)
-[![crates.io](https://img.shields.io/badge/crates.io-2.6.0%20unreleased-b7410e?logo=rust)](#use-from-a-checkout)
+[![crates.io](https://img.shields.io/crates/v/slackblocks?logo=rust)](https://crates.io/crates/slackblocks)
+[![docs.rs](https://docs.rs/slackblocks/badge.svg)](https://docs.rs/slackblocks)
 [![Rust CI](https://github.com/nicklambourne/slackblocks/actions/workflows/rust.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/rust.yml)
 [![Docs](https://img.shields.io/badge/Docs-8A2BE2.svg)](https://nicklambourne.github.io/slackblocks/reference/rust)
 
-An unreleased Rust implementation of Slack Block Kit, targeting coordinated
-version 2.6.0 and shared specification 1.2.0. Registry publication is disabled.
+A native Rust implementation of Slack Block Kit, using coordinated version 2.6.0
+and shared specification 1.2.0.
 
 Rust 2024; minimum supported Rust version (MSRV) 1.85. Values own their data,
 builders consume themselves, getters borrow, and invalid input returns
@@ -16,12 +17,12 @@ All shared model types are implemented. Independent native examples and checked
 JSON ingress cover every shared valid fixture and invalid case.
 See [the implementation plan](https://github.com/nicklambourne/slackblocks/blob/master/rust/IMPLEMENTATION.md) for the train and acceptance evidence.
 
-## Use from a checkout
+## Installation
 
-The Rust crate is not yet published. In an application beside this repository:
+Add the crate and serde_json to your application:
 
 ```sh
-cargo add slackblocks --path ../slackblocks/rust
+cargo add slackblocks@2.6.0
 cargo add serde_json
 ```
 

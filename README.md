@@ -10,7 +10,8 @@
 [![NuGet](https://img.shields.io/nuget/v/Slackblocks?logo=nuget)](https://www.nuget.org/packages/Slackblocks)
 [![RubyGems](https://img.shields.io/gem/v/slackblocks?logo=rubygems)](https://rubygems.org/gems/slackblocks)
 [![Rust MSRV](https://img.shields.io/badge/Rust-1.85%2B-b7410e?logo=rust)](rust/README.md)
-[![crates.io](https://img.shields.io/badge/crates.io-2.6.0%20unreleased-b7410e?logo=rust)](rust/README.md)
+[![crates.io](https://img.shields.io/crates/v/slackblocks?logo=rust)](https://crates.io/crates/slackblocks)
+[![docs.rs](https://docs.rs/slackblocks/badge.svg)](https://docs.rs/slackblocks)
 [![Downloads](https://static.pepy.tech/badge/slackblocks)](https://pepy.tech/project/slackblocks)
 [![Python CI](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
 [![TypeScript CI](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
@@ -81,7 +82,7 @@ Java (17+):
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>2.5.0</version>
+  <version>2.6.0</version>
 </dependency>
 ```
 
@@ -97,19 +98,14 @@ Ruby (3.3+):
 gem install slackblocks
 ```
 
-Rust (1.85+, edition 2024; **2.6.0 unreleased**):
-
-Rust publication is being prepared. From an application beside a checkout of
-this repository containing Rust support:
+Rust (1.85+, edition 2024):
 
 ```bash
-cargo add slackblocks --path ../slackblocks/rust
+cargo add slackblocks@2.6.0
 cargo add serde_json
 ```
 
-The existing six registry packages are released at 2.5.0. Source manifests are
-preparing coordinated 2.6.0; the installation commands above use published
-packages except for the explicit Rust path dependency.
+All seven implementations use the coordinated 2.6.0 version.
 
 ## Quickstart
 
@@ -345,7 +341,7 @@ and [Rust API reference](https://nicklambourne.github.io/slackblocks/reference/r
 - [`java/`](java/) — the Java artifact (`io.github.nicklambourne:slackblocks` on Maven Central).
 - [`csharp/`](csharp/) — the .NET package (`Slackblocks` on NuGet).
 - [`ruby/`](ruby/) — the Ruby gem (`slackblocks` on RubyGems from 2.5.0).
-- [`rust/`](rust/) — the Rust crate (`slackblocks`, prepared for unreleased 2.6.0).
+- [`rust/`](rust/) — the Rust crate (`slackblocks` on crates.io from 2.6.0).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
   and capability coverage that all seven implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.

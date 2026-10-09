@@ -11,13 +11,12 @@ documentation = "https://docs.rs/slackblocks"
 readme = "README.md"
 keywords = ["slack", "block-kit", "builder", "serde"]
 categories = ["api-bindings", "encoding"]
-publish = false
+publish = ["crates-io"]
 include = ["src/**", "examples/**", "tests/**", "README.md", "CHANGELOG.md", "LICENSE", "LICENSE.BSD-3-Clause", "Cargo.toml", "Cargo.lock"]
 
-# Activation is a separately reviewed release-readiness change. No token fallback.
+# Authentication is explicit; trusted publishing never falls back to an API token.
 [package.metadata.slackblocks-release]
-authentication = "bootstrap"
-bootstrap-version = "2.6.0"
+authentication = "token"
 
 [dependencies]
 serde = { version = "1.0.228", features = ["derive"] }

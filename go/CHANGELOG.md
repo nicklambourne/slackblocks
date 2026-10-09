@@ -5,11 +5,11 @@ same version number as the Python, TypeScript, and Java packages.
 
 ## [Unreleased]
 
-## [2.6.0] — Unreleased
+## [2.6.0] — 2026-10-09
 
 - Keep application metadata outside message-wide Block Kit text totals.
 
-- Prepare coordinated 2.6.0 with the native Rust implementation; existing language support floors are unchanged.
+- Release alongside the new native Rust implementation; supported language versions are unchanged.
 
 ## [2.5.0] — 2026-09-28
 

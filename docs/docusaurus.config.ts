@@ -242,7 +242,7 @@ const config: Config = {
           versions: {
             current: {
               badge: false,
-              label: `${pythonVersion} (Unreleased)`,
+              label: pythonVersion,
               path: "",
             },
             ...legacyVersionConfiguration,

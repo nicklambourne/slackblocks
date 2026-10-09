@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.6.0] — Unreleased
+## [2.6.0] — 2026-10-09
 
-- Prepare coordinated 2.6.0 with the native Rust implementation; existing language support floors are unchanged.
+- Release alongside the new native Rust implementation; supported language versions are unchanged.
+- Update `@slack/types` to 3.2.0.
 
 ## [2.5.0] — 2026-09-28
 

@@ -60,12 +60,7 @@ class ReleaseTests(unittest.TestCase):
         text = re.sub(
             r"^publish = .+$", 'publish = ["crates-io"]', manifest.read_text(), flags=re.M
         )
-        text = re.sub(r"^authentication = .+$", 'authentication = "bootstrap"', text, flags=re.M)
-        text = re.sub(r"^bootstrap-version = .+\n", "", text, flags=re.M)
-        text = text.replace(
-            'authentication = "bootstrap"',
-            'authentication = "bootstrap"\nbootstrap-version = "2.6.0"',
-        )
+        text = re.sub(r"^authentication = .+$", 'authentication = "token"', text, flags=re.M)
         manifest.write_text(text)
         for language in release.LANGUAGES:
             (self.root / language / "CHANGELOG.md").write_text(
@@ -248,29 +243,13 @@ class ReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(release.ReleaseError, "origin/master"):
             release.release_commit(self.root)
 
-    def test_authentication_is_explicit_and_first_version_only(self):
-        self.assertEqual(cargo.authentication(self.root), "bootstrap")
-        self.edit(
-            "rust/Cargo.toml",
-            'bootstrap-version = "2.6.0"',
-            'bootstrap-version = "9.9.9"',
-        )
-        with self.assertRaisesRegex(cargo.preflight.ReleaseError, "first Rust release"):
-            cargo.authentication(self.root)
-        self.edit(
-            "rust/Cargo.toml",
-            'authentication = "bootstrap"',
-            'authentication = "trusted"',
-        )
-        with self.assertRaisesRegex(cargo.preflight.ReleaseError, "Remove bootstrap"):
-            cargo.authentication(self.root)
-        self.edit("rust/Cargo.toml", 'bootstrap-version = "9.9.9"\n', "")
+    def test_authentication_is_explicit_for_first_and_later_releases(self):
+        self.assertEqual(cargo.authentication(self.root), "token")
+        self.edit("rust/Cargo.toml", 'version = "2.6.0"', 'version = "2.6.1"')
+        self.assertEqual(cargo.authentication(self.root), "token")
+        self.edit("rust/Cargo.toml", 'authentication = "token"', 'authentication = "trusted"')
         self.assertEqual(cargo.authentication(self.root), "trusted")
-        self.edit(
-            "rust/Cargo.toml",
-            'authentication = "trusted"',
-            'authentication = "fallback"',
-        )
+        self.edit("rust/Cargo.toml", 'authentication = "trusted"', 'authentication = "fallback"')
         with self.assertRaisesRegex(cargo.preflight.ReleaseError, "explicit"):
             cargo.authentication(self.root)
 
@@ -283,7 +262,7 @@ class ReleaseTests(unittest.TestCase):
             "version": VERSION,
             "commit": self.git("rev-parse", "HEAD"),
             "toolchain": cargo.TOOLCHAIN,
-            "authentication": "bootstrap",
+            "authentication": "token",
             "sha256": cargo.sha256(archive),
         }
         manifest = directory / "release.json"
@@ -321,15 +300,20 @@ class RegistryTests(unittest.TestCase):
     def exists(self, *args, **kwargs):
         return io.StringIO(json.dumps({"versions": [{"num": VERSION}]}))
 
-    def test_bootstrap_requires_absent_crate(self):
-        cargo.check_registry(VERSION, "bootstrap", self.absent)
-        with self.assertRaisesRegex(cargo.preflight.ReleaseError, "already exists"):
-            cargo.check_registry(VERSION, "bootstrap", self.exists)
+    def test_token_supports_first_and_later_publication(self):
+        cargo.check_registry(VERSION, "token", self.absent)
+        cargo.check_registry("2.6.1", "token", self.exists)
+
+    def test_both_modes_reject_an_existing_version(self):
+        for mode in ("token", "trusted"):
+            with (
+                self.subTest(mode=mode),
+                self.assertRaisesRegex(cargo.preflight.ReleaseError, "already published"),
+            ):
+                cargo.check_registry(VERSION, mode, self.exists)
 
     def test_trusted_requires_existing_crate_and_new_version(self):
-        cargo.check_registry("9.9.9", "trusted", self.exists)
-        with self.assertRaisesRegex(cargo.preflight.ReleaseError, "already published"):
-            cargo.check_registry(VERSION, "trusted", self.exists)
+        cargo.check_registry("2.6.1", "trusted", self.exists)
         with self.assertRaisesRegex(cargo.preflight.ReleaseError, "existing crate"):
             cargo.check_registry(VERSION, "trusted", self.absent)
 
@@ -342,7 +326,7 @@ class RegistryTests(unittest.TestCase):
                 )
 
             with self.subTest(status=status), self.assertRaises(urllib.error.HTTPError):
-                cargo.check_registry(VERSION, "bootstrap", failed)
+                cargo.check_registry(VERSION, "token", failed)
 
 
 class WorkflowTests(unittest.TestCase):
@@ -364,6 +348,10 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("release.py verify", rust)
         self.assertLess(rust.index("release.py verify"), rust.index("crates-io-auth-action@"))
         self.assertIn("--no-verify", rust)
+        self.assertIn("secrets.CRATES_IO_TOKEN", rust)
+        self.assertIn("if: needs.build.outputs.authentication == 'token'", rust)
+        self.assertIn("if: needs.build.outputs.authentication == 'trusted'", rust)
+        self.assertNotIn("CRATES_IO_BOOTSTRAP_TOKEN", rust)
         self.assertIn("if: github.event_name != 'pull_request'\n    needs: [build, artifact]", rust)
         self.assertNotIn("secrets.", rust.split("  publish:")[0])
         self.assertNotIn("id-token: write", rust.split("  publish:")[0])

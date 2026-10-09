@@ -21,8 +21,8 @@ quality gates, standalone packaging, documentation and coordinated releases.
 Keep publication disabled until the complete implementation and registry setup
 are ready; preserve outgoing documentation before adding new-language content.
 
-Rust joins the source implementation set for unreleased 2.6.0. Include `rust/`
+Rust joins the implementation set in 2.6.0. Include `rust/`
 when updating shared features. Run its generator with Rust 1.85.0 rustfmt, then
 native/conformance/API, compile-contract, coverage and extracted-package checks.
 Use `.github/workflows/rust.yml` on GitHub-provided runners. Rust publication
-stays disabled until the documented registry and release activation gates pass.
+uses the documented registry environment and coordinated release gates.

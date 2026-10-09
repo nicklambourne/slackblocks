@@ -148,7 +148,7 @@ Install the Java artifact from Maven Central. Java 17 or newer is required.
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>2.5.0</version>
+  <version>2.6.0</version>
 </dependency>
 ```
 
@@ -156,14 +156,14 @@ Install the Java artifact from Maven Central. Java 17 or newer is required.
 <TabItem value="gradle-kotlin" label="Gradle (Kotlin)">
 
 ```kotlin
-implementation("io.github.nicklambourne:slackblocks:2.5.0")
+implementation("io.github.nicklambourne:slackblocks:2.6.0")
 ```
 
 </TabItem>
 <TabItem value="gradle-groovy" label="Gradle (Groovy)">
 
 ```groovy
-implementation 'io.github.nicklambourne:slackblocks:2.5.0'
+implementation 'io.github.nicklambourne:slackblocks:2.6.0'
 ```
 
 </TabItem>
@@ -207,7 +207,7 @@ dotnet add package Slackblocks
 <TabItem value="package-reference" label="PackageReference">
 
 ```xml
-<PackageReference Include="Slackblocks" Version="2.5.0" />
+<PackageReference Include="Slackblocks" Version="2.6.0" />
 ```
 
 </TabItem>
@@ -271,23 +271,19 @@ Uninstall with `gem uninstall slackblocks`.
 </Ruby>
 <Rust>
 
-## Install from the checkout
+## Install from crates.io
 
 Rust 1.85 or newer is required. The crate uses edition 2024, Serde and serde_json.
-Rust support targets the unreleased coordinated 2.6.0 version; crates.io
-publication is disabled until the release setup is reviewed.
-
-For an application beside the repository checkout:
+Rust support begins with coordinated version 2.6.0.
 
 ```sh
-cargo add slackblocks --path ../slackblocks/rust
+cargo add slackblocks@2.6.0
 cargo add serde_json
 ```
 
-The equivalent dependency is `slackblocks = { path = "../slackblocks/rust" }`.
-The package includes generated sources; application builds do not require Python
-or the shared specification directory. After the first registry release, use
-`cargo add slackblocks` and your normal Cargo version policy.
+The equivalent dependency is `slackblocks = "2.6.0"`. The package includes
+generated sources; application builds do not require Python or the shared
+specification directory. Use `cargo update` within your normal Cargo version policy.
 
 ## Verify construction and serialization
 
