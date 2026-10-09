@@ -1,0 +1,190 @@
+name: Publish Rust Package
+
+on:
+  pull_request:
+  push:
+    tags:
+      - "rust/v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  changes:
+    name: Detect relevant Rust release changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Compare changed files against Rust release scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ] || grep -qE '^(rust/|spec/|\.github/scripts/|\.github/workflows/(publish-crates|coordinated-release)\.yml$)' <<<"$files"; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    name: Build and verify Rust release
+    needs: changes
+    if: needs.changes.outputs.relevant == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.artifact.outputs.version }}
+      authentication: ${{ steps.artifact.outputs.authentication }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install Python for release and archive checks
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      - name: Test release guards without credentials
+        run: python -m unittest discover -s .github/scripts -p 'test_*.py' -v
+      - name: Verify release activation, commit, seven tags and registry state
+        if: github.event_name != 'pull_request'
+        run: python rust/bin/release.py registry
+      - name: Install minimum and stable Rust tooling
+        run: |
+          rustup toolchain install 1.85.0 stable --profile minimal --component rustfmt,clippy
+          rustup default stable
+          echo "RUSTFMT=$(rustup which --toolchain 1.85.0 rustfmt)" >> "$GITHUB_ENV"
+      - name: Cache Rust dependencies and build outputs
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            rust/target
+          key: rust-${{ runner.os }}-release-${{ hashFiles('rust/Cargo.lock') }}
+          restore-keys: rust-${{ runner.os }}-release-
+      - name: Verify generated code, native API, conformance and documentation
+        run: rust/bin/check
+      - name: Verify standalone archives and fresh consumers
+        run: |
+          python rust/bin/check-package.py --toolchain 1.85.0
+          python rust/bin/check-package.py --toolchain stable
+          python rust/bin/check-package.py --toolchain 1.85.0 --lower-bounds
+          python rust/bin/check-package.py --toolchain 1.85.0 --json-features
+      - name: Exercise native Cargo publish without uploading
+        run: python rust/bin/check-publish-dry-run.py
+      - name: Prepare reproducible release artifact
+        id: artifact
+        run: python rust/bin/release.py prepare
+      - name: Upload tested crate and checksum metadata
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: rust-crate
+          path: |
+            rust/dist/*.crate
+            rust/dist/release.json
+          if-no-files-found: error
+
+  artifact:
+    name: Verify Rust release artifact
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the same commit on a fresh runner
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Download the tested artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: rust-crate
+          path: rust/dist
+      - name: Install the exact packaging toolchain
+        run: rustup toolchain install 1.85.0 --profile minimal
+      - name: Verify downloaded bytes and reproduce the crate without credentials
+        run: python3 rust/bin/release.py verify
+
+  publish:
+    name: Publish to crates.io
+    if: github.event_name != 'pull_request'
+    needs: [build, artifact]
+    runs-on: ubuntu-latest
+    environment:
+      name: crates-io
+      url: https://crates.io/crates/slackblocks
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out the release commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Download tested artifact from this run
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: rust-crate
+          path: rust/dist
+      - name: Install the exact packaging toolchain
+        run: rustup toolchain install 1.85.0 --profile minimal
+      - name: Recheck release and reproduce the exact tested crate before authentication
+        run: |
+          python3 rust/bin/release.py registry
+          python3 rust/bin/release.py verify
+      - name: Authenticate with crates.io trusted publishing
+        if: needs.build.outputs.authentication == 'trusted'
+        id: trusted
+        uses: rust-lang/crates-io-auth-action@c6f97d42243bad5fab37ca0427f495c86d5b1a18 # v1.0.5
+      - name: Publish the first version with the scoped bootstrap token
+        if: needs.build.outputs.authentication == 'bootstrap'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_BOOTSTRAP_TOKEN }}
+        run: |
+          test -n "$CARGO_REGISTRY_TOKEN" || { echo 'Missing crates-io environment bootstrap token'; exit 1; }
+          cargo +1.85.0 publish --manifest-path rust/Cargo.toml --locked --registry crates-io --no-verify
+      - name: Publish with the short-lived trusted credential
+        if: needs.build.outputs.authentication == 'trusted'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.trusted.outputs.token }}
+        run: cargo +1.85.0 publish --manifest-path rust/Cargo.toml --locked --registry crates-io --no-verify
+
+  github-release:
+    name: Create Rust GitHub Release
+    if: github.event_name != 'pull_request'
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Create release from changelog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release already exists; skipping."
+            exit 0
+          fi
+          version="${GITHUB_REF_NAME#rust/v}"
+          awk -v version="$version" '
+            $0 ~ "^## \\[" version "\\]" { capture = 1; next }
+            capture && /^## \[/ { exit }
+            capture { print }
+          ' rust/CHANGELOG.md > release-notes.md
+          test -s release-notes.md
+          gh release create "$GITHUB_REF_NAME" --title "Rust v$version" --notes-file release-notes.md

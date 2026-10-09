@@ -55,7 +55,7 @@ sidebar_position: 0
 
 Rust 2024 with MSRV 1.85. Values own their data and expose borrowed getters.
 Consuming builders return \`Result<T, ValidationError>\`; \`Clone\` and
-\`into_builder()\` support safe editing. Every validated value implements
+\`into_builder()\` support safe editing. Every modeled wire value implements
 Serde serialization and checked deserialization. JSON ingress is also available
 through \`TryFrom<serde_json::Value>\`.
 

@@ -1,50 +1,18 @@
 #!/usr/bin/env python3
-"""Verify that a Ruby release tag names this coordinated package commit."""
+"""Compatibility entry point for the shared seven-language release preflight."""
 
-import json
 import os
-import re
-import subprocess
-import xml.etree.ElementTree as ET
+import sys
 from pathlib import Path
 
-
 root = Path(__file__).resolve().parents[2]
-ref = os.environ.get("GITHUB_REF", "")
-match = re.fullmatch(r"refs/tags/ruby/v(\d+\.\d+\.\d+)", ref)
-if not match:
-    raise SystemExit("Ruby publishing requires a ruby/vX.Y.Z tag")
-
-version = match.group(1)
-tag = ref.removeprefix("refs/tags/")
-head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
-target = subprocess.check_output(
-    ["git", "rev-parse", f"refs/tags/{tag}^{{commit}}"], cwd=root, text=True
-).strip()
-if head != target:
-    raise SystemExit(f"{tag} points to {target}, but the checkout is {head}")
-
-ruby_version = subprocess.check_output(
-    ["ruby", "-I", "ruby/lib", "-r", "slackblocks/version", "-e", "print Slackblocks::VERSION"],
-    cwd=root,
-    text=True,
+os.execv(
+    sys.executable,
+    [
+        sys.executable,
+        str(root / ".github/scripts/verify-release.py"),
+        "publisher",
+        "--language",
+        "ruby",
+    ],
 )
-python_version = re.search(r'^version = "([^"]+)"$', (root / "python/pyproject.toml").read_text(), re.M).group(1)
-typescript_version = json.loads((root / "typescript/package.json").read_text())["version"]
-java_version = ET.parse(root / "java/pom.xml").getroot().findtext(
-    "{http://maven.apache.org/POM/4.0.0}version"
-)
-csharp_version = ET.parse(root / "csharp/src/Slackblocks/Slackblocks.csproj").getroot().findtext(
-    "./PropertyGroup/Version"
-)
-versions = {
-    "Ruby": ruby_version,
-    "Python": python_version,
-    "TypeScript": typescript_version,
-    "Java": java_version,
-    "C#": csharp_version,
-}
-if any(value != version for value in versions.values()):
-    raise SystemExit(f"{tag} does not match coordinated package versions: {versions}")
-
-print(f"Verified {tag} at {head} with all package versions {version}")

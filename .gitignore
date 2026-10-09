@@ -119,3 +119,5 @@ node_modules/
 /docs/scripts/csharp-reference/obj/
 
 /docs/docs/reference/rust/
+
+/rust/dist/

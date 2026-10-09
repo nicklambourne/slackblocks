@@ -11,6 +11,8 @@ on:
       - ".github/workflows/publish-nuget.yml"
       - ".github/workflows/publish-rubygems.yml"
       - "python/pyproject.toml"
+      - "python/uv.lock"
+      - "go/go.mod"
       - "typescript/package.json"
       - "python/CHANGELOG.md"
       - "typescript/CHANGELOG.md"
@@ -21,6 +23,12 @@ on:
       - "csharp/CHANGELOG.md"
       - "ruby/lib/slackblocks/version.rb"
       - "ruby/CHANGELOG.md"
+      - "ruby/Gemfile.lock"
+      - "rust/Cargo.toml"
+      - "rust/Cargo.lock"
+      - "rust/CHANGELOG.md"
+      - ".github/workflows/publish-crates.yml"
+      - ".github/scripts/**"
   workflow_dispatch:
     inputs:
       version:
@@ -47,75 +55,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate version and release notes
+      - name: Install Python for shared release guards
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: Test release preflight and publisher wiring without credentials
+        run: python -m unittest discover -s .github/scripts -p 'test_*.py' -v
+
+      - name: Validate all seven packages and release activation
         id: version
         env:
-          RELEASE_EVENT: ${{ github.event_name }}
-          RELEASE_REF: ${{ github.ref }}
           REQUESTED_VERSION: ${{ inputs.version }}
-        run: |
-          set -euo pipefail
-
-          typescript_version=$(node -p "require('./typescript/package.json').version")
-          python_version=$(node -e "const text = require('fs').readFileSync('python/pyproject.toml', 'utf8'); const match = text.match(/^version = \"([^\"]+)\"$/m); if (!match) process.exit(1); process.stdout.write(match[1]);")
-          java_version=$(node -e "const text = require('fs').readFileSync('java/pom.xml', 'utf8'); const match = text.match(/<artifactId>slackblocks<\/artifactId>\s*<version>([^<]+)<\/version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
-          csharp_version=$(node -e "const text = require('fs').readFileSync('csharp/src/Slackblocks/Slackblocks.csproj', 'utf8'); const match = text.match(/<Version>([^<]+)<\/Version>/); if (!match) process.exit(1); process.stdout.write(match[1]);")
-          ruby_version=$(node -e "const text = require('fs').readFileSync('ruby/lib/slackblocks/version.rb', 'utf8'); const match = text.match(/^  VERSION = \"([^\"]+)\"$/m); if (!match) process.exit(1); process.stdout.write(match[1]);")
-          version="${REQUESTED_VERSION:-$typescript_version}"
-
-          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::Version '$version' must use the stable X.Y.Z format."
-            exit 1
-          fi
-          if [ "$python_version" != "$typescript_version" ] || [ "$python_version" != "$java_version" ] || [ "$python_version" != "$csharp_version" ] || [ "$python_version" != "$ruby_version" ]; then
-            echo "::error::Package versions differ: Python=$python_version, TypeScript=$typescript_version, Java=$java_version, C#=$csharp_version, Ruby=$ruby_version."
-            exit 1
-          fi
-          if [ "$version" != "$python_version" ]; then
-            echo "::error::Requested version '$version' does not match the package manifests ('$python_version')."
-            exit 1
-          fi
-          if [ "$RELEASE_EVENT" = "workflow_dispatch" ] && [ "$RELEASE_REF" != "refs/heads/master" ]; then
-            echo "::error::Coordinated releases must be dispatched from the master branch."
-            exit 1
-          fi
-
-          release_date=""
-          for changelog in python/CHANGELOG.md typescript/CHANGELOG.md go/CHANGELOG.md java/CHANGELOG.md csharp/CHANGELOG.md ruby/CHANGELOG.md; do
-            heading=$(grep -F "## [$version]" "$changelog" | head -n 1 || true)
-            if [ -z "$heading" ]; then
-              echo "::error file=$changelog::Missing release notes for version $version."
-              exit 1
-            fi
-            date=$(grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' <<<"$heading" || true)
-            if [ -z "$date" ]; then
-              # Pull requests may carry "Unreleased"; the release itself needs the real date,
-              # because each publisher copies this section into its GitHub Release.
-              if [ "$RELEASE_EVENT" = "workflow_dispatch" ]; then
-                echo "::error file=$changelog::Replace 'Unreleased' in the $version heading with the release date (YYYY-MM-DD)."
-                exit 1
-              fi
-              echo "::warning file=$changelog::The $version heading has no release date yet."
-            elif [ -n "$release_date" ] && [ "$date" != "$release_date" ]; then
-              echo "::error file=$changelog::Changelog release dates differ ($date and $release_date)."
-              exit 1
-            else
-              release_date="$date"
-            fi
-          done
-
-          timestamp=$(node -e "const text = require('fs').readFileSync('java/pom.xml', 'utf8'); const match = text.match(/<project.build.outputTimestamp>([^<]+)</); if (!match) process.exit(1); process.stdout.write(match[1]);")
-          if [ -n "$release_date" ] && [[ "$timestamp" != "$release_date"T* ]]; then
-            message="Set project.build.outputTimestamp in java/pom.xml to ${release_date}T00:00:00Z so the Java artifacts are reproducible for this release (found $timestamp)."
-            if [ "$RELEASE_EVENT" = "workflow_dispatch" ]; then
-              echo "::error file=java/pom.xml::$message"
-              exit 1
-            fi
-            echo "::warning file=java/pom.xml::$message"
-          fi
-
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "Validated coordinated release $version."
+        run: python .github/scripts/verify-release.py coordinator
 
   create-tags:
     name: Create coordinated tags
@@ -136,7 +88,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          tags=("python/v$VERSION" "ts/v$VERSION" "go/v$VERSION" "java/v$VERSION" "csharp/v$VERSION" "ruby/v$VERSION")
+          tags=("python/v$VERSION" "ts/v$VERSION" "go/v$VERSION" "java/v$VERSION" "csharp/v$VERSION" "ruby/v$VERSION" "rust/v$VERSION")
           existing=0
 
           for tag in "${tags[@]}"; do
@@ -167,6 +119,7 @@ jobs:
           git tag --annotate "java/v$VERSION" --message "slackblocks $VERSION (Java)"
           git tag --annotate "csharp/v$VERSION" --message "Slackblocks $VERSION (C#)"
           git tag --annotate "ruby/v$VERSION" --message "slackblocks $VERSION (Ruby)"
+          git tag --annotate "rust/v$VERSION" --message "slackblocks $VERSION (Rust)"
           git push --atomic origin "${tags[@]}"
 
   publish:
@@ -201,6 +154,9 @@ jobs:
           - language: Ruby
             workflow: publish-rubygems.yml
             tag_prefix: ruby/v
+          - language: Rust
+            workflow: publish-crates.yml
+            tag_prefix: rust/v
     steps:
       - name: Dispatch and monitor publisher
         env:
