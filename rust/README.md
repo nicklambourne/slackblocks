@@ -30,3 +30,17 @@ python3 rust/bin/check-package.py --toolchain 1.85.0 --json-features
 CI runs stable on Linux, macOS, and Windows and the minimum toolchain on Linux.
 Package checks extract the actual Cargo archive and compile fresh consumers
 against that extracted artifact, without access to the checkout's Rust sources.
+
+Quality checks include independent API and contract audits, property tests, and
+negative compile checks with a passing companion. CI enforces at least 90% line
+and 90% region coverage independently for the whole crate and handwritten code:
+
+```sh
+rustup component add llvm-tools-preview --toolchain stable
+cargo +stable install cargo-llvm-cov --version 0.9.1 --locked
+python3 rust/bin/check-coverage.py
+```
+
+Only external code, test/example harnesses, and files containing no executable
+regions are excluded. Coverage is measured on stable Rust; it is not a branch
+coverage claim. The report also exercises consumer-enabled serde_json features.

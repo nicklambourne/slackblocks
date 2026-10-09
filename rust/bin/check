@@ -9,3 +9,5 @@ cargo +stable test --manifest-path rust/Cargo.toml --workspace --all-targets --l
 cargo +stable test --manifest-path rust/Cargo.toml --workspace --doc --locked
 cargo +stable run --manifest-path rust/Cargo.toml --example api_checkpoint --locked
 RUSTDOCFLAGS='-D warnings' cargo +stable doc --manifest-path rust/Cargo.toml --no-deps --locked
+python3 rust/bin/check-ui.py --toolchain stable
+python3 rust/bin/check-ui.py --toolchain 1.85.0

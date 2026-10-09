@@ -84,3 +84,44 @@ fn integer_precision_and_nonfinite_input() {
         assert!(JsonNumber::try_from(n).is_err());
     }
 }
+
+#[test]
+fn numeric_conversion_types_and_decimal_roundtrips() {
+    let numbers = [
+        JsonNumber::from(-8_i8),
+        JsonNumber::from(-16_i16),
+        JsonNumber::from(-32_i32),
+        JsonNumber::from(-64_i64),
+        JsonNumber::from(8_u8),
+        JsonNumber::from(16_u16),
+        JsonNumber::from(32_u32),
+        JsonNumber::from(64_u64),
+    ];
+    let expected = [-8, -16, -32, -64, 8, 16, 32, 64];
+    for (number, expected) in numbers.into_iter().zip(expected) {
+        assert_eq!(number.as_number().as_i64(), Some(expected));
+        assert_eq!(
+            serde_json::from_value::<JsonNumber>(serde_json::to_value(&number).unwrap()).unwrap(),
+            number
+        );
+    }
+    for value in [
+        -0.0,
+        0.01,
+        -1.25,
+        1000.5,
+        1e30,
+        1e-30,
+        f64::MAX,
+        f64::MIN_POSITIVE,
+    ] {
+        let input = serde_json::Number::from_f64(value).unwrap();
+        let number = JsonNumber::try_from(input).unwrap();
+        assert_eq!(number.as_number().as_f64(), Some(value));
+        assert_eq!(
+            JsonNumber::try_from(value).unwrap().as_number().as_f64(),
+            Some(value)
+        );
+    }
+    assert!(serde_json::from_value::<JsonNumber>(serde_json::json!("1")).is_err());
+}

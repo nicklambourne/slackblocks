@@ -1870,8 +1870,8 @@ impl Serialize for ActionsBlock {
 impl FromWire for ActionsBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "actions", path)?;
-        let elements = wire::field::<Vec<Element>>(&mut map, "elements", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let elements = wire::field::<Vec<Element>>(&mut map, "elements", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         ActionsBlockBuilder {
             elements,
             block_id,
@@ -2052,9 +2052,9 @@ impl FromWire for AlertBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "alert", path)?;
         crate::rules::coerce_text(map.get_mut("text"), "mrkdwn");
-        let text = wire::field::<Text>(&mut map, "text", path, false)?;
-        let level = wire::field::<AlertLevel>(&mut map, "level", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let text = wire::field::<Text>(&mut map, "text", path)?;
+        let level = wire::field::<AlertLevel>(&mut map, "level", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         AlertBlockBuilder {
             text: text.map(Into::into),
             level,
@@ -2419,19 +2419,19 @@ impl Serialize for CardBlock {
 impl FromWire for CardBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "card", path)?;
-        let hero_image = wire::field::<ImageElement>(&mut map, "hero_image", path, false)?;
-        let icon = wire::field::<ImageElement>(&mut map, "icon", path, false)?;
+        let hero_image = wire::field::<ImageElement>(&mut map, "hero_image", path)?;
+        let icon = wire::field::<ImageElement>(&mut map, "icon", path)?;
         crate::rules::coerce_text(map.get_mut("title"), "mrkdwn");
-        let title = wire::field::<Text>(&mut map, "title", path, false)?;
+        let title = wire::field::<Text>(&mut map, "title", path)?;
         crate::rules::coerce_text(map.get_mut("subtitle"), "mrkdwn");
-        let subtitle = wire::field::<Text>(&mut map, "subtitle", path, false)?;
+        let subtitle = wire::field::<Text>(&mut map, "subtitle", path)?;
         crate::rules::coerce_text(map.get_mut("body"), "mrkdwn");
-        let body = wire::field::<Text>(&mut map, "body", path, false)?;
-        let actions = wire::field::<Vec<ButtonElement>>(&mut map, "actions", path, false)?;
-        let slack_icon = wire::field::<SlackIcon>(&mut map, "slack_icon", path, false)?;
+        let body = wire::field::<Text>(&mut map, "body", path)?;
+        let actions = wire::field::<Vec<ButtonElement>>(&mut map, "actions", path)?;
+        let slack_icon = wire::field::<SlackIcon>(&mut map, "slack_icon", path)?;
         crate::rules::coerce_text(map.get_mut("subtext"), "mrkdwn");
-        let subtext = wire::field::<Text>(&mut map, "subtext", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let subtext = wire::field::<Text>(&mut map, "subtext", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         CardBlockBuilder {
             hero_image,
             icon,
@@ -2598,8 +2598,8 @@ impl Serialize for CarouselBlock {
 impl FromWire for CarouselBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "carousel", path)?;
-        let elements = wire::field::<Vec<CardBlock>>(&mut map, "elements", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let elements = wire::field::<Vec<CardBlock>>(&mut map, "elements", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         CarouselBlockBuilder {
             elements,
             block_id,
@@ -2973,19 +2973,18 @@ impl Serialize for ContainerBlock {
 impl FromWire for ContainerBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "container", path)?;
-        let child_blocks = wire::field::<Vec<Block>>(&mut map, "child_blocks", path, false)?;
+        let child_blocks = wire::field::<Vec<Block>>(&mut map, "child_blocks", path)?;
         crate::rules::coerce_text(map.get_mut("title"), "plain_text");
-        let title = wire::field::<PlainText>(&mut map, "title", path, false)?;
-        let rich_text_title =
-            wire::field::<RichTextBlock>(&mut map, "rich_text_title", path, false)?;
+        let title = wire::field::<PlainText>(&mut map, "title", path)?;
+        let rich_text_title = wire::field::<RichTextBlock>(&mut map, "rich_text_title", path)?;
         crate::rules::coerce_text(map.get_mut("subtitle"), "mrkdwn");
-        let subtitle = wire::field::<Text>(&mut map, "subtitle", path, false)?;
-        let width = wire::field::<ContainerWidth>(&mut map, "width", path, false)?;
-        let icon = wire::field::<ImageElement>(&mut map, "icon", path, false)?;
-        let is_collapsible = wire::field::<bool>(&mut map, "is_collapsible", path, false)?;
-        let default_collapsed = wire::field::<bool>(&mut map, "default_collapsed", path, false)?;
-        let has_header_divider = wire::field::<bool>(&mut map, "has_header_divider", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let subtitle = wire::field::<Text>(&mut map, "subtitle", path)?;
+        let width = wire::field::<ContainerWidth>(&mut map, "width", path)?;
+        let icon = wire::field::<ImageElement>(&mut map, "icon", path)?;
+        let is_collapsible = wire::field::<bool>(&mut map, "is_collapsible", path)?;
+        let default_collapsed = wire::field::<bool>(&mut map, "default_collapsed", path)?;
+        let has_header_divider = wire::field::<bool>(&mut map, "has_header_divider", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         ContainerBlockBuilder {
             child_blocks,
             title: title.map(Into::into),
@@ -3165,9 +3164,8 @@ impl Serialize for ContextActionsBlock {
 impl FromWire for ContextActionsBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "context_actions", path)?;
-        let elements =
-            wire::field::<Vec<ContextActionsElement>>(&mut map, "elements", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let elements = wire::field::<Vec<ContextActionsElement>>(&mut map, "elements", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         ContextActionsBlockBuilder {
             elements,
             block_id,
@@ -3327,8 +3325,8 @@ impl Serialize for ContextBlock {
 impl FromWire for ContextBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "context", path)?;
-        let elements = wire::field::<Vec<ContextElement>>(&mut map, "elements", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let elements = wire::field::<Vec<ContextElement>>(&mut map, "elements", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         ContextBlockBuilder {
             elements,
             block_id,
@@ -3579,12 +3577,12 @@ impl Serialize for DataTableBlock {
 impl FromWire for DataTableBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "data_table", path)?;
-        let rows = wire::field::<Vec<Vec<DataTableCell>>>(&mut map, "rows", path, false)?;
-        let caption = wire::field::<String>(&mut map, "caption", path, false)?;
-        let page_size = wire::field::<i64>(&mut map, "page_size", path, false)?;
+        let rows = wire::field::<Vec<Vec<DataTableCell>>>(&mut map, "rows", path)?;
+        let caption = wire::field::<String>(&mut map, "caption", path)?;
+        let page_size = wire::field::<i64>(&mut map, "page_size", path)?;
         let row_header_column_index =
-            wire::field::<i64>(&mut map, "row_header_column_index", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+            wire::field::<i64>(&mut map, "row_header_column_index", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         DataTableBlockBuilder {
             rows,
             caption,
@@ -3763,9 +3761,9 @@ impl Serialize for DataVisualizationBlock {
 impl FromWire for DataVisualizationBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "data_visualization", path)?;
-        let title = wire::field::<String>(&mut map, "title", path, false)?;
-        let chart = wire::field::<Chart>(&mut map, "chart", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let title = wire::field::<String>(&mut map, "title", path)?;
+        let chart = wire::field::<Chart>(&mut map, "chart", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         DataVisualizationBlockBuilder {
             title,
             chart,
@@ -3895,7 +3893,7 @@ impl Serialize for DividerBlock {
 impl FromWire for DividerBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "divider", path)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         DividerBlockBuilder {
             block_id,
             extensions: map,
@@ -4059,12 +4057,12 @@ impl Serialize for FileBlock {
 impl FromWire for FileBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "file", path)?;
-        let external_id = wire::field::<String>(&mut map, "external_id", path, false)?;
+        let external_id = wire::field::<String>(&mut map, "external_id", path)?;
         if !map.contains_key("source") {
             map.insert("source".into(), serde_json::json!("remote"));
         }
-        let source = wire::field::<String>(&mut map, "source", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let source = wire::field::<String>(&mut map, "source", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         FileBlockBuilder {
             external_id,
             source,
@@ -4219,8 +4217,8 @@ impl FromWire for HeaderBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "header", path)?;
         crate::rules::coerce_text(map.get_mut("text"), "plain_text");
-        let text = wire::field::<PlainText>(&mut map, "text", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let text = wire::field::<PlainText>(&mut map, "text", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         HeaderBlockBuilder {
             text: text.map(Into::into),
             block_id,
@@ -4450,12 +4448,12 @@ impl Serialize for ImageBlock {
 impl FromWire for ImageBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "image", path)?;
-        let image_url = wire::field::<String>(&mut map, "image_url", path, false)?;
-        let slack_file = wire::field::<SlackFile>(&mut map, "slack_file", path, false)?;
-        let alt_text = wire::field::<String>(&mut map, "alt_text", path, false)?;
+        let image_url = wire::field::<String>(&mut map, "image_url", path)?;
+        let slack_file = wire::field::<SlackFile>(&mut map, "slack_file", path)?;
+        let alt_text = wire::field::<String>(&mut map, "alt_text", path)?;
         crate::rules::coerce_text(map.get_mut("title"), "plain_text");
-        let title = wire::field::<PlainText>(&mut map, "title", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let title = wire::field::<PlainText>(&mut map, "title", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         ImageBlockBuilder {
             image_url,
             slack_file,
@@ -4714,13 +4712,13 @@ impl FromWire for InputBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "input", path)?;
         crate::rules::coerce_text(map.get_mut("label"), "plain_text");
-        let label = wire::field::<PlainText>(&mut map, "label", path, false)?;
-        let element = wire::field::<InputElement>(&mut map, "element", path, false)?;
-        let dispatch_action = wire::field::<bool>(&mut map, "dispatch_action", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let label = wire::field::<PlainText>(&mut map, "label", path)?;
+        let element = wire::field::<InputElement>(&mut map, "element", path)?;
+        let dispatch_action = wire::field::<bool>(&mut map, "dispatch_action", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         crate::rules::coerce_text(map.get_mut("hint"), "plain_text");
-        let hint = wire::field::<PlainText>(&mut map, "hint", path, false)?;
-        let optional = wire::field::<bool>(&mut map, "optional", path, false)?;
+        let hint = wire::field::<PlainText>(&mut map, "hint", path)?;
+        let optional = wire::field::<bool>(&mut map, "optional", path)?;
         InputBlockBuilder {
             label: label.map(Into::into),
             element,
@@ -4872,8 +4870,8 @@ impl Serialize for MarkdownBlock {
 impl FromWire for MarkdownBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "markdown", path)?;
-        let text = wire::field::<String>(&mut map, "text", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let text = wire::field::<String>(&mut map, "text", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         MarkdownBlockBuilder {
             text,
             block_id,
@@ -5051,10 +5049,10 @@ impl Serialize for PlanBlock {
 impl FromWire for PlanBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "plan", path)?;
-        let title = wire::field::<String>(&mut map, "title", path, false)?;
+        let title = wire::field::<String>(&mut map, "title", path)?;
         crate::rules::restore_tasks(map.get_mut("tasks"));
-        let tasks = wire::field::<Vec<TaskCardBlock>>(&mut map, "tasks", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let tasks = wire::field::<Vec<TaskCardBlock>>(&mut map, "tasks", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         PlanBlockBuilder {
             title,
             tasks,
@@ -5212,8 +5210,8 @@ impl Serialize for RichTextBlock {
 impl FromWire for RichTextBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "rich_text", path)?;
-        let elements = wire::field::<Vec<RichTextBlockElement>>(&mut map, "elements", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let elements = wire::field::<Vec<RichTextBlockElement>>(&mut map, "elements", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         RichTextBlockBuilder {
             elements,
             block_id,
@@ -5446,15 +5444,15 @@ impl FromWire for SectionBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "section", path)?;
         crate::rules::coerce_text(map.get_mut("text"), "mrkdwn");
-        let text = wire::field::<Text>(&mut map, "text", path, false)?;
+        let text = wire::field::<Text>(&mut map, "text", path)?;
         if let Some(Value::Array(vs)) = map.get_mut("fields") {
             for v in vs {
                 crate::rules::coerce_text(Some(v), "mrkdwn");
             }
         }
-        let fields = wire::field::<Vec<Text>>(&mut map, "fields", path, false)?;
-        let accessory = wire::field::<Element>(&mut map, "accessory", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let fields = wire::field::<Vec<Text>>(&mut map, "fields", path)?;
+        let accessory = wire::field::<Element>(&mut map, "accessory", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         SectionBlockBuilder {
             text: text.map(Into::into),
             fields: fields.map(|vs| vs.into_iter().map(Into::into).collect()),
@@ -5667,10 +5665,10 @@ impl Serialize for TableBlock {
 impl FromWire for TableBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "table", path)?;
-        let rows = wire::field::<Vec<Vec<TableCell>>>(&mut map, "rows", path, false)?;
+        let rows = wire::field::<Vec<Vec<TableCell>>>(&mut map, "rows", path)?;
         let column_settings =
-            wire::field::<Vec<ColumnSettings>>(&mut map, "column_settings", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+            wire::field::<Vec<ColumnSettings>>(&mut map, "column_settings", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         TableBlockBuilder {
             rows,
             column_settings,
@@ -5933,13 +5931,13 @@ impl Serialize for TaskCardBlock {
 impl FromWire for TaskCardBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "task_card", path)?;
-        let task_id = wire::field::<String>(&mut map, "task_id", path, false)?;
-        let title = wire::field::<String>(&mut map, "title", path, false)?;
-        let details = wire::field::<RichTextBlock>(&mut map, "details", path, false)?;
-        let output = wire::field::<RichTextBlock>(&mut map, "output", path, false)?;
-        let sources = wire::field::<Vec<UrlSource>>(&mut map, "sources", path, false)?;
-        let status = wire::field::<TaskStatus>(&mut map, "status", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
+        let task_id = wire::field::<String>(&mut map, "task_id", path)?;
+        let title = wire::field::<String>(&mut map, "title", path)?;
+        let details = wire::field::<RichTextBlock>(&mut map, "details", path)?;
+        let output = wire::field::<RichTextBlock>(&mut map, "output", path)?;
+        let sources = wire::field::<Vec<UrlSource>>(&mut map, "sources", path)?;
+        let status = wire::field::<TaskStatus>(&mut map, "status", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
         TaskCardBlockBuilder {
             task_id,
             title,
@@ -6302,18 +6300,18 @@ impl Serialize for VideoBlock {
 impl FromWire for VideoBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "video", path)?;
-        let alt_text = wire::field::<String>(&mut map, "alt_text", path, false)?;
-        let thumbnail_url = wire::field::<String>(&mut map, "thumbnail_url", path, false)?;
+        let alt_text = wire::field::<String>(&mut map, "alt_text", path)?;
+        let thumbnail_url = wire::field::<String>(&mut map, "thumbnail_url", path)?;
         crate::rules::coerce_text(map.get_mut("title"), "plain_text");
-        let title = wire::field::<PlainText>(&mut map, "title", path, false)?;
-        let video_url = wire::field::<String>(&mut map, "video_url", path, false)?;
-        let block_id = wire::field::<String>(&mut map, "block_id", path, false)?;
-        let author_name = wire::field::<String>(&mut map, "author_name", path, false)?;
+        let title = wire::field::<PlainText>(&mut map, "title", path)?;
+        let video_url = wire::field::<String>(&mut map, "video_url", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
+        let author_name = wire::field::<String>(&mut map, "author_name", path)?;
         crate::rules::coerce_text(map.get_mut("description"), "plain_text");
-        let description = wire::field::<PlainText>(&mut map, "description", path, false)?;
-        let provider_icon_url = wire::field::<String>(&mut map, "provider_icon_url", path, false)?;
-        let provider_name = wire::field::<String>(&mut map, "provider_name", path, false)?;
-        let title_url = wire::field::<String>(&mut map, "title_url", path, false)?;
+        let description = wire::field::<PlainText>(&mut map, "description", path)?;
+        let provider_icon_url = wire::field::<String>(&mut map, "provider_icon_url", path)?;
+        let provider_name = wire::field::<String>(&mut map, "provider_name", path)?;
+        let title_url = wire::field::<String>(&mut map, "title_url", path)?;
         VideoBlockBuilder {
             alt_text,
             thumbnail_url,
@@ -6615,14 +6613,13 @@ impl FromWire for ButtonElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "button", path)?;
         crate::rules::coerce_text(map.get_mut("text"), "plain_text");
-        let text = wire::field::<PlainText>(&mut map, "text", path, false)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let url = wire::field::<String>(&mut map, "url", path, false)?;
-        let value = wire::field::<String>(&mut map, "value", path, false)?;
-        let style = wire::field::<ButtonStyle>(&mut map, "style", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let accessibility_label =
-            wire::field::<String>(&mut map, "accessibility_label", path, false)?;
+        let text = wire::field::<PlainText>(&mut map, "text", path)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let url = wire::field::<String>(&mut map, "url", path)?;
+        let value = wire::field::<String>(&mut map, "value", path)?;
+        let style = wire::field::<ButtonStyle>(&mut map, "style", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let accessibility_label = wire::field::<String>(&mut map, "accessibility_label", path)?;
         ButtonElementBuilder {
             text: text.map(Into::into),
             action_id,
@@ -6922,14 +6919,13 @@ impl Serialize for ChannelMultiSelectElement {
 impl FromWire for ChannelMultiSelectElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "multi_channels_select", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let initial_channels =
-            wire::field::<Vec<String>>(&mut map, "initial_channels", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let max_selected_items = wire::field::<i64>(&mut map, "max_selected_items", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let initial_channels = wire::field::<Vec<String>>(&mut map, "initial_channels", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let max_selected_items = wire::field::<i64>(&mut map, "max_selected_items", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         ChannelMultiSelectElementBuilder {
             action_id,
             initial_channels,
@@ -7201,14 +7197,13 @@ impl Serialize for ChannelSelectElement {
 impl FromWire for ChannelSelectElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "channels_select", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let initial_channel = wire::field::<String>(&mut map, "initial_channel", path, false)?;
-        let response_url_enabled =
-            wire::field::<bool>(&mut map, "response_url_enabled", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let initial_channel = wire::field::<String>(&mut map, "initial_channel", path)?;
+        let response_url_enabled = wire::field::<bool>(&mut map, "response_url_enabled", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         ChannelSelectElementBuilder {
             action_id,
             initial_channel,
@@ -7465,12 +7460,11 @@ impl Serialize for CheckboxesElement {
 impl FromWire for CheckboxesElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "checkboxes", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let options = wire::field::<Vec<SelectOption>>(&mut map, "options", path, false)?;
-        let initial_options =
-            wire::field::<Vec<SelectOption>>(&mut map, "initial_options", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let options = wire::field::<Vec<SelectOption>>(&mut map, "options", path)?;
+        let initial_options = wire::field::<Vec<SelectOption>>(&mut map, "initial_options", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         CheckboxesElementBuilder {
             action_id,
             options,
@@ -7816,17 +7810,17 @@ impl Serialize for ConversationMultiSelectElement {
 impl FromWire for ConversationMultiSelectElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "multi_conversations_select", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
         let initial_conversations =
-            wire::field::<Vec<String>>(&mut map, "initial_conversations", path, false)?;
+            wire::field::<Vec<String>>(&mut map, "initial_conversations", path)?;
         let default_to_current_conversation =
-            wire::field::<bool>(&mut map, "default_to_current_conversation", path, false)?;
-        let filter = wire::field::<ConversationFilter>(&mut map, "filter", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let max_selected_items = wire::field::<i64>(&mut map, "max_selected_items", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+            wire::field::<bool>(&mut map, "default_to_current_conversation", path)?;
+        let filter = wire::field::<ConversationFilter>(&mut map, "filter", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let max_selected_items = wire::field::<i64>(&mut map, "max_selected_items", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         ConversationMultiSelectElementBuilder {
             action_id,
             initial_conversations,
@@ -8156,18 +8150,16 @@ impl Serialize for ConversationSelectElement {
 impl FromWire for ConversationSelectElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "conversations_select", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let initial_conversation =
-            wire::field::<String>(&mut map, "initial_conversation", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let initial_conversation = wire::field::<String>(&mut map, "initial_conversation", path)?;
         let default_to_current_conversation =
-            wire::field::<bool>(&mut map, "default_to_current_conversation", path, false)?;
-        let filter = wire::field::<ConversationFilter>(&mut map, "filter", path, false)?;
-        let response_url_enabled =
-            wire::field::<bool>(&mut map, "response_url_enabled", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+            wire::field::<bool>(&mut map, "default_to_current_conversation", path)?;
+        let filter = wire::field::<ConversationFilter>(&mut map, "filter", path)?;
+        let response_url_enabled = wire::field::<bool>(&mut map, "response_url_enabled", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         ConversationSelectElementBuilder {
             action_id,
             initial_conversation,
@@ -8421,12 +8413,12 @@ impl Serialize for DatePickerElement {
 impl FromWire for DatePickerElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "datepicker", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let initial_date = wire::field::<String>(&mut map, "initial_date", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let initial_date = wire::field::<String>(&mut map, "initial_date", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         DatePickerElementBuilder {
             action_id,
             initial_date,
@@ -8635,10 +8627,10 @@ impl Serialize for DateTimePickerElement {
 impl FromWire for DateTimePickerElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "datetimepicker", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let initial_date_time = wire::field::<i64>(&mut map, "initial_date_time", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let initial_date_time = wire::field::<i64>(&mut map, "initial_date_time", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         DateTimePickerElementBuilder {
             action_id,
             initial_date_time,
@@ -8888,17 +8880,13 @@ impl Serialize for EmailInputElement {
 impl FromWire for EmailInputElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "email_text_input", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let initial_value = wire::field::<String>(&mut map, "initial_value", path, false)?;
-        let dispatch_action_config = wire::field::<DispatchActionConfiguration>(
-            &mut map,
-            "dispatch_action_config",
-            path,
-            false,
-        )?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let initial_value = wire::field::<String>(&mut map, "initial_value", path)?;
+        let dispatch_action_config =
+            wire::field::<DispatchActionConfiguration>(&mut map, "dispatch_action_config", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         EmailInputElementBuilder {
             action_id,
             initial_value,
@@ -9220,15 +9208,14 @@ impl Serialize for ExternalMultiSelectElement {
 impl FromWire for ExternalMultiSelectElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "multi_external_select", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let min_query_length = wire::field::<i64>(&mut map, "min_query_length", path, false)?;
-        let initial_options =
-            wire::field::<Vec<SelectOption>>(&mut map, "initial_options", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let max_selected_items = wire::field::<i64>(&mut map, "max_selected_items", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let min_query_length = wire::field::<i64>(&mut map, "min_query_length", path)?;
+        let initial_options = wire::field::<Vec<SelectOption>>(&mut map, "initial_options", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let max_selected_items = wire::field::<i64>(&mut map, "max_selected_items", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         ExternalMultiSelectElementBuilder {
             action_id,
             min_query_length,
@@ -9501,13 +9488,13 @@ impl Serialize for ExternalSelectElement {
 impl FromWire for ExternalSelectElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "external_select", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let min_query_length = wire::field::<i64>(&mut map, "min_query_length", path, false)?;
-        let initial_option = wire::field::<SelectOption>(&mut map, "initial_option", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let min_query_length = wire::field::<i64>(&mut map, "min_query_length", path)?;
+        let initial_option = wire::field::<SelectOption>(&mut map, "initial_option", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         ExternalSelectElementBuilder {
             action_id,
             min_query_length,
@@ -9686,11 +9673,9 @@ impl Serialize for FeedbackButtonsElement {
 impl FromWire for FeedbackButtonsElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "feedback_buttons", path)?;
-        let positive_button =
-            wire::field::<FeedbackButton>(&mut map, "positive_button", path, false)?;
-        let negative_button =
-            wire::field::<FeedbackButton>(&mut map, "negative_button", path, false)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
+        let positive_button = wire::field::<FeedbackButton>(&mut map, "positive_button", path)?;
+        let negative_button = wire::field::<FeedbackButton>(&mut map, "negative_button", path)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
         FeedbackButtonsElementBuilder {
             positive_button,
             negative_button,
@@ -9889,9 +9874,9 @@ impl Serialize for FileInputElement {
 impl FromWire for FileInputElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "file_input", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let filetypes = wire::field::<Vec<String>>(&mut map, "filetypes", path, false)?;
-        let max_files = wire::field::<i64>(&mut map, "max_files", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let filetypes = wire::field::<Vec<String>>(&mut map, "filetypes", path)?;
+        let max_files = wire::field::<i64>(&mut map, "max_files", path)?;
         FileInputElementBuilder {
             action_id,
             filetypes,
@@ -10196,18 +10181,17 @@ impl FromWire for IconButtonElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "icon_button", path)?;
         crate::rules::coerce_text(map.get_mut("text"), "plain_text");
-        let text = wire::field::<PlainText>(&mut map, "text", path, false)?;
+        let text = wire::field::<PlainText>(&mut map, "text", path)?;
         if !map.contains_key("icon") {
             map.insert("icon".into(), serde_json::json!("trash"));
         }
-        let icon = wire::field::<IconButtonIcon>(&mut map, "icon", path, false)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let value = wire::field::<String>(&mut map, "value", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let accessibility_label =
-            wire::field::<String>(&mut map, "accessibility_label", path, false)?;
+        let icon = wire::field::<IconButtonIcon>(&mut map, "icon", path)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let value = wire::field::<String>(&mut map, "value", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let accessibility_label = wire::field::<String>(&mut map, "accessibility_label", path)?;
         let visible_to_user_ids =
-            wire::field::<Vec<String>>(&mut map, "visible_to_user_ids", path, false)?;
+            wire::field::<Vec<String>>(&mut map, "visible_to_user_ids", path)?;
         IconButtonElementBuilder {
             text: text.map(Into::into),
             icon,
@@ -10387,9 +10371,9 @@ impl Serialize for ImageElement {
 impl FromWire for ImageElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "image", path)?;
-        let alt_text = wire::field::<String>(&mut map, "alt_text", path, false)?;
-        let image_url = wire::field::<String>(&mut map, "image_url", path, false)?;
-        let slack_file = wire::field::<SlackFile>(&mut map, "slack_file", path, false)?;
+        let alt_text = wire::field::<String>(&mut map, "alt_text", path)?;
+        let image_url = wire::field::<String>(&mut map, "image_url", path)?;
+        let slack_file = wire::field::<SlackFile>(&mut map, "slack_file", path)?;
         ImageElementBuilder {
             alt_text,
             image_url,
@@ -10720,20 +10704,16 @@ impl Serialize for NumberInputElement {
 impl FromWire for NumberInputElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "number_input", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let is_decimal_allowed = wire::field::<bool>(&mut map, "is_decimal_allowed", path, false)?;
-        let initial_value = wire::field::<String>(&mut map, "initial_value", path, false)?;
-        let min_value = wire::field::<f64>(&mut map, "min_value", path, false)?;
-        let max_value = wire::field::<f64>(&mut map, "max_value", path, false)?;
-        let dispatch_action_config = wire::field::<DispatchActionConfiguration>(
-            &mut map,
-            "dispatch_action_config",
-            path,
-            false,
-        )?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let is_decimal_allowed = wire::field::<bool>(&mut map, "is_decimal_allowed", path)?;
+        let initial_value = wire::field::<String>(&mut map, "initial_value", path)?;
+        let min_value = wire::field::<f64>(&mut map, "min_value", path)?;
+        let max_value = wire::field::<f64>(&mut map, "max_value", path)?;
+        let dispatch_action_config =
+            wire::field::<DispatchActionConfiguration>(&mut map, "dispatch_action_config", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         NumberInputElementBuilder {
             action_id,
             is_decimal_allowed,
@@ -10928,9 +10908,9 @@ impl Serialize for OverflowElement {
 impl FromWire for OverflowElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "overflow", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let options = wire::field::<Vec<SelectOption>>(&mut map, "options", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let options = wire::field::<Vec<SelectOption>>(&mut map, "options", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
         OverflowElementBuilder {
             action_id,
             options,
@@ -11265,20 +11245,16 @@ impl Serialize for PlainTextInputElement {
 impl FromWire for PlainTextInputElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "plain_text_input", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let initial_value = wire::field::<String>(&mut map, "initial_value", path, false)?;
-        let multiline = wire::field::<bool>(&mut map, "multiline", path, false)?;
-        let min_length = wire::field::<i64>(&mut map, "min_length", path, false)?;
-        let max_length = wire::field::<i64>(&mut map, "max_length", path, false)?;
-        let dispatch_action_config = wire::field::<DispatchActionConfiguration>(
-            &mut map,
-            "dispatch_action_config",
-            path,
-            false,
-        )?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let initial_value = wire::field::<String>(&mut map, "initial_value", path)?;
+        let multiline = wire::field::<bool>(&mut map, "multiline", path)?;
+        let min_length = wire::field::<i64>(&mut map, "min_length", path)?;
+        let max_length = wire::field::<i64>(&mut map, "max_length", path)?;
+        let dispatch_action_config =
+            wire::field::<DispatchActionConfiguration>(&mut map, "dispatch_action_config", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         PlainTextInputElementBuilder {
             action_id,
             initial_value,
@@ -11525,11 +11501,11 @@ impl Serialize for RadioButtonsElement {
 impl FromWire for RadioButtonsElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "radio_buttons", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let options = wire::field::<Vec<SelectOption>>(&mut map, "options", path, false)?;
-        let initial_option = wire::field::<SelectOption>(&mut map, "initial_option", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let options = wire::field::<Vec<SelectOption>>(&mut map, "options", path)?;
+        let initial_option = wire::field::<SelectOption>(&mut map, "initial_option", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         RadioButtonsElementBuilder {
             action_id,
             options,
@@ -11835,19 +11811,15 @@ impl Serialize for RichTextInputElement {
 impl FromWire for RichTextInputElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "rich_text_input", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let initial_value = wire::field::<RichTextBlock>(&mut map, "initial_value", path, false)?;
-        let dispatch_action_config = wire::field::<DispatchActionConfiguration>(
-            &mut map,
-            "dispatch_action_config",
-            path,
-            false,
-        )?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let initial_value = wire::field::<RichTextBlock>(&mut map, "initial_value", path)?;
+        let dispatch_action_config =
+            wire::field::<DispatchActionConfiguration>(&mut map, "dispatch_action_config", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
-        let min_lines = wire::field::<i64>(&mut map, "min_lines", path, false)?;
-        let max_lines = wire::field::<i64>(&mut map, "max_lines", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
+        let min_lines = wire::field::<i64>(&mut map, "min_lines", path)?;
+        let max_lines = wire::field::<i64>(&mut map, "max_lines", path)?;
         RichTextInputElementBuilder {
             action_id,
             initial_value,
@@ -12227,17 +12199,15 @@ impl Serialize for StaticMultiSelectElement {
 impl FromWire for StaticMultiSelectElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "multi_static_select", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let options = wire::field::<Vec<SelectOption>>(&mut map, "options", path, false)?;
-        let option_groups =
-            wire::field::<Vec<SelectOptionGroup>>(&mut map, "option_groups", path, false)?;
-        let initial_options =
-            wire::field::<Vec<SelectOption>>(&mut map, "initial_options", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let max_selected_items = wire::field::<i64>(&mut map, "max_selected_items", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let options = wire::field::<Vec<SelectOption>>(&mut map, "options", path)?;
+        let option_groups = wire::field::<Vec<SelectOptionGroup>>(&mut map, "option_groups", path)?;
+        let initial_options = wire::field::<Vec<SelectOption>>(&mut map, "initial_options", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let max_selected_items = wire::field::<i64>(&mut map, "max_selected_items", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         StaticMultiSelectElementBuilder {
             action_id,
             options,
@@ -12567,15 +12537,14 @@ impl Serialize for StaticSelectElement {
 impl FromWire for StaticSelectElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "static_select", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let options = wire::field::<Vec<SelectOption>>(&mut map, "options", path, false)?;
-        let option_groups =
-            wire::field::<Vec<SelectOptionGroup>>(&mut map, "option_groups", path, false)?;
-        let initial_option = wire::field::<SelectOption>(&mut map, "initial_option", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let options = wire::field::<Vec<SelectOption>>(&mut map, "options", path)?;
+        let option_groups = wire::field::<Vec<SelectOptionGroup>>(&mut map, "option_groups", path)?;
+        let initial_option = wire::field::<SelectOption>(&mut map, "initial_option", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         StaticSelectElementBuilder {
             action_id,
             options,
@@ -12852,13 +12821,13 @@ impl Serialize for TimePickerElement {
 impl FromWire for TimePickerElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "timepicker", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let initial_time = wire::field::<String>(&mut map, "initial_time", path, false)?;
-        let timezone = wire::field::<String>(&mut map, "timezone", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let initial_time = wire::field::<String>(&mut map, "initial_time", path)?;
+        let timezone = wire::field::<String>(&mut map, "timezone", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         TimePickerElementBuilder {
             action_id,
             initial_time,
@@ -13103,17 +13072,13 @@ impl Serialize for UrlInputElement {
 impl FromWire for UrlInputElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "url_text_input", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let initial_value = wire::field::<String>(&mut map, "initial_value", path, false)?;
-        let dispatch_action_config = wire::field::<DispatchActionConfiguration>(
-            &mut map,
-            "dispatch_action_config",
-            path,
-            false,
-        )?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let initial_value = wire::field::<String>(&mut map, "initial_value", path)?;
+        let dispatch_action_config =
+            wire::field::<DispatchActionConfiguration>(&mut map, "dispatch_action_config", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         UrlInputElementBuilder {
             action_id,
             initial_value,
@@ -13407,13 +13372,13 @@ impl Serialize for UserMultiSelectElement {
 impl FromWire for UserMultiSelectElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "multi_users_select", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let initial_users = wire::field::<Vec<String>>(&mut map, "initial_users", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let max_selected_items = wire::field::<i64>(&mut map, "max_selected_items", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let initial_users = wire::field::<Vec<String>>(&mut map, "initial_users", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let max_selected_items = wire::field::<i64>(&mut map, "max_selected_items", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         UserMultiSelectElementBuilder {
             action_id,
             initial_users,
@@ -13661,12 +13626,12 @@ impl Serialize for UserSelectElement {
 impl FromWire for UserSelectElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "users_select", path)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let initial_user = wire::field::<String>(&mut map, "initial_user", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path, false)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let initial_user = wire::field::<String>(&mut map, "initial_user", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
         crate::rules::coerce_text(map.get_mut("placeholder"), "plain_text");
-        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path, false)?;
+        let placeholder = wire::field::<PlainText>(&mut map, "placeholder", path)?;
         UserSelectElementBuilder {
             action_id,
             initial_user,
@@ -13923,13 +13888,12 @@ impl FromWire for WorkflowButtonElement {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "workflow_button", path)?;
         crate::rules::coerce_text(map.get_mut("text"), "plain_text");
-        let text = wire::field::<PlainText>(&mut map, "text", path, false)?;
-        let workflow = wire::field::<Workflow>(&mut map, "workflow", path, false)?;
-        let action_id = wire::field::<String>(&mut map, "action_id", path, false)?;
-        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path, false)?;
-        let style = wire::field::<ButtonStyle>(&mut map, "style", path, false)?;
-        let accessibility_label =
-            wire::field::<String>(&mut map, "accessibility_label", path, false)?;
+        let text = wire::field::<PlainText>(&mut map, "text", path)?;
+        let workflow = wire::field::<Workflow>(&mut map, "workflow", path)?;
+        let action_id = wire::field::<String>(&mut map, "action_id", path)?;
+        let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
+        let style = wire::field::<ButtonStyle>(&mut map, "style", path)?;
+        let accessibility_label = wire::field::<String>(&mut map, "accessibility_label", path)?;
         WorkflowButtonElementBuilder {
             text: text.map(Into::into),
             workflow,
@@ -14081,8 +14045,8 @@ impl Serialize for AreaChart {
 impl FromWire for AreaChart {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "area", path)?;
-        let series = wire::field::<Vec<DataSeries>>(&mut map, "series", path, false)?;
-        let axis_config = wire::field::<AxisConfig>(&mut map, "axis_config", path, false)?;
+        let series = wire::field::<Vec<DataSeries>>(&mut map, "series", path)?;
+        let axis_config = wire::field::<AxisConfig>(&mut map, "axis_config", path)?;
         AreaChartBuilder {
             series,
             axis_config,
@@ -14270,9 +14234,9 @@ impl Serialize for AxisConfig {
 impl FromWire for AxisConfig {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let categories = wire::field::<Vec<String>>(&mut map, "categories", path, false)?;
-        let x_label = wire::field::<String>(&mut map, "x_label", path, false)?;
-        let y_label = wire::field::<String>(&mut map, "y_label", path, false)?;
+        let categories = wire::field::<Vec<String>>(&mut map, "categories", path)?;
+        let x_label = wire::field::<String>(&mut map, "x_label", path)?;
+        let y_label = wire::field::<String>(&mut map, "y_label", path)?;
         AxisConfigBuilder {
             categories,
             x_label,
@@ -14421,8 +14385,8 @@ impl Serialize for BarChart {
 impl FromWire for BarChart {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "bar", path)?;
-        let series = wire::field::<Vec<DataSeries>>(&mut map, "series", path, false)?;
-        let axis_config = wire::field::<AxisConfig>(&mut map, "axis_config", path, false)?;
+        let series = wire::field::<Vec<DataSeries>>(&mut map, "series", path)?;
+        let axis_config = wire::field::<AxisConfig>(&mut map, "axis_config", path)?;
         BarChartBuilder {
             series,
             axis_config,
@@ -14558,8 +14522,8 @@ impl Serialize for ChartSegment {
 impl FromWire for ChartSegment {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let label = wire::field::<String>(&mut map, "label", path, false)?;
-        let value = wire::field::<JsonNumber>(&mut map, "value", path, false)?;
+        let label = wire::field::<String>(&mut map, "label", path)?;
+        let value = wire::field::<JsonNumber>(&mut map, "value", path)?;
         ChartSegmentBuilder {
             label,
             value,
@@ -14706,8 +14670,8 @@ impl Serialize for ColumnSettings {
 impl FromWire for ColumnSettings {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let align = wire::field::<ColumnAlign>(&mut map, "align", path, false)?;
-        let is_wrapped = wire::field::<bool>(&mut map, "is_wrapped", path, false)?;
+        let align = wire::field::<ColumnAlign>(&mut map, "align", path)?;
+        let is_wrapped = wire::field::<bool>(&mut map, "is_wrapped", path)?;
         ColumnSettingsBuilder {
             align,
             is_wrapped,
@@ -14942,14 +14906,14 @@ impl FromWire for ConfirmationDialogue {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
         crate::rules::coerce_text(map.get_mut("title"), "plain_text");
-        let title = wire::field::<PlainText>(&mut map, "title", path, false)?;
+        let title = wire::field::<PlainText>(&mut map, "title", path)?;
         crate::rules::coerce_text(map.get_mut("text"), "mrkdwn");
-        let text = wire::field::<Text>(&mut map, "text", path, false)?;
+        let text = wire::field::<Text>(&mut map, "text", path)?;
         crate::rules::coerce_text(map.get_mut("confirm"), "plain_text");
-        let confirm = wire::field::<PlainText>(&mut map, "confirm", path, false)?;
+        let confirm = wire::field::<PlainText>(&mut map, "confirm", path)?;
         crate::rules::coerce_text(map.get_mut("deny"), "plain_text");
-        let deny = wire::field::<PlainText>(&mut map, "deny", path, false)?;
-        let style = wire::field::<ButtonStyle>(&mut map, "style", path, false)?;
+        let deny = wire::field::<PlainText>(&mut map, "deny", path)?;
+        let style = wire::field::<ButtonStyle>(&mut map, "style", path)?;
         ConfirmationDialogueBuilder {
             title: title.map(Into::into),
             text: text.map(Into::into),
@@ -15151,10 +15115,10 @@ impl Serialize for ConversationFilter {
 impl FromWire for ConversationFilter {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let include = wire::field::<Vec<String>>(&mut map, "include", path, false)?;
+        let include = wire::field::<Vec<String>>(&mut map, "include", path)?;
         let exclude_external_shared_channels =
-            wire::field::<bool>(&mut map, "exclude_external_shared_channels", path, false)?;
-        let exclude_bot_users = wire::field::<bool>(&mut map, "exclude_bot_users", path, false)?;
+            wire::field::<bool>(&mut map, "exclude_external_shared_channels", path)?;
+        let exclude_bot_users = wire::field::<bool>(&mut map, "exclude_bot_users", path)?;
         ConversationFilterBuilder {
             include,
             exclude_external_shared_channels,
@@ -15291,8 +15255,8 @@ impl Serialize for DataPoint {
 impl FromWire for DataPoint {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let label = wire::field::<String>(&mut map, "label", path, false)?;
-        let value = wire::field::<JsonNumber>(&mut map, "value", path, false)?;
+        let label = wire::field::<String>(&mut map, "label", path)?;
+        let value = wire::field::<JsonNumber>(&mut map, "value", path)?;
         DataPointBuilder {
             label,
             value,
@@ -15441,8 +15405,8 @@ impl Serialize for DataSeries {
 impl FromWire for DataSeries {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let name = wire::field::<String>(&mut map, "name", path, false)?;
-        let data = wire::field::<Vec<DataPoint>>(&mut map, "data", path, false)?;
+        let name = wire::field::<String>(&mut map, "name", path)?;
+        let data = wire::field::<Vec<DataPoint>>(&mut map, "data", path)?;
         DataSeriesBuilder {
             name,
             data,
@@ -15597,8 +15561,7 @@ impl Serialize for DispatchActionConfiguration {
 impl FromWire for DispatchActionConfiguration {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let trigger_actions_on =
-            wire::field::<Vec<String>>(&mut map, "trigger_actions_on", path, false)?;
+        let trigger_actions_on = wire::field::<Vec<String>>(&mut map, "trigger_actions_on", path)?;
         DispatchActionConfigurationBuilder {
             trigger_actions_on,
             extensions: map,
@@ -15776,10 +15739,9 @@ impl FromWire for FeedbackButton {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
         crate::rules::coerce_text(map.get_mut("text"), "plain_text");
-        let text = wire::field::<PlainText>(&mut map, "text", path, false)?;
-        let value = wire::field::<String>(&mut map, "value", path, false)?;
-        let accessibility_label =
-            wire::field::<String>(&mut map, "accessibility_label", path, false)?;
+        let text = wire::field::<PlainText>(&mut map, "text", path)?;
+        let value = wire::field::<String>(&mut map, "value", path)?;
+        let accessibility_label = wire::field::<String>(&mut map, "accessibility_label", path)?;
         FeedbackButtonBuilder {
             text: text.map(Into::into),
             value,
@@ -15913,8 +15875,8 @@ impl Serialize for InputParameter {
 impl FromWire for InputParameter {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let name = wire::field::<String>(&mut map, "name", path, false)?;
-        let value = wire::field::<String>(&mut map, "value", path, false)?;
+        let name = wire::field::<String>(&mut map, "name", path)?;
+        let value = wire::field::<String>(&mut map, "value", path)?;
         InputParameterBuilder {
             name,
             value,
@@ -16062,8 +16024,8 @@ impl Serialize for LineChart {
 impl FromWire for LineChart {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "line", path)?;
-        let series = wire::field::<Vec<DataSeries>>(&mut map, "series", path, false)?;
-        let axis_config = wire::field::<AxisConfig>(&mut map, "axis_config", path, false)?;
+        let series = wire::field::<Vec<DataSeries>>(&mut map, "series", path)?;
+        let axis_config = wire::field::<AxisConfig>(&mut map, "axis_config", path)?;
         LineChartBuilder {
             series,
             axis_config,
@@ -16213,8 +16175,8 @@ impl Serialize for MarkdownText {
 impl FromWire for MarkdownText {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "mrkdwn", path)?;
-        let text = wire::field::<String>(&mut map, "text", path, false)?;
-        let verbatim = wire::field::<bool>(&mut map, "verbatim", path, false)?;
+        let text = wire::field::<String>(&mut map, "text", path)?;
+        let verbatim = wire::field::<bool>(&mut map, "verbatim", path)?;
         MarkdownTextBuilder {
             text,
             verbatim,
@@ -16421,11 +16383,11 @@ impl FromWire for SelectOption {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
         crate::rules::coerce_text(map.get_mut("text"), "plain_text");
-        let text = wire::field::<Text>(&mut map, "text", path, false)?;
-        let value = wire::field::<String>(&mut map, "value", path, false)?;
+        let text = wire::field::<Text>(&mut map, "text", path)?;
+        let value = wire::field::<String>(&mut map, "value", path)?;
         crate::rules::coerce_text(map.get_mut("description"), "plain_text");
-        let description = wire::field::<Text>(&mut map, "description", path, false)?;
-        let url = wire::field::<String>(&mut map, "url", path, false)?;
+        let description = wire::field::<Text>(&mut map, "description", path)?;
+        let url = wire::field::<String>(&mut map, "url", path)?;
         SelectOptionBuilder {
             text: text.map(Into::into),
             value,
@@ -16586,8 +16548,8 @@ impl FromWire for SelectOptionGroup {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
         crate::rules::coerce_text(map.get_mut("label"), "plain_text");
-        let label = wire::field::<PlainText>(&mut map, "label", path, false)?;
-        let options = wire::field::<Vec<SelectOption>>(&mut map, "options", path, false)?;
+        let label = wire::field::<PlainText>(&mut map, "label", path)?;
+        let options = wire::field::<Vec<SelectOption>>(&mut map, "options", path)?;
         SelectOptionGroupBuilder {
             label: label.map(Into::into),
             options,
@@ -16721,7 +16683,7 @@ impl Serialize for PieChart {
 impl FromWire for PieChart {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "pie", path)?;
-        let segments = wire::field::<Vec<ChartSegment>>(&mut map, "segments", path, false)?;
+        let segments = wire::field::<Vec<ChartSegment>>(&mut map, "segments", path)?;
         PieChartBuilder {
             segments,
             extensions: map,
@@ -16870,8 +16832,8 @@ impl Serialize for PlainText {
 impl FromWire for PlainText {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "plain_text", path)?;
-        let text = wire::field::<String>(&mut map, "text", path, false)?;
-        let emoji = wire::field::<bool>(&mut map, "emoji", path, false)?;
+        let text = wire::field::<String>(&mut map, "text", path)?;
+        let emoji = wire::field::<bool>(&mut map, "emoji", path)?;
         PlainTextBuilder {
             text,
             emoji,
@@ -17006,8 +16968,8 @@ impl Serialize for RawNumber {
 impl FromWire for RawNumber {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "raw_number", path)?;
-        let value = wire::field::<JsonNumber>(&mut map, "value", path, false)?;
-        let text = wire::field::<String>(&mut map, "text", path, false)?;
+        let value = wire::field::<JsonNumber>(&mut map, "value", path)?;
+        let text = wire::field::<String>(&mut map, "text", path)?;
         RawNumberBuilder {
             value,
             text,
@@ -17133,7 +17095,7 @@ impl Serialize for RawText {
 impl FromWire for RawText {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "raw_text", path)?;
-        let text = wire::field::<String>(&mut map, "text", path, false)?;
+        let text = wire::field::<String>(&mut map, "text", path)?;
         RawTextBuilder {
             text,
             extensions: map,
@@ -17296,8 +17258,8 @@ impl Serialize for RichTextChannel {
 impl FromWire for RichTextChannel {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "channel", path)?;
-        let channel_id = wire::field::<String>(&mut map, "channel_id", path, false)?;
-        let style = wire::field::<RichTextStyle>(&mut map, "style", path, false)?;
+        let channel_id = wire::field::<String>(&mut map, "channel_id", path)?;
+        let style = wire::field::<RichTextStyle>(&mut map, "style", path)?;
         RichTextChannelBuilder {
             channel_id,
             style,
@@ -17466,9 +17428,8 @@ impl Serialize for RichTextCodeBlock {
 impl FromWire for RichTextCodeBlock {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "rich_text_preformatted", path)?;
-        let elements =
-            wire::field::<Vec<RichTextSectionElement>>(&mut map, "elements", path, false)?;
-        let border = wire::field::<i64>(&mut map, "border", path, false)?;
+        let elements = wire::field::<Vec<RichTextSectionElement>>(&mut map, "elements", path)?;
+        let border = wire::field::<i64>(&mut map, "border", path)?;
         RichTextCodeBlockBuilder {
             elements,
             border,
@@ -17610,8 +17571,8 @@ impl Serialize for RichTextEmoji {
 impl FromWire for RichTextEmoji {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "emoji", path)?;
-        let name = wire::field::<String>(&mut map, "name", path, false)?;
-        let skin_tone = wire::field::<i64>(&mut map, "skin_tone", path, false)?;
+        let name = wire::field::<String>(&mut map, "name", path)?;
+        let skin_tone = wire::field::<i64>(&mut map, "skin_tone", path)?;
         RichTextEmojiBuilder {
             name,
             skin_tone,
@@ -17810,10 +17771,10 @@ impl Serialize for RichTextLink {
 impl FromWire for RichTextLink {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "link", path)?;
-        let url = wire::field::<String>(&mut map, "url", path, false)?;
-        let text = wire::field::<String>(&mut map, "text", path, false)?;
-        let style = wire::field::<RichTextStyle>(&mut map, "style", path, false)?;
-        let r#unsafe = wire::field::<bool>(&mut map, "unsafe", path, false)?;
+        let url = wire::field::<String>(&mut map, "url", path)?;
+        let text = wire::field::<String>(&mut map, "text", path)?;
+        let style = wire::field::<RichTextStyle>(&mut map, "style", path)?;
+        let r#unsafe = wire::field::<bool>(&mut map, "unsafe", path)?;
         RichTextLinkBuilder {
             url,
             text,
@@ -18044,11 +18005,11 @@ impl Serialize for RichTextList {
 impl FromWire for RichTextList {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "rich_text_list", path)?;
-        let style = wire::field::<RichTextListStyle>(&mut map, "style", path, false)?;
-        let elements = wire::field::<Vec<RichTextSection>>(&mut map, "elements", path, false)?;
-        let indent = wire::field::<i64>(&mut map, "indent", path, false)?;
-        let offset = wire::field::<i64>(&mut map, "offset", path, false)?;
-        let border = wire::field::<i64>(&mut map, "border", path, false)?;
+        let style = wire::field::<RichTextListStyle>(&mut map, "style", path)?;
+        let elements = wire::field::<Vec<RichTextSection>>(&mut map, "elements", path)?;
+        let indent = wire::field::<i64>(&mut map, "indent", path)?;
+        let offset = wire::field::<i64>(&mut map, "offset", path)?;
+        let border = wire::field::<i64>(&mut map, "border", path)?;
         RichTextListBuilder {
             style,
             elements,
@@ -18208,9 +18169,8 @@ impl Serialize for RichTextQuote {
 impl FromWire for RichTextQuote {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "rich_text_quote", path)?;
-        let elements =
-            wire::field::<Vec<RichTextSectionElement>>(&mut map, "elements", path, false)?;
-        let border = wire::field::<i64>(&mut map, "border", path, false)?;
+        let elements = wire::field::<Vec<RichTextSectionElement>>(&mut map, "elements", path)?;
+        let border = wire::field::<i64>(&mut map, "border", path)?;
         RichTextQuoteBuilder {
             elements,
             border,
@@ -18345,8 +18305,7 @@ impl Serialize for RichTextSection {
 impl FromWire for RichTextSection {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "rich_text_section", path)?;
-        let elements =
-            wire::field::<Vec<RichTextSectionElement>>(&mut map, "elements", path, false)?;
+        let elements = wire::field::<Vec<RichTextSectionElement>>(&mut map, "elements", path)?;
         RichTextSectionBuilder {
             elements,
             extensions: map,
@@ -18501,8 +18460,8 @@ impl Serialize for RichTextText {
 impl FromWire for RichTextText {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "text", path)?;
-        let text = wire::field::<String>(&mut map, "text", path, false)?;
-        let style = wire::field::<RichTextStyle>(&mut map, "style", path, false)?;
+        let text = wire::field::<String>(&mut map, "text", path)?;
+        let style = wire::field::<RichTextStyle>(&mut map, "style", path)?;
         RichTextTextBuilder {
             text,
             style,
@@ -18658,8 +18617,8 @@ impl Serialize for RichTextUser {
 impl FromWire for RichTextUser {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "user", path)?;
-        let user_id = wire::field::<String>(&mut map, "user_id", path, false)?;
-        let style = wire::field::<RichTextStyle>(&mut map, "style", path, false)?;
+        let user_id = wire::field::<String>(&mut map, "user_id", path)?;
+        let style = wire::field::<RichTextStyle>(&mut map, "style", path)?;
         RichTextUserBuilder {
             user_id,
             style,
@@ -18823,8 +18782,8 @@ impl Serialize for RichTextUserGroup {
 impl FromWire for RichTextUserGroup {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "usergroup", path)?;
-        let usergroup_id = wire::field::<String>(&mut map, "usergroup_id", path, false)?;
-        let style = wire::field::<RichTextStyle>(&mut map, "style", path, false)?;
+        let usergroup_id = wire::field::<String>(&mut map, "usergroup_id", path)?;
+        let style = wire::field::<RichTextStyle>(&mut map, "style", path)?;
         RichTextUserGroupBuilder {
             usergroup_id,
             style,
@@ -18971,8 +18930,8 @@ impl Serialize for SlackFile {
 impl FromWire for SlackFile {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let id = wire::field::<String>(&mut map, "id", path, false)?;
-        let url = wire::field::<String>(&mut map, "url", path, false)?;
+        let id = wire::field::<String>(&mut map, "id", path)?;
+        let url = wire::field::<String>(&mut map, "url", path)?;
         SlackFileBuilder {
             id,
             url,
@@ -19091,7 +19050,7 @@ impl Serialize for SlackIcon {
 impl FromWire for SlackIcon {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "icon", path)?;
-        let name = wire::field::<String>(&mut map, "name", path, false)?;
+        let name = wire::field::<String>(&mut map, "name", path)?;
         SlackIconBuilder {
             name,
             extensions: map,
@@ -19246,13 +19205,9 @@ impl Serialize for Trigger {
 impl FromWire for Trigger {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let url = wire::field::<String>(&mut map, "url", path, false)?;
-        let customizable_input_parameters = wire::field::<Vec<InputParameter>>(
-            &mut map,
-            "customizable_input_parameters",
-            path,
-            false,
-        )?;
+        let url = wire::field::<String>(&mut map, "url", path)?;
+        let customizable_input_parameters =
+            wire::field::<Vec<InputParameter>>(&mut map, "customizable_input_parameters", path)?;
         TriggerBuilder {
             url,
             customizable_input_parameters,
@@ -19387,8 +19342,8 @@ impl Serialize for UrlSource {
 impl FromWire for UrlSource {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "url", path)?;
-        let url = wire::field::<String>(&mut map, "url", path, false)?;
-        let text = wire::field::<String>(&mut map, "text", path, false)?;
+        let url = wire::field::<String>(&mut map, "url", path)?;
+        let text = wire::field::<String>(&mut map, "text", path)?;
         UrlSourceBuilder {
             url,
             text,
@@ -19505,7 +19460,7 @@ impl Serialize for Workflow {
 impl FromWire for Workflow {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let trigger = wire::field::<Trigger>(&mut map, "trigger", path, false)?;
+        let trigger = wire::field::<Trigger>(&mut map, "trigger", path)?;
         WorkflowBuilder {
             trigger,
             extensions: map,
@@ -19681,9 +19636,9 @@ impl Serialize for Attachment {
 impl FromWire for Attachment {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let blocks = wire::field::<Vec<Block>>(&mut map, "blocks", path, false)?;
-        let color = wire::field::<String>(&mut map, "color", path, false)?;
-        let fallback = wire::field::<String>(&mut map, "fallback", path, false)?;
+        let blocks = wire::field::<Vec<Block>>(&mut map, "blocks", path)?;
+        let color = wire::field::<String>(&mut map, "color", path)?;
+        let fallback = wire::field::<String>(&mut map, "fallback", path)?;
         AttachmentBuilder {
             blocks,
             color,
@@ -19898,10 +19853,10 @@ impl Serialize for HomeTabView {
 impl FromWire for HomeTabView {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "home", path)?;
-        let blocks = wire::field::<Vec<Block>>(&mut map, "blocks", path, false)?;
-        let private_metadata = wire::field::<String>(&mut map, "private_metadata", path, false)?;
-        let callback_id = wire::field::<String>(&mut map, "callback_id", path, false)?;
-        let external_id = wire::field::<String>(&mut map, "external_id", path, false)?;
+        let blocks = wire::field::<Vec<Block>>(&mut map, "blocks", path)?;
+        let private_metadata = wire::field::<String>(&mut map, "private_metadata", path)?;
+        let callback_id = wire::field::<String>(&mut map, "callback_id", path)?;
+        let external_id = wire::field::<String>(&mut map, "external_id", path)?;
         HomeTabViewBuilder {
             blocks,
             private_metadata,
@@ -20225,14 +20180,14 @@ impl Serialize for MessagePayload {
 impl FromWire for MessagePayload {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let channel = wire::field::<String>(&mut map, "channel", path, false)?;
-        let blocks = wire::field::<Vec<Block>>(&mut map, "blocks", path, false)?;
-        let attachments = wire::field::<Vec<Attachment>>(&mut map, "attachments", path, false)?;
-        let text = wire::field::<String>(&mut map, "text", path, false)?;
-        let mrkdwn = wire::field::<bool>(&mut map, "mrkdwn", path, false)?;
-        let unfurl_links = wire::field::<bool>(&mut map, "unfurl_links", path, false)?;
-        let unfurl_media = wire::field::<bool>(&mut map, "unfurl_media", path, false)?;
-        let metadata = wire::field::<Map<String, Value>>(&mut map, "metadata", path, false)?;
+        let channel = wire::field::<String>(&mut map, "channel", path)?;
+        let blocks = wire::field::<Vec<Block>>(&mut map, "blocks", path)?;
+        let attachments = wire::field::<Vec<Attachment>>(&mut map, "attachments", path)?;
+        let text = wire::field::<String>(&mut map, "text", path)?;
+        let mrkdwn = wire::field::<bool>(&mut map, "mrkdwn", path)?;
+        let unfurl_links = wire::field::<bool>(&mut map, "unfurl_links", path)?;
+        let unfurl_media = wire::field::<bool>(&mut map, "unfurl_media", path)?;
+        let metadata = wire::field::<Map<String, Value>>(&mut map, "metadata", path)?;
         MessagePayloadBuilder {
             channel,
             blocks,
@@ -20520,12 +20475,12 @@ impl Serialize for MessageResponse {
 impl FromWire for MessageResponse {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let blocks = wire::field::<Vec<Block>>(&mut map, "blocks", path, false)?;
-        let attachments = wire::field::<Vec<Attachment>>(&mut map, "attachments", path, false)?;
-        let text = wire::field::<String>(&mut map, "text", path, false)?;
-        let mrkdwn = wire::field::<bool>(&mut map, "mrkdwn", path, false)?;
-        let replace_original = wire::field::<bool>(&mut map, "replace_original", path, false)?;
-        let response_type = wire::field::<ResponseType>(&mut map, "response_type", path, false)?;
+        let blocks = wire::field::<Vec<Block>>(&mut map, "blocks", path)?;
+        let attachments = wire::field::<Vec<Attachment>>(&mut map, "attachments", path)?;
+        let text = wire::field::<String>(&mut map, "text", path)?;
+        let mrkdwn = wire::field::<bool>(&mut map, "mrkdwn", path)?;
+        let replace_original = wire::field::<bool>(&mut map, "replace_original", path)?;
+        let response_type = wire::field::<ResponseType>(&mut map, "response_type", path)?;
         MessageResponseBuilder {
             blocks,
             attachments,
@@ -20906,18 +20861,18 @@ impl FromWire for ModalView {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "modal", path)?;
         crate::rules::coerce_text(map.get_mut("title"), "plain_text");
-        let title = wire::field::<PlainText>(&mut map, "title", path, false)?;
-        let blocks = wire::field::<Vec<Block>>(&mut map, "blocks", path, false)?;
+        let title = wire::field::<PlainText>(&mut map, "title", path)?;
+        let blocks = wire::field::<Vec<Block>>(&mut map, "blocks", path)?;
         crate::rules::coerce_text(map.get_mut("close"), "plain_text");
-        let close = wire::field::<PlainText>(&mut map, "close", path, false)?;
+        let close = wire::field::<PlainText>(&mut map, "close", path)?;
         crate::rules::coerce_text(map.get_mut("submit"), "plain_text");
-        let submit = wire::field::<PlainText>(&mut map, "submit", path, false)?;
-        let private_metadata = wire::field::<String>(&mut map, "private_metadata", path, false)?;
-        let callback_id = wire::field::<String>(&mut map, "callback_id", path, false)?;
-        let clear_on_close = wire::field::<bool>(&mut map, "clear_on_close", path, false)?;
-        let notify_on_close = wire::field::<bool>(&mut map, "notify_on_close", path, false)?;
-        let external_id = wire::field::<String>(&mut map, "external_id", path, false)?;
-        let submit_disabled = wire::field::<bool>(&mut map, "submit_disabled", path, false)?;
+        let submit = wire::field::<PlainText>(&mut map, "submit", path)?;
+        let private_metadata = wire::field::<String>(&mut map, "private_metadata", path)?;
+        let callback_id = wire::field::<String>(&mut map, "callback_id", path)?;
+        let clear_on_close = wire::field::<bool>(&mut map, "clear_on_close", path)?;
+        let notify_on_close = wire::field::<bool>(&mut map, "notify_on_close", path)?;
+        let external_id = wire::field::<String>(&mut map, "external_id", path)?;
+        let submit_disabled = wire::field::<bool>(&mut map, "submit_disabled", path)?;
         ModalViewBuilder {
             title: title.map(Into::into),
             blocks,
@@ -21275,15 +21230,15 @@ impl Serialize for WebhookMessage {
 impl FromWire for WebhookMessage {
     fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
         let mut map = wire::object(value, "", path)?;
-        let blocks = wire::field::<Vec<Block>>(&mut map, "blocks", path, false)?;
-        let attachments = wire::field::<Vec<Attachment>>(&mut map, "attachments", path, false)?;
-        let text = wire::field::<String>(&mut map, "text", path, false)?;
-        let response_type = wire::field::<ResponseType>(&mut map, "response_type", path, false)?;
-        let replace_original = wire::field::<bool>(&mut map, "replace_original", path, false)?;
-        let delete_original = wire::field::<bool>(&mut map, "delete_original", path, false)?;
-        let unfurl_links = wire::field::<bool>(&mut map, "unfurl_links", path, false)?;
-        let unfurl_media = wire::field::<bool>(&mut map, "unfurl_media", path, false)?;
-        let metadata = wire::field::<Map<String, Value>>(&mut map, "metadata", path, false)?;
+        let blocks = wire::field::<Vec<Block>>(&mut map, "blocks", path)?;
+        let attachments = wire::field::<Vec<Attachment>>(&mut map, "attachments", path)?;
+        let text = wire::field::<String>(&mut map, "text", path)?;
+        let response_type = wire::field::<ResponseType>(&mut map, "response_type", path)?;
+        let replace_original = wire::field::<bool>(&mut map, "replace_original", path)?;
+        let delete_original = wire::field::<bool>(&mut map, "delete_original", path)?;
+        let unfurl_links = wire::field::<bool>(&mut map, "unfurl_links", path)?;
+        let unfurl_media = wire::field::<bool>(&mut map, "unfurl_media", path)?;
+        let metadata = wire::field::<Map<String, Value>>(&mut map, "metadata", path)?;
         WebhookMessageBuilder {
             blocks,
             attachments,

@@ -15,12 +15,46 @@ impl JsonNumber {
         &self.0
     }
 }
-macro_rules! integer {
-    ($($t:ty),* $(,)?) => {$(impl From<$t> for JsonNumber {
-        fn from(value: $t) -> Self { Self(Number::from(value)) }
-    })*};
+impl From<i8> for JsonNumber {
+    fn from(value: i8) -> Self {
+        Self(Number::from(value))
+    }
 }
-integer!(i8, i16, i32, i64, u8, u16, u32, u64);
+impl From<i16> for JsonNumber {
+    fn from(value: i16) -> Self {
+        Self(Number::from(value))
+    }
+}
+impl From<i32> for JsonNumber {
+    fn from(value: i32) -> Self {
+        Self(Number::from(value))
+    }
+}
+impl From<i64> for JsonNumber {
+    fn from(value: i64) -> Self {
+        Self(Number::from(value))
+    }
+}
+impl From<u8> for JsonNumber {
+    fn from(value: u8) -> Self {
+        Self(Number::from(value))
+    }
+}
+impl From<u16> for JsonNumber {
+    fn from(value: u16) -> Self {
+        Self(Number::from(value))
+    }
+}
+impl From<u32> for JsonNumber {
+    fn from(value: u32) -> Self {
+        Self(Number::from(value))
+    }
+}
+impl From<u64> for JsonNumber {
+    fn from(value: u64) -> Self {
+        Self(Number::from(value))
+    }
+}
 impl TryFrom<f64> for JsonNumber {
     type Error = ValidationError;
     fn try_from(value: f64) -> Result<Self, Self::Error> {

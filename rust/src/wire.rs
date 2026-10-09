@@ -28,15 +28,9 @@ pub(crate) fn field<T: FromWire>(
     map: &mut Map<String, Value>,
     name: &str,
     path: &str,
-    required: bool,
 ) -> Result<Option<T>, ValidationError> {
     let path = format!("{path}.{name}");
     match map.remove(name) {
-        None | Some(Value::Null) if required => Err(ValidationError::new(
-            ErrorCategory::MissingRequired,
-            path,
-            "required field is missing",
-        )),
         None | Some(Value::Null) => Ok(None),
         Some(value) => T::from_wire(value, &path).map(Some),
     }

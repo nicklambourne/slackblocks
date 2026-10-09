@@ -47,6 +47,18 @@ pub fn inventory(source: &Path) -> Value {
             Item::Fn(f) if public(&f.vis) => {
                 names.insert(f.sig.ident.to_string());
             }
+            Item::Struct(s) if public(&s.vis) => {
+                names.insert(s.ident.to_string());
+            }
+            Item::Enum(e) if public(&e.vis) => {
+                names.insert(e.ident.to_string());
+            }
+            Item::Type(t) if public(&t.vis) => {
+                names.insert(t.ident.to_string());
+            }
+            Item::Trait(t) if public(&t.vis) => {
+                names.insert(t.ident.to_string());
+            }
             Item::Mod(m) if public(&m.vis) => panic!("public modules require an explicit audit"),
             _ => (),
         }
@@ -70,12 +82,50 @@ pub fn inventory(source: &Path) -> Value {
                         entries.insert(format!("impl {}", t.to_token_stream()));
                     } else {
                         for item in i.items {
-                            if let syn::ImplItem::Fn(f) = item {
-                                if public(&f.vis) {
+                            match item {
+                                syn::ImplItem::Fn(f) if public(&f.vis) => {
                                     entries.insert(f.sig.to_token_stream().to_string());
                                 }
+                                syn::ImplItem::Const(c) if public(&c.vis) => {
+                                    entries.insert(format!(
+                                        "const {}: {}",
+                                        c.ident,
+                                        c.ty.to_token_stream()
+                                    ));
+                                }
+                                _ => (),
                             }
                         }
+                    }
+                }
+                Item::Struct(s) if public(&s.vis) => {
+                    if let Some(entries) = result.get_mut(&s.ident.to_string()) {
+                        for (i, f) in s.fields.iter().enumerate().filter(|(_, f)| public(&f.vis)) {
+                            entries.insert(format!(
+                                "field {}: {}",
+                                f.ident
+                                    .as_ref()
+                                    .map(ToString::to_string)
+                                    .unwrap_or_else(|| i.to_string()),
+                                f.ty.to_token_stream()
+                            ));
+                        }
+                    }
+                }
+                Item::Enum(e) if public(&e.vis) => {
+                    if let Some(entries) = result.get_mut(&e.ident.to_string()) {
+                        for v in e.variants {
+                            entries.insert(format!(
+                                "variant {} {}",
+                                v.ident,
+                                v.fields.to_token_stream()
+                            ));
+                        }
+                    }
+                }
+                Item::Type(t) if public(&t.vis) => {
+                    if let Some(entries) = result.get_mut(&t.ident.to_string()) {
+                        entries.insert(t.to_token_stream().to_string());
                     }
                 }
                 Item::Fn(f) if public(&f.vis) => {
