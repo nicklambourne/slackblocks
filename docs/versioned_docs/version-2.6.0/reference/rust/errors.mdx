@@ -1,0 +1,59 @@
+---
+sidebar_position: 7
+toc_max_heading_level: 3
+---
+
+# Validation and Errors
+
+Generated from the actual Rust signatures and rustdoc comments. Builders validate on `build()`; `into_builder()` preserves omissions. Error categories and paths are stable; prose may improve.
+
+## ErrorCategory
+
+The shared validation category; message wording is not a compatibility promise.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `LengthExceeded` | `` | A string or collection violates a length boundary. |
+| `OutOfRange` | `` | A number is outside its supported range. |
+| `MutuallyExclusive` | `` | Fields that cannot coexist were provided together. |
+| `TypeMismatch` | `` | A value has the wrong type, vocabulary, or receiving role. |
+| `MissingRequired` | `` | Required input is missing. |
+| `InvalidUsage` | `` | A combination or context is invalid. |
+
+### as_str
+
+Returns the normative spelling from the shared contract.
+
+```rust
+const fn as_str(self) -> &'static str
+```
+
+## ValidationError
+
+A checked-construction or parsing error, with a full Slack wire-field path.
+
+### category
+
+Returns the stable error category.
+
+```rust
+const fn category(&self) -> ErrorCategory
+```
+
+**Related types:** [`ErrorCategory`](/reference/rust/errors#errorcategory)
+
+### path
+
+Returns the root type, Slack wire fields, and array indexes of the failure.
+
+```rust
+fn path(&self) -> &str
+```
+
+### message
+
+Returns a human-readable explanation.
+
+```rust
+fn message(&self) -> &str
+```

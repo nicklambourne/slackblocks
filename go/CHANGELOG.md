@@ -3,6 +3,10 @@
 All notable changes to the Go module are documented here. Go releases use the
 same version number as the Python, TypeScript, and Java packages.
 
+## [2.7.0] — Unreleased
+
+- Add the PHP implementation to the coordinated release and documentation.
+
 ## [Unreleased]
 
 ## [2.6.0] — 2026-10-09

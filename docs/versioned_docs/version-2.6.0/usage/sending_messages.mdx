@@ -1,0 +1,855 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
+
+# Sending Messages
+
+`slackblocks` produces the JSON payloads that Slack APIs accept; it does **not** make HTTP calls itself. Send those payloads with the established Slack client for your language or any HTTP client.
+
+<LanguageContent>
+<Python>
+
+The trick is the `**` operator: a `slackblocks.Message` is a mapping, so you can unpack it directly into `client.chat_postMessage(...)`.
+
+## With the modern `slack-sdk`
+
+<Tabs>
+<TabItem value={"python-slackblocks"} label={"Python (slackblocks)"}>
+
+```python
+from os import environ
+from slack_sdk import WebClient
+from slackblocks import Message, SectionBlock
+
+
+client = WebClient(token=environ["SLACK_API_TOKEN"])
+block = SectionBlock("Hello, world!")
+message = Message(channel="#general", blocks=block)
+
+response = client.chat_postMessage(**message)
+```
+
+
+</TabItem>
+<TabItem value={"json-message"} label={"JSON Message"}>
+
+```json
+{
+    "channel": "#general",
+    "mrkdwn": true,
+    "blocks": [
+        {
+            "type": "section",
+            "block_id": "992ceb6b-9ad4-496b-b8e6-1bd8a632e8b3",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Hello, world!"
+            }
+        }
+    ]
+}
+```
+Note: the `block_id` field is a pseudorandomly generated UUID. Pass an explicit `block_id` to any block constructor if you need deterministic IDs (e.g. for testing or interaction handling).
+
+
+</TabItem>
+<TabItem value={"equivalent-curl"} label={"Equivalent `curl`"}>
+
+```bash
+curl -H "Content-type: application/json" \
+  --data '{"channel":"#general","blocks":[{"type":"section","block_id":"992ceb6b-9ad4-496b-b8e6-1bd8a632e8b3","text":{"type":"mrkdwn","text":"Hello, world!"}}]}' \
+  -H "Authorization: Bearer ${SLACK_API_TOKEN}" \
+  -X POST https://slack.com/api/chat.postMessage
+```
+
+
+</TabItem>
+<TabItem value={"slack-ui"} label={"Slack UI"}>
+
+![Hello World rendered in Slack](/img/hello_world.png)
+
+
+</TabItem>
+</Tabs>
+
+## With the legacy `slackclient`
+
+The API is identical — only the import path changes:
+
+```python
+from os import environ
+from slack import WebClient   # legacy slackclient package
+from slackblocks import Message, SectionBlock
+
+
+client = WebClient(token=environ["SLACK_API_TOKEN"])
+message = Message(channel="#general", blocks=SectionBlock("Hello, world!"))
+
+response = client.chat_postMessage(**message)
+```
+
+## Other delivery surfaces
+
+`slackblocks` provides specialized message classes for each Slack delivery surface. They all unpack the same way as `Message`.
+
+### Incoming webhooks
+
+```python
+from slack_sdk.webhook import WebhookClient
+from slackblocks import WebhookMessage, SectionBlock
+
+webhook = WebhookClient(url="https://hooks.slack.com/services/...")
+message = WebhookMessage(blocks=SectionBlock("Build complete :white_check_mark:"))
+
+webhook.send(**message)
+```
+
+`WebhookMessage` supports webhook-only options like `response_type`, `replace_original`, and `delete_original`.
+
+### Slash command / interaction responses
+
+When responding to a slash command or interactive payload, use `MessageResponse`:
+
+```python
+from slackblocks import MessageResponse, SectionBlock
+
+response_body = MessageResponse(
+    blocks=SectionBlock("Got it! Working on that now..."),
+    ephemeral=True,        # only visible to the invoking user
+).json()
+```
+
+### Modals & home tabs
+
+For modals and home tab views, build a `Modal` (or `HomeTabView`) and pass it to `views_open` / `views_publish`:
+
+```python
+from slack_sdk import WebClient
+from slackblocks import Modal, SectionBlock
+
+client = WebClient(token=environ["SLACK_API_TOKEN"])
+modal = Modal(
+    title="Confirm action",
+    blocks=[SectionBlock("Are you sure?")],
+    submit="Yes",
+    close="Cancel",
+)
+
+client.views_open(trigger_id=trigger_id, view=modal.to_dict())
+```
+
+See [Modals reference](../reference/python/modals) and [Views reference](../reference/python/views) for the full surface.
+
+## Sending without an SDK
+
+Because `Message` renders to a plain dict, you can also send it directly:
+
+```python
+import json
+import os
+import urllib.request
+
+from slackblocks import Message, SectionBlock
+
+message = Message(channel="#general", blocks=SectionBlock("Hello, world!"))
+
+req = urllib.request.Request(
+    "https://slack.com/api/chat.postMessage",
+    data=message.json().encode("utf-8"),
+    headers={
+        "Content-Type": "application/json; charset=utf-8",
+        "Authorization": f"Bearer {os.environ['SLACK_API_TOKEN']}",
+    },
+)
+urllib.request.urlopen(req)
+```
+
+</Python>
+<TypeScript>
+
+## With `@slack/web-api`
+
+`.build()` returns a plain Slack-shaped object, so pass the payload directly to the official client:
+
+```ts
+import { WebClient } from "@slack/web-api";
+import { Message, SectionBlock } from "@nicklambourne/slackblocks";
+
+const client = new WebClient(process.env.SLACK_API_TOKEN);
+const payload = Message()
+  .channel("C0123456")
+  .blocks(SectionBlock().text("Hello, world!"))
+  .build();
+
+await client.chat.postMessage(payload);
+```
+
+Use a channel ID rather than a display name when possible. Provide a `text` fallback for notifications and accessibility in production messages.
+
+## Incoming webhooks
+
+```ts
+import { IncomingWebhook } from "@slack/webhook";
+import { SectionBlock, WebhookMessage } from "@nicklambourne/slackblocks";
+
+const webhook = new IncomingWebhook(process.env.SLACK_WEBHOOK_URL!);
+await webhook.send(
+  WebhookMessage()
+    .blocks(SectionBlock().text("Build complete :white_check_mark:"))
+    .build(),
+);
+```
+
+## Slash-command and interaction responses
+
+Construct the response body, then return it through your web framework:
+
+```ts
+import { MessageResponse, SectionBlock } from "@nicklambourne/slackblocks";
+
+const responseBody = MessageResponse()
+  .blocks(SectionBlock().text("Got it! Working on that now..."))
+  .responseType("ephemeral")
+  .build();
+```
+
+## Modals and home tabs
+
+```ts
+import { Modal, SectionBlock } from "@nicklambourne/slackblocks";
+
+const view = Modal()
+  .title("Confirm action")
+  .blocks(SectionBlock().text("Are you sure?"))
+  .submit("Yes")
+  .close("Cancel")
+  .build();
+
+await client.views.open({ trigger_id: triggerId, view });
+```
+
+## Sending without an SDK
+
+```ts
+await fetch("https://slack.com/api/chat.postMessage", {
+  method: "POST",
+  headers: {
+    authorization: `Bearer ${process.env.SLACK_API_TOKEN}`,
+    "content-type": "application/json",
+  },
+  body: JSON.stringify(payload),
+});
+```
+
+</TypeScript>
+<Go>
+
+## With `slack-go/slack`
+
+slackblocks block builders implement `slack.Block`, so they fit directly into the native options accepted by [`github.com/slack-go/slack`](https://github.com/slack-go/slack). Keep the channel, fallback text, threading, unfurling, and other delivery options in slack-go; use slackblocks for the Block Kit content.
+
+```go
+package example
+
+import (
+	"context"
+	"os"
+
+	slackblocks "github.com/nicklambourne/slackblocks/go/v2"
+	slack "github.com/slack-go/slack"
+)
+
+func send(ctx context.Context) (string, error) {
+	client := slack.New(os.Getenv("SLACK_API_TOKEN"))
+	_, timestamp, err := client.PostMessageContext(
+		ctx,
+		"C0123456",
+		slack.MsgOptionText("Hello from slackblocks!", false),
+		slack.MsgOptionBlocks(
+			slackblocks.NewSectionBlock().Text("Hello, world!"),
+		),
+	)
+	return timestamp, err
+}
+```
+
+slack-go marshals each builder while applying `MsgOptionBlocks`. That runs slackblocks validation before any HTTP request is made and preserves newer block types and fields even when the pinned slack-go release does not model them itself.
+
+Higher-level components expand to the same native type:
+
+```go
+blocks, err := slackblocks.NewPaginator().
+	Blocks(
+		slackblocks.NewSectionBlock().Text("Result one"),
+		slackblocks.NewSectionBlock().Text("Result two"),
+	).
+	ActionIDPrefix("results").
+	PageSize(1).
+	SlackBlocks()
+if err != nil {
+	return err
+}
+
+_, _, err = client.PostMessageContext(
+	ctx,
+	"C0123456",
+	slack.MsgOptionBlocks(blocks...),
+)
+```
+
+## Incoming webhooks
+
+Use slack-go's webhook envelope and put slackblocks builders in its `Blocks` collection:
+
+```go
+message := &slack.WebhookMessage{
+	Text: "Build complete",
+	Blocks: &slack.Blocks{BlockSet: []slack.Block{
+		slackblocks.NewSectionBlock().Text("Build complete :white_check_mark:"),
+	}},
+}
+return slack.PostWebhookContext(ctx, os.Getenv("SLACK_WEBHOOK_URL"), message)
+```
+
+## Slash-command and interaction responses
+
+Use `NewMessageResponse()` for the immediate JSON body returned by a slash-command or interaction endpoint. `Build()` returns an [`Object`](/reference/go/core#object), so encode it with `encoding/json` and return it through your web framework.
+
+## Modals and App Home
+
+Use slack-go's native view request types for the view envelope and slackblocks builders for its blocks:
+
+```go
+modal := slack.ModalViewRequest{
+	Type:   slack.VTModal,
+	Title:  slack.NewTextBlockObject("plain_text", "Confirm action", false, false),
+	Submit: slack.NewTextBlockObject("plain_text", "Yes", false, false),
+	Close:  slack.NewTextBlockObject("plain_text", "Cancel", false, false),
+	Blocks: slack.Blocks{BlockSet: []slack.Block{
+		slackblocks.NewSectionBlock().Text("Are you sure?"),
+	}},
+}
+_, err = client.OpenViewContext(ctx, triggerID, modal)
+```
+
+For App Home, place the same builders in `slack.HomeTabViewRequest`:
+
+```go
+home := slack.HomeTabViewRequest{
+	Type: slack.VTHomeTab,
+	Blocks: slack.Blocks{BlockSet: []slack.Block{
+		slackblocks.NewSectionBlock().Text("Welcome home!"),
+	}},
+}
+_, err = client.PublishViewContext(ctx, slack.PublishViewContextRequest{
+	UserID: userID,
+	View:   home,
+})
+```
+
+## Sending without a client library
+
+If an application deliberately does not use slack-go, `NewMessage().Build()` still returns an ordinary JSON-compatible payload. Set its channel and delivery fields there, marshal it with `encoding/json`, and post it with `net/http` or another client.
+
+</Go>
+<Java>
+
+## With the official Slack Java SDK
+
+Completed slackblocks block values implement the Slack SDK's `LayoutBlock` interface directly. Keep the channel, fallback text, threading, unfurling, and other delivery options on `ChatPostMessageRequest`; no adapter is involved.
+
+```java
+import com.slack.api.Slack;
+import com.slack.api.methods.MethodsClient;
+import com.slack.api.methods.request.chat.ChatPostMessageRequest;
+import io.github.nicklambourne.slackblocks.block.SectionBlock;
+import java.util.List;
+
+MethodsClient client = Slack.getInstance().methods(System.getenv("SLACK_API_TOKEN"));
+SectionBlock block = SectionBlock.builder().markdownText("Hello, world!").build();
+
+var response = client.chatPostMessage(ChatPostMessageRequest.builder()
+    .channel("C0123456")
+    .text("Hello from slackblocks!")
+    .blocks(List.of(block))
+    .build());
+```
+
+Validation runs in `build()` before the request is created. Use a channel ID where possible and always supply a short `text` fallback for notifications and accessibility.
+
+Import slackblocks classes by name, because the SDK defines classes with the same simple names in `com.slack.api.model.block`.
+
+Higher-level components produce the same native block values. `List.copyOf` widens their `List<Block>` result to the `List<LayoutBlock>` the SDK expects:
+
+```java
+import io.github.nicklambourne.slackblocks.block.Block;
+import io.github.nicklambourne.slackblocks.component.Paginator;
+import java.util.List;
+
+List<Block> pages = Paginator.builder("search-results")
+    .blocks(
+        SectionBlock.builder().markdownText("Result one").build(),
+        SectionBlock.builder().markdownText("Result two").build())
+    .pageSize(1)
+    .build();
+
+client.chatPostMessage(ChatPostMessageRequest.builder()
+    .channel("C0123456")
+    .text("Search results")
+    .blocks(List.copyOf(pages)) // widens List<Block> to List<LayoutBlock>
+    .build());
+```
+
+## Incoming webhooks
+
+Use the official SDK's webhook envelope and put slackblocks values directly in its blocks list:
+
+```java
+import com.slack.api.webhook.Payload;
+
+var payload = Payload.builder()
+    .text("Build complete")
+    .blocks(List.of(SectionBlock.builder()
+        .markdownText("Build complete :white_check_mark:")
+        .build()))
+    .build();
+
+Slack.getInstance().send(System.getenv("SLACK_WEBHOOK_URL"), payload);
+```
+
+## Slash-command and interaction responses
+
+`MessageResponse` builds the JSON body returned by your web framework:
+
+```java
+import io.github.nicklambourne.slackblocks.payload.MessageResponse;
+import io.github.nicklambourne.slackblocks.payload.ResponseType;
+
+String responseBody = MessageResponse.builder()
+    .blocks(SectionBlock.builder().markdownText("Got it! Working on that now...").build())
+    .responseType(ResponseType.EPHEMERAL)
+    .build()
+    .toJson();
+```
+
+## Modals and App Home
+
+Use the Slack Java SDK for the request and view envelope, and slackblocks for its Block Kit contents. This keeps trigger IDs and view lifecycle calls on the SDK while preserving the same fluent, validated block construction.
+
+## Sending without a client library
+
+When an application intentionally does not use the Slack Java SDK client, serialize a completed [`MessagePayload`](../reference/java/payloads#messagepayload) with `SlackblocksJson.write(...)` and send the resulting JSON through its existing HTTP stack.
+
+</Java>
+<CSharp>
+
+## With the Slack Web API
+
+slackblocks builds and validates the payload; `HttpClient` sends it. Put the channel, fallback text, blocks, and other delivery options on a `MessagePayload`, then post its JSON to `chat.postMessage` with a bot token:
+
+```csharp
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json.Nodes;
+using Slackblocks.Blocks;
+using Slackblocks.Payloads;
+
+var message = new MessagePayload(
+    "C0123456",
+    text: "Hello from slackblocks!",
+    blocks: [new SectionBlock(text: "Hello, world!")]);
+
+using var http = new HttpClient();
+using var request = new HttpRequestMessage(HttpMethod.Post, "https://slack.com/api/chat.postMessage")
+{
+    Content = new StringContent(message.ToJson(), Encoding.UTF8, "application/json"),
+};
+request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("SLACK_BOT_TOKEN"));
+using var response = await http.SendAsync(request);
+var result = JsonNode.Parse(await response.Content.ReadAsStringAsync())!;
+if (result["ok"]?.GetValue<bool>() != true)
+{
+    throw new InvalidOperationException($"Slack rejected the message: {result["error"]}");
+}
+```
+
+Validation runs in each constructor, before the request exists. Use a channel ID where possible and always supply a short `text` fallback for notifications and accessibility.
+
+Higher-level components return ordinary blocks, so their results spread straight into the `blocks` collection:
+
+```csharp
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Payloads;
+
+var results = Paginator.Create(
+    "search-results",
+    [new SectionBlock(text: "Result one"), new SectionBlock(text: "Result two")],
+    pageSize: 1);
+
+var message = new MessagePayload("C0123456", text: "Search results", blocks: [.. results]);
+```
+
+## Incoming webhooks
+
+Post a `WebhookMessage` to the webhook URL. Keep that URL secret, because anyone holding it can post to the channel:
+
+```csharp
+using System.Text;
+using Slackblocks.Blocks;
+using Slackblocks.Payloads;
+
+var payload = new WebhookMessage(
+    text: "Build complete",
+    blocks: [new SectionBlock(text: "Build complete :white_check_mark:")]);
+
+using var http = new HttpClient();
+using var content = new StringContent(payload.ToJson(), Encoding.UTF8, "application/json");
+using var response = await http.PostAsync(Environment.GetEnvironmentVariable("SLACK_WEBHOOK_URL"), content);
+response.EnsureSuccessStatusCode();
+```
+
+## Slash-command and interaction responses
+
+`MessageResponse` builds the JSON body your web framework returns:
+
+```csharp
+using Slackblocks.Blocks;
+using Slackblocks.Payloads;
+
+string responseBody = new MessageResponse(
+    blocks: [new SectionBlock(text: "Got it! Working on that now...")],
+    responseType: ResponseType.Ephemeral).ToJson();
+```
+
+## Modals and App Home
+
+[`ModalView`](../reference/csharp/payloads#modalview) and [`HomeTabView`](../reference/csharp/payloads#hometabview) build the `view` object for `views.open`, `views.update`, `views.push`, and `views.publish`. Serialize the view into the request body alongside its trigger ID or user ID:
+
+```csharp
+using System.Text.Json;
+using Slackblocks.Blocks;
+using Slackblocks.Payloads;
+
+var view = new ModalView(
+    "Deploy",
+    blocks: [new SectionBlock(text: "Deploy *482* to production?")],
+    submit: "Deploy",
+    close: "Cancel");
+
+string body = JsonSerializer.Serialize(new { trigger_id = "12345.98765.abcd2358fdea", view });
+```
+
+## With a Slack client library
+
+When your application already uses a .NET Slack client such as SlackNet, pass slackblocks JSON through that library's raw request support, and keep its delivery, retries, and rate-limit handling. Alias one namespace if a file imports both libraries, because several type names overlap.
+
+</CSharp>
+<Ruby>
+
+## With a Slack Web API client
+
+`slackblocks` constructs payloads and leaves delivery to your chosen HTTP or Slack client. The official `slack-ruby-client` gem is an optional application dependency.
+
+```ruby
+require "slackblocks"
+require "slack-ruby-client"
+
+message = Slackblocks::MessagePayload.new(
+  channel: "C01234567",
+  text: "Deployment complete",
+  blocks: [Slackblocks::SectionBlock.new(text: "Deployment complete")]
+)
+client = Slack::Web::Client.new(token: ENV.fetch("SLACK_BOT_TOKEN"))
+client.chat_postMessage(**message.as_json.transform_keys(&:to_sym))
+```
+
+`as_json` returns a fresh hash, so a client may modify it without changing the message. For an incoming webhook, construct `Slackblocks::WebhookMessage` and send its `to_json` as an `application/json` request body. Use `MessageResponse` for interaction responses, `ModalView` for modals, and `HomeTabView` for App Home.
+
+</Ruby>
+<Rust>
+
+## Serialize a complete payload
+
+The Rust crate builds validated payloads and makes no network requests. Serialize
+with Serde, then send the JSON through your application's HTTP or Slack client.
+This executable example writes the body that can be submitted to `chat.postMessage`:
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let message = MessagePayload::builder("C01234567")
+        .text("Deployment complete")
+        .block(
+            SectionBlock::builder()
+                .text("Deployment complete")
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+Save the output as `message.json`. For a manual request, set `SLACK_BOT_TOKEN`
+in your environment and use:
+
+```sh
+curl --fail-with-body https://slack.com/api/chat.postMessage \
+  -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+  -H 'Content-Type: application/json; charset=utf-8' \
+  --data-binary @message.json
+```
+
+Check both the HTTP status and Slack's JSON `ok`/`error` response. Do not print or
+commit the token. A successful local build validates the documented Block Kit
+contract; permissions, channel membership and delivery remain Slack concerns.
+
+## With Slack Morphism
+
+[Slack Morphism](https://github.com/abdolence/slack-morphism-rust) is a community
+Rust Slack client supporting the Web API, Events API and Socket Mode. Slack's
+[official SDK catalogue](https://docs.slack.dev/tools/) currently has no Rust SDK.
+
+The example below passes our `MessagePayload` directly to the SDK's generic
+`http_post` method, which accepts `serde::Serialize`. Its higher-level
+`chat_post_message` method requires its own request and block types. Sending our
+payload directly preserves unknown extension fields and features the SDK may
+not yet model. The response type reads only the channel and timestamp; blocks
+returned by Slack do not need to pass through the SDK's block models either.
+
+Rate control is enabled explicitly, with the SDK's `chat.postMessage` method
+configuration, a workspace ID, and at most two retries after rate-limit
+rejections. The application imposes a 60-second deadline including retry waits.
+Reuse the client across calls so its rate-control state is shared. Slack's
+[per-channel posting limit](https://docs.slack.dev/reference/methods/chat.postMessage/#rate-limiting)
+still applies; coordinate senders in your application when necessary.
+
+```rust title="rust/integrations/examples/slack_morphism.rs"
+//! Keep Slack Morphism's authenticated transport and send slackblocks values directly.
+use serde::Deserialize;
+use slack_morphism::prelude::*;
+use slackblocks::{MessagePayload, SectionBlock};
+use std::time::Duration;
+
+// Deserialize only the receipt, so new blocks echoed by Slack do not need SDK models.
+#[derive(Debug, Deserialize)]
+pub struct PostedMessage {
+    pub channel: String,
+    pub ts: String,
+}
+
+pub fn https_connector() -> std::io::Result<SlackClientHyperHttpsConnector> {
+    // When both clients share an application, reqwest and Slack Morphism enable
+    // different rustls providers. Choose ring unless the application chose one.
+    let _ = rustls::crypto::ring::default_provider().install_default();
+    SlackClientHyperConnector::new()
+}
+
+pub fn rate_control() -> SlackApiRateControlConfig {
+    SlackApiRateControlConfig::new().with_max_retries(2)
+}
+
+pub async fn send_message<C>(
+    session: &SlackClientSession<'_, C>,
+    message: &MessagePayload,
+) -> ClientResult<PostedMessage>
+where
+    C: SlackClientHttpConnector + Send,
+{
+    // The typed chat_post_message method requires Slack Morphism's own block types.
+    // Its generic transport accepts Serialize and preserves all our payload fields.
+    session
+        .http_session_api
+        .http_post(
+            "chat.postMessage",
+            message,
+            Some(&CHAT_POST_MESSAGE_SPECIAL_LIMIT_RATE_CTL),
+        )
+        .await
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    let token = SlackApiToken::new(std::env::var("SLACK_BOT_TOKEN")?.into())
+        .with_team_id(std::env::var("SLACK_TEAM_ID")?.into());
+    let channel = std::env::var("SLACK_CHANNEL_ID")?;
+    let message = MessagePayload::builder(channel)
+        .text("Deployment complete")
+        .block(
+            SectionBlock::builder()
+                .text("Deployment complete")
+                .build()?,
+        )
+        .build()?;
+    let client = SlackClient::new(https_connector()?.with_rate_control(rate_control()));
+    let session = client.open_session(&token);
+    // Bound the whole operation, including the SDK's rate-limit retries.
+    let posted =
+        tokio::time::timeout(Duration::from_secs(60), send_message(&session, &message)).await??;
+    println!("Posted {} to {}", posted.ts, posted.channel);
+    Ok(())
+}
+```
+
+## With reqwest
+
+An application that only needs to send messages can use
+[reqwest](https://docs.rs/reqwest/latest/reqwest/) directly. Its `.json(&message)`
+method uses our Serde implementation; no adapter or intermediate JSON string is
+required. This example checks HTTP status and Slack's `ok`/`error` envelope,
+respects a numeric `Retry-After` on 429, and makes at most two retry attempts.
+Missing or invalid `Retry-After` returns a rate-limit error for the application to
+handle. Network errors and server failures are returned without automatic retry,
+because a message may already have been accepted. The overall operation has a
+60-second deadline and redirects are disabled.
+
+```rust title="rust/integrations/examples/reqwest.rs"
+//! Send a validated payload with an application-owned HTTP client.
+use reqwest::{Client, StatusCode};
+use serde::Deserialize;
+use slackblocks::{MessagePayload, SectionBlock};
+use std::time::Duration;
+
+const MAX_RATE_LIMIT_RETRIES: usize = 2;
+
+#[derive(Debug, Deserialize)]
+pub struct PostedMessage {
+    pub channel: String,
+    pub ts: String,
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum SendError {
+    #[error(transparent)]
+    Http(#[from] reqwest::Error),
+    #[error("Slack rate limit exceeded (Retry-After: {retry_after:?})")]
+    RateLimited { retry_after: Option<Duration> },
+    #[error("Slack rejected the message: {0}")]
+    Api(String),
+    #[error("Slack returned an invalid response")]
+    InvalidResponse,
+}
+
+/// Retry only explicit 429 rejections, never an ambiguous timeout or server error.
+/// `api_url` is Slack's API base URL in production; tests use a local mock server.
+pub async fn send_message(
+    client: &Client,
+    api_url: &str,
+    token: &str,
+    message: &MessagePayload,
+) -> Result<PostedMessage, SendError> {
+    let mut retries = 0;
+    loop {
+        let response = client
+            .post(format!("{api_url}/chat.postMessage"))
+            .bearer_auth(token)
+            .json(message)
+            .send()
+            .await?;
+        if response.status() == StatusCode::TOO_MANY_REQUESTS {
+            let retry_after = response
+                .headers()
+                .get(reqwest::header::RETRY_AFTER)
+                .and_then(|value| value.to_str().ok()?.parse::<u64>().ok())
+                .map(Duration::from_secs);
+            if retries < MAX_RATE_LIMIT_RETRIES {
+                if let Some(delay) = retry_after {
+                    // Release the response before sleeping; do not retry without a delay.
+                    drop(response);
+                    retries += 1;
+                    tokio::time::sleep(delay).await;
+                    continue;
+                }
+            }
+            return Err(SendError::RateLimited { retry_after });
+        }
+        let body: serde_json::Value = response.error_for_status()?.json().await?;
+        match body.get("ok").and_then(serde_json::Value::as_bool) {
+            Some(true) => {
+                return serde_json::from_value(body).map_err(|_| SendError::InvalidResponse);
+            }
+            Some(false) => {
+                let error = body
+                    .get("error")
+                    .and_then(serde_json::Value::as_str)
+                    .ok_or(SendError::InvalidResponse)?;
+                return Err(SendError::Api(error.to_owned()));
+            }
+            None => return Err(SendError::InvalidResponse),
+        }
+    }
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let token = std::env::var("SLACK_BOT_TOKEN")?;
+    let channel = std::env::var("SLACK_CHANNEL_ID")?;
+    let message = MessagePayload::builder(channel)
+        .text("Deployment complete")
+        .block(
+            SectionBlock::builder()
+                .text("Deployment complete")
+                .build()?,
+        )
+        .build()?;
+    let client = Client::builder()
+        .timeout(Duration::from_secs(30))
+        .redirect(reqwest::redirect::Policy::none())
+        .build()?;
+    // Bound the whole operation, including Retry-After waits.
+    let posted = tokio::time::timeout(
+        Duration::from_secs(60),
+        send_message(&client, "https://slack.com/api", &token, &message),
+    )
+    .await??;
+    println!("Posted {} to {}", posted.ts, posted.channel);
+    Ok(())
+}
+```
+
+## Run and test the examples
+
+Both examples live in the separate, unpublished
+[application project](https://github.com/nicklambourne/slackblocks/tree/master/rust/integrations).
+It depends on the local Rust crate while 2.6.0 remains unpublished. From a checkout:
+
+```sh
+# Both require a bot token with chat:write and a channel the bot can post to.
+# Set SLACK_BOT_TOKEN and SLACK_CHANNEL_ID in your environment.
+# Slack Morphism also requires SLACK_TEAM_ID for workspace-aware rate control.
+cargo run --manifest-path rust/integrations/Cargo.toml --locked --example slack_morphism
+cargo run --manifest-path rust/integrations/Cargo.toml --locked --example reqwest
+
+# No credentials or Slack account required: all requests go to local mock servers.
+cargo +1.85.0 test --manifest-path rust/integrations/Cargo.toml --all-targets --locked
+cargo +stable test --manifest-path rust/integrations/Cargo.toml --all-targets --locked
+```
+
+Running either example sends one real message. The documentation checker matches these snippets to the example files byte for
+byte. The test suite imports those same source files and checks actual HTTP bodies and authentication,
+unknown fields and large integers, success receipts, Slack errors, HTTP failures,
+malformed responses, retry delays and limits, and cancellation. It does not
+validate real workspace credentials or permissions.
+
+The application project uses Slack Morphism 2.29 and reqwest 0.13 with Tokio 1.
+Its own lockfile selects dependencies compatible with Rust 1.85; some newer
+transitive releases require newer Rust. Keep `rust-version = "1.85"` and Cargo
+resolver 3 when resolving for that minimum. Consult the project's manifest and
+[compatibility policy](./compatibility.mdx) before updating dependencies.
+The core crate retains only Serde and serde_json dependencies and requires no
+HTTP client or async runtime. `rustls` provider selection in the SDK example
+allows both clients to coexist even when their default TLS providers differ.
+
+## Webhooks and other surfaces
+
+Use `WebhookMessage` for an incoming webhook and `MessageResponse` for a slash
+command or interaction response. Wrap a serialized `ModalView` under `view` with
+its `trigger_id` for `views.open`; wrap `HomeTabView` with `user_id` for
+`views.publish`. These are request envelopes, separate from the view itself.
+The owned values are `Send + Sync` and can be used with your chosen async client.
+
+
+</Rust>
+</LanguageContent>

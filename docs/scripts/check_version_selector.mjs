@@ -17,3 +17,14 @@ for (const version of versions) {
 }
 
 console.log(`The version selector offers all ${versions.length} documentation snapshots.`);
+
+// PHP starts in the current 2.7.0 docs; frozen versions must not advertise it.
+for (const version of versions.filter((value) => {
+  const [major, minor] = value.split(".").map(Number);
+  return major < 2 || (major === 2 && minor < 7);
+})) {
+  const sidebar = await readFile(new URL(`../versioned_sidebars/version-${version}-sidebars.json`, import.meta.url), "utf8");
+  assert.doesNotMatch(sidebar, /reference\/php/, `${version} advertises an unpublished PHP implementation`);
+}
+const currentPhp = await readFile(new URL("../build/reference/php.html", import.meta.url), "utf8");
+assert.match(currentPhp, /PHP API reference/);

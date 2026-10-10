@@ -125,7 +125,29 @@ public exports/signatures and supplies native API comments to the site renderer.
 Guide checks compile and execute the exact README/MDX code and compare each block
 example with the documented JSON. Rust CI uses GitHub-provided runners.
 
-All seven conformance suites exercise every ID in `spec/manifest.json`. Released
+From the repository root, with 64-bit PHP 8.2+, Composer 2 and Python 3:
+
+```bash
+(cd php && composer install && composer test && composer analyse && composer format:check)
+python3 php/generator/generate.py --check
+python3 php/generator/test_generate.py
+python3 php/bin/check-types.py
+python3 php/bin/check-package.py
+(cd php/integrations && composer install && composer test)
+python3 php/bin/check-integration-resolution.py --lowest
+python3 php/bin/check-integration-resolution.py
+python3 docs/scripts/check_php_guide_snippets.py
+```
+
+PHP uses PSR-4 readonly classes, camelCase named constructors, backed enums and
+PHPDoc collection types. Reflection independently audits every public type and
+signature; every producer maps to a shared capability. The 95% handwritten line
+coverage gate uses Xdebug and reports generated coverage separately. See the
+PHP workflow for its exact coverage command. Actual Composer ZIP consumers run
+on GitHub-provided Linux, macOS and Windows runners. Sending adapters are examples
+in their own Composer project and never become core dependencies.
+
+All eight conformance suites exercise every ID in `spec/manifest.json`. Released
 `conformance/skiplist.txt` files must be empty, and the harnesses assert this. A
 temporary transition gap remains incomplete work; it is not an exception to
 feature parity or permission to release.
@@ -157,9 +179,9 @@ Run the local site from the repository root:
 pnpm --filter @slackblocks/docs start
 ```
 
-Narrative pages live in `docs/docs/`. API pages for all seven languages are generated during every docs build. Java pages come from the javadoc tool, through `docs/scripts/java-reference/ReferenceDoclet.java`, so building the site needs JDK 17 or newer on `PATH` or in `JAVA_HOME`. C# pages come from the compiled library's XML documentation, through `docs/scripts/csharp-reference/`, so building the site also needs the .NET 8 SDK or newer. Ruby pages use model-derived metadata through `docs/scripts/generate_ruby_reference.mjs`. Rust pages use the actual public Syn syntax tree and rustdoc comments through `docs/scripts/generate_rust_reference.mjs`; install stable Rust plus Rust 1.85.0 for MSRV checks and pinned formatting. These four render through `docs/scripts/reference_pages.mjs`. Reusable examples live under the matching directory in `docs/examples/`; tests execute them and compare their output with `docs/examples/section_hello.json`.
+Narrative pages live in `docs/docs/`. API pages for all eight languages are generated during every docs build. Java pages come from the javadoc tool, through `docs/scripts/java-reference/ReferenceDoclet.java`, so building the site needs JDK 17 or newer on `PATH` or in `JAVA_HOME`. C# pages come from the compiled library's XML documentation, through `docs/scripts/csharp-reference/`, so building the site also needs the .NET 8 SDK or newer. Ruby pages use model-derived metadata through `docs/scripts/generate_ruby_reference.mjs`. Rust pages use the actual public Syn syntax tree and rustdoc comments through `docs/scripts/generate_rust_reference.mjs`; install stable Rust plus Rust 1.85.0 for MSRV checks and pinned formatting. PHP pages reflect the actual public signatures, defaults and PHPDoc using `docs/scripts/php_reference_adapter.php`; install PHP 8.2+ and run `composer install` in `php/`. These five render through `docs/scripts/reference_pages.mjs`. Reusable examples live under the matching directory in `docs/examples/`; tests execute them and compare their output with `docs/examples/section_hello.json`.
 
-Use `LanguageContent` with `Python`, `TypeScript`, `Go`, `Java`, `CSharp`, `Ruby`, and `Rust` children for language-specific prose or examples. The site-level selector controls which child is shown.
+Use `LanguageContent` with `Python`, `TypeScript`, `Go`, `Java`, `CSharp`, `Ruby`, `Rust`, and `PHP` children for language-specific prose or examples. The site-level selector controls which child is shown.
 
 ## Pull requests
 

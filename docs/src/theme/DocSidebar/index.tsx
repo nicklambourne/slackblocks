@@ -106,6 +106,7 @@ function filterUsage(
         child.type !== "link" ||
         language === "python" ||
         language === "rust" ||
+        language === "php" ||
         !child.docId ||
         !NON_PYTHON_HIDDEN_DOCS.has(child.docId),
     )
@@ -187,7 +188,8 @@ function filterReference(
       !isLanguageReference(child, "java") &&
       !isLanguageReference(child, "csharp") &&
       !isLanguageReference(child, "ruby") &&
-      !isLanguageReference(child, "rust"),
+      !isLanguageReference(child, "rust") &&
+      !isLanguageReference(child, "php"),
   );
 
   return {

@@ -1,0 +1,5771 @@
+---
+sidebar_position: 2
+toc_max_heading_level: 3
+---
+
+# Elements
+
+Generated from the actual Rust signatures and rustdoc comments. Builders validate on `build()`; `into_builder()` preserves omissions. Error categories and paths are stable; prose may improve.
+
+## ButtonElement
+
+An interactive button that sends a payload or opens a URL.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/button-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ButtonElementBuilder
+```
+
+**Related types:** [`ButtonElementBuilder`](/reference/rust/elements#buttonelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ButtonElementBuilder
+```
+
+**Related types:** [`ButtonElementBuilder`](/reference/rust/elements#buttonelementbuilder)
+
+### text
+
+Borrows or copies `text`. Sets the button label.
+
+```rust
+fn text(&self) -> &PlainText
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### url
+
+Borrows or copies `url`. Sets a URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload.
+
+```rust
+fn url(&self) -> Option<&str>
+```
+
+### value
+
+Borrows or copies `value`. Sets the application-defined value sent in interaction payloads.
+
+```rust
+fn value(&self) -> Option<&str>
+```
+
+### style
+
+Borrows or copies `style`. Sets the button's emphasis. Omit it for the default neutral style.
+
+```rust
+fn style(&self) -> Option<ButtonStyle>
+```
+
+**Related types:** [`ButtonStyle`](/reference/rust/core#buttonstyle)
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### accessibility_label
+
+Borrows or copies `accessibility_label`. Sets the label read by screen readers in place of the visible text.
+
+```rust
+fn accessibility_label(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ButtonElementBuilder
+
+Consuming builder for [`ButtonElement`](/reference/rust/elements#buttonelement). Validation runs in `Self::build`.
+
+### text
+
+Sets the button label.
+
+```rust
+fn text(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### url
+
+Sets a URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload.
+
+```rust
+fn url(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_url
+
+Omits `url`, including any model default.
+
+```rust
+fn clear_url(mut self) -> Self
+```
+
+### value
+
+Sets the application-defined value sent in interaction payloads.
+
+```rust
+fn value(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_value
+
+Omits `value`, including any model default.
+
+```rust
+fn clear_value(mut self) -> Self
+```
+
+### style
+
+Sets the button's emphasis. Omit it for the default neutral style.
+
+```rust
+fn style(mut self, value: ButtonStyle) -> Self
+```
+
+**Related types:** [`ButtonStyle`](/reference/rust/core#buttonstyle)
+
+### clear_style
+
+Omits `style`, including any model default.
+
+```rust
+fn clear_style(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### accessibility_label
+
+Sets the label read by screen readers in place of the visible text.
+
+```rust
+fn accessibility_label(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_accessibility_label
+
+Omits `accessibility_label`, including any model default.
+
+```rust
+fn clear_accessibility_label(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ButtonElement, ValidationError>
+```
+
+**Related types:** [`ButtonElement`](/reference/rust/elements#buttonelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ChannelMultiSelectElement
+
+A menu for selecting multiple public channels.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ChannelMultiSelectElementBuilder
+```
+
+**Related types:** [`ChannelMultiSelectElementBuilder`](/reference/rust/elements#channelmultiselectelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ChannelMultiSelectElementBuilder
+```
+
+**Related types:** [`ChannelMultiSelectElementBuilder`](/reference/rust/elements#channelmultiselectelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### initial_channels
+
+Borrows or copies `initial_channels`. Adds channel IDs that are selected when the menu loads.
+
+```rust
+fn initial_channels(&self) -> Option<&[String]>
+```
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### max_selected_items
+
+Borrows or copies `max_selected_items`. Sets the maximum number of items a user can select.
+
+```rust
+fn max_selected_items(&self) -> Option<i64>
+```
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ChannelMultiSelectElementBuilder
+
+Consuming builder for [`ChannelMultiSelectElement`](/reference/rust/elements#channelmultiselectelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### initial_channels
+
+Adds channel IDs that are selected when the menu loads.
+Replaces the collection; order is preserved.
+
+```rust
+fn initial_channels<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<String>,
+```
+
+### initial_channel
+
+Appends one item to the collection.
+
+```rust
+fn initial_channel(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_initial_channels
+
+Omits `initial_channels`, including any model default.
+
+```rust
+fn clear_initial_channels(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### max_selected_items
+
+Sets the maximum number of items a user can select.
+
+```rust
+fn max_selected_items(mut self, value: i64) -> Self
+```
+
+### clear_max_selected_items
+
+Omits `max_selected_items`, including any model default.
+
+```rust
+fn clear_max_selected_items(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ChannelMultiSelectElement, ValidationError>
+```
+
+**Related types:** [`ChannelMultiSelectElement`](/reference/rust/elements#channelmultiselectelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ChannelSelectElement
+
+A menu for selecting one public channel.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ChannelSelectElementBuilder
+```
+
+**Related types:** [`ChannelSelectElementBuilder`](/reference/rust/elements#channelselectelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ChannelSelectElementBuilder
+```
+
+**Related types:** [`ChannelSelectElementBuilder`](/reference/rust/elements#channelselectelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### initial_channel
+
+Borrows or copies `initial_channel`. Sets the channel ID selected when the menu loads.
+
+```rust
+fn initial_channel(&self) -> Option<&str>
+```
+
+### response_url_enabled
+
+Borrows or copies `response_url_enabled`. Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals.
+
+```rust
+fn response_url_enabled(&self) -> Option<bool>
+```
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ChannelSelectElementBuilder
+
+Consuming builder for [`ChannelSelectElement`](/reference/rust/elements#channelselectelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### initial_channel
+
+Sets the channel ID selected when the menu loads.
+
+```rust
+fn initial_channel(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_initial_channel
+
+Omits `initial_channel`, including any model default.
+
+```rust
+fn clear_initial_channel(mut self) -> Self
+```
+
+### response_url_enabled
+
+Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals.
+
+```rust
+fn response_url_enabled(mut self, value: bool) -> Self
+```
+
+### clear_response_url_enabled
+
+Omits `response_url_enabled`, including any model default.
+
+```rust
+fn clear_response_url_enabled(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ChannelSelectElement, ValidationError>
+```
+
+**Related types:** [`ChannelSelectElement`](/reference/rust/elements#channelselectelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## CheckboxesElement
+
+A group of checkboxes.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/checkboxes-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> CheckboxesElementBuilder
+```
+
+**Related types:** [`CheckboxesElementBuilder`](/reference/rust/elements#checkboxeselementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> CheckboxesElementBuilder
+```
+
+**Related types:** [`CheckboxesElementBuilder`](/reference/rust/elements#checkboxeselementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### options
+
+Borrows or copies `options`. Adds selectable options in display order.
+
+```rust
+fn options(&self) -> &[SelectOption]
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### initial_options
+
+Borrows or copies `initial_options`. Adds options that are selected when the element loads. Each must match an option in the element.
+
+```rust
+fn initial_options(&self) -> Option<&[SelectOption]>
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## CheckboxesElementBuilder
+
+Consuming builder for [`CheckboxesElement`](/reference/rust/elements#checkboxeselement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### options
+
+Adds selectable options in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn options<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<SelectOption>,
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### option
+
+Appends one item to the collection.
+
+```rust
+fn option(mut self, value: impl Into<SelectOption>) -> Self
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### initial_options
+
+Adds options that are selected when the element loads. Each must match an option in the element.
+Replaces the collection; order is preserved.
+
+```rust
+fn initial_options<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<SelectOption>,
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### initial_option
+
+Appends one item to the collection.
+
+```rust
+fn initial_option(mut self, value: impl Into<SelectOption>) -> Self
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### clear_initial_options
+
+Omits `initial_options`, including any model default.
+
+```rust
+fn clear_initial_options(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<CheckboxesElement, ValidationError>
+```
+
+**Related types:** [`CheckboxesElement`](/reference/rust/elements#checkboxeselement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ConversationMultiSelectElement
+
+A menu for selecting multiple conversations.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ConversationMultiSelectElementBuilder
+```
+
+**Related types:** [`ConversationMultiSelectElementBuilder`](/reference/rust/elements#conversationmultiselectelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ConversationMultiSelectElementBuilder
+```
+
+**Related types:** [`ConversationMultiSelectElementBuilder`](/reference/rust/elements#conversationmultiselectelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### initial_conversations
+
+Borrows or copies `initial_conversations`. Adds conversation IDs that are selected when the menu loads.
+
+```rust
+fn initial_conversations(&self) -> Option<&[String]>
+```
+
+### default_to_current_conversation
+
+Borrows or copies `default_to_current_conversation`. Sets whether the menu pre-selects the conversation the user is viewing.
+
+```rust
+fn default_to_current_conversation(&self) -> Option<bool>
+```
+
+### filter
+
+Borrows or copies `filter`. Sets which conversation types the menu offers.
+
+```rust
+fn filter(&self) -> Option<&ConversationFilter>
+```
+
+**Related types:** [`ConversationFilter`](/reference/rust/objects#conversationfilter)
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### max_selected_items
+
+Borrows or copies `max_selected_items`. Sets the maximum number of items a user can select.
+
+```rust
+fn max_selected_items(&self) -> Option<i64>
+```
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ConversationMultiSelectElementBuilder
+
+Consuming builder for [`ConversationMultiSelectElement`](/reference/rust/elements#conversationmultiselectelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### initial_conversations
+
+Adds conversation IDs that are selected when the menu loads.
+Replaces the collection; order is preserved.
+
+```rust
+fn initial_conversations<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<String>,
+```
+
+### initial_conversation
+
+Appends one item to the collection.
+
+```rust
+fn initial_conversation(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_initial_conversations
+
+Omits `initial_conversations`, including any model default.
+
+```rust
+fn clear_initial_conversations(mut self) -> Self
+```
+
+### default_to_current_conversation
+
+Sets whether the menu pre-selects the conversation the user is viewing.
+
+```rust
+fn default_to_current_conversation(mut self, value: bool) -> Self
+```
+
+### clear_default_to_current_conversation
+
+Omits `default_to_current_conversation`, including any model default.
+
+```rust
+fn clear_default_to_current_conversation(mut self) -> Self
+```
+
+### filter
+
+Sets which conversation types the menu offers.
+
+```rust
+fn filter(mut self, value: impl Into<ConversationFilter>) -> Self
+```
+
+**Related types:** [`ConversationFilter`](/reference/rust/objects#conversationfilter)
+
+### clear_filter
+
+Omits `filter`, including any model default.
+
+```rust
+fn clear_filter(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### max_selected_items
+
+Sets the maximum number of items a user can select.
+
+```rust
+fn max_selected_items(mut self, value: i64) -> Self
+```
+
+### clear_max_selected_items
+
+Omits `max_selected_items`, including any model default.
+
+```rust
+fn clear_max_selected_items(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ConversationMultiSelectElement, ValidationError>
+```
+
+**Related types:** [`ConversationMultiSelectElement`](/reference/rust/elements#conversationmultiselectelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ConversationSelectElement
+
+A menu for selecting one conversation.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ConversationSelectElementBuilder
+```
+
+**Related types:** [`ConversationSelectElementBuilder`](/reference/rust/elements#conversationselectelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ConversationSelectElementBuilder
+```
+
+**Related types:** [`ConversationSelectElementBuilder`](/reference/rust/elements#conversationselectelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### initial_conversation
+
+Borrows or copies `initial_conversation`. Sets the conversation ID selected when the menu loads.
+
+```rust
+fn initial_conversation(&self) -> Option<&str>
+```
+
+### default_to_current_conversation
+
+Borrows or copies `default_to_current_conversation`. Sets whether the menu pre-selects the conversation the user is viewing.
+
+```rust
+fn default_to_current_conversation(&self) -> Option<bool>
+```
+
+### filter
+
+Borrows or copies `filter`. Sets which conversation types the menu offers.
+
+```rust
+fn filter(&self) -> Option<&ConversationFilter>
+```
+
+**Related types:** [`ConversationFilter`](/reference/rust/objects#conversationfilter)
+
+### response_url_enabled
+
+Borrows or copies `response_url_enabled`. Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals.
+
+```rust
+fn response_url_enabled(&self) -> Option<bool>
+```
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ConversationSelectElementBuilder
+
+Consuming builder for [`ConversationSelectElement`](/reference/rust/elements#conversationselectelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### initial_conversation
+
+Sets the conversation ID selected when the menu loads.
+
+```rust
+fn initial_conversation(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_initial_conversation
+
+Omits `initial_conversation`, including any model default.
+
+```rust
+fn clear_initial_conversation(mut self) -> Self
+```
+
+### default_to_current_conversation
+
+Sets whether the menu pre-selects the conversation the user is viewing.
+
+```rust
+fn default_to_current_conversation(mut self, value: bool) -> Self
+```
+
+### clear_default_to_current_conversation
+
+Omits `default_to_current_conversation`, including any model default.
+
+```rust
+fn clear_default_to_current_conversation(mut self) -> Self
+```
+
+### filter
+
+Sets which conversation types the menu offers.
+
+```rust
+fn filter(mut self, value: impl Into<ConversationFilter>) -> Self
+```
+
+**Related types:** [`ConversationFilter`](/reference/rust/objects#conversationfilter)
+
+### clear_filter
+
+Omits `filter`, including any model default.
+
+```rust
+fn clear_filter(mut self) -> Self
+```
+
+### response_url_enabled
+
+Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals.
+
+```rust
+fn response_url_enabled(mut self, value: bool) -> Self
+```
+
+### clear_response_url_enabled
+
+Omits `response_url_enabled`, including any model default.
+
+```rust
+fn clear_response_url_enabled(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ConversationSelectElement, ValidationError>
+```
+
+**Related types:** [`ConversationSelectElement`](/reference/rust/elements#conversationselectelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## DatePickerElement
+
+A calendar date picker.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> DatePickerElementBuilder
+```
+
+**Related types:** [`DatePickerElementBuilder`](/reference/rust/elements#datepickerelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> DatePickerElementBuilder
+```
+
+**Related types:** [`DatePickerElementBuilder`](/reference/rust/elements#datepickerelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### initial_date
+
+Borrows or copies `initial_date`. Sets the initially selected date, formatted as YYYY-MM-DD.
+
+```rust
+fn initial_date(&self) -> Option<&str>
+```
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## DatePickerElementBuilder
+
+Consuming builder for [`DatePickerElement`](/reference/rust/elements#datepickerelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### initial_date
+
+Sets the initially selected date, formatted as YYYY-MM-DD.
+
+```rust
+fn initial_date(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_initial_date
+
+Omits `initial_date`, including any model default.
+
+```rust
+fn clear_initial_date(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<DatePickerElement, ValidationError>
+```
+
+**Related types:** [`DatePickerElement`](/reference/rust/elements#datepickerelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## DateTimePickerElement
+
+A combined date and time picker.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/datetime-picker-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> DateTimePickerElementBuilder
+```
+
+**Related types:** [`DateTimePickerElementBuilder`](/reference/rust/elements#datetimepickerelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> DateTimePickerElementBuilder
+```
+
+**Related types:** [`DateTimePickerElementBuilder`](/reference/rust/elements#datetimepickerelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### initial_date_time
+
+Borrows or copies `initial_date_time`. Sets the initially selected moment as a UNIX timestamp in seconds.
+
+```rust
+fn initial_date_time(&self) -> Option<i64>
+```
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## DateTimePickerElementBuilder
+
+Consuming builder for [`DateTimePickerElement`](/reference/rust/elements#datetimepickerelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### initial_date_time
+
+Sets the initially selected moment as a UNIX timestamp in seconds.
+
+```rust
+fn initial_date_time(mut self, value: i64) -> Self
+```
+
+### clear_initial_date_time
+
+Omits `initial_date_time`, including any model default.
+
+```rust
+fn clear_initial_date_time(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<DateTimePickerElement, ValidationError>
+```
+
+**Related types:** [`DateTimePickerElement`](/reference/rust/elements#datetimepickerelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## EmailInputElement
+
+A single-line input that accepts an email address.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/email-input-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> EmailInputElementBuilder
+```
+
+**Related types:** [`EmailInputElementBuilder`](/reference/rust/elements#emailinputelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> EmailInputElementBuilder
+```
+
+**Related types:** [`EmailInputElementBuilder`](/reference/rust/elements#emailinputelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### initial_value
+
+Borrows or copies `initial_value`. Sets the value present when the input loads.
+
+```rust
+fn initial_value(&self) -> Option<&str>
+```
+
+### dispatch_action_config
+
+Borrows or copies `dispatch_action_config`. Sets which user interactions send a block_actions payload.
+
+```rust
+fn dispatch_action_config(&self) -> Option<&DispatchActionConfiguration>
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/rust/objects#dispatchactionconfiguration)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## EmailInputElementBuilder
+
+Consuming builder for [`EmailInputElement`](/reference/rust/elements#emailinputelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### initial_value
+
+Sets the value present when the input loads.
+
+```rust
+fn initial_value(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_initial_value
+
+Omits `initial_value`, including any model default.
+
+```rust
+fn clear_initial_value(mut self) -> Self
+```
+
+### dispatch_action_config
+
+Sets which user interactions send a block_actions payload.
+
+```rust
+fn dispatch_action_config(
+    mut self,
+    value: impl Into<DispatchActionConfiguration>,
+) -> Self
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/rust/objects#dispatchactionconfiguration)
+
+### clear_dispatch_action_config
+
+Omits `dispatch_action_config`, including any model default.
+
+```rust
+fn clear_dispatch_action_config(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<EmailInputElement, ValidationError>
+```
+
+**Related types:** [`EmailInputElement`](/reference/rust/elements#emailinputelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ExternalMultiSelectElement
+
+A menu for selecting multiple options loaded from your app.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ExternalMultiSelectElementBuilder
+```
+
+**Related types:** [`ExternalMultiSelectElementBuilder`](/reference/rust/elements#externalmultiselectelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ExternalMultiSelectElementBuilder
+```
+
+**Related types:** [`ExternalMultiSelectElementBuilder`](/reference/rust/elements#externalmultiselectelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### min_query_length
+
+Borrows or copies `min_query_length`. Sets how many characters the user must type before Slack queries your options endpoint.
+
+```rust
+fn min_query_length(&self) -> Option<i64>
+```
+
+### initial_options
+
+Borrows or copies `initial_options`. Adds options that are selected when the element loads. Each must match an option in the element.
+
+```rust
+fn initial_options(&self) -> Option<&[SelectOption]>
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### max_selected_items
+
+Borrows or copies `max_selected_items`. Sets the maximum number of items a user can select.
+
+```rust
+fn max_selected_items(&self) -> Option<i64>
+```
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ExternalMultiSelectElementBuilder
+
+Consuming builder for [`ExternalMultiSelectElement`](/reference/rust/elements#externalmultiselectelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### min_query_length
+
+Sets how many characters the user must type before Slack queries your options endpoint.
+
+```rust
+fn min_query_length(mut self, value: i64) -> Self
+```
+
+### clear_min_query_length
+
+Omits `min_query_length`, including any model default.
+
+```rust
+fn clear_min_query_length(mut self) -> Self
+```
+
+### initial_options
+
+Adds options that are selected when the element loads. Each must match an option in the element.
+Replaces the collection; order is preserved.
+
+```rust
+fn initial_options<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<SelectOption>,
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### initial_option
+
+Appends one item to the collection.
+
+```rust
+fn initial_option(mut self, value: impl Into<SelectOption>) -> Self
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### clear_initial_options
+
+Omits `initial_options`, including any model default.
+
+```rust
+fn clear_initial_options(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### max_selected_items
+
+Sets the maximum number of items a user can select.
+
+```rust
+fn max_selected_items(mut self, value: i64) -> Self
+```
+
+### clear_max_selected_items
+
+Omits `max_selected_items`, including any model default.
+
+```rust
+fn clear_max_selected_items(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ExternalMultiSelectElement, ValidationError>
+```
+
+**Related types:** [`ExternalMultiSelectElement`](/reference/rust/elements#externalmultiselectelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ExternalSelectElement
+
+A menu for selecting one option loaded from your app.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ExternalSelectElementBuilder
+```
+
+**Related types:** [`ExternalSelectElementBuilder`](/reference/rust/elements#externalselectelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ExternalSelectElementBuilder
+```
+
+**Related types:** [`ExternalSelectElementBuilder`](/reference/rust/elements#externalselectelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### min_query_length
+
+Borrows or copies `min_query_length`. Sets how many characters the user must type before Slack queries your options endpoint.
+
+```rust
+fn min_query_length(&self) -> Option<i64>
+```
+
+### initial_option
+
+Borrows or copies `initial_option`. Sets the option selected when the element loads. It must match an option in the element.
+
+```rust
+fn initial_option(&self) -> Option<&SelectOption>
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ExternalSelectElementBuilder
+
+Consuming builder for [`ExternalSelectElement`](/reference/rust/elements#externalselectelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### min_query_length
+
+Sets how many characters the user must type before Slack queries your options endpoint.
+
+```rust
+fn min_query_length(mut self, value: i64) -> Self
+```
+
+### clear_min_query_length
+
+Omits `min_query_length`, including any model default.
+
+```rust
+fn clear_min_query_length(mut self) -> Self
+```
+
+### initial_option
+
+Sets the option selected when the element loads. It must match an option in the element.
+
+```rust
+fn initial_option(mut self, value: impl Into<SelectOption>) -> Self
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### clear_initial_option
+
+Omits `initial_option`, including any model default.
+
+```rust
+fn clear_initial_option(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ExternalSelectElement, ValidationError>
+```
+
+**Related types:** [`ExternalSelectElement`](/reference/rust/elements#externalselectelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## FeedbackButtonsElement
+
+A pair of thumbs-up and thumbs-down feedback buttons.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> FeedbackButtonsElementBuilder
+```
+
+**Related types:** [`FeedbackButtonsElementBuilder`](/reference/rust/elements#feedbackbuttonselementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> FeedbackButtonsElementBuilder
+```
+
+**Related types:** [`FeedbackButtonsElementBuilder`](/reference/rust/elements#feedbackbuttonselementbuilder)
+
+### positive_button
+
+Borrows or copies `positive_button`. Sets the button for positive feedback.
+
+```rust
+fn positive_button(&self) -> &FeedbackButton
+```
+
+**Related types:** [`FeedbackButton`](/reference/rust/objects#feedbackbutton)
+
+### negative_button
+
+Borrows or copies `negative_button`. Sets the button for negative feedback.
+
+```rust
+fn negative_button(&self) -> &FeedbackButton
+```
+
+**Related types:** [`FeedbackButton`](/reference/rust/objects#feedbackbutton)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## FeedbackButtonsElementBuilder
+
+Consuming builder for [`FeedbackButtonsElement`](/reference/rust/elements#feedbackbuttonselement). Validation runs in `Self::build`.
+
+### positive_button
+
+Sets the button for positive feedback.
+
+```rust
+fn positive_button(mut self, value: impl Into<FeedbackButton>) -> Self
+```
+
+**Related types:** [`FeedbackButton`](/reference/rust/objects#feedbackbutton)
+
+### negative_button
+
+Sets the button for negative feedback.
+
+```rust
+fn negative_button(mut self, value: impl Into<FeedbackButton>) -> Self
+```
+
+**Related types:** [`FeedbackButton`](/reference/rust/objects#feedbackbutton)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<FeedbackButtonsElement, ValidationError>
+```
+
+**Related types:** [`FeedbackButtonsElement`](/reference/rust/elements#feedbackbuttonselement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## FileInputElement
+
+An input that lets users upload files.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/file-input-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> FileInputElementBuilder
+```
+
+**Related types:** [`FileInputElementBuilder`](/reference/rust/elements#fileinputelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> FileInputElementBuilder
+```
+
+**Related types:** [`FileInputElementBuilder`](/reference/rust/elements#fileinputelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### filetypes
+
+Borrows or copies `filetypes`. Adds accepted file extensions, such as pdf or png.
+
+```rust
+fn filetypes(&self) -> Option<&[String]>
+```
+
+### max_files
+
+Borrows or copies `max_files`. Sets the maximum number of files a user can upload.
+
+```rust
+fn max_files(&self) -> Option<i64>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## FileInputElementBuilder
+
+Consuming builder for [`FileInputElement`](/reference/rust/elements#fileinputelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### filetypes
+
+Adds accepted file extensions, such as pdf or png.
+Replaces the collection; order is preserved.
+
+```rust
+fn filetypes<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<String>,
+```
+
+### filetype
+
+Appends one item to the collection.
+
+```rust
+fn filetype(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_filetypes
+
+Omits `filetypes`, including any model default.
+
+```rust
+fn clear_filetypes(mut self) -> Self
+```
+
+### max_files
+
+Sets the maximum number of files a user can upload.
+
+```rust
+fn max_files(mut self, value: i64) -> Self
+```
+
+### clear_max_files
+
+Omits `max_files`, including any model default.
+
+```rust
+fn clear_max_files(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<FileInputElement, ValidationError>
+```
+
+**Related types:** [`FileInputElement`](/reference/rust/elements#fileinputelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## IconButtonElement
+
+A button that shows an icon instead of text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> IconButtonElementBuilder
+```
+
+**Related types:** [`IconButtonElementBuilder`](/reference/rust/elements#iconbuttonelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> IconButtonElementBuilder
+```
+
+**Related types:** [`IconButtonElementBuilder`](/reference/rust/elements#iconbuttonelementbuilder)
+
+### text
+
+Borrows or copies `text`. Sets the text used as the button's accessible name.
+
+```rust
+fn text(&self) -> &PlainText
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### icon
+
+Borrows or copies `icon`. Sets the icon shown on the button.
+
+```rust
+fn icon(&self) -> IconButtonIcon
+```
+
+**Related types:** [`IconButtonIcon`](/reference/rust/core#iconbuttonicon)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### value
+
+Borrows or copies `value`. Sets the application-defined value sent in interaction payloads.
+
+```rust
+fn value(&self) -> Option<&str>
+```
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### accessibility_label
+
+Borrows or copies `accessibility_label`. Sets the label read by screen readers in place of the visible text.
+
+```rust
+fn accessibility_label(&self) -> Option<&str>
+```
+
+### visible_to_user_ids
+
+Borrows or copies `visible_to_user_ids`. Adds the IDs of users who can see this button.
+
+```rust
+fn visible_to_user_ids(&self) -> Option<&[String]>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## IconButtonElementBuilder
+
+Consuming builder for [`IconButtonElement`](/reference/rust/elements#iconbuttonelement). Validation runs in `Self::build`.
+
+### text
+
+Sets the text used as the button's accessible name.
+
+```rust
+fn text(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### icon
+
+Sets the icon shown on the button.
+
+```rust
+fn icon(mut self, value: IconButtonIcon) -> Self
+```
+
+**Related types:** [`IconButtonIcon`](/reference/rust/core#iconbuttonicon)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### value
+
+Sets the application-defined value sent in interaction payloads.
+
+```rust
+fn value(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_value
+
+Omits `value`, including any model default.
+
+```rust
+fn clear_value(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### accessibility_label
+
+Sets the label read by screen readers in place of the visible text.
+
+```rust
+fn accessibility_label(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_accessibility_label
+
+Omits `accessibility_label`, including any model default.
+
+```rust
+fn clear_accessibility_label(mut self) -> Self
+```
+
+### visible_to_user_ids
+
+Adds the IDs of users who can see this button.
+Replaces the collection; order is preserved.
+
+```rust
+fn visible_to_user_ids<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<String>,
+```
+
+### visible_to_user_id
+
+Appends one item to the collection.
+
+```rust
+fn visible_to_user_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_visible_to_user_ids
+
+Omits `visible_to_user_ids`, including any model default.
+
+```rust
+fn clear_visible_to_user_ids(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<IconButtonElement, ValidationError>
+```
+
+**Related types:** [`IconButtonElement`](/reference/rust/elements#iconbuttonelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ImageElement
+
+An image displayed inside a section, context, or card.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/image-element).
+Provide exactly one of an image URL or a Slack file.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ImageElementBuilder
+```
+
+**Related types:** [`ImageElementBuilder`](/reference/rust/elements#imageelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ImageElementBuilder
+```
+
+**Related types:** [`ImageElementBuilder`](/reference/rust/elements#imageelementbuilder)
+
+### alt_text
+
+Borrows or copies `alt_text`. Sets a plain-text summary of the image or video for assistive technology.
+
+```rust
+fn alt_text(&self) -> &str
+```
+
+### image_url
+
+Borrows or copies `image_url`. Sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+
+```rust
+fn image_url(&self) -> Option<&str>
+```
+
+### slack_file
+
+Borrows or copies `slack_file`. Sets a file hosted in Slack as the image source. Cannot be combined with an image URL.
+
+```rust
+fn slack_file(&self) -> Option<&SlackFile>
+```
+
+**Related types:** [`SlackFile`](/reference/rust/objects#slackfile)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ImageElementBuilder
+
+Consuming builder for [`ImageElement`](/reference/rust/elements#imageelement). Validation runs in `Self::build`.
+
+### alt_text
+
+Sets a plain-text summary of the image or video for assistive technology.
+
+```rust
+fn alt_text(mut self, value: impl Into<String>) -> Self
+```
+
+### image_url
+
+Sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+
+```rust
+fn image_url(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_image_url
+
+Omits `image_url`, including any model default.
+
+```rust
+fn clear_image_url(mut self) -> Self
+```
+
+### slack_file
+
+Sets a file hosted in Slack as the image source. Cannot be combined with an image URL.
+
+```rust
+fn slack_file(mut self, value: impl Into<SlackFile>) -> Self
+```
+
+**Related types:** [`SlackFile`](/reference/rust/objects#slackfile)
+
+### clear_slack_file
+
+Omits `slack_file`, including any model default.
+
+```rust
+fn clear_slack_file(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ImageElement, ValidationError>
+```
+
+**Related types:** [`ImageElement`](/reference/rust/elements#imageelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## NumberInputElement
+
+An input that accepts whole or decimal numbers.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/number-input-element).
+The minimum value cannot exceed the maximum value.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> NumberInputElementBuilder
+```
+
+**Related types:** [`NumberInputElementBuilder`](/reference/rust/elements#numberinputelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> NumberInputElementBuilder
+```
+
+**Related types:** [`NumberInputElementBuilder`](/reference/rust/elements#numberinputelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### is_decimal_allowed
+
+Borrows or copies `is_decimal_allowed`. Sets whether the input accepts decimal numbers.
+
+```rust
+fn is_decimal_allowed(&self) -> bool
+```
+
+### initial_value
+
+Borrows or copies `initial_value`. Sets the number present when the input loads, as a string such as 42 or 3.5.
+
+```rust
+fn initial_value(&self) -> Option<&str>
+```
+
+### min_value
+
+Borrows or copies `min_value`. Sets the smallest accepted number.
+
+```rust
+fn min_value(&self) -> Option<f64>
+```
+
+### max_value
+
+Borrows or copies `max_value`. Sets the largest accepted number.
+
+```rust
+fn max_value(&self) -> Option<f64>
+```
+
+### dispatch_action_config
+
+Borrows or copies `dispatch_action_config`. Sets which user interactions send a block_actions payload.
+
+```rust
+fn dispatch_action_config(&self) -> Option<&DispatchActionConfiguration>
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/rust/objects#dispatchactionconfiguration)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## NumberInputElementBuilder
+
+Consuming builder for [`NumberInputElement`](/reference/rust/elements#numberinputelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### is_decimal_allowed
+
+Sets whether the input accepts decimal numbers.
+
+```rust
+fn is_decimal_allowed(mut self, value: bool) -> Self
+```
+
+### initial_value
+
+Sets the number present when the input loads, as a string such as 42 or 3.5.
+
+```rust
+fn initial_value(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_initial_value
+
+Omits `initial_value`, including any model default.
+
+```rust
+fn clear_initial_value(mut self) -> Self
+```
+
+### min_value
+
+Sets the smallest accepted number.
+
+```rust
+fn min_value(mut self, value: f64) -> Self
+```
+
+### clear_min_value
+
+Omits `min_value`, including any model default.
+
+```rust
+fn clear_min_value(mut self) -> Self
+```
+
+### max_value
+
+Sets the largest accepted number.
+
+```rust
+fn max_value(mut self, value: f64) -> Self
+```
+
+### clear_max_value
+
+Omits `max_value`, including any model default.
+
+```rust
+fn clear_max_value(mut self) -> Self
+```
+
+### dispatch_action_config
+
+Sets which user interactions send a block_actions payload.
+
+```rust
+fn dispatch_action_config(
+    mut self,
+    value: impl Into<DispatchActionConfiguration>,
+) -> Self
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/rust/objects#dispatchactionconfiguration)
+
+### clear_dispatch_action_config
+
+Omits `dispatch_action_config`, including any model default.
+
+```rust
+fn clear_dispatch_action_config(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<NumberInputElement, ValidationError>
+```
+
+**Related types:** [`NumberInputElement`](/reference/rust/elements#numberinputelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## OverflowElement
+
+A compact menu of up to five options.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/overflow-menu-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> OverflowElementBuilder
+```
+
+**Related types:** [`OverflowElementBuilder`](/reference/rust/elements#overflowelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> OverflowElementBuilder
+```
+
+**Related types:** [`OverflowElementBuilder`](/reference/rust/elements#overflowelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### options
+
+Borrows or copies `options`. Adds selectable options in display order.
+
+```rust
+fn options(&self) -> &[SelectOption]
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## OverflowElementBuilder
+
+Consuming builder for [`OverflowElement`](/reference/rust/elements#overflowelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### options
+
+Adds selectable options in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn options<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<SelectOption>,
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### option
+
+Appends one item to the collection.
+
+```rust
+fn option(mut self, value: impl Into<SelectOption>) -> Self
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<OverflowElement, ValidationError>
+```
+
+**Related types:** [`OverflowElement`](/reference/rust/elements#overflowelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## PlainTextInputElement
+
+A single-line or multi-line free-text input.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> PlainTextInputElementBuilder
+```
+
+**Related types:** [`PlainTextInputElementBuilder`](/reference/rust/elements#plaintextinputelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> PlainTextInputElementBuilder
+```
+
+**Related types:** [`PlainTextInputElementBuilder`](/reference/rust/elements#plaintextinputelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### initial_value
+
+Borrows or copies `initial_value`. Sets the value present when the input loads.
+
+```rust
+fn initial_value(&self) -> Option<&str>
+```
+
+### multiline
+
+Borrows or copies `multiline`. Sets whether the input is a multi-line text area.
+
+```rust
+fn multiline(&self) -> Option<bool>
+```
+
+### min_length
+
+Borrows or copies `min_length`. Sets the minimum number of characters the user must enter.
+
+```rust
+fn min_length(&self) -> Option<i64>
+```
+
+### max_length
+
+Borrows or copies `max_length`. Sets the maximum number of characters the user can enter.
+
+```rust
+fn max_length(&self) -> Option<i64>
+```
+
+### dispatch_action_config
+
+Borrows or copies `dispatch_action_config`. Sets which user interactions send a block_actions payload.
+
+```rust
+fn dispatch_action_config(&self) -> Option<&DispatchActionConfiguration>
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/rust/objects#dispatchactionconfiguration)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## PlainTextInputElementBuilder
+
+Consuming builder for [`PlainTextInputElement`](/reference/rust/elements#plaintextinputelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### initial_value
+
+Sets the value present when the input loads.
+
+```rust
+fn initial_value(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_initial_value
+
+Omits `initial_value`, including any model default.
+
+```rust
+fn clear_initial_value(mut self) -> Self
+```
+
+### multiline
+
+Sets whether the input is a multi-line text area.
+
+```rust
+fn multiline(mut self, value: bool) -> Self
+```
+
+### clear_multiline
+
+Omits `multiline`, including any model default.
+
+```rust
+fn clear_multiline(mut self) -> Self
+```
+
+### min_length
+
+Sets the minimum number of characters the user must enter.
+
+```rust
+fn min_length(mut self, value: i64) -> Self
+```
+
+### clear_min_length
+
+Omits `min_length`, including any model default.
+
+```rust
+fn clear_min_length(mut self) -> Self
+```
+
+### max_length
+
+Sets the maximum number of characters the user can enter.
+
+```rust
+fn max_length(mut self, value: i64) -> Self
+```
+
+### clear_max_length
+
+Omits `max_length`, including any model default.
+
+```rust
+fn clear_max_length(mut self) -> Self
+```
+
+### dispatch_action_config
+
+Sets which user interactions send a block_actions payload.
+
+```rust
+fn dispatch_action_config(
+    mut self,
+    value: impl Into<DispatchActionConfiguration>,
+) -> Self
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/rust/objects#dispatchactionconfiguration)
+
+### clear_dispatch_action_config
+
+Omits `dispatch_action_config`, including any model default.
+
+```rust
+fn clear_dispatch_action_config(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<PlainTextInputElement, ValidationError>
+```
+
+**Related types:** [`PlainTextInputElement`](/reference/rust/elements#plaintextinputelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RadioButtonsElement
+
+A group of radio buttons.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/radio-button-group-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RadioButtonsElementBuilder
+```
+
+**Related types:** [`RadioButtonsElementBuilder`](/reference/rust/elements#radiobuttonselementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RadioButtonsElementBuilder
+```
+
+**Related types:** [`RadioButtonsElementBuilder`](/reference/rust/elements#radiobuttonselementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### options
+
+Borrows or copies `options`. Adds selectable options in display order.
+
+```rust
+fn options(&self) -> &[SelectOption]
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### initial_option
+
+Borrows or copies `initial_option`. Sets the option selected when the element loads. It must match an option in the element.
+
+```rust
+fn initial_option(&self) -> Option<&SelectOption>
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RadioButtonsElementBuilder
+
+Consuming builder for [`RadioButtonsElement`](/reference/rust/elements#radiobuttonselement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### options
+
+Adds selectable options in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn options<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<SelectOption>,
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### option
+
+Appends one item to the collection.
+
+```rust
+fn option(mut self, value: impl Into<SelectOption>) -> Self
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### initial_option
+
+Sets the option selected when the element loads. It must match an option in the element.
+
+```rust
+fn initial_option(mut self, value: impl Into<SelectOption>) -> Self
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### clear_initial_option
+
+Omits `initial_option`, including any model default.
+
+```rust
+fn clear_initial_option(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RadioButtonsElement, ValidationError>
+```
+
+**Related types:** [`RadioButtonsElement`](/reference/rust/elements#radiobuttonselement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RichTextInputElement
+
+An input that accepts formatted rich text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/rich-text-input-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RichTextInputElementBuilder
+```
+
+**Related types:** [`RichTextInputElementBuilder`](/reference/rust/elements#richtextinputelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RichTextInputElementBuilder
+```
+
+**Related types:** [`RichTextInputElementBuilder`](/reference/rust/elements#richtextinputelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> &str
+```
+
+### initial_value
+
+Borrows or copies `initial_value`. Sets the rich text present when the input loads.
+
+```rust
+fn initial_value(&self) -> Option<&RichTextBlock>
+```
+
+**Related types:** [`RichTextBlock`](/reference/rust/blocks#richtextblock)
+
+### dispatch_action_config
+
+Borrows or copies `dispatch_action_config`. Sets which user interactions send a block_actions payload.
+
+```rust
+fn dispatch_action_config(&self) -> Option<&DispatchActionConfiguration>
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/rust/objects#dispatchactionconfiguration)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### min_lines
+
+Borrows or copies `min_lines`. Sets the minimum visible height of the input, in lines.
+
+```rust
+fn min_lines(&self) -> Option<i64>
+```
+
+### max_lines
+
+Borrows or copies `max_lines`. Sets the maximum visible height of the input, in lines.
+
+```rust
+fn max_lines(&self) -> Option<i64>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RichTextInputElementBuilder
+
+Consuming builder for [`RichTextInputElement`](/reference/rust/elements#richtextinputelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### initial_value
+
+Sets the rich text present when the input loads.
+
+```rust
+fn initial_value(mut self, value: impl Into<RichTextBlock>) -> Self
+```
+
+**Related types:** [`RichTextBlock`](/reference/rust/blocks#richtextblock)
+
+### clear_initial_value
+
+Omits `initial_value`, including any model default.
+
+```rust
+fn clear_initial_value(mut self) -> Self
+```
+
+### dispatch_action_config
+
+Sets which user interactions send a block_actions payload.
+
+```rust
+fn dispatch_action_config(
+    mut self,
+    value: impl Into<DispatchActionConfiguration>,
+) -> Self
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/rust/objects#dispatchactionconfiguration)
+
+### clear_dispatch_action_config
+
+Omits `dispatch_action_config`, including any model default.
+
+```rust
+fn clear_dispatch_action_config(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### min_lines
+
+Sets the minimum visible height of the input, in lines.
+
+```rust
+fn min_lines(mut self, value: i64) -> Self
+```
+
+### clear_min_lines
+
+Omits `min_lines`, including any model default.
+
+```rust
+fn clear_min_lines(mut self) -> Self
+```
+
+### max_lines
+
+Sets the maximum visible height of the input, in lines.
+
+```rust
+fn max_lines(mut self, value: i64) -> Self
+```
+
+### clear_max_lines
+
+Omits `max_lines`, including any model default.
+
+```rust
+fn clear_max_lines(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RichTextInputElement, ValidationError>
+```
+
+**Related types:** [`RichTextInputElement`](/reference/rust/elements#richtextinputelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## StaticMultiSelectElement
+
+A menu for selecting multiple options defined in the payload.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+Use options or option groups, not both.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> StaticMultiSelectElementBuilder
+```
+
+**Related types:** [`StaticMultiSelectElementBuilder`](/reference/rust/elements#staticmultiselectelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> StaticMultiSelectElementBuilder
+```
+
+**Related types:** [`StaticMultiSelectElementBuilder`](/reference/rust/elements#staticmultiselectelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### options
+
+Borrows or copies `options`. Adds selectable options in display order.
+
+```rust
+fn options(&self) -> Option<&[SelectOption]>
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### option_groups
+
+Borrows or copies `option_groups`. Adds labelled groups of options in display order. Cannot be combined with ungrouped options.
+
+```rust
+fn option_groups(&self) -> Option<&[SelectOptionGroup]>
+```
+
+**Related types:** [`SelectOptionGroup`](/reference/rust/objects#selectoptiongroup)
+
+### initial_options
+
+Borrows or copies `initial_options`. Adds options that are selected when the element loads. Each must match an option in the element.
+
+```rust
+fn initial_options(&self) -> Option<&[SelectOption]>
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### max_selected_items
+
+Borrows or copies `max_selected_items`. Sets the maximum number of items a user can select.
+
+```rust
+fn max_selected_items(&self) -> Option<i64>
+```
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## StaticMultiSelectElementBuilder
+
+Consuming builder for [`StaticMultiSelectElement`](/reference/rust/elements#staticmultiselectelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### options
+
+Adds selectable options in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn options<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<SelectOption>,
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### option
+
+Appends one item to the collection.
+
+```rust
+fn option(mut self, value: impl Into<SelectOption>) -> Self
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### clear_options
+
+Omits `options`, including any model default.
+
+```rust
+fn clear_options(mut self) -> Self
+```
+
+### option_groups
+
+Adds labelled groups of options in display order. Cannot be combined with ungrouped options.
+Replaces the collection; order is preserved.
+
+```rust
+fn option_groups<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<SelectOptionGroup>,
+```
+
+**Related types:** [`SelectOptionGroup`](/reference/rust/objects#selectoptiongroup)
+
+### option_group
+
+Appends one item to the collection.
+
+```rust
+fn option_group(mut self, value: impl Into<SelectOptionGroup>) -> Self
+```
+
+**Related types:** [`SelectOptionGroup`](/reference/rust/objects#selectoptiongroup)
+
+### clear_option_groups
+
+Omits `option_groups`, including any model default.
+
+```rust
+fn clear_option_groups(mut self) -> Self
+```
+
+### initial_options
+
+Adds options that are selected when the element loads. Each must match an option in the element.
+Replaces the collection; order is preserved.
+
+```rust
+fn initial_options<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<SelectOption>,
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### initial_option
+
+Appends one item to the collection.
+
+```rust
+fn initial_option(mut self, value: impl Into<SelectOption>) -> Self
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### clear_initial_options
+
+Omits `initial_options`, including any model default.
+
+```rust
+fn clear_initial_options(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### max_selected_items
+
+Sets the maximum number of items a user can select.
+
+```rust
+fn max_selected_items(mut self, value: i64) -> Self
+```
+
+### clear_max_selected_items
+
+Omits `max_selected_items`, including any model default.
+
+```rust
+fn clear_max_selected_items(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<StaticMultiSelectElement, ValidationError>
+```
+
+**Related types:** [`StaticMultiSelectElement`](/reference/rust/elements#staticmultiselectelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## StaticSelectElement
+
+A menu for selecting one option defined in the payload.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+Use options or option groups, not both.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> StaticSelectElementBuilder
+```
+
+**Related types:** [`StaticSelectElementBuilder`](/reference/rust/elements#staticselectelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> StaticSelectElementBuilder
+```
+
+**Related types:** [`StaticSelectElementBuilder`](/reference/rust/elements#staticselectelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### options
+
+Borrows or copies `options`. Adds selectable options in display order.
+
+```rust
+fn options(&self) -> Option<&[SelectOption]>
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### option_groups
+
+Borrows or copies `option_groups`. Adds labelled groups of options in display order. Cannot be combined with ungrouped options.
+
+```rust
+fn option_groups(&self) -> Option<&[SelectOptionGroup]>
+```
+
+**Related types:** [`SelectOptionGroup`](/reference/rust/objects#selectoptiongroup)
+
+### initial_option
+
+Borrows or copies `initial_option`. Sets the option selected when the element loads. It must match an option in the element.
+
+```rust
+fn initial_option(&self) -> Option<&SelectOption>
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## StaticSelectElementBuilder
+
+Consuming builder for [`StaticSelectElement`](/reference/rust/elements#staticselectelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### options
+
+Adds selectable options in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn options<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<SelectOption>,
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### option
+
+Appends one item to the collection.
+
+```rust
+fn option(mut self, value: impl Into<SelectOption>) -> Self
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### clear_options
+
+Omits `options`, including any model default.
+
+```rust
+fn clear_options(mut self) -> Self
+```
+
+### option_groups
+
+Adds labelled groups of options in display order. Cannot be combined with ungrouped options.
+Replaces the collection; order is preserved.
+
+```rust
+fn option_groups<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<SelectOptionGroup>,
+```
+
+**Related types:** [`SelectOptionGroup`](/reference/rust/objects#selectoptiongroup)
+
+### option_group
+
+Appends one item to the collection.
+
+```rust
+fn option_group(mut self, value: impl Into<SelectOptionGroup>) -> Self
+```
+
+**Related types:** [`SelectOptionGroup`](/reference/rust/objects#selectoptiongroup)
+
+### clear_option_groups
+
+Omits `option_groups`, including any model default.
+
+```rust
+fn clear_option_groups(mut self) -> Self
+```
+
+### initial_option
+
+Sets the option selected when the element loads. It must match an option in the element.
+
+```rust
+fn initial_option(mut self, value: impl Into<SelectOption>) -> Self
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### clear_initial_option
+
+Omits `initial_option`, including any model default.
+
+```rust
+fn clear_initial_option(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<StaticSelectElement, ValidationError>
+```
+
+**Related types:** [`StaticSelectElement`](/reference/rust/elements#staticselectelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## TimePickerElement
+
+A time-of-day picker.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> TimePickerElementBuilder
+```
+
+**Related types:** [`TimePickerElementBuilder`](/reference/rust/elements#timepickerelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> TimePickerElementBuilder
+```
+
+**Related types:** [`TimePickerElementBuilder`](/reference/rust/elements#timepickerelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### initial_time
+
+Borrows or copies `initial_time`. Sets the initially selected time, formatted as HH:mm in 24-hour time.
+
+```rust
+fn initial_time(&self) -> Option<&str>
+```
+
+### timezone
+
+Borrows or copies `timezone`. Sets the IANA time zone used to display the time, such as Australia/Brisbane.
+
+```rust
+fn timezone(&self) -> Option<&str>
+```
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## TimePickerElementBuilder
+
+Consuming builder for [`TimePickerElement`](/reference/rust/elements#timepickerelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### initial_time
+
+Sets the initially selected time, formatted as HH:mm in 24-hour time.
+
+```rust
+fn initial_time(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_initial_time
+
+Omits `initial_time`, including any model default.
+
+```rust
+fn clear_initial_time(mut self) -> Self
+```
+
+### timezone
+
+Sets the IANA time zone used to display the time, such as Australia/Brisbane.
+
+```rust
+fn timezone(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_timezone
+
+Omits `timezone`, including any model default.
+
+```rust
+fn clear_timezone(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<TimePickerElement, ValidationError>
+```
+
+**Related types:** [`TimePickerElement`](/reference/rust/elements#timepickerelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## UrlInputElement
+
+A single-line input that accepts a URL.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/url-input-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> UrlInputElementBuilder
+```
+
+**Related types:** [`UrlInputElementBuilder`](/reference/rust/elements#urlinputelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> UrlInputElementBuilder
+```
+
+**Related types:** [`UrlInputElementBuilder`](/reference/rust/elements#urlinputelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### initial_value
+
+Borrows or copies `initial_value`. Sets the value present when the input loads.
+
+```rust
+fn initial_value(&self) -> Option<&str>
+```
+
+### dispatch_action_config
+
+Borrows or copies `dispatch_action_config`. Sets which user interactions send a block_actions payload.
+
+```rust
+fn dispatch_action_config(&self) -> Option<&DispatchActionConfiguration>
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/rust/objects#dispatchactionconfiguration)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## UrlInputElementBuilder
+
+Consuming builder for [`UrlInputElement`](/reference/rust/elements#urlinputelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### initial_value
+
+Sets the value present when the input loads.
+
+```rust
+fn initial_value(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_initial_value
+
+Omits `initial_value`, including any model default.
+
+```rust
+fn clear_initial_value(mut self) -> Self
+```
+
+### dispatch_action_config
+
+Sets which user interactions send a block_actions payload.
+
+```rust
+fn dispatch_action_config(
+    mut self,
+    value: impl Into<DispatchActionConfiguration>,
+) -> Self
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/rust/objects#dispatchactionconfiguration)
+
+### clear_dispatch_action_config
+
+Omits `dispatch_action_config`, including any model default.
+
+```rust
+fn clear_dispatch_action_config(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<UrlInputElement, ValidationError>
+```
+
+**Related types:** [`UrlInputElement`](/reference/rust/elements#urlinputelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## UserMultiSelectElement
+
+A menu for selecting multiple workspace users.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> UserMultiSelectElementBuilder
+```
+
+**Related types:** [`UserMultiSelectElementBuilder`](/reference/rust/elements#usermultiselectelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> UserMultiSelectElementBuilder
+```
+
+**Related types:** [`UserMultiSelectElementBuilder`](/reference/rust/elements#usermultiselectelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### initial_users
+
+Borrows or copies `initial_users`. Adds user IDs that are selected when the menu loads.
+
+```rust
+fn initial_users(&self) -> Option<&[String]>
+```
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### max_selected_items
+
+Borrows or copies `max_selected_items`. Sets the maximum number of items a user can select.
+
+```rust
+fn max_selected_items(&self) -> Option<i64>
+```
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## UserMultiSelectElementBuilder
+
+Consuming builder for [`UserMultiSelectElement`](/reference/rust/elements#usermultiselectelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### initial_users
+
+Adds user IDs that are selected when the menu loads.
+Replaces the collection; order is preserved.
+
+```rust
+fn initial_users<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<String>,
+```
+
+### initial_user
+
+Appends one item to the collection.
+
+```rust
+fn initial_user(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_initial_users
+
+Omits `initial_users`, including any model default.
+
+```rust
+fn clear_initial_users(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### max_selected_items
+
+Sets the maximum number of items a user can select.
+
+```rust
+fn max_selected_items(mut self, value: i64) -> Self
+```
+
+### clear_max_selected_items
+
+Omits `max_selected_items`, including any model default.
+
+```rust
+fn clear_max_selected_items(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<UserMultiSelectElement, ValidationError>
+```
+
+**Related types:** [`UserMultiSelectElement`](/reference/rust/elements#usermultiselectelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## UserSelectElement
+
+A menu for selecting one workspace user.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> UserSelectElementBuilder
+```
+
+**Related types:** [`UserSelectElementBuilder`](/reference/rust/elements#userselectelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> UserSelectElementBuilder
+```
+
+**Related types:** [`UserSelectElementBuilder`](/reference/rust/elements#userselectelementbuilder)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> Option<&str>
+```
+
+### initial_user
+
+Borrows or copies `initial_user`. Sets the user ID selected when the menu loads.
+
+```rust
+fn initial_user(&self) -> Option<&str>
+```
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### focus_on_load
+
+Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(&self) -> Option<bool>
+```
+
+### placeholder
+
+Borrows or copies `placeholder`. Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## UserSelectElementBuilder
+
+Consuming builder for [`UserSelectElement`](/reference/rust/elements#userselectelement). Validation runs in `Self::build`.
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_action_id
+
+Omits `action_id`, including any model default.
+
+```rust
+fn clear_action_id(mut self) -> Self
+```
+
+### initial_user
+
+Sets the user ID selected when the menu loads.
+
+```rust
+fn initial_user(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_initial_user
+
+Omits `initial_user`, including any model default.
+
+```rust
+fn clear_initial_user(mut self) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so.
+
+```rust
+fn focus_on_load(mut self, value: bool) -> Self
+```
+
+### clear_focus_on_load
+
+Omits `focus_on_load`, including any model default.
+
+```rust
+fn clear_focus_on_load(mut self) -> Self
+```
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen.
+
+```rust
+fn placeholder(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_placeholder
+
+Omits `placeholder`, including any model default.
+
+```rust
+fn clear_placeholder(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<UserSelectElement, ValidationError>
+```
+
+**Related types:** [`UserSelectElement`](/reference/rust/elements#userselectelement), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## WorkflowButtonElement
+
+A button that starts a workflow through a link trigger.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> WorkflowButtonElementBuilder
+```
+
+**Related types:** [`WorkflowButtonElementBuilder`](/reference/rust/elements#workflowbuttonelementbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> WorkflowButtonElementBuilder
+```
+
+**Related types:** [`WorkflowButtonElementBuilder`](/reference/rust/elements#workflowbuttonelementbuilder)
+
+### text
+
+Borrows or copies `text`. Sets the button label.
+
+```rust
+fn text(&self) -> &PlainText
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### workflow
+
+Borrows or copies `workflow`. Sets the workflow started when the button is clicked.
+
+```rust
+fn workflow(&self) -> &Workflow
+```
+
+**Related types:** [`Workflow`](/reference/rust/objects#workflow)
+
+### action_id
+
+Borrows or copies `action_id`. Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(&self) -> &str
+```
+
+### confirm
+
+Borrows or copies `confirm`. Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(&self) -> Option<&ConfirmationDialogue>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### style
+
+Borrows or copies `style`. Sets the button's emphasis. Omit it for the default neutral style.
+
+```rust
+fn style(&self) -> Option<ButtonStyle>
+```
+
+**Related types:** [`ButtonStyle`](/reference/rust/core#buttonstyle)
+
+### accessibility_label
+
+Borrows or copies `accessibility_label`. Sets the label read by screen readers in place of the visible text.
+
+```rust
+fn accessibility_label(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## WorkflowButtonElementBuilder
+
+Consuming builder for [`WorkflowButtonElement`](/reference/rust/elements#workflowbuttonelement). Validation runs in `Self::build`.
+
+### text
+
+Sets the button label.
+
+```rust
+fn text(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### workflow
+
+Sets the workflow started when the button is clicked.
+
+```rust
+fn workflow(mut self, value: impl Into<Workflow>) -> Self
+```
+
+**Related types:** [`Workflow`](/reference/rust/objects#workflow)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
+
+```rust
+fn action_id(mut self, value: impl Into<String>) -> Self
+```
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent.
+
+```rust
+fn confirm(mut self, value: impl Into<ConfirmationDialogue>) -> Self
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue)
+
+### clear_confirm
+
+Omits `confirm`, including any model default.
+
+```rust
+fn clear_confirm(mut self) -> Self
+```
+
+### style
+
+Sets the button's emphasis. Omit it for the default neutral style.
+
+```rust
+fn style(mut self, value: ButtonStyle) -> Self
+```
+
+**Related types:** [`ButtonStyle`](/reference/rust/core#buttonstyle)
+
+### clear_style
+
+Omits `style`, including any model default.
+
+```rust
+fn clear_style(mut self) -> Self
+```
+
+### accessibility_label
+
+Sets the label read by screen readers in place of the visible text.
+
+```rust
+fn accessibility_label(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_accessibility_label
+
+Omits `accessibility_label`, including any model default.
+
+```rust
+fn clear_accessibility_label(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<WorkflowButtonElement, ValidationError>
+```
+
+**Related types:** [`ValidationError`](/reference/rust/errors#validationerror), [`WorkflowButtonElement`](/reference/rust/elements#workflowbuttonelement)

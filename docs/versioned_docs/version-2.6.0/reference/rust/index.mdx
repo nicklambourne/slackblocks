@@ -1,0 +1,23 @@
+---
+sidebar_position: 0
+---
+
+# Rust API reference
+
+Rust 2024 with MSRV 1.85. Values own their data and expose borrowed getters.
+Consuming builders return `Result<T, ValidationError>`; `Clone` and
+`into_builder()` support safe editing. Every modeled wire value implements
+Serde serialization and checked deserialization. JSON ingress is also available
+through `TryFrom<serde_json::Value>`.
+
+This is the unreleased 2.6.0 implementation; see [installation](/usage/installation)
+for use from a checkout. Run `cargo doc --manifest-path rust/Cargo.toml --no-deps`
+for the full native rustdoc reference, including trait implementations.
+
+- [Blocks](/reference/rust/blocks)
+- [Elements](/reference/rust/elements)
+- [Composition Objects](/reference/rust/objects)
+- [Payloads and Views](/reference/rust/payloads)
+- [Components and Utilities](/reference/rust/components)
+- [Core Types](/reference/rust/core)
+- [Validation and Errors](/reference/rust/errors)
