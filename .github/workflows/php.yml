@@ -1,0 +1,110 @@
+name: PHP
+
+on:
+  push:
+    branches: [master]
+    paths: ["php/**", "spec/**", "docs/**", "README.md", "AGENTS.md", ".github/workflows/php.yml", ".github/dependabot.yml"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: php-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect relevant PHP changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Compare changed files against PHP workflow scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ] || echo "$files" | grep -Eq '^(php/|spec/|docs/|README\.md$|AGENTS\.md$|\.github/workflows/php\.yml$|\.github/dependabot\.yml$)'; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  tests:
+    needs: changes
+    name: PHP tests (${{ matrix.os }}, ${{ matrix.php }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: php
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-2025]
+        php: ["8.2", "8.5"]
+        include:
+          - os: ubuntu-latest
+            php: "8.3"
+          - os: ubuntu-latest
+            php: "8.4"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          coverage: none
+      - name: Install dependencies
+        if: needs.changes.outputs.relevant == 'true'
+        run: composer install --no-interaction --prefer-dist
+      - name: Validate Composer package
+        if: needs.changes.outputs.relevant == 'true'
+        run: composer validate --strict
+      - name: Run native and conformance tests
+        if: needs.changes.outputs.relevant == 'true'
+        run: composer test
+
+  quality:
+    needs: changes
+    name: PHP quality and package
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: php
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          php-version: "8.2"
+          tools: composer:v2
+          coverage: xdebug
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        if: needs.changes.outputs.relevant == 'true'
+        run: composer install --no-interaction --prefer-dist
+      - name: Verify generated sources
+        if: needs.changes.outputs.relevant == 'true'
+        run: python generator/generate.py --check
+      - name: Verify PHP formatting
+        if: needs.changes.outputs.relevant == 'true'
+        run: composer format:check
+      - name: Check PHP types
+        if: needs.changes.outputs.relevant == 'true'
+        run: composer analyse
