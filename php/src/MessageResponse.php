@@ -62,8 +62,8 @@ final readonly class MessageResponse extends Value
         ResponseType|null $responseType = ResponseType::InChannel,
         ?JsonObject $extensions = null,
     ) {
-        $this->blocks = $blocks;
-        $this->attachments = $attachments;
+        $this->blocks = $blocks === null ? null : Internal\Collections::copy($blocks, 'MessageResponse.blocks');
+        $this->attachments = $attachments === null ? null : Internal\Collections::copy($attachments, 'MessageResponse.attachments');
         $this->text = $text;
         $this->mrkdwn = $mrkdwn;
         $this->replaceOriginal = $replaceOriginal;

@@ -33,7 +33,7 @@ final readonly class AreaChart extends Value implements Chart
         AxisConfig $axisConfig,
         ?JsonObject $extensions = null,
     ) {
-        $this->series = $series;
+        $this->series = Internal\Collections::copy($series, 'AreaChart.series');
         $this->axisConfig = $axisConfig;
         parent::__construct($extensions);
     }

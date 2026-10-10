@@ -55,7 +55,7 @@ final readonly class DataTableBlock extends Value implements Block
         string|null $blockId = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->rows = $rows;
+        $this->rows = Internal\Collections::rows($rows, 'DataTableBlock.rows');
         $this->caption = $caption;
         $this->pageSize = $pageSize;
         $this->rowHeaderColumnIndex = $rowHeaderColumnIndex;

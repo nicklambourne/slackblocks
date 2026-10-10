@@ -25,7 +25,7 @@ final readonly class DispatchActionConfiguration extends Value
         array|null $triggerActionsOn = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->triggerActionsOn = $triggerActionsOn;
+        $this->triggerActionsOn = $triggerActionsOn === null ? null : Internal\Collections::copy($triggerActionsOn, 'DispatchActionConfiguration.trigger_actions_on');
         parent::__construct($extensions);
     }
 }

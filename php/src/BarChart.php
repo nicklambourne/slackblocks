@@ -33,7 +33,7 @@ final readonly class BarChart extends Value implements Chart
         AxisConfig $axisConfig,
         ?JsonObject $extensions = null,
     ) {
-        $this->series = $series;
+        $this->series = Internal\Collections::copy($series, 'BarChart.series');
         $this->axisConfig = $axisConfig;
         parent::__construct($extensions);
     }

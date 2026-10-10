@@ -40,7 +40,7 @@ final readonly class Attachment extends Value
         string|null $fallback = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->blocks = $blocks;
+        $this->blocks = Internal\Collections::copy($blocks, 'Attachment.blocks');
         $this->color = $color !== null && preg_match('/\A[0-9a-fA-F]{6}\z/', $color) === 1 ? '#' . $color : $color;
         $this->fallback = $fallback;
         parent::__construct($extensions);

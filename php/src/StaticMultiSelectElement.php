@@ -76,9 +76,9 @@ final readonly class StaticMultiSelectElement extends Value implements Element, 
         ?JsonObject $extensions = null,
     ) {
         $this->actionId = $actionId;
-        $this->options = $options;
-        $this->optionGroups = $optionGroups;
-        $this->initialOptions = $initialOptions;
+        $this->options = $options === null ? null : Internal\Collections::copy($options, 'StaticMultiSelectElement.options');
+        $this->optionGroups = $optionGroups === null ? null : Internal\Collections::copy($optionGroups, 'StaticMultiSelectElement.option_groups');
+        $this->initialOptions = $initialOptions === null ? null : Internal\Collections::copy($initialOptions, 'StaticMultiSelectElement.initial_options');
         $this->confirm = $confirm;
         $this->maxSelectedItems = $maxSelectedItems;
         $this->focusOnLoad = $focusOnLoad;

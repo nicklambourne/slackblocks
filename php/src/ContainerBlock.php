@@ -89,7 +89,7 @@ final readonly class ContainerBlock extends Value implements Block
         string|null $blockId = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->childBlocks = $childBlocks;
+        $this->childBlocks = Internal\Collections::copy($childBlocks, 'ContainerBlock.child_blocks');
         $this->title = is_string($title) ? new PlainText($title) : $title;
         $this->richTextTitle = $richTextTitle;
         $this->subtitle = is_string($subtitle) ? new MarkdownText($subtitle) : $subtitle;

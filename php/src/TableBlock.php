@@ -39,8 +39,8 @@ final readonly class TableBlock extends Value implements Block
         string|null $blockId = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->rows = $rows;
-        $this->columnSettings = $columnSettings;
+        $this->rows = Internal\Collections::rows($rows, 'TableBlock.rows');
+        $this->columnSettings = $columnSettings === null ? null : Internal\Collections::copy($columnSettings, 'TableBlock.column_settings');
         $this->blockId = $blockId;
         parent::__construct($extensions);
     }

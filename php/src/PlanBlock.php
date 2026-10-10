@@ -41,7 +41,7 @@ final readonly class PlanBlock extends Value implements Block
         ?JsonObject $extensions = null,
     ) {
         $this->title = $title;
-        $this->tasks = $tasks;
+        $this->tasks = Internal\Collections::copy($tasks, 'PlanBlock.tasks');
         $this->blockId = $blockId;
         parent::__construct($extensions);
     }

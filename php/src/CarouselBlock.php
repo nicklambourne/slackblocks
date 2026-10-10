@@ -32,7 +32,7 @@ final readonly class CarouselBlock extends Value implements Block
         string|null $blockId = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->elements = $elements;
+        $this->elements = Internal\Collections::copy($elements, 'CarouselBlock.elements');
         $this->blockId = $blockId;
         parent::__construct($extensions);
     }

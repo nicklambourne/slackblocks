@@ -9,6 +9,35 @@ use Slackblocks as S;
 
 final class ApiTest extends TestCase
 {
+    public function testIndependentInventoryDetectsDefaultOnlyDrift(): void
+    {
+        require_once __DIR__ . '/../bin/api-inventory.php';
+        $before = new \ReflectionFunction(static fn(int $size = 10): int => $size);
+        $after = new \ReflectionFunction(static fn(int $size = 20): int => $size);
+        $old = \parameterInventory($before->getParameters()[0]);
+        $new = \parameterInventory($after->getParameters()[0]);
+        self::assertNotSame($old, $new, 'Changing only a default must change the independent inventory');
+        self::assertSame(10, $old['default']);
+        self::assertSame(20, $new['default']);
+        unset($old['default'], $new['default']);
+        self::assertSame($old, $new);
+
+        $fixture = new \ReflectionFunction(static function (string $required, ?string $nullable = null, bool $flag = false, float $number = 1.0, array $values = ['x' => [S\TaskStatus::Pending]], S\TaskStatus $status = S\TaskStatus::Pending, mixed & ...$rest): void {});
+        $parameters = array_map(\parameterInventory(...), $fixture->getParameters());
+        self::assertFalse($parameters[0]['hasDefault']);
+        self::assertArrayNotHasKey('default', $parameters[0]);
+        self::assertTrue($parameters[1]['hasDefault']);
+        self::assertNull($parameters[1]['default']);
+        self::assertFalse($parameters[2]['default']);
+        self::assertSame(1.0, $parameters[3]['default']);
+        $enum = ['enum' => S\TaskStatus::class, 'case' => 'Pending'];
+        self::assertSame(['x' => [$enum]], $parameters[4]['default']);
+        self::assertSame($enum, $parameters[5]['default']);
+        self::assertTrue($parameters[6]['variadic']);
+        self::assertTrue($parameters[6]['byReference']);
+        self::assertFalse($parameters[6]['hasDefault']);
+    }
+
     public function testIndependentPublicInventoryAndCapabilityCoverage(): void
     {
         $actual = [];
