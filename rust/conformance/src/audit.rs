@@ -78,7 +78,7 @@ pub fn inventory(source: &Path) -> Value {
                     let Some(entries) = result.get_mut(&name) else {
                         continue;
                     };
-                    if let Some((_, t, _)) = &i.trait_ {
+                    if let Some((t, _)) = &i.trait_ {
                         entries.insert(format!("impl {}", t.to_token_stream()));
                     } else {
                         for item in i.items {
@@ -169,6 +169,7 @@ fn doc(attributes: &[syn::Attribute]) -> String {
 fn signature(sig: &syn::Signature) -> String {
     let function: syn::ItemFn = syn::parse_quote!(#sig {});
     let file = syn::File {
+        frontmatter: None,
         shebang: None,
         attrs: vec![],
         items: vec![Item::Fn(function)],
