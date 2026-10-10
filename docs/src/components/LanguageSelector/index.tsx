@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "@docusaurus/router";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import {
   legacyDocumentationVersion,
   useLanguage,
@@ -21,6 +22,7 @@ const languageLabels: Record<Language, string> = {
 };
 
 function LanguageLogo({ language }: { language: Language }) {
+  const logoUrl = useBaseUrl(`/img/languages/${language}.svg`);
   if (language === "python") {
     return (
       <svg
@@ -99,18 +101,14 @@ function LanguageLogo({ language }: { language: Language }) {
     </svg>
   );
 
-  if (language === "ruby") return (
-    <svg aria-hidden="true" className="language-selector__logo" viewBox="0 0 24 24">
-      <path fill="#cc342d" d="M4 3h16l3 8-11 12L1 11z" />
-      <path fill="#fff" d="M7 6h10l2 5-7 7-7-7z" opacity=".22" />
-    </svg>
-  );
-
-  if (language === "rust") return (
-    <svg aria-hidden="true" className="language-selector__logo" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="11" fill="#b7410e" />
-      <text x="12" y="17" textAnchor="middle" fill="white" fontSize="15" fontWeight="700">R</text>
-    </svg>
+  // Official artwork and attribution: static/img/languages/README.md.
+  if (language === "ruby" || language === "rust") return (
+    <img
+      alt=""
+      aria-hidden="true"
+      className="language-selector__logo"
+      src={logoUrl}
+    />
   );
 
   // Official Go wordmark: https://go.dev/images/go-logo-blue.svg
