@@ -10,9 +10,9 @@ import shutil
 import subprocess
 import tempfile
 import time
-import zipfile
-import urllib.request
 import urllib.error
+import urllib.request
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -40,18 +40,14 @@ def temporary_directory(prefix):
                 "Required external volume is missing: " + volume,
             )
         scratch = "/Volumes/Scratch"
-        os.environ.setdefault(
-            "COMPOSER_CACHE_DIR", "/Volumes/Cache/composer-slackblocks"
-        )
+        os.environ.setdefault("COMPOSER_CACHE_DIR", "/Volumes/Cache/composer-slackblocks")
     return tempfile.TemporaryDirectory(prefix=prefix, dir=scratch)
 
 
 def run(*args, cwd, env=None):
     executable = shutil.which(args[0])
     preflight.require(executable is not None, f"Required executable missing: {args[0]}")
-    return subprocess.check_output(
-        [executable, *args[1:]], cwd=cwd, env=env, text=True
-    ).strip()
+    return subprocess.check_output([executable, *args[1:]], cwd=cwd, env=env, text=True).strip()
 
 
 def digest(content):
@@ -74,14 +70,10 @@ def contents(root):
             or name == "examples/consumer.php"
         ):
             file = root / path
-            preflight.require(
-                not file.is_symlink(), f"Symlink in PHP distribution: {path}"
-            )
-            selected[name] = subprocess.check_output(
-                ["git", "show", "HEAD:" + path], cwd=root
-            )
+            preflight.require(not file.is_symlink(), f"Symlink in PHP distribution: {path}")
+            selected[name] = subprocess.check_output(["git", "show", "HEAD:" + path], cwd=root)
     preflight.require(
-        FILES <= selected.keys() and "src/MessagePayload.php" in selected,
+        selected.keys() >= FILES and "src/MessagePayload.php" in selected,
         "Missing PHP distribution files",
     )
     return dict(sorted(selected.items()))
@@ -144,9 +136,7 @@ def verify(root, directory):
         "PHP source inventory mismatch",
     )
     with zipfile.ZipFile(archive) as package:
-        preflight.require(
-            package.namelist() == sorted(source), "PHP archive inventory mismatch"
-        )
+        preflight.require(package.namelist() == sorted(source), "PHP archive inventory mismatch")
         preflight.require(
             all(package.read(name) == data for name, data in source.items()),
             "PHP archive differs from source",
@@ -194,17 +184,13 @@ def consumer(root, directory, registry=False):
             cwd=project,
         )
         installed = project / "vendor" / record["package"]
-        preflight.require(
-            not installed.is_symlink(), "Installed PHP package must not be a symlink"
-        )
+        preflight.require(not installed.is_symlink(), "Installed PHP package must not be a symlink")
         actual = {
             str(path.relative_to(installed)).replace("\\", "/")
             for path in installed.rglob("*")
             if path.is_file()
         }
-        preflight.require(
-            actual == set(record["files"]), "Installed PHP inventory differs"
-        )
+        preflight.require(actual == set(record["files"]), "Installed PHP inventory differs")
         preflight.require(
             not any(path.is_symlink() for path in installed.rglob("*")),
             "Installed PHP files must not be symlinks",
@@ -214,12 +200,9 @@ def consumer(root, directory, registry=False):
             distribution(root, directory, checkout)
             commit = run("git", "rev-parse", "HEAD", cwd=checkout)
             packages = json.loads((project / "composer.lock").read_text())["packages"]
-            package = next(
-                item for item in packages if item["name"] == record["package"]
-            )
+            package = next(item for item in packages if item["name"] == record["package"])
             preflight.require(
-                package["source"]["reference"] == commit
-                and package["dist"]["reference"] == commit,
+                package["source"]["reference"] == commit and package["dist"]["reference"] == commit,
                 "Packagist source/dist references differ",
             )
             preflight.require(
@@ -306,9 +289,7 @@ def push_tag(directory, remote, tag, apply=False):
 def check_registration(settings, opener=urllib.request.urlopen):
     request = urllib.request.Request(
         "https://packagist.org/packages/" + settings["package"] + ".json",
-        headers={
-            "User-Agent": "slackblocks-release (github.com/nicklambourne/slackblocks)"
-        },
+        headers={"User-Agent": "slackblocks-release (github.com/nicklambourne/slackblocks)"},
     )
     try:
         with opener(request, timeout=30) as response:
@@ -316,9 +297,7 @@ def check_registration(settings, opener=urllib.request.urlopen):
     except urllib.error.HTTPError as error:
         error.close()
         raise
-    preflight.require(
-        package["name"] == settings["package"], "Packagist package identity differs"
-    )
+    preflight.require(package["name"] == settings["package"], "Packagist package identity differs")
     repository = package["repository"].removesuffix(".git").rstrip("/")
     preflight.require(
         repository == "https://github.com/" + settings["repository"],
@@ -343,18 +322,14 @@ def main():
     parser.add_argument("--apply", action="store_true")
     args = parser.parse_args()
     if args.command == "readiness":
-        preflight.coordinator(
-            ROOT, None, "workflow_dispatch", os.environ.get("GITHUB_REF", "")
-        )
+        preflight.coordinator(ROOT, None, "workflow_dispatch", os.environ.get("GITHUB_REF", ""))
         check_registration(policy(ROOT))
         with temporary_directory(prefix="slackblocks-php-readiness-") as temporary:
             artifact = Path(temporary) / "artifact"
             prepare(ROOT, artifact)
             checkout = Path(temporary) / "distribution"
             record, tag = distribution(ROOT, artifact, checkout)
-            result = push_tag(
-                checkout, "git@github.com:" + record["repository"] + ".git", tag
-            )
+            result = push_tag(checkout, "git@github.com:" + record["repository"] + ".git", tag)
     elif args.command == "prepare":
         result = prepare(ROOT, args.directory)
     elif args.command == "verify":

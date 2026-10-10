@@ -6,6 +6,8 @@ on:
     paths:
       - "python/**"
       - "docs/scripts/**"
+      - "php/generator/**"
+      - "php/bin/**"
       - ".github/workflows/ruff-lint.yml"
   pull_request:
 
@@ -38,7 +40,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(python/|docs/scripts/|\.github/workflows/ruff-lint\.yml$)' <<<"$files"; then
+          if grep -qE '^(python/|docs/scripts/|php/(generator|bin)/|\.github/workflows/ruff-lint\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -67,4 +69,4 @@ jobs:
         run: uv sync --frozen --group dev
 
       - name: Lint
-        run: uv run --frozen ruff check slackblocks test generator ../docs/scripts
+        run: uv run --frozen ruff check slackblocks test generator ../docs/scripts ../php/generator ../php/bin

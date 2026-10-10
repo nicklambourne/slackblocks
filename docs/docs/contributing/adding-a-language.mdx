@@ -244,6 +244,13 @@ values for fields that depend on another field, and distinct values for append
 operations subject to uniqueness rules. Spot-check deliberate broken operations
 to confirm the behavior tests fail.
 
+Test the runtime's indirect-call and aliasing behavior as well as ordinary calls.
+PHP readonly properties can retain references inside copied arrays, and internal
+callbacks can coerce scalar arguments despite a strict caller. Exercise referenced
+collection entries, nested rows and exported copies; reject invalid element types
+before convenience normalization. Check long and escaped JSON strings around
+numeric boundaries so tokenizer limits cannot silently skip validation.
+
 Keep metadata and extension JSON opaque during Block Kit validation. Test maps
 containing unrelated `type`, `text`, `rows` and `tasks` keys through native
 construction and each parsing boundary. Check original numeric literals before

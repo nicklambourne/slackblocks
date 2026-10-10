@@ -28,7 +28,11 @@ final class Color
     /** Black (#000000). */
     public const BLACK = '#000000';
 
-    /** Validates six hexadecimal digits and adds one leading # if absent. */
+    /** Validates six hexadecimal digits and adds one leading # if absent.
+     * @param string $value Six hexadecimal digits with an optional leading #.
+     * @return string Color with one leading #, preserving letter case.
+     * @throws ValidationError The value is not a six-digit hexadecimal color.
+     */
     public static function hex(string $value): string
     {
         $hex = str_starts_with($value, '#') ? substr($value, 1) : $value;

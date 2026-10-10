@@ -3,11 +3,11 @@
 
 import argparse
 import json
-from pathlib import Path
+import os
 import shutil
 import subprocess
-import os
 import tempfile
+from pathlib import Path
 
 SCRATCH = None
 if Path("/Volumes/Repos").exists():
@@ -21,9 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument("mode", choices=["latest", "lowest"])
 args = parser.parse_args()
-with tempfile.TemporaryDirectory(
-    dir=SCRATCH, prefix="slackblocks-php-integration-"
-) as directory:
+with tempfile.TemporaryDirectory(dir=SCRATCH, prefix="slackblocks-php-integration-") as directory:
     target = Path(directory)
     for name in ["src", "tests", "examples"]:
         shutil.copytree(ROOT / "integrations" / name, target / name)

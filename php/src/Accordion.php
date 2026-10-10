@@ -7,7 +7,9 @@ namespace Slackblocks;
 /** Expands validated collapsible containers into ordinary Slack blocks. */
 final class Accordion
 {
-    /** @param list<ContainerBlock> $sections Ordered, nonempty collapsible sections.
+    /** Expands a nonempty sequence of collapsible sections in display order.
+     * @throws ValidationError A section is missing, wrongly typed or not collapsible.
+     * @param list<ContainerBlock> $sections Ordered, nonempty collapsible sections.
      * @return list<ContainerBlock> Blocks to spread into a modal or Home tab.
      */
     public static function create(array $sections): array

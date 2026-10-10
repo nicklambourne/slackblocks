@@ -91,7 +91,7 @@ final readonly class ModalView extends Value
         ?JsonObject $extensions = null,
     ) {
         $this->title = is_string($title) ? new PlainText($title) : $title;
-        $this->blocks = $blocks;
+        $this->blocks = Internal\Collections::copy($blocks, 'ModalView.blocks');
         $this->close = is_string($close) ? new PlainText($close) : $close;
         $this->submit = is_string($submit) ? new PlainText($submit) : $submit;
         $this->privateMetadata = $privateMetadata;

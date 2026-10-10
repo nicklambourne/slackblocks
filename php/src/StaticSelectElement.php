@@ -69,8 +69,8 @@ final readonly class StaticSelectElement extends Value implements Element, Input
         ?JsonObject $extensions = null,
     ) {
         $this->actionId = $actionId;
-        $this->options = $options;
-        $this->optionGroups = $optionGroups;
+        $this->options = $options === null ? null : Internal\Collections::copy($options, 'StaticSelectElement.options');
+        $this->optionGroups = $optionGroups === null ? null : Internal\Collections::copy($optionGroups, 'StaticSelectElement.option_groups');
         $this->initialOption = $initialOption;
         $this->confirm = $confirm;
         $this->focusOnLoad = $focusOnLoad;

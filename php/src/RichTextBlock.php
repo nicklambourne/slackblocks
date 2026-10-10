@@ -32,7 +32,7 @@ final readonly class RichTextBlock extends Value implements Block, TableCell, Da
         string|null $blockId = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->elements = $elements;
+        $this->elements = Internal\Collections::copy($elements, 'RichTextBlock.elements');
         $this->blockId = $blockId;
         parent::__construct($extensions);
     }

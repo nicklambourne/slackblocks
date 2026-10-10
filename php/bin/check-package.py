@@ -3,13 +3,13 @@
 
 import hashlib
 import json
+import os
 import re
 import shutil
-from pathlib import Path
 import subprocess
-import os
 import tempfile
 import zipfile
+from pathlib import Path
 
 SCRATCH = None
 if Path("/Volumes/Repos").exists():
@@ -30,9 +30,7 @@ def run(*cmd, cwd=ROOT, env=None):
     subprocess.run([executable, *cmd[1:]], cwd=cwd, check=True, env=env)
 
 
-with tempfile.TemporaryDirectory(
-    dir=SCRATCH, prefix="slackblocks-php-package-"
-) as directory:
+with tempfile.TemporaryDirectory(dir=SCRATCH, prefix="slackblocks-php-package-") as directory:
     work = Path(directory)
     run(
         "composer",
@@ -57,9 +55,7 @@ with tempfile.TemporaryDirectory(
         unexpected = [
             p
             for p in names
-            if p.split("/")[0] not in allowed
-            or ".." in Path(p).parts
-            or p.startswith("/")
+            if p.split("/")[0] not in allowed or ".." in Path(p).parts or p.startswith("/")
         ]
         if unexpected:
             raise SystemExit(

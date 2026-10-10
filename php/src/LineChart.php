@@ -33,7 +33,7 @@ final readonly class LineChart extends Value implements Chart
         AxisConfig $axisConfig,
         ?JsonObject $extensions = null,
     ) {
-        $this->series = $series;
+        $this->series = Internal\Collections::copy($series, 'LineChart.series');
         $this->axisConfig = $axisConfig;
         parent::__construct($extensions);
     }
