@@ -7,40 +7,26 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-files = [ROOT / "README.md", ROOT / "php/README.md"] + sorted(
-    (ROOT / "docs/docs").rglob("*.mdx")
-)
-sending = {
-    f"php/integrations/examples/{name}.php" for name in ("jolicode", "curl", "laravel")
-}
+files = [ROOT / "README.md", ROOT / "php/README.md"] + sorted((ROOT / "docs/docs").rglob("*.mdx"))
+sending = {f"php/integrations/examples/{name}.php" for name in ("jolicode", "curl", "laravel")}
 seen = set()
 cases = []
 for file in files:
     if file.parent.name == "php" and "reference" in file.parts:
         continue
     source = file.read_text()
-    for match in re.finditer(
-        r'^```php(?: title="([^"]+)")?\n([\s\S]*?)\n```', source, re.M
-    ):
+    for match in re.finditer(r'^```php(?: title="([^"]+)")?\n([\s\S]*?)\n```', source, re.M):
         title, code = match[1], match[2]
-        assert code.startswith("<?php\n"), (
-            f"{file}: PHP snippets must be complete scripts"
-        )
+        assert code.startswith("<?php\n"), f"{file}: PHP snippets must be complete scripts"
         if title:
             assert title in sending and title not in seen, title
-            assert code == (ROOT / title).read_text().rstrip(), (
-                f"Sending example drift: {title}"
-            )
-            subprocess.run(
-                ["php", "-l", str(ROOT / title)], check=True, capture_output=True
-            )
+            assert code == (ROOT / title).read_text().rstrip(), f"Sending example drift: {title}"
+            subprocess.run(["php", "-l", str(ROOT / title)], check=True, capture_output=True)
             seen.add(title)
             continue
         expected = None
         if file.name == "using_blocks.mdx":
-            heading = list(
-                re.finditer(r"^## (.+) Block$", source[: match.start()], re.M)
-            )[-1][1]
+            heading = list(re.finditer(r"^## (.+) Block$", source[: match.start()], re.M))[-1][1]
             end = source.find("\n## ", match.end())
             section = source[match.end() : end if end >= 0 else None]
             payload = re.search(r"```json\n([\s\S]*?)\n```", section)
@@ -71,9 +57,7 @@ for label, code, expected in cases:
     assert result.returncode == 0, f"{label}: {result.stdout}{result.stderr}\n{code}"
     output = result.stdout
     if expected is not None:
-        assert json.loads(output) == expected, (
-            f"{label}: PHP differs from documented JSON"
-        )
+        assert json.loads(output) == expected, f"{label}: PHP differs from documented JSON"
 print(
     f"Executed {len(cases)} PHP README/guide/reusable examples; every block matches its JSON tab; {len(seen)} sending examples match tested integration source and parse successfully."
 )
