@@ -4,7 +4,7 @@
 ![Licence: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-green.svg)
 ![Python Versions](https://img.shields.io/pypi/pyversions/slackblocks)
 [![PyPI](https://img.shields.io/pypi/v/slackblocks?color=yellow&label=PyPI&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/#history)
-[![Downloads](https://static.pepy.tech/badge/slackblocks)](https://pepy.tech/project/slackblocks)
+[![PyPI downloads](https://api.pepy.tech/personalized-badge/slackblocks?period=TOTAL&units=INTERNATIONAL_SYSTEM&left_text=PyPI%20downloads&left_color=GREY&right_color=BLUE)](https://pepy.tech/project/slackblocks)
 [![Build Status](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
 [![Docs](https://img.shields.io/badge/Docs-8A2BE2.svg)](https://nicklambourne.github.io/slackblocks)
 
