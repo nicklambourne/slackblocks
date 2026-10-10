@@ -106,9 +106,7 @@ final class ValidConstructions
             'objects/workflow_basic' => static fn(): S\Value => new S\Workflow(trigger: new S\Trigger(url: 'https://slack.com/shortcuts/Ft012KXZK1MZ/8831723c452aac3e87c6d3219bebd44c', customizableInputParameters: [new S\InputParameter(name: 'A', value: 'A'), new S\InputParameter(name: 'B', value: 'B')])),
             'rich_text/rich_text_basic' => static fn(): S\Value => new S\RichTextText(text: 'I am a bold rich text block!', style: new S\RichTextStyle(bold: true, italic: true, strike: false)),
             'rich_text/rich_text_channel_basic' => static fn(): S\Value => new S\RichTextChannel(channelId: 'C0261C65XNY', style: new S\RichTextStyle(bold: true, clientHighlight: true, highlight: true, italic: false, strike: true, unlink: false)),
-            'rich_text/rich_text_code_block_basic' => static fn(): S\Value => new S\RichTextCodeBlock(elements: [new S\RichTextText(text: '
-def hello_world():
-    print(\'hello, world\')')], border: 0),
+            'rich_text/rich_text_code_block_basic' => static fn(): S\Value => new S\RichTextCodeBlock(elements: [new S\RichTextText(text: "\ndef hello_world():\n    print('hello, world')")], border: 0),
             'rich_text/rich_text_emoji_basic' => static fn(): S\Value => new S\RichTextEmoji(name: 'wave'),
             'rich_text/rich_text_link_basic' => static fn(): S\Value => new S\RichTextLink(url: 'https://google.com/', text: 'Google', style: new S\RichTextStyle(bold: true, code: true, italic: false, strike: true), unsafe: false),
             'rich_text/rich_text_list_basic' => static fn(): S\Value => new S\RichTextList(style: S\RichTextListStyle::Bullet, elements: [new S\RichTextSection(elements: [new S\RichTextText(text: 'Oh')]), new S\RichTextSection(elements: [new S\RichTextText(text: 'Hi')]), new S\RichTextSection(elements: [new S\RichTextText(text: 'Mark')])], indent: 0, offset: 0, border: 1),
