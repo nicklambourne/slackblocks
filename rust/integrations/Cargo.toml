@@ -20,6 +20,6 @@ thiserror = "2"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
 
 [dev-dependencies]
-# Newer wiremock uses let chains without declaring its Rust 1.88 requirement.
-wiremock = "=0.6.5"
+# wiremock 0.6.5 uses let chains without declaring its Rust 1.88 requirement.
+wiremock = "=0.6.4"
 hyper-util = { version = "0.1", features = ["client-legacy", "http1", "tokio"] }
