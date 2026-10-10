@@ -40,5 +40,5 @@ with tempfile.TemporaryDirectory(prefix='slackblocks-php-package-') as directory
     script=consumer/'location.php'
     script.write_text("<?php require __DIR__.'/vendor/autoload.php'; echo (new ReflectionClass(Slackblocks\\MessagePayload::class))->getFileName();")
     location=subprocess.check_output(['php',str(script)],cwd=consumer,text=True)
-    if not Path(location).is_relative_to(installed):raise SystemExit('Consumer loaded the source checkout')
+    if not Path(location).resolve().is_relative_to(installed.resolve()):raise SystemExit('Consumer loaded the source checkout')
     print(f'Archive verified: {len(names)} entries; SHA256 {hashlib.sha256(archive.read_bytes()).hexdigest()}')

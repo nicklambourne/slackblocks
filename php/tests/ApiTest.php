@@ -61,6 +61,6 @@ final class ApiTest extends TestCase
         $command = escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(__DIR__ . '/../bin/api-inventory.php');
         exec($command, $lines, $code);
         self::assertSame(0, $code);
-        self::assertSame(file_get_contents(__DIR__ . '/../conformance/api-inventory.json'), implode("\n", $lines) . "\n", 'Public signatures changed: review and update the independent inventory');
+        self::assertSame(json_decode(file_get_contents(__DIR__ . '/../conformance/api-inventory.json'), true, flags: JSON_THROW_ON_ERROR), json_decode(implode("\n", $lines), true, flags: JSON_THROW_ON_ERROR), 'Public signatures changed: review and update the independent inventory');
     }
 }
