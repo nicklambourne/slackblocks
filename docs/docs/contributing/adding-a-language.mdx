@@ -12,7 +12,7 @@ shared contract, useful helpers, tested documentation, and working package and
 release integration. Passing the JSON fixtures is one part of that work.
 
 The maintained implementations are currently Python, TypeScript, Go, Java, C#,
-Ruby, and Rust (introduced in 2.6.0). Recheck that list against the packages and coordinated release at the
+Ruby, Rust (introduced in 2.6.0), and PHP (prepared for 2.7.0; publication remains gated). Recheck that list against the packages and coordinated release at the
 start of the project. A plan or an unfinished implementation does not add a
 language to the release set.
 
@@ -137,7 +137,7 @@ and generated implementations meet the same contract.
   the monorepo, the generator's toolchain or files outside the package.
 
 Existing examples include `ruby/generator/generate_models.py` with `--check`,
-`java/generator/generate_models.py`, `csharp/generator/generate_models.py`, `rust/generator/generate.py`, and
+`java/generator/generate_models.py`, `csharp/generator/generate_models.py`, `rust/generator/generate.py`, `php/generator/generate.py`, and
 `go/internal/generatebuilders/`. Adapt their contract handling to the chosen
 idiom; do not copy their language-specific assumptions.
 
@@ -551,3 +551,31 @@ Copy this completion record into the final PR or implementation plan:
 - If Cargo republishes from source, pin the packaging toolchain and compare its
   reproduced archive to the tested artifact before authentication. A successful
   archive download alone does not prove Cargo will publish those contents.
+
+
+## Lessons verified while adding PHP
+
+- Audit competing libraries and their real transport behavior before picking an
+  integration. JoliCode accepts nested Block Kit JSON as form strings; Laravel's
+  template boundary is blocks-only and converts empty objects to arrays. Test
+  the boundary and reject lossy conversions rather than claiming full payload parity.
+- Treat named parameter spelling as public API. Use reflection to discover classes,
+  properties, enums, signatures and defaults independently of generated metadata.
+  Collection PHPDoc and positive/negative static consumers complement native types.
+- Preserve empty objects, explicit false/null, signed 64-bit numbers and Unicode
+  limits. Check cycles/depth before recursively decoding untrusted arrays.
+- Test an actual archived package in a new Composer consumer. Resolve executable
+  launchers through PATH on Windows, resolve filesystem aliases on macOS, and compare
+  parsed JSON inventories rather than line-ending-sensitive text. Use explicit `\n`
+  escapes where fixture text has semantically significant LF characters.
+- A monorepo subdirectory is not automatically a Packagist VCS package root.
+  Choose a root-manifest or deterministic distribution-repository strategy, prove
+  archive/source equality and retry behavior locally, and gate publication on
+  verified repository ownership, scoped credentials and registry configuration.
+- Keep first-release docs explicit about availability. Use a neutral preparation
+  badge until publication, then activate the registry badge and download provider.
+  Historical snapshots must retain their actual language set.
+- Execute all literal block/cookbook examples and compare block output with the
+  separately documented JSON. Reflect handwritten helper comments as well as
+  generated constructors into the reference; API member tables need defaults,
+  collection types and error boundaries.

@@ -1,0 +1,365 @@
+---
+sidebar_position: 5
+toc_max_heading_level: 3
+---
+
+# Components and Utilities
+
+Generated from the actual Rust signatures and rustdoc comments. Builders validate on `build()`; `into_builder()` preserves omissions. Error categories and paths are stable; prose may improve.
+
+## Accordion
+
+A nonempty ordered collection of collapsible sections.
+
+Rendering produces ordinary blocks; the receiving message/view builder checks
+its own surface and total block-count constraints after expansion.
+
+### new
+
+Collects validated sections in display order.
+
+**Errors**
+Returns `missing-required` when no section is supplied.
+
+```rust
+fn new(
+    sections: impl IntoIterator<Item = AccordionSection>,
+) -> Result<Self, ValidationError>
+```
+
+**Related types:** [`AccordionSection`](/reference/rust/components#accordionsection), [`ValidationError`](/reference/rust/errors#validationerror)
+
+### sections
+
+Borrows the ordered sections.
+
+```rust
+fn sections(&self) -> &[AccordionSection]
+```
+
+**Related types:** [`AccordionSection`](/reference/rust/components#accordionsection)
+
+### render
+
+Renders owned blocks while retaining this accordion for reuse.
+
+```rust
+fn render(&self) -> Vec<Block>
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+## AccordionSection
+
+A validated, collapsible section of an [`Accordion`](/reference/rust/components#accordion).
+
+### builder
+
+Starts a collapsed section with standard width and the supplied plain-text title.
+
+```rust
+fn builder(title: impl Into<PlainTextInput>) -> AccordionSectionBuilder
+```
+
+**Related types:** [`AccordionSectionBuilder`](/reference/rust/components#accordionsectionbuilder), [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### as_container
+
+Borrows the validated container representation.
+
+```rust
+fn as_container(&self) -> &ContainerBlock
+```
+
+**Related types:** [`ContainerBlock`](/reference/rust/blocks#containerblock)
+
+### into_container
+
+Moves the section into its container block representation.
+
+```rust
+fn into_container(self) -> ContainerBlock
+```
+
+**Related types:** [`ContainerBlock`](/reference/rust/blocks#containerblock)
+
+## AccordionSectionBuilder
+
+Consuming builder for an accordion section.
+
+### subtitle
+
+Adds a subtitle with field-specific text coercion.
+
+```rust
+fn subtitle(mut self, subtitle: impl Into<crate::TextInput>) -> Self
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### icon
+
+Adds a validated image icon.
+
+```rust
+fn icon(mut self, icon: crate::ImageElement) -> Self
+```
+
+**Related types:** [`ImageElement`](/reference/rust/elements#imageelement)
+
+### width
+
+Selects the section width.
+
+```rust
+fn width(mut self, width: ContainerWidth) -> Self
+```
+
+**Related types:** [`ContainerWidth`](/reference/rust/core#containerwidth)
+
+### has_header_divider
+
+Sets the header-divider flag. Slack rejects `true` on collapsible sections.
+
+```rust
+fn has_header_divider(mut self, divider: bool) -> Self
+```
+
+### blocks
+
+Replaces the section's child blocks, retaining their order.
+
+```rust
+fn blocks<I, T>(mut self, blocks: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Block>,
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### block
+
+Appends a child block.
+
+```rust
+fn block(mut self, block: impl Into<Block>) -> Self
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### expanded
+
+Controls whether the section initially appears expanded.
+
+```rust
+fn expanded(mut self, expanded: bool) -> Self
+```
+
+### block_id
+
+Sets the section's block identifier.
+
+```rust
+fn block_id(mut self, id: impl Into<String>) -> Self
+```
+
+### build
+
+Builds a validated collapsible container.
+
+**Errors**
+Returns an error for invalid titles, missing/too many blocks or invalid identifiers.
+
+```rust
+fn build(self) -> Result<AccordionSection, ValidationError>
+```
+
+**Related types:** [`AccordionSection`](/reference/rust/components#accordionsection), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## AttachmentColor
+
+A semantic or six-digit hexadecimal attachment color.
+
+Named constants use Slack's semantic strings or documented hexadecimal values.
+Parsing accepts hexadecimal strings with or without one leading `#`.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `GOOD` | `Self` | Slack's positive semantic color. |
+| `WARNING` | `Self` | Slack's warning semantic color. |
+| `DANGER` | `Self` | Slack's negative semantic color. |
+| `RED` | `Self` | Red (`#ff0000`). |
+| `BLUE` | `Self` | Blue (`#0000ff`). |
+| `YELLOW` | `Self` | Yellow (`#ffff00`). |
+| `GREEN` | `Self` | Green (`#00ff00`). |
+| `ORANGE` | `Self` | Orange (`#ff8800`). |
+| `PURPLE` | `Self` | Purple (`#8800ff`). |
+| `BLACK` | `Self` | Black (`#000000`). |
+
+### as_str
+
+Returns the normalized Slack wire spelling.
+
+```rust
+fn as_str(&self) -> &str
+```
+
+## block_kit_builder_url
+
+Creates a Slack Block Kit Builder URL without performing any network requests.
+Optional team IDs are encoded as a single path segment. JSON is encoded as UTF-8.
+
+**Errors**
+Returns a Serde error if the supplied payload cannot be serialized.
+
+### block_kit_builder_url
+
+```rust
+fn block_kit_builder_url<'a>(
+    payload: impl Into<BuilderPayload<'a>>,
+    team_id: Option<&str>,
+) -> Result<String, serde_json::Error>
+```
+
+**Related types:** [`BuilderPayload`](/reference/rust/components#builderpayload), [`block_kit_builder_url`](/reference/rust/components#block_kit_builder_url)
+
+## BuilderPayload
+
+Borrowed input shapes for a Block Kit Builder preview URL.
+
+Blocks are wrapped in a `blocks` object. Payloads are serialized as-is. `Raw`
+is an explicit, unvalidated escape hatch for an existing JSON object.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Block` | `(& 'a Block)` | One validated block. |
+| `Blocks` | `(& 'a [Block])` | Ordered validated blocks. |
+| `Message` | `(& 'a MessagePayload)` | A chat message payload. |
+| `Webhook` | `(& 'a WebhookMessage)` | An incoming webhook payload. |
+| `Response` | `(& 'a MessageResponse)` | An interaction response payload. |
+| `Modal` | `(& 'a ModalView)` | A modal view. |
+| `Home` | `(& 'a HomeTabView)` | A Home tab view. |
+| `Raw` | `(& 'a Map < String , Value >)` | A JSON object constructed outside the validated API. |
+
+## Paginator
+
+A validated page of blocks and its navigation controls.
+
+Rendered blocks are ordinary values. Receiving message/view builders validate
+surface and aggregate constraints after pagination has expanded the controls.
+
+### builder
+
+Starts at page one with five content blocks per page.
+
+```rust
+fn builder<I, T>(action_id_prefix: impl Into<String>, blocks: I) -> PaginatorBuilder
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Block>,
+```
+
+**Related types:** [`Block`](/reference/rust/core#block), [`PaginatorBuilder`](/reference/rust/components#paginatorbuilder)
+
+### page
+
+Returns the current one-based page number.
+
+```rust
+const fn page(&self) -> usize
+```
+
+### page_count
+
+Returns the total number of pages.
+
+```rust
+const fn page_count(&self) -> usize
+```
+
+### blocks
+
+Borrows this page's content and controls.
+
+```rust
+fn blocks(&self) -> &[Block]
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### render
+
+Clones this page's content and controls for reuse.
+
+```rust
+fn render(&self) -> Vec<Block>
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+## PaginatorBuilder
+
+Consuming configuration for a [`Paginator`](/reference/rust/components#paginator).
+
+### page
+
+Selects a one-based page number.
+
+```rust
+fn page(mut self, page: usize) -> Self
+```
+
+### page_size
+
+Sets the positive number of content blocks on each page.
+
+```rust
+fn page_size(mut self, size: usize) -> Self
+```
+
+### previous_text
+
+Sets the previous button's plain-text label.
+
+```rust
+fn previous_text(mut self, text: impl Into<String>) -> Self
+```
+
+### next_text
+
+Sets the next button's plain-text label.
+
+```rust
+fn next_text(mut self, text: impl Into<String>) -> Self
+```
+
+### show_page_indicator
+
+Controls the `Page N of M` context block.
+
+```rust
+fn show_page_indicator(mut self, show: bool) -> Self
+```
+
+### block_id
+
+Sets the navigation actions block identifier.
+
+```rust
+fn block_id(mut self, id: impl Into<String>) -> Self
+```
+
+### build
+
+Builds this page, omitting controls when only one page exists.
+
+**Errors**
+Rejects empty content/prefixes, zero page sizes, out-of-range pages, and
+invalid navigation labels or action identifiers.
+
+```rust
+fn build(self) -> Result<Paginator, ValidationError>
+```
+
+**Related types:** [`Paginator`](/reference/rust/components#paginator), [`ValidationError`](/reference/rust/errors#validationerror)

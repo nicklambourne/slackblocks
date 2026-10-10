@@ -142,3 +142,17 @@ assert.doesNotMatch(rustText, /MRI Ruby 3\.3 or newer is required/);
 assert.doesNotMatch(rustText, /Python 3\.10 or newer is required/);
 assert.ok(rustDocuments.some(({u}) => u.includes("/reference/rust")));
 assert.ok(rustDocuments.some(({u}) => u.endsWith("/usage/compatibility")));
+
+const allLanguages = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php"];
+for (const language of allLanguages) {
+  const documents = await readDocuments(language);
+  for (const other of allLanguages.filter((candidate) => candidate !== language)) {
+    assert.equal(documents.some(({ u }) => u.includes(`/reference/${other}`)), false, `${language} leaked ${other} reference`);
+  }
+  if (language === "php") {
+    const text = documents.map(({ t }) => t).join("\n");
+    assert.match(text, /PHP 8\.2 or newer is required/);
+    assert.ok(documents.some(({ u }) => u.includes("/usage/compatibility")));
+    assert.ok(documents.some(({ u }) => u.includes("/reference/php/blocks")));
+  }
+}

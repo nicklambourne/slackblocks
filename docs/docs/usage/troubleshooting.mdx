@@ -1,4 +1,4 @@
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Troubleshooting & FAQ
 
@@ -615,4 +615,58 @@ Use `block_kit_builder_url` to preview blocks without sending them.
 
 
 </Rust>
+<PHP>
+
+## What does validation report?
+
+A malformed PHP call raises native `TypeError`, `ArgumentCountError`, or `Error`
+(for example an unknown named argument). Content errors raise `ValidationError`.
+Checked ingress translates invalid wire types into the shared error categories.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+try {
+    new S\HeaderBlock(str_repeat('x', 151));
+} catch (S\ValidationError $error) {
+    assert($error->category === S\ErrorCategory::LengthExceeded);
+    echo $error->path;
+}
+```
+
+The six categories are `LengthExceeded`, `OutOfRange`, `MutuallyExclusive`,
+`TypeMismatch`, `MissingRequired`, and `InvalidUsage`. Inspect `$error->category`
+and `$error->path`; avoid matching exception prose.
+
+## Why do arrays or objects change shape?
+
+Use lists for modeled collections and `JsonObject` for opaque objects. Its empty
+value is an object; `[]` is a list. `toArray()` preserves nested `stdClass` objects.
+Use `toJson()` or `json_encode($value, JSON_THROW_ON_ERROR)` instead of recursively
+casting everything into associative arrays. Laravel's template adapter rejects
+empty objects that its decoder cannot preserve.
+
+## Text, surfaces and interactions
+
+Headers and button labels are plain text; section text defaults to mrkdwn.
+Always provide fallback message text for notifications. Messages accept at most
+50 blocks and views 100; helper-generated controls count too. Surface-specific
+rules reject unsupported combinations. A pending task belongs inside a plan;
+serializing it as a standalone task card is invalid. IDs are caller-owned.
+Buttons describe an action; your app must still receive and handle interactions.
+
+## Previewing and sending
+
+`Builder::url()` creates a Block Kit Builder URL without network access.
+The package itself sends nothing. See [Sending Messages](sending_messages) for
+tested transports, deadlines and rate-limit behavior. Report minimal reproduction
+code and PHP/package versions in the [issue tracker](https://github.com/nicklambourne/slackblocks/issues).
+
+</PHP>
 </LanguageContent>

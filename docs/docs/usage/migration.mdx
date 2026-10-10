@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Migration
 
@@ -310,4 +310,41 @@ See [Quick Start](../quick-start), [Compatibility](compatibility), and the
 [Rust API reference](../reference/rust) for complete signatures and error behavior.
 
 </Rust>
+<PHP>
+
+## Adopting the PHP API
+
+There is no earlier Slackblocks PHP release to migrate from. Existing raw arrays
+can enter through `MessagePayload::fromArray()` or `fromJson()`; choose `fromJson()`
+when preserving empty JSON objects matters. Unknown fields become immutable
+`JsonObject` extensions. Modeled names and `type` cannot be overridden.
+
+From `slack-php/slack-php-block-kit`, replace mutable/fluent construction with
+named constructors and `with()`. These are separate packages with different APIs;
+objects are not interchangeable. Use JSON at the boundary. From Laravel's Slack
+notification builder, keep delivery and routing in Laravel and bridge validated
+blocks through `usingBlockKitTemplate()` as shown in [Sending Messages](sending_messages).
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$original = S\SectionBlock::fromJson('{"type":"section","text":{"type":"mrkdwn","text":"Original"}}');
+$edited = $original->with(text: 'Updated');
+assert($original->text->getText() === 'Original');
+echo $edited->toJson();
+```
+
+Construct typed children directly for new code. `PlainText` and `MarkdownText`
+are distinct classes; text parameters also accept strings with the field's
+native plain-text or mrkdwn default. Enums use cases such as
+`ButtonStyle::Primary`, not unchecked strings. Optional constructor `null` omits
+a field; explicit null inside a `JsonObject` is preserved.
+
+</PHP>
 </LanguageContent>

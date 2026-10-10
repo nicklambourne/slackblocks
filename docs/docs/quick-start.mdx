@@ -3,7 +3,7 @@ sidebar_label: Quick Start
 sidebar_position: 2
 ---
 
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Quick Start
 
@@ -245,6 +245,55 @@ propagate `ValidationError`. Built values own their data; getters borrow it.
 
 
 </Rust>
+<PHP>
+
+## Install the package
+
+PHP 8.2 or newer is required, on a 64-bit build with the JSON and PCRE extensions.
+The core has no third-party runtime dependencies. Composer 2 handles PSR-4 autoloading.
+
+**PHP support is being prepared for 2.7.0 and is not published on Packagist yet.**
+Until the first release, check out this repository and run from its `php` directory:
+
+```sh
+composer install
+php examples/consumer.php vendor/autoload.php
+```
+
+After publication, install with `composer require nicklambourne/slackblocks:^2.7`.
+Keep `vendor/autoload.php` in your application's entry point and use
+`declare(strict_types=1)` in your calling PHP files. PHP 8.2's named arguments,
+readonly classes and backed enums are the public API; named parameter spelling
+is part of compatibility.
+
+## Build a message
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(
+    channel: 'C0123456789',
+    text: 'Build #482 passed',
+    blocks: [
+        new S\HeaderBlock('Build #482 passed'),
+        new S\SectionBlock(fields: ["*Branch*\n`main`", "*Tests*\n1,247 passed"]),
+        new S\ActionsBlock(elements: [
+            new S\ButtonElement(text: 'View build', actionId: 'view', url: 'https://ci.example.com/482'),
+        ]),
+    ],
+);
+echo $message->toJson();
+```
+
+Send the resulting payload with [JoliCode, cURL, or Laravel](usage/sending_messages).
+
+</PHP>
 </LanguageContent>
 
 ## Where to go next

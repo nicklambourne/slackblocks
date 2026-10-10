@@ -1,0 +1,4102 @@
+---
+sidebar_position: 2
+toc_max_heading_level: 3
+---
+
+# Elements
+
+This page documents the Ruby API for elements. Values use keyword-only construction, validate before freezing, and serialize to Slack JSON.
+
+## ButtonElement
+
+An interactive button that sends a payload or opens a URL.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/button-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: text.
+
+```ruby
+def self.new: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets the button label. |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `url` | Sets a URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload. |
+| `value` | Sets the application-defined value sent in interaction payloads. |
+| `style` | Sets the button's emphasis. Omit it for the default neutral style. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `accessibility_label` | Sets the label read by screen readers in place of the visible text. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ButtonElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ButtonElement`](/reference/ruby/elements#buttonelement), [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
+```
+
+**Returns:** ButtonElement
+
+**Related types:** [`ButtonElement`](/reference/ruby/elements#buttonelement), [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### text
+
+Sets the button label. Wire key: text.
+
+```ruby
+def text: () -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### url
+
+Sets a URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload. Wire key: url.
+
+```ruby
+def url: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### value
+
+Sets the application-defined value sent in interaction payloads. Wire key: value.
+
+```ruby
+def value: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### style
+
+Sets the button's emphasis. Omit it for the default neutral style. Wire key: style.
+
+```ruby
+def style: () -> (:primary | :danger)?
+```
+
+**Returns:** (:primary \| :danger)?
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### accessibility_label
+
+Sets the label read by screen readers in place of the visible text. Wire key: accessibility_label.
+
+```ruby
+def accessibility_label: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ButtonElement
+```
+
+**Returns:** ButtonElement
+
+**Related types:** [`ButtonElement`](/reference/ruby/elements#buttonelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ButtonStyle
+
+Visual emphasis for buttons and confirmation dialogs. Pass the wire symbol to constructor keywords.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `PRIMARY` | `:primary` | Green emphasis for the affirmative action. |
+| `DANGER` | `:danger` | Red emphasis for destructive actions. |
+
+## ChannelMultiSelectElement
+
+A menu for selecting multiple public channels.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?initial_channels: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChannelMultiSelectElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_channels` | Adds channel IDs that are selected when the menu loads. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `max_selected_items` | Sets the maximum number of items a user can select. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ChannelMultiSelectElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ChannelMultiSelectElement`](/reference/ruby/elements#channelmultiselectelement), [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_channels: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChannelMultiSelectElement
+```
+
+**Returns:** ChannelMultiSelectElement
+
+**Related types:** [`ChannelMultiSelectElement`](/reference/ruby/elements#channelmultiselectelement), [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### initial_channels
+
+Adds channel IDs that are selected when the menu loads. Wire key: initial_channels.
+
+```ruby
+def initial_channels: () -> (Array[String])?
+```
+
+**Returns:** (Array[String])?
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### max_selected_items
+
+Sets the maximum number of items a user can select. Wire key: max_selected_items.
+
+```ruby
+def max_selected_items: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ChannelMultiSelectElement
+```
+
+**Returns:** ChannelMultiSelectElement
+
+**Related types:** [`ChannelMultiSelectElement`](/reference/ruby/elements#channelmultiselectelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ChannelSelectElement
+
+A menu for selecting one public channel.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?initial_channel: (String)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChannelSelectElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_channel` | Sets the channel ID selected when the menu loads. |
+| `response_url_enabled` | Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ChannelSelectElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ChannelSelectElement`](/reference/ruby/elements#channelselectelement), [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_channel: (String)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ChannelSelectElement
+```
+
+**Returns:** ChannelSelectElement
+
+**Related types:** [`ChannelSelectElement`](/reference/ruby/elements#channelselectelement), [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### initial_channel
+
+Sets the channel ID selected when the menu loads. Wire key: initial_channel.
+
+```ruby
+def initial_channel: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### response_url_enabled
+
+Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals. Wire key: response_url_enabled.
+
+```ruby
+def response_url_enabled: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ChannelSelectElement
+```
+
+**Returns:** ChannelSelectElement
+
+**Related types:** [`ChannelSelectElement`](/reference/ruby/elements#channelselectelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## CheckboxesElement
+
+A group of checkboxes.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/checkboxes-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: options.
+
+```ruby
+def self.new: (?action_id: (String)?, options: Array[Option], ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CheckboxesElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `options` | Adds selectable options in display order. |
+| `initial_options` | Adds options that are selected when the element loads. Each must match an option in the element. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** CheckboxesElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`CheckboxesElement`](/reference/ruby/elements#checkboxeselement), [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, options: Array[Option], ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CheckboxesElement
+```
+
+**Returns:** CheckboxesElement
+
+**Related types:** [`CheckboxesElement`](/reference/ruby/elements#checkboxeselement), [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### options
+
+Adds selectable options in display order. Wire key: options.
+
+```ruby
+def options: () -> Array[Option]
+```
+
+**Returns:** Array[Option]
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### initial_options
+
+Adds options that are selected when the element loads. Each must match an option in the element. Wire key: initial_options.
+
+```ruby
+def initial_options: () -> (Array[Option])?
+```
+
+**Returns:** (Array[Option])?
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> CheckboxesElement
+```
+
+**Returns:** CheckboxesElement
+
+**Related types:** [`CheckboxesElement`](/reference/ruby/elements#checkboxeselement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ConversationMultiSelectElement
+
+A menu for selecting multiple conversations.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?initial_conversations: (Array[String])?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationMultiSelectElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_conversations` | Adds conversation IDs that are selected when the menu loads. |
+| `default_to_current_conversation` | Sets whether the menu pre-selects the conversation the user is viewing. |
+| `filter` | Sets which conversation types the menu offers. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `max_selected_items` | Sets the maximum number of items a user can select. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ConversationMultiSelectElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ConversationFilter`](/reference/ruby/objects#conversationfilter), [`ConversationMultiSelectElement`](/reference/ruby/elements#conversationmultiselectelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_conversations: (Array[String])?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationMultiSelectElement
+```
+
+**Returns:** ConversationMultiSelectElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ConversationFilter`](/reference/ruby/objects#conversationfilter), [`ConversationMultiSelectElement`](/reference/ruby/elements#conversationmultiselectelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### initial_conversations
+
+Adds conversation IDs that are selected when the menu loads. Wire key: initial_conversations.
+
+```ruby
+def initial_conversations: () -> (Array[String])?
+```
+
+**Returns:** (Array[String])?
+
+### default_to_current_conversation
+
+Sets whether the menu pre-selects the conversation the user is viewing. Wire key: default_to_current_conversation.
+
+```ruby
+def default_to_current_conversation: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### filter
+
+Sets which conversation types the menu offers. Wire key: filter.
+
+```ruby
+def filter: () -> (ConversationFilter)?
+```
+
+**Returns:** (ConversationFilter)?
+
+**Related types:** [`ConversationFilter`](/reference/ruby/objects#conversationfilter)
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### max_selected_items
+
+Sets the maximum number of items a user can select. Wire key: max_selected_items.
+
+```ruby
+def max_selected_items: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ConversationMultiSelectElement
+```
+
+**Returns:** ConversationMultiSelectElement
+
+**Related types:** [`ConversationMultiSelectElement`](/reference/ruby/elements#conversationmultiselectelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ConversationSelectElement
+
+A menu for selecting one conversation.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?initial_conversation: (String)?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationSelectElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_conversation` | Sets the conversation ID selected when the menu loads. |
+| `default_to_current_conversation` | Sets whether the menu pre-selects the conversation the user is viewing. |
+| `filter` | Sets which conversation types the menu offers. |
+| `response_url_enabled` | Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ConversationSelectElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ConversationFilter`](/reference/ruby/objects#conversationfilter), [`ConversationSelectElement`](/reference/ruby/elements#conversationselectelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_conversation: (String)?, ?default_to_current_conversation: (bool)?, ?filter: (ConversationFilter)?, ?response_url_enabled: (bool)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ConversationSelectElement
+```
+
+**Returns:** ConversationSelectElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ConversationFilter`](/reference/ruby/objects#conversationfilter), [`ConversationSelectElement`](/reference/ruby/elements#conversationselectelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### initial_conversation
+
+Sets the conversation ID selected when the menu loads. Wire key: initial_conversation.
+
+```ruby
+def initial_conversation: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### default_to_current_conversation
+
+Sets whether the menu pre-selects the conversation the user is viewing. Wire key: default_to_current_conversation.
+
+```ruby
+def default_to_current_conversation: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### filter
+
+Sets which conversation types the menu offers. Wire key: filter.
+
+```ruby
+def filter: () -> (ConversationFilter)?
+```
+
+**Returns:** (ConversationFilter)?
+
+**Related types:** [`ConversationFilter`](/reference/ruby/objects#conversationfilter)
+
+### response_url_enabled
+
+Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals. Wire key: response_url_enabled.
+
+```ruby
+def response_url_enabled: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ConversationSelectElement
+```
+
+**Returns:** ConversationSelectElement
+
+**Related types:** [`ConversationSelectElement`](/reference/ruby/elements#conversationselectelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## DatePickerElement
+
+A calendar date picker.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?initial_date: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DatePickerElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_date` | Sets the initially selected date, formatted as YYYY-MM-DD. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** DatePickerElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`DatePickerElement`](/reference/ruby/elements#datepickerelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_date: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DatePickerElement
+```
+
+**Returns:** DatePickerElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`DatePickerElement`](/reference/ruby/elements#datepickerelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### initial_date
+
+Sets the initially selected date, formatted as YYYY-MM-DD. Wire key: initial_date.
+
+```ruby
+def initial_date: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> DatePickerElement
+```
+
+**Returns:** DatePickerElement
+
+**Related types:** [`DatePickerElement`](/reference/ruby/elements#datepickerelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## DateTimePickerElement
+
+A combined date and time picker.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/datetime-picker-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?initial_date_time: (Integer)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DateTimePickerElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_date_time` | Sets the initially selected moment as a UNIX timestamp in seconds. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** DateTimePickerElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`DateTimePickerElement`](/reference/ruby/elements#datetimepickerelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_date_time: (Integer)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DateTimePickerElement
+```
+
+**Returns:** DateTimePickerElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`DateTimePickerElement`](/reference/ruby/elements#datetimepickerelement)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### initial_date_time
+
+Sets the initially selected moment as a UNIX timestamp in seconds. Wire key: initial_date_time.
+
+```ruby
+def initial_date_time: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> DateTimePickerElement
+```
+
+**Returns:** DateTimePickerElement
+
+**Related types:** [`DateTimePickerElement`](/reference/ruby/elements#datetimepickerelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## Element
+
+A validated interactive, visual, or input element nested inside a Slack block.
+
+## EmailInputElement
+
+A single-line input that accepts an email address.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/email-input-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> EmailInputElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_value` | Sets the value present when the input loads. |
+| `dispatch_action_config` | Sets which user interactions send a block_actions payload. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** EmailInputElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`EmailInputElement`](/reference/ruby/elements#emailinputelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> EmailInputElement
+```
+
+**Returns:** EmailInputElement
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`EmailInputElement`](/reference/ruby/elements#emailinputelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### initial_value
+
+Sets the value present when the input loads. Wire key: initial_value.
+
+```ruby
+def initial_value: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### dispatch_action_config
+
+Sets which user interactions send a block_actions payload. Wire key: dispatch_action_config.
+
+```ruby
+def dispatch_action_config: () -> (DispatchActionConfiguration)?
+```
+
+**Returns:** (DispatchActionConfiguration)?
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> EmailInputElement
+```
+
+**Returns:** EmailInputElement
+
+**Related types:** [`EmailInputElement`](/reference/ruby/elements#emailinputelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ExternalMultiSelectElement
+
+A menu for selecting multiple options loaded from your app.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ExternalMultiSelectElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `min_query_length` | Sets how many characters the user must type before Slack queries your options endpoint. |
+| `initial_options` | Adds options that are selected when the element loads. Each must match an option in the element. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `max_selected_items` | Sets the maximum number of items a user can select. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ExternalMultiSelectElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ExternalMultiSelectElement`](/reference/ruby/elements#externalmultiselectelement), [`Option`](/reference/ruby/objects#option), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ExternalMultiSelectElement
+```
+
+**Returns:** ExternalMultiSelectElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ExternalMultiSelectElement`](/reference/ruby/elements#externalmultiselectelement), [`Option`](/reference/ruby/objects#option), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### min_query_length
+
+Sets how many characters the user must type before Slack queries your options endpoint. Wire key: min_query_length.
+
+```ruby
+def min_query_length: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### initial_options
+
+Adds options that are selected when the element loads. Each must match an option in the element. Wire key: initial_options.
+
+```ruby
+def initial_options: () -> (Array[Option])?
+```
+
+**Returns:** (Array[Option])?
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### max_selected_items
+
+Sets the maximum number of items a user can select. Wire key: max_selected_items.
+
+```ruby
+def max_selected_items: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ExternalMultiSelectElement
+```
+
+**Returns:** ExternalMultiSelectElement
+
+**Related types:** [`ExternalMultiSelectElement`](/reference/ruby/elements#externalmultiselectelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ExternalSelectElement
+
+A menu for selecting one option loaded from your app.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ExternalSelectElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `min_query_length` | Sets how many characters the user must type before Slack queries your options endpoint. |
+| `initial_option` | Sets the option selected when the element loads. It must match an option in the element. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ExternalSelectElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ExternalSelectElement`](/reference/ruby/elements#externalselectelement), [`Option`](/reference/ruby/objects#option), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ExternalSelectElement
+```
+
+**Returns:** ExternalSelectElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`ExternalSelectElement`](/reference/ruby/elements#externalselectelement), [`Option`](/reference/ruby/objects#option), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### min_query_length
+
+Sets how many characters the user must type before Slack queries your options endpoint. Wire key: min_query_length.
+
+```ruby
+def min_query_length: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### initial_option
+
+Sets the option selected when the element loads. It must match an option in the element. Wire key: initial_option.
+
+```ruby
+def initial_option: () -> (Option)?
+```
+
+**Returns:** (Option)?
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ExternalSelectElement
+```
+
+**Returns:** ExternalSelectElement
+
+**Related types:** [`ExternalSelectElement`](/reference/ruby/elements#externalselectelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## FeedbackButtonsElement
+
+A pair of thumbs-up and thumbs-down feedback buttons.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: positive_button, negative_button.
+
+```ruby
+def self.new: (positive_button: FeedbackButton, negative_button: FeedbackButton, ?action_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FeedbackButtonsElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `positive_button` | Sets the button for positive feedback. |
+| `negative_button` | Sets the button for negative feedback. |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** FeedbackButtonsElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`FeedbackButton`](/reference/ruby/objects#feedbackbutton), [`FeedbackButtonsElement`](/reference/ruby/elements#feedbackbuttonselement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (positive_button: FeedbackButton, negative_button: FeedbackButton, ?action_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FeedbackButtonsElement
+```
+
+**Returns:** FeedbackButtonsElement
+
+**Related types:** [`FeedbackButton`](/reference/ruby/objects#feedbackbutton), [`FeedbackButtonsElement`](/reference/ruby/elements#feedbackbuttonselement)
+
+### positive_button
+
+Sets the button for positive feedback. Wire key: positive_button.
+
+```ruby
+def positive_button: () -> FeedbackButton
+```
+
+**Returns:** FeedbackButton
+
+**Related types:** [`FeedbackButton`](/reference/ruby/objects#feedbackbutton)
+
+### negative_button
+
+Sets the button for negative feedback. Wire key: negative_button.
+
+```ruby
+def negative_button: () -> FeedbackButton
+```
+
+**Returns:** FeedbackButton
+
+**Related types:** [`FeedbackButton`](/reference/ruby/objects#feedbackbutton)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> FeedbackButtonsElement
+```
+
+**Returns:** FeedbackButtonsElement
+
+**Related types:** [`FeedbackButtonsElement`](/reference/ruby/elements#feedbackbuttonselement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## FileInputElement
+
+An input that lets users upload files.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/file-input-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?filetypes: (Array[String])?, ?max_files: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FileInputElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `filetypes` | Adds accepted file extensions, such as pdf or png. |
+| `max_files` | Sets the maximum number of files a user can upload. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** FileInputElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`FileInputElement`](/reference/ruby/elements#fileinputelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?filetypes: (Array[String])?, ?max_files: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FileInputElement
+```
+
+**Returns:** FileInputElement
+
+**Related types:** [`FileInputElement`](/reference/ruby/elements#fileinputelement)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### filetypes
+
+Adds accepted file extensions, such as pdf or png. Wire key: filetypes.
+
+```ruby
+def filetypes: () -> (Array[String])?
+```
+
+**Returns:** (Array[String])?
+
+### max_files
+
+Sets the maximum number of files a user can upload. Wire key: max_files.
+
+```ruby
+def max_files: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> FileInputElement
+```
+
+**Returns:** FileInputElement
+
+**Related types:** [`FileInputElement`](/reference/ruby/elements#fileinputelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## IconButtonElement
+
+A button that shows an icon instead of text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: text.
+
+```ruby
+def self.new: (text: String | PlainText, ?icon: (:trash)?, ?action_id: (String)?, ?value: (String)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?visible_to_user_ids: (Array[String])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> IconButtonElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets the text used as the button's accessible name. |
+| `icon` | Sets the icon shown on the button. |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `value` | Sets the application-defined value sent in interaction payloads. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `accessibility_label` | Sets the label read by screen readers in place of the visible text. |
+| `visible_to_user_ids` | Adds the IDs of users who can see this button. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** IconButtonElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`IconButtonElement`](/reference/ruby/elements#iconbuttonelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String | PlainText, ?icon: (:trash)?, ?action_id: (String)?, ?value: (String)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?visible_to_user_ids: (Array[String])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> IconButtonElement
+```
+
+**Returns:** IconButtonElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`IconButtonElement`](/reference/ruby/elements#iconbuttonelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### text
+
+Sets the text used as the button's accessible name. Wire key: text.
+
+```ruby
+def text: () -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### icon
+
+Sets the icon shown on the button. Wire key: icon.
+
+```ruby
+def icon: () -> (:trash)?
+```
+
+**Returns:** (:trash)?
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### value
+
+Sets the application-defined value sent in interaction payloads. Wire key: value.
+
+```ruby
+def value: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### accessibility_label
+
+Sets the label read by screen readers in place of the visible text. Wire key: accessibility_label.
+
+```ruby
+def accessibility_label: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### visible_to_user_ids
+
+Adds the IDs of users who can see this button. Wire key: visible_to_user_ids.
+
+```ruby
+def visible_to_user_ids: () -> (Array[String])?
+```
+
+**Returns:** (Array[String])?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> IconButtonElement
+```
+
+**Returns:** IconButtonElement
+
+**Related types:** [`IconButtonElement`](/reference/ruby/elements#iconbuttonelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## IconButtonIcon
+
+Icons supported by icon buttons. Pass the wire symbol to constructor keywords.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `TRASH` | `:trash` | A trash can, for delete actions. |
+
+## ImageElement
+
+An image displayed inside a section, context, or card.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/image-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: alt_text.
+
+```ruby
+def self.new: (alt_text: String, ?image_url: (String)?, ?slack_file: (SlackFile)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ImageElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `alt_text` | Sets a plain-text summary of the image or video for assistive technology. |
+| `image_url` | Sets the publicly accessible URL of the image. Cannot be combined with a Slack file. |
+| `slack_file` | Sets a file hosted in Slack as the image source. Cannot be combined with an image URL. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ImageElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ImageElement`](/reference/ruby/elements#imageelement), [`SlackFile`](/reference/ruby/objects#slackfile)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (alt_text: String, ?image_url: (String)?, ?slack_file: (SlackFile)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ImageElement
+```
+
+**Returns:** ImageElement
+
+**Related types:** [`ImageElement`](/reference/ruby/elements#imageelement), [`SlackFile`](/reference/ruby/objects#slackfile)
+
+### alt_text
+
+Sets a plain-text summary of the image or video for assistive technology. Wire key: alt_text.
+
+```ruby
+def alt_text: () -> String
+```
+
+**Returns:** String
+
+### image_url
+
+Sets the publicly accessible URL of the image. Cannot be combined with a Slack file. Wire key: image_url.
+
+```ruby
+def image_url: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### slack_file
+
+Sets a file hosted in Slack as the image source. Cannot be combined with an image URL. Wire key: slack_file.
+
+```ruby
+def slack_file: () -> (SlackFile)?
+```
+
+**Returns:** (SlackFile)?
+
+**Related types:** [`SlackFile`](/reference/ruby/objects#slackfile)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ImageElement
+```
+
+**Returns:** ImageElement
+
+**Related types:** [`ImageElement`](/reference/ruby/elements#imageelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## InputElement
+
+An element that can be placed in an input block.
+
+## NumberInputElement
+
+An input that accepts whole or decimal numbers.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/number-input-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: is_decimal_allowed.
+
+```ruby
+def self.new: (?action_id: (String)?, is_decimal_allowed: bool, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `is_decimal_allowed` | Sets whether the input accepts decimal numbers. |
+| `initial_value` | Sets the number present when the input loads, as a string such as 42 or 3.5. |
+| `min_value` | Sets the smallest accepted number. |
+| `max_value` | Sets the largest accepted number. |
+| `dispatch_action_config` | Sets which user interactions send a block_actions payload. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** NumberInputElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`NumberInputElement`](/reference/ruby/elements#numberinputelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, is_decimal_allowed: bool, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
+```
+
+**Returns:** NumberInputElement
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`NumberInputElement`](/reference/ruby/elements#numberinputelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### is_decimal_allowed
+
+Sets whether the input accepts decimal numbers. Wire key: is_decimal_allowed.
+
+```ruby
+def is_decimal_allowed: () -> bool
+```
+
+**Returns:** bool
+
+### initial_value
+
+Sets the number present when the input loads, as a string such as 42 or 3.5. Wire key: initial_value.
+
+```ruby
+def initial_value: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### min_value
+
+Sets the smallest accepted number. Wire key: min_value.
+
+```ruby
+def min_value: () -> (Integer | Float)?
+```
+
+**Returns:** (Integer \| Float)?
+
+### max_value
+
+Sets the largest accepted number. Wire key: max_value.
+
+```ruby
+def max_value: () -> (Integer | Float)?
+```
+
+**Returns:** (Integer \| Float)?
+
+### dispatch_action_config
+
+Sets which user interactions send a block_actions payload. Wire key: dispatch_action_config.
+
+```ruby
+def dispatch_action_config: () -> (DispatchActionConfiguration)?
+```
+
+**Returns:** (DispatchActionConfiguration)?
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> NumberInputElement
+```
+
+**Returns:** NumberInputElement
+
+**Related types:** [`NumberInputElement`](/reference/ruby/elements#numberinputelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## OverflowElement
+
+A compact menu of up to five options.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/overflow-menu-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: options.
+
+```ruby
+def self.new: (?action_id: (String)?, options: Array[Option], ?confirm: (Confirmation)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> OverflowElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `options` | Adds selectable options in display order. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** OverflowElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`OverflowElement`](/reference/ruby/elements#overflowelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, options: Array[Option], ?confirm: (Confirmation)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> OverflowElement
+```
+
+**Returns:** OverflowElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`OverflowElement`](/reference/ruby/elements#overflowelement)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### options
+
+Adds selectable options in display order. Wire key: options.
+
+```ruby
+def options: () -> Array[Option]
+```
+
+**Returns:** Array[Option]
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> OverflowElement
+```
+
+**Returns:** OverflowElement
+
+**Related types:** [`OverflowElement`](/reference/ruby/elements#overflowelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## PlainTextInputElement
+
+A single-line or multi-line free-text input.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?initial_value: (String)?, ?multiline: (bool)?, ?min_length: (Integer)?, ?max_length: (Integer)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlainTextInputElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_value` | Sets the value present when the input loads. |
+| `multiline` | Sets whether the input is a multi-line text area. |
+| `min_length` | Sets the minimum number of characters the user must enter. |
+| `max_length` | Sets the maximum number of characters the user can enter. |
+| `dispatch_action_config` | Sets which user interactions send a block_actions payload. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** PlainTextInputElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`PlainText`](/reference/ruby/objects#plaintext), [`PlainTextInputElement`](/reference/ruby/elements#plaintextinputelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_value: (String)?, ?multiline: (bool)?, ?min_length: (Integer)?, ?max_length: (Integer)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlainTextInputElement
+```
+
+**Returns:** PlainTextInputElement
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`PlainText`](/reference/ruby/objects#plaintext), [`PlainTextInputElement`](/reference/ruby/elements#plaintextinputelement)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### initial_value
+
+Sets the value present when the input loads. Wire key: initial_value.
+
+```ruby
+def initial_value: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### multiline
+
+Sets whether the input is a multi-line text area. Wire key: multiline.
+
+```ruby
+def multiline: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### min_length
+
+Sets the minimum number of characters the user must enter. Wire key: min_length.
+
+```ruby
+def min_length: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### max_length
+
+Sets the maximum number of characters the user can enter. Wire key: max_length.
+
+```ruby
+def max_length: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### dispatch_action_config
+
+Sets which user interactions send a block_actions payload. Wire key: dispatch_action_config.
+
+```ruby
+def dispatch_action_config: () -> (DispatchActionConfiguration)?
+```
+
+**Returns:** (DispatchActionConfiguration)?
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> PlainTextInputElement
+```
+
+**Returns:** PlainTextInputElement
+
+**Related types:** [`PlainTextInputElement`](/reference/ruby/elements#plaintextinputelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RadioButtonsElement
+
+A group of radio buttons.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/radio-button-group-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: options.
+
+```ruby
+def self.new: (?action_id: (String)?, options: Array[Option], ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RadioButtonsElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `options` | Adds selectable options in display order. |
+| `initial_option` | Sets the option selected when the element loads. It must match an option in the element. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RadioButtonsElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`RadioButtonsElement`](/reference/ruby/elements#radiobuttonselement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, options: Array[Option], ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RadioButtonsElement
+```
+
+**Returns:** RadioButtonsElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`RadioButtonsElement`](/reference/ruby/elements#radiobuttonselement)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### options
+
+Adds selectable options in display order. Wire key: options.
+
+```ruby
+def options: () -> Array[Option]
+```
+
+**Returns:** Array[Option]
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### initial_option
+
+Sets the option selected when the element loads. It must match an option in the element. Wire key: initial_option.
+
+```ruby
+def initial_option: () -> (Option)?
+```
+
+**Returns:** (Option)?
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RadioButtonsElement
+```
+
+**Returns:** RadioButtonsElement
+
+**Related types:** [`RadioButtonsElement`](/reference/ruby/elements#radiobuttonselement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RichTextInputElement
+
+An input that accepts formatted rich text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/rich-text-input-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: action_id.
+
+```ruby
+def self.new: (action_id: String, ?initial_value: (RichTextBlock)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?min_lines: (Integer)?, ?max_lines: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextInputElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_value` | Sets the rich text present when the input loads. |
+| `dispatch_action_config` | Sets which user interactions send a block_actions payload. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `min_lines` | Sets the minimum visible height of the input, in lines. |
+| `max_lines` | Sets the maximum visible height of the input, in lines. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RichTextInputElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`PlainText`](/reference/ruby/objects#plaintext), [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`RichTextInputElement`](/reference/ruby/elements#richtextinputelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (action_id: String, ?initial_value: (RichTextBlock)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?min_lines: (Integer)?, ?max_lines: (Integer)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextInputElement
+```
+
+**Returns:** RichTextInputElement
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`PlainText`](/reference/ruby/objects#plaintext), [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`RichTextInputElement`](/reference/ruby/elements#richtextinputelement)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> String
+```
+
+**Returns:** String
+
+### initial_value
+
+Sets the rich text present when the input loads. Wire key: initial_value.
+
+```ruby
+def initial_value: () -> (RichTextBlock)?
+```
+
+**Returns:** (RichTextBlock)?
+
+**Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock)
+
+### dispatch_action_config
+
+Sets which user interactions send a block_actions payload. Wire key: dispatch_action_config.
+
+```ruby
+def dispatch_action_config: () -> (DispatchActionConfiguration)?
+```
+
+**Returns:** (DispatchActionConfiguration)?
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### min_lines
+
+Sets the minimum visible height of the input, in lines. Wire key: min_lines.
+
+```ruby
+def min_lines: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### max_lines
+
+Sets the maximum visible height of the input, in lines. Wire key: max_lines.
+
+```ruby
+def max_lines: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextInputElement
+```
+
+**Returns:** RichTextInputElement
+
+**Related types:** [`RichTextInputElement`](/reference/ruby/elements#richtextinputelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## StaticMultiSelectElement
+
+A menu for selecting multiple options defined in the payload.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> StaticMultiSelectElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `options` | Adds selectable options in display order. |
+| `option_groups` | Adds labelled groups of options in display order. Cannot be combined with ungrouped options. |
+| `initial_options` | Adds options that are selected when the element loads. Each must match an option in the element. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `max_selected_items` | Sets the maximum number of items a user can select. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** StaticMultiSelectElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`OptionGroup`](/reference/ruby/objects#optiongroup), [`PlainText`](/reference/ruby/objects#plaintext), [`StaticMultiSelectElement`](/reference/ruby/elements#staticmultiselectelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_options: (Array[Option])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> StaticMultiSelectElement
+```
+
+**Returns:** StaticMultiSelectElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`OptionGroup`](/reference/ruby/objects#optiongroup), [`PlainText`](/reference/ruby/objects#plaintext), [`StaticMultiSelectElement`](/reference/ruby/elements#staticmultiselectelement)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### options
+
+Adds selectable options in display order. Wire key: options.
+
+```ruby
+def options: () -> (Array[Option])?
+```
+
+**Returns:** (Array[Option])?
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### option_groups
+
+Adds labelled groups of options in display order. Cannot be combined with ungrouped options. Wire key: option_groups.
+
+```ruby
+def option_groups: () -> (Array[OptionGroup])?
+```
+
+**Returns:** (Array[OptionGroup])?
+
+**Related types:** [`OptionGroup`](/reference/ruby/objects#optiongroup)
+
+### initial_options
+
+Adds options that are selected when the element loads. Each must match an option in the element. Wire key: initial_options.
+
+```ruby
+def initial_options: () -> (Array[Option])?
+```
+
+**Returns:** (Array[Option])?
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### max_selected_items
+
+Sets the maximum number of items a user can select. Wire key: max_selected_items.
+
+```ruby
+def max_selected_items: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> StaticMultiSelectElement
+```
+
+**Returns:** StaticMultiSelectElement
+
+**Related types:** [`StaticMultiSelectElement`](/reference/ruby/elements#staticmultiselectelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## StaticSelectElement
+
+A menu for selecting one option defined in the payload.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> StaticSelectElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `options` | Adds selectable options in display order. |
+| `option_groups` | Adds labelled groups of options in display order. Cannot be combined with ungrouped options. |
+| `initial_option` | Sets the option selected when the element loads. It must match an option in the element. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** StaticSelectElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`OptionGroup`](/reference/ruby/objects#optiongroup), [`PlainText`](/reference/ruby/objects#plaintext), [`StaticSelectElement`](/reference/ruby/elements#staticselectelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?options: (Array[Option])?, ?option_groups: (Array[OptionGroup])?, ?initial_option: (Option)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> StaticSelectElement
+```
+
+**Returns:** StaticSelectElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`Option`](/reference/ruby/objects#option), [`OptionGroup`](/reference/ruby/objects#optiongroup), [`PlainText`](/reference/ruby/objects#plaintext), [`StaticSelectElement`](/reference/ruby/elements#staticselectelement)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### options
+
+Adds selectable options in display order. Wire key: options.
+
+```ruby
+def options: () -> (Array[Option])?
+```
+
+**Returns:** (Array[Option])?
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### option_groups
+
+Adds labelled groups of options in display order. Cannot be combined with ungrouped options. Wire key: option_groups.
+
+```ruby
+def option_groups: () -> (Array[OptionGroup])?
+```
+
+**Returns:** (Array[OptionGroup])?
+
+**Related types:** [`OptionGroup`](/reference/ruby/objects#optiongroup)
+
+### initial_option
+
+Sets the option selected when the element loads. It must match an option in the element. Wire key: initial_option.
+
+```ruby
+def initial_option: () -> (Option)?
+```
+
+**Returns:** (Option)?
+
+**Related types:** [`Option`](/reference/ruby/objects#option)
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> StaticSelectElement
+```
+
+**Returns:** StaticSelectElement
+
+**Related types:** [`StaticSelectElement`](/reference/ruby/elements#staticselectelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## TimePickerElement
+
+A time-of-day picker.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?initial_time: (String)?, ?timezone: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TimePickerElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_time` | Sets the initially selected time, formatted as HH:mm in 24-hour time. |
+| `timezone` | Sets the IANA time zone used to display the time, such as Australia/Brisbane. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** TimePickerElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`TimePickerElement`](/reference/ruby/elements#timepickerelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_time: (String)?, ?timezone: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TimePickerElement
+```
+
+**Returns:** TimePickerElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`TimePickerElement`](/reference/ruby/elements#timepickerelement)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### initial_time
+
+Sets the initially selected time, formatted as HH:mm in 24-hour time. Wire key: initial_time.
+
+```ruby
+def initial_time: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### timezone
+
+Sets the IANA time zone used to display the time, such as Australia/Brisbane. Wire key: timezone.
+
+```ruby
+def timezone: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> TimePickerElement
+```
+
+**Returns:** TimePickerElement
+
+**Related types:** [`TimePickerElement`](/reference/ruby/elements#timepickerelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## UrlInputElement
+
+A single-line input that accepts a URL.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/url-input-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UrlInputElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_value` | Sets the value present when the input loads. |
+| `dispatch_action_config` | Sets which user interactions send a block_actions payload. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** UrlInputElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`PlainText`](/reference/ruby/objects#plaintext), [`UrlInputElement`](/reference/ruby/elements#urlinputelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_value: (String)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UrlInputElement
+```
+
+**Returns:** UrlInputElement
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration), [`PlainText`](/reference/ruby/objects#plaintext), [`UrlInputElement`](/reference/ruby/elements#urlinputelement)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### initial_value
+
+Sets the value present when the input loads. Wire key: initial_value.
+
+```ruby
+def initial_value: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### dispatch_action_config
+
+Sets which user interactions send a block_actions payload. Wire key: dispatch_action_config.
+
+```ruby
+def dispatch_action_config: () -> (DispatchActionConfiguration)?
+```
+
+**Returns:** (DispatchActionConfiguration)?
+
+**Related types:** [`DispatchActionConfiguration`](/reference/ruby/objects#dispatchactionconfiguration)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> UrlInputElement
+```
+
+**Returns:** UrlInputElement
+
+**Related types:** [`UrlInputElement`](/reference/ruby/elements#urlinputelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## UserMultiSelectElement
+
+A menu for selecting multiple workspace users.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?initial_users: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UserMultiSelectElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_users` | Adds user IDs that are selected when the menu loads. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `max_selected_items` | Sets the maximum number of items a user can select. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** UserMultiSelectElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`UserMultiSelectElement`](/reference/ruby/elements#usermultiselectelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_users: (Array[String])?, ?confirm: (Confirmation)?, ?max_selected_items: (Integer)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UserMultiSelectElement
+```
+
+**Returns:** UserMultiSelectElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`UserMultiSelectElement`](/reference/ruby/elements#usermultiselectelement)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### initial_users
+
+Adds user IDs that are selected when the menu loads. Wire key: initial_users.
+
+```ruby
+def initial_users: () -> (Array[String])?
+```
+
+**Returns:** (Array[String])?
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### max_selected_items
+
+Sets the maximum number of items a user can select. Wire key: max_selected_items.
+
+```ruby
+def max_selected_items: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> UserMultiSelectElement
+```
+
+**Returns:** UserMultiSelectElement
+
+**Related types:** [`UserMultiSelectElement`](/reference/ruby/elements#usermultiselectelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## UserSelectElement
+
+A menu for selecting one workspace user.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?action_id: (String)?, ?initial_user: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UserSelectElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `initial_user` | Sets the user ID selected when the menu loads. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `placeholder` | Sets the placeholder text shown before a value is chosen. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** UserSelectElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`UserSelectElement`](/reference/ruby/elements#userselectelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?action_id: (String)?, ?initial_user: (String)?, ?confirm: (Confirmation)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> UserSelectElement
+```
+
+**Returns:** UserSelectElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`UserSelectElement`](/reference/ruby/elements#userselectelement)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### initial_user
+
+Sets the user ID selected when the menu loads. Wire key: initial_user.
+
+```ruby
+def initial_user: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### focus_on_load
+
+Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+
+```ruby
+def focus_on_load: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### placeholder
+
+Sets the placeholder text shown before a value is chosen. Wire key: placeholder.
+
+```ruby
+def placeholder: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> UserSelectElement
+```
+
+**Returns:** UserSelectElement
+
+**Related types:** [`UserSelectElement`](/reference/ruby/elements#userselectelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## WorkflowButtonElement
+
+A button that starts a workflow through a link trigger.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: text, workflow, action_id.
+
+```ruby
+def self.new: (text: String | PlainText, workflow: Workflow, action_id: String, ?confirm: (Confirmation)?, ?style: (:primary | :danger)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> WorkflowButtonElement
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets the button label. |
+| `workflow` | Sets the workflow started when the button is clicked. |
+| `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
+| `confirm` | Sets a confirmation dialog shown before the action is sent. |
+| `style` | Sets the button's emphasis. Omit it for the default neutral style. |
+| `accessibility_label` | Sets the label read by screen readers in place of the visible text. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** WorkflowButtonElement
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`Workflow`](/reference/ruby/objects#workflow), [`WorkflowButtonElement`](/reference/ruby/elements#workflowbuttonelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String | PlainText, workflow: Workflow, action_id: String, ?confirm: (Confirmation)?, ?style: (:primary | :danger)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> WorkflowButtonElement
+```
+
+**Returns:** WorkflowButtonElement
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation), [`PlainText`](/reference/ruby/objects#plaintext), [`Workflow`](/reference/ruby/objects#workflow), [`WorkflowButtonElement`](/reference/ruby/elements#workflowbuttonelement)
+
+### text
+
+Sets the button label. Wire key: text.
+
+```ruby
+def text: () -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### workflow
+
+Sets the workflow started when the button is clicked. Wire key: workflow.
+
+```ruby
+def workflow: () -> Workflow
+```
+
+**Returns:** Workflow
+
+**Related types:** [`Workflow`](/reference/ruby/objects#workflow)
+
+### action_id
+
+Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Wire key: action_id.
+
+```ruby
+def action_id: () -> String
+```
+
+**Returns:** String
+
+### confirm
+
+Sets a confirmation dialog shown before the action is sent. Wire key: confirm.
+
+```ruby
+def confirm: () -> (Confirmation)?
+```
+
+**Returns:** (Confirmation)?
+
+**Related types:** [`Confirmation`](/reference/ruby/objects#confirmation)
+
+### style
+
+Sets the button's emphasis. Omit it for the default neutral style. Wire key: style.
+
+```ruby
+def style: () -> (:primary | :danger)?
+```
+
+**Returns:** (:primary \| :danger)?
+
+### accessibility_label
+
+Sets the label read by screen readers in place of the visible text. Wire key: accessibility_label.
+
+```ruby
+def accessibility_label: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> WorkflowButtonElement
+```
+
+**Returns:** WorkflowButtonElement
+
+**Related types:** [`WorkflowButtonElement`](/reference/ruby/elements#workflowbuttonelement)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```

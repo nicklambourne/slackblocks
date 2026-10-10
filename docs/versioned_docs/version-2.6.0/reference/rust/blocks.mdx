@@ -1,0 +1,3469 @@
+---
+sidebar_position: 1
+toc_max_heading_level: 3
+---
+
+# Blocks
+
+Generated from the actual Rust signatures and rustdoc comments. Builders validate on `build()`; `into_builder()` preserves omissions. Error categories and paths are stable; prose may improve.
+
+## ActionsBlock
+
+A block that holds interactive elements such as buttons and menus.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/actions-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ActionsBlockBuilder
+```
+
+**Related types:** [`ActionsBlockBuilder`](/reference/rust/blocks#actionsblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ActionsBlockBuilder
+```
+
+**Related types:** [`ActionsBlockBuilder`](/reference/rust/blocks#actionsblockbuilder)
+
+### elements
+
+Borrows or copies `elements`. Adds interactive elements in display order.
+
+```rust
+fn elements(&self) -> &[Element]
+```
+
+**Related types:** [`Element`](/reference/rust/core#element)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ActionsBlockBuilder
+
+Consuming builder for [`ActionsBlock`](/reference/rust/blocks#actionsblock). Validation runs in `Self::build`.
+
+### elements
+
+Adds interactive elements in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn elements<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Element>,
+```
+
+**Related types:** [`Element`](/reference/rust/core#element)
+
+### element
+
+Appends one item to the collection.
+
+```rust
+fn element(mut self, value: impl Into<Element>) -> Self
+```
+
+**Related types:** [`Element`](/reference/rust/core#element)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ActionsBlock, ValidationError>
+```
+
+**Related types:** [`ActionsBlock`](/reference/rust/blocks#actionsblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## AlertBlock
+
+A severity-labelled alert, available in modals.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/alert-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> AlertBlockBuilder
+```
+
+**Related types:** [`AlertBlockBuilder`](/reference/rust/blocks#alertblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> AlertBlockBuilder
+```
+
+**Related types:** [`AlertBlockBuilder`](/reference/rust/blocks#alertblockbuilder)
+
+### text
+
+Borrows or copies `text`. Sets the alert message.
+
+```rust
+fn text(&self) -> &Text
+```
+
+**Related types:** [`Text`](/reference/rust/core#text)
+
+### level
+
+Borrows or copies `level`. Sets the alert severity, which controls its color and icon.
+
+```rust
+fn level(&self) -> Option<AlertLevel>
+```
+
+**Related types:** [`AlertLevel`](/reference/rust/core#alertlevel)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## AlertBlockBuilder
+
+Consuming builder for [`AlertBlock`](/reference/rust/blocks#alertblock). Validation runs in `Self::build`.
+
+### text
+
+Sets the alert message.
+
+```rust
+fn text(mut self, value: impl Into<TextInput>) -> Self
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### level
+
+Sets the alert severity, which controls its color and icon.
+
+```rust
+fn level(mut self, value: AlertLevel) -> Self
+```
+
+**Related types:** [`AlertLevel`](/reference/rust/core#alertlevel)
+
+### clear_level
+
+Omits `level`, including any model default.
+
+```rust
+fn clear_level(mut self) -> Self
+```
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<AlertBlock, ValidationError>
+```
+
+**Related types:** [`AlertBlock`](/reference/rust/blocks#alertblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## CardBlock
+
+A compact card with an image, text, and up to three buttons.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+Provide at least one of a hero image, title, actions, or body. An image icon and a Slack icon cannot be combined.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> CardBlockBuilder
+```
+
+**Related types:** [`CardBlockBuilder`](/reference/rust/blocks#cardblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> CardBlockBuilder
+```
+
+**Related types:** [`CardBlockBuilder`](/reference/rust/blocks#cardblockbuilder)
+
+### hero_image
+
+Borrows or copies `hero_image`. Sets the image displayed prominently at the top of the card.
+
+```rust
+fn hero_image(&self) -> Option<&ImageElement>
+```
+
+**Related types:** [`ImageElement`](/reference/rust/elements#imageelement)
+
+### icon
+
+Borrows or copies `icon`. Sets the image displayed beside the title.
+
+```rust
+fn icon(&self) -> Option<&ImageElement>
+```
+
+**Related types:** [`ImageElement`](/reference/rust/elements#imageelement)
+
+### title
+
+Borrows or copies `title`. Sets the card title.
+
+```rust
+fn title(&self) -> Option<&Text>
+```
+
+**Related types:** [`Text`](/reference/rust/core#text)
+
+### subtitle
+
+Borrows or copies `subtitle`. Sets the supporting text shown below the title.
+
+```rust
+fn subtitle(&self) -> Option<&Text>
+```
+
+**Related types:** [`Text`](/reference/rust/core#text)
+
+### body
+
+Borrows or copies `body`. Sets the main body text of the card.
+
+```rust
+fn body(&self) -> Option<&Text>
+```
+
+**Related types:** [`Text`](/reference/rust/core#text)
+
+### actions
+
+Borrows or copies `actions`. Adds buttons displayed at the bottom of the card, in display order.
+
+```rust
+fn actions(&self) -> Option<&[ButtonElement]>
+```
+
+**Related types:** [`ButtonElement`](/reference/rust/elements#buttonelement)
+
+### slack_icon
+
+Borrows or copies `slack_icon`. Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon.
+
+```rust
+fn slack_icon(&self) -> Option<&SlackIcon>
+```
+
+**Related types:** [`SlackIcon`](/reference/rust/objects#slackicon)
+
+### subtext
+
+Borrows or copies `subtext`. Sets the small print shown at the bottom of the card.
+
+```rust
+fn subtext(&self) -> Option<&Text>
+```
+
+**Related types:** [`Text`](/reference/rust/core#text)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## CardBlockBuilder
+
+Consuming builder for [`CardBlock`](/reference/rust/blocks#cardblock). Validation runs in `Self::build`.
+
+### hero_image
+
+Sets the image displayed prominently at the top of the card.
+
+```rust
+fn hero_image(mut self, value: impl Into<ImageElement>) -> Self
+```
+
+**Related types:** [`ImageElement`](/reference/rust/elements#imageelement)
+
+### clear_hero_image
+
+Omits `hero_image`, including any model default.
+
+```rust
+fn clear_hero_image(mut self) -> Self
+```
+
+### icon
+
+Sets the image displayed beside the title.
+
+```rust
+fn icon(mut self, value: impl Into<ImageElement>) -> Self
+```
+
+**Related types:** [`ImageElement`](/reference/rust/elements#imageelement)
+
+### clear_icon
+
+Omits `icon`, including any model default.
+
+```rust
+fn clear_icon(mut self) -> Self
+```
+
+### title
+
+Sets the card title.
+
+```rust
+fn title(mut self, value: impl Into<TextInput>) -> Self
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### clear_title
+
+Omits `title`, including any model default.
+
+```rust
+fn clear_title(mut self) -> Self
+```
+
+### subtitle
+
+Sets the supporting text shown below the title.
+
+```rust
+fn subtitle(mut self, value: impl Into<TextInput>) -> Self
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### clear_subtitle
+
+Omits `subtitle`, including any model default.
+
+```rust
+fn clear_subtitle(mut self) -> Self
+```
+
+### body
+
+Sets the main body text of the card.
+
+```rust
+fn body(mut self, value: impl Into<TextInput>) -> Self
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### clear_body
+
+Omits `body`, including any model default.
+
+```rust
+fn clear_body(mut self) -> Self
+```
+
+### actions
+
+Adds buttons displayed at the bottom of the card, in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn actions<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<ButtonElement>,
+```
+
+**Related types:** [`ButtonElement`](/reference/rust/elements#buttonelement)
+
+### action
+
+Appends one item to the collection.
+
+```rust
+fn action(mut self, value: impl Into<ButtonElement>) -> Self
+```
+
+**Related types:** [`ButtonElement`](/reference/rust/elements#buttonelement)
+
+### clear_actions
+
+Omits `actions`, including any model default.
+
+```rust
+fn clear_actions(mut self) -> Self
+```
+
+### slack_icon
+
+Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon.
+
+```rust
+fn slack_icon(mut self, value: impl Into<SlackIcon>) -> Self
+```
+
+**Related types:** [`SlackIcon`](/reference/rust/objects#slackicon)
+
+### clear_slack_icon
+
+Omits `slack_icon`, including any model default.
+
+```rust
+fn clear_slack_icon(mut self) -> Self
+```
+
+### subtext
+
+Sets the small print shown at the bottom of the card.
+
+```rust
+fn subtext(mut self, value: impl Into<TextInput>) -> Self
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### clear_subtext
+
+Omits `subtext`, including any model default.
+
+```rust
+fn clear_subtext(mut self) -> Self
+```
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<CardBlock, ValidationError>
+```
+
+**Related types:** [`CardBlock`](/reference/rust/blocks#cardblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## CarouselBlock
+
+A horizontally scrolling set of cards, available in messages and App Home.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/carousel-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> CarouselBlockBuilder
+```
+
+**Related types:** [`CarouselBlockBuilder`](/reference/rust/blocks#carouselblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> CarouselBlockBuilder
+```
+
+**Related types:** [`CarouselBlockBuilder`](/reference/rust/blocks#carouselblockbuilder)
+
+### elements
+
+Borrows or copies `elements`. Adds the cards in display order.
+
+```rust
+fn elements(&self) -> &[CardBlock]
+```
+
+**Related types:** [`CardBlock`](/reference/rust/blocks#cardblock)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## CarouselBlockBuilder
+
+Consuming builder for [`CarouselBlock`](/reference/rust/blocks#carouselblock). Validation runs in `Self::build`.
+
+### elements
+
+Adds the cards in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn elements<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<CardBlock>,
+```
+
+**Related types:** [`CardBlock`](/reference/rust/blocks#cardblock)
+
+### element
+
+Appends one item to the collection.
+
+```rust
+fn element(mut self, value: impl Into<CardBlock>) -> Self
+```
+
+**Related types:** [`CardBlock`](/reference/rust/blocks#cardblock)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<CarouselBlock, ValidationError>
+```
+
+**Related types:** [`CarouselBlock`](/reference/rust/blocks#carouselblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ContainerBlock
+
+A titled group of blocks that can optionally collapse.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/container-block).
+Provide a title or a rich text title.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ContainerBlockBuilder
+```
+
+**Related types:** [`ContainerBlockBuilder`](/reference/rust/blocks#containerblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ContainerBlockBuilder
+```
+
+**Related types:** [`ContainerBlockBuilder`](/reference/rust/blocks#containerblockbuilder)
+
+### child_blocks
+
+Borrows or copies `child_blocks`. Adds the blocks grouped inside the container, in display order.
+
+```rust
+fn child_blocks(&self) -> &[Block]
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### title
+
+Borrows or copies `title`. Sets the container title. Provide either a title or a rich text title.
+
+```rust
+fn title(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### rich_text_title
+
+Borrows or copies `rich_text_title`. Sets a rich text block used as the title in place of a plain-text title.
+
+```rust
+fn rich_text_title(&self) -> Option<&RichTextBlock>
+```
+
+**Related types:** [`RichTextBlock`](/reference/rust/blocks#richtextblock)
+
+### subtitle
+
+Borrows or copies `subtitle`. Sets the supporting text shown below the title.
+
+```rust
+fn subtitle(&self) -> Option<&Text>
+```
+
+**Related types:** [`Text`](/reference/rust/core#text)
+
+### width
+
+Borrows or copies `width`. Sets the horizontal width of the container.
+
+```rust
+fn width(&self) -> Option<ContainerWidth>
+```
+
+**Related types:** [`ContainerWidth`](/reference/rust/core#containerwidth)
+
+### icon
+
+Borrows or copies `icon`. Sets the image displayed beside the title.
+
+```rust
+fn icon(&self) -> Option<&ImageElement>
+```
+
+**Related types:** [`ImageElement`](/reference/rust/elements#imageelement)
+
+### is_collapsible
+
+Borrows or copies `is_collapsible`. Sets whether users can collapse and expand the container.
+
+```rust
+fn is_collapsible(&self) -> Option<bool>
+```
+
+### default_collapsed
+
+Borrows or copies `default_collapsed`. Sets whether a collapsible container starts collapsed. Requires the container to be collapsible.
+
+```rust
+fn default_collapsed(&self) -> Option<bool>
+```
+
+### has_header_divider
+
+Borrows or copies `has_header_divider`. Sets whether Slack draws a divider below the container header. Only valid for non-collapsible containers.
+
+```rust
+fn has_header_divider(&self) -> Option<bool>
+```
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ContainerBlockBuilder
+
+Consuming builder for [`ContainerBlock`](/reference/rust/blocks#containerblock). Validation runs in `Self::build`.
+
+### child_blocks
+
+Adds the blocks grouped inside the container, in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn child_blocks<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Block>,
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### child_block
+
+Appends one item to the collection.
+
+```rust
+fn child_block(mut self, value: impl Into<Block>) -> Self
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### title
+
+Sets the container title. Provide either a title or a rich text title.
+
+```rust
+fn title(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_title
+
+Omits `title`, including any model default.
+
+```rust
+fn clear_title(mut self) -> Self
+```
+
+### rich_text_title
+
+Sets a rich text block used as the title in place of a plain-text title.
+
+```rust
+fn rich_text_title(mut self, value: impl Into<RichTextBlock>) -> Self
+```
+
+**Related types:** [`RichTextBlock`](/reference/rust/blocks#richtextblock)
+
+### clear_rich_text_title
+
+Omits `rich_text_title`, including any model default.
+
+```rust
+fn clear_rich_text_title(mut self) -> Self
+```
+
+### subtitle
+
+Sets the supporting text shown below the title.
+
+```rust
+fn subtitle(mut self, value: impl Into<TextInput>) -> Self
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### clear_subtitle
+
+Omits `subtitle`, including any model default.
+
+```rust
+fn clear_subtitle(mut self) -> Self
+```
+
+### width
+
+Sets the horizontal width of the container.
+
+```rust
+fn width(mut self, value: ContainerWidth) -> Self
+```
+
+**Related types:** [`ContainerWidth`](/reference/rust/core#containerwidth)
+
+### clear_width
+
+Omits `width`, including any model default.
+
+```rust
+fn clear_width(mut self) -> Self
+```
+
+### icon
+
+Sets the image displayed beside the title.
+
+```rust
+fn icon(mut self, value: impl Into<ImageElement>) -> Self
+```
+
+**Related types:** [`ImageElement`](/reference/rust/elements#imageelement)
+
+### clear_icon
+
+Omits `icon`, including any model default.
+
+```rust
+fn clear_icon(mut self) -> Self
+```
+
+### is_collapsible
+
+Sets whether users can collapse and expand the container.
+
+```rust
+fn is_collapsible(mut self, value: bool) -> Self
+```
+
+### clear_is_collapsible
+
+Omits `is_collapsible`, including any model default.
+
+```rust
+fn clear_is_collapsible(mut self) -> Self
+```
+
+### default_collapsed
+
+Sets whether a collapsible container starts collapsed. Requires the container to be collapsible.
+
+```rust
+fn default_collapsed(mut self, value: bool) -> Self
+```
+
+### clear_default_collapsed
+
+Omits `default_collapsed`, including any model default.
+
+```rust
+fn clear_default_collapsed(mut self) -> Self
+```
+
+### has_header_divider
+
+Sets whether Slack draws a divider below the container header. Only valid for non-collapsible containers.
+
+```rust
+fn has_header_divider(mut self, value: bool) -> Self
+```
+
+### clear_has_header_divider
+
+Omits `has_header_divider`, including any model default.
+
+```rust
+fn clear_has_header_divider(mut self) -> Self
+```
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ContainerBlock, ValidationError>
+```
+
+**Related types:** [`ContainerBlock`](/reference/rust/blocks#containerblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ContextActionsBlock
+
+A row of feedback or icon buttons, usually shown below AI-generated content.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/context-actions-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ContextActionsBlockBuilder
+```
+
+**Related types:** [`ContextActionsBlockBuilder`](/reference/rust/blocks#contextactionsblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ContextActionsBlockBuilder
+```
+
+**Related types:** [`ContextActionsBlockBuilder`](/reference/rust/blocks#contextactionsblockbuilder)
+
+### elements
+
+Borrows or copies `elements`. Adds feedback buttons or icon buttons in display order.
+
+```rust
+fn elements(&self) -> &[ContextActionsElement]
+```
+
+**Related types:** [`ContextActionsElement`](/reference/rust/core#contextactionselement)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ContextActionsBlockBuilder
+
+Consuming builder for [`ContextActionsBlock`](/reference/rust/blocks#contextactionsblock). Validation runs in `Self::build`.
+
+### elements
+
+Adds feedback buttons or icon buttons in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn elements<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<ContextActionsElement>,
+```
+
+**Related types:** [`ContextActionsElement`](/reference/rust/core#contextactionselement)
+
+### element
+
+Appends one item to the collection.
+
+```rust
+fn element(mut self, value: impl Into<ContextActionsElement>) -> Self
+```
+
+**Related types:** [`ContextActionsElement`](/reference/rust/core#contextactionselement)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ContextActionsBlock, ValidationError>
+```
+
+**Related types:** [`ContextActionsBlock`](/reference/rust/blocks#contextactionsblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ContextBlock
+
+A block of small, secondary images and text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/context-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ContextBlockBuilder
+```
+
+**Related types:** [`ContextBlockBuilder`](/reference/rust/blocks#contextblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ContextBlockBuilder
+```
+
+**Related types:** [`ContextBlockBuilder`](/reference/rust/blocks#contextblockbuilder)
+
+### elements
+
+Borrows or copies `elements`. Adds images and text in display order.
+
+```rust
+fn elements(&self) -> &[ContextElement]
+```
+
+**Related types:** [`ContextElement`](/reference/rust/core#contextelement)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ContextBlockBuilder
+
+Consuming builder for [`ContextBlock`](/reference/rust/blocks#contextblock). Validation runs in `Self::build`.
+
+### elements
+
+Adds images and text in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn elements<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<ContextElement>,
+```
+
+**Related types:** [`ContextElement`](/reference/rust/core#contextelement)
+
+### element
+
+Appends one item to the collection.
+
+```rust
+fn element(mut self, value: impl Into<ContextElement>) -> Self
+```
+
+**Related types:** [`ContextElement`](/reference/rust/core#contextelement)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ContextBlock, ValidationError>
+```
+
+**Related types:** [`ContextBlock`](/reference/rust/blocks#contextblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## DataTableBlock
+
+A sortable, paginated table of raw text, numbers, and rich text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+The first row is the header row and cannot contain rich text. Every row must have the same number of cells, and all cell text together is limited to 20,000 characters.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> DataTableBlockBuilder
+```
+
+**Related types:** [`DataTableBlockBuilder`](/reference/rust/blocks#datatableblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> DataTableBlockBuilder
+```
+
+**Related types:** [`DataTableBlockBuilder`](/reference/rust/blocks#datatableblockbuilder)
+
+### rows
+
+Borrows or copies `rows`. Adds complete table rows in display order. Every row must have the same number of cells.
+
+```rust
+fn rows(&self) -> &[Vec<DataTableCell>]
+```
+
+**Related types:** [`DataTableCell`](/reference/rust/core#datatablecell)
+
+### caption
+
+Borrows or copies `caption`. Sets the caption that describes the table's contents.
+
+```rust
+fn caption(&self) -> &str
+```
+
+### page_size
+
+Borrows or copies `page_size`. Sets how many rows Slack shows per page.
+
+```rust
+fn page_size(&self) -> Option<i64>
+```
+
+### row_header_column_index
+
+Borrows or copies `row_header_column_index`. Sets the zero-based index of the column whose cells act as row headers.
+
+```rust
+fn row_header_column_index(&self) -> Option<i64>
+```
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## DataTableBlockBuilder
+
+Consuming builder for [`DataTableBlock`](/reference/rust/blocks#datatableblock). Validation runs in `Self::build`.
+
+### rows
+
+Adds complete table rows in display order. Every row must have the same number of cells.
+Replaces all rows, preserving row and cell order.
+
+```rust
+fn rows<I, R, T>(mut self, rows: I) -> Self
+where
+    I: IntoIterator<Item = R>,
+    R: IntoIterator<Item = T>,
+    T: Into<DataTableCell>,
+```
+
+**Related types:** [`DataTableCell`](/reference/rust/core#datatablecell)
+
+### row
+
+Appends a complete row.
+
+```rust
+fn row<I, T>(mut self, row: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<DataTableCell>,
+```
+
+**Related types:** [`DataTableCell`](/reference/rust/core#datatablecell)
+
+### caption
+
+Sets the caption that describes the table's contents.
+
+```rust
+fn caption(mut self, value: impl Into<String>) -> Self
+```
+
+### page_size
+
+Sets how many rows Slack shows per page.
+
+```rust
+fn page_size(mut self, value: i64) -> Self
+```
+
+### clear_page_size
+
+Omits `page_size`, including any model default.
+
+```rust
+fn clear_page_size(mut self) -> Self
+```
+
+### row_header_column_index
+
+Sets the zero-based index of the column whose cells act as row headers.
+
+```rust
+fn row_header_column_index(mut self, value: i64) -> Self
+```
+
+### clear_row_header_column_index
+
+Omits `row_header_column_index`, including any model default.
+
+```rust
+fn clear_row_header_column_index(mut self) -> Self
+```
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<DataTableBlock, ValidationError>
+```
+
+**Related types:** [`DataTableBlock`](/reference/rust/blocks#datatableblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## DataVisualizationBlock
+
+A titled pie, bar, area, or line chart.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> DataVisualizationBlockBuilder
+```
+
+**Related types:** [`DataVisualizationBlockBuilder`](/reference/rust/blocks#datavisualizationblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> DataVisualizationBlockBuilder
+```
+
+**Related types:** [`DataVisualizationBlockBuilder`](/reference/rust/blocks#datavisualizationblockbuilder)
+
+### title
+
+Borrows or copies `title`. Sets the chart title.
+
+```rust
+fn title(&self) -> &str
+```
+
+### chart
+
+Borrows or copies `chart`. Sets the chart to display.
+
+```rust
+fn chart(&self) -> &Chart
+```
+
+**Related types:** [`Chart`](/reference/rust/core#chart)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## DataVisualizationBlockBuilder
+
+Consuming builder for [`DataVisualizationBlock`](/reference/rust/blocks#datavisualizationblock). Validation runs in `Self::build`.
+
+### title
+
+Sets the chart title.
+
+```rust
+fn title(mut self, value: impl Into<String>) -> Self
+```
+
+### chart
+
+Sets the chart to display.
+
+```rust
+fn chart(mut self, value: impl Into<Chart>) -> Self
+```
+
+**Related types:** [`Chart`](/reference/rust/core#chart)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<DataVisualizationBlock, ValidationError>
+```
+
+**Related types:** [`DataVisualizationBlock`](/reference/rust/blocks#datavisualizationblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## DividerBlock
+
+A horizontal rule that separates blocks.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/divider-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> DividerBlockBuilder
+```
+
+**Related types:** [`DividerBlockBuilder`](/reference/rust/blocks#dividerblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> DividerBlockBuilder
+```
+
+**Related types:** [`DividerBlockBuilder`](/reference/rust/blocks#dividerblockbuilder)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## DividerBlockBuilder
+
+Consuming builder for [`DividerBlock`](/reference/rust/blocks#dividerblock). Validation runs in `Self::build`.
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<DividerBlock, ValidationError>
+```
+
+**Related types:** [`DividerBlock`](/reference/rust/blocks#dividerblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## FileBlock
+
+A remote file previously added with the files.remote API.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/file-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> FileBlockBuilder
+```
+
+**Related types:** [`FileBlockBuilder`](/reference/rust/blocks#fileblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> FileBlockBuilder
+```
+
+**Related types:** [`FileBlockBuilder`](/reference/rust/blocks#fileblockbuilder)
+
+### external_id
+
+Borrows or copies `external_id`. Sets the external identifier of a remote file previously added with the files.remote API.
+
+```rust
+fn external_id(&self) -> &str
+```
+
+### source
+
+Borrows or copies `source`. Sets the file source. Slack currently supports only remote files.
+
+```rust
+fn source(&self) -> &str
+```
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## FileBlockBuilder
+
+Consuming builder for [`FileBlock`](/reference/rust/blocks#fileblock). Validation runs in `Self::build`.
+
+### external_id
+
+Sets the external identifier of a remote file previously added with the files.remote API.
+
+```rust
+fn external_id(mut self, value: impl Into<String>) -> Self
+```
+
+### source
+
+Sets the file source. Slack currently supports only remote files.
+
+```rust
+fn source(mut self, value: impl Into<String>) -> Self
+```
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<FileBlock, ValidationError>
+```
+
+**Related types:** [`FileBlock`](/reference/rust/blocks#fileblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## HeaderBlock
+
+Large, bold plain text that introduces a group of blocks.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/header-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> HeaderBlockBuilder
+```
+
+**Related types:** [`HeaderBlockBuilder`](/reference/rust/blocks#headerblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> HeaderBlockBuilder
+```
+
+**Related types:** [`HeaderBlockBuilder`](/reference/rust/blocks#headerblockbuilder)
+
+### text
+
+Borrows or copies `text`. Sets the header text, shown in a larger bold font.
+
+```rust
+fn text(&self) -> &PlainText
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## HeaderBlockBuilder
+
+Consuming builder for [`HeaderBlock`](/reference/rust/blocks#headerblock). Validation runs in `Self::build`.
+
+### text
+
+Sets the header text, shown in a larger bold font.
+
+```rust
+fn text(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<HeaderBlock, ValidationError>
+```
+
+**Related types:** [`HeaderBlock`](/reference/rust/blocks#headerblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ImageBlock
+
+A standalone image with alternative text and an optional title.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/image-block).
+Provide exactly one of an image URL or a Slack file.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ImageBlockBuilder
+```
+
+**Related types:** [`ImageBlockBuilder`](/reference/rust/blocks#imageblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ImageBlockBuilder
+```
+
+**Related types:** [`ImageBlockBuilder`](/reference/rust/blocks#imageblockbuilder)
+
+### image_url
+
+Borrows or copies `image_url`. Sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+
+```rust
+fn image_url(&self) -> Option<&str>
+```
+
+### slack_file
+
+Borrows or copies `slack_file`. Sets a file hosted in Slack as the image source. Cannot be combined with an image URL.
+
+```rust
+fn slack_file(&self) -> Option<&SlackFile>
+```
+
+**Related types:** [`SlackFile`](/reference/rust/objects#slackfile)
+
+### alt_text
+
+Borrows or copies `alt_text`. Sets a plain-text summary of the image or video for assistive technology.
+
+```rust
+fn alt_text(&self) -> &str
+```
+
+### title
+
+Borrows or copies `title`. Sets the title shown above the image.
+
+```rust
+fn title(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ImageBlockBuilder
+
+Consuming builder for [`ImageBlock`](/reference/rust/blocks#imageblock). Validation runs in `Self::build`.
+
+### image_url
+
+Sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+
+```rust
+fn image_url(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_image_url
+
+Omits `image_url`, including any model default.
+
+```rust
+fn clear_image_url(mut self) -> Self
+```
+
+### slack_file
+
+Sets a file hosted in Slack as the image source. Cannot be combined with an image URL.
+
+```rust
+fn slack_file(mut self, value: impl Into<SlackFile>) -> Self
+```
+
+**Related types:** [`SlackFile`](/reference/rust/objects#slackfile)
+
+### clear_slack_file
+
+Omits `slack_file`, including any model default.
+
+```rust
+fn clear_slack_file(mut self) -> Self
+```
+
+### alt_text
+
+Sets a plain-text summary of the image or video for assistive technology.
+
+```rust
+fn alt_text(mut self, value: impl Into<String>) -> Self
+```
+
+### title
+
+Sets the title shown above the image.
+
+```rust
+fn title(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_title
+
+Omits `title`, including any model default.
+
+```rust
+fn clear_title(mut self) -> Self
+```
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ImageBlock, ValidationError>
+```
+
+**Related types:** [`ImageBlock`](/reference/rust/blocks#imageblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## InputBlock
+
+A labelled input that collects a value in a modal, App Home, or message.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/input-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> InputBlockBuilder
+```
+
+**Related types:** [`InputBlockBuilder`](/reference/rust/blocks#inputblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> InputBlockBuilder
+```
+
+**Related types:** [`InputBlockBuilder`](/reference/rust/blocks#inputblockbuilder)
+
+### label
+
+Borrows or copies `label`. Sets the label shown above the input.
+
+```rust
+fn label(&self) -> &PlainText
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### element
+
+Borrows or copies `element`. Sets the input element that collects the user's value.
+
+```rust
+fn element(&self) -> &InputElement
+```
+
+**Related types:** [`InputElement`](/reference/rust/core#inputelement)
+
+### dispatch_action
+
+Borrows or copies `dispatch_action`. Sets whether changing the element sends a block_actions payload immediately.
+
+```rust
+fn dispatch_action(&self) -> Option<bool>
+```
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### hint
+
+Borrows or copies `hint`. Sets helper text shown below the input.
+
+```rust
+fn hint(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### optional
+
+Borrows or copies `optional`. Sets whether the modal can be submitted when this input is empty.
+
+```rust
+fn optional(&self) -> Option<bool>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## InputBlockBuilder
+
+Consuming builder for [`InputBlock`](/reference/rust/blocks#inputblock). Validation runs in `Self::build`.
+
+### label
+
+Sets the label shown above the input.
+
+```rust
+fn label(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### element
+
+Sets the input element that collects the user's value.
+
+```rust
+fn element(mut self, value: impl Into<InputElement>) -> Self
+```
+
+**Related types:** [`InputElement`](/reference/rust/core#inputelement)
+
+### dispatch_action
+
+Sets whether changing the element sends a block_actions payload immediately.
+
+```rust
+fn dispatch_action(mut self, value: bool) -> Self
+```
+
+### clear_dispatch_action
+
+Omits `dispatch_action`, including any model default.
+
+```rust
+fn clear_dispatch_action(mut self) -> Self
+```
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### hint
+
+Sets helper text shown below the input.
+
+```rust
+fn hint(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_hint
+
+Omits `hint`, including any model default.
+
+```rust
+fn clear_hint(mut self) -> Self
+```
+
+### optional
+
+Sets whether the modal can be submitted when this input is empty.
+
+```rust
+fn optional(mut self, value: bool) -> Self
+```
+
+### clear_optional
+
+Omits `optional`, including any model default.
+
+```rust
+fn clear_optional(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<InputBlock, ValidationError>
+```
+
+**Related types:** [`InputBlock`](/reference/rust/blocks#inputblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## MarkdownBlock
+
+Standard markdown rendered by Slack, intended for AI-generated content.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/markdown-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> MarkdownBlockBuilder
+```
+
+**Related types:** [`MarkdownBlockBuilder`](/reference/rust/blocks#markdownblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> MarkdownBlockBuilder
+```
+
+**Related types:** [`MarkdownBlockBuilder`](/reference/rust/blocks#markdownblockbuilder)
+
+### text
+
+Borrows or copies `text`. Sets standard markdown content, which Slack renders directly.
+
+```rust
+fn text(&self) -> &str
+```
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## MarkdownBlockBuilder
+
+Consuming builder for [`MarkdownBlock`](/reference/rust/blocks#markdownblock). Validation runs in `Self::build`.
+
+### text
+
+Sets standard markdown content, which Slack renders directly.
+
+```rust
+fn text(mut self, value: impl Into<String>) -> Self
+```
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<MarkdownBlock, ValidationError>
+```
+
+**Related types:** [`MarkdownBlock`](/reference/rust/blocks#markdownblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## PlanBlock
+
+A titled sequence of task cards.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/plan-block).
+Task IDs must be unique within a plan.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> PlanBlockBuilder
+```
+
+**Related types:** [`PlanBlockBuilder`](/reference/rust/blocks#planblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> PlanBlockBuilder
+```
+
+**Related types:** [`PlanBlockBuilder`](/reference/rust/blocks#planblockbuilder)
+
+### title
+
+Borrows or copies `title`. Sets the plan title.
+
+```rust
+fn title(&self) -> &str
+```
+
+### tasks
+
+Borrows or copies `tasks`. Adds task cards in display order.
+
+```rust
+fn tasks(&self) -> &[TaskCardBlock]
+```
+
+**Related types:** [`TaskCardBlock`](/reference/rust/blocks#taskcardblock)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## PlanBlockBuilder
+
+Consuming builder for [`PlanBlock`](/reference/rust/blocks#planblock). Validation runs in `Self::build`.
+
+### title
+
+Sets the plan title.
+
+```rust
+fn title(mut self, value: impl Into<String>) -> Self
+```
+
+### tasks
+
+Adds task cards in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn tasks<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<TaskCardBlock>,
+```
+
+**Related types:** [`TaskCardBlock`](/reference/rust/blocks#taskcardblock)
+
+### task
+
+Appends one item to the collection.
+
+```rust
+fn task(mut self, value: impl Into<TaskCardBlock>) -> Self
+```
+
+**Related types:** [`TaskCardBlock`](/reference/rust/blocks#taskcardblock)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<PlanBlock, ValidationError>
+```
+
+**Related types:** [`PlanBlock`](/reference/rust/blocks#planblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RichTextBlock
+
+Formatted text built from sections, lists, preformatted blocks, and quotes.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RichTextBlockBuilder
+```
+
+**Related types:** [`RichTextBlockBuilder`](/reference/rust/blocks#richtextblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RichTextBlockBuilder
+```
+
+**Related types:** [`RichTextBlockBuilder`](/reference/rust/blocks#richtextblockbuilder)
+
+### elements
+
+Borrows or copies `elements`. Adds sections, lists, preformatted blocks, and quotes in display order.
+
+```rust
+fn elements(&self) -> &[RichTextBlockElement]
+```
+
+**Related types:** [`RichTextBlockElement`](/reference/rust/core#richtextblockelement)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RichTextBlockBuilder
+
+Consuming builder for [`RichTextBlock`](/reference/rust/blocks#richtextblock). Validation runs in `Self::build`.
+
+### elements
+
+Adds sections, lists, preformatted blocks, and quotes in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn elements<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<RichTextBlockElement>,
+```
+
+**Related types:** [`RichTextBlockElement`](/reference/rust/core#richtextblockelement)
+
+### element
+
+Appends one item to the collection.
+
+```rust
+fn element(mut self, value: impl Into<RichTextBlockElement>) -> Self
+```
+
+**Related types:** [`RichTextBlockElement`](/reference/rust/core#richtextblockelement)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RichTextBlock, ValidationError>
+```
+
+**Related types:** [`RichTextBlock`](/reference/rust/blocks#richtextblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## SectionBlock
+
+Text, a grid of fields, or both, with an optional accessory element.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/section-block).
+Provide text, fields, or both.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> SectionBlockBuilder
+```
+
+**Related types:** [`SectionBlockBuilder`](/reference/rust/blocks#sectionblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> SectionBlockBuilder
+```
+
+**Related types:** [`SectionBlockBuilder`](/reference/rust/blocks#sectionblockbuilder)
+
+### text
+
+Borrows or copies `text`. Sets the main text of the section.
+
+```rust
+fn text(&self) -> Option<&Text>
+```
+
+**Related types:** [`Text`](/reference/rust/core#text)
+
+### fields
+
+Borrows or copies `fields`. Adds section fields, shown in a two-column grid, in display order.
+
+```rust
+fn fields(&self) -> Option<&[Text]>
+```
+
+**Related types:** [`Text`](/reference/rust/core#text)
+
+### accessory
+
+Borrows or copies `accessory`. Sets the element displayed beside the section text.
+
+```rust
+fn accessory(&self) -> Option<&Element>
+```
+
+**Related types:** [`Element`](/reference/rust/core#element)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## SectionBlockBuilder
+
+Consuming builder for [`SectionBlock`](/reference/rust/blocks#sectionblock). Validation runs in `Self::build`.
+
+### text
+
+Sets the main text of the section.
+
+```rust
+fn text(mut self, value: impl Into<TextInput>) -> Self
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### clear_text
+
+Omits `text`, including any model default.
+
+```rust
+fn clear_text(mut self) -> Self
+```
+
+### fields
+
+Adds section fields, shown in a two-column grid, in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn fields<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<TextInput>,
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### field
+
+Appends one item to the collection.
+
+```rust
+fn field(mut self, value: impl Into<TextInput>) -> Self
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### clear_fields
+
+Omits `fields`, including any model default.
+
+```rust
+fn clear_fields(mut self) -> Self
+```
+
+### accessory
+
+Sets the element displayed beside the section text.
+
+```rust
+fn accessory(mut self, value: impl Into<Element>) -> Self
+```
+
+**Related types:** [`Element`](/reference/rust/core#element)
+
+### clear_accessory
+
+Omits `accessory`, including any model default.
+
+```rust
+fn clear_accessory(mut self) -> Self
+```
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<SectionBlock, ValidationError>
+```
+
+**Related types:** [`SectionBlock`](/reference/rust/blocks#sectionblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## TableBlock
+
+A simple table of raw text and rich text cells.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> TableBlockBuilder
+```
+
+**Related types:** [`TableBlockBuilder`](/reference/rust/blocks#tableblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> TableBlockBuilder
+```
+
+**Related types:** [`TableBlockBuilder`](/reference/rust/blocks#tableblockbuilder)
+
+### rows
+
+Borrows or copies `rows`. Adds complete table rows in display order.
+
+```rust
+fn rows(&self) -> &[Vec<TableCell>]
+```
+
+**Related types:** [`TableCell`](/reference/rust/core#tablecell)
+
+### column_settings
+
+Borrows or copies `column_settings`. Adds per-column settings in column order. Provide one entry for every column.
+
+```rust
+fn column_settings(&self) -> Option<&[ColumnSettings]>
+```
+
+**Related types:** [`ColumnSettings`](/reference/rust/objects#columnsettings)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## TableBlockBuilder
+
+Consuming builder for [`TableBlock`](/reference/rust/blocks#tableblock). Validation runs in `Self::build`.
+
+### rows
+
+Adds complete table rows in display order.
+Replaces all rows, preserving row and cell order.
+
+```rust
+fn rows<I, R, T>(mut self, rows: I) -> Self
+where
+    I: IntoIterator<Item = R>,
+    R: IntoIterator<Item = T>,
+    T: Into<TableCell>,
+```
+
+**Related types:** [`TableCell`](/reference/rust/core#tablecell)
+
+### row
+
+Appends a complete row.
+
+```rust
+fn row<I, T>(mut self, row: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<TableCell>,
+```
+
+**Related types:** [`TableCell`](/reference/rust/core#tablecell)
+
+### column_settings
+
+Adds per-column settings in column order. Provide one entry for every column.
+Replaces the collection; order is preserved.
+
+```rust
+fn column_settings<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<ColumnSettings>,
+```
+
+**Related types:** [`ColumnSettings`](/reference/rust/objects#columnsettings)
+
+### column_setting
+
+Appends one item to the collection.
+
+```rust
+fn column_setting(mut self, value: impl Into<ColumnSettings>) -> Self
+```
+
+**Related types:** [`ColumnSettings`](/reference/rust/objects#columnsettings)
+
+### clear_column_settings
+
+Omits `column_settings`, including any model default.
+
+```rust
+fn clear_column_settings(mut self) -> Self
+```
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<TableBlock, ValidationError>
+```
+
+**Related types:** [`TableBlock`](/reference/rust/blocks#tableblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## TaskCardBlock
+
+One task with its status, details, output, and sources.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+A standalone task card's status cannot be pending; pending is only valid for plan tasks.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> TaskCardBlockBuilder
+```
+
+**Related types:** [`TaskCardBlockBuilder`](/reference/rust/blocks#taskcardblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> TaskCardBlockBuilder
+```
+
+**Related types:** [`TaskCardBlockBuilder`](/reference/rust/blocks#taskcardblockbuilder)
+
+### task_id
+
+Borrows or copies `task_id`. Sets the identifier of the task.
+
+```rust
+fn task_id(&self) -> &str
+```
+
+### title
+
+Borrows or copies `title`. Sets the task title.
+
+```rust
+fn title(&self) -> &str
+```
+
+### details
+
+Borrows or copies `details`. Sets a rich text description of the task.
+
+```rust
+fn details(&self) -> Option<&RichTextBlock>
+```
+
+**Related types:** [`RichTextBlock`](/reference/rust/blocks#richtextblock)
+
+### output
+
+Borrows or copies `output`. Sets rich text describing the task's output.
+
+```rust
+fn output(&self) -> Option<&RichTextBlock>
+```
+
+**Related types:** [`RichTextBlock`](/reference/rust/blocks#richtextblock)
+
+### sources
+
+Borrows or copies `sources`. Adds links to the sources the task used, in display order.
+
+```rust
+fn sources(&self) -> Option<&[UrlSource]>
+```
+
+**Related types:** [`UrlSource`](/reference/rust/objects#urlsource)
+
+### status
+
+Borrows or copies `status`. Sets the task's current state.
+
+```rust
+fn status(&self) -> TaskStatus
+```
+
+**Related types:** [`TaskStatus`](/reference/rust/core#taskstatus)
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## TaskCardBlockBuilder
+
+Consuming builder for [`TaskCardBlock`](/reference/rust/blocks#taskcardblock). Validation runs in `Self::build`.
+
+### task_id
+
+Sets the identifier of the task.
+
+```rust
+fn task_id(mut self, value: impl Into<String>) -> Self
+```
+
+### title
+
+Sets the task title.
+
+```rust
+fn title(mut self, value: impl Into<String>) -> Self
+```
+
+### details
+
+Sets a rich text description of the task.
+
+```rust
+fn details(mut self, value: impl Into<RichTextBlock>) -> Self
+```
+
+**Related types:** [`RichTextBlock`](/reference/rust/blocks#richtextblock)
+
+### clear_details
+
+Omits `details`, including any model default.
+
+```rust
+fn clear_details(mut self) -> Self
+```
+
+### output
+
+Sets rich text describing the task's output.
+
+```rust
+fn output(mut self, value: impl Into<RichTextBlock>) -> Self
+```
+
+**Related types:** [`RichTextBlock`](/reference/rust/blocks#richtextblock)
+
+### clear_output
+
+Omits `output`, including any model default.
+
+```rust
+fn clear_output(mut self) -> Self
+```
+
+### sources
+
+Adds links to the sources the task used, in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn sources<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<UrlSource>,
+```
+
+**Related types:** [`UrlSource`](/reference/rust/objects#urlsource)
+
+### source
+
+Appends one item to the collection.
+
+```rust
+fn source(mut self, value: impl Into<UrlSource>) -> Self
+```
+
+**Related types:** [`UrlSource`](/reference/rust/objects#urlsource)
+
+### clear_sources
+
+Omits `sources`, including any model default.
+
+```rust
+fn clear_sources(mut self) -> Self
+```
+
+### status
+
+Sets the task's current state.
+
+```rust
+fn status(mut self, value: TaskStatus) -> Self
+```
+
+**Related types:** [`TaskStatus`](/reference/rust/core#taskstatus)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<TaskCardBlock, ValidationError>
+```
+
+**Related types:** [`TaskCardBlock`](/reference/rust/blocks#taskcardblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## VideoBlock
+
+An embedded video player.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/video-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> VideoBlockBuilder
+```
+
+**Related types:** [`VideoBlockBuilder`](/reference/rust/blocks#videoblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> VideoBlockBuilder
+```
+
+**Related types:** [`VideoBlockBuilder`](/reference/rust/blocks#videoblockbuilder)
+
+### alt_text
+
+Borrows or copies `alt_text`. Sets a plain-text summary of the image or video for assistive technology.
+
+```rust
+fn alt_text(&self) -> &str
+```
+
+### thumbnail_url
+
+Borrows or copies `thumbnail_url`. Sets the URL of the image shown before the video plays.
+
+```rust
+fn thumbnail_url(&self) -> &str
+```
+
+### title
+
+Borrows or copies `title`. Sets the video title.
+
+```rust
+fn title(&self) -> &PlainText
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### video_url
+
+Borrows or copies `video_url`. Sets the embeddable URL of the video. The domain must be listed in the app's unfurl domains.
+
+```rust
+fn video_url(&self) -> &str
+```
+
+### block_id
+
+Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(&self) -> Option<&str>
+```
+
+### author_name
+
+Borrows or copies `author_name`. Sets the name of the video's author.
+
+```rust
+fn author_name(&self) -> Option<&str>
+```
+
+### description
+
+Borrows or copies `description`. Sets the video description.
+
+```rust
+fn description(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### provider_icon_url
+
+Borrows or copies `provider_icon_url`. Sets the URL of the video provider's icon.
+
+```rust
+fn provider_icon_url(&self) -> Option<&str>
+```
+
+### provider_name
+
+Borrows or copies `provider_name`. Sets the name of the video provider, such as YouTube.
+
+```rust
+fn provider_name(&self) -> Option<&str>
+```
+
+### title_url
+
+Borrows or copies `title_url`. Sets the HTTPS URL opened when the title is clicked.
+
+```rust
+fn title_url(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## VideoBlockBuilder
+
+Consuming builder for [`VideoBlock`](/reference/rust/blocks#videoblock). Validation runs in `Self::build`.
+
+### alt_text
+
+Sets a plain-text summary of the image or video for assistive technology.
+
+```rust
+fn alt_text(mut self, value: impl Into<String>) -> Self
+```
+
+### thumbnail_url
+
+Sets the URL of the image shown before the video plays.
+
+```rust
+fn thumbnail_url(mut self, value: impl Into<String>) -> Self
+```
+
+### title
+
+Sets the video title.
+
+```rust
+fn title(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### video_url
+
+Sets the embeddable URL of the video. The domain must be listed in the app's unfurl domains.
+
+```rust
+fn video_url(mut self, value: impl Into<String>) -> Self
+```
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```rust
+fn block_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_block_id
+
+Omits `block_id`, including any model default.
+
+```rust
+fn clear_block_id(mut self) -> Self
+```
+
+### author_name
+
+Sets the name of the video's author.
+
+```rust
+fn author_name(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_author_name
+
+Omits `author_name`, including any model default.
+
+```rust
+fn clear_author_name(mut self) -> Self
+```
+
+### description
+
+Sets the video description.
+
+```rust
+fn description(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_description
+
+Omits `description`, including any model default.
+
+```rust
+fn clear_description(mut self) -> Self
+```
+
+### provider_icon_url
+
+Sets the URL of the video provider's icon.
+
+```rust
+fn provider_icon_url(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_provider_icon_url
+
+Omits `provider_icon_url`, including any model default.
+
+```rust
+fn clear_provider_icon_url(mut self) -> Self
+```
+
+### provider_name
+
+Sets the name of the video provider, such as YouTube.
+
+```rust
+fn provider_name(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_provider_name
+
+Omits `provider_name`, including any model default.
+
+```rust
+fn clear_provider_name(mut self) -> Self
+```
+
+### title_url
+
+Sets the HTTPS URL opened when the title is clicked.
+
+```rust
+fn title_url(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_title_url
+
+Omits `title_url`, including any model default.
+
+```rust
+fn clear_title_url(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<VideoBlock, ValidationError>
+```
+
+**Related types:** [`ValidationError`](/reference/rust/errors#validationerror), [`VideoBlock`](/reference/rust/blocks#videoblock)

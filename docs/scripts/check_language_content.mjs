@@ -22,6 +22,7 @@ for (const file of await markdownFiles(docsRoot)) {
     const relative = path.relative(docsRoot, file);
     assert.match(block, /<Python>/, `${relative} LanguageContent #${index + 1} has no Python variant`);
     assert.match(block, /<TypeScript>/, `${relative} LanguageContent #${index + 1} has no TypeScript variant`);
+    assert.match(block, /<PHP>/, `${relative} LanguageContent #${index + 1} has no PHP variant`);
     assert.match(block, /<Rust>/, `${relative} LanguageContent #${index + 1} has no Rust variant`);
     assert.match(block, /<Go>/, `${relative} LanguageContent #${index + 1} has no Go variant`);
     assert.match(block, /<Java>/, `${relative} LanguageContent #${index + 1} has no Java variant`);
@@ -30,4 +31,4 @@ for (const file of await markdownFiles(docsRoot)) {
   });
 }
 
-console.log("Every language-switched documentation section includes all seven language variants.");
+console.log("Every language-switched documentation section includes all eight language variants.");

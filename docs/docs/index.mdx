@@ -3,7 +3,7 @@ sidebar_label: Welcome
 sidebar_position: 1
 ---
 
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Welcome to `slackblocks`!
 
@@ -11,14 +11,14 @@ import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } fro
   <img width="30%" src="/slackblocks/img/sb.png" alt="slackblocks logo" />
 </p>
 
-`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, C#, Ruby, and Rust — without writing JSON by hand.
+`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, C#, Ruby, Rust, and PHP — without writing JSON by hand.
 
 It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control. `slackblocks` gives you:
 
-- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, C#, Ruby, and Rust.
+- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, C#, Ruby, Rust, and PHP.
 - **Validation as you build** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
 - **Drop-in compatibility** with established Slack SDKs and clients and their plain JSON payloads.
-- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, C# depends on nothing beyond .NET, Ruby uses the default `json` gem, and Rust depends only on Serde and serde_json.
+- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, C# depends on nothing beyond .NET, Ruby uses the default `json` gem, Rust depends only on Serde and serde_json, and PHP needs only its built-in JSON and PCRE extensions.
 
 ## Quick Start
 
@@ -248,6 +248,23 @@ checked deserialization and `TryFrom<Value>` apply the same validation. Clone a
 value and call `into_builder()` to edit it without changing the original.
 
 </Rust>
+<PHP>
+
+PHP uses final readonly classes under `Slackblocks`, camelCase named arguments,
+backed enums and typed role interfaces. Constructors validate immediately;
+`with()` creates a newly validated copy and `toJson()` produces Slack JSON.
+
+- [Blocks](reference/php/blocks) group text and interactive content.
+- [Elements](reference/php/elements) provide controls inside blocks.
+- [Composition objects](reference/php/objects) hold text, choices and chart data.
+- [Payloads and views](reference/php/payloads) enforce the message, modal and Home surfaces.
+- [Components](reference/php/components) provide accordions, pagination and previews.
+- [Core types](reference/php/core) define JSON objects, role interfaces and enums.
+- [Validation](reference/php/errors) exposes stable categories and wire paths.
+
+No HTTP or framework package is required. Choose a transport in [Sending Messages](usage/sending_messages).
+
+</PHP>
 </LanguageContent>
 
 ## Guides
@@ -324,4 +341,16 @@ value and call `into_builder()` to edit it without changing the original.
 - [Contributing](contributing)
 
 </Rust>
+<PHP>
+
+- [Installation](usage/installation)
+- [Using Blocks](usage/using_blocks)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook)
+- [Troubleshooting](usage/troubleshooting)
+- [Compatibility](usage/compatibility)
+- [Migration](usage/migration)
+- [Contributing](contributing)
+
+</PHP>
 </LanguageContent>

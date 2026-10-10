@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Sending Messages
 
@@ -852,4 +852,103 @@ The owned values are `Send + Sync` and can be used with your chosen async client
 
 
 </Rust>
+<PHP>
+
+## Choosing a PHP transport
+
+Slack does not list an official PHP SDK. [JoliCode](https://github.com/jolicode/slack-php-api)
+is a community SDK; [Laravel's Slack notification channel](https://github.com/laravel/slack-notification-channel)
+is the framework-native option. The core Slackblocks package requires neither.
+Native cURL works without an SDK.
+
+The complete, tested adapters live in the repository's
+[`php/integrations`](https://github.com/nicklambourne/slackblocks/tree/master/php/integrations)
+example project. Run `composer install` there and adapt the example files into your
+application. `Slackblocks\Examples` is not part of the published core package.
+
+### JoliCode and native cURL
+
+The following standalone example constructs a payload and returns a callable.
+Invoke it deliberately with an application token to send; merely loading it
+performs no network request.
+
+```php title="php/integrations/examples/jolicode.php"
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks\{MessagePayload, SectionBlock};
+use Slackblocks\Examples\Sending;
+
+$message = new MessagePayload(channel: 'C0123456789', text: 'Hello', blocks: [new SectionBlock('*Hello* from PHP')]);
+return static fn(string $token): array => Sending::jolicode($message, $token);
+```
+
+```php title="php/integrations/examples/curl.php"
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks\{MessagePayload, SectionBlock};
+use Slackblocks\Examples\Sending;
+
+$message = new MessagePayload(channel: 'C0123456789', text: 'Hello', blocks: [new SectionBlock('*Hello* from PHP')]);
+return static fn(string $token): array => Sending::curl($message, $token);
+```
+
+JoliCode receives `blocks`, `attachments`, and `metadata` as JSON form parameters,
+so new nested types bypass its generated Block Kit models. Unknown **top-level**
+Web API parameters may still be rejected by the SDK; cURL sends the complete
+`toJson()` body. Native cURL requires `ext-curl` only in the sending application.
+
+Both adapters reject non-success HTTP responses, Slack `ok: false`, malformed
+JSON, redirects and timeouts. Only explicit HTTP 429 responses are retried, with
+at most two retries and `Retry-After` of zero or one second. Longer/missing delays
+fail for the application to reschedule. Five-second request limits bound the
+default budget to 17 seconds. Ambiguous network failures and HTTP 5xx responses
+are never automatically retried. A caller-injected PSR-18 client must supply
+its own timeouts and redirect policy. The implementation and these boundaries
+are exercised against a local HTTP server with fake tokens.
+
+### Laravel notifications
+
+Return the adapter's result from your notification's `toSlack()` method. It uses
+Laravel's public `usingBlockKitTemplate()` API and preserves Laravel routing and
+options. The example project tests the real Slack notification channel with its
+HTTP fake.
+
+```php title="php/integrations/examples/laravel.php"
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks\SectionBlock;
+use Slackblocks\Examples\LaravelTemplate;
+
+$message = LaravelTemplate::message('C0123456789', 'Hello', [new SectionBlock('*Hello* from Laravel')]);
+$message->unfurlLinks(false);
+return $message;
+```
+
+This is a **blocks-only** bridge: set channel, fallback text and notification
+options separately. It does not import full payloads or attachments. Laravel's
+associative template decoder changes empty objects into arrays; the adapter
+rejects those lossy inputs. Use the SDK or cURL path when such opaque objects
+must survive. Laravel owns sending and retries for its notification channel.
+
+### Webhooks, modals and responses
+
+Use `WebhookMessage` for an incoming webhook, `ModalView` for the `view` parameter
+of `views.open`/`views.update`, `HomeTabView` for `views.publish`, and
+`MessageResponse` for slash-command or interaction responses. Serialize each
+with `toJson()`; transport credentials, trigger IDs and application routing stay
+in the sending application. Do not put a bot token into a preview URL or payload.
+
+</PHP>
 </LanguageContent>

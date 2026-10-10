@@ -12,6 +12,7 @@ const languageLabels: Record<Language, string> = {
   csharp: "C#",
   ruby: "Ruby",
   rust: "Rust",
+  php: "PHP",
 };
 
 export default function DocVersionBadge({ className }: Props): ReactNode {

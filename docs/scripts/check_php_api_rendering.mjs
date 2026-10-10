@@ -1,0 +1,31 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+const directory = path.dirname(fileURLToPath(import.meta.url));
+const domains = ["blocks", "elements", "objects", "payloads", "components", "core", "errors"];
+const pages = new Map(await Promise.all(domains.map(async (domain) => [domain, await readFile(path.resolve(directory, `../docs/reference/php/${domain}.mdx`), "utf8")])));
+const text = [...pages.values()].join("\n");
+const inventory = JSON.parse(execFileSync("php", [path.resolve(directory, "../../php/bin/api-inventory.php")], { encoding: "utf8" }));
+const headings = [...text.matchAll(/^## (\w+)$/gm)].map((match) => match[1]);
+assert.deepEqual(headings.sort(), Object.keys(inventory).sort(), "Every independently discovered public PHP type must appear once");
+assert.match(pages.get("blocks"), /### __construct/);
+assert.match(pages.get("blocks"), /public readonly (?:\?Text|Text\|null) \$text/);
+assert.match(pages.get("core"), /### with/);
+assert.match(pages.get("core"), /### fromJson/);
+assert.match(pages.get("components"), /## Paginator/);
+assert.match(pages.get("errors"), /## ErrorCategory/);
+assert.match(text, /\| Throws \| When \|/);
+assert.match(text, /\| `Primary` \| `'primary'` \|/);
+assert.doesNotMatch(text, /\]\((?:ref|javadoc):/);
+for (const [, domain, anchor] of text.matchAll(/\]\(\/reference\/php\/([a-z]+)#([a-z0-9_]+)\)/g)) {
+  assert.ok(pages.has(domain));
+  assert.match(pages.get(domain).toLowerCase(), new RegExp(`^## ${anchor}$`, "m"));
+}
+const html = await readFile(path.resolve(directory, "../build/reference/php/blocks.html"), "utf8");
+assert.match(html, /id="sectionblock"/);
+const breadcrumbs = html.match(/<nav[^>]+aria-label="Breadcrumbs">[\s\S]*?<\/nav>/)?.[0];
+assert.ok(breadcrumbs);
+assert.doesNotMatch(breadcrumbs, />PHP API reference</);
+console.log("PHP native reference completeness, links and rendered breadcrumbs passed.");

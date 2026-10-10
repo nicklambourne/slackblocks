@@ -18,9 +18,16 @@ const languageLabels: Record<Language, string> = {
   csharp: "C#",
   ruby: "Ruby",
   rust: "Rust",
+  php: "PHP",
 };
 
 function LanguageLogo({ language }: { language: Language }) {
+  if (language === "php") return (
+    <svg aria-hidden="true" className="language-selector__logo" viewBox="0 0 32 24">
+      <ellipse cx="16" cy="12" rx="16" ry="9" fill="#777BB4" />
+      <text x="16" y="16" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold" fontStyle="italic">php</text>
+    </svg>
+  );
   if (language === "python") {
     return (
       <svg

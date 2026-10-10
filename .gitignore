@@ -119,5 +119,6 @@ node_modules/
 /docs/scripts/csharp-reference/obj/
 
 /docs/docs/reference/rust/
+docs/docs/reference/php/
 
 /rust/dist/
