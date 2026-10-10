@@ -3,6 +3,7 @@
 import hashlib
 import json
 import os
+import shutil
 from pathlib import Path
 import subprocess
 import tempfile
@@ -11,7 +12,9 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 
 def run(*cmd, cwd=ROOT, env=None):
-    subprocess.run(cmd, cwd=cwd, check=True, env=env)
+    executable = shutil.which(cmd[0])
+    if executable is None: raise SystemExit('Required tool not found: '+cmd[0])
+    subprocess.run([executable, *cmd[1:]], cwd=cwd, check=True, env=env)
 
 with tempfile.TemporaryDirectory(prefix='slackblocks-php-package-') as directory:
     work = Path(directory)
