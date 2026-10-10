@@ -128,3 +128,50 @@ jobs:
         run: |
           php vendor/bin/phpunit --coverage-clover "$RUNNER_TEMP/php-coverage.xml"
           python bin/check-coverage.py "$RUNNER_TEMP/php-coverage.xml"
+
+  integrations:
+    needs: changes
+    name: PHP sending (${{ matrix.php }}, ${{ matrix.resolution }})
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: php
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["8.2", "8.5"]
+        resolution: [locked]
+        include:
+          - php: "8.2"
+            resolution: lowest
+          - php: "8.5"
+            resolution: latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          extensions: curl
+          coverage: none
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Install locked integration dependencies
+        if: needs.changes.outputs.relevant == 'true' && matrix.resolution == 'locked'
+        run: composer install --working-dir=integrations --no-interaction --prefer-dist
+      - name: Exercise real SDK, cURL and Laravel notification channel
+        if: needs.changes.outputs.relevant == 'true' && matrix.resolution == 'locked'
+        run: composer test --working-dir=integrations
+      - name: Check example types
+        if: needs.changes.outputs.relevant == 'true' && matrix.resolution == 'locked'
+        run: |
+          composer install --no-interaction --prefer-dist
+          php vendor/bin/phpstan analyse -c integrations/phpstan.neon --no-progress
+      - name: Resolve integrations independently
+        if: needs.changes.outputs.relevant == 'true' && matrix.resolution != 'locked'
+        run: python bin/check-integration-resolution.py "${{ matrix.resolution }}"

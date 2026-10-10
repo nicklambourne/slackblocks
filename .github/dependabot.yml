@@ -82,6 +82,20 @@ updates:
       - dependency-name: phpunit/phpunit
         update-types: ["version-update:semver-major"]
 
+  - package-ecosystem: composer
+    directory: /php/integrations
+    schedule:
+      interval: weekly
+    groups:
+      php-sending-examples:
+        patterns: ["*"]
+    ignore:
+      # PHPUnit 12+ and Symfony 8 require a newer PHP than the supported 8.2 minimum.
+      - dependency-name: phpunit/phpunit
+        update-types: ["version-update:semver-major"]
+      - dependency-name: symfony/http-client
+        update-types: ["version-update:semver-major"]
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
