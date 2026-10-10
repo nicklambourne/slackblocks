@@ -12,7 +12,8 @@ $directories = [
 ];
 $finder = PhpCsFixer\Finder::create()
     ->in(array_filter($directories, 'is_dir'))
-    ->notName('Schema.php');
+    ->notName('Schema.php')
+    ->append([__DIR__ . '/../docs/scripts/php_reference_adapter.php']);
 return (new PhpCsFixer\Config())
     ->setCacheFile(__DIR__ . '/.php-cs-fixer.cache')
     ->setRules(['@PER-CS2.0' => true])

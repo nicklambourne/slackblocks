@@ -9,7 +9,9 @@ namespace Slackblocks;
 /** A validated Slack layout block. */
 interface Block extends \JsonSerializable
 {
-    /** @return array<string, mixed> Slack wire fields. */
+    /** Exports the Slack wire fields as a detached array.
+     * @return array<string, mixed> Slack wire fields.
+     */
     public function toArray(): array;
 
     /** Encodes this validated value as Slack JSON. */

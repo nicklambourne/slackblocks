@@ -30,6 +30,9 @@ final readonly class Workflow extends Value
     }
 
     /** Builds a workflow trigger from a Slack workflow URL.
+     * @param string $url Slack workflow trigger URL.
+     * @return self Workflow containing the validated trigger and supplied inputs.
+     * @throws ValidationError The URL or customizable inputs are invalid.
      * @param list<InputParameter> $parameters Ordered customizable workflow inputs; an empty list is omitted.
      */
     public static function fromUrl(string $url, array $parameters = []): self

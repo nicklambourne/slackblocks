@@ -7,13 +7,16 @@ namespace Slackblocks;
 /** Expands one page into blocks, optional page text and navigation buttons. */
 final class Paginator
 {
-    /**
+    /** Selects one page and adds navigation only when multiple pages exist.
+     * @throws ValidationError Content, page bounds or generated navigation controls are invalid.
      * @param string $actionIdPrefix Nonempty prefix for .previous and .next action IDs.
      * @param list<Block> $blocks Full nonempty sequence of content blocks.
      * @param int $page One-based page number.
      * @param int $pageSize Positive number of content blocks per page; controls are additional.
      * @param PlainText|string $previousText Previous-button label.
      * @param PlainText|string $nextText Next-button label.
+     * @param bool $showPageIndicator Whether to add a context block showing the current page.
+     * @param string|null $blockId Identifier for the navigation actions block.
      * @return list<Block> Spread into a payload to enforce that surface's total block limit.
      */
     public static function create(

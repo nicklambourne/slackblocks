@@ -100,7 +100,7 @@ def generate(model, limits, vocab, spec_version):
         methods = (
             ""
             if name == "InputElement"
-            else "\n    /** @return array<string, mixed> Slack wire fields. */\n    public function toArray(): array;\n\n    /** Encodes this validated value as Slack JSON. */\n    public function toJson(): string;\n"
+            else "\n    /** Exports the Slack wire fields as a detached array.\n     * @return array<string, mixed> Slack wire fields.\n     */\n    public function toArray(): array;\n\n    /** Encodes this validated value as Slack JSON. */\n    public function toJson(): string;\n"
         )
         if name == "Text":
             methods += "\n    /** Returns the text content regardless of its plain/mrkdwn variant. */\n    public function getText(): string;\n"
@@ -205,6 +205,9 @@ def generate(model, limits, vocab, spec_version):
             lines += [
                 "",
                 "    /** Builds a workflow trigger from a Slack workflow URL.",
+                "     * @param string $url Slack workflow trigger URL.",
+                "     * @return self Workflow containing the validated trigger and supplied inputs.",
+                "     * @throws ValidationError The URL or customizable inputs are invalid.",
                 "     * @param list<InputParameter> $parameters Ordered customizable workflow inputs; an empty list is omitted.",
                 "     */",
                 "    public static function fromUrl(string $url, array $parameters = []): self",
