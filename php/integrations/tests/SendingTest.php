@@ -132,6 +132,26 @@ final class SendingTest extends TestCase
     }
 
     #[DataProvider('transports')]
+    public function testDocumentedSendingEntryPoint(string $transport): void
+    {
+        $send = require __DIR__ . '/../examples/' . $transport . '.php';
+        $result = $send('xoxb-test-only', $transport === 'curl' ? self::$endpoint : self::client());
+        self::assertTrue($result['ok']);
+        self::assertCount(1, self::requests());
+        $request = self::requests()[0];
+        self::assertSame('Bearer xoxb-test-only', array_change_key_case($request['headers'])['authorization']);
+        if ($transport === 'curl') {
+            $body = json_decode($request['body'], true, flags: JSON_THROW_ON_ERROR);
+        } else {
+            parse_str($request['body'], $body);
+            $body['blocks'] = json_decode($body['blocks'], true, flags: JSON_THROW_ON_ERROR);
+        }
+        self::assertSame('C0123456789', $body['channel']);
+        self::assertSame('Hello', $body['text']);
+        self::assertSame('*Hello* from PHP', $body['blocks'][0]['text']['text']);
+    }
+
+    #[DataProvider('transports')]
     public function testBoundedRateLimitRetry(string $transport): void
     {
         file_put_contents(self::$directory . '/case', 'retry');
@@ -179,10 +199,23 @@ final class SendingTest extends TestCase
         }
     }
 
-    public function testLaravelRunsItsActualNotificationChannel(): void
+    /** @return iterable<string,array{bool}> */
+    public static function laravelMessages(): iterable
     {
-        $payload = self::payload();
-        $message = LaravelTemplate::message($payload->channel, $payload->text, $payload->blocks)->unfurlLinks(false);
+        yield 'complete model payload' => [false];
+        yield 'documented entry point' => [true];
+    }
+
+    #[DataProvider('laravelMessages')]
+    public function testLaravelRunsItsActualNotificationChannel(bool $documented): void
+    {
+        $payload = $documented
+            ? new S\MessagePayload(channel: 'C0123456789', text: 'Hello', blocks: [new S\SectionBlock('*Hello* from Laravel')])
+            : self::payload();
+        $message = $documented
+            ? require __DIR__ . '/../examples/laravel.php'
+            : LaravelTemplate::message($payload->channel, $payload->text, $payload->blocks)->unfurlLinks(false);
+        self::assertSame($payload->channel, $message->toArray()['channel']);
         $http = new Factory();
         $http->fake(['https://slack.com/api/chat.postMessage' => $http->response(['ok' => true], 200)]);
         $notification = new class ($message) extends Notification {
@@ -201,9 +234,10 @@ final class SendingTest extends TestCase
         (new SlackChannel($http))->send($notifiable, $notification);
         $http->assertSent(function ($request) use ($payload): bool {
             self::assertSame('Bearer xoxb-test-only', $request->header('Authorization')[0]);
+            self::assertSame('C123', $request['channel'], 'Laravel notification routing overrides the message channel');
             self::assertFalse($request['unfurl_links']);
             self::assertEquals(json_decode(json_encode($payload->toArray()['blocks'])), json_decode(json_encode($request['blocks'])));
-            self::assertSame('Fallback', $request['text']);
+            self::assertSame($payload->text, $request['text']);
             return true;
         });
     }

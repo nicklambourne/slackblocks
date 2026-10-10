@@ -1,0 +1,166 @@
+name: Publish PHP Package
+
+on:
+  pull_request:
+  push:
+    tags: ["php/v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  changes:
+    name: Detect relevant PHP release changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Check release scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ] || grep -qE '^(php/|spec/|\.github/scripts/|\.github/workflows/(publish-packagist|coordinated-release)\.yml$)' <<<"$files"; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
+  build:
+    name: Build PHP distribution
+    needs: changes
+    if: needs.changes.outputs.relevant == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.13"
+      - uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        with:
+          php-version: "8.2"
+          tools: composer:v2
+          coverage: none
+      - name: Test release gates and local distribution retries without credentials
+        run: python -m unittest discover -s .github/scripts -p 'test_*.py' -v
+      - name: Verify coordinated release activation and all eight tags
+        if: github.event_name != 'pull_request'
+        run: python .github/scripts/verify-release.py publisher --language php
+      - name: Install and check native PHP
+        run: |
+          composer install --working-dir=php --no-interaction --prefer-dist
+          python php/generator/generate.py --check
+          composer --working-dir=php test
+          composer --working-dir=php analyse
+          composer --working-dir=php format:check
+          python php/bin/check-types.py
+          python php/bin/check-package.py
+      - name: Repeat sending integration checks before publication
+        if: github.event_name != 'pull_request'
+        run: |
+          composer install --working-dir=php/integrations --no-interaction --prefer-dist
+          composer --working-dir=php/integrations test
+      - name: Prepare deterministic allowlisted ZIP and provenance
+        run: python php/bin/release.py prepare
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: php-distribution
+          path: php/dist/*
+          if-no-files-found: error
+  artifact:
+    name: Verify PHP distribution (${{ matrix.php }})
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        php: ["8.2", "8.5"]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: php-distribution
+          path: php/dist
+      - uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          coverage: none
+      - name: Reproduce downloaded bytes and test the installed ZIP in a fresh project
+        run: python3 php/bin/release.py consumer
+  publish:
+    name: Publish PHP distribution tag
+    if: github.event_name != 'pull_request'
+    needs: [build, artifact]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: packagist
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: php-distribution
+          path: php/dist
+      - name: Reverify tested artifact before loading credentials
+        run: python3 php/bin/release.py verify
+      - name: Push immutable distribution tag or verify an identical previous push
+        env:
+          PHP_DIST_DEPLOY_KEY: ${{ secrets.PHP_DIST_DEPLOY_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/php-publish-ssh.sh publish --apply
+      - uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        with:
+          php-version: "8.2"
+          tools: composer:v2
+          coverage: none
+      - name: Verify Packagist indexing and exact installed files
+        run: python3 php/bin/release.py verify-registry
+  release:
+    name: Create PHP GitHub Release
+    if: github.event_name != 'pull_request'
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: php-distribution
+          path: php/dist
+      - name: Create release notes after registry verification
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release already exists; immutable registry files were verified again."
+            exit 0
+          fi
+          version="${GITHUB_REF_NAME#php/v}"
+          awk -v version="$version" '
+            $0 ~ "^## \\[" version "\\]" { capture = 1; next }
+            capture && /^## \[/ { exit }
+            capture { print }
+          ' php/CHANGELOG.md > release-notes.md
+          test -s release-notes.md
+          gh release create "$GITHUB_REF_NAME" php/dist/*.zip php/dist/release.json --verify-tag --title "PHP v$version" --notes-file release-notes.md

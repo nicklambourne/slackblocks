@@ -883,7 +883,7 @@ use Slackblocks\{MessagePayload, SectionBlock};
 use Slackblocks\Examples\Sending;
 
 $message = new MessagePayload(channel: 'C0123456789', text: 'Hello', blocks: [new SectionBlock('*Hello* from PHP')]);
-return static fn(string $token): array => Sending::jolicode($message, $token);
+return static fn(string $token, ?\Psr\Http\Client\ClientInterface $http = null): array => Sending::jolicode($message, $token, $http);
 ```
 
 ```php title="php/integrations/examples/curl.php"
@@ -897,7 +897,7 @@ use Slackblocks\{MessagePayload, SectionBlock};
 use Slackblocks\Examples\Sending;
 
 $message = new MessagePayload(channel: 'C0123456789', text: 'Hello', blocks: [new SectionBlock('*Hello* from PHP')]);
-return static fn(string $token): array => Sending::curl($message, $token);
+return static fn(string $token, string $endpoint = 'https://slack.com/api/chat.postMessage'): array => Sending::curl($message, $token, $endpoint);
 ```
 
 JoliCode receives `blocks`, `attachments`, and `metadata` as JSON form parameters,
@@ -937,7 +937,8 @@ return $message;
 ```
 
 This is a **blocks-only** bridge: set channel, fallback text and notification
-options separately. It does not import full payloads or attachments. Laravel's
+options separately. An explicit channel from Laravel's notification route takes
+precedence over the message's channel. It does not import full payloads or attachments. Laravel's
 associative template decoder changes empty objects into arrays; the adapter
 rejects those lossy inputs. Use the SDK or cURL path when such opaque objects
 must survive. Laravel owns sending and retries for its notification channel.
