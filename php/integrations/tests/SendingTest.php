@@ -211,6 +211,6 @@ final class SendingTest extends TestCase
     public function testLaravelTemplateRefusesLossyEmptyObjects(): void
     {
         $this->expectException(\LogicException::class);
-        LaravelTemplate::message('C1','Fallback',[new S\SectionBlock('x',extensions: new S\JsonObject(['app' => (object) []]))]);
+        LaravelTemplate::message('C1', 'Fallback', [new S\SectionBlock('x', extensions: new S\JsonObject(['app' => (object) []]))]);
     }
 }
