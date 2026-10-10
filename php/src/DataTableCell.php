@@ -7,4 +7,11 @@ declare(strict_types=1);
 namespace Slackblocks;
 
 /** A value that can appear as a data table cell: raw text, a raw number, or a rich text block. */
-interface DataTableCell extends \JsonSerializable {}
+interface DataTableCell extends \JsonSerializable
+{
+    /** @return array<string, mixed> Slack wire fields. */
+    public function toArray(): array;
+
+    /** Encodes this validated value as Slack JSON. */
+    public function toJson(): string;
+}

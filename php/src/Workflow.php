@@ -29,9 +29,11 @@ final readonly class Workflow extends Value
         parent::__construct($extensions);
     }
 
-    /** Builds a workflow trigger from a Slack workflow URL. */
-    public static function fromUrl(string $url): self
+    /** Builds a workflow trigger from a Slack workflow URL.
+     * @param list<InputParameter> $parameters Ordered customizable workflow inputs; an empty list is omitted.
+     */
+    public static function fromUrl(string $url, array $parameters = []): self
     {
-        return new self(trigger: new Trigger(url: $url));
+        return new self(trigger: new Trigger(url: $url, customizableInputParameters: $parameters === [] ? null : $parameters));
     }
 }

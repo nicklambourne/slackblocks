@@ -7,4 +7,11 @@ declare(strict_types=1);
 namespace Slackblocks;
 
 /** A value that can appear in a context block: an image element or a text object. */
-interface ContextElement extends \JsonSerializable {}
+interface ContextElement extends \JsonSerializable
+{
+    /** @return array<string, mixed> Slack wire fields. */
+    public function toArray(): array;
+
+    /** Encodes this validated value as Slack JSON. */
+    public function toJson(): string;
+}

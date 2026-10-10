@@ -14,7 +14,8 @@ final class FoundationTest extends TestCase
         $section = new S\SectionBlock(text: '*Hello*', accessory: new S\ButtonElement(text: 'Open', actionId: 'open'));
         $message = new S\MessagePayload(channel: 'C123', blocks: [$section], unfurlLinks: false);
         self::assertInstanceOf(S\MarkdownText::class, $section->text);
-        self::assertSame('*Hello*', $section->text->text);
+        self::assertSame('*Hello*', $section->text->getText());
+        self::assertSame('Open', $section->accessory->text->getText());
         self::assertSame('Updated', $section->with(text: 'Updated')->text->text);
         self::assertFalse($message->toArray()['unfurl_links']);
         self::assertEquals($message, S\MessagePayload::fromJson($message->toJson()));

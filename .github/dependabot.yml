@@ -70,6 +70,18 @@ updates:
       - dependency-name: wiremock
         versions: ["0.6.5"]
 
+  - package-ecosystem: composer
+    directory: /php
+    schedule:
+      interval: weekly
+    groups:
+      php-development:
+        dependency-type: development
+    ignore:
+      # PHPUnit 12+ requires PHP 8.3+. Keep contributor tooling compatible with PHP 8.2.
+      - dependency-name: phpunit/phpunit
+        update-types: ["version-update:semver-major"]
+
   - package-ecosystem: github-actions
     directory: /
     schedule:

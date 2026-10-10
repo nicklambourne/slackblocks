@@ -39,9 +39,22 @@ python3 generator/generate.py --check
 composer test
 composer analyse
 composer format:check
+python3 generator/test_generate.py
+python3 bin/check-types.py
+python3 bin/check-package.py
 ```
 
 Generated classes come directly from the shared model. The package's tests and development tools are not runtime requirements. See [the implementation notes](IMPLEMENTATION.md) for design and support boundaries.
+
+## Conformance and quality
+
+The suite constructs all 105 valid shared fixtures and rejects all 167 invalid cases with the required categories. It checks every scalar limit, vocabulary, capability and exported class. The release skiplist is empty. Public constructors, enums, readonly fields and helper methods are independently inventoried.
+
+PHPStan level 8 checks the library and positive/negative consumers. CI enforces at least 95% line coverage for handwritten code and reports generated coverage separately. Package checks install the actual Composer ZIP in a fresh external project on each supported platform. There are no third-party runtime dependencies to resolve at lower bounds; the development lock is resolved on PHP 8.2.
+
+## Helpers
+
+`AccordionSection::create()` produces a collapsible `ContainerBlock`; `Accordion::create()` returns sections to spread into a view's blocks. `Paginator::create()` takes one-based page numbers and returns content plus navigation controls. Controls count toward the enclosing surface's block limit. `Builder::url()` makes a preview URL. `Workflow::fromUrl()` accepts optional `InputParameter` values. `Color` provides semantic/hex strings for attachments.
 
 ## License
 
