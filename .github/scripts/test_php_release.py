@@ -1,11 +1,13 @@
 """Exercise PHP release gates, exact artifacts, local pushes and registry failures."""
 
 import io
+import contextlib
 import json
 import subprocess
 import unittest
 import urllib.error
 import zipfile
+from unittest.mock import patch
 
 import test_release as fixtures
 
@@ -174,6 +176,89 @@ class PHPReleaseTests(unittest.TestCase):
 
             with self.subTest(status=status), self.assertRaises(urllib.error.HTTPError):
                 php.check_registration(settings, failure)
+
+    def test_registry_consumer_rejects_wrong_refs_repository_and_installed_files(self):
+        checkout = self.root / "expected-registry"
+        php.distribution(self.root, self.directory, checkout)
+        commit = php.run("git", "rev-parse", "HEAD", cwd=checkout)
+        original_run = php.run
+        failure = None
+
+        def install(*args, cwd, env=None):
+            if args[0] == "composer":
+                installed = cwd / "vendor" / self.record["package"]
+                installed.mkdir(parents=True)
+                with zipfile.ZipFile(
+                    self.directory / f"slackblocks-{fixtures.VERSION}.zip"
+                ) as archive:
+                    archive.extractall(installed)
+                package = {
+                    "name": self.record["package"],
+                    "source": {
+                        "reference": commit,
+                        "url": "https://github.com/"
+                        + self.record["repository"]
+                        + ".git",
+                    },
+                    "dist": {"reference": commit},
+                }
+                if failure in ("source", "dist"):
+                    package[failure]["reference"] = "wrong"
+                elif failure == "repository":
+                    package["source"]["url"] = "https://github.com/unexpected/package"
+                elif failure == "file":
+                    (installed / "src/MessagePayload.php").write_text("tampered")
+                elif failure == "inventory":
+                    (installed / "unexpected.php").write_text("unexpected")
+                (cwd / "composer.lock").write_text(json.dumps({"packages": [package]}))
+                return ""
+            if args[0] == "php":
+                return ""  # Actual PHP execution is exercised by artifact CI.
+            return original_run(*args, cwd=cwd, env=env)
+
+        with patch.object(php, "run", side_effect=install):
+            self.assertEqual(
+                php.consumer(self.root, self.directory, registry=True), self.record
+            )
+            for failure in ("source", "dist", "repository", "file", "inventory"):
+                with (
+                    self.subTest(failure=failure),
+                    self.assertRaises(php.preflight.ReleaseError),
+                ):
+                    php.consumer(self.root, self.directory, registry=True)
+
+    def test_registry_indexing_retry_is_bounded_and_content_mismatches_fail_immediately(
+        self,
+    ):
+        unavailable = subprocess.CalledProcessError(2, "composer")
+        cases = [
+            ([unavailable, unavailable, self.record], None, 3, 2),
+            ([unavailable] * 12, subprocess.CalledProcessError, 12, 11),
+            (
+                [php.preflight.ReleaseError("content differs")],
+                php.preflight.ReleaseError,
+                1,
+                0,
+            ),
+        ]
+        for outcomes, error, calls, sleeps in cases:
+            with (
+                self.subTest(error=error),
+                patch("sys.argv", ["release.py", "verify-registry"]),
+                patch.object(php.preflight, "publisher"),
+                patch.object(php, "consumer", side_effect=outcomes) as consumer,
+                patch.object(php.time, "sleep") as sleep,
+                contextlib.redirect_stdout(io.StringIO()),
+            ):
+                if error is None:
+                    php.main()
+                else:
+                    with self.assertRaises(error):
+                        php.main()
+                self.assertEqual(consumer.call_count, calls)
+                self.assertEqual(sleep.call_count, sleeps)
+                for call in sleep.call_args_list:
+                    self.assertEqual(call.args, (15,))
 
     def test_credentials_follow_artifact_checks_and_readiness_precedes_tags(self):
         workflow = (
