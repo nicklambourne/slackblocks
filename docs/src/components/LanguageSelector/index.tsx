@@ -115,7 +115,7 @@ function LanguageLogo({ language }: { language: Language }) {
   return (
     <svg
       aria-hidden="true"
-      className="language-selector__logo language-selector__logo--go"
+      className="language-selector__logo"
       viewBox="0 0 207 78"
     >
       <g fill="#00acd7" fillRule="evenodd">

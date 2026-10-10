@@ -54,12 +54,10 @@
 }
 
 .language-selector__logo {
+  /* Align labels beside wide wordmarks while preserving the artwork's proportions. */
   flex: none;
   height: 18px;
-  width: 18px;
-}
-
-.language-selector__logo--go {
+  object-fit: contain;
   width: 34px;
 }
 
