@@ -51,6 +51,9 @@ updates:
     schedule:
       interval: weekly
     groups:
+      # These tooling crates exchange syn AST values and must move together.
+      rust-syntax-tools:
+        patterns: ["syn", "prettyplease"]
       rust-development:
         dependency-type: development
 
@@ -61,6 +64,11 @@ updates:
     groups:
       rust-sending-examples:
         patterns: ["*"]
+    ignore:
+      # wiremock 0.6.5 uses let chains (Rust 1.88+) without declaring an MSRV.
+      # Keep the integration tests runnable on Rust 1.85; assess later releases separately.
+      - dependency-name: wiremock
+        versions: ["0.6.5"]
 
   - package-ecosystem: github-actions
     directory: /
