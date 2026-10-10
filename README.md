@@ -1,26 +1,24 @@
 # slackblocks <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/sb.png" align="right" width="250px"/>
 
-![Licence: MIT](https://img.shields.io/badge/License-MIT-green.svg)
-![Licence: BSD-3-Clause](https://img.shields.io/badge/License-BSD_3_Clause-green.svg)
-![Python Versions](https://img.shields.io/pypi/pyversions/slackblocks)
-[![PyPI](https://img.shields.io/pypi/v/slackblocks?color=yellow&label=PyPI&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/#history)
-[![npm](https://img.shields.io/npm/v/%40nicklambourne%2Fslackblocks?color=CB3837&label=npm&logo=npm)](https://www.npmjs.com/package/@nicklambourne/slackblocks)
-[![Go](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv2%2F%40latest&query=%24.Version&label=Go&color=00ADD8&logo=go&logoColor=white)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.nicklambourne/slackblocks?logo=apachemaven)](https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks)
-[![NuGet](https://img.shields.io/nuget/v/Slackblocks?logo=nuget)](https://www.nuget.org/packages/Slackblocks)
-[![RubyGems](https://img.shields.io/gem/v/slackblocks?logo=rubygems)](https://rubygems.org/gems/slackblocks)
-[![Rust MSRV](https://img.shields.io/badge/Rust-1.85%2B-b7410e?logo=rust)](rust/README.md)
-[![crates.io](https://img.shields.io/crates/v/slackblocks?logo=rust)](https://crates.io/crates/slackblocks)
-[![docs.rs](https://docs.rs/slackblocks/badge.svg)](https://docs.rs/slackblocks)
-[![Downloads](https://static.pepy.tech/badge/slackblocks)](https://pepy.tech/project/slackblocks)
-[![Python CI](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
-[![TypeScript CI](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
-[![Go CI](https://github.com/nicklambourne/slackblocks/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions)
-[![Java CI](https://github.com/nicklambourne/slackblocks/actions/workflows/java.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/java.yml)
-[![.NET CI](https://github.com/nicklambourne/slackblocks/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/dotnet.yml)
-[![Ruby CI](https://github.com/nicklambourne/slackblocks/actions/workflows/ruby.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/ruby.yml)
-[![Rust CI](https://github.com/nicklambourne/slackblocks/actions/workflows/rust.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/rust.yml)
-[![Docs](https://img.shields.io/badge/Docs-8A2BE2.svg)](https://nicklambourne.github.io/slackblocks)
+[![License: MIT OR BSD-3-Clause](https://img.shields.io/badge/License-MIT_OR_BSD--3--Clause-grey?style=flat&labelColor=555)](#licensing)
+[![Docs: read](https://img.shields.io/badge/Docs-read-007EC6?style=flat&labelColor=555)](https://nicklambourne.github.io/slackblocks)
+[![Reported downloads across PyPI, npm, NuGet, RubyGems and crates.io](https://img.shields.io/endpoint?url=https%3A%2F%2Fwatch.ndl.au%2Fbadges%2Fslackblocks-downloads.json&style=flat&labelColor=555)](#download-statistics)
+
+[![PyPI version](https://img.shields.io/pypi/v/slackblocks?style=flat&labelColor=555&label=PyPI&color=007EC6&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/)
+[![npm version](https://img.shields.io/npm/v/%40nicklambourne%2Fslackblocks?style=flat&labelColor=555&label=npm&color=007EC6&logo=npm&logoColor=white)](https://www.npmjs.com/package/@nicklambourne/slackblocks)
+[![Go module version](https://img.shields.io/badge/dynamic/json?style=flat&labelColor=555&label=Go+module&color=007EC6&logo=go&logoColor=white&url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv2%2F%40latest&query=%24.Version)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2)
+[![Maven Central version](https://img.shields.io/maven-central/v/io.github.nicklambourne/slackblocks?style=flat&labelColor=555&label=Maven+Central&color=007EC6&logo=apachemaven&logoColor=white)](https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks)
+[![NuGet version](https://img.shields.io/nuget/v/Slackblocks?style=flat&labelColor=555&label=NuGet&color=007EC6&logo=nuget&logoColor=white)](https://www.nuget.org/packages/Slackblocks)
+[![RubyGems version](https://img.shields.io/gem/v/slackblocks?style=flat&labelColor=555&label=RubyGems&color=007EC6&logo=rubygems&logoColor=white)](https://rubygems.org/gems/slackblocks)
+[![crates.io version](https://img.shields.io/crates/v/slackblocks?style=flat&labelColor=555&label=crates.io&color=007EC6&logo=rust&logoColor=white)](https://crates.io/crates/slackblocks)
+
+[![Python CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/unit-tests.yml?style=flat&labelColor=555&branch=master&event=push&label=Python+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml?query=branch%3Amaster)
+[![TypeScript CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/typescript.yml?style=flat&labelColor=555&branch=master&event=push&label=TypeScript+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml?query=branch%3Amaster)
+[![Go CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/go.yml?style=flat&labelColor=555&branch=master&event=push&label=Go+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/go.yml?query=branch%3Amaster)
+[![Java CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/java.yml?style=flat&labelColor=555&branch=master&event=push&label=Java+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/java.yml?query=branch%3Amaster)
+[![C# CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/dotnet.yml?style=flat&labelColor=555&branch=master&event=push&label=C%23+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/dotnet.yml?query=branch%3Amaster)
+[![Ruby CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/ruby.yml?style=flat&labelColor=555&branch=master&event=push&label=Ruby+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/ruby.yml?query=branch%3Amaster)
+[![Rust CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/rust.yml?style=flat&labelColor=555&branch=master&event=push&label=Rust+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/rust.yml?query=branch%3Amaster)
 
 > **Build Slack messages in Python, TypeScript, Go, Java, C#, Ruby, or Rust — without writing JSON by hand.**
 
@@ -345,6 +343,15 @@ and [Rust API reference](https://nicklambourne.github.io/slackblocks/reference/r
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
   and capability coverage that all seven implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.
+
+## Download statistics
+
+The **reported downloads** badge sums all-time counts from PyPI (via Pepy), npm,
+NuGet, RubyGems, and crates.io. Go and Maven Central have no comparable public
+all-time download counters and are excluded. Registry counting rules differ;
+these counts include automated downloads and do not represent unique users.
+The total refreshes hourly and shows unavailable if any contributing count is
+missing or more than 24 hours old.
 
 ## Licensing
 

@@ -5,12 +5,17 @@ on:
     tags:
       - "java/v*"
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing java/vX.Y.Z tag to recover using the current publishing workflow
+        required: false
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -26,9 +31,25 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Keep the workflow's tested Maven launcher when recovering an immutable older tag.
+      - name: Preserve the release Maven launcher
+        run: |
+          mkdir -p "$RUNNER_TEMP/release-maven/.mvn/wrapper"
+          cp java/mvnw "$RUNNER_TEMP/release-maven/mvnw"
+          cp java/.mvn/wrapper/maven-wrapper.properties "$RUNNER_TEMP/release-maven/.mvn/wrapper/"
+
+      - name: Check out the existing release tag for recovery
+        if: inputs.release_tag != ''
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ inputs.release_tag }}
+          fetch-depth: 0
+
       - name: Verify seven-language release activation, tags and commit
         working-directory: .
-        run: python3 .github/scripts/verify-release.py publisher --language java
+        env:
+          RELEASE_REF: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}
+        run: GITHUB_REF="$RELEASE_REF" python3 .github/scripts/verify-release.py publisher --language java
 
       - name: Install Java and configure Maven Central
         uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
@@ -45,7 +66,7 @@ jobs:
 
       - name: Publish signed bundle
         working-directory: java
-        run: ./mvnw -B -ntp -Prelease clean deploy
+        run: '"$RUNNER_TEMP/release-maven/mvnw" -B -ntp -Prelease clean deploy'
         env:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
@@ -67,25 +88,28 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ inputs.release_tag || github.ref }}
 
       - name: Create release from changelog
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
         run: |
           set -euo pipefail
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            echo "Release for $GITHUB_REF_NAME already exists; skipping."
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Release for $RELEASE_TAG already exists; skipping."
             exit 0
           fi
-          version="${GITHUB_REF_NAME#java/v}"
+          version="${RELEASE_TAG#java/v}"
           awk -v version="$version" '
             $0 ~ "^## \\[" version "\\]" { capture = 1; next }
             capture && /^## \[/ { exit }
             capture { print }
           ' java/CHANGELOG.md > release-notes.md
           if [ -s release-notes.md ]; then
-            gh release create "$GITHUB_REF_NAME" --title "Java v$version" --notes-file release-notes.md
+            gh release create "$RELEASE_TAG" --title "Java v$version" --notes-file release-notes.md
           else
             echo "::warning::Could not extract changelog section for $version; using generated notes."
-            gh release create "$GITHUB_REF_NAME" --title "Java v$version" --generate-notes
+            gh release create "$RELEASE_TAG" --title "Java v$version" --generate-notes
           fi

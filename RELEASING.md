@@ -158,6 +158,28 @@ These must be in place before the workflows can publish:
    release approval is desired. The publisher exchanges GitHub OIDC for a
    short-lived credential; it needs no RubyGems API key.
 
+## Java publication recovery
+
+Maven 3.10 and Central publishing plugin 0.11 produce a bundle containing
+`maven-metadata-local.xml` outside the version directory. Central rejects it.
+The wrapper stays on Maven 3.9.16 until a compatible publisher is available;
+Java language support remains 17+. The signed-bundle CI job runs the full Maven
+deploy lifecycle against a local mock Central endpoint and checks archive layout,
+signatures and checksums without uploading to a registry.
+
+If a tagged Java publication fails because of publishing tooling, fix and test
+the workflow on `master`, then dispatch it with the existing tag:
+
+```sh
+gh workflow run publish-java.yml --ref master -f release_tag=java/v2.6.0
+```
+
+Recovery uses the workflow's tested Maven launcher while checking out and building
+the original tag's sources and POM. The shared guard still requires the complete
+seven-tag set, a clean checkout and master ancestry. Never move the release tag.
+Confirm the version is absent from Maven Central before retrying, and verify its
+availability afterwards; a validated deployment may still be propagating.
+
 ## Rust activation and first publication
 
 The implementation train kept publication disabled until this release-readiness
