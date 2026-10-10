@@ -3,3 +3,4 @@
 /.php-cs-fixer.cache
 /.phpstan/
 /coverage/
+/dist/

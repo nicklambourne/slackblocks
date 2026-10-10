@@ -31,12 +31,19 @@ FILES = [
     "typescript/package.json",
     "go/go.mod",
     "java/pom.xml",
+    "java/src/main/java/io/github/nicklambourne/slackblocks/Slackblocks.java",
+    "csharp/src/Slackblocks/SlackblocksInfo.cs",
     "csharp/src/Slackblocks/Slackblocks.csproj",
     "ruby/lib/slackblocks/version.rb",
     "ruby/Gemfile.lock",
     "rust/Cargo.toml",
     "rust/Cargo.lock",
     "rust/integrations/Cargo.lock",
+    "php/composer.json",
+    "php/src/Version.php",
+    "php/release.json",
+    "php/integrations/composer.json",
+    "php/integrations/composer.lock",
 ]
 
 
@@ -47,20 +54,35 @@ class ReleaseTests(unittest.TestCase):
             for mount in ("Repos", "Cache", "Scratch"):
                 self.assertTrue(os.path.ismount("/Volumes/" + mount))
             scratch = "/Volumes/Scratch"
-        self.temp = tempfile.TemporaryDirectory(prefix="slackblocks-release-test-", dir=scratch)
+        self.temp = tempfile.TemporaryDirectory(
+            prefix="slackblocks-release-test-", dir=scratch
+        )
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        for name in FILES + [language + "/CHANGELOG.md" for language in release.LANGUAGES]:
+        for name in FILES + [
+            language + "/CHANGELOG.md" for language in release.LANGUAGES
+        ]:
             target = self.root / name
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text((ROOT / name).read_text().replace(SOURCE_VERSION, VERSION))
+            target.write_text(
+                (ROOT / name).read_text().replace(SOURCE_VERSION, VERSION)
+            )
         import re
 
+        policy = self.root / "php/release.json"
+        settings = json.loads(policy.read_text())
+        settings["enabled"] = True
+        policy.write_text(json.dumps(settings))
         manifest = self.root / "rust/Cargo.toml"
         text = re.sub(
-            r"^publish = .+$", 'publish = ["crates-io"]', manifest.read_text(), flags=re.M
+            r"^publish = .+$",
+            'publish = ["crates-io"]',
+            manifest.read_text(),
+            flags=re.M,
         )
-        text = re.sub(r"^authentication = .+$", 'authentication = "token"', text, flags=re.M)
+        text = re.sub(
+            r"^authentication = .+$", 'authentication = "token"', text, flags=re.M
+        )
         manifest.write_text(text)
         for language in release.LANGUAGES:
             (self.root / language / "CHANGELOG.md").write_text(
@@ -105,21 +127,27 @@ class ReleaseTests(unittest.TestCase):
 
     def test_valid_coordinator_before_and_after_all_tags(self):
         self.assertEqual(
-            release.coordinator(self.root, VERSION, "workflow_dispatch", "refs/heads/master"),
+            release.coordinator(
+                self.root, VERSION, "workflow_dispatch", "refs/heads/master"
+            ),
             VERSION,
         )
         self.tags()
         self.assertEqual(
-            release.coordinator(self.root, VERSION, "workflow_dispatch", "refs/heads/master"),
+            release.coordinator(
+                self.root, VERSION, "workflow_dispatch", "refs/heads/master"
+            ),
             VERSION,
         )
 
-    def test_all_seven_publishers_require_their_own_tag(self):
+    def test_all_eight_publishers_require_their_own_tag(self):
         self.tags()
         for language, prefix in release.LANGUAGES.items():
             with self.subTest(language=language):
                 self.assertEqual(
-                    release.publisher(self.root, language, f"refs/tags/{prefix}/v{VERSION}"),
+                    release.publisher(
+                        self.root, language, f"refs/tags/{prefix}/v{VERSION}"
+                    ),
                     VERSION,
                 )
                 with self.assertRaisesRegex(release.ReleaseError, "exact"):
@@ -138,15 +166,21 @@ class ReleaseTests(unittest.TestCase):
             ):
                 release.publisher(self.root, language, f"refs/tags/{prefix}/v{VERSION}")
         with self.assertRaisesRegex(release.ReleaseError, "disabled"):
-            release.coordinator(self.root, VERSION, "workflow_dispatch", "refs/heads/master")
-        self.assertEqual(before, self.git("show-ref"), "Preflight must never create or move tags")
+            release.coordinator(
+                self.root, VERSION, "workflow_dispatch", "refs/heads/master"
+            )
+        self.assertEqual(
+            before, self.git("show-ref"), "Preflight must never create or move tags"
+        )
 
     def test_pull_request_allows_disabled_unreleased_source(self):
         self.edit("rust/Cargo.toml", 'publish = ["crates-io"]', "publish = false")
         for language in release.LANGUAGES:
             self.edit(language + "/CHANGELOG.md", "2026-10-04", "Unreleased")
         self.assertEqual(
-            release.coordinator(self.root, VERSION, "pull_request", "refs/pull/1/merge"),
+            release.coordinator(
+                self.root, VERSION, "pull_request", "refs/pull/1/merge"
+            ),
             VERSION,
         )
 
@@ -165,6 +199,7 @@ class ReleaseTests(unittest.TestCase):
             "ruby/Gemfile.lock",
             "rust/Cargo.lock",
             "rust/integrations/Cargo.lock",
+            "php/integrations/composer.lock",
         ):
             path = self.root / name
             original = path.read_text()
@@ -212,7 +247,9 @@ class ReleaseTests(unittest.TestCase):
 
     def test_dispatch_requires_master(self):
         with self.assertRaisesRegex(release.ReleaseError, "from master"):
-            release.coordinator(self.root, VERSION, "workflow_dispatch", "refs/heads/feature")
+            release.coordinator(
+                self.root, VERSION, "workflow_dispatch", "refs/heads/feature"
+            )
 
     def test_partial_tags_fail(self):
         self.git("tag", "-a", f"rust/v{VERSION}", "-m", "partial")
@@ -236,7 +273,9 @@ class ReleaseTests(unittest.TestCase):
             release.publisher(self.root, "rust", f"refs/tags/rust/v{VERSION}")
 
     def test_dirty_or_unmerged_commit_rejected(self):
-        self.edit("typescript/package.json", '"sideEffects": false', '"sideEffects": true')
+        self.edit(
+            "typescript/package.json", '"sideEffects": false', '"sideEffects": true'
+        )
         with self.assertRaisesRegex(release.ReleaseError, "modifications"):
             release.release_commit(self.root)
         self.commit()
@@ -247,9 +286,15 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(cargo.authentication(self.root), "token")
         self.edit("rust/Cargo.toml", 'version = "2.6.0"', 'version = "2.6.1"')
         self.assertEqual(cargo.authentication(self.root), "token")
-        self.edit("rust/Cargo.toml", 'authentication = "token"', 'authentication = "trusted"')
+        self.edit(
+            "rust/Cargo.toml", 'authentication = "token"', 'authentication = "trusted"'
+        )
         self.assertEqual(cargo.authentication(self.root), "trusted")
-        self.edit("rust/Cargo.toml", 'authentication = "trusted"', 'authentication = "fallback"')
+        self.edit(
+            "rust/Cargo.toml",
+            'authentication = "trusted"',
+            'authentication = "fallback"',
+        )
         with self.assertRaisesRegex(cargo.preflight.ReleaseError, "explicit"):
             cargo.authentication(self.root)
 
@@ -277,7 +322,9 @@ class ReleaseTests(unittest.TestCase):
                 cargo.verify_artifact(self.root, directory)
         manifest.write_text(json.dumps(record))
         with patch.object(cargo, "package", return_value=archive):
-            self.assertEqual(cargo.verify_artifact(self.root, directory, rebuild=True), record)
+            self.assertEqual(
+                cargo.verify_artifact(self.root, directory, rebuild=True), record
+            )
         other = self.root / "other.crate"
         other.write_bytes(b"different package")
         with (
@@ -308,7 +355,9 @@ class RegistryTests(unittest.TestCase):
         for mode in ("token", "trusted"):
             with (
                 self.subTest(mode=mode),
-                self.assertRaisesRegex(cargo.preflight.ReleaseError, "already published"),
+                self.assertRaisesRegex(
+                    cargo.preflight.ReleaseError, "already published"
+                ),
             ):
                 cargo.check_registry(VERSION, mode, self.exists)
 
@@ -338,6 +387,7 @@ class WorkflowTests(unittest.TestCase):
             "java": "publish-java",
             "csharp": "publish-nuget",
             "ruby": "publish-rubygems",
+            "php": "publish-packagist",
         }
         for language, name in names.items():
             text = (ROOT / f".github/workflows/{name}.yml").read_text()
@@ -346,13 +396,18 @@ class WorkflowTests(unittest.TestCase):
         rust = (ROOT / ".github/workflows/publish-crates.yml").read_text()
         self.assertIn("release.py registry", rust)
         self.assertIn("release.py verify", rust)
-        self.assertLess(rust.index("release.py verify"), rust.index("crates-io-auth-action@"))
+        self.assertLess(
+            rust.index("release.py verify"), rust.index("crates-io-auth-action@")
+        )
         self.assertIn("--no-verify", rust)
         self.assertIn("secrets.CRATES_IO_TOKEN", rust)
         self.assertIn("if: needs.build.outputs.authentication == 'token'", rust)
         self.assertIn("if: needs.build.outputs.authentication == 'trusted'", rust)
         self.assertNotIn("CRATES_IO_BOOTSTRAP_TOKEN", rust)
-        self.assertIn("if: github.event_name != 'pull_request'\n    needs: [build, artifact]", rust)
+        self.assertIn(
+            "if: github.event_name != 'pull_request'\n    needs: [build, artifact]",
+            rust,
+        )
         self.assertNotIn("secrets.", rust.split("  publish:")[0])
         self.assertNotIn("id-token: write", rust.split("  publish:")[0])
         coordinator = (ROOT / ".github/workflows/coordinated-release.yml").read_text()

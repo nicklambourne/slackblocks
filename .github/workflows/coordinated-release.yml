@@ -29,6 +29,9 @@ on:
       - "rust/CHANGELOG.md"
       - ".github/workflows/publish-crates.yml"
       - ".github/scripts/**"
+      - ".github/workflows/publish-packagist.yml"
+      - "php/**"
+      - "rust/integrations/Cargo.lock"
   workflow_dispatch:
     inputs:
       version:
@@ -63,16 +66,34 @@ jobs:
       - name: Test release preflight and publisher wiring without credentials
         run: python -m unittest discover -s .github/scripts -p 'test_*.py' -v
 
-      - name: Validate all seven packages and release activation
+      - name: Validate all eight packages and release activation
         id: version
         env:
           REQUESTED_VERSION: ${{ inputs.version }}
         run: python .github/scripts/verify-release.py coordinator
 
+  php-readiness:
+    name: Verify PHP registry and repository readiness before tags
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: packagist
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify registration and dry-run the scoped distribution push
+        env:
+          PHP_DIST_DEPLOY_KEY: ${{ secrets.PHP_DIST_DEPLOY_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/php-publish-ssh.sh readiness
+
   create-tags:
     name: Create coordinated tags
     if: github.event_name == 'workflow_dispatch'
-    needs: validate
+    needs: [validate, php-readiness]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -88,7 +109,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          tags=("python/v$VERSION" "ts/v$VERSION" "go/v$VERSION" "java/v$VERSION" "csharp/v$VERSION" "ruby/v$VERSION" "rust/v$VERSION")
+          tags=("python/v$VERSION" "ts/v$VERSION" "go/v$VERSION" "java/v$VERSION" "csharp/v$VERSION" "ruby/v$VERSION" "rust/v$VERSION" "php/v$VERSION")
           existing=0
 
           for tag in "${tags[@]}"; do
@@ -120,6 +141,7 @@ jobs:
           git tag --annotate "csharp/v$VERSION" --message "Slackblocks $VERSION (C#)"
           git tag --annotate "ruby/v$VERSION" --message "slackblocks $VERSION (Ruby)"
           git tag --annotate "rust/v$VERSION" --message "slackblocks $VERSION (Rust)"
+          git tag --annotate "php/v$VERSION" --message "slackblocks $VERSION (PHP)"
           git push --atomic origin "${tags[@]}"
 
   publish:
@@ -157,6 +179,9 @@ jobs:
           - language: Rust
             workflow: publish-crates.yml
             tag_prefix: rust/v
+          - language: PHP
+            workflow: publish-packagist.yml
+            tag_prefix: php/v
     steps:
       - name: Dispatch and monitor publisher
         env:
