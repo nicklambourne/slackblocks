@@ -77,8 +77,8 @@ final readonly class MessagePayload extends Value
         ?JsonObject $extensions = null,
     ) {
         $this->channel = $channel;
-        $this->blocks = $blocks;
-        $this->attachments = $attachments;
+        $this->blocks = $blocks === null ? null : Internal\Collections::copy($blocks, 'MessagePayload.blocks');
+        $this->attachments = $attachments === null ? null : Internal\Collections::copy($attachments, 'MessagePayload.attachments');
         $this->text = $text;
         $this->mrkdwn = $mrkdwn;
         $this->unfurlLinks = $unfurlLinks;

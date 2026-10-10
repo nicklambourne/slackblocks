@@ -33,7 +33,7 @@ final readonly class DataSeries extends Value
         ?JsonObject $extensions = null,
     ) {
         $this->name = $name;
-        $this->data = $data;
+        $this->data = Internal\Collections::copy($data, 'DataSeries.data');
         parent::__construct($extensions);
     }
 }

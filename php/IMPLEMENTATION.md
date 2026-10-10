@@ -3,6 +3,7 @@
 - PHP 8.2+ and 64-bit integers. CI tests 8.2–8.5; existing languages retain their support ranges.
 - PSR-4 classes in `Slackblocks`, camelCase named constructor parameters, readonly public properties, native role interfaces and backed enums. Collection contracts use PHPDoc and runtime validation. Role interfaces describe library values; external implementations are not accepted as validated models.
 - Optional null means omission; required fields fail. No implicit IDs. Message defaults follow the shared model (`text: ''`, `mrkdwn: true`); response defaults additionally use `in_channel` and `replace_original: false`.
+- Model collections are copied by value, including referenced entries and table rows. Strict text-list element checks run before normalization; only strings receive text shorthand.
 - Strings supplied to text fields become the documented PlainText or MarkdownText class. Limits count Unicode code points. Invalid UTF-8 and nonfinite numbers fail.
 - PHP double values retain native double semantics. Checked JSON rejects signed-integer overflow, nonfinite numbers and nonzero literals that underflow to zero. It does not promise arbitrary decimal precision. Opaque JSON uses the same numeric policy.
 - JsonObject preserves JSON objects independently of PHP lists and copies mutable objects. Metadata and extension fields are opaque; extensions cannot shadow modeled fields or discriminators.

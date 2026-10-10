@@ -48,7 +48,7 @@ final readonly class SectionBlock extends Value implements Block
         ?JsonObject $extensions = null,
     ) {
         $this->text = is_string($text) ? new MarkdownText($text) : $text;
-        $this->fields = $fields === null ? null : array_map(static fn(Text|string $item): Text => is_string($item) ? new MarkdownText($item) : $item, $fields);
+        $this->fields = $fields === null ? null : Internal\Collections::text($fields, 'SectionBlock.fields');
         $this->accessory = $accessory;
         $this->blockId = $blockId;
         parent::__construct($extensions);

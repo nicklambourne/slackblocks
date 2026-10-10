@@ -69,7 +69,7 @@ final readonly class ExternalMultiSelectElement extends Value implements Element
     ) {
         $this->actionId = $actionId;
         $this->minQueryLength = $minQueryLength;
-        $this->initialOptions = $initialOptions;
+        $this->initialOptions = $initialOptions === null ? null : Internal\Collections::copy($initialOptions, 'ExternalMultiSelectElement.initial_options');
         $this->confirm = $confirm;
         $this->maxSelectedItems = $maxSelectedItems;
         $this->focusOnLoad = $focusOnLoad;

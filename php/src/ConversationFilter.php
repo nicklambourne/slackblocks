@@ -41,7 +41,7 @@ final readonly class ConversationFilter extends Value
         bool|null $excludeBotUsers = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->include = $include;
+        $this->include = $include === null ? null : Internal\Collections::copy($include, 'ConversationFilter.include');
         $this->excludeExternalSharedChannels = $excludeExternalSharedChannels;
         $this->excludeBotUsers = $excludeBotUsers;
         parent::__construct($extensions);

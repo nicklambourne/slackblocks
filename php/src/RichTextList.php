@@ -54,7 +54,7 @@ final readonly class RichTextList extends Value implements RichTextBlockElement
         ?JsonObject $extensions = null,
     ) {
         $this->style = $style;
-        $this->elements = $elements;
+        $this->elements = Internal\Collections::copy($elements, 'RichTextList.elements');
         $this->indent = $indent;
         $this->offset = $offset;
         $this->border = $border;

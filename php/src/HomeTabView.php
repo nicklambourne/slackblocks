@@ -47,7 +47,7 @@ final readonly class HomeTabView extends Value
         string|null $externalId = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->blocks = $blocks;
+        $this->blocks = Internal\Collections::copy($blocks, 'HomeTabView.blocks');
         $this->privateMetadata = $privateMetadata;
         $this->callbackId = $callbackId;
         $this->externalId = $externalId;

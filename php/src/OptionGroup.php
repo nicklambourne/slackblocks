@@ -33,7 +33,7 @@ final readonly class OptionGroup extends Value
         ?JsonObject $extensions = null,
     ) {
         $this->label = is_string($label) ? new PlainText($label) : $label;
-        $this->options = $options;
+        $this->options = Internal\Collections::copy($options, 'OptionGroup.options');
         parent::__construct($extensions);
     }
 }

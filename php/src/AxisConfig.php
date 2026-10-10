@@ -39,7 +39,7 @@ final readonly class AxisConfig extends Value
         string|null $yLabel = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->categories = $categories;
+        $this->categories = Internal\Collections::copy($categories, 'AxisConfig.categories');
         $this->xLabel = $xLabel;
         $this->yLabel = $yLabel;
         parent::__construct($extensions);

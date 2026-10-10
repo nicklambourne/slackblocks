@@ -40,7 +40,7 @@ final readonly class FileInputElement extends Value implements Element, InputEle
         ?JsonObject $extensions = null,
     ) {
         $this->actionId = $actionId;
-        $this->filetypes = $filetypes;
+        $this->filetypes = $filetypes === null ? null : Internal\Collections::copy($filetypes, 'FileInputElement.filetypes');
         $this->maxFiles = $maxFiles;
         parent::__construct($extensions);
     }

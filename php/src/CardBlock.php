@@ -88,7 +88,7 @@ final readonly class CardBlock extends Value implements Block
         $this->title = is_string($title) ? new MarkdownText($title) : $title;
         $this->subtitle = is_string($subtitle) ? new MarkdownText($subtitle) : $subtitle;
         $this->body = is_string($body) ? new MarkdownText($body) : $body;
-        $this->actions = $actions;
+        $this->actions = $actions === null ? null : Internal\Collections::copy($actions, 'CardBlock.actions');
         $this->slackIcon = $slackIcon;
         $this->subtext = is_string($subtext) ? new MarkdownText($subtext) : $subtext;
         $this->blockId = $blockId;
