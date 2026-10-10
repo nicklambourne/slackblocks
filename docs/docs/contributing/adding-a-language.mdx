@@ -328,6 +328,11 @@ already changed on the implementation branch, generate the snapshot from the
 verified outgoing release sources. Do not copy the new language into a release
 that never contained it, or modify older frozen/legacy snapshots to advertise it.
 
+Check direct historical URLs with a stored preference for the new language,
+including paths with and without a trailing slash. Unsupported versions must
+return to current documentation without relabelling an older page as the new
+language. Verify this in a browser after hydration as well as in generated HTML.
+
 Current docs use the coordinated package version. Coordinate their integration
 with the version update and mark availability honestly while unreleased; do not
 tell users to install a registry version that does not exist.

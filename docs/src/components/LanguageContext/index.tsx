@@ -126,7 +126,7 @@ export function LanguageProvider({ children }: PropsWithChildren) {
     search.delete("language");
     const nextSearch = search.toString();
     const version = Object.values(allDocsData).flatMap(data => data.versions)
-      .find(version => version.docs.some(doc => doc.path === location.pathname));
+      .find(version => version.docs.some(doc => doc.path.replace(/\/$/, "") === location.pathname.replace(/\/$/, "")));
     const supported = !version || version.name === "current" || version.docs
       .some(doc => doc.id.startsWith(`reference/${nextLanguage}/`));
     const pathname = supported || legacyVersion
