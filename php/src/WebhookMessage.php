@@ -83,8 +83,8 @@ final readonly class WebhookMessage extends Value
         JsonObject|null $metadata = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->blocks = $blocks;
-        $this->attachments = $attachments;
+        $this->blocks = $blocks === null ? null : Internal\Collections::copy($blocks, 'WebhookMessage.blocks');
+        $this->attachments = $attachments === null ? null : Internal\Collections::copy($attachments, 'WebhookMessage.attachments');
         $this->text = $text;
         $this->responseType = $responseType;
         $this->replaceOriginal = $replaceOriginal;

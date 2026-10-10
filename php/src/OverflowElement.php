@@ -40,7 +40,7 @@ final readonly class OverflowElement extends Value implements Element
         ?JsonObject $extensions = null,
     ) {
         $this->actionId = $actionId;
-        $this->options = $options;
+        $this->options = Internal\Collections::copy($options, 'OverflowElement.options');
         $this->confirm = $confirm;
         parent::__construct($extensions);
     }

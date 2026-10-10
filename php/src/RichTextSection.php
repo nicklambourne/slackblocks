@@ -25,7 +25,7 @@ final readonly class RichTextSection extends Value implements RichTextBlockEleme
         array $elements,
         ?JsonObject $extensions = null,
     ) {
-        $this->elements = $elements;
+        $this->elements = Internal\Collections::copy($elements, 'RichTextSection.elements');
         parent::__construct($extensions);
     }
 }

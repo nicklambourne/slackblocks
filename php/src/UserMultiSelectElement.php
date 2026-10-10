@@ -61,7 +61,7 @@ final readonly class UserMultiSelectElement extends Value implements Element, In
         ?JsonObject $extensions = null,
     ) {
         $this->actionId = $actionId;
-        $this->initialUsers = $initialUsers;
+        $this->initialUsers = $initialUsers === null ? null : Internal\Collections::copy($initialUsers, 'UserMultiSelectElement.initial_users');
         $this->confirm = $confirm;
         $this->maxSelectedItems = $maxSelectedItems;
         $this->focusOnLoad = $focusOnLoad;

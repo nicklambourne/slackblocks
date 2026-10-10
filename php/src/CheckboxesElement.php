@@ -54,8 +54,8 @@ final readonly class CheckboxesElement extends Value implements Element, InputEl
         ?JsonObject $extensions = null,
     ) {
         $this->actionId = $actionId;
-        $this->options = $options;
-        $this->initialOptions = $initialOptions;
+        $this->options = Internal\Collections::copy($options, 'CheckboxesElement.options');
+        $this->initialOptions = $initialOptions === null ? null : Internal\Collections::copy($initialOptions, 'CheckboxesElement.initial_options');
         $this->confirm = $confirm;
         $this->focusOnLoad = $focusOnLoad;
         parent::__construct($extensions);

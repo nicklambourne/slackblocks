@@ -61,7 +61,7 @@ final readonly class ChannelMultiSelectElement extends Value implements Element,
         ?JsonObject $extensions = null,
     ) {
         $this->actionId = $actionId;
-        $this->initialChannels = $initialChannels;
+        $this->initialChannels = $initialChannels === null ? null : Internal\Collections::copy($initialChannels, 'ChannelMultiSelectElement.initial_channels');
         $this->confirm = $confirm;
         $this->maxSelectedItems = $maxSelectedItems;
         $this->focusOnLoad = $focusOnLoad;

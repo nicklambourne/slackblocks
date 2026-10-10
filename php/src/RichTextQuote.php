@@ -32,7 +32,7 @@ final readonly class RichTextQuote extends Value implements RichTextBlockElement
         int|null $border = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->elements = $elements;
+        $this->elements = Internal\Collections::copy($elements, 'RichTextQuote.elements');
         $this->border = $border;
         parent::__construct($extensions);
     }

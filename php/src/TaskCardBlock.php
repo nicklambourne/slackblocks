@@ -72,7 +72,7 @@ final readonly class TaskCardBlock extends Value implements Block
         $this->title = $title;
         $this->details = $details;
         $this->output = $output;
-        $this->sources = $sources;
+        $this->sources = $sources === null ? null : Internal\Collections::copy($sources, 'TaskCardBlock.sources');
         $this->status = $status;
         $this->blockId = $blockId;
         parent::__construct($extensions);
