@@ -24,7 +24,7 @@ final class Rules
                 Validator::fail(C::MissingRequired, $path . '.fields', 'fields cannot be empty');
             }
             foreach ($value->fields ?? [] as $i => $field) {
-                if (Json::length(($field instanceof S\PlainText || $field instanceof S\MarkdownText) ? $field->text : '', $path) > Schema::LIMITS['section.fields.item_max_length']) {
+                if (Json::length($field->getText(), $path) > Schema::LIMITS['section.fields.item_max_length']) {
                     Validator::fail(C::LengthExceeded, $path . '.fields[' . $i . '].text', 'section field exceeds limit');
                 }
             }
@@ -95,6 +95,9 @@ final class Rules
             if (count(array_unique($value->categories)) !== count($value->categories)) {
                 Validator::fail(C::InvalidUsage, $path . '.categories', 'duplicate category');
             }
+        }
+        if ($value instanceof S\ChartSegment && $value->value <= Schema::LIMITS['data_visualization.segment.value.exclusive_min']) {
+            Validator::fail(C::OutOfRange, $path . '.value', 'expected a positive segment value');
         }
         if ($value instanceof S\LineChart || $value instanceof S\BarChart || $value instanceof S\AreaChart) {
             self::chart($value, $path);

@@ -1,5 +1,7 @@
 parameters:
     level: 8
+    # Collection PHPDoc describes caller contracts; runtime checks still guard untyped callers.
+    treatPhpDocTypesAsCertain: false
     paths:
         - src
     tmpDir: .phpstan

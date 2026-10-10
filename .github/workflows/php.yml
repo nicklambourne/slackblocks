@@ -71,9 +71,16 @@ jobs:
       - name: Validate Composer package
         if: needs.changes.outputs.relevant == 'true'
         run: composer validate --strict
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
       - name: Run native and conformance tests
         if: needs.changes.outputs.relevant == 'true'
         run: composer test
+      - name: Install and exercise the actual Composer archive
+        if: needs.changes.outputs.relevant == 'true'
+        run: python bin/check-package.py
 
   quality:
     needs: changes
@@ -108,3 +115,16 @@ jobs:
       - name: Check PHP types
         if: needs.changes.outputs.relevant == 'true'
         run: composer analyse
+      - name: Test generator output and failure guards
+        if: needs.changes.outputs.relevant == 'true'
+        run: python generator/test_generate.py
+      - name: Verify consumer type contracts
+        if: needs.changes.outputs.relevant == 'true'
+        run: python bin/check-types.py
+      - name: Enforce handwritten coverage
+        if: needs.changes.outputs.relevant == 'true'
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          php vendor/bin/phpunit --coverage-clover "$RUNNER_TEMP/php-coverage.xml"
+          python bin/check-coverage.py "$RUNNER_TEMP/php-coverage.xml"

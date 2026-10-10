@@ -52,6 +52,7 @@ abstract readonly class Value implements \JsonSerializable
     /** @param array<string, mixed>|\stdClass $fields Untrusted Slack wire fields. */
     final public static function fromArray(array|\stdClass $fields): static
     {
+        Json::validate((object) $fields, (new \ReflectionClass(static::class))->getShortName());
         $value = Codec::decode(static::class, (object) $fields, (new \ReflectionClass(static::class))->getShortName());
         assert($value instanceof static);
         return $value;

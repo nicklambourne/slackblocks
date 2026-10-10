@@ -36,4 +36,10 @@ final readonly class PlainText extends Value implements Text, ContextElement
         $this->emoji = $emoji;
         parent::__construct($extensions);
     }
+
+    /** Returns the text content through the Text interface. */
+    public function getText(): string
+    {
+        return $this->text;
+    }
 }
