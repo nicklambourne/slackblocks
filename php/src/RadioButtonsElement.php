@@ -54,7 +54,7 @@ final readonly class RadioButtonsElement extends Value implements Element, Input
         ?JsonObject $extensions = null,
     ) {
         $this->actionId = $actionId;
-        $this->options = $options;
+        $this->options = Internal\Collections::copy($options, 'RadioButtonsElement.options');
         $this->initialOption = $initialOption;
         $this->confirm = $confirm;
         $this->focusOnLoad = $focusOnLoad;

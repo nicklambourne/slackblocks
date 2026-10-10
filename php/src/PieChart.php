@@ -25,7 +25,7 @@ final readonly class PieChart extends Value implements Chart
         array $segments,
         ?JsonObject $extensions = null,
     ) {
-        $this->segments = $segments;
+        $this->segments = Internal\Collections::copy($segments, 'PieChart.segments');
         parent::__construct($extensions);
     }
 }

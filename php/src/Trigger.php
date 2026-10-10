@@ -33,7 +33,7 @@ final readonly class Trigger extends Value
         ?JsonObject $extensions = null,
     ) {
         $this->url = $url;
-        $this->customizableInputParameters = $customizableInputParameters;
+        $this->customizableInputParameters = $customizableInputParameters === null ? null : Internal\Collections::copy($customizableInputParameters, 'Trigger.customizable_input_parameters');
         parent::__construct($extensions);
     }
 }

@@ -73,7 +73,7 @@ final readonly class IconButtonElement extends Value implements Element, Context
         $this->value = $value;
         $this->confirm = $confirm;
         $this->accessibilityLabel = $accessibilityLabel;
-        $this->visibleToUserIds = $visibleToUserIds;
+        $this->visibleToUserIds = $visibleToUserIds === null ? null : Internal\Collections::copy($visibleToUserIds, 'IconButtonElement.visible_to_user_ids');
         parent::__construct($extensions);
     }
 }

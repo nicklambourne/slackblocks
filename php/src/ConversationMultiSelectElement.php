@@ -75,7 +75,7 @@ final readonly class ConversationMultiSelectElement extends Value implements Ele
         ?JsonObject $extensions = null,
     ) {
         $this->actionId = $actionId;
-        $this->initialConversations = $initialConversations;
+        $this->initialConversations = $initialConversations === null ? null : Internal\Collections::copy($initialConversations, 'ConversationMultiSelectElement.initial_conversations');
         $this->defaultToCurrentConversation = $defaultToCurrentConversation;
         $this->filter = $filter;
         $this->confirm = $confirm;

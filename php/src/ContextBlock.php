@@ -32,7 +32,7 @@ final readonly class ContextBlock extends Value implements Block
         string|null $blockId = null,
         ?JsonObject $extensions = null,
     ) {
-        $this->elements = $elements;
+        $this->elements = Internal\Collections::copy($elements, 'ContextBlock.elements');
         $this->blockId = $blockId;
         parent::__construct($extensions);
     }

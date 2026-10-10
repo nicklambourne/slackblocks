@@ -73,7 +73,9 @@ jobs:
         run: composer validate --strict
       - name: Run native and conformance tests
         if: needs.changes.outputs.relevant == 'true'
-        run: composer test
+        run: |
+          composer test
+          php -d pcre.jit=0 vendor/bin/phpunit --filter BoundaryTest
 
   quality:
     needs: changes

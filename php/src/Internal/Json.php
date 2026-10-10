@@ -27,12 +27,7 @@ final class Json
         }
         // Skip strings before inspecting number tokens. PHP otherwise rounds oversized
         // integers and underflows tiny finite literals silently during json_decode.
-        preg_match_all('/"(?:[^"\\\\]|\\\\.)*"|(-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)/s', $json, $tokens, PREG_SET_ORDER);
-        foreach ($tokens as $token) {
-            if (!isset($token[1])) {
-                continue;
-            }
-            $number = $token[1];
+        foreach (self::numbers($json) as $number) {
             if (!strpbrk($number, '.eE')) {
                 $negative = str_starts_with($number, '-');
                 $digits = ltrim($number, '-');
@@ -43,13 +38,35 @@ final class Json
             } else {
                 $float = (float) $number;
                 $mantissa = explode('e', strtolower($number), 2)[0];
-                if (!is_finite($float) || ($float == 0.0 && preg_match('/[1-9]/', $mantissa))) {
+                if (!is_finite($float) || ($float == 0.0 && strcspn($mantissa, '123456789') < strlen($mantissa))) {
                     throw new ValidationError(C::OutOfRange, '$', 'JSON number exceeds finite double range');
                 }
             }
         }
         self::validate($value, '$');
         return $value;
+    }
+
+    /** @return \Generator<int, string> Number literals from already syntax-checked JSON. */
+    private static function numbers(string $json): \Generator
+    {
+        $length = strlen($json);
+        for ($i = 0; $i < $length; ++$i) {
+            if ($json[$i] === '"') {
+                // Skip string bytes without PCRE recursion/JIT stack limits.
+                for (++$i; $i < $length; ++$i) {
+                    if ($json[$i] === '\\') {
+                        ++$i;
+                    } elseif ($json[$i] === '"') {
+                        break;
+                    }
+                }
+            } elseif ($json[$i] === '-' || ($json[$i] >= '0' && $json[$i] <= '9')) {
+                $size = strspn($json, '-0123456789.eE+', $i);
+                yield substr($json, $i, $size);
+                $i += $size - 1;
+            }
+        }
     }
 
     public static function validate(mixed $value, string $path, int $depth = 0): void
