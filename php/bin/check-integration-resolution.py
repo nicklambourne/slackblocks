@@ -25,7 +25,7 @@ with tempfile.TemporaryDirectory(
     dir=SCRATCH, prefix="slackblocks-php-integration-"
 ) as directory:
     target = Path(directory)
-    for name in ["src", "tests"]:
+    for name in ["src", "tests", "examples"]:
         shutil.copytree(ROOT / "integrations" / name, target / name)
     shutil.copy(ROOT / "integrations/phpunit.xml", target / "phpunit.xml")
     manifest = json.loads((ROOT / "integrations/composer.json").read_text())
