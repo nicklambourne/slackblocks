@@ -323,6 +323,11 @@ registration, tag-derived versions and GitHub update hooks.
    strict release checks, verifies Packagist's package/repository identity, and
    rehearses the conventional tag push. Missing setup blocks the whole release.
 
+Registration was verified on 2026-10-11: Packagist lists `nicklambourne` as the
+maintainer, points to this monorepo and indexes the current default-branch commit.
+The GitHub Packagist push hook is active and its delivery was accepted. The
+`packagist` environment permits `master` and `php/v*`; it needs no registry secret.
+
 ### Required PHP checks
 
 Branch protection requires the PHP 8.2–8.5 native matrix, `PHP quality and
