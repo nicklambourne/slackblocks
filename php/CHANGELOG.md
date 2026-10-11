@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.7.0] — Unreleased
+## [2.7.0] — 2026-10-11
 
 - Introduce native PHP 8.2+ Slack Block Kit values, typed roles and enums, immutable edits and checked JSON serialization.
 - Cover all shared fixtures, invalid cases, limits and capabilities, plus independent public API, PHPStan contracts and actual installed archive checks.

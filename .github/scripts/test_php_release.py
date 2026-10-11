@@ -3,6 +3,8 @@
 import io
 import contextlib
 import json
+import os
+import textwrap
 import subprocess
 from pathlib import Path
 import unittest
@@ -363,6 +365,43 @@ class PHPReleaseTests(unittest.TestCase):
                 with self.assertRaises(subprocess.CalledProcessError):
                     php.release_info(self.root, "owner/repo", tag)
 
+    def test_release_listing_waits_for_creation_and_publication_visibility(self):
+        draft = {"tag_name": "php/v" + fixtures.VERSION, "draft": True}
+        public = {**draft, "draft": False}
+        for published, responses, expected in (
+            (False, [None, None, draft], draft),
+            (True, [draft, None, public], public),
+        ):
+            with (
+                self.subTest(published=published),
+                patch.object(php, "release_info", side_effect=responses),
+                patch.object(php.time, "sleep") as sleep,
+            ):
+                self.assertEqual(
+                    php.wait_for_release(
+                        self.root, "owner/repo", draft["tag_name"], published=published
+                    ),
+                    expected,
+                )
+                self.assertEqual(sleep.call_count, 2)
+
+    def test_release_listing_timeout_and_api_failures_remain_closed(self):
+        with (
+            patch.object(php, "release_info", return_value=None) as lookup,
+            patch.object(php.time, "sleep") as sleep,
+            self.assertRaisesRegex(php.preflight.ReleaseError, "not visible yet"),
+        ):
+            php.wait_for_release(self.root, "owner/repo", "php/v" + fixtures.VERSION)
+        self.assertEqual(lookup.call_count, 12)
+        self.assertEqual(sleep.call_count, 11)
+        with (
+            patch.object(php, "release_info", side_effect=subprocess.CalledProcessError(1, "gh")),
+            patch.object(php.time, "sleep") as sleep,
+            self.assertRaises(subprocess.CalledProcessError),
+        ):
+            php.wait_for_release(self.root, "owner/repo", "php/v" + fixtures.VERSION)
+        sleep.assert_not_called()
+
     def asset_service(self, draft=True, initial=None):
         assets = {} if initial is None else dict(initial)
         state = {"exists": initial is not None, "draft": draft, "events": []}
@@ -431,6 +470,32 @@ class PHPReleaseTests(unittest.TestCase):
         self.assertEqual(
             assets[php.ARCHIVE], (self.directory / php.ARCHIVE).read_bytes()
         )
+
+    def test_release_assets_tolerate_delayed_github_listing_updates(self):
+        assets, state, gh = self.asset_service()
+        original_lookup = php.release_info
+        delayed = {True: True, False: True}
+
+        def lookup(*args):
+            info = original_lookup(*args)
+            if info is not None and delayed[info["draft"]]:
+                delayed[info["draft"]] = False
+                return None if info["draft"] else {**info, "draft": True}
+            return info
+
+        with (
+            patch.object(php, "run", side_effect=gh),
+            patch.object(php, "release_info", side_effect=lookup),
+            patch.object(php.time, "sleep") as sleep,
+        ):
+            php.release_assets(self.root, self.directory, self.record)
+        self.assertFalse(state["draft"])
+        self.assertEqual(sleep.call_count, 2)
+        self.assertEqual(
+            state["events"],
+            ["create", "upload", "download", "upload", "download", "edit"],
+        )
+        self.assertEqual(set(assets), {php.ARCHIVE, "release.json"})
 
     def test_partial_draft_is_resumable_but_changed_or_missing_public_assets_fail(self):
         for draft, changed in (
@@ -502,6 +567,39 @@ class PHPReleaseTests(unittest.TestCase):
             with self.assertRaisesRegex(php.preflight.ReleaseError, "asset mismatch"):
                 php.publish(self.root, self.directory, apply=True)
             self.assertEqual(events, ["dry-run"])
+
+    def test_required_release_check_handles_relevant_unrelated_and_failed_jobs(self):
+        workflow = (
+            fixtures.ROOT / ".github/workflows/publish-packagist.yml"
+        ).read_text()
+        job = workflow.split("  checks:\n", 1)[1].split("  publish:\n", 1)[0]
+        script = textwrap.dedent(job.split("        run: |\n", 1)[1])
+        cases = [
+            ("success", "true", "success", "success", True),
+            ("success", "false", "skipped", "skipped", True),
+            ("failure", "false", "skipped", "skipped", False),
+            ("success", "true", "failure", "skipped", False),
+            ("success", "true", "success", "cancelled", False),
+            ("success", "true", "success", "skipped", False),
+            ("success", "false", "success", "success", False),
+            ("success", "", "skipped", "skipped", False),
+        ]
+        for changes, relevant, build, artifact, success in cases:
+            with self.subTest(
+                changes=changes, relevant=relevant, build=build, artifact=artifact
+            ):
+                result = subprocess.run(
+                    ["bash", "-c", script],
+                    env={
+                        **os.environ,
+                        "CHANGES_RESULT": changes,
+                        "RELEVANT": relevant,
+                        "BUILD_RESULT": build,
+                        "ARTIFACT_RESULT": artifact,
+                    },
+                    capture_output=True,
+                )
+                self.assertEqual(result.returncode == 0, success, result.stderr)
 
     def test_write_credentials_follow_artifact_checks_and_readiness_precedes_tags(self):
         workflow = (

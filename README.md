@@ -1,17 +1,17 @@
 # slackblocks <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/sb.png" align="right" width="250px"/>
 
-[![License: MIT OR BSD-3-Clause](https://img.shields.io/badge/License-MIT_OR_BSD--3--Clause-grey?style=flat&labelColor=555)](#licensing)
-[![Docs: read](https://img.shields.io/badge/Docs-read-007EC6?style=flat&labelColor=555)](https://nicklambourne.github.io/slackblocks)
-[![Reported downloads across PyPI, npm, NuGet, RubyGems and crates.io](https://img.shields.io/endpoint?url=https%3A%2F%2Fwatch.ndl.au%2Fbadges%2Fslackblocks-downloads.json&style=flat&labelColor=555)](#download-statistics)
+[![License: MIT OR BSD-3-Clause](https://img.shields.io/badge/License-MIT_OR_BSD--3--Clause-2E8B57?style=flat&labelColor=555)](#licensing)
+[![Docs: read](https://img.shields.io/badge/Docs-read-4A154B?style=flat&labelColor=555)](https://nicklambourne.github.io/slackblocks)
+[![Downloads across PyPI, npm, NuGet, RubyGems, crates.io and Packagist](https://img.shields.io/endpoint?url=https%3A%2F%2Fwatch.ndl.au%2Fbadges%2Fslackblocks-downloads.json&style=flat&labelColor=555&label=Downloads)](#download-statistics)
 
-[![PyPI version](https://img.shields.io/pypi/v/slackblocks?style=flat&labelColor=555&label=PyPI&color=007EC6&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/)
-[![npm version](https://img.shields.io/npm/v/%40nicklambourne%2Fslackblocks?style=flat&labelColor=555&label=npm&color=007EC6&logo=npm&logoColor=white)](https://www.npmjs.com/package/@nicklambourne/slackblocks)
-[![Go module version](https://img.shields.io/badge/dynamic/json?style=flat&labelColor=555&label=Go+module&color=007EC6&logo=go&logoColor=white&url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv2%2F%40latest&query=%24.Version)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2)
-[![Maven Central version](https://img.shields.io/maven-central/v/io.github.nicklambourne/slackblocks?style=flat&labelColor=555&label=Maven+Central&color=007EC6&logo=apachemaven&logoColor=white)](https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks)
-[![NuGet version](https://img.shields.io/nuget/v/Slackblocks?style=flat&labelColor=555&label=NuGet&color=007EC6&logo=nuget&logoColor=white)](https://www.nuget.org/packages/Slackblocks)
-[![RubyGems version](https://img.shields.io/gem/v/slackblocks?style=flat&labelColor=555&label=RubyGems&color=007EC6&logo=rubygems&logoColor=white)](https://rubygems.org/gems/slackblocks)
-[![crates.io version](https://img.shields.io/crates/v/slackblocks?style=flat&labelColor=555&label=crates.io&color=007EC6&logo=rust&logoColor=white)](https://crates.io/crates/slackblocks)
-[![Packagist: preparing 2.7.0](https://img.shields.io/badge/Packagist-preparing_2.7.0-grey?style=flat&labelColor=555&logo=php&logoColor=white)](php/README.md)
+[![PyPI version](https://img.shields.io/pypi/v/slackblocks?style=flat&labelColor=555&label=PyPI&color=3776AB&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/)
+[![npm version](https://img.shields.io/npm/v/%40nicklambourne%2Fslackblocks?style=flat&labelColor=555&label=npm&color=3178C6&logo=npm&logoColor=white)](https://www.npmjs.com/package/@nicklambourne/slackblocks)
+[![Go module version](https://img.shields.io/badge/dynamic/json?style=flat&labelColor=555&label=Go+module&color=00ACD7&logo=go&logoColor=white&url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv2%2F%40latest&query=%24.Version)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2)
+[![Maven Central version](https://img.shields.io/maven-central/v/io.github.nicklambourne/slackblocks?style=flat&labelColor=555&label=Maven+Central&color=E76F00&logo=apachemaven&logoColor=white)](https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks)
+[![NuGet version](https://img.shields.io/nuget/v/Slackblocks?style=flat&labelColor=555&label=NuGet&color=512BD4&logo=nuget&logoColor=white)](https://www.nuget.org/packages/Slackblocks)
+[![RubyGems version](https://img.shields.io/gem/v/slackblocks?style=flat&labelColor=555&label=RubyGems&color=CC342D&logo=rubygems&logoColor=white)](https://rubygems.org/gems/slackblocks)
+[![crates.io version](https://img.shields.io/crates/v/slackblocks?style=flat&labelColor=555&label=crates.io&color=CE422B&logo=rust&logoColor=white)](https://crates.io/crates/slackblocks)
+[![Packagist version](https://img.shields.io/packagist/v/nicklambourne/slackblocks?style=flat&labelColor=555&label=Packagist&color=777BB4&logo=php&logoColor=white)](https://packagist.org/packages/nicklambourne/slackblocks)
 
 [![Python CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/unit-tests.yml?style=flat&labelColor=555&branch=master&event=push&label=Python+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml?query=branch%3Amaster)
 [![TypeScript CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/typescript.yml?style=flat&labelColor=555&branch=master&event=push&label=TypeScript+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml?query=branch%3Amaster)
@@ -57,64 +57,95 @@ your tests, rather than in production.
 
 ## Installation
 
-Python (3.10+ — earlier Pythons should pin the `1.x` line, see
-[Compatibility](https://nicklambourne.github.io/slackblocks/usage/compatibility)):
+<details>
+<summary>Python (3.10+)</summary>
+
+Earlier Pythons should pin the `1.x` line, see
+[Compatibility](https://nicklambourne.github.io/slackblocks/usage/compatibility).
 
 ```bash
 pip install slackblocks
 ```
 
-TypeScript / JavaScript (Node 20.19+ or 22.12+, ESM):
+</details>
+
+<details>
+<summary>TypeScript / JavaScript (Node 20.19+ or 22.12+, ESM)</summary>
 
 ```bash
 npm install @nicklambourne/slackblocks
 ```
 
-Go (1.22+):
+</details>
+
+<details>
+<summary>Go (1.22+)</summary>
 
 ```bash
 go get github.com/nicklambourne/slackblocks/go/v2
 ```
 
-Java (17+):
+</details>
+
+<details>
+<summary>Java (17+)</summary>
 
 ```xml
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>2.6.0</version>
+  <version>2.7.0</version>
 </dependency>
 ```
 
-C# (.NET 8+):
+</details>
+
+<details>
+<summary>C# (.NET 8+)</summary>
 
 ```bash
 dotnet add package Slackblocks
 ```
 
-Ruby (3.3+):
+</details>
+
+<details>
+<summary>Ruby (3.3+)</summary>
 
 ```bash
 gem install slackblocks
 ```
 
-Rust (1.85+, edition 2024):
+</details>
+
+<details>
+<summary>Rust (1.85+, edition 2024)</summary>
 
 ```bash
-cargo add slackblocks@2.6.0
+cargo add slackblocks@2.7.0
 cargo add serde_json
 ```
 
-The next coordinated version is 2.7.0. The seven established implementations are published at 2.6.0; PHP is not yet published.
+</details>
 
-PHP (8.2+, 64-bit; preparing the first 2.7.0 release):
+<details>
+<summary>PHP (8.2+, 64-bit)</summary>
 
-Use the [checkout installation instructions](php/README.md) until publication.
-The eventual Composer command is `composer require nicklambourne/slackblocks:^2.7`.
+```bash
+composer require nicklambourne/slackblocks:^2.7
+```
+
+PHP support begins with coordinated version 2.7.0. See the
+[PHP package guide](php/README.md) for native usage and development setup.
+
+</details>
 
 ## Quickstart
 
-A CI notification, in Python:
+<details>
+<summary>Python</summary>
+
+A CI notification:
 
 ```python
 from slackblocks import (
@@ -161,7 +192,10 @@ client = WebClient(token=os.environ["SLACK_API_TOKEN"])
 client.chat_postMessage(**message)
 ```
 
-The same message in TypeScript:
+</details>
+
+<details>
+<summary>TypeScript / JavaScript</summary>
 
 ```ts
 import {
@@ -200,7 +234,10 @@ const client = new WebClient(process.env.SLACK_API_TOKEN);
 await client.chat.postMessage(payload);
 ```
 
-And in Go:
+</details>
+
+<details>
+<summary>Go</summary>
 
 ```go
 client := slack.New(os.Getenv("SLACK_API_TOKEN"))
@@ -219,8 +256,10 @@ _, _, err := client.PostMessageContext(
 )
 ```
 
+</details>
 
-And in Java:
+<details>
+<summary>Java</summary>
 
 ```java
 SectionBlock block = SectionBlock.builder()
@@ -235,7 +274,10 @@ client.chatPostMessage(ChatPostMessageRequest.builder()
     .build());
 ```
 
-And in C#:
+</details>
+
+<details>
+<summary>C#</summary>
 
 ```csharp
 using Slackblocks.Blocks;
@@ -256,7 +298,10 @@ var message = new MessagePayload(
 // POST message.ToJson() to chat.postMessage with HttpClient and a bot token.
 ```
 
-And in Ruby:
+</details>
+
+<details>
+<summary>Ruby</summary>
 
 ```ruby
 require "slackblocks"
@@ -291,10 +336,10 @@ message = Slackblocks::MessagePayload.new(
 puts message.to_json
 ```
 
-<p align="center">
-  <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/usage/build_notification.png" alt="The build notification rendered in Slack" width="600px" />
-</p>
+</details>
 
+<details>
+<summary>Rust</summary>
 
 The same validated construction in Rust uses consuming builders and native errors:
 
@@ -315,6 +360,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 Values own their data, getters borrow, and `clone().into_builder()` supports
 editing without mutating the original. See the [Rust package guide](rust/README.md)
 and [Rust API reference](https://nicklambourne.github.io/slackblocks/reference/rust).
+
+</details>
+
+<details>
+<summary>PHP</summary>
 
 The same construction in PHP uses readonly classes and named arguments:
 
@@ -342,6 +392,12 @@ echo $message->toJson();
 ```
 
 See the [PHP package guide](php/README.md), [sending integrations](php/integrations/README.md), and [PHP API reference](https://nicklambourne.github.io/slackblocks/reference/php).
+
+</details>
+
+<p align="center">
+  <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/usage/build_notification.png" alt="The build notification rendered in Slack" width="600px" />
+</p>
 
 ## Documentation
 
@@ -374,7 +430,7 @@ See the [PHP package guide](php/README.md), [sending integrations](php/integrati
 - [`java/`](java/) — the Java artifact (`io.github.nicklambourne:slackblocks` on Maven Central).
 - [`csharp/`](csharp/) — the .NET package (`Slackblocks` on NuGet).
 - [`ruby/`](ruby/) — the Ruby gem (`slackblocks` on RubyGems from 2.5.0).
-- [`php/`](php/) — native PHP values and Composer package (first release planned for 2.7.0).
+- [`php/`](php/) — native PHP values and Composer package (`nicklambourne/slackblocks` on Packagist from 2.7.0).
 - [`rust/`](rust/) — the Rust crate (`slackblocks` on crates.io from 2.6.0).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
   and capability coverage that all eight implementations are tested against.
@@ -382,8 +438,8 @@ See the [PHP package guide](php/README.md), [sending integrations](php/integrati
 
 ## Download statistics
 
-The **reported downloads** badge sums all-time counts from PyPI (via Pepy), npm,
-NuGet, RubyGems, and crates.io. Go and Maven Central have no comparable public
+The **Downloads** badge sums all-time counts from PyPI (via Pepy), npm,
+NuGet, RubyGems, crates.io, and Packagist. Go and Maven Central have no comparable public
 all-time download counters and are excluded. Registry counting rules differ;
 these counts include automated downloads and do not represent unique users.
 The total refreshes hourly and shows unavailable if any contributing count is

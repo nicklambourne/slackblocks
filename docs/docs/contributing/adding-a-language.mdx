@@ -12,7 +12,7 @@ shared contract, useful helpers, tested documentation, and working package and
 release integration. Passing the JSON fixtures is one part of that work.
 
 The maintained implementations are currently Python, TypeScript, Go, Java, C#,
-Ruby, Rust (introduced in 2.6.0), and PHP (prepared for 2.7.0; publication remains gated). Recheck that list against the packages and coordinated release at the
+Ruby, Rust (introduced in 2.6.0), and PHP (introduced in 2.7.0). Recheck that list against the packages and coordinated release at the
 start of the project. A plan or an unfinished implementation does not add a
 language to the release set.
 
@@ -354,6 +354,63 @@ or execute examples from the actual README/guide sources, not manually copied
 test strings. Add reusable examples under `docs/examples/` and compare common
 examples with `docs/examples/section_hello.json` where applicable.
 
+For each new language, add one `<details>` accordion under **Installation** and
+another under **Quickstart** in the root README. Omit the `open` attribute so both
+start collapsed. Use a plain-text `<summary>` with the language name and, for
+installation, runtime requirements. Keep compatibility links, commands and native
+examples inside the relevant accordion; leave shared illustrations outside.
+Keep blank lines around fenced code blocks so GitHub renders them as Markdown.
+Check GitHub's rendered README: every language must have both accordions, all
+must start collapsed, and every existing command and example must be preserved.
+
+### Keep README badges consistent
+
+Add the new language to both badge rows in the root README: its registry version
+and its CI workflow. Use the same language order as the installation examples,
+`style=flat` and `labelColor=555`. Registry badges use a white logo and a highlight
+associated with the language, not a shared registry blue. The current palette is:
+
+| Language | Registry | Highlight |
+| --- | --- | --- |
+| Python | PyPI | `3776AB` |
+| TypeScript / JavaScript | npm | `3178C6` |
+| Go | Go module proxy | `00ACD7` |
+| Java | Maven Central | `E76F00` |
+| C# | NuGet | `512BD4` |
+| Ruby | RubyGems | `CC342D` |
+| Rust | crates.io | `CE422B` |
+| PHP | Packagist | `777BB4` |
+
+Choose and record a recognisable language colour when extending this table.
+Keep the shared Docs highlight purple (`4A154B`) and Licence highlight green
+(`2E8B57`). CI badges retain status-driven colours and must report default-branch
+pushes (`branch=master&event=push`), with a link to the matching workflow.
+Verify the package identity, badge rendering and destination links. Before the
+first registry release is available, describe preparation honestly; do not
+substitute a hard-coded released version for a missing registry result.
+
+### Extend the shared download total
+
+The README and [ndl.au/projects](https://ndl.au/projects) share the public
+[Watch download endpoint](https://watch.ndl.au/badges/slackblocks-downloads.json).
+Add a new registry's comparable all-time counter to the Watch exporter in the
+`noodle` monorepo (`state/ci-cluster/monitoring/slackblocks_exporter.py`), alongside
+its collector, aggregate registration, dashboard and tests. Document the source's
+meaning and cache/freshness limits in `state/ci-cluster/README.md`. Ecosystems
+without a comparable download count remain explicitly excluded.
+
+Stage collection separately from activation until the first stable release is
+indexed and its counter is verified. Test aggregate arithmetic, a real zero,
+missing/malformed data and stale sources: an unavailable required source must
+make the aggregate unavailable, never silently contribute zero or a partial sum.
+After activation, verify the public endpoint and update the README badge's alt
+text and **Download statistics** definition to match the active source set.
+
+The consumer in `projects/ndl_au/ui/src/lib/projects/downloads.ts` already reads
+this aggregate with a five-minute revalidation interval. New Slackblocks registry
+sources need no second calculation or copied database total there. Check both
+public surfaces after deployment and cache expiry.
+
 ### Extend the complete site integration
 
 | Area | Files to review and extend |
@@ -503,6 +560,8 @@ Copy this completion record into the final PR or implementation plan:
 - [ ] Standalone artifact and external consumer checks pass.
 - [ ] Public comments, READMEs, guides, runnable examples and API reference complete.
 - [ ] Every language enumeration reviewed, including README reference/changelog/layout lists.
+- [ ] Installation and quickstart accordions render collapsed for every language without losing examples.
+- [ ] Registry/CI badges and language colours verified; download-source activation and public total documented.
 - [ ] Every separately resolved example/integration project's own-package lock entry guarded.
 - [ ] Site language/search/version/navigation checks pass; history remains accurate.
 - [ ] CI filters, stable required checks and dependency maintenance configured.

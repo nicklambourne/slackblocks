@@ -106,6 +106,32 @@ jobs:
         run: |
           python3 php/bin/release.py consumer
           python3 php/bin/release.py consumer --source
+  checks:
+    name: PHP release checks
+    if: always() && github.event_name == 'pull_request'
+    needs: [changes, build, artifact]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require successful PHP artifacts or an explicitly unrelated change
+        env:
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          RELEVANT: ${{ needs.changes.outputs.relevant }}
+          BUILD_RESULT: ${{ needs.build.result }}
+          ARTIFACT_RESULT: ${{ needs.artifact.result }}
+        run: |
+          set -euo pipefail
+          test "$CHANGES_RESULT" = success
+          case "$RELEVANT" in
+            true)
+              test "$BUILD_RESULT" = success
+              test "$ARTIFACT_RESULT" = success
+              ;;
+            false)
+              test "$BUILD_RESULT" = skipped
+              test "$ARTIFACT_RESULT" = skipped
+              ;;
+            *) exit 1 ;;
+          esac
   publish:
     name: Publish PHP archive and Composer version tag
     if: github.event_name != 'pull_request'

@@ -6,7 +6,7 @@
 [![Rust CI](https://github.com/nicklambourne/slackblocks/actions/workflows/rust.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/rust.yml)
 [![Docs](https://img.shields.io/badge/Docs-8A2BE2.svg)](https://nicklambourne.github.io/slackblocks/reference/rust)
 
-A native Rust implementation of Slack Block Kit, using coordinated version 2.6.0
+A native Rust implementation of Slack Block Kit, using coordinated version 2.7.0
 and shared specification 1.2.0.
 
 Rust 2024; minimum supported Rust version (MSRV) 1.85. Values own their data,
@@ -22,7 +22,7 @@ See [the implementation plan](https://github.com/nicklambourne/slackblocks/blob/
 Add the crate and serde_json to your application:
 
 ```sh
-cargo add slackblocks@2.6.0
+cargo add slackblocks@2.7.0
 cargo add serde_json
 ```
 
