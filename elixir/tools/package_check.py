@@ -17,11 +17,48 @@ def run(args, cwd=PACKAGE, env=None):
     subprocess.run([executable, *args[1:]], cwd=cwd, env=env, check=True)
 
 
+def extract_archive(archive, source):
+    source.mkdir()
+    with tarfile.open(archive) as outer:
+        data = outer.extractfile("contents.tar.gz").read()
+        metadata = outer.extractfile("metadata.config").read().decode()
+    for expected in ["MIT", "BSD-3-Clause", "jason", "decimal", "slackblocks"]:
+        if expected not in metadata:
+            raise SystemExit(f"Package metadata is missing {expected}")
+    with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as inner:
+        names = set(inner.getnames())
+        for required in [
+            "mix.exs",
+            "README.md",
+            "CHANGELOG.md",
+            "LICENSE",
+            "LICENSE.BSD-3-Clause",
+            "lib/slackblocks.ex",
+        ]:
+            if required not in names:
+                raise SystemExit(f"Package is missing {required}")
+        for member in inner.getmembers():
+            name = Path(member.name)
+            if (
+                name.is_absolute()
+                or ".." in name.parts
+                or member.issym()
+                or member.islnk()
+            ):
+                raise SystemExit(f"Unsafe package member {name}")
+            if name.parts[0] not in {
+                "lib",
+                "mix.exs",
+                "README.md",
+                "CHANGELOG.md",
+                "LICENSE",
+                "LICENSE.BSD-3-Clause",
+            }:
+                raise SystemExit(f"Unexpected package member {name}")
+        inner.extractall(source)
+
+
 def main():
-    run(["mix", "hex.build"])
-    archives = list(PACKAGE.glob("slackblocks-*.tar"))
-    if len(archives) != 1:
-        raise SystemExit(f"Expected one package artifact, found {archives}")
     volume_host = Path("/Volumes/Repos").is_dir()
     if volume_host and not all(
         Path(p).is_dir() for p in ["/Volumes/Cache", "/Volumes/Scratch"]
@@ -33,44 +70,9 @@ def main():
     ) as tmp:
         root = Path(tmp)
         source = root / "package"
-        source.mkdir()
-        with tarfile.open(archives[0]) as outer:
-            data = outer.extractfile("contents.tar.gz").read()
-            metadata = outer.extractfile("metadata.config").read().decode()
-        for expected in ["MIT", "BSD-3-Clause", "jason", "decimal", "slackblocks"]:
-            if expected not in metadata:
-                raise SystemExit(f"Package metadata is missing {expected}")
-        with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as inner:
-            names = set(inner.getnames())
-            for required in [
-                "mix.exs",
-                "README.md",
-                "CHANGELOG.md",
-                "LICENSE",
-                "LICENSE.BSD-3-Clause",
-                "lib/slackblocks.ex",
-            ]:
-                if required not in names:
-                    raise SystemExit(f"Package is missing {required}")
-            for member in inner.getmembers():
-                name = Path(member.name)
-                if (
-                    name.is_absolute()
-                    or ".." in name.parts
-                    or member.issym()
-                    or member.islnk()
-                ):
-                    raise SystemExit(f"Unsafe package member {name}")
-                if name.parts[0] not in {
-                    "lib",
-                    "mix.exs",
-                    "README.md",
-                    "CHANGELOG.md",
-                    "LICENSE",
-                    "LICENSE.BSD-3-Clause",
-                }:
-                    raise SystemExit(f"Unexpected package member {name}")
-            inner.extractall(source)
+        archive = root / "slackblocks.tar"
+        run(["mix", "hex.build", "--output", str(archive)])
+        extract_archive(archive, source)
         consumer = root / "consumer"
         (consumer / "test").mkdir(parents=True)
         decimal = os.environ.get("SLACKBLOCKS_DECIMAL", "~> 2.4 or ~> 3.0")

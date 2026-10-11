@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "models, helpers and quality implemented; integrations/docs/release remain",
+  "status": "models, helpers, quality and sending implemented; docs/release remain",
   "baseline_commit": "70ffab589935d98d8fe63bb532d65d3e2b5d48a1",
   "spec_version": "1.2.0",
   "proposed_package_version": "2.8.0",
@@ -112,7 +112,7 @@
     "package_consumers": "implemented and locally verified",
     "erlang_consumer": "implemented and locally verified",
     "erlang_release": "implemented and locally verified",
-    "sending": "planned",
+    "sending": "actual archive, locked/lower/latest dependencies and real localhost HTTP verified",
     "documentation": "planned",
     "disabled_release": "planned",
     "monitoring": "planned"
@@ -129,7 +129,8 @@
   },
   "evidence": {
     "contract": "elixir/test/conformance_test.exs (283 tests including foundation)",
-    "quality": "elixir/design/quality.md"
+    "quality": "elixir/design/quality.md",
+    "sending": "elixir/integrations/README.md and elixir/integrations/test/sending_test.exs"
   },
   "source_hashes": {
     "spec/model.json": "f99f3c03dd338ab382ee99e547ce824977254477068a59efcf7e96832e74c72d",

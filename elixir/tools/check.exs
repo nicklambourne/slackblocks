@@ -1,7 +1,9 @@
 {options, _, invalid} = OptionParser.parse(System.argv(), strict: [profile: :string])
 if invalid != [], do: raise("unknown checker options: #{inspect(invalid)}")
 profile = Keyword.get(options, :profile, "full")
-unless profile in ["full", "runtime"], do: raise("profile must be full or runtime")
+
+unless profile in ["full", "runtime", "native"],
+  do: raise("profile must be full, runtime or native")
 
 run = fn command, args ->
   IO.puts("\nChecking: #{command} #{Enum.join(args, " ")}")
@@ -25,7 +27,16 @@ if profile == "full" do
   run.(ruff, ["format", "--check", "generator", "tools"])
   run.(ruff, ["check", "generator", "tools"])
   run.("mix", ["format", "--check-formatted"])
+
+  {_, format_status} =
+    System.cmd("mix", ["format", "--check-formatted"],
+      cd: "integrations",
+      into: IO.stream(:stdio, :line)
+    )
+
+  if format_status != 0, do: System.halt(format_status)
   run.("mix", ["credo", "--strict"])
+  run.("mix", ["credo", "--strict", "integrations"])
   run.("mix", ["docs", "--warnings-as-errors"])
   run.("mix", ["dialyzer"])
   run.(python, ["tools/docs_check.py"])
@@ -46,4 +57,10 @@ end
 
 run.(python, ["tools/package_check.py"])
 if profile == "full", do: run.(python, ["tools/erlang_check.py"])
+
+if profile != "native" do
+  profiles = if profile == "full", do: ["locked", "lower", "latest"], else: ["locked"]
+  Enum.each(profiles, &run.(python, ["tools/integration_check.py", "--profile", &1]))
+end
+
 IO.puts("Elixir #{profile} checks passed. Remaining train gates are tracked in design/plan.md.")
