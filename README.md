@@ -385,7 +385,7 @@ See the [PHP package guide](php/README.md), [sending integrations](php/integrati
 ## Download statistics
 
 The **reported downloads** badge sums all-time counts from PyPI (via Pepy), npm,
-NuGet, RubyGems, and crates.io. Go and Maven Central have no comparable public
+NuGet, RubyGems, crates.io, and Packagist. Go and Maven Central have no comparable public
 all-time download counters and are excluded. Registry counting rules differ;
 these counts include automated downloads and do not represent unique users.
 The total refreshes hourly and shows unavailable if any contributing count is
