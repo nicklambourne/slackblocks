@@ -36,7 +36,7 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/release-maven/.mvn/wrapper"
           cp java/mvnw "$RUNNER_TEMP/release-maven/mvnw"
-          cp java/.mvn/wrapper/maven-wrapper.properties "$RUNNER_TEMP/release-maven/.mvn/wrapper/"
+          cp java/.mvn/wrapper/release-maven-wrapper.properties "$RUNNER_TEMP/release-maven/.mvn/wrapper/maven-wrapper.properties"
 
       - name: Check out the existing release tag for recovery
         if: inputs.release_tag != ''

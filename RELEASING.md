@@ -163,8 +163,11 @@ These must be in place before the workflows can publish:
 
 Maven 3.10 and Central publishing plugin 0.11 produce a bundle containing
 `maven-metadata-local.xml` outside the version directory. Central rejects it.
-The wrapper stays on Maven 3.9.16 until a compatible publisher is available;
-Java language support remains 17+. The signed-bundle CI job runs the full Maven
+Normal builds and tests use Maven 3.10. The publisher and signed-bundle CI job
+use the separate, checksum-pinned
+`java/.mvn/wrapper/release-maven-wrapper.properties` launcher on Maven 3.9.16
+until a compatible publisher is available. Java language support remains 17+.
+The signed-bundle CI job runs the full Maven
 deploy lifecycle against a local mock Central endpoint and checks archive layout,
 signatures and checksums without uploading to a registry.
 
