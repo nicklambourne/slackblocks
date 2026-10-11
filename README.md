@@ -2,7 +2,7 @@
 
 [![License: MIT OR BSD-3-Clause](https://img.shields.io/badge/License-MIT_OR_BSD--3--Clause-2E8B57?style=flat&labelColor=555)](#licensing)
 [![Docs: read](https://img.shields.io/badge/Docs-read-4A154B?style=flat&labelColor=555)](https://nicklambourne.github.io/slackblocks)
-[![Reported downloads across PyPI, npm, NuGet, RubyGems and crates.io](https://img.shields.io/endpoint?url=https%3A%2F%2Fwatch.ndl.au%2Fbadges%2Fslackblocks-downloads.json&style=flat&labelColor=555)](#download-statistics)
+[![Downloads across PyPI, npm, NuGet, RubyGems and crates.io](https://img.shields.io/endpoint?url=https%3A%2F%2Fwatch.ndl.au%2Fbadges%2Fslackblocks-downloads.json&style=flat&labelColor=555&label=Downloads)](#download-statistics)
 
 [![PyPI version](https://img.shields.io/pypi/v/slackblocks?style=flat&labelColor=555&label=PyPI&color=3776AB&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/)
 [![npm version](https://img.shields.io/npm/v/%40nicklambourne%2Fslackblocks?style=flat&labelColor=555&label=npm&color=3178C6&logo=npm&logoColor=white)](https://www.npmjs.com/package/@nicklambourne/slackblocks)
@@ -384,7 +384,7 @@ See the [PHP package guide](php/README.md), [sending integrations](php/integrati
 
 ## Download statistics
 
-The **reported downloads** badge sums all-time counts from PyPI (via Pepy), npm,
+The **Downloads** badge sums all-time counts from PyPI (via Pepy), npm,
 NuGet, RubyGems, and crates.io. Go and Maven Central have no comparable public
 all-time download counters and are excluded. Registry counting rules differ;
 these counts include automated downloads and do not represent unique users.
