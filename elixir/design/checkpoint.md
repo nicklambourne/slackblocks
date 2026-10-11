@@ -144,6 +144,9 @@ release PR's hosted checks. This is now included in the new-language guidance.
 - Collapsed README sections, an honest pending Hex badge, Elixir CI badge and
   official light/dark logos preserve the established language order. The public
   download total remains the existing six sources until verified Hex activation.
+- Chromium checks verify light/dark logo variants, current-only Elixir versions,
+  reference switching, page back/forward history, stored-language fallback from
+  2.7.0 and untouched historical panels, with no page errors.
 - The complete nine-language site renders; all reference-rendering, search,
   selector, legacy fixture and historical snapshot checks pass. ExDoc passes with
   warnings as errors; publication supplies immutable commit-based source links.

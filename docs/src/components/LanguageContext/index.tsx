@@ -46,6 +46,7 @@ function isLanguage(value: string | null): value is Language {
 }
 
 function referenceLanguage(pathname: string): Language | null {
+  if (/\/usage\/erlang\/?$/.test(pathname)) return "elixir";
   const language =
     pathname.match(/\/reference\/(python|typescript|go|java|csharp|ruby|rust|php|elixir)(?:\/|$)/)?.[1] ?? null;
   return isLanguage(language) ? language : null;
@@ -56,6 +57,9 @@ function languagePath(
   language: Language,
   docPaths: ReadonlySet<string>,
 ): string {
+  if (language !== "elixir" && /\/usage\/erlang\/?$/.test(pathname)) {
+    return pathname.replace(/\/erlang\/?$/, "/sending_messages");
+  }
   const referenceMatch = pathname.match(
     /^(.*\/reference\/)(python|typescript|go|java|csharp|ruby|rust|php|elixir)(\/.*)?$/,
   );
