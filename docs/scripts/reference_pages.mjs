@@ -1,7 +1,7 @@
 // Renders a generated API reference model as one MDX page per API area.
 //
 // Java (javadoc through java-reference/ReferenceDoclet.java), C# (reflection and XML
-// documentation through csharp-reference/), and Ruby (model-derived metadata) all produce
+// documentation through csharp-reference/), Ruby (model-derived metadata), Rust (Syn), and PHP (reflection/PHPDoc) produce
 // the same JSON model: types with Markdown documentation, constants, and members with
 // signatures, parameters, return values, and exceptions. Links to other API types are
 // written as [`Name`](ref:Name), or javadoc:Name for the Java doclet, and resolved here.

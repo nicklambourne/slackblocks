@@ -59,8 +59,7 @@ Consuming builders return \`Result<T, ValidationError>\`; \`Clone\` and
 Serde serialization and checked deserialization. JSON ingress is also available
 through \`TryFrom<serde_json::Value>\`.
 
-This is the unreleased 2.6.0 implementation; see [installation](/usage/installation)
-for use from a checkout. Run \`cargo doc --manifest-path rust/Cargo.toml --no-deps\`
+Rust is available on crates.io; see [installation](/usage/installation). Run \`cargo doc --manifest-path rust/Cargo.toml --no-deps\`
 for the full native rustdoc reference, including trait implementations.
 
 ${domains.map(d=>`- [${d.title}](/reference/rust/${d.slug})`).join("\n")}

@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.7.0] — Unreleased
+
+- Add the PHP implementation to the coordinated release and documentation.
+
 ## [Unreleased]
 
 ## [2.6.0] — 2026-10-09

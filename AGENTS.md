@@ -26,3 +26,12 @@ when updating shared features. Run its generator with Rust 1.85.0 rustfmt, then
 native/conformance/API, compile-contract, coverage and extracted-package checks.
 Use `.github/workflows/rust.yml` on GitHub-provided runners. Rust publication
 uses the documented registry environment and coordinated release gates.
+
+PHP joins the implementation set in 2.7.0. Include `php/` when updating shared
+features. Use PHP 8.2+ on 64-bit platforms, named constructors, readonly values,
+and backed enums. Run generator, native/conformance/API, PHPStan contracts,
+coverage, actual Composer archive, sending integrations and documentation checks.
+Keep the Packagist publisher disabled until monorepo registration, its update hook
+and the protected environment have been verified; see `RELEASING.md`. Generate
+the root Composer descriptor with `php/bin/package_manifest.py` after changing
+PHP package metadata. Verify trimmed archives and native source installs.

@@ -1,0 +1,19 @@
+{
+    "name": "nicklambourne/slackblocks-sending-examples",
+    "description": "Separately resolved sending examples for Slackblocks PHP",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2",
+        "nicklambourne/slackblocks": "2.7.0",
+        "jolicode/slack-php-api": "^4.10",
+        "laravel/slack-notification-channel": "^3.10",
+        "symfony/http-client": "^7.4",
+        "nyholm/psr7": "^1.8"
+    },
+    "require-dev": {"phpunit/phpunit": "^11.5"},
+    "repositories": [{"type": "path", "url": "..", "options": {"versions": {"nicklambourne/slackblocks": "2.7.0"}, "symlink": false}}],
+    "autoload": {"psr-4": {"Slackblocks\\Examples\\": "src/"}},
+    "autoload-dev": {"psr-4": {"Slackblocks\\Examples\\Tests\\": "tests/"}},
+    "config": {"allow-plugins": {"php-http/discovery": false}, "sort-packages": true},
+    "scripts": {"test": "phpunit"}
+}

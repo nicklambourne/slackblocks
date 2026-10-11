@@ -11,6 +11,7 @@
 [![NuGet version](https://img.shields.io/nuget/v/Slackblocks?style=flat&labelColor=555&label=NuGet&color=007EC6&logo=nuget&logoColor=white)](https://www.nuget.org/packages/Slackblocks)
 [![RubyGems version](https://img.shields.io/gem/v/slackblocks?style=flat&labelColor=555&label=RubyGems&color=007EC6&logo=rubygems&logoColor=white)](https://rubygems.org/gems/slackblocks)
 [![crates.io version](https://img.shields.io/crates/v/slackblocks?style=flat&labelColor=555&label=crates.io&color=007EC6&logo=rust&logoColor=white)](https://crates.io/crates/slackblocks)
+[![Packagist: preparing 2.7.0](https://img.shields.io/badge/Packagist-preparing_2.7.0-grey?style=flat&labelColor=555&logo=php&logoColor=white)](php/README.md)
 
 [![Python CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/unit-tests.yml?style=flat&labelColor=555&branch=master&event=push&label=Python+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml?query=branch%3Amaster)
 [![TypeScript CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/typescript.yml?style=flat&labelColor=555&branch=master&event=push&label=TypeScript+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml?query=branch%3Amaster)
@@ -19,8 +20,9 @@
 [![C# CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/dotnet.yml?style=flat&labelColor=555&branch=master&event=push&label=C%23+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/dotnet.yml?query=branch%3Amaster)
 [![Ruby CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/ruby.yml?style=flat&labelColor=555&branch=master&event=push&label=Ruby+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/ruby.yml?query=branch%3Amaster)
 [![Rust CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/rust.yml?style=flat&labelColor=555&branch=master&event=push&label=Rust+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/rust.yml?query=branch%3Amaster)
+[![PHP CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/php.yml?style=flat&labelColor=555&branch=master&event=push&label=PHP+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/php.yml?query=branch%3Amaster)
 
-> **Build Slack messages in Python, TypeScript, Go, Java, C#, Ruby, or Rust — without writing JSON by hand.**
+> **Build Slack messages in Python, TypeScript, Go, Java, C#, Ruby, Rust, or PHP — without writing JSON by hand.**
 
 Anyone who has built a non-trivial Slack message knows the drill: a wall of nested
 [Block Kit](https://docs.slack.dev/block-kit/) JSON, five levels deep, where a typo'd
@@ -38,20 +40,20 @@ your tests, rather than in production.
   out *before* hitting Slack's API.
 - **Typed** — full type hints and `py.typed` in Python, strict types in TypeScript,
   compile-checked concrete fluent builders in Go and Java, and typed constructors with
-  nullable annotations in C#, RBS signatures in Ruby, and consuming builders with typed role enums in Rust.
+  nullable annotations in C#, RBS signatures in Ruby, and consuming builders with typed role enums in Rust, and readonly classes with backed enums in PHP.
 - **Plays well with established Slack clients** — unpack a `Message` straight into
   `client.chat_postMessage(**message)` with [`slack-sdk`](https://pypi.org/project/slack-sdk/),
   pass a payload directly to [`@slack/web-api`](https://www.npmjs.com/package/@slack/web-api),
   pass Go block builders directly to [`slack-go/slack`](https://github.com/slack-go/slack),
   pass Java blocks directly to the [official Slack Java SDK](https://slack.dev/java-slack-sdk/),
-  serialize C# values with `System.Text.Json`, call `to_json` on Ruby values, or use Serde with Rust values.
-- **One contract across seven implementations** — the same blocks, validation rules, and version
-  numbers in Python, TypeScript, Go, Java, C#, Ruby, and Rust. A shared conformance corpus keeps the implementations emitting the same Slack JSON.
+  serialize C# values with `System.Text.Json`, call `to_json` on Ruby values, use Serde with Rust values, or pass PHP JSON to JoliCode, cURL or Laravel.
+- **One contract across eight implementations** — the same blocks, validation rules, and version
+  numbers in Python, TypeScript, Go, Java, C#, Ruby, Rust, and PHP. A shared conformance corpus keeps the implementations emitting the same Slack JSON.
 - **Everything Block Kit ships today** — all current blocks and elements, rich text,
   modals and Home tabs, and the 2025 block families (tables, cards, carousels, charts).
 - **Light** — zero runtime dependencies in Python, a self-contained ESM module on npm,
   one direct Go dependency (`slack-go/slack`), Java integration through the official Slack model interfaces,
-  no dependencies beyond .NET itself in C#, Ruby's default JSON gem, and Serde/serde_json in Rust.
+  no dependencies beyond .NET itself in C#, Ruby's default JSON gem, Serde/serde_json in Rust, and only built-in JSON/PCRE extensions in PHP.
 
 ## Installation
 
@@ -103,7 +105,12 @@ cargo add slackblocks@2.6.0
 cargo add serde_json
 ```
 
-All seven implementations use the coordinated 2.6.0 version.
+The next coordinated version is 2.7.0. The seven established implementations are published at 2.6.0; PHP is not yet published.
+
+PHP (8.2+, 64-bit; preparing the first 2.7.0 release):
+
+Use the [checkout installation instructions](php/README.md) until publication.
+The eventual Composer command is `composer require nicklambourne/slackblocks:^2.7`.
 
 ## Quickstart
 
@@ -309,12 +316,39 @@ Values own their data, getters borrow, and `clone().into_builder()` supports
 editing without mutating the original. See the [Rust package guide](rust/README.md)
 and [Rust API reference](https://nicklambourne.github.io/slackblocks/reference/rust).
 
+The same construction in PHP uses readonly classes and named arguments:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(
+    channel: 'C0123456789',
+    text: 'Build #482 passed',
+    blocks: [
+        new S\HeaderBlock('Build #482 passed'),
+        new S\SectionBlock(fields: ["*Branch*\n`main`", "*Tests*\n1,247 passed"]),
+        new S\ActionsBlock(elements: [
+            new S\ButtonElement(text: 'View build', actionId: 'view', url: 'https://ci.example.com/482'),
+        ]),
+    ],
+);
+echo $message->toJson();
+```
+
+See the [PHP package guide](php/README.md), [sending integrations](php/integrations/README.md), and [PHP API reference](https://nicklambourne.github.io/slackblocks/reference/php).
+
 ## Documentation
 
 - **Full docs:** <https://nicklambourne.github.io/slackblocks/>
 - [Installation](https://nicklambourne.github.io/slackblocks/usage/installation)
 - [Using Blocks](https://nicklambourne.github.io/slackblocks/usage/using_blocks) — every
-  block type with code in all seven languages, the JSON it produces, and screenshots.
+  block type with code in all eight languages, the JSON it produces, and screenshots.
 - [Sending Messages](https://nicklambourne.github.io/slackblocks/usage/sending_messages)
 - [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end
   recipes for build notifications, approval requests, modals, and more.
@@ -325,10 +359,11 @@ and [Rust API reference](https://nicklambourne.github.io/slackblocks/reference/r
   [Java](https://nicklambourne.github.io/slackblocks/reference/java),
   [C#](https://nicklambourne.github.io/slackblocks/reference/csharp),
   [Ruby](https://nicklambourne.github.io/slackblocks/reference/ruby), and
-  [Rust](https://nicklambourne.github.io/slackblocks/reference/rust).
+  [Rust](https://nicklambourne.github.io/slackblocks/reference/rust),
+  [PHP](https://nicklambourne.github.io/slackblocks/reference/php).
 - [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/usage/migration) ·
   [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/usage/troubleshooting)
-- Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md) · [Go](go/CHANGELOG.md) · [Java](java/CHANGELOG.md) · [C#](csharp/CHANGELOG.md) · [Ruby](ruby/CHANGELOG.md) · [Rust](rust/CHANGELOG.md)
+- Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md) · [Go](go/CHANGELOG.md) · [Java](java/CHANGELOG.md) · [C#](csharp/CHANGELOG.md) · [Ruby](ruby/CHANGELOG.md) · [Rust](rust/CHANGELOG.md) · [PHP](php/CHANGELOG.md)
 - [Roadmap](ROADMAP.md) — including the TypeScript legacy API removal planned for v3.0.
 
 ## Repository layout
@@ -339,9 +374,10 @@ and [Rust API reference](https://nicklambourne.github.io/slackblocks/reference/r
 - [`java/`](java/) — the Java artifact (`io.github.nicklambourne:slackblocks` on Maven Central).
 - [`csharp/`](csharp/) — the .NET package (`Slackblocks` on NuGet).
 - [`ruby/`](ruby/) — the Ruby gem (`slackblocks` on RubyGems from 2.5.0).
+- [`php/`](php/) — native PHP values and Composer package (first release planned for 2.7.0).
 - [`rust/`](rust/) — the Rust crate (`slackblocks` on crates.io from 2.6.0).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
-  and capability coverage that all seven implementations are tested against.
+  and capability coverage that all eight implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.
 
 ## Download statistics

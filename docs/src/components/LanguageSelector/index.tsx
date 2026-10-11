@@ -19,6 +19,7 @@ const languageLabels: Record<Language, string> = {
   csharp: "C#",
   ruby: "Ruby",
   rust: "Rust",
+  php: "PHP",
 };
 
 function LanguageLogo({ language }: { language: Language }) {
@@ -102,7 +103,7 @@ function LanguageLogo({ language }: { language: Language }) {
   );
 
   // Official artwork and attribution: static/img/languages/README.md.
-  if (language === "ruby" || language === "rust") return (
+  if (language === "ruby" || language === "rust" || language === "php") return (
     <img
       alt=""
       aria-hidden="true"

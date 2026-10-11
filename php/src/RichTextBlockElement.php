@@ -7,4 +7,13 @@ declare(strict_types=1);
 namespace Slackblocks;
 
 /** A top-level element of a rich text block: a section, list, preformatted block, or quote. */
-interface RichTextBlockElement extends \JsonSerializable {}
+interface RichTextBlockElement extends \JsonSerializable
+{
+    /** Exports the Slack wire fields as a detached array.
+     * @return array<string, mixed> Slack wire fields.
+     */
+    public function toArray(): array;
+
+    /** Encodes this validated value as Slack JSON. */
+    public function toJson(): string;
+}
