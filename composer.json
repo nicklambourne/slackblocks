@@ -1,0 +1,45 @@
+{
+    "name": "nicklambourne/slackblocks",
+    "description": "Native, validated Slack Block Kit values for PHP",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://slackblocks.ndl.au",
+    "support": {
+        "issues": "https://github.com/nicklambourne/slackblocks/issues",
+        "source": "https://github.com/nicklambourne/slackblocks/tree/master/php"
+    },
+    "keywords": [
+        "slack",
+        "block-kit",
+        "messages"
+    ],
+    "require": {
+        "php": ">=8.2",
+        "php-64bit": ">=8.2",
+        "ext-json": "*",
+        "ext-pcre": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Slackblocks\\": "php/src/"
+        }
+    },
+    "dist": {
+        "type": "zip",
+        "url": "https://github.com/nicklambourne/slackblocks/releases/download/php/%prettyVersion%/slackblocks-php.zip"
+    },
+    "archive": {
+        "exclude": [
+            "/**",
+            "/.*",
+            "!/composer.json",
+            "!/php/src/**",
+            "!/php/examples/consumer.php",
+            "!/php/CHANGELOG.md",
+            "!/php/IMPLEMENTATION.md",
+            "!/php/LICENSE",
+            "!/php/LICENSE.BSD-3-Clause",
+            "!/php/README.md"
+        ]
+    }
+}

@@ -11,6 +11,14 @@
 - `with()` applies named constructor arguments to a new value and validates it. Unknown fields fail; the original remains unchanged after either success or failure.
 - Checked ingress uses Slack wire names, resolves role discriminators and emits categorized errors. Native constructors deliberately use PHP's native TypeError/ArgumentCountError for incompatible signatures; weak callers still follow PHP's scalar coercion rules.
 - Model generation reads only the shared model/limits/vocabulary. Handwritten contextual rules follow modeled graph edges. Conformance constructions must stay independent of expected JSON.
-- Composer distribution must contain only PHP package files. First publication is disabled pending the complete train and verified distribution repository/Packagist setup.
+- Composer distribution must contain only PHP package files. First publication is disabled pending the complete train and verified monorepo/Packagist setup.
 
 The implementation audit and full delivery plan are intentionally kept in task scratch at the owner's request.
+
+The public Composer descriptor is generated at the monorepo root by
+`python php/bin/package_manifest.py`; `php/composer.json` owns development metadata.
+The descriptor maps the namespace to `php/src/`, preserving the same layout in
+source installs and the PHP-only release ZIP. Package checks validate descriptor
+freshness, the actual Composer archive, conventional version tags, custom archive
+URLs and isolated stable/development source installs. Run with `--check` to detect
+metadata drift. The publishing PR supplies the gated release/tag workflow.

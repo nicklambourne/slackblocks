@@ -121,3 +121,7 @@ node_modules/
 /docs/docs/reference/rust/
 
 /rust/dist/
+
+# Root Composer package consumers
+/vendor/
+/composer.lock
