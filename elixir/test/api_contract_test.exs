@@ -63,7 +63,7 @@ defmodule Slackblocks.ApiContractTest do
       fields = model["fields"]
       native_fields = Enum.map(fields, &String.to_existing_atom(&1["wire"]))
       assert Map.keys(Map.from_struct(value)) |> Enum.sort() == Enum.sort(native_fields)
-      info = Map.new(module.__info__(:struct), &{&1.field, &1.required})
+      info = Map.new(module.__info__(:struct), &{&1.field, Map.get(&1, :required, false)})
       defaults = struct(module)
       assert {:ok, types} = Code.Typespec.fetch_types(module)
       assert Enum.any?(types, fn {kind, {name, _, _}} -> kind == :type and name == :t end)
