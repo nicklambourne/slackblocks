@@ -3,6 +3,7 @@
 
 import argparse
 import datetime
+import importlib.util
 import json
 import os
 import re
@@ -11,6 +12,12 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import tomllib
+
+_php_spec = importlib.util.spec_from_file_location(
+    "php_package_manifest", Path(__file__).resolve().parents[2] / "php/bin/package_manifest.py"
+)
+php_manifest = importlib.util.module_from_spec(_php_spec)
+_php_spec.loader.exec_module(php_manifest)
 
 LANGUAGES = {
     "python": "python",
@@ -105,13 +112,18 @@ def validate(root, requested=None, strict=False):
     )
     require(
         "version" not in php,
-        "Composer versions must be inferred from distribution tags",
+        "Composer versions must be inferred from conventional monorepo tags",
     )
     require(
-        policy["repository"] == "nicklambourne/slackblocks-php"
+        policy["repository"] == "nicklambourne/slackblocks"
         and policy["environment"] == "packagist",
-        "PHP distribution policy differs",
+        "PHP monorepo publication policy differs",
     )
+    require((root / "composer.json").is_file(), "Root Composer manifest is missing")
+    try:
+        php_manifest.check(root)
+    except ValueError as error:
+        raise ReleaseError(str(error)) from error
     integration = json.loads((root / "php/integrations/composer.json").read_text())
     require(
         integration["require"][php["name"]] == version,
@@ -132,7 +144,7 @@ def validate(root, requested=None, strict=False):
     if strict:
         require(
             policy.get("enabled") is True,
-            "PHP publication is disabled; verify distribution repository, Packagist and protected environment before releasing any language",
+            "PHP publication is disabled; verify monorepo registration, Packagist and protected environment before releasing any language",
         )
     major = version.split(".")[0]
     require(
@@ -215,6 +227,19 @@ def tag_state(root, version, head):
         existing in (0, len(tags)),
         f"Partial coordinated tag set: {existing}/{len(tags)}; recover without moving public tags",
     )
+    composer_tag = f"refs/tags/v{version}"
+    present = subprocess.run(["git", "show-ref", "--verify", "--quiet", composer_tag], cwd=root)
+    require(present.returncode in (0, 1), "Cannot inspect Composer version tag")
+    if present.returncode == 0:
+        require(existing == len(tags), "Composer version tag must follow all coordinated tags")
+        require(
+            git(root, "cat-file", "-t", composer_tag) == "tag",
+            "Composer version tag must be annotated",
+        )
+        require(
+            git(root, "rev-parse", composer_tag + "^{commit}") == head,
+            "Composer version tag points to a different commit",
+        )
     return existing
 
 

@@ -1,6 +1,6 @@
 {
   "enabled": false,
   "package": "nicklambourne/slackblocks",
-  "repository": "nicklambourne/slackblocks-php",
+  "repository": "nicklambourne/slackblocks",
   "environment": "packagist"
 }

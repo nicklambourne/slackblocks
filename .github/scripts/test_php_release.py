@@ -4,6 +4,7 @@ import io
 import contextlib
 import json
 import subprocess
+from pathlib import Path
 import unittest
 import urllib.error
 import zipfile
@@ -20,10 +21,8 @@ class PHPReleaseTests(unittest.TestCase):
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
         self.root = self.fixture.root
-        for name in php.FILES - {"composer.json", "CHANGELOG.md"}:
-            (self.root / "php" / name).write_bytes(
-                (fixtures.ROOT / "php" / name).read_bytes()
-            )
+        for name in php.FILES - {"composer.json", "php/CHANGELOG.md"}:
+            (self.root / name).write_bytes((fixtures.ROOT / name).read_bytes())
         (self.root / "php/src/MessagePayload.php").write_text(
             "<?php // distribution fixture\n"
         )
@@ -81,13 +80,13 @@ class PHPReleaseTests(unittest.TestCase):
         self.assertEqual(php.verify(self.root, self.directory), self.record)
         other = self.root / "second-artifact"
         php.prepare(self.root, other)
-        archive = f"slackblocks-{fixtures.VERSION}.zip"
+        archive = php.ARCHIVE
         self.assertEqual(
             (self.directory / archive).read_bytes(), (other / archive).read_bytes()
         )
-        self.assertNotIn("tests/private.php", self.record["files"])
-        self.assertNotIn("release.json", self.record["files"])
-        self.assertIn("LICENSE.BSD-3-Clause", self.record["files"])
+        self.assertNotIn("php/tests/private.php", self.record["files"])
+        self.assertNotIn("php/release.json", self.record["files"])
+        self.assertIn("php/LICENSE.BSD-3-Clause", self.record["files"])
         self.assertNotIn(
             "version", json.loads((self.root / "php/composer.json").read_text())
         )
@@ -108,7 +107,7 @@ class PHPReleaseTests(unittest.TestCase):
             ):
                 php.verify(self.root, self.directory)
         manifest.write_text(json.dumps(self.record))
-        archive = self.directory / f"slackblocks-{fixtures.VERSION}.zip"
+        archive = self.directory / php.ARCHIVE
         with zipfile.ZipFile(archive, "a") as package:
             package.writestr("../escape.php", "bad")
         with self.assertRaisesRegex(php.preflight.ReleaseError, "checksum"):
@@ -124,31 +123,86 @@ class PHPReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(php.preflight.ReleaseError, "Commit changes"):
             php.prepare(self.root, self.root / "dirty-artifact")
 
-    def test_distribution_commit_and_tag_are_deterministic_and_retry_is_immutable(self):
-        first = self.root / "distribution-one"
-        second = self.root / "distribution-two"
-        _, tag = php.distribution(self.root, self.directory, first)
-        php.distribution(self.root, self.directory, second)
-        self.assertEqual(
-            php.run("git", "rev-parse", "HEAD", cwd=first),
-            php.run("git", "rev-parse", "HEAD", cwd=second),
-        )
+    def test_monorepo_tag_is_deterministic_and_retry_is_immutable(self):
         remote = self.root / "remote.git"
         subprocess.run(["git", "init", "--quiet", "--bare", str(remote)], check=True)
-        self.assertEqual(php.push_tag(first, str(remote), tag), "dry-run")
-        self.assertEqual(php.run("git", "ls-remote", str(remote), cwd=first), "")
-        self.assertEqual(php.push_tag(first, str(remote), tag, apply=True), "published")
+        tag = "v" + fixtures.VERSION
+        self.assertEqual(php.push_tag(self.root, self.record, str(remote)), "dry-run")
+        self.assertEqual(php.run("git", "ls-remote", str(remote), cwd=self.root), "")
         self.assertEqual(
-            php.push_tag(second, str(remote), tag, apply=True), "unchanged"
+            php.push_tag(self.root, self.record, str(remote), apply=True), "published"
         )
-        # Even a lightweight tag pointing to the same commit is not interchangeable.
-        php.run("git", "tag", "-d", tag, cwd=second)
-        php.run("git", "-c", "tag.gpgsign=false", "tag", tag, cwd=second)
-        with self.assertRaisesRegex(php.preflight.ReleaseError, "never move"):
-            php.push_tag(second, str(remote), tag, apply=True)
+        clone = self.root / "second-clone"
+        php.run("git", "clone", "--quiet", str(self.root), str(clone), cwd=self.root)
         self.assertEqual(
-            php.run("git", "ls-remote", str(remote), "refs/heads/*", cwd=first), ""
+            php.push_tag(clone, self.record, str(remote), apply=True), "unchanged"
         )
+        self.assertEqual(
+            php.run(
+                "git",
+                "--git-dir=" + str(remote),
+                "rev-parse",
+                tag + "^{commit}",
+                cwd=self.root,
+            ),
+            self.record["source_commit"],
+        )
+        # Neither the monorepo's default branch nor local tag refs are mutated.
+        self.assertEqual(
+            php.run("git", "ls-remote", str(remote), "refs/heads/*", cwd=self.root), ""
+        )
+        self.assertEqual(self.fixture.git("tag", "--list"), "")
+        for wrong in (
+            self.record["source_commit"],
+            self.fixture.git("rev-parse", "HEAD~1"),
+        ):
+            php.run(
+                "git",
+                "--git-dir=" + str(remote),
+                "update-ref",
+                "refs/tags/" + tag,
+                wrong,
+                cwd=self.root,
+            )
+            with self.assertRaisesRegex(php.preflight.ReleaseError, "never move"):
+                php.push_tag(self.root, self.record, str(remote), apply=True)
+
+    def test_root_descriptor_drift_and_premature_composer_tags_block_release(self):
+        path = self.root / "composer.json"
+        original = path.read_text()
+        for field in ("autoload", "dist", "require", "archive", "name"):
+            changed = json.loads(original)
+            changed[field] = "wrong"
+            path.write_text(json.dumps(changed))
+            with (
+                self.subTest(field=field),
+                self.assertRaisesRegex(php.preflight.ReleaseError, "manifest is stale"),
+            ):
+                php.preflight.validate(self.root)
+        path.write_text(original)
+        tag = "v" + fixtures.VERSION
+        self.fixture.git("tag", "-a", tag, "-m", "premature version")
+        with self.assertRaisesRegex(php.preflight.ReleaseError, "must follow"):
+            php.preflight.tag_state(
+                self.root, fixtures.VERSION, self.record["source_commit"]
+            )
+        self.fixture.tags()
+        self.assertEqual(
+            php.preflight.tag_state(
+                self.root, fixtures.VERSION, self.record["source_commit"]
+            ),
+            8,
+        )
+        self.fixture.git("tag", "-f", tag, "HEAD")
+        with self.assertRaisesRegex(php.preflight.ReleaseError, "annotated"):
+            php.preflight.tag_state(
+                self.root, fixtures.VERSION, self.record["source_commit"]
+            )
+        self.fixture.git("tag", "-a", "-f", tag, "HEAD~1", "-m", "wrong commit")
+        with self.assertRaisesRegex(php.preflight.ReleaseError, "different commit"):
+            php.preflight.tag_state(
+                self.root, fixtures.VERSION, self.record["source_commit"]
+            )
 
     def test_registration_requires_exact_identity_and_repository(self):
         settings = php.policy(self.root)
@@ -178,19 +232,15 @@ class PHPReleaseTests(unittest.TestCase):
                 php.check_registration(settings, failure)
 
     def test_registry_consumer_rejects_wrong_refs_repository_and_installed_files(self):
-        checkout = self.root / "expected-registry"
-        php.distribution(self.root, self.directory, checkout)
-        commit = php.run("git", "rev-parse", "HEAD", cwd=checkout)
+        commit = self.record["source_commit"]
         original_run = php.run
         failure = None
 
-        def install(*args, cwd, env=None):
+        def install(*args, cwd, env=None, input=None):
             if args[0] == "composer":
                 installed = cwd / "vendor" / self.record["package"]
                 installed.mkdir(parents=True)
-                with zipfile.ZipFile(
-                    self.directory / f"slackblocks-{fixtures.VERSION}.zip"
-                ) as archive:
+                with zipfile.ZipFile(self.directory / php.ARCHIVE) as archive:
                     archive.extractall(installed)
                 package = {
                     "name": self.record["package"],
@@ -200,27 +250,57 @@ class PHPReleaseTests(unittest.TestCase):
                         + self.record["repository"]
                         + ".git",
                     },
-                    "dist": {"reference": commit},
+                    "dist": {
+                        "reference": commit,
+                        "type": "zip",
+                        "url": php.preflight.php_manifest.DIST_URL,
+                    },
                 }
                 if failure in ("source", "dist"):
                     package[failure]["reference"] = "wrong"
                 elif failure == "repository":
                     package["source"]["url"] = "https://github.com/unexpected/package"
+                elif failure == "url":
+                    package["dist"]["url"] = "https://example.invalid/unrelated.zip"
                 elif failure == "file":
-                    (installed / "src/MessagePayload.php").write_text("tampered")
+                    (installed / "php/src/MessagePayload.php").write_text("tampered")
                 elif failure == "inventory":
                     (installed / "unexpected.php").write_text("unexpected")
                 (cwd / "composer.lock").write_text(json.dumps({"packages": [package]}))
+                info = cwd / "vendor/composer/installed.json"
+                info.parent.mkdir()
+                info.write_text(
+                    json.dumps(
+                        {
+                            "packages": [
+                                {
+                                    "name": self.record["package"],
+                                    "installation-source": "source"
+                                    if failure == "transport"
+                                    else "dist",
+                                }
+                            ]
+                        }
+                    )
+                )
                 return ""
             if args[0] == "php":
                 return ""  # Actual PHP execution is exercised by artifact CI.
-            return original_run(*args, cwd=cwd, env=env)
+            return original_run(*args, cwd=cwd, env=env, input=input)
 
         with patch.object(php, "run", side_effect=install):
             self.assertEqual(
                 php.consumer(self.root, self.directory, registry=True), self.record
             )
-            for failure in ("source", "dist", "repository", "file", "inventory"):
+            for failure in (
+                "source",
+                "dist",
+                "repository",
+                "url",
+                "file",
+                "inventory",
+                "transport",
+            ):
                 with (
                     self.subTest(failure=failure),
                     self.assertRaises(php.preflight.ReleaseError),
@@ -232,7 +312,7 @@ class PHPReleaseTests(unittest.TestCase):
     ):
         unavailable = subprocess.CalledProcessError(2, "composer")
         cases = [
-            ([unavailable, unavailable, self.record], None, 3, 2),
+            ([unavailable, unavailable, self.record, self.record], None, 4, 2),
             ([unavailable] * 12, subprocess.CalledProcessError, 12, 11),
             (
                 [php.preflight.ReleaseError("content differs")],
@@ -260,23 +340,188 @@ class PHPReleaseTests(unittest.TestCase):
                 for call in sleep.call_args_list:
                     self.assertEqual(call.args, (15,))
 
-    def test_credentials_follow_artifact_checks_and_readiness_precedes_tags(self):
+    def test_github_lookup_finds_drafts_across_pages_and_fails_closed(self):
+        tag = "php/v" + fixtures.VERSION
+        release = {"tag_name": tag, "draft": True}
+        pages = [[{"tag_name": "python/v" + fixtures.VERSION}], [release]]
+        with patch.object(php, "run", return_value=json.dumps(pages)) as run:
+            self.assertEqual(php.release_info(self.root, "owner/repo", tag), release)
+            self.assertIn("--paginate", run.call_args.args)
+            self.assertIn("--slurp", run.call_args.args)
+            self.assertIsNone(php.release_info(self.root, "owner/repo", "absent"))
+        with patch.object(php, "run", return_value=json.dumps([[release], [release]])):
+            with self.assertRaisesRegex(
+                php.preflight.ReleaseError, "Multiple PHP releases"
+            ):
+                php.release_info(self.root, "owner/repo", tag)
+        for status in (404, 401, 403, 429, 500, "network failure"):
+            error = subprocess.CalledProcessError(1, "gh", output=str(status))
+            with (
+                self.subTest(status=status),
+                patch.object(php, "run", side_effect=error),
+            ):
+                with self.assertRaises(subprocess.CalledProcessError):
+                    php.release_info(self.root, "owner/repo", tag)
+
+    def asset_service(self, draft=True, initial=None):
+        assets = {} if initial is None else dict(initial)
+        state = {"exists": initial is not None, "draft": draft, "events": []}
+        tag = "php/v" + fixtures.VERSION
+
+        def gh(*args, cwd, env=None, input=None):
+            self.assertEqual(args[0], "gh")
+            if args[1] == "api":
+                if not state["exists"]:
+                    return "[[]]"
+                return json.dumps(
+                    [
+                        [
+                            {
+                                "tag_name": tag,
+                                "draft": state["draft"],
+                                "prerelease": False,
+                                "assets": [{"name": name} for name in assets],
+                            }
+                        ]
+                    ]
+                )
+            command = args[2]
+            state["events"].append(command)
+            if command == "create":
+                self.assertIn("--draft", args)
+                self.assertIn("--verify-tag", args)
+                state["exists"] = True
+                state["draft"] = True
+            elif command == "upload":
+                self.assertTrue(state["draft"], "Never edit an already public release")
+                self.assertNotIn("--clobber", args)
+                path = Path(args[4])
+                self.assertNotIn(path.name, assets)
+                assets[path.name] = path.read_bytes()
+            elif command == "download":
+                name = args[args.index("--pattern") + 1]
+                directory = Path(args[args.index("--dir") + 1])
+                (directory / name).write_bytes(assets[name])
+            elif command == "edit":
+                self.assertEqual(set(assets), {php.ARCHIVE, "release.json"})
+                self.assertIn("--draft=false", args)
+                state["draft"] = False
+            else:
+                self.fail("Unexpected release operation: " + repr(args))
+            return ""
+
+        return assets, state, gh
+
+    def test_release_assets_are_verified_before_publication_and_retries_do_not_write(
+        self,
+    ):
+        original_run = php.run
+        assets, state, gh = self.asset_service()
+        with patch.object(php, "run", side_effect=gh):
+            php.release_assets(self.root, self.directory, self.record)
+            self.assertFalse(state["draft"])
+            self.assertEqual(
+                state["events"],
+                ["create", "upload", "download", "upload", "download", "edit"],
+            )
+            state["events"].clear()
+            php.release_assets(self.root, self.directory, self.record)
+            self.assertEqual(state["events"], ["download", "download"])
+        self.assertIs(php.run, original_run)
+        self.assertEqual(
+            assets[php.ARCHIVE], (self.directory / php.ARCHIVE).read_bytes()
+        )
+
+    def test_partial_draft_is_resumable_but_changed_or_missing_public_assets_fail(self):
+        for draft, changed in (
+            (True, False),
+            (True, True),
+            (False, False),
+            (False, True),
+        ):
+            data = b"wrong" if changed else (self.directory / php.ARCHIVE).read_bytes()
+            assets, state, gh = self.asset_service(
+                draft=draft, initial={php.ARCHIVE: data}
+            )
+            with (
+                self.subTest(draft=draft, changed=changed),
+                patch.object(php, "run", side_effect=gh),
+            ):
+                if draft and not changed:
+                    php.release_assets(self.root, self.directory, self.record)
+                    self.assertFalse(state["draft"])
+                    self.assertEqual(
+                        state["events"], ["download", "upload", "download", "edit"]
+                    )
+                else:
+                    with self.assertRaises(php.preflight.ReleaseError):
+                        php.release_assets(self.root, self.directory, self.record)
+                    self.assertFalse(
+                        any(
+                            action in state["events"]
+                            for action in ("create", "upload", "edit")
+                        )
+                    )
+
+    def test_publish_exposes_composer_tag_only_after_verified_public_assets(self):
+        events = []
+
+        def tag(*args, apply=False):
+            events.append("tag" if apply else "dry-run")
+            return "published" if apply else "dry-run"
+
+        def assets(*args):
+            events.append("assets")
+
+        with (
+            patch.object(php, "push_tag", side_effect=tag),
+            patch.object(php, "release_assets", side_effect=assets),
+            patch.object(
+                php,
+                "check_registration",
+                side_effect=lambda *_: events.append("registration"),
+            ),
+        ):
+            self.assertEqual(php.publish(self.root, self.directory), "dry-run")
+            self.assertEqual(events, ["dry-run"])
+            events.clear()
+            self.assertEqual(
+                php.publish(self.root, self.directory, apply=True), "published"
+            )
+            self.assertEqual(events, ["dry-run", "registration", "assets", "tag"])
+        with (
+            patch.object(php, "push_tag", side_effect=tag),
+            patch.object(
+                php,
+                "release_assets",
+                side_effect=php.preflight.ReleaseError("asset mismatch"),
+            ),
+            patch.object(php, "check_registration"),
+        ):
+            events.clear()
+            with self.assertRaisesRegex(php.preflight.ReleaseError, "asset mismatch"):
+                php.publish(self.root, self.directory, apply=True)
+            self.assertEqual(events, ["dry-run"])
+
+    def test_write_credentials_follow_artifact_checks_and_readiness_precedes_tags(self):
         workflow = (
             fixtures.ROOT / ".github/workflows/publish-packagist.yml"
         ).read_text()
-        self.assertNotIn("secrets.", workflow.split("  publish:")[0])
+        self.assertNotIn("secrets.", workflow)
+        self.assertNotIn("contents: write", workflow.split("  publish:")[0])
         self.assertLess(
-            workflow.index("release.py verify"),
-            workflow.index("secrets.PHP_DIST_DEPLOY_KEY"),
+            workflow.index("release.py verify"), workflow.index("gh auth setup-git")
         )
         self.assertIn("needs: [build, artifact]", workflow)
         self.assertIn("environment: packagist", workflow)
+        self.assertIn("release.py consumer --source", workflow)
         coordinator = (
             fixtures.ROOT / ".github/workflows/coordinated-release.yml"
         ).read_text()
         self.assertIn("needs: [validate, php-readiness]", coordinator)
-        self.assertIn("php-publish-ssh.sh readiness", coordinator)
+        self.assertIn("release.py readiness", coordinator)
         self.assertIn("workflow: publish-packagist.yml", coordinator)
+        self.assertNotIn("secrets.PHP_DIST", coordinator)
 
 
 if __name__ == "__main__":

@@ -33,6 +33,7 @@ on:
       - ".github/scripts/**"
       - ".github/workflows/publish-packagist.yml"
       - "php/**"
+      - "composer.json"
       - "rust/integrations/Cargo.lock"
   workflow_dispatch:
     inputs:
@@ -75,22 +76,25 @@ jobs:
         run: python .github/scripts/verify-release.py coordinator
 
   php-readiness:
-    name: Verify PHP registry and repository readiness before tags
+    name: Verify PHP registry and monorepo readiness before tags
     if: github.event_name == 'workflow_dispatch'
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: packagist
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Verify registration and dry-run the scoped distribution push
+      - name: Verify registration and dry-run the monorepo Composer tag
         env:
-          PHP_DIST_DEPLOY_KEY: ${{ secrets.PHP_DIST_DEPLOY_KEY }}
           GH_TOKEN: ${{ github.token }}
-        run: bash .github/scripts/php-publish-ssh.sh readiness
+        run: |
+          gh auth setup-git --hostname github.com
+          python3 php/bin/release.py readiness
 
   create-tags:
     name: Create coordinated tags

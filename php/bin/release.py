@@ -21,14 +21,8 @@ _spec = importlib.util.spec_from_file_location(
 )
 preflight = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(preflight)
-FILES = {
-    "composer.json",
-    "README.md",
-    "IMPLEMENTATION.md",
-    "CHANGELOG.md",
-    "LICENSE",
-    "LICENSE.BSD-3-Clause",
-}
+FILES = {"composer.json", *["php/" + name for name in preflight.php_manifest.PACKAGE_FILES]}
+ARCHIVE = "slackblocks-php.zip"
 
 
 def temporary_directory(prefix):
@@ -44,10 +38,12 @@ def temporary_directory(prefix):
     return tempfile.TemporaryDirectory(prefix=prefix, dir=scratch)
 
 
-def run(*args, cwd, env=None):
+def run(*args, cwd, env=None, input=None):
     executable = shutil.which(args[0])
     preflight.require(executable is not None, f"Required executable missing: {args[0]}")
-    return subprocess.check_output([executable, *args[1:]], cwd=cwd, env=env, text=True).strip()
+    return subprocess.check_output(
+        [executable, *args[1:]], cwd=cwd, env=env, input=input, text=True
+    ).strip()
 
 
 def digest(content):
@@ -59,21 +55,24 @@ def policy(root):
 
 
 def contents(root):
-    paths = preflight.git(root, "ls-files", "php").splitlines()
+    paths = preflight.git(
+        root, "ls-tree", "-r", "--name-only", "HEAD", "composer.json", "php"
+    ).splitlines()
     selected = {}
-    for path in paths:
-        name = path.removeprefix("php/")
+    for name in paths:
         if (
             name in FILES
-            or name.startswith("src/")
+            or name.startswith("php/src/")
             and name.endswith(".php")
-            or name == "examples/consumer.php"
+            or name == "php/examples/consumer.php"
         ):
-            file = root / path
-            preflight.require(not file.is_symlink(), f"Symlink in PHP distribution: {path}")
-            selected[name] = subprocess.check_output(["git", "show", "HEAD:" + path], cwd=root)
+            entry = preflight.git(root, "ls-tree", "HEAD", name)
+            preflight.require(
+                entry.startswith("100644 "), f"Non-regular PHP distribution file: {name}"
+            )
+            selected[name] = subprocess.check_output(["git", "show", "HEAD:" + name], cwd=root)
     preflight.require(
-        selected.keys() >= FILES and "src/MessagePayload.php" in selected,
+        selected.keys() >= FILES and "php/src/MessagePayload.php" in selected,
         "Missing PHP distribution files",
     )
     return dict(sorted(selected.items()))
@@ -96,7 +95,7 @@ def prepare(root, directory):
     )
     files = contents(root)
     directory.mkdir(parents=True, exist_ok=True)
-    archive = directory / f"slackblocks-{version}.zip"
+    archive = directory / ARCHIVE
     zip_bytes(files, archive)
     record = {
         "version": version,
@@ -125,7 +124,7 @@ def verify(root, directory):
         all(record.get(key) == value for key, value in expected.items()),
         "PHP artifact metadata mismatch",
     )
-    archive = directory / f"slackblocks-{version}.zip"
+    archive = directory / ARCHIVE
     preflight.require(
         digest(archive.read_bytes()) == record["sha256"],
         "PHP artifact checksum mismatch",
@@ -151,7 +150,7 @@ def verify(root, directory):
     return record
 
 
-def consumer(root, directory, registry=False):
+def consumer(root, directory, registry=False, source=False):
     record = verify(root, directory)
     with temporary_directory(prefix="slackblocks-php-consumer-") as temporary:
         project = Path(temporary)
@@ -160,45 +159,63 @@ def consumer(root, directory, registry=False):
             "config": {"allow-plugins": False},
         }
         if not registry:
-            metadata = json.loads((root / "php/composer.json").read_text())
+            metadata = json.loads((root / "composer.json").read_text())
             for key in ["require-dev", "autoload-dev", "scripts", "config", "archive"]:
                 metadata.pop(key, None)
-            archive = directory / f"slackblocks-{record['version']}.zip"
+            archive = directory / ARCHIVE
             metadata.update(
                 version=record["version"],
+                source={"type": "git", "url": str(root), "reference": record["source_commit"]},
                 dist={
                     "type": "zip",
                     "url": archive.resolve().as_uri(),
                     "shasum": hashlib.sha1(archive.read_bytes()).hexdigest(),
                 },
             )
-            manifest["repositories"] = [{"type": "package", "package": metadata}]
+            manifest["repositories"] = [
+                {"type": "package", "package": metadata},
+                {"packagist.org": False},
+            ]
         (project / "composer.json").write_text(json.dumps(manifest))
         run(
             "composer",
             "install",
             "--no-interaction",
-            "--prefer-dist",
+            "--prefer-source" if source else "--prefer-dist",
             "--no-scripts",
             "--no-plugins",
             cwd=project,
         )
         installed = project / "vendor" / record["package"]
         preflight.require(not installed.is_symlink(), "Installed PHP package must not be a symlink")
-        actual = {
-            str(path.relative_to(installed)).replace("\\", "/")
-            for path in installed.rglob("*")
-            if path.is_file()
-        }
-        preflight.require(actual == set(record["files"]), "Installed PHP inventory differs")
+        installed_metadata = json.loads((project / "vendor/composer/installed.json").read_text())[
+            "packages"
+        ]
+        installed_package = next(
+            item for item in installed_metadata if item["name"] == record["package"]
+        )
         preflight.require(
-            not any(path.is_symlink() for path in installed.rglob("*")),
+            installed_package["installation-source"] == ("source" if source else "dist"),
+            "Composer used the wrong installation transport",
+        )
+        if source:
+            preflight.require(
+                run("git", "rev-parse", "HEAD", cwd=installed) == record["source_commit"],
+                "Installed source commit differs",
+            )
+        else:
+            actual = {
+                path.relative_to(installed).as_posix()
+                for path in installed.rglob("*")
+                if path.is_file()
+            }
+            preflight.require(actual == set(record["files"]), "Installed PHP inventory differs")
+        preflight.require(
+            not any((installed / name).is_symlink() for name in record["files"]),
             "Installed PHP files must not be symlinks",
         )
         if registry:
-            checkout = project / "expected-distribution"
-            distribution(root, directory, checkout)
-            commit = run("git", "rev-parse", "HEAD", cwd=checkout)
+            commit = record["source_commit"]
             packages = json.loads((project / "composer.lock").read_text())["packages"]
             package = next(item for item in packages if item["name"] == record["package"])
             preflight.require(
@@ -210,80 +227,185 @@ def consumer(root, directory, registry=False):
                 == "https://github.com/" + record["repository"],
                 "Packagist source repository differs",
             )
+            expected_url = preflight.php_manifest.DIST_URL
+            preflight.require(
+                package["dist"]["type"] == "zip"
+                and package["dist"]["url"]
+                in (expected_url, expected_url.replace("%prettyVersion%", "v" + record["version"])),
+                "Packagist archive URL differs",
+            )
         for name, checksum in record["files"].items():
             preflight.require(
-                digest((installed / name).read_bytes()) == checksum,
+                (installed / name).is_file()
+                and digest((installed / name).read_bytes()) == checksum,
                 f"Installed PHP file differs: {name}",
             )
         run(
             "php",
-            str(installed / "examples/consumer.php"),
+            str(installed / "php/examples/consumer.php"),
             str(project / "vendor/autoload.php"),
             cwd=project,
         )
     return record
 
 
-def distribution(root, directory, destination):
-    """Create an independent, deterministic tagged commit; never rewrite default-branch history."""
-    record = verify(root, directory)
-    destination.mkdir()
-    with zipfile.ZipFile(directory / f"slackblocks-{record['version']}.zip") as archive:
-        # verify() checks every exact path before extraction.
-        archive.extractall(destination)
-    run("git", "init", "--quiet", "--object-format=sha1", cwd=destination)
-    run("git", "config", "core.autocrlf", "false", cwd=destination)
-    run("git", "config", "core.attributesFile", os.devnull, cwd=destination)
-    run("git", "add", ".", cwd=destination)
-    env = os.environ.copy()
-    for role in ["AUTHOR", "COMMITTER"]:
-        env[f"GIT_{role}_NAME"] = "Slackblocks release"
-        env[f"GIT_{role}_EMAIL"] = "release@slackblocks.invalid"
-        env[f"GIT_{role}_DATE"] = record["source_timestamp"] + " +0000"
-    message = f"Slackblocks PHP {record['version']}\n\nSource: https://github.com/nicklambourne/slackblocks/commit/{record['source_commit']}"
-    run(
-        "git",
-        "-c",
-        "commit.gpgsign=false",
-        "-c",
-        "core.autocrlf=false",
-        "commit",
-        "--quiet",
-        "-m",
-        message,
-        cwd=destination,
-        env=env,
-    )
+def push_tag(root, record, remote, apply=False):
+    """Expose the tested source commit to Composer, refusing changed or lightweight tags."""
     tag = "v" + record["version"]
-    run(
-        "git",
-        "-c",
-        "tag.gpgsign=false",
-        "tag",
-        "-a",
-        tag,
-        "-m",
-        message,
-        cwd=destination,
-        env=env,
+    content = (
+        f"object {record['source_commit']}\ntype commit\ntag {tag}\n"
+        f"tagger Slackblocks release <release@slackblocks.invalid> {record['source_timestamp']} +0000\n\n"
+        f"Slackblocks PHP {record['version']}\n\nSource: https://github.com/{record['repository']}/commit/{record['source_commit']}\n"
     )
-    return record, tag
-
-
-def push_tag(directory, remote, tag, apply=False):
-    expected = run("git", "rev-parse", "refs/tags/" + tag, cwd=directory)
-    refs = run("git", "ls-remote", remote, "refs/tags/" + tag, cwd=directory)
+    expected = run("git", "mktag", cwd=root, input=content)
+    refs = run("git", "ls-remote", remote, "refs/tags/" + tag, cwd=root)
     if refs:
         preflight.require(
             refs.split()[0] == expected,
-            "Existing distribution tag differs; never move a published tag",
+            "Existing Composer version tag differs; never move a published tag",
         )
         return "unchanged"
     command = ["git", "push", "--atomic", "--porcelain"]
     if not apply:
         command.append("--dry-run")
-    run(*command, remote, "refs/tags/" + tag, cwd=directory)
+    run(*command, remote, expected + ":refs/tags/" + tag, cwd=root)
     return "published" if apply else "dry-run"
+
+
+def release_info(root, repository, tag):
+    # The tag endpoint only returns published releases. List all pages so retries
+    # can find drafts as well; lookup failures must never authorize creation.
+    pages = json.loads(
+        run(
+            "gh",
+            "api",
+            "--paginate",
+            "--slurp",
+            f"repos/{repository}/releases?per_page=100",
+            cwd=root,
+        )
+    )
+    matches = [release for page in pages for release in page if release["tag_name"] == tag]
+    preflight.require(len(matches) <= 1, "Multiple PHP releases use the same tag")
+    return matches[0] if matches else None
+
+
+def release_assets(root, directory, record):
+    """Create/complete the PHP release, verify exact bytes, and never overwrite an asset."""
+    tag = "php/v" + record["version"]
+    repository = record["repository"]
+    info = release_info(root, repository, tag)
+    if info is None:
+        # Public assets must exist before the conventional vX.Y.Z tag is exposed.
+        with temporary_directory(prefix="slackblocks-php-notes-") as temporary:
+            notes = Path(temporary) / "notes.md"
+            changelog = (root / "php/CHANGELOG.md").read_text()
+            section = (
+                changelog.split("## [" + record["version"] + "]", 1)[1]
+                .split("\n", 1)[1]
+                .split("\n## [", 1)[0]
+                .strip()
+            )
+            preflight.require(bool(section), "PHP release notes are empty")
+            notes.write_text(
+                section + "\n\nPackagist publication is verified by the PHP publishing workflow.\n"
+            )
+            run(
+                "gh",
+                "release",
+                "create",
+                tag,
+                "--repo",
+                repository,
+                "--verify-tag",
+                "--latest=false",
+                "--draft",
+                "--title",
+                "PHP v" + record["version"],
+                "--notes-file",
+                str(notes),
+                cwd=root,
+            )
+        info = release_info(root, repository, tag)
+    preflight.require(
+        info is not None and info["tag_name"] == tag and not info["prerelease"],
+        "PHP release has unexpected tag or prerelease metadata",
+    )
+    names = [asset["name"] for asset in info["assets"]]
+    preflight.require(len(names) == len(set(names)), "Duplicate PHP release asset names")
+    required = (ARCHIVE, "release.json")
+    preflight.require(
+        info["draft"] or set(required) <= set(names),
+        "Published PHP release is missing required assets",
+    )
+
+    def verify_asset(name):
+        with temporary_directory(prefix="slackblocks-php-upload-") as temporary:
+            run(
+                "gh",
+                "release",
+                "download",
+                tag,
+                "--repo",
+                repository,
+                "--pattern",
+                name,
+                "--dir",
+                temporary,
+                cwd=root,
+            )
+            preflight.require(
+                (Path(temporary) / name).read_bytes() == (directory / name).read_bytes(),
+                "Published PHP asset differs; never overwrite release files: " + name,
+            )
+
+    # Check all pre-existing files before completing a partial draft. Public
+    # releases are never edited, including repositories with immutable releases.
+    for name in required:
+        if name in names:
+            verify_asset(name)
+    for name in required:
+        if name not in names:
+            run(
+                "gh",
+                "release",
+                "upload",
+                tag,
+                str(directory / name),
+                "--repo",
+                repository,
+                cwd=root,
+            )
+            verify_asset(name)
+    if info["draft"]:
+        run(
+            "gh",
+            "release",
+            "edit",
+            tag,
+            "--repo",
+            repository,
+            "--draft=false",
+            "--latest=false",
+            cwd=root,
+        )
+        info = release_info(root, repository, tag)
+        preflight.require(
+            info is not None and not info["draft"], "PHP release assets are not public yet"
+        )
+
+
+def publish(root, directory, apply=False):
+    record = verify(root, directory)
+    remote = "https://github.com/" + record["repository"] + ".git"
+    # Check tag identity and rehearse the push before creating assets. A dry run
+    # cannot prove that server-side tag rules will allow the eventual write.
+    result = push_tag(root, record, remote)
+    if not apply:
+        return result
+    check_registration(policy(root))
+    release_assets(root, directory, record)
+    return push_tag(root, record, remote, apply=True)
 
 
 def check_registration(settings, opener=urllib.request.urlopen):
@@ -301,7 +423,7 @@ def check_registration(settings, opener=urllib.request.urlopen):
     repository = package["repository"].removesuffix(".git").rstrip("/")
     preflight.require(
         repository == "https://github.com/" + settings["repository"],
-        "Packagist points to the wrong distribution repository",
+        "Packagist points to the wrong monorepo",
     )
 
 
@@ -320,22 +442,20 @@ def main():
     )
     parser.add_argument("--directory", type=Path, default=ROOT / "php/dist")
     parser.add_argument("--apply", action="store_true")
+    parser.add_argument("--source", action="store_true", help="Verify a native source installation")
     args = parser.parse_args()
     if args.command == "readiness":
         preflight.coordinator(ROOT, None, "workflow_dispatch", os.environ.get("GITHUB_REF", ""))
         check_registration(policy(ROOT))
         with temporary_directory(prefix="slackblocks-php-readiness-") as temporary:
-            artifact = Path(temporary) / "artifact"
-            prepare(ROOT, artifact)
-            checkout = Path(temporary) / "distribution"
-            record, tag = distribution(ROOT, artifact, checkout)
-            result = push_tag(checkout, "git@github.com:" + record["repository"] + ".git", tag)
+            record = prepare(ROOT, Path(temporary))
+            result = push_tag(ROOT, record, "https://github.com/" + record["repository"] + ".git")
     elif args.command == "prepare":
         result = prepare(ROOT, args.directory)
     elif args.command == "verify":
         result = verify(ROOT, args.directory)
     elif args.command == "consumer":
-        result = consumer(ROOT, args.directory)
+        result = consumer(ROOT, args.directory, source=args.source)
     else:
         preflight.publisher(ROOT, "php", os.environ.get("GITHUB_REF", ""))
         if args.command == "verify-registry":
@@ -348,16 +468,9 @@ def main():
                     if attempt == 11:
                         raise
                     time.sleep(15)
+            consumer(ROOT, args.directory, registry=True, source=True)
         else:
-            with temporary_directory(prefix="slackblocks-php-push-") as temporary:
-                checkout = Path(temporary) / "distribution"
-                record, tag = distribution(ROOT, args.directory, checkout)
-                result = push_tag(
-                    checkout,
-                    "git@github.com:" + record["repository"] + ".git",
-                    tag,
-                    args.apply,
-                )
+            result = publish(ROOT, args.directory, args.apply)
     print(json.dumps(result, indent=2))
 
 

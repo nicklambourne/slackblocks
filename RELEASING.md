@@ -9,8 +9,8 @@ number.
 
 **Current preparation state:** 2.7.0 adds PHP to the coordinated release.
 All eight changelogs are **Unreleased**. PHP publication is disabled in
-`php/release.json` until its distribution repository, Packagist registration,
-protected environment and scoped deploy key are verified. No registry setup is
+`php/release.json` until the monorepo's Packagist registration, GitHub update
+hook and protected environment are verified. No registry setup is
 claimed by this change. The existing seven 2.6.0 implementations are published.
 Follow [PHP activation and first publication](#php-activation-and-first-publication)
 before enabling the next coordinated release.
@@ -38,10 +38,13 @@ Releases are triggered by pushing tags:
 | `csharp/vX.Y.Z` | [`.github/workflows/publish-nuget.yml`](.github/workflows/publish-nuget.yml) | `Slackblocks` to NuGet |
 | `ruby/vX.Y.Z` | [`.github/workflows/publish-rubygems.yml`](.github/workflows/publish-rubygems.yml) | `slackblocks` to RubyGems |
 | `rust/vX.Y.Z` | [`.github/workflows/publish-crates.yml`](.github/workflows/publish-crates.yml) | `slackblocks` to crates.io |
-| `php/vX.Y.Z` | [`.github/workflows/publish-packagist.yml`](.github/workflows/publish-packagist.yml) | PHP-only `vX.Y.Z` tag in `nicklambourne/slackblocks-php`, indexed by Packagist |
+| `php/vX.Y.Z` | [`.github/workflows/publish-packagist.yml`](.github/workflows/publish-packagist.yml) | PHP-only release ZIP and monorepo `vX.Y.Z` tag, indexed by Packagist |
 
-Plain `v*` tags (used by the pre-monorepo 1.x/2.0 releases) no longer trigger
-anything.
+The PHP publisher creates an additional annotated `vX.Y.Z` tag at the same
+monorepo commit, after its downloadable archive is public. Composer recognizes
+this conventional version tag; it ignores `php/vX.Y.Z`. Plain `v*` tags do not
+trigger Actions workflows. Older pre-monorepo tags without a root
+`composer.json` are ignored by Packagist.
 
 The eight publisher workflows also accept a manual dispatch at an existing,
 matching language tag. The coordinator uses those entry points so each job
@@ -285,61 +288,83 @@ metadata and the complete tag set.
 ## PHP activation and first publication
 
 The library is prepared for **PHP 8.2+ on 64-bit systems** and package
-`nicklambourne/slackblocks`. Packagist reads a root `composer.json`; it does not
-publish a monorepo subdirectory as an independent VCS package. The chosen
-[distribution repository](https://github.com/nicklambourne/slackblocks-php)
-contains only allowlisted PHP runtime, license and documentation files.
+`nicklambourne/slackblocks`. Packagist indexes the existing
+[`nicklambourne/slackblocks` monorepo](https://github.com/nicklambourne/slackblocks).
+Its root `composer.json` maps `Slackblocks\` to `php/src/` and points stable
+versions at a small PHP-only GitHub release ZIP. Native source installs retain
+the full monorepo and use the same autoload mapping. Development remains in
+`php/`; regenerate the public descriptor with
+`python3 php/bin/package_manifest.py` when changing `php/composer.json`.
 The [Packagist package documentation](https://packagist.org/about) explains
 registration, tag-derived versions and GitHub update hooks.
 
 ### One-time maintainer setup (not performed by this train)
 
-1. Create the **public** `nicklambourne/slackblocks-php` GitHub repository under
-   the intended owner. Disable Actions there; development and publishing belong
-   to the monorepo. Seed its default branch with the PHP package files and a root
-   `composer.json` (no `version` key). Do not create a stable version tag yet.
-   `python3 php/bin/release.py prepare` on a committed checkout writes the
-   allowlisted ZIP to `php/dist/`; inspect/unpack it for this initial seed.
-2. Register that VCS URL as `nicklambourne/slackblocks` on Packagist and configure
-   its GitHub auto-update integration. Check package ownership and that the
-   returned repository URL matches exactly. A dev-only package is sufficient
-   for readiness; the first stable version will come from the publisher tag.
-   A missing package or an unrelated package with the same name must fail.
-3. Create the monorepo GitHub environment **`packagist`**, permit `master` for
-   coordinator readiness and `php/v*` for publication, and configure the desired
-   reviewer policy. Create an SSH deploy key with write access **only** to the
-   PHP distribution repository; store its private half as
-   **`PHP_DIST_DEPLOY_KEY`** in this environment. The default monorepo token
-   cannot write another repository. No Packagist write token is used.
-4. Verify the credential and webhook, then change `php/release.json` to
-   `"enabled": true` in a reviewed activation change. The coordinator runs the
-   shared strict preflight, verifies Packagist's package/repository identity,
-   and dry-runs the distribution tag push with the scoped key **before any of
-   the eight monorepo tags are created**. Missing setup blocks the whole release.
+1. Merge the reviewed implementation with publication still disabled. The root
+   `composer.json` must exist on the default branch before registration; it has
+   no `version` key. Do not create a stable Composer tag manually.
+2. Register **`https://github.com/nicklambourne/slackblocks`** on Packagist as
+   `nicklambourne/slackblocks`. Verify the intended account owns the package and
+   the returned repository URL matches. A dev-only listing is sufficient for
+   readiness; the first stable version comes from the publisher's `vX.Y.Z` tag.
+   Missing registration or an unrelated package with the same name must fail.
+3. Configure Packagist's GitHub auto-update integration for this repository.
+   Verify its hook delivers successfully and that an update refreshes the dev
+   branch's commit. The release workflow uses this integration for indexing;
+   it does not store a Packagist write token.
+4. Create the GitHub environment **`packagist`** in this repository. Permit
+   `master` for coordinator readiness and `php/v*` for publication, with the
+   desired reviewer policy. Both jobs use the built-in **`GITHUB_TOKEN`** with
+   `contents: write`. No second repository or deploy key is required. Ensure
+   repository tag rules permit the workflow to create `v*` tags. A Git push dry
+   run checks connectivity and tag conflicts, but cannot prove server-side tag
+   rules will permit the eventual write.
+5. Once registration, update delivery and environment permissions are verified,
+   change `php/release.json` to `"enabled": true` in a reviewed activation
+   change. Before creating any of the eight language tags, the coordinator runs
+   strict release checks, verifies Packagist's package/repository identity, and
+   rehearses the conventional tag push. Missing setup blocks the whole release.
 
 ### Artifacts, publication and retry
 
-`php/bin/release.py prepare` exports committed, allowlisted files into a
-byte-reproducible ZIP with fixed file order, permissions and timestamps.
-`release.json` beside it records the source commit, timestamp, version, package,
-repository, archive SHA-256 and every file hash. Tests/dependencies/other languages
-are excluded. `verify` reproduces those bytes from the same commit; `consumer`
-installs the unchanged ZIP through Composer in a fresh external application.
-CI repeats the consumer on PHP 8.2 and 8.5 before credentials are available.
+`php/bin/release.py prepare` exports committed, allowlisted files into
+`php/dist/slackblocks-php.zip`, with fixed file order, permissions and timestamps.
+It contains the root descriptor and PHP runtime, licenses, documentation and
+consumer example under `php/`. Tests, dependencies and other languages are
+excluded. The accompanying `release.json` records the monorepo commit,
+timestamp, version, package, repository, archive SHA-256 and every file hash.
+`verify` reproduces those bytes from the same commit. `consumer` installs the
+unchanged ZIP through Composer in a fresh application; `consumer --source`
+verifies a real Git source install of that commit. CI runs both on PHP 8.2 and
+8.5 before publication.
 
-Publication creates a deterministic independent commit and annotated `vX.Y.Z`
-tag in the distribution repository. Its message links to the exact monorepo
-source commit. Only that immutable tag is pushed; the bootstrap default branch
-is never rewritten. Packagist/Composer use the tagged root manifest. The SSH
-credential is loaded only in the protected publish step after artifact checks,
-with GitHub host keys read through its HTTPS API, and removed afterward.
+The protected publisher follows this order:
 
-The publisher verifies Packagist by installing the exact version, checking its
-source/dist references and every installed file, then running the installed
-native consumer. Indexing retries are bounded to twelve attempts with 15-second
-waits. A timeout fails visibly; repair indexing and rerun the same tagged
-workflow. It accepts an identical existing distribution tag and refuses any
-changed or lightweight tag. Nothing uses force-push or overwrites a release.
+1. Reverify the tested artifact, Packagist registration and existing tag identity.
+2. Create or resume a **draft** GitHub release for `php/vX.Y.Z`. Upload the ZIP
+   and provenance without overwriting existing assets, download them and compare
+   their exact bytes. Publish the draft only after both assets are verified.
+3. Create the deterministic annotated **`vX.Y.Z`** tag in this same repository,
+   pointing at the original monorepo commit. This makes the version visible to
+   Packagist only after its archive exists. The `php/vX.Y.Z` workflow tag remains
+   part of the coordinator's eight-tag atomic push; `vX.Y.Z` is created later.
+4. Install the exact indexed version through Packagist using both archive and
+   source modes. Check the transport, repository, source/dist commit references,
+   expected archive URL and all packaged file hashes, then run the installed
+   native consumer. Archive installs must contain exactly the allowed files.
+
+An interrupted draft upload can resume. An existing public release must already
+contain both identical assets; the publisher never edits it. Tag retries accept
+only the identical annotated tag object and never move refs or rewrite the
+default branch. Conflicting assets or tags stop publication. If the archive is
+public but creating the Composer tag fails, repair the permission/tag-rule issue
+and rerun the same tagged workflow.
+
+Indexing retries are bounded to twelve archive-install attempts, with 15-second
+waits; content mismatches fail immediately. A timeout fails visibly. Repair
+Packagist's update integration and rerun the same workflow; verify both installed
+forms before declaring success. Stable installs default to the small release
+ZIP. Unreleased branches have no such archive and require `--prefer-source`.
 
 Before the first release, date all eight changelogs, align Java's output timestamp,
 replace the neutral PHP preparation badge with the Packagist version badge,
@@ -400,7 +425,7 @@ Do not repeat the snapshot step for this train. Future releases follow the proce
    - `php/src/Version.php` (`PACKAGE`), `php/integrations/composer.json` (both
      the exact requirement and path repository version), and its own-package
      entry in `php/integrations/composer.lock`. Composer's library manifest must
-     omit `version`; Packagist derives it from distribution tags.
+     omit `version`; Packagist derives it from the monorepo’s conventional `vX.Y.Z` tags.
    - the pinned versions in the installation examples of `README.md`,
      `java/README.md`, `docs/docs/quick-start.mdx`, and
      `docs/docs/usage/installation.mdx`
@@ -434,8 +459,9 @@ Do not repeat the snapshot step for this train. Future releases follow the proce
    protected `packagist` environment, before creating any tags. It then atomically pushes `python/vX.Y.Z`, `ts/vX.Y.Z`,
    `go/vX.Y.Z`, `java/vX.Y.Z`, `csharp/vX.Y.Z`, `ruby/vX.Y.Z`, `rust/vX.Y.Z`, and `php/vX.Y.Z`,
    then dispatches and monitors all eight publishers.
-   Each publisher creates its own GitHub Release after its registry step
-   succeeds.
+   PHP publishes verified GitHub release assets before exposing its Composer
+   version tag and checking Packagist. The other publishers create their GitHub
+   Releases after their registry steps succeed.
 8. **Java only:** the publisher uploads the bundle and waits for Central to
    validate it, and `autoPublish` then publishes it. Central can take around
    30 minutes to serve a newly published version. Confirm it arrives at
@@ -453,14 +479,17 @@ Do not repeat the snapshot step for this train. Future releases follow the proce
    cannot be deleted or re-uploaded, only unlisted.
 
 If the coordinator is unavailable, complete the same PHP readiness check with
-the scoped deploy key and verified Packagist registration first, then create all eight signed tags at the same
-commit and push them atomically. GitHub does not generate tag-push workflow
+an authenticated maintainer account and verified Packagist registration first,
+then create all eight signed tags at the same commit and push them atomically.
+Leave `vX.Y.Z` creation to the PHP publisher after it verifies the public assets. GitHub does not generate tag-push workflow
 runs when more than three tags are pushed at once, so dispatch each publisher
 explicitly at its tag after the push:
 
 ```sh
 GITHUB_EVENT_NAME=workflow_dispatch GITHUB_REF=refs/heads/master REQUESTED_VERSION=X.Y.Z \
   python3 .github/scripts/verify-release.py coordinator
+gh auth setup-git --hostname github.com
+GITHUB_REF=refs/heads/master python3 php/bin/release.py readiness
 git tag -s python/vX.Y.Z -m "slackblocks X.Y.Z (Python)"
 git tag -s ts/vX.Y.Z -m "@nicklambourne/slackblocks X.Y.Z (TypeScript)"
 git tag -s go/vX.Y.Z -m "slackblocks X.Y.Z (Go)"
@@ -517,13 +546,13 @@ Inspect the registry state before re-running a failed publisher:
 - **crates.io** — use the Rust artifact/recovery checks above. Re-run only while
   the target version is absent; complete a missing GitHub Release separately.
 - **Packagist** — rerun the PHP publisher at the existing `php/vX.Y.Z` tag. It
-  regenerates the same distribution commit and annotated `vX.Y.Z` tag, verifies
-  an identical prior push, then retries registry installation. A different tag
-  object is rejected; never force-push or move it. If indexing failed, repair the
-  Packagist webhook/update configuration before retrying. An already-published
-  version is accepted only when every installed file and source commit match.
-- **GitHub Releases** — the release step skips itself if a release for the
-  tag already exists.
+  reproduces and verifies the release assets, completes any partial draft, and
+  creates or verifies the identical annotated `vX.Y.Z` tag at the monorepo
+  commit. Existing public assets and tags are immutable. If indexing failed,
+  repair the Packagist update integration before retrying. Success requires
+  both archive and source consumers to match the recorded commit and files.
+- **GitHub Releases** — other publishers skip their release step if a release
+  for the tag already exists. PHP verifies existing assets as described above.
 
 After a failure, check:
 
@@ -540,8 +569,9 @@ After a failure, check:
 - crates.io: https://crates.io/crates/slackblocks lists the exact version and
   https://docs.rs/slackblocks has a successful rustdoc build.
 - Packagist: `composer require nicklambourne/slackblocks:X.Y.Z` installs the exact
-  tested distribution. The PHP publisher compares source/dist references, all
-  installed file hashes and a native consumer before declaring success.
+  tested archive; `--prefer-source` installs the same monorepo commit. The PHP
+  publisher checks both forms, their source/dist references, all packaged file
+  hashes and a native consumer before declaring success.
 - GitHub: a Release exists for each of the eight tags with the changelog notes.
 
 If a bad artifact was published, do not delete and re-upload: registries

@@ -26,6 +26,7 @@ cargo = load("cargo_release", ROOT / "rust/bin/release.py")
 SOURCE_VERSION = release.rust_package(ROOT)["version"]
 VERSION = "2.6.0"
 FILES = [
+    "composer.json",
     "python/pyproject.toml",
     "python/uv.lock",
     "typescript/package.json",
