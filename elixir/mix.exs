@@ -26,7 +26,7 @@ defmodule Slackblocks.MixProject do
         extras: ["README.md", "CHANGELOG.md"],
         source_ref: System.get_env("SLACKBLOCKS_SOURCE_REF", "master"),
         source_url_pattern:
-          "https://github.com/nicklambourne/slackblocks/blob/%{ref}/elixir/%{path}#L%{line}"
+          "https://github.com/nicklambourne/slackblocks/blob/#{System.get_env("SLACKBLOCKS_SOURCE_REF", "master")}/elixir/%{path}#L%{line}"
       ]
     ]
   end
