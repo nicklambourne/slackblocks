@@ -1,0 +1,171 @@
+name: Elixir
+
+on:
+  push:
+    branches: [master]
+    paths: ["elixir/**", "spec/**", "docs/**", "README.md", "AGENTS.md", ".github/workflows/elixir.yml"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: elixir-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect relevant Elixir changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Determine relevance (run on lookup failure)
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if [ "$EVENT" != pull_request ]; then
+            echo 'relevant=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/$PR/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ] || grep -qE '^(elixir/|spec/|docs/|README\.md$|AGENTS\.md$|\.github/(workflows/|scripts/))' <<<"$files"; then
+            echo 'relevant=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'relevant=false' >> "$GITHUB_OUTPUT"
+          fi
+
+  native:
+    needs: changes
+    name: Elixir foundation (${{ matrix.os }}, ${{ matrix.elixir }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: elixir
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-24.04, elixir: "1.16.3", otp: "26.2"}
+          - {os: macos-latest, elixir: "1.16.3", otp: "26.2"}
+          - {os: windows-2025, elixir: "1.16.3", otp: "26.2"}
+          - {os: ubuntu-24.04, elixir: "1.20.4", otp: "29.1"}
+          - {os: macos-latest, elixir: "1.20.4", otp: "29.1"}
+          - {os: windows-2025, elixir: "1.20.4", otp: "29.1"}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+          version-type: strict
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Resolve dependencies
+        if: needs.changes.outputs.relevant == 'true'
+        run: mix deps.get
+      - name: Test native API and actual package consumer
+        if: needs.changes.outputs.relevant == 'true'
+        run: mix run tools/check.exs --profile runtime
+
+  quality:
+    needs: changes
+    name: Elixir quality and package
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: elixir
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          elixir-version: "1.16.3"
+          otp-version: "26.2"
+          version-type: strict
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Resolve dependencies
+        if: needs.changes.outputs.relevant == 'true'
+        run: mix deps.get
+      - name: Foundation quality gates
+        if: needs.changes.outputs.relevant == 'true'
+        run: mix run tools/check.exs
+      - name: Decimal 2 lower-bound artifact consumer
+        if: needs.changes.outputs.relevant == 'true'
+        env:
+          SLACKBLOCKS_DECIMAL: "== 2.4.0"
+        run: python tools/package_check.py
+
+  erlang:
+    needs: changes
+    name: Erlang consumer (${{ matrix.elixir }}, Decimal ${{ matrix.decimal }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {elixir: "1.16.3", otp: "26.2", decimal: "2.4.0"}
+          - {elixir: "1.16.3", otp: "26.2", decimal: "3.2.0"}
+          - {elixir: "1.20.4", otp: "29.1", decimal: "3.2.0"}
+    defaults:
+      run:
+        working-directory: elixir
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+          rebar3-version: "3.27.1"
+          version-type: strict
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Resolve dependencies
+        if: needs.changes.outputs.relevant == 'true'
+        run: mix deps.get
+      - name: EUnit and standalone OTP release from the Hex artifact
+        if: needs.changes.outputs.relevant == 'true'
+        env:
+          SLACKBLOCKS_ERLANG_DECIMAL: ${{ matrix.decimal }}
+        run: python tools/erlang_check.py
+
+  erlang-result:
+    name: Elixir Erlang compatibility
+    needs: [changes, erlang]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every Erlang consumer lane
+        env:
+          CHANGE_RESULT: ${{ needs.changes.result }}
+          ERLANG_RESULT: ${{ needs.erlang.result }}
+        run: test "$CHANGE_RESULT" = success && test "$ERLANG_RESULT" = success
+
+  native-result:
+    name: Elixir native checks
+    needs: [changes, native]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every native lane
+        env:
+          CHANGE_RESULT: ${{ needs.changes.result }}
+          NATIVE_RESULT: ${{ needs.native.result }}
+        run: test "$CHANGE_RESULT" = success && test "$NATIVE_RESULT" = success

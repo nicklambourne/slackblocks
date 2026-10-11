@@ -1,0 +1,119 @@
+# slackblocks for Elixir
+
+Native immutable values for constructing validated Slack Block Kit payloads.
+The library builds messages; your application chooses the HTTP client that sends them.
+
+**Unreleased foundation:** this branch is the native API checkpoint of the Elixir
+implementation train. Full conformance, integrations and release activation are
+tracked in [the implementation plan](https://github.com/nicklambourne/slackblocks/blob/codex/elixir-1-foundation/elixir/design/plan.md). No Hex release is available.
+
+## Requirements
+
+Elixir 1.16.3 or newer (below 2.0), with a compatible Erlang/OTP version starting
+at 26.2, on 64-bit systems. The supported matrix will be verified before release.
+Runtime dependencies are Jason and Decimal; HTTP clients and frameworks are optional.
+
+For review, add a path dependency to this directory:
+
+```elixir
+{:slackblocks, path: "../slackblocks/elixir"}
+```
+
+## Quick start
+
+```elixir
+alias Slackblocks.Message
+alias Slackblocks.Blocks.Section
+alias Slackblocks.Elements.Button
+
+button = Button.new!(text: "View build", action_id: "view_build", url: "https://example.com/build/42")
+section = Section.new!(text: "*Build complete*", accessory: button)
+message = Message.new!(channel: "C123", text: "Build complete", blocks: [section])
+wire = Slackblocks.to_map!(message)
+# Send `wire` as JSON using your chosen Slack client.
+```
+
+`new/1` and `change/2` return `{:ok, value}` or `{:error, ValidationError}`;
+the corresponding bang functions raise. Use keyword options and ordinary lists.
+Fields are public for inspection and pattern matching. `change/2` validates a
+complete replacement atomically, and values remain immutable:
+
+```elixir
+updated = Section.change!(section, text: "*Build deployed*", block_id: "build")
+```
+
+A text field may accept a binary in its constructor, converting it to the field's
+plain or markdown text type. Direct struct edits must use the stored typed value.
+Every map/JSON output revalidates the graph, including directly edited structs.
+Error `category` is an atom; `path` contains wire keys and zero-based indexes.
+
+## JSON and defaults
+
+- `Slackblocks.to_map/1` produces a string-keyed Slack map. `encode/1` produces JSON.
+- Models implement `Jason.Encoder`. Direct `Jason.encode/1` and `encode!/1` may
+  raise `Slackblocks.ValidationError`; use `Slackblocks.encode/1` for tagged errors.
+- `from_map/2` and `decode/2` accept a model module or a documented receiving role
+  such as `:block`, `:element` or `:text`. They reconstruct modeled payloads;
+  they are not parsers for arbitrary Slack events.
+- Checked decoding rejects duplicate keys, unknown modeled fields, and decimal
+  values that cannot survive the shortest-decimal float round trip. Arbitrary-size
+  integer tokens are preserved. Integer fields reject decimal/exponent tokens.
+  Negative zero is a float; decimal scale is not preserved.
+- Map ingress cannot recover precision or duplicate keys lost by a previous parser.
+- Constructors apply declared defaults. Parsing preserves absent optional fields
+  as `nil`; `change/2` retains omitted keys, while explicit `nil` clears an optional
+  field. False, zero, empty JSON objects, arrays and metadata nulls are preserved.
+- `Message` defaults to `text: ""` and `mrkdwn: true`. No block IDs are generated.
+- Limits count Unicode code points, not graphemes or UTF-8 bytes.
+- Pending task cards can be constructed for use inside a plan. Standalone output
+  rejects them; a plan serializes its tasks without their block discriminator.
+- Whole-message rules require a `Message` or view wrapper. A model inside an
+  arbitrary application map cannot validate the surrounding map as a Slack payload.
+
+Adding optional fields or enum members is additive. Match the fields you need and
+include catch-all branches for evolving enums. Persist wire JSON rather than BEAM
+struct terms across package upgrades.
+
+## Erlang
+
+The same BEAM modules are callable from Erlang:
+
+```erlang
+{ok, Section} = 'Elixir.Slackblocks.Blocks.Section':new([{text, <<"Hello from Erlang!">>}]),
+{ok, Wire} = 'Elixir.Slackblocks':to_map(Section).
+```
+
+Use UTF-8 binaries and keyword tuples. The Erlang consumer requires Elixir runtime
+libraries and the declared package dependencies. Rebar3/Mix integration and a
+standalone OTP release test are part of this train; successful direct calls alone
+are not a promise that every Erlang build configuration works.
+
+## Development
+
+From this directory, with Elixir 1.16.3, Python 3.11+ and Hex installed:
+
+```sh
+mix deps.get
+mix run tools/check.exs
+```
+
+The foundation checker verifies deterministic generation, formatting, compilation,
+native tests, lint, ExDoc and an actual Hex archive installed into an independent
+consumer. `--profile runtime` checks native and archive behavior on another
+compiler without changing the pinned formatter. Full conformance, coverage,
+Dialyzer and integration gates are added by the following PRs.
+
+On the maintainer's Mac, keep durable build/dependency caches under `/Volumes/Cache`
+and disposable consumers under `/Volumes/Scratch`. The package does not need these
+paths. The consumer checker detects the external volumes; CI uses its temporary
+directory. Override `MIX_BUILD_ROOT`, `MIX_DEPS_PATH`, `MIX_HOME` and `HEX_HOME` as
+appropriate for your host.
+
+Generated modules and schema live under `lib/slackblocks`; their first comment
+identifies their owner. Edit `spec/model.json` or `generator/generate.py`, then run
+`python3 generator/generate.py`. `--check` detects changed, missing and obsolete
+owned files. Contextual rules, codec and helpers are handwritten.
+
+## License
+
+MIT **OR** BSD-3-Clause, at your option. Both license texts are included.
