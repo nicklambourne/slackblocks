@@ -21,14 +21,14 @@ const DEFAULT_SEARCH_OPTIONS = {
   forceIgnoreNoIndex: false,
 };
 
-const LANGUAGES = ["python", "typescript", "go", "java", "csharp", "ruby", "rust"];
+const LANGUAGES = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php"];
 const LANGUAGE_INDEXES = Object.fromEntries(LANGUAGES.map((language) => {
   const others = LANGUAGES.filter((candidate) => candidate !== language);
   return [language, {
     ignoredContent: others.map((other) => `[data-language-content="${other}"]`).join(", "),
     ignoredRoutes: [
       new RegExp(`^reference/(?:${others.join("|")})(?:/|$)`),
-      ...(["python", "rust"].includes(language) ? [] : [/^usage\/(?:compatibility|migration)$/]),
+      ...(["python", "rust", "php"].includes(language) ? [] : [/^usage\/(?:compatibility|migration)$/]),
     ],
   }];
 }));

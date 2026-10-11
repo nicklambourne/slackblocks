@@ -11,7 +11,7 @@ vocabulary value, or validation rule. It also applies to higher-level helpers
 that compose existing blocks. Start with the shared contract, implement the
 behavior in every maintained language, then verify the public APIs and docs.
 
-The current implementations are Python, TypeScript, Go, Java, C#, Ruby, and Rust. Check
+The current implementations are Python, TypeScript, Go, Java, C#, Ruby, Rust, and PHP. Check
 the packages, CI workflows, and coordinated release before starting: when a new
 language ships, extend this guide's implementation and verification lists. A
 planned implementation is not yet a required package.
@@ -97,7 +97,7 @@ exactly matches that path. Use the established inclusive/exclusive conventions;
 requiredness and contextual rules remain structural checks unless the registry
 already represents the constraint. Put Slack icon names and surface block types
 in `spec/vocabulary.json`. Python, TypeScript and Go maintain native vocabulary
-tables with equality tests; Java, C#, Ruby and Rust generate them.
+tables with equality tests; Java, C#, Ruby, Rust and PHP generate them.
 
 ### Valid fixtures and capabilities
 
@@ -154,6 +154,7 @@ typed accessors, equality/copy behavior and public exports as appropriate.
 | C# | Shared model/generator plus handwritten core/validation/supporting types under `csharp/src/Slackblocks/` | `csharp/tests/Slackblocks.Tests/`: `FixtureDriver`, conformance, invalid cases, `CapabilityTests`, API and snippet tests |
 | Ruby | Shared model/generator plus `ruby/lib/slackblocks/value.rb`, `validator.rb`, supporting types/helpers | `ruby/test/valid_constructions.rb`, `invalid_cases.rb`, `registry_test.rb`; `ruby/conformance/capabilities.json`, RBS/Steep consumer checks and installed-gem tests |
 | Rust | `rust/generator/generate.py` and `rust/src/generated/`; handwritten `rules.rs`, `wire.rs`, `components.rs` and `helpers.rs` | Native constructors in `rust/conformance/src/valid.rs`, invalid attempts, Syn API inventory, scalar/vocabulary tests, compile contracts and extracted Cargo archive consumers |
+| PHP | `php/generator/generate.py`, generated readonly values and roles; handwritten `php/src/Internal/Validator.php`, `Rules.php`, `Codec.php` and helpers | Explicit native `php/tests/ValidConstructions.php` / `InvalidConstructions.php`, independent reflection API inventory, capabilities, PHPStan contracts, coverage, installed Composer ZIP, sending integrations and executable docs |
 
 Each harness must attempt every registered fixture/case through its public API.
 Extend its construction mapping or driver; do not deserialize the expected JSON
@@ -182,6 +183,8 @@ python3 java/generator/generate_models.py --check-go
 python3 csharp/generator/generate_models.py
 python3 ruby/generator/generate_models.py
 python3 ruby/generator/generate_models.py --check
+python3 php/generator/generate.py
+python3 php/generator/generate.py --check
 RUSTFMT="$(rustup which --toolchain 1.85.0 rustfmt)" python3 rust/generator/generate.py
 RUSTFMT="$(rustup which --toolchain 1.85.0 rustfmt)" python3 rust/generator/generate.py --check
 ```
@@ -211,6 +214,7 @@ commands for additional gates rather than reducing checks to a single example:
 - Go: `.github/workflows/go.yml`.
 - Java: `.github/workflows/java.yml`; Java 17 compatibility and the newer-JDK quality gates.
 - C#: `.github/workflows/dotnet.yml`.
+- PHP: `.github/workflows/php.yml`; PHPStan, conformance, native API, coverage, actual Composer ZIP, and separately resolved sending adapters.
 - Rust: `.github/workflows/rust.yml`; MSRV/stable/platform tests, independent native
   conformance and API audit, diagnostic-specific compile contracts, separate line
   and region coverage gates, archive and fresh dependency consumers. Compile
@@ -280,6 +284,7 @@ When the spec version changes, update `spec/manifest.json`,
 - Java: `java/src/main/java/io/github/nicklambourne/slackblocks/Slackblocks.java`.
 - C#: `csharp/src/Slackblocks/SlackblocksInfo.cs`.
 - Ruby: `ruby/lib/slackblocks/version.rb` (`SPEC_VERSION`).
+- PHP: `php/src/Version.php` and generated `php/generated/reference.json`; verify both against `spec/manifest.json`.
 - Rust: generated `rust/src/generated/constants.rs`, exported as `slackblocks::SPEC_VERSION`; regenerate from `spec/manifest.json`.
 
 Use the chosen spec version for new fixture `since` values; retain historical

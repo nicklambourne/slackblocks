@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Compatibility
 
@@ -133,4 +133,31 @@ new Slack variants can be added. Private fields and validated builders preserve
 invariants. No earlier Rust release line exists to migrate from.
 
 </Rust>
+<PHP>
+
+## PHP support policy
+
+PHP 8.2+ on 64-bit Linux, macOS and Windows is supported. CI runs 8.2 and 8.5
+on all three platforms, plus 8.3 and 8.4 on Linux. The minimum remains 8.2 even
+when development or integration dependencies are updated. PHP itself provides
+security fixes for 8.2 through December 2026; applications should prefer a
+currently supported PHP release ([PHP support schedule](https://www.php.net/supported-versions.php)).
+
+The core needs only JSON and PCRE. cURL, JoliCode and Laravel are optional
+application dependencies tested separately. The minimum integration lock uses
+Laravel 12; newest compatible versions are also resolved on current PHP.
+
+2.7.0 is the first planned PHP release. Named arguments, enum cases, readonly
+properties, JSON field names and validation categories are compatibility surfaces.
+Human-readable error prose may improve. Existing Python, TypeScript, Go, Java,
+C#, Ruby and Rust minimum versions are unchanged.
+
+Integers preserve the signed 64-bit range, including values above JavaScript's
+safe-integer limit. Floats use PHP's binary double semantics; arbitrary-precision
+decimal numbers are not supported. Checked JSON ingress rejects integer overflow,
+nonfinite values and nonzero numbers that underflow to zero. Strings must be valid
+UTF-8 and Slack string limits count Unicode code points. Opaque JSON is limited
+to 128 levels; cyclic graphs and custom object instances are rejected.
+
+</PHP>
 </LanguageContent>

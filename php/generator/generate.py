@@ -96,8 +96,18 @@ def generate(model, limits, vocab, spec_version):
         description = interface["description"].replace(
             " accepted directly by Slack's official Java SDK", ""
         )
+        doc = f"/** {description} */"
+        methods = (
+            ""
+            if name == "InputElement"
+            else "\n    /** Exports the Slack wire fields as a detached array.\n     * @return array<string, mixed> Slack wire fields.\n     */\n    public function toArray(): array;\n\n    /** Encodes this validated value as Slack JSON. */\n    public function toJson(): string;\n"
+        )
+        if name == "Text":
+            methods += "\n    /** Returns the text content regardless of its plain/mrkdwn variant. */\n    public function getText(): string;\n"
         output[f"src/{name}.php"] = (
-            HEADER + f"/** {description} */\ninterface {name} extends {parent} {{}}\n"
+            HEADER + doc + f"\ninterface {name} extends {parent}\n{{" + methods + "}\n"
+            if methods
+            else HEADER + doc + f"\ninterface {name} extends {parent} {{}}\n"
         )
     for enum in model["enums"]:
         lines = [HEADER + f"/** {enum['description']} */\nenum {enum['name']}: string\n{{"]
@@ -182,13 +192,27 @@ def generate(model, limits, vocab, spec_version):
                 val = "$color !== null && preg_match('/\\A[0-9a-fA-F]{6}\\z/', $color) === 1 ? '#' . $color : $color"
             lines.append(f"        $this->{key} = {val};")
         lines += ["        parent::__construct($extensions);", "    }"]
+        if name in ["PlainText", "MarkdownText"]:
+            lines += [
+                "",
+                "    /** Returns the text content through the Text interface. */",
+                "    public function getText(): string",
+                "    {",
+                "        return $this->text;",
+                "    }",
+            ]
         if name == "Workflow":
             lines += [
                 "",
-                "    /** Builds a workflow trigger from a Slack workflow URL. */",
-                "    public static function fromUrl(string $url): self",
+                "    /** Builds a workflow trigger from a Slack workflow URL.",
+                "     * @param string $url Slack workflow trigger URL.",
+                "     * @return self Workflow containing the validated trigger and supplied inputs.",
+                "     * @throws ValidationError The URL or customizable inputs are invalid.",
+                "     * @param list<InputParameter> $parameters Ordered customizable workflow inputs; an empty list is omitted.",
+                "     */",
+                "    public static function fromUrl(string $url, array $parameters = []): self",
                 "    {",
-                "        return new self(trigger: new Trigger(url: $url));",
+                "        return new self(trigger: new Trigger(url: $url, customizableInputParameters: $parameters === [] ? null : $parameters));",
                 "    }",
             ]
         lines += ["}", ""]

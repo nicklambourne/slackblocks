@@ -36,4 +36,10 @@ final readonly class MarkdownText extends Value implements Text, ContextElement
         $this->verbatim = $verbatim;
         parent::__construct($extensions);
     }
+
+    /** Returns the text content through the Text interface. */
+    public function getText(): string
+    {
+        return $this->text;
+    }
 }

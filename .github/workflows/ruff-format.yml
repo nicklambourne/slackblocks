@@ -6,6 +6,8 @@ on:
     paths:
       - "python/**"
       - "docs/scripts/**"
+      - "php/generator/**"
+      - "php/bin/**"
       - ".github/workflows/ruff-format.yml"
   pull_request:
 
@@ -38,7 +40,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(python/|docs/scripts/|\.github/workflows/ruff-format\.yml$)' <<<"$files"; then
+          if grep -qE '^(python/|docs/scripts/|php/(generator|bin)/|\.github/workflows/ruff-format\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -67,4 +69,4 @@ jobs:
         run: uv sync --frozen --group dev
 
       - name: Check formatting
-        run: uv run --frozen ruff format --check slackblocks test generator ../docs/scripts
+        run: uv run --frozen ruff format --check slackblocks test generator ../docs/scripts ../php/generator ../php/bin

@@ -16,3 +16,10 @@ inclusion does not imply endorsement by either language project.
 - Copyright: Rust Foundation.
 - License: [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/), as stated in the [artwork license](https://github.com/rust-lang/rust-artwork/blob/7b54b6689dc310db2f301d7bcda847f016bd447c/logo/README.md).
 - Changes: none; renamed locally and displayed at the selector's icon size. The supplied white outline keeps the logo visible on both light and dark backgrounds.
+
+## PHP — `php.svg`
+
+- Source: [PHP's official SVG](https://www.php.net/images/logos/new-php-logo.svg).
+- Author: Colin Viebrock.
+- License: [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/), as stated on [PHP's logo page](https://www.php.net/download-logos.php).
+- Changes: none; renamed locally and scaled proportionally within the shared selector slot.

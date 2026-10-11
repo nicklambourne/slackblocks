@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Using Blocks
 
@@ -50,6 +50,11 @@ For keyword constructors, immutable values, and validation errors, see the [Ruby
 For consuming builders, borrowed getters and structured errors, see the [Rust API reference](../reference/rust). These runnable examples produce the JSON shown in each tab. All examples use edition 2024 and Rust 1.85 or newer.
 
 </Rust>
+<PHP>
+
+Construct readonly values using named arguments and typed children. `toJson()` serializes the validated result. Each example below runs unchanged in CI and is compared with its JSON tab.
+
+</PHP>
 </LanguageContent>
 
 ## Section Block
@@ -197,6 +202,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\SectionBlock(
+    text: new S\MarkdownText(
+        text: 'This is a section block with a checkbox accessory.',
+    ),
+    accessory: new S\CheckboxesElement(
+        actionId: 'checkboxes-action',
+        options: [new S\Option(
+            text: new S\MarkdownText(
+                text: '*Your Only Option*',
+            ),
+            value: 'option_one',
+        )],
+    ),
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -417,6 +452,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\RichTextBlock(
+    elements: [new S\RichTextSection(
+        elements: [new S\RichTextText(
+            text: "You 'bout to witness hip-hop in its most purest\n",
+            style: new S\RichTextStyle(bold: true),
+        ), new S\RichTextText(
+            text: "Most rawest form, flow almost flawless\n",
+            style: new S\RichTextStyle(strike: true),
+        ), new S\RichTextText(
+            text: "Most hardest, most honest known artist\n",
+            style: new S\RichTextStyle(italic: true),
+        )],
+    )],
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -556,6 +621,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\HeaderBlock(
+    text: new S\PlainText(
+        text: 'This is a header block',
+    ),
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -676,6 +762,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\MarkdownBlock(
+    text: '**Hello!** Markdown blocks support _GitHub-flavored_ syntax.',
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -808,6 +913,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\ImageBlock(
+    imageUrl: 'https://api.slack.com/img/blocks/bkb_template_images/beagle.png',
+    altText: 'a beagle',
+    title: new S\PlainText(
+        text: 'dog',
+    ),
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -954,6 +1082,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\InputBlock(
+    label: new S\PlainText(
+        text: 'Label',
+        emoji: true,
+    ),
+    element: new S\PlainTextInputElement(
+        actionId: 'action',
+    ),
+    blockId: 'fake_block_id',
+    hint: new S\PlainText(
+        text: 'Hint',
+        emoji: true,
+    ),
+    optional: true,
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -1064,6 +1222,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\DividerBlock(
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -1172,6 +1348,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\FileBlock(
+    externalId: 'external_id',
+    source: 'remote',
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -1289,6 +1485,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\ContextBlock(
+    elements: [new S\MarkdownText(
+        text: 'Hello, world!',
+    )],
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -1498,6 +1715,52 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\ActionsBlock(
+    elements: [new S\CheckboxesElement(
+        actionId: 'actionId-0',
+        options: [new S\Option(
+            text: new S\MarkdownText(
+                text: '*a*',
+            ),
+            value: 'a',
+            description: new S\PlainText(
+                text: '*a*',
+            ),
+        ), new S\Option(
+            text: new S\MarkdownText(
+                text: '*b*',
+            ),
+            value: 'b',
+            description: new S\PlainText(
+                text: '*b*',
+            ),
+        ), new S\Option(
+            text: new S\MarkdownText(
+                text: '*c*',
+            ),
+            value: 'c',
+            description: new S\PlainText(
+                text: '*c*',
+            ),
+        )],
+    )],
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -1868,6 +2131,54 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\TableBlock(
+    rows: [[new S\RichTextBlock(
+        elements: [new S\RichTextSection(
+            elements: [new S\RichTextText(
+                text: 'Header 1',
+                style: new S\RichTextStyle(bold: true),
+            )],
+        )],
+    ), new S\RichTextBlock(
+        elements: [new S\RichTextSection(
+            elements: [new S\RichTextText(
+                text: 'Header 2',
+                style: new S\RichTextStyle(bold: true),
+            )],
+        )],
+    )], [new S\RawText(
+        text: 'Datum 1',
+    ), new S\RichTextBlock(
+        elements: [new S\RichTextSection(
+            elements: [new S\RichTextLink(
+                url: 'https://slack.com',
+                text: 'Datum 2',
+            )],
+        )],
+    )]],
+    columnSettings: [new S\ColumnSettings(
+        align: S\ColumnAlign::Right,
+        isWrapped: true,
+    ), new S\ColumnSettings(
+        align: S\ColumnAlign::Left,
+    )],
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -2091,6 +2402,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\VideoBlock(
+    altText: 'Use the Events API to create a dynamic App Home',
+    thumbnailUrl: 'https://i.ytimg.com/vi/8876OZV_Yy0/hqdefault.jpg',
+    title: new S\PlainText(
+        text: 'Use the Events API to create a dynamic App Home',
+    ),
+    videoUrl: 'https://www.youtube.com/embed/8876OZV_Yy0?feature=oembed&autoplay=1',
+    blockId: 'fake_block_id',
+    description: new S\PlainText(
+        text: 'Slack sure is nifty!',
+    ),
+    titleUrl: 'https://www.youtube.com/watch?v=8876OZV_Yy0',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -2230,6 +2569,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\AlertBlock(
+    text: new S\MarkdownText(
+        text: 'The deployment needs attention.',
+    ),
+    level: S\AlertLevel::Warning,
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -2378,6 +2739,39 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\CardBlock(
+    title: new S\MarkdownText(
+        text: 'Build complete',
+    ),
+    body: new S\MarkdownText(
+        text: 'Version 2.1.0 is ready to deploy.',
+    ),
+    actions: [new S\ButtonElement(
+        text: new S\PlainText(
+            text: 'Open build',
+        ),
+        actionId: 'open_build',
+    )],
+    slackIcon: new S\SlackIcon(
+        name: 'rocket',
+    ),
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -2540,6 +2934,35 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\CarouselBlock(
+    elements: [new S\CardBlock(
+        title: new S\MarkdownText(
+            text: 'First result',
+        ),
+        blockId: 'card_1',
+    ), new S\CardBlock(
+        title: new S\MarkdownText(
+            text: 'Second result',
+        ),
+        blockId: 'card_2',
+    )],
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -2717,6 +3140,37 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\ContainerBlock(
+    childBlocks: [new S\SectionBlock(
+        text: new S\MarkdownText(
+            text: 'All systems operational.',
+        ),
+        blockId: 'child_1',
+    )],
+    title: new S\PlainText(
+        text: 'Deployment summary',
+    ),
+    width: S\ContainerWidth::Standard,
+    isCollapsible: false,
+    defaultCollapsed: false,
+    hasHeaderDivider: true,
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -2892,6 +3346,39 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\ContextActionsBlock(
+    elements: [new S\FeedbackButtonsElement(
+        positiveButton: new S\FeedbackButton(
+            text: new S\PlainText(
+                text: 'Good',
+            ),
+            value: 'positive',
+        ),
+        negativeButton: new S\FeedbackButton(
+            text: new S\PlainText(
+                text: 'Bad',
+            ),
+            value: 'negative',
+        ),
+        actionId: 'response_feedback',
+    )],
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -3061,6 +3548,37 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\DataTableBlock(
+    rows: [[new S\RawText(
+        text: 'Name',
+    ), new S\RawText(
+        text: 'Score',
+    )], [new S\RawText(
+        text: 'Alice',
+    ), new S\RawNumber(
+        value: 42,
+        text: '42',
+    )]],
+    caption: 'Team scores',
+    pageSize: 5,
+    rowHeaderColumnIndex: 0,
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -3233,6 +3751,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\DataVisualizationBlock(
+    title: 'Incidents by severity',
+    chart: new S\PieChart(
+        segments: [new S\ChartSegment(
+            label: 'High',
+            value: 3,
+        ), new S\ChartSegment(
+            label: 'Low',
+            value: 12,
+        )],
+    ),
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -3386,6 +3932,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\TaskCardBlock(
+    taskId: 'weather_1',
+    title: 'Fetch weather data',
+    sources: [new S\UrlSource(
+        url: 'https://weather.com/',
+        text: 'weather.com',
+    )],
+    status: S\TaskStatus::Complete,
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -3548,6 +4119,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 </Rust>
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$block = new S\PlanBlock(
+    title: 'Release plan',
+    tasks: [new S\TaskCardBlock(
+        taskId: 'test',
+        title: 'Run the test suite',
+        status: S\TaskStatus::Complete,
+    ), new S\TaskCardBlock(
+        taskId: 'deploy',
+        title: 'Deploy the release',
+        status: S\TaskStatus::Pending,
+    )],
+    blockId: 'fake_block_id',
+);
+echo $block->toJson();
+```
+
+</PHP>
 </LanguageContent>
 
 </TabItem>
@@ -3837,4 +4436,16 @@ See [Components](../reference/ruby/components) for navigation labels and page op
 The Rust API also provides `Accordion`, `AccordionSection`, `Paginator`, `Workflow::from_url`, attachment colors and `block_kit_builder_url`. See the [recipe book](cookbook) and [components reference](../reference/rust/components) for native examples.
 
 </Rust>
+<PHP>
+
+## Higher-Level Components
+
+`AccordionSection::create()` returns a collapsible `ContainerBlock`;
+`Accordion::create()` and `Paginator::create()` return lists of ordinary blocks.
+Spread them into a payload to validate the total block count. Pagination uses
+one-based page numbers and emits `.previous`/`.next` action IDs and page values;
+your interaction handler chooses the next page. Accordion expansion is native
+to Slack. See the [recipe book](cookbook) and [components reference](../reference/php/components).
+
+</PHP>
 </LanguageContent>

@@ -1,0 +1,6 @@
+{
+  "enabled": true,
+  "package": "nicklambourne/slackblocks",
+  "repository": "nicklambourne/slackblocks",
+  "environment": "packagist"
+}
