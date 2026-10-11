@@ -33,7 +33,7 @@ defmodule Slackblocks.FoundationTest do
   test "local task context is resolved by a complete plan" do
     pending = TaskCard.new!(task_id: "task_1", title: "Queued", status: :pending)
 
-    assert {:error, %ValidationError{category: :invalid_usage, path: ["status"]}} =
+    assert {:error, %ValidationError{category: :type_mismatch, path: ["status"]}} =
              Slackblocks.to_map(pending)
 
     plan = Plan.new!(title: "Work", tasks: [pending])

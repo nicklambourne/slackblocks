@@ -7,7 +7,7 @@ defmodule Slackblocks.Internal.Rules do
     local(name, wire, path)
 
     if name == "TaskCardBlock" and context not in [:local, :plan] and wire["status"] == "pending",
-      do: fail(:invalid_usage, path ++ ["status"], "pending tasks require a plan")
+      do: fail(:type_mismatch, path ++ ["status"], "pending tasks require a plan")
 
     :ok
   end
@@ -115,6 +115,9 @@ defmodule Slackblocks.Internal.Rules do
     if w["min_value"] != nil and w["max_value"] != nil and w["min_value"] > w["max_value"],
       do: fail(:out_of_range, p, "minimum exceeds maximum")
   end
+
+  defp local("ChartSegment", w, p),
+    do: Codec.limits(w["value"], "data_visualization.segment.value", p ++ ["value"])
 
   defp local("AxisConfig", w, p) do
     each(w["categories"], fn c, i ->

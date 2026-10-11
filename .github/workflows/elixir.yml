@@ -41,7 +41,7 @@ jobs:
 
   native:
     needs: changes
-    name: Elixir foundation (${{ matrix.os }}, ${{ matrix.elixir }})
+    name: Elixir native (${{ matrix.os }}, ${{ matrix.elixir }})
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -100,7 +100,7 @@ jobs:
       - name: Resolve dependencies
         if: needs.changes.outputs.relevant == 'true'
         run: mix deps.get
-      - name: Foundation quality gates
+      - name: Native and contract quality gates
         if: needs.changes.outputs.relevant == 'true'
         run: mix run tools/check.exs
       - name: Decimal 2 lower-bound artifact consumer

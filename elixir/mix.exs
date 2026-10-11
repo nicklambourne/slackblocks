@@ -8,6 +8,7 @@ defmodule Slackblocks.MixProject do
       elixir: ">= 1.16.3 and < 2.0.0",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      elixirc_paths: if(Mix.env() == :test, do: ["lib", "test/support"], else: ["lib"]),
       description: "Native, validated Slack Block Kit values for Elixir and Erlang",
       source_url: "https://github.com/nicklambourne/slackblocks",
       package: [

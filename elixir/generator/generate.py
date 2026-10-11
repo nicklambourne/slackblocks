@@ -9,12 +9,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = ROOT / 'elixir'
-FOUNDATION = {
-    'PlainText', 'MarkdownText', 'ButtonElement', 'Confirmation', 'SectionBlock',
-    'MessagePayload', 'TableBlock', 'DataTableBlock', 'RawText', 'RawNumber',
-    'ContainerBlock', 'ColumnSettings', 'RichTextBlock', 'RichTextSection', 'RichTextText',
-    'RichTextLink', 'TaskCardBlock', 'PlanBlock', 'DividerBlock',
-}
+
 KINDS = {'boolean', 'double', 'enum', 'int', 'list', 'long', 'map', 'number',
          'object', 'rows', 'string', 'stringList', 'style', 'text', 'textList'}
 
@@ -57,7 +52,7 @@ def flat(data, prefix=''):
             out[path] = value
     return out
 
-def generate(all_models):
+def generate():
     model = json.loads((ROOT / 'spec/model.json').read_text())
     inventory = json.loads((PACKAGE / 'design/parity.json').read_text())
     names = inventory['models']
@@ -65,13 +60,7 @@ def generate(all_models):
         raise ValueError('Native naming map differs from model types; review the API first')
     enums = {e['name']: {atom(c['wire']): c['wire'] for c in e['constants']} for e in model['enums']}
     roles = {r['name']: [] for r in model['interfaces']}
-    selected_names = set(names) if all_models else set(FOUNDATION)
-    while True:
-        needed = {f.get('type') for t in model['types'] if t['name'] in selected_names for f in t['fields']} & set(names)
-        if needed <= selected_names:
-            break
-        selected_names |= needed
-    selected = [t for t in model['types'] if t['name'] in selected_names]
+    selected = model['types']
     known = set(names) | set(roles) | set(enums)
     limits = flat(json.loads((ROOT / 'spec/limits.json').read_text()))
     schema, files = {}, {}
@@ -184,9 +173,8 @@ end
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
-    parser.add_argument('--all', action='store_true')
     args = parser.parse_args()
-    files = generate(args.all)
+    files = generate()
     # Honor the host's external scratch volume; CI uses its normal temporary directory.
     scratch = '/Volumes/Scratch' if Path('/Volumes/Scratch').is_dir() else None
     with tempfile.TemporaryDirectory(prefix='slackblocks-elixir-generator-', dir=scratch) as tmp:

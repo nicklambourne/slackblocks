@@ -25,4 +25,4 @@ end
 run.("mix", ["compile", "--warnings-as-errors"])
 run.("mix", ["test", "--warnings-as-errors"])
 run.(python, ["tools/package_check.py"])
-IO.puts("Foundation #{profile} checks passed. Full contract gates are tracked in design/plan.md.")
+IO.puts("Elixir #{profile} checks passed. Remaining train gates are tracked in design/plan.md.")
