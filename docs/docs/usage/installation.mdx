@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Installation
 
@@ -148,7 +148,7 @@ Install the Java artifact from Maven Central. Java 17 or newer is required.
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>2.6.0</version>
+  <version>2.7.0</version>
 </dependency>
 ```
 
@@ -156,14 +156,14 @@ Install the Java artifact from Maven Central. Java 17 or newer is required.
 <TabItem value="gradle-kotlin" label="Gradle (Kotlin)">
 
 ```kotlin
-implementation("io.github.nicklambourne:slackblocks:2.6.0")
+implementation("io.github.nicklambourne:slackblocks:2.7.0")
 ```
 
 </TabItem>
 <TabItem value="gradle-groovy" label="Gradle (Groovy)">
 
 ```groovy
-implementation 'io.github.nicklambourne:slackblocks:2.6.0'
+implementation 'io.github.nicklambourne:slackblocks:2.7.0'
 ```
 
 </TabItem>
@@ -207,7 +207,7 @@ dotnet add package Slackblocks
 <TabItem value="package-reference" label="PackageReference">
 
 ```xml
-<PackageReference Include="Slackblocks" Version="2.6.0" />
+<PackageReference Include="Slackblocks" Version="2.7.0" />
 ```
 
 </TabItem>
@@ -277,11 +277,11 @@ Rust 1.85 or newer is required. The crate uses edition 2024, Serde and serde_jso
 Rust support begins with coordinated version 2.6.0.
 
 ```sh
-cargo add slackblocks@2.6.0
+cargo add slackblocks@2.7.0
 cargo add serde_json
 ```
 
-The equivalent dependency is `slackblocks = "2.6.0"`. The package includes
+The equivalent dependency is `slackblocks = "2.7.0"`. The package includes
 generated sources; application builds do not require Python or the shared
 specification directory. Use `cargo update` within your normal Cargo version policy.
 
@@ -306,4 +306,51 @@ Rust naming and editing conventions. HTTP clients are application dependencies.
 
 
 </Rust>
+<PHP>
+
+## Install with Composer
+
+PHP 8.2 or newer is required, on a 64-bit build with the JSON and PCRE extensions.
+The core has no third-party runtime dependencies. Composer 2 handles PSR-4 autoloading.
+
+PHP support begins with coordinated version 2.7.0. Install the
+[Packagist package](https://packagist.org/packages/nicklambourne/slackblocks):
+
+```sh
+composer require nicklambourne/slackblocks:^2.7
+```
+
+Stable installs download a PHP-only archive. Composer's `--prefer-source` option
+checks out the monorepo and is required for unreleased development branches.
+Keep `vendor/autoload.php` in your application's entry point and use
+`declare(strict_types=1)` in your calling PHP files. PHP 8.2's named arguments,
+readonly classes and backed enums are the public API; named parameter spelling
+is part of compatibility.
+
+## Verify construction and serialization
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(
+    channel: 'C0123456789',
+    text: 'Build #482 passed',
+    blocks: [
+        new S\HeaderBlock('Build #482 passed'),
+        new S\SectionBlock(fields: ["*Branch*\n`main`", "*Tests*\n1,247 passed"]),
+        new S\ActionsBlock(elements: [
+            new S\ButtonElement(text: 'View build', actionId: 'view', url: 'https://ci.example.com/482'),
+        ]),
+    ],
+);
+echo $message->toJson();
+```
+
+</PHP>
 </LanguageContent>

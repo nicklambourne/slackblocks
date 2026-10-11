@@ -7,4 +7,16 @@ declare(strict_types=1);
 namespace Slackblocks;
 
 /** A Slack text composition object: plain text or mrkdwn. */
-interface Text extends \JsonSerializable {}
+interface Text extends \JsonSerializable
+{
+    /** Exports the Slack wire fields as a detached array.
+     * @return array<string, mixed> Slack wire fields.
+     */
+    public function toArray(): array;
+
+    /** Encodes this validated value as Slack JSON. */
+    public function toJson(): string;
+
+    /** Returns the text content regardless of its plain/mrkdwn variant. */
+    public function getText(): string;
+}

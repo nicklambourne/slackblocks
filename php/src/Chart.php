@@ -7,4 +7,13 @@ declare(strict_types=1);
 namespace Slackblocks;
 
 /** A chart that can be displayed by a data visualization block. */
-interface Chart extends \JsonSerializable {}
+interface Chart extends \JsonSerializable
+{
+    /** Exports the Slack wire fields as a detached array.
+     * @return array<string, mixed> Slack wire fields.
+     */
+    public function toArray(): array;
+
+    /** Encodes this validated value as Slack JSON. */
+    public function toJson(): string;
+}

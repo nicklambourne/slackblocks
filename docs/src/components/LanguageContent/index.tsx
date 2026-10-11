@@ -20,7 +20,9 @@ export default function LanguageContent({ children }: PropsWithChildren) {
                   ? "ruby"
                   : child.type === Rust
                     ? "rust"
-                    : null;
+                    : child.type === PHP
+                      ? "php"
+                      : null;
     if (!childLanguage) return null;
 
     return (
@@ -62,5 +64,9 @@ export function Ruby({ children }: PropsWithChildren) {
 }
 
 export function Rust({ children }: PropsWithChildren) {
+  return <>{children}</>;
+}
+
+export function PHP({ children }: PropsWithChildren) {
   return <>{children}</>;
 }

@@ -59,7 +59,7 @@ final class Codec
     public static function decode(string $class, mixed $input, string $path): Value
     {
         $name = substr($class, strlen('Slackblocks\\'));
-        if (is_array($input) && (!array_is_list($input) || $input === [])) {
+        if (is_array($input) && !array_is_list($input)) {
             $input = (object) $input;
         }
         if (!$input instanceof \stdClass) {
@@ -153,12 +153,12 @@ final class Codec
                 }
                 return $case;
             case 'map':
-                if (!$value instanceof \stdClass && !(is_array($value) && (!array_is_list($value) || $value === []))) {
+                if (!$value instanceof \stdClass && !(is_array($value) && !array_is_list($value))) {
                     throw $bad();
                 }
                 return new JsonObject($value);
             case 'style':
-                if (!$value instanceof \stdClass && !is_array($value)) {
+                if (!$value instanceof \stdClass && !(is_array($value) && !array_is_list($value))) {
                     throw $bad();
                 }
                 $args = [];
@@ -172,7 +172,7 @@ final class Codec
             case 'text':
                 if (is_string($value)) {
                     $class = $field['coerce'] === 'plain_text' ? \Slackblocks\PlainText::class : \Slackblocks\MarkdownText::class;
-                    return new $class($value);
+                    return self::decode($class, (object) ['type' => $field['coerce'], 'text' => $value], $path);
                 }
                 // Text objects and other role-typed fields share discriminator resolution.
                 // no break

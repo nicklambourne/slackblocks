@@ -1,4 +1,4 @@
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Recipe Book
 
@@ -992,4 +992,249 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 See [Troubleshooting](troubleshooting) for typed error handling, omission rules and safe editing.
 
 </Rust>
+<PHP>
+
+PHP examples are standalone programs using your application autoloader. They only construct or serialize values.
+
+## Build status notification
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(
+    channel: 'C0123456789',
+    text: 'Build #482 passed',
+    blocks: [
+        new S\HeaderBlock('Build #482 passed'),
+        new S\SectionBlock(fields: ["*Branch*\n`main`", "*Tests*\n1,247 passed"]),
+        new S\ActionsBlock(elements: [
+            new S\ButtonElement(text: 'View build', actionId: 'view', url: 'https://ci.example.com/482'),
+        ]),
+    ],
+);
+echo $message->toJson();
+```
+
+![Illustrative build status notification layout](/img/usage/build_notification.png)
+
+## Approval request with action buttons
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(channel: 'C1', text: 'Approval requested', blocks: [
+    new S\SectionBlock('*Approve deployment?*'),
+    new S\ActionsBlock(elements: [
+        new S\ButtonElement(text: 'Approve', actionId: 'approve', value: '482', style: S\ButtonStyle::Primary),
+        new S\ButtonElement(text: 'Reject', actionId: 'reject', value: '482', style: S\ButtonStyle::Danger),
+    ]),
+]);
+echo $message->toJson();
+```
+
+## Rich-formatted alert
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$view = new S\ModalView(title: 'Deployment', blocks: [
+    new S\AlertBlock(text: '*Attention:* deployment paused', level: S\AlertLevel::Warning),
+    new S\RichTextBlock(elements: [new S\RichTextSection(elements: [
+        new S\RichTextText(text: 'Review the checks', style: new S\RichTextStyle(bold: true)),
+    ])]),
+]);
+echo $view->toJson();
+```
+
+![Illustrative rich-formatted alert component](/img/usage/alert.png)
+
+## Confirmation modal
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$view = new S\ModalView(title: 'Confirm deployment', submit: 'Deploy', callbackId: 'deploy', blocks: [
+    new S\InputBlock(label: 'Reason', blockId: 'reason', element: new S\PlainTextInputElement(actionId: 'reason_input')),
+]);
+echo $view->toJson();
+```
+
+![Illustrative confirmation modal component](/img/usage/input.png)
+
+## Threaded reply
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(channel: 'C1', text: 'Deployment complete', extensions: new S\JsonObject([
+    'thread_ts' => '1700000000.000001',
+]));
+echo $message->toJson();
+```
+
+## Ephemeral slash-command response
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$response = new S\MessageResponse(text: 'Only you can see this', responseType: S\ResponseType::Ephemeral);
+echo $response->toJson();
+```
+
+## Multi-column status report
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$table = new S\TableBlock(rows: [
+    [new S\RawText('Service'), new S\RawText('Status')],
+    [new S\RawText('API'), new S\RawText('Healthy')],
+]);
+echo $table->toJson();
+```
+
+![Illustrative multi-column status report component](/img/usage/table.png)
+
+## Colored-bar attachment
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(channel: 'C1', text: 'Deployment passed', attachments: [
+    new S\Attachment(blocks: [new S\SectionBlock('All checks passed')], color: S\Color::GOOD),
+]);
+echo $message->toJson();
+```
+
+## Preview a message
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(channel: 'C1', text: 'Preview', blocks: [new S\SectionBlock('*Preview*')]);
+echo S\Builder::url($message);
+```
+
+## Parse incoming modeled JSON
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$section = S\SectionBlock::fromJson('{"type":"section","text":{"type":"mrkdwn","text":"Hello"},"future_field":{"enabled":false}}');
+echo $section->with(blockId: 'welcome')->toJson();
+```
+
+## Workflow trigger shortcut
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$workflow = S\Workflow::fromUrl('https://slack.com/shortcuts/Ft123', [new S\InputParameter(name: 'deployment', value: '482')]);
+echo $workflow->toJson();
+```
+
+## Accordion and pagination
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$sections = S\Accordion::create([
+    S\AccordionSection::create(title: 'Details', blocks: [new S\SectionBlock('Ready')]),
+]);
+$pages = S\Paginator::create(actionIdPrefix: 'releases', blocks: [new S\SectionBlock('One'), new S\SectionBlock('Two')], page: 1, pageSize: 1);
+$view = new S\MessagePayload(channel: 'C1', text: 'Releases', blocks: [...$sections, ...$pages]);
+echo $view->toJson();
+```
+
+## Opaque metadata and safe edits
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$metadata = new S\JsonObject(['event_type' => 'deployment', 'event_payload' => (object) ['context' => (object) [], 'optional' => null]]);
+$message = new S\MessagePayload(channel: 'C1', text: 'Ready', metadata: $metadata, unfurlLinks: false);
+$edited = $message->with(text: 'Complete');
+assert($message->text === 'Ready');
+echo $edited->toJson();
+```
+
+</PHP>
 </LanguageContent>

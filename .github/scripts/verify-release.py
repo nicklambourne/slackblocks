@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Read-only, shared preflight for the seven-language release train (Python 3.11+)."""
+"""Read-only, shared preflight for the eight-language release train (Python 3.11+)."""
 
 import argparse
 import datetime
+import importlib.util
 import json
 import os
 import re
@@ -12,6 +13,12 @@ from pathlib import Path
 
 import tomllib
 
+_php_spec = importlib.util.spec_from_file_location(
+    "php_package_manifest", Path(__file__).resolve().parents[2] / "php/bin/package_manifest.py"
+)
+php_manifest = importlib.util.module_from_spec(_php_spec)
+_php_spec.loader.exec_module(php_manifest)
+
 LANGUAGES = {
     "python": "python",
     "typescript": "ts",
@@ -20,6 +27,7 @@ LANGUAGES = {
     "csharp": "csharp",
     "ruby": "ruby",
     "rust": "rust",
+    "php": "php",
 }
 
 
@@ -44,16 +52,31 @@ def rust_package(root):
 
 def validate(root, requested=None, strict=False):
     versions = {
-        "Python": tomllib.loads((root / "python/pyproject.toml").read_text())["project"]["version"],
-        "TypeScript": json.loads((root / "typescript/package.json").read_text())["version"],
+        "Python": tomllib.loads((root / "python/pyproject.toml").read_text())[
+            "project"
+        ]["version"],
+        "TypeScript": json.loads((root / "typescript/package.json").read_text())[
+            "version"
+        ],
         "Java": ET.parse(root / "java/pom.xml")
         .getroot()
         .findtext("{http://maven.apache.org/POM/4.0.0}version"),
         "C#": ET.parse(root / "csharp/src/Slackblocks/Slackblocks.csproj")
         .getroot()
         .findtext("./PropertyGroup/Version"),
-        "Ruby": match(root / "ruby/lib/slackblocks/version.rb", r'^  VERSION = "([^"]+)"$'),
+        "Ruby": match(
+            root / "ruby/lib/slackblocks/version.rb", r'^  VERSION = "([^"]+)"$'
+        ),
         "Rust": rust_package(root)["version"],
+        "Java constant": match(
+            root
+            / "java/src/main/java/io/github/nicklambourne/slackblocks/Slackblocks.java",
+            r'\bVERSION = "([^"]+)"',
+        ),
+        "C# constant": match(
+            root / "csharp/src/Slackblocks/SlackblocksInfo.cs", r'\bVersion = "([^"]+)"'
+        ),
+        "PHP": match(root / "php/src/Version.php", r"PACKAGE = '([^']+)'"),
     }
     version = requested or versions["Rust"]
     require(re.fullmatch(r"\d+\.\d+\.\d+", version), "Use a stable X.Y.Z version")
@@ -71,7 +94,9 @@ def validate(root, requested=None, strict=False):
             for package in tomllib.loads((root / path).read_text())[key]
             if package["name"] == "slackblocks"
         ]
-        require(own == [version], f"{label} lockfile must pin this package to {version}")
+        require(
+            own == [version], f"{label} lockfile must pin this package to {version}"
+        )
     ruby_locks = re.findall(
         r"^\s+slackblocks \(([^)]+)\)$", (root / "ruby/Gemfile.lock").read_text(), re.M
     )
@@ -79,6 +104,48 @@ def validate(root, requested=None, strict=False):
         ruby_locks and set(ruby_locks) == {version},
         "Ruby lockfile must pin this package version",
     )
+    php = json.loads((root / "php/composer.json").read_text())
+    policy = json.loads((root / "php/release.json").read_text())
+    require(
+        php["name"] == policy["package"] == "nicklambourne/slackblocks",
+        "PHP package identity differs",
+    )
+    require(
+        "version" not in php,
+        "Composer versions must be inferred from conventional monorepo tags",
+    )
+    require(
+        policy["repository"] == "nicklambourne/slackblocks"
+        and policy["environment"] == "packagist",
+        "PHP monorepo publication policy differs",
+    )
+    require((root / "composer.json").is_file(), "Root Composer manifest is missing")
+    try:
+        php_manifest.check(root)
+    except ValueError as error:
+        raise ReleaseError(str(error)) from error
+    integration = json.loads((root / "php/integrations/composer.json").read_text())
+    require(
+        integration["require"][php["name"]] == version,
+        "PHP integration constraint must match package version",
+    )
+    require(
+        integration["repositories"][0]["options"]["versions"][php["name"]] == version,
+        "PHP integration path version differs",
+    )
+    locked = json.loads((root / "php/integrations/composer.lock").read_text())
+    own = [
+        package["version"]
+        for package in locked["packages"]
+        if package["name"] == php["name"]
+    ]
+    require(own == [version], "PHP integration lockfile must pin package version")
+    require(type(policy.get("enabled")) is bool, "PHP activation must be boolean")
+    if strict:
+        require(
+            policy.get("enabled") is True,
+            "PHP publication is disabled; verify monorepo registration, Packagist and protected environment before releasing any language",
+        )
     major = version.split(".")[0]
     require(
         match(root / "go/go.mod", r"^module (.+)$")
@@ -101,7 +168,8 @@ def validate(root, requested=None, strict=False):
             re.M,
         )
         require(
-            section is not None and section[1].strip(), f"{file}: release notes must not be empty"
+            section is not None and section[1].strip(),
+            f"{file}: release notes must not be empty",
         )
         date = headings[0]
         if date == "Unreleased" and not strict:
@@ -109,7 +177,9 @@ def validate(root, requested=None, strict=False):
         try:
             datetime.date.fromisoformat(date)
         except ValueError as error:
-            raise ReleaseError(f"{file}: require a real YYYY-MM-DD release date") from error
+            raise ReleaseError(
+                f"{file}: require a real YYYY-MM-DD release date"
+            ) from error
         require(re.fullmatch(r"\d{4}-\d{2}-\d{2}", date), f"{file}: use YYYY-MM-DD")
         dates.add(date)
     require(len(dates) <= 1, "Changelog release dates differ")
@@ -118,7 +188,9 @@ def validate(root, requested=None, strict=False):
             rust_package(root).get("publish") == ["crates-io"],
             "Rust publication is disabled; complete the release activation checklist before releasing any language",
         )
-        timestamp = match(root / "java/pom.xml", r"<project.build.outputTimestamp>([^<]+)<")
+        timestamp = match(
+            root / "java/pom.xml", r"<project.build.outputTimestamp>([^<]+)<"
+        )
         require(
             timestamp == next(iter(dates)) + "T00:00:00Z",
             "Java output timestamp must match the coordinated release date",
@@ -155,6 +227,19 @@ def tag_state(root, version, head):
         existing in (0, len(tags)),
         f"Partial coordinated tag set: {existing}/{len(tags)}; recover without moving public tags",
     )
+    composer_tag = f"refs/tags/v{version}"
+    present = subprocess.run(["git", "show-ref", "--verify", "--quiet", composer_tag], cwd=root)
+    require(present.returncode in (0, 1), "Cannot inspect Composer version tag")
+    if present.returncode == 0:
+        require(existing == len(tags), "Composer version tag must follow all coordinated tags")
+        require(
+            git(root, "cat-file", "-t", composer_tag) == "tag",
+            "Composer version tag must be annotated",
+        )
+        require(
+            git(root, "rev-parse", composer_tag + "^{commit}") == head,
+            "Composer version tag points to a different commit",
+        )
     return existing
 
 
@@ -164,7 +249,9 @@ def release_commit(root):
         not git(root, "status", "--porcelain", "--untracked-files=no"),
         "Release checkout has tracked modifications",
     )
-    result = subprocess.run(["git", "merge-base", "--is-ancestor", head, "origin/master"], cwd=root)
+    result = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", head, "origin/master"], cwd=root
+    )
     require(
         result.returncode == 0,
         "Release commit must be on origin/master; fetch full history first",
@@ -191,7 +278,9 @@ def coordinator(root, version, event, ref):
 
 
 def publisher(root, language, ref):
-    found = re.fullmatch(r"refs/tags/" + LANGUAGES[language] + r"/v(\d+\.\d+\.\d+)", ref)
+    found = re.fullmatch(
+        r"refs/tags/" + LANGUAGES[language] + r"/v(\d+\.\d+\.\d+)", ref
+    )
     require(
         found is not None,
         f"{language} publication requires its exact language/vX.Y.Z tag",
@@ -204,7 +293,7 @@ def publisher(root, language, ref):
     )
     require(
         tag_state(root, version, head) == len(LANGUAGES),
-        "Create the complete seven-tag set before publishing",
+        "Create the complete eight-tag set before publishing",
     )
     return version
 
@@ -230,7 +319,7 @@ def main():
         if output := os.environ.get("GITHUB_OUTPUT"):
             with open(output, "a") as stream:
                 stream.write(f"version={version}\n")
-        print(f"Verified seven-language {args.command} preflight for {version}")
+        print(f"Verified eight-language {args.command} preflight for {version}")
     except (ReleaseError, subprocess.CalledProcessError) as error:
         raise SystemExit(str(error)) from error
 

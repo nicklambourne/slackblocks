@@ -15,6 +15,7 @@ on:
       - "csharp/**"
       - "ruby/**"
       - "rust/**"
+      - "php/**"
       - "README.md"
       - "spec/**"
       - "package.json"
@@ -53,7 +54,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(docs/|python/|typescript/src/|typescript/package\.json$|typescript/tsconfig\.json$|typescript/tsconfig\.typedoc\.json$|go/|java/|csharp/|ruby/|rust/|README\.md$|spec/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/docs\.yml$)' <<<"$files"; then
+          if grep -qE '^(docs/|python/|typescript/src/|typescript/package\.json$|typescript/tsconfig\.json$|typescript/tsconfig\.typedoc\.json$|go/|java/|csharp/|ruby/|rust/|php/|README\.md$|spec/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/docs\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -118,6 +119,16 @@ jobs:
         run: |
           rustup toolchain install stable 1.85.0 --profile minimal --component rustfmt
           rustup default stable
+
+      - name: Install PHP for native reference and executable guide examples
+        uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        with:
+          php-version: "8.2"
+          tools: composer:v2
+          coverage: none
+
+      - name: Install PHP dependencies
+        run: composer install --working-dir=php --no-interaction --prefer-dist
 
       - name: Install JavaScript dependencies
         run: pnpm install --frozen-lockfile

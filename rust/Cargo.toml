@@ -1,6 +1,6 @@
 [package]
 name = "slackblocks"
-version = "2.6.0"
+version = "2.7.0"
 edition = "2024"
 rust-version = "1.85"
 description = "Native, validated Rust builders for Slack Block Kit"
