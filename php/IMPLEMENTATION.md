@@ -11,7 +11,7 @@
 - `with()` applies named constructor arguments to a new value and validates it. Unknown fields fail; the original remains unchanged after either success or failure.
 - Checked ingress uses Slack wire names, resolves role discriminators and emits categorized errors. Native constructors deliberately use PHP's native TypeError/ArgumentCountError for incompatible signatures; weak callers still follow PHP's scalar coercion rules.
 - Model generation reads only the shared model/limits/vocabulary. Handwritten contextual rules follow modeled graph edges. Conformance constructions must stay independent of expected JSON.
-- Composer distribution must contain only PHP package files. First publication is disabled pending the complete train and verified monorepo/Packagist setup.
+- Composer distribution must contain only PHP package files. Publication uses the monorepo root Composer manifest, Packagist registration and protected `packagist` environment.
 
 The implementation audit and full delivery plan are intentionally kept in task scratch at the owner's request.
 

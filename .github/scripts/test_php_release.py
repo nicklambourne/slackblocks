@@ -3,6 +3,8 @@
 import io
 import contextlib
 import json
+import os
+import textwrap
 import subprocess
 from pathlib import Path
 import unittest
@@ -502,6 +504,39 @@ class PHPReleaseTests(unittest.TestCase):
             with self.assertRaisesRegex(php.preflight.ReleaseError, "asset mismatch"):
                 php.publish(self.root, self.directory, apply=True)
             self.assertEqual(events, ["dry-run"])
+
+    def test_required_release_check_handles_relevant_unrelated_and_failed_jobs(self):
+        workflow = (
+            fixtures.ROOT / ".github/workflows/publish-packagist.yml"
+        ).read_text()
+        job = workflow.split("  checks:\n", 1)[1].split("  publish:\n", 1)[0]
+        script = textwrap.dedent(job.split("        run: |\n", 1)[1])
+        cases = [
+            ("success", "true", "success", "success", True),
+            ("success", "false", "skipped", "skipped", True),
+            ("failure", "false", "skipped", "skipped", False),
+            ("success", "true", "failure", "skipped", False),
+            ("success", "true", "success", "cancelled", False),
+            ("success", "true", "success", "skipped", False),
+            ("success", "false", "success", "success", False),
+            ("success", "", "skipped", "skipped", False),
+        ]
+        for changes, relevant, build, artifact, success in cases:
+            with self.subTest(
+                changes=changes, relevant=relevant, build=build, artifact=artifact
+            ):
+                result = subprocess.run(
+                    ["bash", "-c", script],
+                    env={
+                        **os.environ,
+                        "CHANGES_RESULT": changes,
+                        "RELEVANT": relevant,
+                        "BUILD_RESULT": build,
+                        "ARTIFACT_RESULT": artifact,
+                    },
+                    capture_output=True,
+                )
+                self.assertEqual(result.returncode == 0, success, result.stderr)
 
     def test_write_credentials_follow_artifact_checks_and_readiness_precedes_tags(self):
         workflow = (
