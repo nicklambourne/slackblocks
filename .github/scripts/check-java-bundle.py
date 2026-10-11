@@ -4,6 +4,7 @@
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import tempfile
 import threading
@@ -76,6 +77,15 @@ def main():
                 raise SystemExit(f"Required /Volumes/{name} is not mounted")
         scratch = "/Volumes/Scratch"
     with tempfile.TemporaryDirectory(prefix="slackblocks-central-", dir=scratch) as tmp:
+        # Match the publisher's isolated launcher: Maven 3.10 is used for normal
+        # builds, but Central plugin 0.11 still needs 3.9.16 to stage clean bundles.
+        launcher = Path(tmp) / "release-maven"
+        (launcher / ".mvn/wrapper").mkdir(parents=True)
+        shutil.copy2(root / "java/mvnw", launcher / "mvnw")
+        shutil.copy2(
+            root / "java/.mvn/wrapper/release-maven-wrapper.properties",
+            launcher / ".mvn/wrapper/maven-wrapper.properties",
+        )
         settings = Path(tmp) / "settings.xml"
         settings.write_text(
             "<settings><servers><server><id>central</id>"
@@ -88,7 +98,7 @@ def main():
             try:
                 subprocess.run(
                     [
-                        "./mvnw",
+                        str(launcher / "mvnw"),
                         "-B",
                         "-ntp",
                         "-s",
