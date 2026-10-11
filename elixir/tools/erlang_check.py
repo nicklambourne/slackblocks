@@ -4,6 +4,7 @@
 import functools
 import http.server
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -14,10 +15,7 @@ PACKAGE = Path(__file__).resolve().parents[1]
 
 
 def main():
-    subprocess.run(["mix", "hex.build"], cwd=PACKAGE, check=True)
-    archives = list(PACKAGE.glob("slackblocks-*.tar"))
-    if len(archives) != 1:
-        raise SystemExit("Expected exactly one Hex artifact")
+    version = re.search(r'version:\s*"([^"]+)"', (PACKAGE / "mix.exs").read_text())[1]
     scratch = "/Volumes/Scratch" if Path("/Volumes/Repos").is_dir() else None
     if scratch and not Path(scratch).is_dir():
         raise SystemExit("Required scratch volume is unavailable")
@@ -42,7 +40,8 @@ def main():
         consumer = root / "consumer"
         registry = root / "registry"
         (registry / "tarballs").mkdir(parents=True)
-        shutil.copy2(archives[0], registry / "tarballs" / archives[0].name)
+        archive = registry / "tarballs" / f"slackblocks-{version}.tar"
+        subprocess.run(["mix", "hex.build", "--output", str(archive)], cwd=PACKAGE, check=True)
         server = http.server.ThreadingHTTPServer(
             ("127.0.0.1", 0),
             functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(registry)),
@@ -51,8 +50,8 @@ def main():
         thread.start()
         config = consumer / "rebar.config"
         text = config.read_text().replace(
-            '{slackblocks, "2.8.0-dev"}',
-            '{slackblocks, {hex, slackblocks, "2.8.0-dev"}}',
+            '{slackblocks, "' + version + '"}',
+            '{slackblocks, {hex, slackblocks, "' + version + '"}}',
         )
         text = text.replace(
             '{decimal, "3.2.0"}',

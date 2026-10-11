@@ -26,7 +26,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Verify seven-language release activation, tags and commit
+      - name: Verify nine-language release activation, tags and commit
         working-directory: .
         run: python3 .github/scripts/verify-release.py publisher --language python
 

@@ -8,3 +8,4 @@
 /integrations/deps/
 /erlang/_build/
 /erlang/_checkouts/
+/dist/
