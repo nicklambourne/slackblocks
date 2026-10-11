@@ -31,5 +31,7 @@ PHP joins the implementation set in 2.7.0. Include `php/` when updating shared
 features. Use PHP 8.2+ on 64-bit platforms, named constructors, readonly values,
 and backed enums. Run generator, native/conformance/API, PHPStan contracts,
 coverage, actual Composer archive, sending integrations and documentation checks.
-Keep the Packagist publisher disabled until the protected environment and PHP
-VCS distribution repository have been verified; see `RELEASING.md`.
+Keep the Packagist publisher disabled until monorepo registration, its update hook
+and the protected environment have been verified; see `RELEASING.md`. Generate
+the root Composer descriptor with `php/bin/package_manifest.py` after changing
+PHP package metadata. Verify trimmed archives and native source installs.
