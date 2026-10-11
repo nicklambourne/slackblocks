@@ -290,6 +290,17 @@ def release_info(root, repository, tag):
     return matches[0] if matches else None
 
 
+def wait_for_release(root, repository, tag, *, published=False):
+    """Allow GitHub's release listing to catch up after a successful write."""
+    for attempt in range(12):
+        info = release_info(root, repository, tag)
+        if info is not None and (not published or not info["draft"]):
+            return info
+        if attempt < 11:
+            time.sleep(5)
+    raise preflight.ReleaseError("GitHub release state is not visible yet; retry the publisher")
+
+
 def release_assets(root, directory, record):
     """Create/complete the PHP release, verify exact bytes, and never overwrite an asset."""
     tag = "php/v" + record["version"]
@@ -326,7 +337,7 @@ def release_assets(root, directory, record):
                 str(notes),
                 cwd=root,
             )
-        info = release_info(root, repository, tag)
+        info = wait_for_release(root, repository, tag)
     preflight.require(
         info is not None and info["tag_name"] == tag and not info["prerelease"],
         "PHP release has unexpected tag or prerelease metadata",
@@ -389,10 +400,7 @@ def release_assets(root, directory, record):
             "--latest=false",
             cwd=root,
         )
-        info = release_info(root, repository, tag)
-        preflight.require(
-            info is not None and not info["draft"], "PHP release assets are not public yet"
-        )
+        wait_for_release(root, repository, tag, published=True)
 
 
 def publish(root, directory, apply=False):
