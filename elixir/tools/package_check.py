@@ -4,10 +4,10 @@
 import io
 import os
 import shutil
-from pathlib import Path
 import subprocess
 import tarfile
 import tempfile
+from pathlib import Path
 
 PACKAGE = Path(__file__).resolve().parents[1]
 
@@ -39,12 +39,7 @@ def extract_archive(archive, source):
                 raise SystemExit(f"Package is missing {required}")
         for member in inner.getmembers():
             name = Path(member.name)
-            if (
-                name.is_absolute()
-                or ".." in name.parts
-                or member.issym()
-                or member.islnk()
-            ):
+            if name.is_absolute() or ".." in name.parts or member.issym() or member.islnk():
                 raise SystemExit(f"Unsafe package member {name}")
             if name.parts[0] not in {
                 "lib",
@@ -60,14 +55,10 @@ def extract_archive(archive, source):
 
 def main():
     volume_host = Path("/Volumes/Repos").is_dir()
-    if volume_host and not all(
-        Path(p).is_dir() for p in ["/Volumes/Cache", "/Volumes/Scratch"]
-    ):
+    if volume_host and not all(Path(p).is_dir() for p in ["/Volumes/Cache", "/Volumes/Scratch"]):
         raise SystemExit("Required external storage volumes are unavailable")
     scratch = "/Volumes/Scratch" if volume_host else None
-    with tempfile.TemporaryDirectory(
-        prefix="slackblocks-elixir-package-", dir=scratch
-    ) as tmp:
+    with tempfile.TemporaryDirectory(prefix="slackblocks-elixir-package-", dir=scratch) as tmp:
         root = Path(tmp)
         source = root / "package"
         archive = root / "slackblocks.tar"

@@ -3,12 +3,12 @@
 
 import functools
 import http.server
-import threading
 import os
-from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+import threading
+from pathlib import Path
 
 PACKAGE = Path(__file__).resolve().parents[1]
 
@@ -45,9 +45,7 @@ def main():
         shutil.copy2(archives[0], registry / "tarballs" / archives[0].name)
         server = http.server.ThreadingHTTPServer(
             ("127.0.0.1", 0),
-            functools.partial(
-                http.server.SimpleHTTPRequestHandler, directory=str(registry)
-            ),
+            functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(registry)),
         )
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
@@ -60,9 +58,7 @@ def main():
             '{decimal, "3.2.0"}',
             '{decimal, "' + env.get("SLACKBLOCKS_ERLANG_DECIMAL", "3.2.0") + '"}',
         )
-        text += (
-            f'\n{{elixir_opts, [{{cdn, "http://127.0.0.1:{server.server_port}"}}]}}.\n'
-        )
+        text += f'\n{{elixir_opts, [{{cdn, "http://127.0.0.1:{server.server_port}"}}]}}.\n'
         config.write_text(text)
         try:
             for args in [["rebar3", "eunit"], ["rebar3", "release"]]:
@@ -88,9 +84,7 @@ def main():
             check=True,
             timeout=60,
         )
-        print(
-            "Erlang Hex artifact, EUnit, protocol consolidation and standalone release passed"
-        )
+        print("Erlang Hex artifact, EUnit, protocol consolidation and standalone release passed")
 
 
 if __name__ == "__main__":
