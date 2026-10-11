@@ -68,7 +68,7 @@ end
         run(['mix', 'compile', '--warnings-as-errors'], consumer, {**env, 'MIX_ENV': 'prod'})
         # Call the compiled public API from Erlang, with the dependency application started.
         beams = [str(p) for p in (consumer / '_build/prod/lib').glob('*/ebin')]
-        elixir_lib = Path(subprocess.check_output(['elixir', '-e', 'IO.puts(:code.lib_dir(:elixir))'], env=env, text=True).strip()).parent
+        elixir_lib = Path(subprocess.check_output([shutil.which('elixir') or 'elixir', '-e', 'IO.puts(:code.lib_dir(:elixir))'], env=env, text=True).strip()).parent
         beams += [str(p) for p in elixir_lib.glob('*/ebin')]
         expr = "{ok,_}=application:ensure_all_started(slackblocks), {ok,S}='Elixir.Slackblocks.Blocks.Section':new([{text,<<\"Erlang\">>}]), {ok,W}='Elixir.Slackblocks':to_map(S), <<\"section\">> = maps:get(<<\"type\">>,W), halt(0)."
         run(['erl', '-noshell', '-pa', *beams, '-eval', expr], consumer, env)
