@@ -55,26 +55,38 @@ your tests, rather than in production.
 
 ## Installation
 
-Python (3.10+ — earlier Pythons should pin the `1.x` line, see
-[Compatibility](https://nicklambourne.github.io/slackblocks/usage/compatibility)):
+<details>
+<summary>Python (3.10+)</summary>
+
+Earlier Pythons should pin the `1.x` line, see
+[Compatibility](https://nicklambourne.github.io/slackblocks/usage/compatibility).
 
 ```bash
 pip install slackblocks
 ```
 
-TypeScript / JavaScript (Node 20.19+ or 22.12+, ESM):
+</details>
+
+<details>
+<summary>TypeScript / JavaScript (Node 20.19+ or 22.12+, ESM)</summary>
 
 ```bash
 npm install @nicklambourne/slackblocks
 ```
 
-Go (1.22+):
+</details>
+
+<details>
+<summary>Go (1.22+)</summary>
 
 ```bash
 go get github.com/nicklambourne/slackblocks/go/v2
 ```
 
-Java (17+):
+</details>
+
+<details>
+<summary>Java (17+)</summary>
 
 ```xml
 <dependency>
@@ -84,30 +96,44 @@ Java (17+):
 </dependency>
 ```
 
-C# (.NET 8+):
+</details>
+
+<details>
+<summary>C# (.NET 8+)</summary>
 
 ```bash
 dotnet add package Slackblocks
 ```
 
-Ruby (3.3+):
+</details>
+
+<details>
+<summary>Ruby (3.3+)</summary>
 
 ```bash
 gem install slackblocks
 ```
 
-Rust (1.85+, edition 2024):
+</details>
+
+<details>
+<summary>Rust (1.85+, edition 2024)</summary>
 
 ```bash
 cargo add slackblocks@2.6.0
 cargo add serde_json
 ```
 
+</details>
+
 All seven implementations use the coordinated 2.6.0 version.
 
 ## Quickstart
 
-A CI notification, in Python:
+<details>
+<summary>Python</summary>
+
+A CI notification:
 
 ```python
 from slackblocks import (
@@ -154,7 +180,10 @@ client = WebClient(token=os.environ["SLACK_API_TOKEN"])
 client.chat_postMessage(**message)
 ```
 
-The same message in TypeScript:
+</details>
+
+<details>
+<summary>TypeScript / JavaScript</summary>
 
 ```ts
 import {
@@ -193,7 +222,10 @@ const client = new WebClient(process.env.SLACK_API_TOKEN);
 await client.chat.postMessage(payload);
 ```
 
-And in Go:
+</details>
+
+<details>
+<summary>Go</summary>
 
 ```go
 client := slack.New(os.Getenv("SLACK_API_TOKEN"))
@@ -212,8 +244,10 @@ _, _, err := client.PostMessageContext(
 )
 ```
 
+</details>
 
-And in Java:
+<details>
+<summary>Java</summary>
 
 ```java
 SectionBlock block = SectionBlock.builder()
@@ -228,7 +262,10 @@ client.chatPostMessage(ChatPostMessageRequest.builder()
     .build());
 ```
 
-And in C#:
+</details>
+
+<details>
+<summary>C#</summary>
 
 ```csharp
 using Slackblocks.Blocks;
@@ -249,7 +286,10 @@ var message = new MessagePayload(
 // POST message.ToJson() to chat.postMessage with HttpClient and a bot token.
 ```
 
-And in Ruby:
+</details>
+
+<details>
+<summary>Ruby</summary>
 
 ```ruby
 require "slackblocks"
@@ -284,10 +324,10 @@ message = Slackblocks::MessagePayload.new(
 puts message.to_json
 ```
 
-<p align="center">
-  <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/usage/build_notification.png" alt="The build notification rendered in Slack" width="600px" />
-</p>
+</details>
 
+<details>
+<summary>Rust</summary>
 
 The same validated construction in Rust uses consuming builders and native errors:
 
@@ -308,6 +348,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 Values own their data, getters borrow, and `clone().into_builder()` supports
 editing without mutating the original. See the [Rust package guide](rust/README.md)
 and [Rust API reference](https://nicklambourne.github.io/slackblocks/reference/rust).
+
+</details>
+
+<p align="center">
+  <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/usage/build_notification.png" alt="The build notification rendered in Slack" width="600px" />
+</p>
 
 ## Documentation
 
