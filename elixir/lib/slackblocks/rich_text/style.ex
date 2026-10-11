@@ -18,13 +18,7 @@ defmodule Slackblocks.RichText.Style do
   @spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
   def new(options \\ []) do
     Value.capture(fn ->
-      unless is_list(options) and Keyword.keyword?(options),
-        do: Value.fail(:type_mismatch, [], "expected keyword options")
-
-      keys = Keyword.keys(options)
-
-      unless Enum.all?(keys, &(&1 in @flags)) and length(keys) == length(Enum.uniq(keys)),
-        do: Value.fail(:invalid_usage, [], "unknown or duplicate style flag")
+      Value.options(options, @flags)
 
       value = struct(__MODULE__, options)
       wire(value, Enum.map(@flags, &Atom.to_string/1), [])
@@ -71,7 +65,9 @@ defmodule Slackblocks.RichText.Style do
         {flag, v}
       end)
 
-    Value.unwrap(new(options))
+    result = struct(__MODULE__, options)
+    wire(result, Map.keys(known), path)
+    result
   end
 
   def parse(_value, path), do: Value.fail(:type_mismatch, path, "expected style object")

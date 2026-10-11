@@ -40,6 +40,8 @@ defmodule Slackblocks.Internal.Value do
     end)
   end
 
+  def options(options, allowed), do: keywords(options, Enum.map(allowed, &%{key: &1}))
+
   defp keywords(options, fields) do
     list!(options, [])
 

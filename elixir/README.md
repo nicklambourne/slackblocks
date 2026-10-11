@@ -4,13 +4,13 @@ Native immutable values for constructing validated Slack Block Kit payloads.
 The library builds messages; your application chooses the HTTP client that sends them.
 
 **Unreleased implementation:** all 89 shared models and the complete conformance
-corpus are implemented. Further quality, integrations and release activation are
-tracked in [the implementation plan](https://github.com/nicklambourne/slackblocks/blob/codex/elixir-2-contract/elixir/design/plan.md). No Hex release is available.
+corpus are implemented. Sending integrations, site documentation and release activation are
+tracked in [the implementation plan](https://github.com/nicklambourne/slackblocks/blob/codex/elixir-3-quality/elixir/design/plan.md). No Hex release is available.
 
 ## Requirements
 
 Elixir 1.16.3 or newer (below 2.0), with a compatible Erlang/OTP version starting
-at 26.2, on 64-bit systems. The supported matrix will be verified before release.
+at 26.2, on 64-bit systems. CI checks Elixir 1.16–1.20 on their compatible OTP versions, with Linux, macOS and Windows endpoint lanes.
 Runtime dependencies are Jason and Decimal; HTTP clients and frameworks are optional.
 
 For review, add a path dependency to this directory:
@@ -74,6 +74,29 @@ Adding optional fields or enum members is additive. Match the fields you need an
 include catch-all branches for evolving enums. Persist wire JSON rather than BEAM
 struct terms across package upgrades.
 
+## Composition helpers
+
+```elixir
+alias Slackblocks.Components.Paginator
+alias Slackblocks.{Attachment, Color}
+
+page = Paginator.to_blocks!([section], action_id_prefix: "builds", page: 1, page_size: 5)
+attachment = Attachment.new!(blocks: page, color: Color.named!(:purple))
+preview = Slackblocks.block_kit_builder_url!(message, team_id: "T123")
+```
+
+`AccordionSection.new/1` returns a collapsible container; `Accordion.to_blocks/1`
+checks and expands the section list. `Paginator.to_blocks/2` returns ordinary
+blocks with explicit navigation IDs. Put expanded blocks into the final message
+or view so its total block limit is checked. These helpers do not manage state or
+route interactions.
+
+`Objects.Workflow.from_url/2` builds a trigger from its URL and an optional list of
+`Objects.InputParameter` values. `RichText.Style` holds optional boolean flags;
+receiving fields enforce their allowed flags. `Color` supports semantic/named
+colors, six-digit hex strings and RGB channels. Each helper has tagged and bang
+variants; see ExDoc for accepted options and defaults.
+
 ## Erlang
 
 The same BEAM modules are callable from Erlang:
@@ -90,7 +113,8 @@ are not a promise that every Erlang build configuration works.
 
 ## Development
 
-From this directory, with Elixir 1.16.3, Python 3.11+ and Hex installed:
+From this directory, with Elixir 1.16.3, OTP 26.2+, Python 3.11+, Ruff 0.15.12,
+Hex 2.5.1 and Rebar3 3.27.1 installed:
 
 ```sh
 mix deps.get
@@ -100,13 +124,16 @@ mix run tools/check.exs
 The checker verifies deterministic generation, formatting, compilation,
 native and full conformance tests, lint, ExDoc and an actual Hex archive installed into an independent
 consumer. `--profile runtime` checks native and archive behavior on another
-compiler without changing the pinned formatter. Coverage, Dialyzer and integration gates are added by the following PRs.
+compiler without changing the pinned formatter. The full profile includes Dialyzer, doctests, properties, a separate 90% handwritten
+coverage gate, API/coverage mutation probes, credential-free HexDocs packaging and
+a standalone Erlang release. Sending integration gates follow in the next PR.
 
 On the maintainer's Mac, keep durable build/dependency caches under `/Volumes/Cache`
 and disposable consumers under `/Volumes/Scratch`. The package does not need these
 paths. The consumer checker detects the external volumes; CI uses its temporary
 directory. Override `MIX_BUILD_ROOT`, `MIX_DEPS_PATH`, `MIX_HOME` and `HEX_HOME` as
-appropriate for your host.
+appropriate for your host. `SLACKBLOCKS_PLT_PATH` selects a runtime-specific durable
+Dialyzer cache, and `SLACKBLOCKS_RUFF` can select an installed Ruff executable.
 
 Generated modules and schema live under `lib/slackblocks`; their first comment
 identifies their owner. Edit `spec/model.json` or `generator/generate.py`, then run

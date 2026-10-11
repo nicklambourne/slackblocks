@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "complete modeled contract; remaining train gates in progress",
+  "status": "models, helpers and quality implemented; integrations/docs/release remain",
   "baseline_commit": "70ffab589935d98d8fe63bb532d65d3e2b5d48a1",
   "spec_version": "1.2.0",
   "proposed_package_version": "2.8.0",
@@ -104,14 +104,14 @@
     "spec/coverage.json"
   ],
   "requirements": {
-    "full_contract": "planned",
-    "native_api": "planned",
-    "helpers": "planned",
-    "independent_exports": "planned",
-    "coverage": "planned",
-    "package_consumers": "planned",
-    "erlang_consumer": "planned",
-    "erlang_release": "planned",
+    "full_contract": "implemented and locally verified",
+    "native_api": "implemented and locally verified",
+    "helpers": "implemented and locally verified",
+    "independent_exports": "implemented and locally verified",
+    "coverage": "implemented and locally verified",
+    "package_consumers": "implemented and locally verified",
+    "erlang_consumer": "implemented and locally verified",
+    "erlang_release": "implemented and locally verified",
     "sending": "planned",
     "documentation": "planned",
     "disabled_release": "planned",
@@ -128,7 +128,8 @@
     "Field": "Excluded: legacy Python attachment-only object outside the shared contract"
   },
   "evidence": {
-    "contract": "elixir/test/conformance_test.exs (283 tests including foundation)"
+    "contract": "elixir/test/conformance_test.exs (283 tests including foundation)",
+    "quality": "elixir/design/quality.md"
   },
   "source_hashes": {
     "spec/model.json": "f99f3c03dd338ab382ee99e547ce824977254477068a59efcf7e96832e74c72d",
@@ -144,7 +145,7 @@
       "implementation": "elixir/lib/<native_module_path>.ex",
       "tests": "elixir/test/api_contract_test.exs",
       "docs": "generated ExDoc for native module",
-      "status": "all 89 models and 360 fields generated; independent field audit planned"
+      "status": "all 89 models and 360 fields independently audited"
     },
     "valid_fixtures": {
       "source": "spec/manifest.json",
@@ -166,7 +167,7 @@
     "public_exports": {
       "source": "spec/coverage.json",
       "tests": "elixir/test/api_contract_test.exs",
-      "status": "planned"
+      "status": "compiled discovery and explicit classification; missing producer mutation fails"
     },
     "erlang": {
       "implementation": "elixir/erlang/src/slackblocks_erlang.erl",

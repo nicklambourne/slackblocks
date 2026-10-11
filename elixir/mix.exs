@@ -9,6 +9,11 @@ defmodule Slackblocks.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       elixirc_paths: if(Mix.env() == :test, do: ["lib", "test/support"], else: ["lib"]),
+      test_coverage: [summary: false],
+      dialyzer: [
+        plt_local_path: System.get_env("SLACKBLOCKS_PLT_PATH", "_build/dev/plts"),
+        plt_core_path: System.get_env("SLACKBLOCKS_PLT_PATH", "_build/dev/plts")
+      ],
       description: "Native, validated Slack Block Kit values for Elixir and Erlang",
       source_url: "https://github.com/nicklambourne/slackblocks",
       package: [
