@@ -63,7 +63,6 @@ defmodule Slackblocks.ApiContractTest do
       fields = model["fields"]
       native_fields = Enum.map(fields, &String.to_existing_atom(&1["wire"]))
       assert Map.keys(Map.from_struct(value)) |> Enum.sort() == Enum.sort(native_fields)
-      info = Map.new(module.__info__(:struct), &{&1.field, Map.get(&1, :required, false)})
       defaults = struct(module)
       assert {:ok, types} = Code.Typespec.fetch_types(module)
       assert Enum.any?(types, fn {kind, {name, _, _}} -> kind == :type and name == :t end)
@@ -79,8 +78,13 @@ defmodule Slackblocks.ApiContractTest do
 
         assert Map.fetch!(defaults, key) === default
 
-        assert info[key] ==
-                 (field["required"] == true and not Map.has_key?(model["defaults"], field["wire"]))
+        options_without_key = value |> Map.from_struct() |> Map.delete(key) |> Map.to_list()
+
+        if field["required"] == true and not Map.has_key?(model["defaults"], field["wire"]) do
+          assert_raise ArgumentError, fn -> struct!(module, options_without_key) end
+        else
+          assert is_struct(struct!(module, options_without_key), module)
+        end
 
         assert {:error, %ValidationError{category: :type_mismatch, path: [wire | _]}} =
                  module.change(value, [{key, self()}])
