@@ -53,6 +53,7 @@ composer analyse
 composer format:check
 python3 generator/test_generate.py
 python3 bin/check-types.py
+python3 bin/package_manifest.py --check
 python3 bin/check-package.py
 ```
 
@@ -62,11 +63,26 @@ Generated classes come directly from the shared model. The package's tests and d
 
 The suite constructs all 105 valid shared fixtures and rejects all 167 invalid cases with the required categories. It checks every scalar limit, vocabulary, capability and exported class. The release skiplist is empty. Public constructors, enums, readonly fields and helper methods are independently inventoried.
 
-PHPStan level 8 checks the library and positive/negative consumers. CI enforces at least 95% line coverage for handwritten code and reports generated coverage separately. Package checks install the actual Composer ZIP in a fresh external project on each supported platform. There are no third-party runtime dependencies to resolve at lower bounds; the development lock is resolved on PHP 8.2.
+PHPStan level 8 checks the library and positive/negative consumers. CI enforces at least 95% line coverage for handwritten code and reports generated coverage separately. Package checks install the actual Composer ZIP and exercise native VCS discovery, stable source installs and development source installs in fresh external projects on each supported platform. There are no third-party runtime dependencies to resolve at lower bounds; the development lock is resolved on PHP 8.2.
 
 ## Helpers
 
 `AccordionSection::create()` produces a collapsible `ContainerBlock`; `Accordion::create()` returns sections to spread into a message's blocks. `Paginator::create()` takes one-based page numbers and returns content plus navigation controls. Controls count toward the enclosing surface's block limit. `Builder::url()` makes a preview URL. `Workflow::fromUrl()` accepts optional `InputParameter` values. `Color` provides semantic/hex strings for attachments.
+
+## Package maintenance
+
+Development dependencies and checks use `php/composer.json`. The repository-root
+Composer descriptor is generated from it with `python3 php/bin/package_manifest.py`
+(run from the repository root); CI rejects metadata drift. The PHP namespace maps
+to `php/src/` in both source installs and the small PHP-only release archive.
+Publication uses this monorepo and Packagist; setup and retry instructions are in
+[the release guide](https://github.com/nicklambourne/slackblocks/blob/master/RELEASING.md#php-activation-and-first-publication).
+
+After registration, consumers choosing an unreleased development branch must use
+Composer's `--prefer-source` option: development commits have no release ZIP.
+Source installs include the monorepo; stable archive installs contain only the
+PHP package. The checkout quickstart above remains the development entry point
+until this implementation is merged and registered.
 
 ## License
 

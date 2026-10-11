@@ -3,7 +3,7 @@ name: PHP
 on:
   push:
     branches: [master]
-    paths: ["php/**", "spec/**", "docs/**", "README.md", "AGENTS.md", ".github/workflows/php.yml", ".github/dependabot.yml"]
+    paths: ["composer.json", "php/**", "spec/**", "docs/**", "README.md", "AGENTS.md", ".github/workflows/php.yml", ".github/dependabot.yml"]
   pull_request:
   workflow_dispatch:
 
@@ -32,7 +32,7 @@ jobs:
             exit 0
           fi
           files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
-          if [ -z "$files" ] || echo "$files" | grep -Eq '^(php/|spec/|docs/|README\.md$|AGENTS\.md$|\.github/workflows/php\.yml$|\.github/dependabot\.yml$)'; then
+          if [ -z "$files" ] || echo "$files" | grep -Eq '^(composer\.json$|php/|spec/|docs/|README\.md$|AGENTS\.md$|\.github/workflows/php\.yml$|\.github/dependabot\.yml$)'; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -70,7 +70,9 @@ jobs:
         run: composer install --no-interaction --prefer-dist
       - name: Validate Composer package
         if: needs.changes.outputs.relevant == 'true'
-        run: composer validate --strict
+        run: |
+          composer validate --strict
+          composer --working-dir=.. validate --strict
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         if: needs.changes.outputs.relevant == 'true'
         with:

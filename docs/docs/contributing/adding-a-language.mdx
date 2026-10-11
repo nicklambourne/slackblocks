@@ -580,10 +580,16 @@ Copy this completion record into the final PR or implementation plan:
   launchers through PATH on Windows, resolve filesystem aliases on macOS, and compare
   parsed JSON inventories rather than line-ending-sensitive text. Use explicit `\n`
   escapes where fixture text has semantically significant LF characters.
-- A monorepo subdirectory is not automatically a Packagist VCS package root.
-  Choose a root-manifest or deterministic distribution-repository strategy, prove
-  archive/source equality and retry behavior locally, and gate publication on
-  verified repository ownership, scoped credentials and registry configuration.
+- Packagist can index the existing monorepo through a root Composer descriptor
+  whose autoload paths point into the language directory. Generate it from the
+  development manifest and reject drift. PHP verifies native VCS discovery,
+  conventional tags, trimmed archives and stable/development source installs.
+- For a custom release archive, make the tested bytes available before exposing
+  the conventional Composer version tag. PHP keeps its `php/vX.Y.Z` workflow tag,
+  uploads and verifies its ZIP, then adds `vX.Y.Z` at the same source commit.
+  Check retry identity for both assets and tags, and document `--prefer-source`
+  for unreleased development commits without archives. Gate activation on the
+  existing monorepo's Packagist registration, update hook and protected environment.
 - Keep first-release docs explicit about availability. Use a neutral preparation
   badge until publication, then activate the registry badge and download provider.
   Historical snapshots must retain their actual language set.

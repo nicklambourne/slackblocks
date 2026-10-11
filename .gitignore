@@ -122,3 +122,7 @@ node_modules/
 docs/docs/reference/php/
 
 /rust/dist/
+
+# Root Composer package consumers
+/vendor/
+/composer.lock
