@@ -1,7 +1,7 @@
 defmodule Slackblocks.Components.Accordion do
   @moduledoc "Expands collapsible sections into ordinary blocks in display order."
   alias Slackblocks.Blocks.Container
-  alias Slackblocks.Internal.Value
+  alias Slackblocks.Internal.{Codec, Value}
 
   @doc "Checks a nonempty list of collapsible containers before returning its blocks."
   @spec to_blocks([Container.t()]) ::
@@ -20,10 +20,15 @@ defmodule Slackblocks.Components.Accordion do
   end
 
   defp check_section({section, index}) do
-    unless is_struct(section, Container) and section.is_collapsible == true,
-      do: Value.fail(:type_mismatch, ["sections", index], "expected a collapsible container")
+    path = ["sections", index]
 
-    Slackblocks.to_map!(section)
+    unless is_struct(section, Container),
+      do: Value.fail(:type_mismatch, path, "expected a collapsible container")
+
+    wire = Codec.wire(section, path, :complete)
+
+    unless wire["is_collapsible"] == true,
+      do: Value.fail(:type_mismatch, path, "expected a collapsible container")
   end
 
   @doc "Like `to_blocks/1`, raising on failure."
