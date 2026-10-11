@@ -1,17 +1,17 @@
 # slackblocks <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/sb.png" align="right" width="250px"/>
 
-[![License: MIT OR BSD-3-Clause](https://img.shields.io/badge/License-MIT_OR_BSD--3--Clause-grey?style=flat&labelColor=555)](#licensing)
-[![Docs: read](https://img.shields.io/badge/Docs-read-007EC6?style=flat&labelColor=555)](https://nicklambourne.github.io/slackblocks)
-[![Reported downloads across PyPI, npm, NuGet, RubyGems and crates.io](https://img.shields.io/endpoint?url=https%3A%2F%2Fwatch.ndl.au%2Fbadges%2Fslackblocks-downloads.json&style=flat&labelColor=555)](#download-statistics)
+[![License: MIT OR BSD-3-Clause](https://img.shields.io/badge/License-MIT_OR_BSD--3--Clause-2E8B57?style=flat&labelColor=555)](#licensing)
+[![Docs: read](https://img.shields.io/badge/Docs-read-4A154B?style=flat&labelColor=555)](https://nicklambourne.github.io/slackblocks)
+[![Downloads across PyPI, npm, NuGet, RubyGems, crates.io and Packagist](https://img.shields.io/endpoint?url=https%3A%2F%2Fwatch.ndl.au%2Fbadges%2Fslackblocks-downloads.json&style=flat&labelColor=555&label=Downloads)](#download-statistics)
 
-[![PyPI version](https://img.shields.io/pypi/v/slackblocks?style=flat&labelColor=555&label=PyPI&color=007EC6&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/)
-[![npm version](https://img.shields.io/npm/v/%40nicklambourne%2Fslackblocks?style=flat&labelColor=555&label=npm&color=007EC6&logo=npm&logoColor=white)](https://www.npmjs.com/package/@nicklambourne/slackblocks)
-[![Go module version](https://img.shields.io/badge/dynamic/json?style=flat&labelColor=555&label=Go+module&color=007EC6&logo=go&logoColor=white&url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv2%2F%40latest&query=%24.Version)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2)
-[![Maven Central version](https://img.shields.io/maven-central/v/io.github.nicklambourne/slackblocks?style=flat&labelColor=555&label=Maven+Central&color=007EC6&logo=apachemaven&logoColor=white)](https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks)
-[![NuGet version](https://img.shields.io/nuget/v/Slackblocks?style=flat&labelColor=555&label=NuGet&color=007EC6&logo=nuget&logoColor=white)](https://www.nuget.org/packages/Slackblocks)
-[![RubyGems version](https://img.shields.io/gem/v/slackblocks?style=flat&labelColor=555&label=RubyGems&color=007EC6&logo=rubygems&logoColor=white)](https://rubygems.org/gems/slackblocks)
-[![crates.io version](https://img.shields.io/crates/v/slackblocks?style=flat&labelColor=555&label=crates.io&color=007EC6&logo=rust&logoColor=white)](https://crates.io/crates/slackblocks)
-[![Packagist version](https://img.shields.io/packagist/v/nicklambourne/slackblocks?style=flat&labelColor=555&label=Packagist&color=007EC6&logo=php&logoColor=white)](https://packagist.org/packages/nicklambourne/slackblocks)
+[![PyPI version](https://img.shields.io/pypi/v/slackblocks?style=flat&labelColor=555&label=PyPI&color=3776AB&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/)
+[![npm version](https://img.shields.io/npm/v/%40nicklambourne%2Fslackblocks?style=flat&labelColor=555&label=npm&color=3178C6&logo=npm&logoColor=white)](https://www.npmjs.com/package/@nicklambourne/slackblocks)
+[![Go module version](https://img.shields.io/badge/dynamic/json?style=flat&labelColor=555&label=Go+module&color=00ACD7&logo=go&logoColor=white&url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv2%2F%40latest&query=%24.Version)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2)
+[![Maven Central version](https://img.shields.io/maven-central/v/io.github.nicklambourne/slackblocks?style=flat&labelColor=555&label=Maven+Central&color=E76F00&logo=apachemaven&logoColor=white)](https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks)
+[![NuGet version](https://img.shields.io/nuget/v/Slackblocks?style=flat&labelColor=555&label=NuGet&color=512BD4&logo=nuget&logoColor=white)](https://www.nuget.org/packages/Slackblocks)
+[![RubyGems version](https://img.shields.io/gem/v/slackblocks?style=flat&labelColor=555&label=RubyGems&color=CC342D&logo=rubygems&logoColor=white)](https://rubygems.org/gems/slackblocks)
+[![crates.io version](https://img.shields.io/crates/v/slackblocks?style=flat&labelColor=555&label=crates.io&color=CE422B&logo=rust&logoColor=white)](https://crates.io/crates/slackblocks)
+[![Packagist version](https://img.shields.io/packagist/v/nicklambourne/slackblocks?style=flat&labelColor=555&label=Packagist&color=777BB4&logo=php&logoColor=white)](https://packagist.org/packages/nicklambourne/slackblocks)
 
 [![Python CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/unit-tests.yml?style=flat&labelColor=555&branch=master&event=push&label=Python+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml?query=branch%3Amaster)
 [![TypeScript CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/typescript.yml?style=flat&labelColor=555&branch=master&event=push&label=TypeScript+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml?query=branch%3Amaster)
@@ -384,7 +384,7 @@ See the [PHP package guide](php/README.md), [sending integrations](php/integrati
 
 ## Download statistics
 
-The **reported downloads** badge sums all-time counts from PyPI (via Pepy), npm,
+The **Downloads** badge sums all-time counts from PyPI (via Pepy), npm,
 NuGet, RubyGems, crates.io, and Packagist. Go and Maven Central have no comparable public
 all-time download counters and are excluded. Registry counting rules differ;
 these counts include automated downloads and do not represent unique users.

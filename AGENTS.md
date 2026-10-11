@@ -20,6 +20,8 @@ the shared contract, useful helpers, independent public API coverage, language
 quality gates, standalone packaging, documentation and coordinated releases.
 Keep publication disabled until the complete implementation and registry setup
 are ready; preserve outgoing documentation before adding new-language content.
+Follow the guide's README badge palette and shared download-total activation
+checks whenever adding an implementation.
 
 Rust joins the implementation set in 2.6.0. Include `rust/`
 when updating shared features. Run its generator with Rust 1.85.0 rustfmt, then
