@@ -363,6 +363,10 @@ The protected publisher follows this order:
    expected archive URL and all packaged file hashes, then run the installed
    native consumer. Archive installs must contain exactly the allowed files.
 
+GitHub's release listing can briefly lag successful creation or publication.
+The publisher waits up to 55 seconds for the updated state; a timeout fails
+visibly and can be retried from the same tagged workflow.
+
 An interrupted draft upload can resume. An existing public release must already
 contain both identical assets; the publisher never edits it. Tag retries accept
 only the identical annotated tag object and never move refs or rewrite the
