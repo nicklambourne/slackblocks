@@ -15,7 +15,13 @@ defmodule Slackblocks.MixProject do
         links: %{"GitHub" => "https://github.com/nicklambourne/slackblocks"},
         files: ~w(lib mix.exs README.md CHANGELOG.md LICENSE LICENSE.BSD-3-Clause)
       ],
-      docs: [main: "readme", extras: ["README.md", "CHANGELOG.md"], source_ref: "master"]
+      docs: [
+        main: "readme",
+        extras: ["README.md", "CHANGELOG.md"],
+        source_ref: System.get_env("SLACKBLOCKS_SOURCE_REF", "master"),
+        source_url_pattern:
+          "https://github.com/nicklambourne/slackblocks/blob/#{System.get_env("SLACKBLOCKS_SOURCE_REF", "master")}/elixir/%{path}#L%{line}"
+      ]
     ]
   end
 

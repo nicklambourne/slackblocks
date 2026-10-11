@@ -78,6 +78,29 @@ defmodule Slackblocks.FoundationTest do
     assert {:error, %ValidationError{category: :type_mismatch}} = Accordion.to_blocks([body])
   end
 
+  test "accordion validates damaged structs before reading fields" do
+    section = AccordionSection.new!(title: "Summary", blocks: [Section.new!(text: "Details")])
+
+    for invalid <- [Map.delete(section, :is_collapsible), Map.put(section, :extra, true)] do
+      assert {:error, %ValidationError{category: :type_mismatch, path: ["sections", 1]}} =
+               Accordion.to_blocks([section, invalid])
+
+      assert_raise ValidationError, fn -> Accordion.to_blocks!([section, invalid]) end
+    end
+  end
+
+  test "accordion nested validation errors retain the section index" do
+    body = Section.new!(text: "Details")
+    section = AccordionSection.new!(title: "Summary", blocks: [body])
+    invalid = %{section | child_blocks: [%{body | text: "raw"}]}
+
+    assert {:error,
+            %ValidationError{
+              category: :type_mismatch,
+              path: ["sections", 1, "child_blocks", 0, "text"]
+            }} = Accordion.to_blocks([section, invalid])
+  end
+
   test "every output boundary rejects forged or directly edited structs" do
     valid = Section.new!(text: "Hello")
 
