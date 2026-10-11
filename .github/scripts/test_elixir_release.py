@@ -127,6 +127,29 @@ class ElixirReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(hex_release.preflight.ReleaseError, "checksum"):
             hex_release.verify(self.root, self.directory)
 
+    def test_artifacts_reject_untracked_and_ignored_package_files(self):
+        # Hex includes lib contents independently of Git's ignore rules.
+        (self.root / ".git/info/exclude").write_text("*.ez\n")
+        for name in ["lib/uncommitted.ex", "lib/ignored.ez", "README.md"]:
+            path = self.root / "elixir" / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("uncommitted package content")
+            try:
+                with (
+                    self.subTest(name=name),
+                    self.assertRaisesRegex(
+                        hex_release.preflight.ReleaseError, "Untracked package"
+                    ),
+                ):
+                    self.artifact()
+            finally:
+                path.unlink()
+        # Unrelated scratch and build outputs do not enter the Hex archive.
+        (self.root / "elixir/dist").mkdir()
+        (self.root / "elixir/dist/slackblocks.tar").write_bytes(b"previous build")
+        record = self.artifact()
+        self.assertEqual(hex_release.verify(self.root, self.directory), record)
+
     def test_readiness_rejects_missing_credentials_before_dry_run(self):
         with (
             patch.dict(os.environ, {}, clear=True),
@@ -283,6 +306,41 @@ class ElixirReleaseTests(unittest.TestCase):
         ):
             hex_release.publish(self.root, self.directory)
             self.assertEqual(run.call_count, 1)
+
+
+class ElixirDocsTests(unittest.TestCase):
+    def test_rendered_source_links_require_exact_ref_and_package_directory(self):
+        import tempfile
+        from pathlib import Path
+
+        docs = fixtures.load(
+            "elixir_docs", fixtures.ROOT / "elixir/tools/docs_check.py"
+        )
+        with tempfile.TemporaryDirectory(dir=hex_release.scratch()) as tmp:
+            directory = Path(tmp)
+            page = directory / "Slackblocks.html"
+            prefix = "https://github.com/nicklambourne/slackblocks/blob/"
+            for link in [
+                "%{ref}/elixir/lib/slackblocks.ex#L1",
+                "master/elixir/lib/slackblocks.ex#L1",
+                "abc123/lib/slackblocks.ex#L1",
+                "",
+            ]:
+                page.write_text(
+                    f'<a href="{prefix}{link}" title="View Source">Source</a>'
+                )
+                with self.subTest(link=link), self.assertRaises(SystemExit):
+                    docs.verify_source_links(directory, "abc123")
+            page.write_text("<p>No source links</p>")
+            with self.assertRaises(SystemExit):
+                docs.verify_source_links(directory, "abc123")
+            page.write_text(
+                f'<a href="{prefix}abc123/elixir/lib/slackblocks.ex#L1" title="View Source">Source</a>'
+                f'<a href="{prefix}abc123/elixir/lib/slackblocks.ex#L20" aria-label="View Source">Source</a>'
+                f'<a href="{prefix}master/README.md">An ordinary prose link</a>'
+                '<a href="https://github.com/nicklambourne/slackblocks" title="View Source">API index</a>'
+            )
+            docs.verify_source_links(directory, "abc123")
 
 
 class ElixirWorkflowTests(unittest.TestCase):

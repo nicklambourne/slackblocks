@@ -14,7 +14,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-from package_check import extract_archive
+from package_check import PACKAGE_ROOTS, extract_archive
 
 ROOT = Path(__file__).resolve().parents[2]
 _spec = importlib.util.spec_from_file_location(
@@ -87,6 +87,12 @@ def identity(root):
         not preflight.git(root, "status", "--porcelain", "--untracked-files=no"),
         "Commit changes before preparing the release artifact",
     )
+    # Hex packages source files even when they are untracked or ignored by Git.
+    # Limit this check to the archive allowlist so generated docs/dist remain usable.
+    untracked = preflight.git(
+        root, "ls-files", "--others", "--", *(f"elixir/{name}" for name in sorted(PACKAGE_ROOTS))
+    )
+    require(not untracked, f"Untracked package files must be committed or removed: {untracked}")
     return {
         "version": preflight.validate(root),
         "commit": preflight.git(root, "rev-parse", "HEAD"),

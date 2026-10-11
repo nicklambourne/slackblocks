@@ -10,6 +10,7 @@ import tempfile
 from pathlib import Path
 
 PACKAGE = Path(__file__).resolve().parents[1]
+PACKAGE_ROOTS = {"lib", "mix.exs", "README.md", "CHANGELOG.md", "LICENSE", "LICENSE.BSD-3-Clause"}
 
 
 def run(args, cwd=PACKAGE, env=None):
@@ -41,14 +42,7 @@ def extract_archive(archive, source):
             name = Path(member.name)
             if name.is_absolute() or ".." in name.parts or member.issym() or member.islnk():
                 raise SystemExit(f"Unsafe package member {name}")
-            if name.parts[0] not in {
-                "lib",
-                "mix.exs",
-                "README.md",
-                "CHANGELOG.md",
-                "LICENSE",
-                "LICENSE.BSD-3-Clause",
-            }:
+            if name.parts[0] not in PACKAGE_ROOTS:
                 raise SystemExit(f"Unexpected package member {name}")
         inner.extractall(source)
 
