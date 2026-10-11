@@ -10,6 +10,7 @@ on:
       - "php/bin/**"
       - "elixir/generator/**"
       - "elixir/tools/**"
+      - "elixir/ruff.toml"
       - ".github/workflows/ruff-lint.yml"
   pull_request:
 
@@ -42,7 +43,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(python/|docs/scripts/|php/(generator|bin)/|elixir/(generator|tools)/|\.github/workflows/ruff-lint\.yml$)' <<<"$files"; then
+          if grep -qE '^(python/|docs/scripts/|php/(generator|bin)/|elixir/((generator|tools)/|ruff\.toml$)|\.github/workflows/ruff-lint\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"

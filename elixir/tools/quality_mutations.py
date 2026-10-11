@@ -3,10 +3,10 @@
 
 import json
 import os
-from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+from pathlib import Path
 
 PACKAGE = Path(__file__).resolve().parents[1]
 
@@ -31,9 +31,7 @@ def main():
     scratch = "/Volumes/Scratch" if Path("/Volumes/Repos").is_dir() else None
     if scratch and not Path(scratch).is_dir():
         raise SystemExit("Required /Volumes/Scratch mount is unavailable")
-    with tempfile.TemporaryDirectory(
-        prefix="slackblocks-elixir-mutations-", dir=scratch
-    ) as temp:
+    with tempfile.TemporaryDirectory(prefix="slackblocks-elixir-mutations-", dir=scratch) as temp:
         root = Path(temp) / "elixir"
         root.mkdir()
         shutil.copytree(PACKAGE.parent / "spec", Path(temp) / "spec")
@@ -67,8 +65,7 @@ def main():
         color = root / "lib/slackblocks/color.ex"
         original = color.read_text()
         color.write_text(
-            original.removesuffix("end\n")
-            + "  def new_public_producer, do: named!(:good)\nend\n"
+            original.removesuffix("end\n") + "  def new_public_producer, do: named!(:good)\nend\n"
         )
         run(
             root,
