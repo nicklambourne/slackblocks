@@ -354,6 +354,15 @@ or execute examples from the actual README/guide sources, not manually copied
 test strings. Add reusable examples under `docs/examples/` and compare common
 examples with `docs/examples/section_hello.json` where applicable.
 
+For each new language, add one `<details>` accordion under **Installation** and
+another under **Quickstart** in the root README. Omit the `open` attribute so both
+start collapsed. Use a plain-text `<summary>` with the language name and, for
+installation, runtime requirements. Keep compatibility links, commands and native
+examples inside the relevant accordion; leave shared illustrations outside.
+Keep blank lines around fenced code blocks so GitHub renders them as Markdown.
+Check GitHub's rendered README: every language must have both accordions, all
+must start collapsed, and every existing command and example must be preserved.
+
 ### Keep README badges consistent
 
 Add the new language to both badge rows in the root README: its registry version
@@ -551,6 +560,7 @@ Copy this completion record into the final PR or implementation plan:
 - [ ] Standalone artifact and external consumer checks pass.
 - [ ] Public comments, READMEs, guides, runnable examples and API reference complete.
 - [ ] Every language enumeration reviewed, including README reference/changelog/layout lists.
+- [ ] Installation and quickstart accordions render collapsed for every language without losing examples.
 - [ ] Registry/CI badges and language colours verified; download-source activation and public total documented.
 - [ ] Every separately resolved example/integration project's own-package lock entry guarded.
 - [ ] Site language/search/version/navigation checks pass; history remains accurate.
