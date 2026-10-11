@@ -1,7 +1,7 @@
-# Native API checkpoint
+# Elixir implementation checkpoints
 
-Implementation started from master `70ffab58` on 11 October 2026. This is PR 1
-of the reviewed train. The generator is deliberately restricted to the prototype
+Implementation started from master `70ffab58` on 11 October 2026. The opening checkpoint below records PR 1
+of the review train; subsequent sections record completed implementation phases. The generator is deliberately restricted to the prototype
 and its concrete dependencies (23 models). It does not claim full conformance.
 
 ## Decisions exercised
@@ -56,7 +56,7 @@ Sources: [Rebar3 plugins](https://www.rebar3.org/docs/configuration/plugins/),
 [released plugin source](https://repo.hex.pm/tarballs/rebar_mix-0.5.1.tar),
 [Relx launcher](https://github.com/erlware/relx/blob/main/priv/templates/extended_bin).
 
-## Remaining train gates
+## Gates remaining at the PR 1 checkpoint
 
 The full model/fixture/invalid registries, independent API inventory, broader
 property and coverage checks, Dialyzer, sending integrations, complete site/README
@@ -103,3 +103,64 @@ for this specific state; it never falls back to precision-losing parsing. The
 consumer restores a genuine Jason-without-Decimal beam to make the regression
 deterministic, then executes the documented repair and complete JSON/protocol
 checks. No runtime compilation, dependency patching or alternate parser is added.
+
+
+## Quality and complete API (PR 3)
+
+The final native suite has 297 tests, four properties and four doctests. Compiled
+module/export discovery is checked against the independent inventory, including
+default arities and native required/defaulted field behavior across compilers.
+Mutation probes reject an unclassified module, missing producer coverage and an
+unexercised handwritten module. The full pinned checker passes strict Credo,
+Dialyzer, formatter/generator checks and the 90% handwritten line coverage gate
+(400 of 427 executable lines, 93.68%, in the final preparation run).
+Generated coverage is reported separately and does not inflate that gate.
+
+## Disabled release and coordinated versions (PR 5)
+
+All eight outgoing references were generated before freezing 2.7.0. The snapshot
+manifest records the exact file set and hashes. All nine packages now prepare
+2.8.0 together, with unreleased changelog entries. Strict guards reject disabled
+Hex publication before coordinated tags. The protected environment, verified
+owner and `HEX_API_KEY` remain maintainer setup; no account calls or publication
+were performed. Sixty-one release/recovery tests pass, along with actual Hex
+archive preparation and byte-for-byte reconstruction from a clean commit.
+
+The first hosted run caught PHP's independent public version constant still at
+2.7.0. Updating only that expected constant restored all 392 PHP tests and the
+release PR's hosted checks. This is now included in the new-language guidance.
+
+## Documentation and repository guidance (PR 6)
+
+- Compiled Elixir docs/typespecs generate 97 public modules and all 360 modeled
+  fields. Independent export/default-arity and rendered-anchor checks pass.
+- Literal README and guide evaluation runs 46 scripts; every one of the 21 block
+  examples matches its displayed JSON. Sending snippets match the source tested
+  against a local HTTP server; the Erlang guide embeds exact EUnit/release sources.
+- Every language-switched section has Elixir content. Installation, quick start,
+  all blocks, recipes, migration, compatibility, troubleshooting, sending and
+  Erlang consumption are documented. Existing Jason rebuild requirements are
+  explicit. The core still has no HTTP or framework dependency.
+- Collapsed README sections, an honest pending Hex badge, Elixir CI badge and
+  official light/dark logos preserve the established language order. The public
+  download total remains the existing six sources until verified Hex activation.
+- The complete nine-language site renders; all reference-rendering, search,
+  selector, legacy fixture and historical snapshot checks pass. ExDoc passes with
+  warnings as errors; publication supplies immutable commit-based source links.
+- Contributor, Block Kit and language-addition guides include the implemented
+  Elixir commands, native metadata/compiler lessons, installed-dependency tests,
+  archive/ignore-rule checks and required branch-protection additions.
+
+## Monitoring companion and remaining approval gates
+
+[Noodle #1316](https://github.com/nicklambourne/noodle/pull/1316) prepares the
+Hex provider, ninth version/card/trend queries and ndl.au registry metadata.
+Collection and website visibility are disabled. Thirty-six exporter/HTTP/dashboard
+checks and seven project metadata tests pass. Actual publication, activation,
+deployment and production cache/privacy checks remain future approved work.
+
+All train PRs remain drafts. Nothing is merged or published. The maintainer must
+review the native API and complete train before authorizing merge; branch
+protection is updated only after stable check names exist on the default branch.
+Protected Hex readiness, release approval and verified registry consumers are
+separate from these credential-free preparation checks.

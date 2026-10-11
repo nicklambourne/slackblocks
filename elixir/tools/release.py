@@ -39,7 +39,12 @@ def scratch():
 
 
 def run(root, *args):
-    subprocess.run(args, cwd=root / "elixir", check=True)
+    subprocess.run(
+        args,
+        cwd=root / "elixir",
+        check=True,
+        env={**os.environ, "SLACKBLOCKS_SOURCE_REF": preflight.git(root, "rev-parse", "HEAD")},
+    )
 
 
 def digest(path):

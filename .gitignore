@@ -134,3 +134,5 @@ docs/docs/reference/php/
 # Elixir sending examples are source, including their native lib directory.
 !/elixir/integrations/lib/
 !/elixir/integrations/lib/**
+
+/docs/docs/reference/elixir/
