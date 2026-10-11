@@ -11,7 +11,7 @@
 [![NuGet version](https://img.shields.io/nuget/v/Slackblocks?style=flat&labelColor=555&label=NuGet&color=007EC6&logo=nuget&logoColor=white)](https://www.nuget.org/packages/Slackblocks)
 [![RubyGems version](https://img.shields.io/gem/v/slackblocks?style=flat&labelColor=555&label=RubyGems&color=007EC6&logo=rubygems&logoColor=white)](https://rubygems.org/gems/slackblocks)
 [![crates.io version](https://img.shields.io/crates/v/slackblocks?style=flat&labelColor=555&label=crates.io&color=007EC6&logo=rust&logoColor=white)](https://crates.io/crates/slackblocks)
-[![Packagist: preparing 2.7.0](https://img.shields.io/badge/Packagist-preparing_2.7.0-grey?style=flat&labelColor=555&logo=php&logoColor=white)](php/README.md)
+[![Packagist version](https://img.shields.io/packagist/v/nicklambourne/slackblocks?style=flat&labelColor=555&label=Packagist&color=007EC6&logo=php&logoColor=white)](https://packagist.org/packages/nicklambourne/slackblocks)
 
 [![Python CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/unit-tests.yml?style=flat&labelColor=555&branch=master&event=push&label=Python+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml?query=branch%3Amaster)
 [![TypeScript CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/typescript.yml?style=flat&labelColor=555&branch=master&event=push&label=TypeScript+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml?query=branch%3Amaster)
@@ -82,7 +82,7 @@ Java (17+):
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>2.6.0</version>
+  <version>2.7.0</version>
 </dependency>
 ```
 
@@ -101,16 +101,18 @@ gem install slackblocks
 Rust (1.85+, edition 2024):
 
 ```bash
-cargo add slackblocks@2.6.0
+cargo add slackblocks@2.7.0
 cargo add serde_json
 ```
 
-The next coordinated version is 2.7.0. The seven established implementations are published at 2.6.0; PHP is not yet published.
+PHP (8.2+, 64-bit):
 
-PHP (8.2+, 64-bit; preparing the first 2.7.0 release):
+```bash
+composer require nicklambourne/slackblocks:^2.7
+```
 
-Use the [checkout installation instructions](php/README.md) until publication.
-The eventual Composer command is `composer require nicklambourne/slackblocks:^2.7`.
+PHP support begins with coordinated version 2.7.0. See the
+[PHP package guide](php/README.md) for native usage and development setup.
 
 ## Quickstart
 
@@ -374,7 +376,7 @@ See the [PHP package guide](php/README.md), [sending integrations](php/integrati
 - [`java/`](java/) — the Java artifact (`io.github.nicklambourne:slackblocks` on Maven Central).
 - [`csharp/`](csharp/) — the .NET package (`Slackblocks` on NuGet).
 - [`ruby/`](ruby/) — the Ruby gem (`slackblocks` on RubyGems from 2.5.0).
-- [`php/`](php/) — native PHP values and Composer package (first release planned for 2.7.0).
+- [`php/`](php/) — native PHP values and Composer package (`nicklambourne/slackblocks` on Packagist from 2.7.0).
 - [`rust/`](rust/) — the Rust crate (`slackblocks` on crates.io from 2.6.0).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
   and capability coverage that all eight implementations are tested against.

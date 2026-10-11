@@ -1,10 +1,16 @@
 # Slackblocks for PHP
 
-Native, immutable Slack Block Kit values for **PHP 8.2+ (64-bit)**. PHP support is being prepared for Slackblocks **2.7.0** and is not published yet. The core requires JSON and PCRE, with no HTTP or framework dependencies.
+Native, immutable Slack Block Kit values for **PHP 8.2+ (64-bit)**. PHP support begins with Slackblocks **2.7.0**. The core requires JSON and PCRE, with no HTTP or framework dependencies.
 
-## Development quickstart
+## Installation
 
-From this repository's `php` directory, run `composer install`. Then:
+```sh
+composer require nicklambourne/slackblocks:^2.7
+```
+
+## Quickstart
+
+Load Composer's autoloader in your application:
 
 ```php
 <?php
@@ -38,12 +44,13 @@ Properties are readonly. `$section->with(text: 'Updated')` creates a validated c
 - [Recipes](https://nicklambourne.github.io/slackblocks/usage/cookbook?language=php)
 - [Tested JoliCode, native cURL and Laravel adapters](https://github.com/nicklambourne/slackblocks/tree/master/php/integrations)
 
-The published package will be `nicklambourne/slackblocks` on Packagist. Until its
-first release, use the checkout instructions above. HTTP examples are a separate
-project; `Slackblocks\Examples` is not a core namespace. Full payloads work through
+The package is [nicklambourne/slackblocks on Packagist](https://packagist.org/packages/nicklambourne/slackblocks).
+HTTP examples are a separate project; `Slackblocks\Examples` is not a core namespace. Full payloads work through
 JoliCode/cURL; Laravel's template bridge accepts blocks and checks for lossy JSON.
 
-## Checks
+## Development and checks
+
+From this repository's `php` directory:
 
 ```sh
 composer install
@@ -78,11 +85,11 @@ to `php/src/` in both source installs and the small PHP-only release archive.
 Publication uses this monorepo and Packagist; setup and retry instructions are in
 [the release guide](https://github.com/nicklambourne/slackblocks/blob/master/RELEASING.md#php-activation-and-first-publication).
 
-After registration, consumers choosing an unreleased development branch must use
+Consumers choosing an unreleased development branch must use
 Composer's `--prefer-source` option: development commits have no release ZIP.
 Source installs include the monorepo; stable archive installs contain only the
-PHP package. The checkout quickstart above remains the development entry point
-until this implementation is merged and registered.
+PHP package. For local development, run `composer install` from this repository's
+`php` directory, then `php examples/consumer.php vendor/autoload.php`.
 
 ## License
 

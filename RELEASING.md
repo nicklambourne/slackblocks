@@ -7,13 +7,11 @@ The Python (`slackblocks` on PyPI), TypeScript
 packages are released together and always carry the same version
 number.
 
-**Current preparation state:** 2.7.0 adds PHP to the coordinated release.
-All eight changelogs are **Unreleased**. PHP publication is disabled in
-`php/release.json` until the monorepo's Packagist registration, GitHub update
-hook and protected environment are verified. No registry setup is
-claimed by this change. The existing seven 2.6.0 implementations are published.
-Follow [PHP activation and first publication](#php-activation-and-first-publication)
-before enabling the next coordinated release.
+**Current release:** 2.7.0 adds PHP to the coordinated release. All eight
+changelogs use the release date 2026-10-11. PHP publication uses the existing
+monorepo, Packagist registration and protected `packagist` environment; the
+coordinator verifies registry/repository readiness before creating release tags.
+The outgoing 2.6.0 documentation snapshot is already frozen.
 
 The recommended entry point is the **Coordinated Release** workflow in GitHub
 Actions. Run it from `master` with one `X.Y.Z` input; it validates the shared
@@ -298,7 +296,7 @@ the full monorepo and use the same autoload mapping. Development remains in
 The [Packagist package documentation](https://packagist.org/about) explains
 registration, tag-derived versions and GitHub update hooks.
 
-### One-time maintainer setup (not performed by this train)
+### One-time maintainer setup
 
 1. Merge the reviewed implementation with publication still disabled. The root
    `composer.json` must exist on the default branch before registration; it has
@@ -324,6 +322,18 @@ registration, tag-derived versions and GitHub update hooks.
    change. Before creating any of the eight language tags, the coordinator runs
    strict release checks, verifies Packagist's package/repository identity, and
    rehearses the conventional tag push. Missing setup blocks the whole release.
+
+Registration was verified on 2026-10-11: Packagist lists `nicklambourne` as the
+maintainer, points to this monorepo and indexes the current default-branch commit.
+The GitHub Packagist push hook is active and its delivery was accepted. The
+`packagist` environment permits `master` and `php/v*`; it needs no registry secret.
+
+### Required PHP checks
+
+Branch protection requires the PHP 8.2–8.5 native matrix, `PHP quality and
+package`, all four locked/lowest/latest sending checks, and `PHP release checks`.
+The last check requires both artifact consumers for relevant changes and reports
+success for explicitly unrelated changes. Keep these checks available on every PR.
 
 ### Artifacts, publication and retry
 
@@ -374,8 +384,8 @@ and sixth download source, and update the README aggregate description. The
 public badge still exposes only the aggregate. Do not activate the collector
 before an indexed stable release; unpublished PHP is not a measured zero.
 
-No account-side setup, publication, dashboard deployment, or merge is implied by
-these implementation PRs. The audit and comprehensive plan remain in scratch.
+The first PHP release is part of the authorized 2.7.0 coordinated release.
+Keep the audit and comprehensive implementation plan in scratch.
 
 ## Coordinated release procedure
 

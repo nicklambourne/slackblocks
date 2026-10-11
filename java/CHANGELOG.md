@@ -3,7 +3,7 @@
 All notable changes to the Java package are documented here. Java versions move
 in lockstep with the Python, TypeScript, and Go packages.
 
-## [2.7.0] — Unreleased
+## [2.7.0] — 2026-10-11
 
 - Add the PHP implementation to the coordinated release and documentation.
 
