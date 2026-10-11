@@ -200,7 +200,9 @@ defmodule Slackblocks.Internal.Codec do
   def json(_value, path, _),
     do: fail(:type_mismatch, path, "expected a JSON value with string object keys")
 
-  defp decimal(%Decimal{coef: 0, sign: sign}, _path), do: if(sign == -1, do: -0.0, else: 0.0)
+  # OTP 26 can merge literal +0.0/-0.0 branches; parse the sign explicitly.
+  defp decimal(%Decimal{coef: 0, sign: sign}, _path),
+    do: String.to_float(if(sign == -1, do: "-0.0", else: "0.0"))
 
   defp decimal(%Decimal{coef: coef, exp: exp} = value, path) when is_integer(coef) do
     magnitude = byte_size(Integer.to_string(coef)) + exp
@@ -208,12 +210,12 @@ defmodule Slackblocks.Internal.Codec do
     if magnitude < -323 or magnitude > 309,
       do: fail(:out_of_range, path, "number exceeds float range")
 
+    # Decimal.to_float/1 rejects representable subnormal floats. BEAM parses the
+    # compact decimal rendering; the exact comparison below still rejects rounding.
     candidate =
-      try do
-        Decimal.to_float(value)
-      rescue
-        _error in [ArithmeticError, ArgumentError] ->
-          fail(:out_of_range, path, "number exceeds float range")
+      case value |> Decimal.to_string(:scientific) |> Float.parse() do
+        {number, ""} -> number
+        :error -> fail(:out_of_range, path, "number exceeds float range")
       end
 
     if candidate == 0.0 or Decimal.compare(value, Decimal.from_float(candidate)) != :eq,
