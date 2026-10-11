@@ -76,6 +76,8 @@ end
     env = {**env, "MIX_ENV": "prod"}
     run(["mix", "deps.get"], consumer, env)
     run(["mix", "run", "before.exs"], consumer, env)
+    decoder = consumer / "_build/prod/lib/jason/ebin/Elixir.Jason.Decoder.beam"
+    previous_decoder = decoder.read_bytes()
     manifest.write_text(source.replace("deps: [", 'deps: [{:slackblocks, path: "../package"},'))
     (
         consumer / "after.exs"
@@ -84,10 +86,27 @@ true = Protocol.consolidated?(Jason.Encoder)
 %{"type" => "divider"} = Slackblocks.Blocks.Divider.new!() |> Jason.encode!() |> Jason.decode!()
 """)
     run(["mix", "deps.get"], consumer, env)
+    run(["mix", "compile"], consumer, env)
+    # Mix may or may not invalidate this optional compile-time integration.
+    # Restore the genuine earlier beam to deterministically exercise that state.
+    decoder.write_bytes(previous_decoder)
+    (
+        consumer / "stale.exs"
+    ).write_text("""{:error, %ArgumentError{message: message}} = Slackblocks.decode(Slackblocks.Blocks.Divider, ~s({"type":"divider"}))
+true = String.contains?(message, "mix deps.compile jason --force")
+try do
+  Slackblocks.decode!(Slackblocks.Blocks.Divider, ~s({"type":"divider"}))
+  raise "expected actionable stale-Jason error"
+rescue
+  error in ArgumentError -> true = String.contains?(error.message, "mix deps.compile jason --force")
+end
+""")
+    run(["mix", "run", "--no-compile", "stale.exs"], consumer, env)
+    # These are the documented commands for an existing application's build cache.
+    run(["mix", "deps.compile", "jason", "--force"], consumer, env)
+    run(["mix", "compile", "--force"], consumer, env)
     run(["mix", "run", "after.exs"], consumer, env)
-    print(
-        "Previously compiled Jason-only consumer adds the artifact and consolidates protocols successfully"
-    )
+    print("Precompiled Jason diagnostic, documented rebuild and consolidated protocol passed")
 
 
 if __name__ == "__main__":

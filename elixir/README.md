@@ -19,6 +19,22 @@ For review, add a path dependency to this directory:
 {:slackblocks, path: "../slackblocks/elixir"}
 ```
 
+If this application already compiled Jason before adding slackblocks/Decimal,
+refresh Jason's optional Decimal integration in each build environment:
+
+```sh
+mix deps.get
+mix deps.compile jason --force
+mix compile
+# Repeat with MIX_ENV=prod before building a production release.
+```
+
+Checked decoding requires this integration to preserve decimal tokens. An old
+Jason build returns an actionable `ArgumentError` through `decode/2` (`decode!/2`
+raises); it never silently switches to lossy float parsing. Fresh builds resolve
+both runtime dependencies normally. CI tests an actual pre-Decimal Jason beam,
+the diagnostic, these rebuild commands and the resulting consolidated release.
+
 ## Quick start
 
 ```elixir

@@ -67,7 +67,14 @@ defmodule Slackblocks do
   @spec from_map!(module() | atom(), map()) :: struct()
   def from_map!(selector, wire), do: Value.unwrap(from_map(selector, wire))
 
-  @doc "Decodes JSON without atomizing keys; rejects duplicate keys and lossy numbers."
+  @doc """
+  Decodes JSON without atomizing keys; rejects duplicate keys and lossy numbers.
+
+  An application that compiled Jason before installing Decimal must run
+  `mix deps.compile jason --force` in each build environment, then rebuild its
+  release. Missing compile-time Decimal support returns an actionable
+  `ArgumentError` in the tagged result; `decode!/2` raises it.
+  """
   @spec decode(module() | atom(), binary()) :: {:ok, struct()} | {:error, Exception.t()}
   def decode(selector, json) when is_binary(json) do
     with {:ok, raw} <-
@@ -80,6 +87,17 @@ defmodule Slackblocks do
          {:ok, wire} <- Value.capture(fn -> Codec.json(raw, [], true) end) do
       from_map(selector, wire)
     end
+  rescue
+    error in ArgumentError ->
+      if error.message == "decimal library not found, :decimals option not available" do
+        {:error,
+         ArgumentError.exception(
+           "Jason was compiled without Decimal support. Run `mix deps.compile jason --force` " <>
+             "in this MIX_ENV, then rebuild the application/release before using Slackblocks.decode/2."
+         )}
+      else
+        reraise error, __STACKTRACE__
+      end
   end
 
   def decode(_selector, _json),
