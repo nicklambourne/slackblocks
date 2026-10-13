@@ -477,6 +477,22 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "number-bound-infinity": lambda: NumberInput(True, min_value="Infinity"),
     "external-multi-focus-false": lambda: ExternalMultiSelectMenu(focus_on_load=False),
     "external-multi-focus-true": lambda: ExternalMultiSelectMenu(focus_on_load=True),
+    "external-query-negative": lambda: slackblocks.ExternalSelectMenu(min_query_length=-1),
+    "external-multi-query-negative": lambda: slackblocks.ExternalMultiSelectMenu(
+        min_query_length=-1
+    ),
+    "date-picker-invalid-format": lambda: slackblocks.DatePicker(initial_date="February 29, 2028"),
+    "time-picker-invalid-format": lambda: slackblocks.TimePicker(initial_time="9:00"),
+    "time-picker-invalid-range": lambda: slackblocks.TimePicker(initial_time="25:99"),
+    "static-select-empty-options": lambda: slackblocks.StaticSelectMenu(options=[]),
+    "static-multi-select-empty-options": lambda: slackblocks.StaticMultiSelectMenu(
+        action_id="a", options=[]
+    ),
+    "static-select-empty-groups": lambda: slackblocks.StaticSelectMenu(option_groups=[]),
+    "static-multi-select-empty-groups": lambda: slackblocks.StaticMultiSelectMenu(
+        action_id="a", options=None, option_groups=[]
+    ),  # type: ignore[arg-type]
+    "plain-text-input-inverted-range": lambda: PlainTextInput(min_length=20, max_length=10),
     "number-input-inverted-range": lambda: NumberInput(
         is_decimal_allowed=True, min_value=2, max_value=1
     ),

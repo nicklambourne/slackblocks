@@ -21,6 +21,10 @@ import java.util.Optional;
  * <p>Start with {@link #builder()}, set fields with the named fluent methods, and call {@link
  * Builder#build()} to validate and create an immutable value.
  *
+ * <ul>
+ *   <li>initial_time must be HH:mm in 24-hour time, from 00:00 through 23:59.
+ * </ul>
+ *
  * @see <a
  *     href="https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element">Slack
  *     reference</a>

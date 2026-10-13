@@ -1531,7 +1531,9 @@
           "limits": "date_picker.placeholder"
         }
       ],
-      "rules": [],
+      "rules": [
+        "initial_date must have the YYYY-MM-DD shape. Calendar validity is application-owned; some language date parsers additionally reject impossible calendar dates."
+      ],
       "rustName": "DatePickerElement"
     },
     {
@@ -1661,7 +1663,8 @@
           "goMethod": "MinQueryLength",
           "wire": "min_query_length",
           "kind": "int",
-          "description": "Sets how many characters the user must type before Slack queries your options endpoint."
+          "description": "Sets how many characters the user must type before Slack queries your options endpoint.",
+          "limits": "select.min_query_length"
         },
         {
           "method": "initialOptions",
@@ -1733,7 +1736,8 @@
           "goMethod": "MinQueryLength",
           "wire": "min_query_length",
           "kind": "int",
-          "description": "Sets how many characters the user must type before Slack queries your options endpoint."
+          "description": "Sets how many characters the user must type before Slack queries your options endpoint.",
+          "limits": "select.min_query_length"
         },
         {
           "method": "initialOption",
@@ -2171,7 +2175,9 @@
           "limits": "plain_text_input.placeholder"
         }
       ],
-      "rules": [],
+      "rules": [
+        "When both min_length and max_length are supplied, min_length must not exceed max_length; otherwise the input cannot be satisfied."
+      ],
       "rustName": "PlainTextInputElement"
     },
     {
@@ -2527,7 +2533,9 @@
           "limits": "time_picker.placeholder"
         }
       ],
-      "rules": [],
+      "rules": [
+        "initial_time must be HH:mm in 24-hour time, from 00:00 through 23:59."
+      ],
       "rustName": "TimePickerElement"
     },
     {

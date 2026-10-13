@@ -1,0 +1,454 @@
+{
+  "checked": "2026-10-13",
+  "method": "blocks.validate",
+  "scope": "Structural view validation only; no write-path acceptance inferred.",
+  "native_source": "Go public builders; originals retained in authorized stress scratch",
+  "sources": [
+    "https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element/",
+    "https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element/",
+    "https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element/",
+    "https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element/",
+    "https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element/",
+    "https://docs.slack.dev/reference/block-kit/block-elements/image-element/"
+  ],
+  "receipts": [
+    {
+      "at": "2026-10-13T12:33:34.047Z",
+      "name": "sb013-text-equal",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"text-equal\"}, \"element\": {\"max_length\": 10, \"min_length\": 10, \"type\": \"plain_text_input\"}}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:35.919Z",
+      "name": "sb013-text-reversed",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"text-reversed\"}, \"element\": {\"max_length\": 10, \"min_length\": 20, \"type\": \"plain_text_input\"}}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:37.424Z",
+      "name": "sb013-date-leap",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"date-leap\"}, \"element\": {\"initial_date\": \"2028-02-29\", \"type\": \"datepicker\"}}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:38.888Z",
+      "name": "sb013-date-impossible",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"date-impossible\"}, \"element\": {\"initial_date\": \"2028-02-30\", \"type\": \"datepicker\"}}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:40.369Z",
+      "name": "sb013-date-wrong-format",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"date-wrong-format\"}, \"element\": {\"initial_date\": \"February 29, 2028\", \"type\": \"datepicker\"}}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_view",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "all_of"
+            },
+            "message": "failed to match all allowed schemas",
+            "pointer": ""
+          },
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "format",
+              "expected": "date"
+            },
+            "message": "input must be a valid: date",
+            "pointer": "/blocks/0/element/initial_date"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:41.819Z",
+      "name": "sb013-time-last-minute",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"time-last-minute\"}, \"element\": {\"initial_time\": \"23:59\", \"type\": \"timepicker\"}}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:43.287Z",
+      "name": "sb013-time-impossible",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"time-impossible\"}, \"element\": {\"initial_time\": \"25:99\", \"type\": \"timepicker\"}}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_view",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "all_of"
+            },
+            "message": "failed to match all allowed schemas",
+            "pointer": ""
+          },
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "pattern",
+              "expected": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+            },
+            "message": "input must match regex pattern: ^([0-1][0-9]|2[0-3]):[0-5][0-9]$",
+            "pointer": "/blocks/0/element/initial_time"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:44.750Z",
+      "name": "sb013-time-wrong-format",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"time-wrong-format\"}, \"element\": {\"initial_time\": \"9:00\", \"type\": \"timepicker\"}}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_view",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "all_of"
+            },
+            "message": "failed to match all allowed schemas",
+            "pointer": ""
+          },
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "pattern",
+              "expected": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+            },
+            "message": "input must match regex pattern: ^([0-1][0-9]|2[0-3]):[0-5][0-9]$",
+            "pointer": "/blocks/0/element/initial_time"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:46.195Z",
+      "name": "sb013-query-zero",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"query-zero\"}, \"element\": {\"min_query_length\": 0, \"type\": \"external_select\"}}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:47.685Z",
+      "name": "sb013-query-negative",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"query-negative\"}, \"element\": {\"min_query_length\": -1, \"type\": \"external_select\"}}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_view",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "all_of"
+            },
+            "message": "failed to match all allowed schemas",
+            "pointer": ""
+          },
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "minimum",
+              "expected": 0,
+              "got": -1
+            },
+            "message": "must be greater than 0",
+            "pointer": "/blocks/0/element/min_query_length"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:49.119Z",
+      "name": "sb013-multi-query-zero",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"multi-query-zero\"}, \"element\": {\"min_query_length\": 0, \"type\": \"multi_external_select\"}}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:50.590Z",
+      "name": "sb013-multi-query-negative",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"multi-query-negative\"}, \"element\": {\"min_query_length\": -1, \"type\": \"multi_external_select\"}}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_view",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "all_of"
+            },
+            "message": "failed to match all allowed schemas",
+            "pointer": ""
+          },
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "minimum",
+              "expected": 0,
+              "got": -1
+            },
+            "message": "must be greater than 0",
+            "pointer": "/blocks/0/element/min_query_length"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:52.062Z",
+      "name": "sb013-static-empty-options",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"static-empty-options\"}, \"element\": {\"options\": [], \"type\": \"static_select\"}}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_view",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "all_of"
+            },
+            "message": "failed to match all allowed schemas",
+            "pointer": ""
+          },
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "min_items",
+              "expected": 1,
+              "got": 0
+            },
+            "message": "must provide at least 1 items",
+            "pointer": "/blocks/0/element/options"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:53.536Z",
+      "name": "sb013-static-one-option",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"static-one-option\"}, \"element\": {\"options\": [{\"text\": {\"text\": \"One\", \"type\": \"plain_text\"}, \"value\": \"one\"}], \"type\": \"static_select\"}}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:55.029Z",
+      "name": "sb013-image-empty-alt",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"context\", \"elements\": [{\"alt_text\": \"\", \"image_url\": \"https://placehold.co/64x64/png\", \"type\": \"image\"}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "at": "2026-10-13T12:33:56.485Z",
+      "name": "sb013-image-alt",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Boundary control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"context\", \"elements\": [{\"alt_text\": \"Synthetic\", \"image_url\": \"https://placehold.co/64x64/png\", \"type\": \"image\"}]}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "at": "2026-10-13T12:39:04.802Z",
+      "name": "sb013-static-multi-empty-options",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Collection control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"static-multi-empty-options\"}, \"element\": {\"options\": [], \"type\": \"multi_static_select\"}}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_view",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "all_of"
+            },
+            "message": "failed to match all allowed schemas",
+            "pointer": ""
+          },
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "min_items",
+              "expected": 1,
+              "got": 0
+            },
+            "message": "must provide at least 1 items",
+            "pointer": "/blocks/0/element/options"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-13T12:39:06.276Z",
+      "name": "sb013-static-empty-groups",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Collection control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"static-empty-groups\"}, \"element\": {\"option_groups\": [], \"type\": \"static_select\"}}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_view",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "all_of"
+            },
+            "message": "failed to match all allowed schemas",
+            "pointer": ""
+          },
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "min_items",
+              "expected": 1,
+              "got": 0
+            },
+            "message": "must provide at least 1 items",
+            "pointer": "/blocks/0/element/option_groups"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-13T12:39:07.751Z",
+      "name": "sb013-static-multi-empty-groups",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Collection control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"static-multi-empty-groups\"}, \"element\": {\"option_groups\": [], \"type\": \"multi_static_select\"}}]}"
+      },
+      "result": {
+        "ok": false,
+        "error": "invalid_view",
+        "errors": [
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "all_of"
+            },
+            "message": "failed to match all allowed schemas",
+            "pointer": ""
+          },
+          {
+            "code": "failed_constraint",
+            "constraint": {
+              "type": "min_items",
+              "expected": 1,
+              "got": 0
+            },
+            "message": "must provide at least 1 items",
+            "pointer": "/blocks/0/element/option_groups"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-13T12:39:09.184Z",
+      "name": "sb013-static-one-group",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Collection control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"static-one-group\"}, \"element\": {\"option_groups\": [{\"label\": {\"text\": \"Group\", \"type\": \"plain_text\"}, \"options\": [{\"text\": {\"text\": \"One\", \"type\": \"plain_text\"}, \"value\": \"one\"}]}], \"type\": \"static_select\"}}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "at": "2026-10-13T12:39:10.636Z",
+      "name": "sb013-static-multi-one-group",
+      "method": "blocks.validate",
+      "http": 200,
+      "request": {
+        "view": "{\"type\": \"modal\", \"title\": {\"type\": \"plain_text\", \"text\": \"Collection control\"}, \"submit\": {\"type\": \"plain_text\", \"text\": \"Submit\"}, \"blocks\": [{\"type\": \"input\", \"label\": {\"type\": \"plain_text\", \"text\": \"static-multi-one-group\"}, \"element\": {\"option_groups\": [{\"label\": {\"text\": \"Group\", \"type\": \"plain_text\"}, \"options\": [{\"text\": {\"text\": \"One\", \"type\": \"plain_text\"}, \"value\": \"one\"}]}], \"type\": \"multi_static_select\"}}]}"
+      },
+      "result": {
+        "ok": true
+      }
+    }
+  ]
+}

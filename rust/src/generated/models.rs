@@ -8126,7 +8126,7 @@ impl<'de> Deserialize<'de> for ConversationSelectElement {
 /// A calendar date picker.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element).
-
+/// initial_date must have the YYYY-MM-DD shape. Calendar validity is application-owned; some language date parsers additionally reject impossible calendar dates.
 #[derive(Clone, Debug, PartialEq)]
 pub struct DatePickerElement {
     action_id: Option<String>,
@@ -8330,6 +8330,14 @@ impl DatePickerElementBuilder {
                 "DatePickerElement.placeholder",
             )?;
         }
+        let wire = serde_json::to_value(&value).map_err(|e| {
+            ValidationError::new(
+                ErrorCategory::TypeMismatch,
+                "DatePickerElement",
+                e.to_string(),
+            )
+        })?;
+        crate::rules::validate("DatePickerElement", &wire, "DatePickerElement")?;
         Ok(value)
     }
 }
@@ -9081,6 +9089,15 @@ impl ExternalMultiSelectElementBuilder {
                 "ExternalMultiSelectElement.action_id",
             )?;
         }
+        if let Some(v) = &value.min_query_length {
+            if *v < 0 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "ExternalMultiSelectElement.min_query_length",
+                    "number outside field bounds",
+                ));
+            }
+        }
         if let Some(v) = &value.max_selected_items {
             if *v < 1 {
                 return Err(ValidationError::new(
@@ -9377,6 +9394,15 @@ impl ExternalSelectElementBuilder {
                 Some(255),
                 "ExternalSelectElement.action_id",
             )?;
+        }
+        if let Some(v) = &value.min_query_length {
+            if *v < 0 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "ExternalSelectElement.min_query_length",
+                    "number outside field bounds",
+                ));
+            }
         }
         if let Some(v) = &value.placeholder {
             crate::rules::length(
@@ -10816,7 +10842,7 @@ impl<'de> Deserialize<'de> for OverflowElement {
 /// A single-line or multi-line free-text input.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element).
-
+/// When both min_length and max_length are supplied, min_length must not exceed max_length; otherwise the input cannot be satisfied.
 #[derive(Clone, Debug, PartialEq)]
 pub struct PlainTextInputElement {
     action_id: Option<String>,
@@ -11124,6 +11150,14 @@ impl PlainTextInputElementBuilder {
                 "PlainTextInputElement.placeholder",
             )?;
         }
+        let wire = serde_json::to_value(&value).map_err(|e| {
+            ValidationError::new(
+                ErrorCategory::TypeMismatch,
+                "PlainTextInputElement",
+                e.to_string(),
+            )
+        })?;
+        crate::rules::validate("PlainTextInputElement", &wire, "PlainTextInputElement")?;
         Ok(value)
     }
 }
@@ -12045,12 +12079,17 @@ impl StaticMultiSelectElementBuilder {
             )?;
         }
         if let Some(v) = &value.options {
-            crate::rules::length(v.len(), None, Some(100), "StaticMultiSelectElement.options")?;
+            crate::rules::length(
+                v.len(),
+                Some(1),
+                Some(100),
+                "StaticMultiSelectElement.options",
+            )?;
         }
         if let Some(v) = &value.option_groups {
             crate::rules::length(
                 v.len(),
-                None,
+                Some(1),
                 Some(100),
                 "StaticMultiSelectElement.option_groups",
             )?;
@@ -12401,12 +12440,12 @@ impl StaticSelectElementBuilder {
             )?;
         }
         if let Some(v) = &value.options {
-            crate::rules::length(v.len(), None, Some(100), "StaticSelectElement.options")?;
+            crate::rules::length(v.len(), Some(1), Some(100), "StaticSelectElement.options")?;
         }
         if let Some(v) = &value.option_groups {
             crate::rules::length(
                 v.len(),
-                None,
+                Some(1),
                 Some(100),
                 "StaticSelectElement.option_groups",
             )?;
@@ -12475,7 +12514,7 @@ impl<'de> Deserialize<'de> for StaticSelectElement {
 /// A time-of-day picker.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element).
-
+/// initial_time must be HH:mm in 24-hour time, from 00:00 through 23:59.
 #[derive(Clone, Debug, PartialEq)]
 pub struct TimePickerElement {
     action_id: Option<String>,
@@ -12703,6 +12742,14 @@ impl TimePickerElementBuilder {
                 "TimePickerElement.placeholder",
             )?;
         }
+        let wire = serde_json::to_value(&value).map_err(|e| {
+            ValidationError::new(
+                ErrorCategory::TypeMismatch,
+                "TimePickerElement",
+                e.to_string(),
+            )
+        })?;
+        crate::rules::validate("TimePickerElement", &wire, "TimePickerElement")?;
         Ok(value)
     }
 }
