@@ -1,0 +1,9 @@
+[package]
+name = "slackblocks-multiselect-example"
+version = "0.0.0"
+edition = "2024"
+publish = false
+[dependencies]
+slackblocks = { path = "../../../../rust" }
+serde_json = "1"
+[workspace]

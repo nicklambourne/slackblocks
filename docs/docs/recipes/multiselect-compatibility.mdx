@@ -1,0 +1,20 @@
+---
+title: Multi-select compatibility probes
+---
+
+# Multi-select compatibility probes
+
+Slack's [multi-select reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element/) lists **Section, Actions, and Input** as supported parents. During the 12 October 2026 stress run, Slack rejected multi-select elements inside Actions in tested messages across all eight implementations with `unsupported element:multiselect`. Native Section accessories were accepted. This is a dated discrepancy between the documented contract and the tested Slack workspace, not evidence that Actions should be removed from slackblocks.
+
+If your workspace rejects an Actions multi-select, construct the same native element as a Section accessory. For a form, put it in an Input block inside a Modal with a submit button. Each placement needs its own native parent constructor; do not rewrite serialized JSON or disable validation to work around an API rejection.
+
+The [executable probes](https://github.com/nicklambourne/slackblocks/tree/master/docs/examples/multiselect-compat) cover static, external, users, conversations, and channels menus in every parent, using all eight native APIs. They emit 15 payloads per language and include a local structural check. External options still require an authenticated options handler; constructing an external menu does not implement that handler.
+
+For an authorized live reproduction:
+
+1. Record the slackblocks version, runtime, test date, app scopes, surface, and exact sanitized payload. Use the same menu family and equivalent inputs for each parent. Keep test workspace identifiers private.
+2. Send one Actions and one Section message through the same API transport. Open the Input Modal through a genuine fresh interaction trigger. Record API success or the complete sanitized error separately from whether the client visibly renders the control.
+3. Select actual values and verify the callback and saved selection. An accepted payload alone does not prove that option loading, interaction routing, or application state works.
+4. Preserve the rejected Actions request alongside the compatible native request. If current Slack behavior differs, report the new date and result instead of treating the historical rejection as a permanent validation rule.
+
+Do not automatically retry an unchanged `invalid_blocks` request. The API rejected its content, so repair the native construction or investigate the documented/runtime mismatch first. This recipe changes the application layout; it does not change the shared Actions schema or promise identical behavior across every Slack client. Mobile verification remains a separate test.
