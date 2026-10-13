@@ -13,6 +13,10 @@ same version number as the Python, TypeScript, and Java packages.
 - Correct number-input bounds to string wire values, retain native numeric convenience arguments, and reject nonfinite/inverted bounds (SB-001, spec 1.3.0). Bound getters now return strings; reflection/signature consumers must migrate. Package version unchanged.
 
 - Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
+- Reject supplied empty or unknown button/confirmation styles, column alignments,
+  rich-text list styles and response visibility values with `TypeMismatch`.
+  Omitting optional setters retains existing omissions and defaults.
+
 - Return `TypeMismatch` with the nested field path for typed nil builders instead
   of panicking during parent `Build` or JSON marshaling. Optional fields are
   omitted by leaving their setters uncalled, not by supplying nil.
