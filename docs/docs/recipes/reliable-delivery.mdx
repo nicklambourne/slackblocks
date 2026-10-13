@@ -1,0 +1,45 @@
+---
+title: Bounded delivery and uncertain writes
+---
+
+# Bounded delivery and uncertain writes
+
+Deduplicating an incoming Slack event prevents one class of repeated work. It does not guarantee one outgoing message: a server can accept a write before the client loses the connection, or a process can die before saving the receipt. Retrying that write can create a duplicate.
+
+The [SQLite outbox example](https://github.com/nicklambourne/slackblocks/tree/master/docs/examples/reliable-delivery) is an executable Python reference with native slackblocks messages, atomic event/operation enqueueing, immutable operation payloads, persisted attempt counts, and explicit uncertain-result reconciliation. It intentionally uses a small HTTP transport with no hidden retries. It is not eight native SDK clients, a production queue service, or an exactly-once guarantee.
+
+```sh
+python -m pip install slackblocks
+python -m unittest discover -s docs/examples/reliable-delivery -p 'test_*.py'
+```
+
+For a checkout use `PYTHONPATH=python` (an absolute path when the test launches its crash subprocess). Set `TEST_TMPDIR` to a disposable directory on your build volume. Tests use a real loopback HTTP server and a subprocess that exits immediately **after server acceptance but before the receipt transaction**. No Slack credentials or workspace are required. The emitted count records distinguish HTTP attempts from accepted writes; redirects, errors and rate-limit responses are not counted as accepted writes.
+
+## One component owns retries
+
+slackblocks builds payloads; your transport determines retry behavior. Verify the exact SDK version and configure it before layering another retry loop. For example, the [Python SDK](https://docs.slack.dev/tools/python-slack-sdk/web/) documents an enabled connection-error retry handler; supply `retry_handlers=[]` when your application owns this policy. The [Node SDK](https://docs.slack.dev/tools/node-slack-sdk/web-api/) exposes `retryConfig` and `rejectRateLimitedCalls`; configure and test them together. Go, Java, C#, Ruby, Rust and PHP integrations may use different SDK/HTTP clients. Do not infer their redirect or retry policy from their slackblocks payload API.
+
+The example's policy is deliberately conservative for a non-idempotent `chat.postMessage`:
+
+| Outcome | Stored state and automatic action |
+| --- | --- |
+| HTTP 200, `ok:true`, matching channel and timestamp | Mark sent and retain receipt |
+| HTTP 200, `ok:false` | Fail with the API error; do not treat HTTP success as delivery |
+| HTTP 429 with valid `Retry-After` | Persist the earliest next attempt; at most three attempts by default |
+| Retry delay beyond the configured budget | Defer without sending early; operator/scheduler decision required |
+| Exhausted or malformed retry instruction | Fail without further writes |
+| Redirect, 5xx, malformed JSON, missing receipt | Preserve uncertain; never follow or automatically resend |
+| Timeout, disconnect or refused connection | Preserve uncertain; this sample does not guess how far a write progressed |
+| Process restart with an unfinished `sending` record | Move to uncertain only after the former dispatcher has stopped |
+
+[Slack's rate-limit response](https://docs.slack.dev/apis/web-api/rate-limits/) supplies the minimum wait in `Retry-After`. The example makes one HTTP attempt per call and stores the delay rather than sleeping inside the receiver. A scheduler must respect that timestamp. A higher retry cap cannot exceed the example's hard maximum of five; it does not reset the persisted attempt count.
+
+## Reconcile uncertainty explicitly
+
+Use a stable operation identity in your own durable store and, when appropriate, in native message metadata or a block identifier that you can recover from an authorized history/read receipt. Slack does not promise to deduplicate an arbitrary application ID. A search returning no result is not definitive evidence of non-delivery: history can be delayed, restricted or paginated.
+
+For an uncertain operation, independently verify the destination, exact operation content and returned timestamp before calling `reconcile_accepted`. Save the evidence reference. The example checks the destination and requires evidence, but it cannot itself establish that a supplied receipt is genuine. If delivery cannot be established, keep the operation uncertain and make any explicit resend a separate audited decision with duplicate risk. Do not silently convert an uncertain write back into a queued write.
+
+Enqueueing the incoming event ID and outgoing operation is one SQLite transaction. A real workflow should commit its domain state and all resulting effects in that same transaction, then let a separate dispatcher send them. The small example handles one outgoing operation per event and one dispatcher. It does not implement multi-worker leases, retention, encryption, a production scheduler, authorization, automatic Slack-history reconciliation, or disaster recovery. Tokens are supplied at send time and are never stored in the outbox.
+
+The tests retain exact counts for API errors, malformed JSON, timeout, refusal, 302/307, 503, bounded 429 retry/exhaustion, normal restart, network redelivery, and crash-at-write ambiguity. The crash test proves that its stopped subprocess is not blindly replayed and that the persisted record can be reconciled against the independent mock server ledger. It does not establish real Slack exactly-once delivery.
