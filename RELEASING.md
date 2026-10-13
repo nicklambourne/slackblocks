@@ -530,6 +530,36 @@ Tags created by the coordinator are annotated as `github-actions[bot]` but
 are not signed with a maintainer's personal key; CI deliberately does not
 store that private key.
 
+## Exact NuGet consumer verification
+
+A successful pack or local-feed install does not establish public availability.
+The NuGet publisher now restores the exact tagged version from nuget.org into a
+fresh external consumer before creating its GitHub Release. It uses an exact
+`[X.Y.Z]` PackageReference, clears inherited sources/fallback feeds, isolates
+package and HTTP caches, checks the resolved version/source, and executes native
+construction, serialization and validation. The package SHA-256, attempt count
+and restore/build logs are retained as `nuget-public-consumer`.
+
+To verify without publishing, choose a new disposable directory outside your checkout:
+
+```bash
+python3 .github/scripts/verify-nuget-consumer.py --version X.Y.Z --workdir "$RELEASE_SCRATCH/nuget-check"
+```
+
+`--attempts 6` permits at most six clean restores, waiting ten seconds only after
+`NU1102` (version not found). Other restore/build errors fail immediately. Preserve
+the receipt and failure logs; do not substitute an older version or a local feed.
+Registry indexing can take longer than this bound: investigate and rerun the
+verification, rather than repeatedly publishing or changing tags.
+
+On 13 October 2026, the public flat-container index still listed 2.6.0 as its
+newest version while candidate metadata was 2.7.0. This records an availability
+gap, not evidence that a publish was attempted or permission to publish. Check
+the existing tag, publisher run, protected-environment approval and registry
+state first. Recovery uses the existing tagged publisher and its environment
+approval; do not move the tag, bump a version merely to bypass the check, or
+regard a locally built 2.7.0 package as a registry receipt.
+
 ## Partial-failure recovery
 
 The eight tags are created atomically, but eight publishing targets cannot be
