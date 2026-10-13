@@ -91,6 +91,10 @@ func (t typing) typedMethods(typeName string, field modelField, comment string) 
 	}
 	scalars := map[string]string{"string": "string", "boolean": "bool", "int": "int", "long": "int64", "double": "float64", "number": "float64"}
 
+	if field.Coerce == "decimal_string" {
+		write(comment, method, "value any", call("value"))
+		return output.String()
+	}
 	switch field.Kind {
 	case "string", "boolean", "int", "long", "double", "number":
 		write(comment, method, "value "+scalars[field.Kind], call("value"))

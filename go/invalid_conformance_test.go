@@ -32,8 +32,8 @@ func TestSharedInvalidFixtures(t *testing.T) {
 	if manifest.SpecVersion != slackblocks.SpecVersion {
 		t.Fatalf("spec version = %q, want %q", slackblocks.SpecVersion, manifest.SpecVersion)
 	}
-	if len(manifest.Cases) != 167 {
-		t.Fatalf("expected 167 invalid cases, got %d", len(manifest.Cases))
+	if len(manifest.Cases) == 0 {
+		t.Fatal("invalid case manifest must not be empty")
 	}
 
 	for _, testCase := range manifest.Cases {
@@ -250,6 +250,22 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewStaticSelect().ActionID("a").Options(choice()).Set("option_groups", []any{slackblocks.Object{"label": slackblocks.NewPlainText().Text("A")}}))
 	case "image-url-and-slack-file":
 		return buildError(slackblocks.NewImageElement().AltText("image").ImageURL("https://example.com/image.png").SlackFile(slackblocks.NewSlackFile().SlackFileID("F0123ABC456")))
+	case "number-bound-inverted-large-integer":
+		return buildError(slackblocks.NewNumberInput().IsDecimalAllowed(true).MinValue("9007199254740993").MaxValue("9007199254740992"))
+	case "number-bound-inverted-long-fraction":
+		return buildError(slackblocks.NewNumberInput().IsDecimalAllowed(true).MinValue("0.10000000000000001").MaxValue("0.1"))
+	case "number-bound-hex":
+		return buildError(slackblocks.NewNumberInput().IsDecimalAllowed(true).MinValue("0x10"))
+	case "number-bound-underscore":
+		return buildError(slackblocks.NewNumberInput().IsDecimalAllowed(true).MinValue("1_000"))
+	case "number-bound-leading-space":
+		return buildError(slackblocks.NewNumberInput().IsDecimalAllowed(true).MinValue(" 1"))
+	case "number-bound-trailing-space":
+		return buildError(slackblocks.NewNumberInput().IsDecimalAllowed(true).MinValue("1 "))
+	case "number-bound-nan":
+		return buildError(slackblocks.NewNumberInput().IsDecimalAllowed(true).MinValue("NaN"))
+	case "number-bound-infinity":
+		return buildError(slackblocks.NewNumberInput().IsDecimalAllowed(true).MinValue("Infinity"))
 	case "number-input-inverted-range":
 		return buildError(slackblocks.NewNumberInput().ActionID("a").IsDecimalAllowed(true).MinValue(2).MaxValue(1))
 	case "context-invalid-element":

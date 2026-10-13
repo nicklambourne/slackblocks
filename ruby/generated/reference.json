@@ -1710,18 +1710,18 @@
         {
           "name": "min_value",
           "wire": "min_value",
-          "type": "Integer | Float",
-          "readerType": "Integer | Float",
+          "type": "String | Integer | Float",
+          "readerType": "String",
           "required": false,
-          "description": "Sets the smallest accepted number."
+          "description": "Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings."
         },
         {
           "name": "max_value",
           "wire": "max_value",
-          "type": "Integer | Float",
-          "readerType": "Integer | Float",
+          "type": "String | Integer | Float",
+          "readerType": "String",
           "required": false,
-          "description": "Sets the largest accepted number."
+          "description": "Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings."
         },
         {
           "name": "dispatch_action_config",

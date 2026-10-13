@@ -87,10 +87,13 @@ assert.match(
 assert.match(pages.get("types"), /^## ContextElement$/m, "Marker interfaces must be documented");
 assert.match(pages.get("types"), /^## ButtonStylePrimary$/m, "Enum constants must be documented");
 assert.match(pages.get("types"), /^## RichTextStyle$/m, "RichTextStyle must be documented");
+// Number bounds retain the numeric convenience API while accepting exact decimal strings.
+const numberBoundSignatures = /^func \(b \*NumberInputBuilder\) (?:MinValue|MaxValue)\(value any\) \*NumberInputBuilder$/gm;
+assert.equal([...rendered.matchAll(numberBoundSignatures)].length, 2);
 assert.doesNotMatch(
-  rendered,
+  rendered.replace(numberBoundSignatures, ""),
   /^func \(b \*\w+Builder\) \w+\((?:value any|values \.\.\.any)\)/m,
-  "Generated builder methods must not take any",
+  "Generated builder methods other than the two compatible number bounds must not take any",
 );
 assert.match(
   pages.get("blocks"),

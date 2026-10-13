@@ -192,7 +192,13 @@ final class BuilderMethodsTest {
                       + field.get("type").getAsString())
               : Object.class;
       switch (kind) {
-        case "string" -> check(builderClass, covered, method, String.class, "x", wire, "x");
+        case "string" -> {
+          check(builderClass, covered, method, String.class, "x", wire, "x");
+          if (field.has("coerce") && field.get("coerce").getAsString().equals("decimal_string")) {
+            check(builderClass, covered, method, double.class, 1.5, wire, "1.5");
+            check(builderClass, covered, method, long.class, 2L, wire, "2");
+          }
+        }
         case "boolean" -> check(builderClass, covered, method, boolean.class, true, wire, true);
         case "int" -> check(builderClass, covered, method, int.class, 1, wire, 1);
         case "long" -> check(builderClass, covered, method, long.class, 1L, wire, 1L);

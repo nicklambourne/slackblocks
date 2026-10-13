@@ -76,6 +76,14 @@ module InvalidCases
     section-empty-fields
     static-select-options-and-groups
     image-url-and-slack-file
+    number-bound-inverted-large-integer
+    number-bound-inverted-long-fraction
+    number-bound-hex
+    number-bound-underscore
+    number-bound-leading-space
+    number-bound-trailing-space
+    number-bound-nan
+    number-bound-infinity
     number-input-inverted-range
     context-invalid-element
     input-invalid-element
@@ -249,6 +257,14 @@ module InvalidCases
     when "section-empty-fields" then typed("SectionBlock", "section", "fields", items)
     when "static-select-options-and-groups" then typed("StaticSelect", "static_select", "action_id", "a", "options", items(option("A", "a")), "option_groups", items(map("label", plain("A"), "options", items(option("B", "b")))))
     when "image-url-and-slack-file" then typed("ImageElement", "image", "alt_text", "image", "image_url", "https://example.com/image.png", "slack_file", map("id", "F0123ABC456"))
+    when "number-bound-inverted-large-integer" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "9007199254740993", "max_value", "9007199254740992")
+    when "number-bound-inverted-long-fraction" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "0.10000000000000001", "max_value", "0.1")
+    when "number-bound-hex" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "0x10")
+    when "number-bound-underscore" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "1_000")
+    when "number-bound-leading-space" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", " 1")
+    when "number-bound-trailing-space" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "1 ")
+    when "number-bound-nan" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "NaN")
+    when "number-bound-infinity" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "Infinity")
     when "number-input-inverted-range" then typed("NumberInput", "number_input", "action_id", "a", "is_decimal_allowed", true, "min_value", 2, "max_value", 1)
     when "context-invalid-element" then typed("ContextBlock", "context", "elements", items(divider))
     when "input-invalid-element" then typed("InputBlock", "input", "label", plain("Label"), "element", button)

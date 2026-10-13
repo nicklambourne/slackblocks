@@ -88,6 +88,12 @@ module Slackblocks
     def self.normalize_field(field, value, path)
       kind = field.fetch("kind")
       target = field["target"] && Slackblocks.const_get(field["target"], false)
+      if field["coerce"] == "decimal_string"
+        unless value.is_a?(String) || value.is_a?(Integer) || value.instance_of?(Float)
+          fail!("type-mismatch", path, "expected a numeric string or number")
+        end
+        return string(value.to_s, path)
+      end
       case kind
       when "string"
         string(value, path)
