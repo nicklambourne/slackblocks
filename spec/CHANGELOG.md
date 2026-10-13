@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Record the observed Plan/root Task and nested-ID write-path discrepancies in `evidence/SB-016-plan-context.json`. Document a narrow native composition recipe; no new unverified validation rule or conformance exclusion (SB-016).
+
 - Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
 
 ## 1.2.0 - 2026-09-28

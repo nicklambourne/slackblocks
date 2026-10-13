@@ -3989,6 +3989,26 @@ echo $block->toJson();
 
 ## Plan Block
 
+For message delivery, use the plan as the top-level representation of its tasks.
+Put a standalone `TaskCardBlock` in a separate message instead of combining it
+with a plan. On 13 October 2026, minimal native Python messages containing only
+a plan or only a completed task both posted successfully. The combined message
+was rejected with “Plan block and task blocks are mutually exclusive”, although
+`blocks.validate` accepted all three. This is a message-delivery compatibility
+recipe; these controls do not establish a restriction for other surfaces.
+
+Give separately rendered rich-text `details` and `output` fresh block IDs,
+including when their text is identical. Reconstruct each native rich-text value
+with a distinct ID instead of reusing one object. The
+[Slack plan example](https://docs.slack.dev/reference/block-kit/blocks/plan-block/)
+reuses a nested ID. Paired minimal message controls rejected reuse between one
+task's `details` and `output`, both within a plan and in a standalone task, while
+distinct IDs succeeded. Structural validation accepted all four controls.
+The observations are recorded in `spec/evidence/SB-016-plan-context.json`.
+They do not establish that every recursive block context shares one ID namespace.
+The native examples below deliberately use one plan and unique task IDs.
+
+
 A plan groups task cards. `slackblocks` automatically renders nested tasks in Slack's plan-specific wire format.
 
 Required: `title`.
