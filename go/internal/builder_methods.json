@@ -401,7 +401,8 @@
 	"NewRichTextLink": [
 		"URL",
 		"Text",
-		"Style"
+		"Style",
+		"Unsafe"
 	],
 	"NewRichTextList": [
 		"Style",

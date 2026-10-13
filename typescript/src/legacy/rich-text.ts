@@ -58,13 +58,15 @@ export function richTextChannel(
  *
  * @param name - Emoji name without surrounding colons.
  * @param settings - Per-call validation settings.
+ * @param skinTone - Optional Slack skin-tone index (1-6).
  * @returns A validated Slack rich-text `emoji` element.
  */
 export function richTextEmoji(
   name: string,
   settings: FactorySettings = {},
+  skinTone?: number,
 ) {
-  return create("emoji", { name }, settings);
+  return create("emoji", { name, skinTone }, settings);
 }
 
 /**

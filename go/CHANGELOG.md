@@ -9,6 +9,8 @@ same version number as the Python, TypeScript, and Java packages.
 
 ## [Unreleased]
 
+- Expose the existing rich-text link unsafe field on its concrete native builder.
+
 ## [2.6.0] — 2026-10-09
 
 - Keep application metadata outside message-wide Block Kit text totals.

@@ -370,6 +370,7 @@ class ConfirmationDialogue(CompositionObject):
             the dialogue box (max 300 chars).
         confirm: the text inside the confirmation button of the dialogue box (max 30 chars).
         deny: the text inside the deny button of the dialogue box (max 30 chars).
+        style: optional `primary` or `danger` emphasis for the confirm button.
 
     Throws:
         InvalidUsageError: if any of the arguments fail to pass validation checks.
@@ -381,6 +382,7 @@ class ConfirmationDialogue(CompositionObject):
         text: TextLike,
         confirm: TextLike,
         deny: TextLike,
+        style: Literal["primary", "danger"] | None = None,
     ) -> None:
         super().__init__(type_=CompositionObjectType.CONFIRM)
         self.title = Text.to_text_nonnull(
@@ -393,6 +395,9 @@ class ConfirmationDialogue(CompositionObject):
         self.deny = Text.to_text_nonnull(
             deny, max_length=CONFIRMATION_DENY_MAX_LENGTH, force_plaintext=True
         )
+        if style is not None and style not in ("primary", "danger"):
+            raise TypeMismatchError("Confirmation style must be `primary` or `danger`.")
+        self.style = style
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(
@@ -401,6 +406,7 @@ class ConfirmationDialogue(CompositionObject):
                 "text": self.text,
                 "confirm": self.confirm,
                 "deny": self.deny,
+                "style": self.style,
             }
         )
 
@@ -422,6 +428,7 @@ class ConfirmationDialogue(CompositionObject):
             text=Text.from_dict(data["text"]),
             confirm=Text.from_dict(data["confirm"]),
             deny=Text.from_dict(data["deny"]),
+            style=data.get("style"),
         )
 
 

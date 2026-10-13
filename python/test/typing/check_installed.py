@@ -14,7 +14,7 @@ def main() -> None:
     scratch = Path("/Volumes/Scratch")
     with tempfile.TemporaryDirectory(dir=scratch if scratch.is_dir() else None) as directory:
         environment = {k: v for k, v in os.environ.items() if k not in {"MYPYPATH", "PYTHONPATH"}}
-        for name, expected_errors in (("positive", 0), ("negative", 3)):
+        for name, expected_errors in (("positive", 0), ("negative", 7)):
             target = Path(directory) / f"{name}.py"
             target.write_text((fixtures / f"{name}.py").read_text())
             result = subprocess.run(
