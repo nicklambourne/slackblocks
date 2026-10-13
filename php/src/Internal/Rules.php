@@ -85,6 +85,15 @@ final class Rules
         if ($value instanceof S\DispatchActionConfiguration && $value->triggerActionsOn === null) {
             Validator::fail(C::MissingRequired, $path . '.trigger_actions_on', 'required field is missing');
         }
+        if ($value instanceof S\DatePickerElement && $value->initialDate !== null && preg_match('/\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/', $value->initialDate) !== 1) {
+            Validator::fail(C::TypeMismatch, $path . '.initial_date', 'expected YYYY-MM-DD');
+        }
+        if ($value instanceof S\TimePickerElement && $value->initialTime !== null && preg_match('/\A([01][0-9]|2[0-3]):[0-5][0-9]\z/', $value->initialTime) !== 1) {
+            Validator::fail(C::TypeMismatch, $path . '.initial_time', 'expected HH:mm in 24-hour time');
+        }
+        if ($value instanceof S\PlainTextInputElement && $value->minLength !== null && $value->maxLength !== null && $value->minLength > $value->maxLength) {
+            Validator::fail(C::OutOfRange, $path . '.min_length', 'cannot exceed max_length');
+        }
         if ($value instanceof S\NumberInputElement) {
             foreach (['minValue' => 'min_value', 'maxValue' => 'max_value'] as $property => $field) {
                 $text = $value->$property;

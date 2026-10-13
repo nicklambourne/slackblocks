@@ -2,6 +2,16 @@
 # Each case is constructed through the public Ruby API by FixtureDriver.
 module InvalidCases
   IDS = %w[
+    external-query-negative
+    external-multi-query-negative
+    date-picker-invalid-format
+    time-picker-invalid-format
+    time-picker-invalid-range
+    static-select-empty-options
+    static-multi-select-empty-options
+    static-select-empty-groups
+    static-multi-select-empty-groups
+
     text-empty
     text-too-long
     button-action-id-too-long
@@ -86,6 +96,7 @@ module InvalidCases
     number-bound-infinity
     external-multi-focus-false
     external-multi-focus-true
+    plain-text-input-inverted-range
     number-input-inverted-range
     context-invalid-element
     input-invalid-element
@@ -270,6 +281,16 @@ module InvalidCases
     when "number-bound-infinity" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "Infinity")
     when "external-multi-focus-false" then typed("ExternalMultiSelectElement", "multi_external_select", "focus_on_load", false)
     when "external-multi-focus-true" then typed("ExternalMultiSelectElement", "multi_external_select", "focus_on_load", true)
+    when "external-query-negative" then typed("ExternalSelectElement", "external_select", "min_query_length", -1)
+    when "external-multi-query-negative" then typed("ExternalMultiSelectElement", "multi_external_select", "min_query_length", -1)
+    when "date-picker-invalid-format" then typed("DatePickerElement", "datepicker", "initial_date", "February 29, 2028")
+    when "time-picker-invalid-format" then typed("TimePickerElement", "timepicker", "initial_time", "9:00")
+    when "time-picker-invalid-range" then typed("TimePickerElement", "timepicker", "initial_time", "25:99")
+    when "static-select-empty-options" then typed("StaticSelectElement", "static_select", "options", [])
+    when "static-multi-select-empty-options" then typed("StaticMultiSelectElement", "multi_static_select", "options", [])
+    when "static-select-empty-groups" then typed("StaticSelectElement", "static_select", "option_groups", [])
+    when "static-multi-select-empty-groups" then typed("StaticMultiSelectElement", "multi_static_select", "option_groups", [])
+    when "plain-text-input-inverted-range" then typed("PlainTextInput", "plain_text_input", "min_length", 20, "max_length", 10)
     when "number-input-inverted-range" then typed("NumberInput", "number_input", "action_id", "a", "is_decimal_allowed", true, "min_value", 2, "max_value", 1)
     when "context-invalid-element" then typed("ContextBlock", "context", "elements", items(divider))
     when "input-invalid-element" then typed("InputBlock", "input", "label", plain("Label"), "element", button)

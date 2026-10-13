@@ -825,8 +825,8 @@ export function staticMultiSelect(
     "multi_static_select",
     {
       ...input,
-      options: dropEmpty(input.options),
-      optionGroups: dropEmpty(input.optionGroups),
+      options: input.options,
+      optionGroups: input.optionGroups,
       initialOptions: dropEmpty(input.initialOptions),
     },
     settings,
@@ -964,8 +964,8 @@ export function staticSelect(input: StaticSelectInput, settings: FactorySettings
     "static_select",
     {
       ...input,
-      options: dropEmpty(input.options),
-      optionGroups: dropEmpty(input.optionGroups),
+      options: input.options,
+      optionGroups: input.optionGroups,
     },
     settings,
   );

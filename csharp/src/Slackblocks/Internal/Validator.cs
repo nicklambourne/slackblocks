@@ -261,6 +261,19 @@ internal static partial class Validator
         {
             Fail(ErrorCategory.InvalidUsage, Child(path, "focus_on_load"), "unsupported for external multi-select menus; omit this field");
         }
+        if (type is "external_select" or "multi_external_select")
+        {
+            CheckRange(value, "min_query_length", path, SlackLimits.SelectMinQueryLengthMin, int.MaxValue);
+        }
+        if (type == "datepicker" && value.ContainsKey("initial_date") && (!JsonValues.IsString(value["initial_date"], out var date) || !Regex.IsMatch(date, "\\A[0-9]{4}-[0-9]{2}-[0-9]{2}\\z")))
+        {
+            Fail(ErrorCategory.TypeMismatch, Child(path, "initial_date"), "expected YYYY-MM-DD");
+        }
+        if (type == "timepicker" && value.ContainsKey("initial_time") && (!JsonValues.IsString(value["initial_time"], out var time) || !Regex.IsMatch(time, "\\A([01][0-9]|2[0-3]):[0-5][0-9]\\z")))
+        {
+            Fail(ErrorCategory.TypeMismatch, Child(path, "initial_time"), "expected HH:mm in 24-hour time");
+        }
+
         if (MultiSelectTypes.Contains(type))
         {
             CheckRange(value, "max_selected_items", path, SlackLimits.MultiSelectMaxSelectedItemsMin, int.MaxValue);
@@ -318,6 +331,11 @@ internal static partial class Validator
 
                 break;
             case "plain_text_input":
+                if (JsonValues.Number(value["min_length"]) is double minLength && JsonValues.Number(value["max_length"]) is double maxLength && minLength > maxLength)
+                {
+                    Fail(ErrorCategory.OutOfRange, Child(path, "min_length"), "cannot exceed max_length");
+                }
+
                 CheckRange(value, "min_length", path, SlackLimits.PlainTextInputMinLengthMin, SlackLimits.PlainTextInputMinLengthMax);
                 CheckRange(value, "max_length", path, SlackLimits.PlainTextInputMaxLengthMin, SlackLimits.PlainTextInputMaxLengthMax);
                 if (value.ContainsKey("placeholder"))
@@ -562,14 +580,14 @@ internal static partial class Validator
         if (hasOptions)
         {
             var options = ListAt(value["options"], Child(path, "options"));
-            SliceLength(options, Child(path, "options"), 0, SlackLimits.SelectOptionsMaxItems);
+            SliceLength(options, Child(path, "options"), SlackLimits.SelectOptionsMinItems, SlackLimits.SelectOptionsMaxItems);
             ValidateOptions(options, Child(path, "options"));
         }
 
         if (hasGroups)
         {
             var groups = ListAt(value["option_groups"], Child(path, "option_groups"));
-            SliceLength(groups, Child(path, "option_groups"), 0, SlackLimits.SelectOptionGroupsMaxItems);
+            SliceLength(groups, Child(path, "option_groups"), SlackLimits.SelectOptionGroupsMinItems, SlackLimits.SelectOptionGroupsMaxItems);
             for (var index = 0; index < groups.Count; index++)
             {
                 var groupPath = $"{Child(path, "option_groups")}[{index}]";
