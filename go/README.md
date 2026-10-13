@@ -51,7 +51,9 @@ Builder methods are typed, so a value of the wrong kind fails to compile:
   companion method, such as `TextObject(NewPlainText().Text("Hi").Emoji(true))`, to pass a
   text object.
 - Closed value sets are named string types with constants, such as `ButtonStylePrimary`.
-  Untyped string constants still work: `Style("primary")`.
+  Untyped string constants still work: `Style("primary")`. Supplied empty or
+  unknown enum strings return `TypeMismatch` at build time. Leave an optional
+  setter uncalled to preserve its omission or documented constructor default.
 - Rich text styles take `RichTextStyle{"bold": true}`.
 
 Passing a typed nil nested builder (for example, `Confirm(nil)`) returns a
