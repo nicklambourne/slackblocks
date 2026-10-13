@@ -142,6 +142,9 @@ export interface MessageInput {
   metadata?: JsonObject;
 }
 
+/** A validated message retains its required destination for SDK type checking. */
+export type MessagePayload = JsonObject & { channel: string; text: string };
+
 /**
  * Creates a payload for Slack Web API message methods such as `chat.postMessage`.
  *
@@ -153,7 +156,7 @@ export interface MessageInput {
 export function message(
   input: MessageInput,
   settings: FactorySettings = {},
-): JsonObject {
+): MessagePayload {
   if (typeof input.channel !== "string") {
     throw new TypeMismatchError("message.channel", "expected a string");
   }
@@ -163,8 +166,11 @@ export function message(
       `expected at least ${limits.message.channel.min_length} character`,
     );
   }
+  if (input.text !== undefined && typeof input.text !== "string") {
+    throw new TypeMismatchError("message.text", "expected a string");
+  }
   validateMessageCollections(input, "message");
-  return createObject(
+  const payload = createObject(
     {
       mrkdwn: true,
       text: "",
@@ -174,6 +180,7 @@ export function message(
     },
     settings,
   );
+  return { ...payload, channel: input.channel, text: input.text ?? "" };
 }
 
 /**

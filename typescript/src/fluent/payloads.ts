@@ -9,6 +9,7 @@ import {
   messageResponse as createMessageResponse,
   webhookMessage as createWebhookMessage,
   type MessageInput,
+  type MessagePayload,
 } from "../legacy/messages.js";
 import type { JsonObject } from "../types.js";
 import { homeTab as createHomeTab, modal as createModal } from "../legacy/views.js";
@@ -38,7 +39,7 @@ export function Attachment(): FluentBuilder<
  *
  * See: <https://docs.slack.dev/reference/methods/chat.postMessage>.
  */
-export function Message(): FluentBuilder<MessageInput, JsonObject> {
+export function Message(): FluentBuilder<MessageInput, MessagePayload> {
   return createFluentBuilder(createMessage, {
     collections: { blocks: "flat", attachments: "flat" },
   });
