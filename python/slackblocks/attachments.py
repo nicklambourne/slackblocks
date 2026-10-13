@@ -77,14 +77,8 @@ class Field:
         self.value = value
         self.short = short
 
-    def _resolve(self):
-        field = dict()
-        field["short"] = self.short
-        if self.title:
-            field["title"] = self.title
-        if self.value:
-            field["value"] = self.value
-        return dumps(field)
+    def _resolve(self) -> dict[str, Any]:
+        return resolve({"title": self.title, "value": self.value, "short": self.short})
 
 
 class Attachment:
@@ -95,7 +89,9 @@ class Attachment:
 
     See <https://api.slack.com/reference/messaging/attachments>.
 
-    N.B: `fields` is a deprecated field, included only for legacy purposes. Other legacy
+    N.B: `fields` is a deprecated field, included only for legacy purposes. The
+    `blocks` argument remains required; use `blocks=[]` for legacy fields-only
+    content. Other legacy
     fields, e.g. `author_name` are deliberately omitted as they were never implemented in
     `slackblocks`.
 
@@ -138,12 +134,10 @@ class Attachment:
             self.color = None
 
     def _resolve(self) -> dict[str, Any]:
-        # Note: 'fields' is intentionally not included here. The attribute
-        # exists for legacy reasons but Attachment._resolve has historically
-        # never emitted it; preserving that behaviour.
         return resolve(
             {
                 "blocks": self.blocks if self.blocks else None,
+                "fields": self.fields if self.fields else None,
                 "color": self.color if self.color else None,
                 "fallback": self.fallback if self.fallback else None,
             }
