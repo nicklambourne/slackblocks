@@ -4230,6 +4230,10 @@ value, creates the same paginator with that page, and updates the message.
 
 ### Accordion
 
+Accordion sections are always collapsible. Omit the header-divider option or set it
+to `false`; `true` conflicts with this mode. Use a non-collapsible `ContainerBlock`
+when a header divider is required.
+
 `Accordion()` expands into Slack-native collapsible container blocks, so expanding and
 collapsing sections does not require an application-side interaction handler.
 

@@ -55,7 +55,7 @@ public static class AccordionSection
     /// <param name="icon">Image shown beside the heading.</param>
     /// <param name="expanded">Whether the section starts expanded.</param>
     /// <param name="width">Container width.</param>
-    /// <param name="hasHeaderDivider">Whether a divider separates the heading from the content.</param>
+    /// <param name="hasHeaderDivider">Compatibility option: only false is valid for a collapsible accordion; prefer omission.</param>
     /// <param name="blockId">Block identifier for the container.</param>
     /// <returns>A validated collapsible <see cref="ContainerBlock"/>.</returns>
     /// <exception cref="ValidationException">The section breaks a Block Kit rule.</exception>
@@ -67,8 +67,14 @@ public static class AccordionSection
         bool expanded = false,
         ContainerWidth width = ContainerWidth.Standard,
         bool hasHeaderDivider = false,
-        string? blockId = null) =>
-        new(
+        string? blockId = null)
+    {
+        if (hasHeaderDivider)
+        {
+            throw new ValidationException(ErrorCategory.MutuallyExclusive, "AccordionSection.hasHeaderDivider", "a collapsible accordion cannot have a header divider; omit this option or use false");
+        }
+
+        return new(
             childBlocks: blocks,
             title: title,
             subtitle: subtitle,
@@ -78,4 +84,5 @@ public static class AccordionSection
             defaultCollapsed: !expanded,
             hasHeaderDivider: hasHeaderDivider,
             blockId: blockId);
+    }
 }

@@ -9,6 +9,8 @@ in lockstep with the Python, TypeScript, and Go packages.
 
 ## [Unreleased]
 
+- Reject header dividers at the accordion helper boundary with a clear field path.
+
 ## [2.6.0] — 2026-10-09
 
 - Keep application metadata outside message-wide Block Kit text totals.
