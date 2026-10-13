@@ -41,10 +41,16 @@ OPTION_GROUP_OPTIONS_MIN_ITEMS = 1
 OPTION_GROUP_OPTIONS_MAX_ITEMS = 100
 # select.placeholder.max_length
 SELECT_PLACEHOLDER_MAX_LENGTH = 150
+# select.options.min_items
+SELECT_OPTIONS_MIN_ITEMS = 1
 # select.options.max_items
 SELECT_OPTIONS_MAX_ITEMS = 100
+# select.option_groups.min_items
+SELECT_OPTION_GROUPS_MIN_ITEMS = 1
 # select.option_groups.max_items
 SELECT_OPTION_GROUPS_MAX_ITEMS = 100
+# select.min_query_length.min
+SELECT_MIN_QUERY_LENGTH_MIN = 0
 # overflow.options.min_items
 OVERFLOW_OPTIONS_MIN_ITEMS = 1
 # overflow.options.max_items

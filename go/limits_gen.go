@@ -119,8 +119,11 @@ const (
 	limitSectionFieldsItemMaxLength                          = 2000  // section.fields.item_max_length
 	limitSectionFieldsMaxItems                               = 10    // section.fields.max_items
 	limitSectionTextMaxLength                                = 3000  // section.text.max_length
+	limitSelectMinQueryLengthMin                             = 0     // select.min_query_length.min
 	limitSelectOptionGroupsMaxItems                          = 100   // select.option_groups.max_items
+	limitSelectOptionGroupsMinItems                          = 1     // select.option_groups.min_items
 	limitSelectOptionsMaxItems                               = 100   // select.options.max_items
+	limitSelectOptionsMinItems                               = 1     // select.options.min_items
 	limitSelectPlaceholderMaxLength                          = 150   // select.placeholder.max_length
 	limitTableColumnSettingsMaxItems                         = 20    // table.column_settings.max_items
 	limitTableColumnsMaxItems                                = 20    // table.columns.max_items

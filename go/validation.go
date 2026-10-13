@@ -93,6 +93,9 @@ var inputPlaceholderMaxLengths = map[string]int{
 	"rich_text_input":  limitRichTextInputPlaceholderMaxLength,
 }
 
+var dateShapePattern = regexp.MustCompile(`^[0-9]{4}-[0-9]{2}-[0-9]{2}$`)
+var timeShapePattern = regexp.MustCompile(`^([01][0-9]|2[0-3]):[0-5][0-9]$`)
+
 var attachmentColorPattern = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
 
 var slackFileIDPattern = regexp.MustCompile(`^F[A-Z0-9]{8,}$`)
@@ -361,6 +364,22 @@ func validateObject(object Object, path string) error {
 			return validationError(InvalidUsage, child(path, "focus_on_load"), "unsupported for external multi-select menus; omit this field")
 		}
 	}
+	if typeName == "external_select" || typeName == "multi_external_select" {
+		if err := numberBetween(object, "min_query_length", path, limitSelectMinQueryLengthMin, math.MaxInt); err != nil {
+			return err
+		}
+	}
+	if typeName == "datepicker" || typeName == "timepicker" {
+		field, pattern := "initial_date", dateShapePattern
+		if typeName == "timepicker" {
+			field, pattern = "initial_time", timeShapePattern
+		}
+		if value, present := object[field]; present {
+			if text, ok := value.(string); !ok || !pattern.MatchString(text) {
+				return validationError(TypeMismatch, child(path, field), "invalid date/time format")
+			}
+		}
+	}
 	if multiSelectTypes[typeName] {
 		if err := numberBetween(object, "max_selected_items", path, limitMultiSelectMaxSelectedItemsMin, math.MaxInt); err != nil {
 			return err
@@ -475,6 +494,11 @@ func validateObject(object Object, path string) error {
 			return validationError(OutOfRange, child(path, "max_files"), "expected a value between %d and %d", limitFileInputMaxFilesMin, limitFileInputMaxFilesMax)
 		}
 	case "plain_text_input":
+		minimum, hasMin := number(object["min_length"])
+		maximum, hasMax := number(object["max_length"])
+		if hasMin && hasMax && minimum > maximum {
+			return validationError(OutOfRange, child(path, "min_length"), "cannot exceed max_length")
+		}
 		if value, ok := number(object["max_length"]); ok && value > limitPlainTextInputMaxLengthMax {
 			return validationError(OutOfRange, child(path, "max_length"), "exceeds maximum %d", limitPlainTextInputMaxLengthMax)
 		}
@@ -538,7 +562,7 @@ func validateObject(object Object, path string) error {
 			if err != nil {
 				return err
 			}
-			if err := sliceLength(options, child(path, "options"), 0, limitSelectOptionsMaxItems); err != nil {
+			if err := sliceLength(options, child(path, "options"), limitSelectOptionsMinItems, limitSelectOptionsMaxItems); err != nil {
 				return err
 			}
 			if err := validateOptions(options, child(path, "options")); err != nil {
@@ -550,7 +574,7 @@ func validateObject(object Object, path string) error {
 			if err != nil {
 				return err
 			}
-			if err := sliceLength(groups, child(path, "option_groups"), 0, limitSelectOptionGroupsMaxItems); err != nil {
+			if err := sliceLength(groups, child(path, "option_groups"), limitSelectOptionGroupsMinItems, limitSelectOptionGroupsMaxItems); err != nil {
 				return err
 			}
 			for index, raw := range groups {

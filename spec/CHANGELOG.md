@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add the probe-confirmed nonnegative external-query threshold, nonempty supplied static options/groups, date-shape and 24-hour-time rules in all eight implementations. Retain `2028-02-30` and empty image alt text as structurally accepted controls; Python retains its existing stricter calendar parser. See `evidence/SB-013-validation-boundary.json` and the validation-boundary guide (SB-013).
+
+- Declare plain-text input bounds must be satisfiable when both are supplied: `min_length <= max_length`. Reject inverted bounds as `out-of-range`, with native positive controls for equality, zero and omission in every implementation (SB-013). This is an explicit library consistency rule derived from the documented minimum/maximum meanings, not a newly observed Slack write-path guarantee.
+
 - Correct number-input bounds to string wire values, retain native numeric convenience arguments, and reject nonfinite/inverted bounds (SB-001, spec 1.3.0). Bound getters now return strings; reflection/signature consumers must migrate. Package version unchanged.
 
 - Preserve number-input initial strings while documenting an explicitly provisional trailing-zero workaround; paired write-path isolation remains open (`evidence/SB-017-decimal-format.json`, SB-017).
