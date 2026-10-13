@@ -8,6 +8,16 @@ namespace Slackblocks.Tests;
 
 public sealed class ComponentTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void AccordionRejectsHeaderDividerBeforeContainerExpansion(bool expanded)
+    {
+        var error = Assert.Throws<ValidationException>(() => AccordionSection.Create("Details", [new DividerBlock()], expanded: expanded, hasHeaderDivider: true));
+        Assert.Equal(ErrorCategory.MutuallyExclusive, error.Category);
+        Assert.Equal("AccordionSection.hasHeaderDivider", error.Path);
+    }
+
     [Fact]
     public void AccordionBuildsSlackNativeContainerBlocks()
     {

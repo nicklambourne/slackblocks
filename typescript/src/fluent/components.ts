@@ -14,6 +14,7 @@ import {
 import { button } from "../legacy/elements.js";
 import {
   MissingRequiredError,
+  MutualExclusivityError,
   OutOfRangeError,
   TypeMismatchError,
 } from "../errors.js";
@@ -40,7 +41,7 @@ export interface AccordionSectionInput {
   expanded?: boolean;
   /** Horizontal width of this section. Defaults to `standard`. */
   width?: ContainerWidth;
-  /** Whether Slack draws a divider below the header. */
+  /** Compatibility option: only false is valid for a collapsible accordion. */
   hasHeaderDivider?: boolean;
   /** Optional deterministic identifier for this section. */
   blockId?: string;
@@ -50,6 +51,9 @@ function renderAccordionSection(
   input: AccordionSectionInput,
   settings: FactorySettings = {},
 ): JsonObject {
+  if (input.hasHeaderDivider === true) {
+    throw new MutualExclusivityError("AccordionSection.hasHeaderDivider", "a collapsible accordion cannot have a header divider; omit this option or use false");
+  }
   const { blocks, expanded, ...container } = input;
   return containerBlock(
     {
