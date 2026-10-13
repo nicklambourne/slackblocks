@@ -70,6 +70,22 @@ jobs:
           API_KEY: ${{ env.NUGET_API_KEY != '' && env.NUGET_API_KEY || steps.login.outputs.NUGET_API_KEY }}
         run: dotnet nuget push "*.nupkg" --api-key "$API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
 
+      - name: Verify exact version from the public registry
+        run: |
+          version="${GITHUB_REF_NAME#csharp/v}"
+          python3 .github/scripts/verify-nuget-consumer.py --version "$version" \
+            --workdir "$RUNNER_TEMP/nuget-consumer-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" --attempts 6
+
+      - name: Retain public-registry install receipt
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: nuget-public-consumer
+          path: |
+            ${{ runner.temp }}/nuget-consumer-*/receipt.json
+            ${{ runner.temp }}/nuget-consumer-*/attempt-*/*.log
+          if-no-files-found: ignore
+
       - name: Upload release artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
