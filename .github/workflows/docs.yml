@@ -133,6 +133,12 @@ jobs:
       - name: Install JavaScript dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Test executable integration guides
+        run: |
+          uv run --frozen --project python --group docs python -m unittest discover -s docs/examples/workflow-state -p 'test_*.py'
+          uv run --frozen --project python --group docs python -m unittest discover -s docs/examples/reliable-delivery -p 'test_*.py'
+          uv run --frozen --project python --group docs python -m unittest discover -s docs/examples/live-prerequisites -p 'test_*.py'
+
       - name: Build documentation
         run: pnpm --filter @slackblocks/docs build
 
