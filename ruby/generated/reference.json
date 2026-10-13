@@ -3596,7 +3596,7 @@
           "type": "bool",
           "readerType": "bool",
           "required": false,
-          "description": "Sets whether the submit button starts disabled. Only valid in workflow configuration modals."
+          "description": "Sets whether the submit button starts disabled in workflow configuration modals only. Omit this field for ordinary views.open/views.push modals, including when false. The general ModalView value cannot infer its receiving workflow context."
         }
       ]
     },

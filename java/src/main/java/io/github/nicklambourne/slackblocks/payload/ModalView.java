@@ -151,7 +151,9 @@ public final class ModalView implements SlackObject {
   }
 
   /**
-   * Returns whether the submit button starts disabled. Only valid in workflow configuration modals.
+   * Returns whether the submit button starts disabled in workflow configuration modals only. Omit
+   * this field for ordinary views.open/views.push modals, including when false. The general
+   * ModalView value cannot infer its receiving workflow context.
    *
    * @return the value, or an empty optional when it was not set
    * @throws IllegalStateException if the field was set through a raw wire field to a value this
@@ -348,7 +350,9 @@ public final class ModalView implements SlackObject {
     }
 
     /**
-     * Sets whether the submit button starts disabled. Only valid in workflow configuration modals.
+     * Sets whether the submit button starts disabled in workflow configuration modals only. Omit
+     * this field for ordinary views.open/views.push modals, including when false. The general
+     * ModalView value cannot infer its receiving workflow context.
      *
      * @param value value for Slack's {@code submit_disabled} field
      * @return this builder

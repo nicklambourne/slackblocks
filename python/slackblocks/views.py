@@ -134,9 +134,11 @@ class ModalView(View):
             modal is closed.
         external_id: A custom identifier that is unique within the views of a
             given Slack team.
-        submit_disabled: when `True` disabled submitting the form until one or
-            more inputs have been provided. Used only for
-            [`configuaration models`](https://api.slack.com/reference/workflows/configuration-view).
+        submit_disabled: disables submission until inputs are completed in workflow
+            configuration modals only. Omit for ordinary `views.open`/`views.push`
+            modals; even an explicit false wire field is not supported there.
+            See [configuration modals](https://docs.slack.dev/reference/views/modal-views/).
+            This general value cannot infer its receiving workflow context.
     """
 
     def __init__(

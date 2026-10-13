@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
+
 ## 1.2.0 - 2026-09-28
 
 - Add `vocabulary.json`, the shared registry of Slack icon names and per-surface
