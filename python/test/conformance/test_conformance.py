@@ -462,6 +462,18 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "image-url-and-slack-file": lambda: Image(
         image_url="https://example.com/image.png", slack_file=SlackFile(url=None, id="F0123ABC456")
     ),
+    "number-bound-inverted-large-integer": lambda: NumberInput(
+        True, min_value="9007199254740993", max_value="9007199254740992"
+    ),
+    "number-bound-inverted-long-fraction": lambda: NumberInput(
+        True, min_value="0.10000000000000001", max_value="0.1"
+    ),
+    "number-bound-hex": lambda: NumberInput(True, min_value="0x10"),
+    "number-bound-underscore": lambda: NumberInput(True, min_value="1_000"),
+    "number-bound-leading-space": lambda: NumberInput(True, min_value=" 1"),
+    "number-bound-trailing-space": lambda: NumberInput(True, min_value="1 "),
+    "number-bound-nan": lambda: NumberInput(True, min_value="NaN"),
+    "number-bound-infinity": lambda: NumberInput(True, min_value="Infinity"),
     "number-input-inverted-range": lambda: NumberInput(
         is_decimal_allowed=True, min_value=2, max_value=1
     ),

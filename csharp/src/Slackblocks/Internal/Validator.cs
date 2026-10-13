@@ -385,13 +385,12 @@ internal static partial class Validator
                 ValidateStaticSelect(value, path);
                 break;
             case "number_input":
-                if (JsonValues.Number(value["min_value"]) is double minimum
-                    && JsonValues.Number(value["max_value"]) is double maximum
-                    && minimum > maximum)
+                var minimum = DecimalBound(value["min_value"], Child(path, "min_value"));
+                var maximum = DecimalBound(value["max_value"], Child(path, "max_value"));
+                if (minimum is not null && maximum is not null && CompareDecimal(value["min_value"]!.GetValue<string>(), value["max_value"]!.GetValue<string>()) > 0)
                 {
                     Fail(ErrorCategory.OutOfRange, path, "min_value cannot exceed max_value");
                 }
-
                 CheckOptionalText(value, "placeholder", path, SlackLimits.NumberInputPlaceholderMaxLength);
                 break;
             case "image":
@@ -1308,4 +1307,34 @@ internal static partial class Validator
 
     private static void Fail(ErrorCategory category, string path, string reason) =>
         throw new ValidationException(category, path, reason);
+    private static int CompareDecimal(string left, string right)
+    {
+        static (int Sign, string Digits, System.Numerics.BigInteger Rank) Parts(string text)
+        {
+            var parts = text.Trim().ToLowerInvariant().Split('e');
+            var exponent = parts.Length == 2 ? System.Numerics.BigInteger.Parse(parts[1], System.Globalization.CultureInfo.InvariantCulture) : System.Numerics.BigInteger.Zero;
+            var mantissa = parts[0].TrimStart('+', '-');
+            var dot = mantissa.IndexOf('.');
+            var fraction = dot < 0 ? 0 : mantissa.Length - dot - 1;
+            var digits = mantissa.Replace(".", "", StringComparison.Ordinal).TrimStart('0');
+            var sign = digits.Length == 0 ? 0 : parts[0].StartsWith('-') ? -1 : 1;
+            return (sign, digits, exponent + digits.Length - fraction);
+        }
+        var a = Parts(left); var b = Parts(right);
+        if (a.Sign != b.Sign) return a.Sign.CompareTo(b.Sign);
+        if (a.Sign == 0) return 0;
+        var rank = a.Rank.CompareTo(b.Rank);
+        if (rank != 0) return rank * a.Sign;
+        var width = Math.Max(a.Digits.Length, b.Digits.Length);
+        return StringComparer.Ordinal.Compare(a.Digits.PadRight(width, '0'), b.Digits.PadRight(width, '0')) * a.Sign;
+    }
+
+    private static string? DecimalBound(JsonNode? value, string path)
+    {
+        if (value is null) return null;
+        if (!JsonValues.IsString(value, out var text) || !Regex.IsMatch(text, @"\A[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?\z"))
+        { Fail(ErrorCategory.TypeMismatch, path, "expected a decimal string"); return null; }
+        return text;
+    }
+
 }

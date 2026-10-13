@@ -28,15 +28,15 @@ final readonly class NumberInputElement extends Value implements Element, InputE
      */
     public string|null $initialValue;
 
-    /** Sets the smallest accepted number.
-     * @var int|float|null
+    /** Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+     * @var string|null
      */
-    public int|float|null $minValue;
+    public string|null $minValue;
 
-    /** Sets the largest accepted number.
-     * @var int|float|null
+    /** Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+     * @var string|null
      */
-    public int|float|null $maxValue;
+    public string|null $maxValue;
 
     /** Sets which user interactions send a block_actions payload.
      * @var DispatchActionConfiguration|null
@@ -57,8 +57,8 @@ final readonly class NumberInputElement extends Value implements Element, InputE
      * @param bool $isDecimalAllowed Sets whether the input accepts decimal numbers.
      * @param string|null $actionId Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block.
      * @param string|null $initialValue Sets the number present when the input loads, as a string such as 42 or 3.5.
-     * @param int|float|null $minValue Sets the smallest accepted number.
-     * @param int|float|null $maxValue Sets the largest accepted number.
+     * @param string|int|float|null $minValue Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+     * @param string|int|float|null $maxValue Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
      * @param DispatchActionConfiguration|null $dispatchActionConfig Sets which user interactions send a block_actions payload.
      * @param bool|null $focusOnLoad Sets whether the element receives focus when the view opens. Only one element per view may do so.
      * @param PlainText|string|null $placeholder Sets the placeholder text shown before a value is chosen.
@@ -68,8 +68,8 @@ final readonly class NumberInputElement extends Value implements Element, InputE
         bool $isDecimalAllowed,
         string|null $actionId = null,
         string|null $initialValue = null,
-        int|float|null $minValue = null,
-        int|float|null $maxValue = null,
+        string|int|float|null $minValue = null,
+        string|int|float|null $maxValue = null,
         DispatchActionConfiguration|null $dispatchActionConfig = null,
         bool|null $focusOnLoad = null,
         PlainText|string|null $placeholder = null,
@@ -78,8 +78,14 @@ final readonly class NumberInputElement extends Value implements Element, InputE
         $this->actionId = $actionId;
         $this->isDecimalAllowed = $isDecimalAllowed;
         $this->initialValue = $initialValue;
-        $this->minValue = $minValue;
-        $this->maxValue = $maxValue;
+        if (is_float($minValue) && !is_finite($minValue)) {
+            throw new ValidationError(ErrorCategory::TypeMismatch, 'NumberInputElement.min_value', 'expected a finite numeric bound');
+        }
+        $this->minValue = $minValue === null ? null : (string) $minValue;
+        if (is_float($maxValue) && !is_finite($maxValue)) {
+            throw new ValidationError(ErrorCategory::TypeMismatch, 'NumberInputElement.max_value', 'expected a finite numeric bound');
+        }
+        $this->maxValue = $maxValue === null ? null : (string) $maxValue;
         $this->dispatchActionConfig = $dispatchActionConfig;
         $this->focusOnLoad = $focusOnLoad;
         $this->placeholder = is_string($placeholder) ? new PlainText($placeholder) : $placeholder;

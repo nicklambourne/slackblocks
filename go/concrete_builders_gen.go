@@ -2723,14 +2723,16 @@ func (b *NumberInputBuilder) InitialValue(value string) *NumberInputBuilder {
 	return b
 }
 
-// MinValue sets the smallest accepted number.
-func (b *NumberInputBuilder) MinValue(value float64) *NumberInputBuilder {
+// MinValue sets the smallest accepted number. Sent as a finite numeric string; native numeric
+// convenience arguments are converted to strings.
+func (b *NumberInputBuilder) MinValue(value any) *NumberInputBuilder {
 	b.core.MinValue(value)
 	return b
 }
 
-// MaxValue sets the largest accepted number.
-func (b *NumberInputBuilder) MaxValue(value float64) *NumberInputBuilder {
+// MaxValue sets the largest accepted number. Sent as a finite numeric string; native numeric
+// convenience arguments are converted to strings.
+func (b *NumberInputBuilder) MaxValue(value any) *NumberInputBuilder {
 	b.core.MaxValue(value)
 	return b
 }

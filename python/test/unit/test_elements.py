@@ -392,8 +392,8 @@ def test_number_input_zero_min_value_emitted() -> None:
         max_value=0,
     )
     resolved = number_input._resolve()
-    assert resolved["min_value"] == 0
-    assert resolved["max_value"] == 0
+    assert resolved["min_value"] == "0"
+    assert resolved["max_value"] == "0"
 
 
 def test_number_input_min_greater_than_max_error_message() -> None:

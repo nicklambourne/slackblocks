@@ -21,8 +21,8 @@ public sealed partial class NumberInputElement : global::Slackblocks.SlackObject
     /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
     /// <param name="isDecimalAllowed">Whether the input accepts decimal numbers. Required.</param>
     /// <param name="initialValue">The number present when the input loads, as a string such as 42 or 3.5.</param>
-    /// <param name="minValue">The smallest accepted number.</param>
-    /// <param name="maxValue">The largest accepted number.</param>
+    /// <param name="minValue">The smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.</param>
+    /// <param name="maxValue">The largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.</param>
     /// <param name="dispatchActionConfig">Which user interactions send a block_actions payload.</param>
     /// <param name="focusOnLoad">Whether the element receives focus when the view opens. Only one element per view may do so.</param>
     /// <param name="placeholder">The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a <c>plain_text</c> text object.</param>
@@ -33,8 +33,8 @@ public sealed partial class NumberInputElement : global::Slackblocks.SlackObject
         string? actionId = null,
         bool? isDecimalAllowed = null,
         string? initialValue = null,
-        double? minValue = null,
-        double? maxValue = null,
+        global::Slackblocks.NumberInputBound? minValue = null,
+        global::Slackblocks.NumberInputBound? maxValue = null,
         global::Slackblocks.Objects.DispatchActionConfiguration? dispatchActionConfig = null,
         bool? focusOnLoad = null,
         global::Slackblocks.Objects.PlainText? placeholder = null,
@@ -44,8 +44,8 @@ public sealed partial class NumberInputElement : global::Slackblocks.SlackObject
         ActionId = wire.String("action_id", actionId);
         IsDecimalAllowed = wire.Boolean("is_decimal_allowed", isDecimalAllowed);
         InitialValue = wire.String("initial_value", initialValue);
-        MinValue = wire.Double("min_value", minValue);
-        MaxValue = wire.Double("max_value", maxValue);
+        MinValue = wire.String("min_value", minValue?.Value);
+        MaxValue = wire.String("max_value", maxValue?.Value);
         DispatchActionConfig = wire.Object("dispatch_action_config", dispatchActionConfig);
         FocusOnLoad = wire.Boolean("focus_on_load", focusOnLoad);
         Placeholder = wire.Text("placeholder", placeholder, "plain_text");
@@ -64,13 +64,13 @@ public sealed partial class NumberInputElement : global::Slackblocks.SlackObject
     /// <value>The value, or <see langword="null"/> when it was not set.</value>
     public string? InitialValue { get; }
 
-    /// <summary>Gets the smallest accepted number.</summary>
+    /// <summary>Gets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>
-    public double? MinValue { get; }
+    public string? MinValue { get; }
 
-    /// <summary>Gets the largest accepted number.</summary>
+    /// <summary>Gets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>
-    public double? MaxValue { get; }
+    public string? MaxValue { get; }
 
     /// <summary>Gets which user interactions send a block_actions payload.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>

@@ -10295,8 +10295,8 @@ pub struct NumberInputElement {
     action_id: Option<String>,
     is_decimal_allowed: bool,
     initial_value: Option<String>,
-    min_value: Option<f64>,
-    max_value: Option<f64>,
+    min_value: Option<String>,
+    max_value: Option<String>,
     dispatch_action_config: Option<DispatchActionConfiguration>,
     focus_on_load: Option<bool>,
     placeholder: Option<PlainText>,
@@ -10308,8 +10308,8 @@ pub struct NumberInputElementBuilder {
     action_id: Option<String>,
     is_decimal_allowed: Option<bool>,
     initial_value: Option<String>,
-    min_value: Option<f64>,
-    max_value: Option<f64>,
+    min_value: Option<String>,
+    max_value: Option<String>,
     dispatch_action_config: Option<DispatchActionConfiguration>,
     focus_on_load: Option<bool>,
     placeholder: Option<PlainTextInput>,
@@ -10361,13 +10361,13 @@ impl NumberInputElement {
     pub fn initial_value(&self) -> Option<&str> {
         self.initial_value.as_deref()
     }
-    /// Borrows or copies `min_value`. Sets the smallest accepted number.
-    pub fn min_value(&self) -> Option<f64> {
-        self.min_value
+    /// Borrows or copies `min_value`. Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+    pub fn min_value(&self) -> Option<&str> {
+        self.min_value.as_deref()
     }
-    /// Borrows or copies `max_value`. Sets the largest accepted number.
-    pub fn max_value(&self) -> Option<f64> {
-        self.max_value
+    /// Borrows or copies `max_value`. Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+    pub fn max_value(&self) -> Option<&str> {
+        self.max_value.as_deref()
     }
     /// Borrows or copies `dispatch_action_config`. Sets which user interactions send a block_actions payload.
     pub fn dispatch_action_config(&self) -> Option<&DispatchActionConfiguration> {
@@ -10442,9 +10442,9 @@ impl NumberInputElementBuilder {
         self.initial_value = None;
         self
     }
-    /// Sets the smallest accepted number.
-    pub fn min_value(mut self, value: f64) -> Self {
-        self.min_value = Some(value);
+    /// Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+    pub fn min_value(mut self, value: impl std::fmt::Display) -> Self {
+        self.min_value = Some(value.to_string());
         self
     }
     /// Omits `min_value`, including any model default.
@@ -10452,9 +10452,9 @@ impl NumberInputElementBuilder {
         self.min_value = None;
         self
     }
-    /// Sets the largest accepted number.
-    pub fn max_value(mut self, value: f64) -> Self {
-        self.max_value = Some(value);
+    /// Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+    pub fn max_value(mut self, value: impl std::fmt::Display) -> Self {
+        self.max_value = Some(value.to_string());
         self
     }
     /// Omits `max_value`, including any model default.
@@ -10510,21 +10510,7 @@ impl NumberInputElementBuilder {
         )?;
         let initial_value = self.initial_value;
         let min_value = self.min_value;
-        if min_value.is_some_and(|v| !v.is_finite()) {
-            return Err(ValidationError::new(
-                ErrorCategory::OutOfRange,
-                "NumberInputElement.min_value",
-                "expected a finite number",
-            ));
-        }
         let max_value = self.max_value;
-        if max_value.is_some_and(|v| !v.is_finite()) {
-            return Err(ValidationError::new(
-                ErrorCategory::OutOfRange,
-                "NumberInputElement.max_value",
-                "expected a finite number",
-            ));
-        }
         let dispatch_action_config = self.dispatch_action_config;
         let focus_on_load = self.focus_on_load;
         let placeholder = self
@@ -10597,8 +10583,8 @@ impl FromWire for NumberInputElement {
         let action_id = wire::field::<String>(&mut map, "action_id", path)?;
         let is_decimal_allowed = wire::field::<bool>(&mut map, "is_decimal_allowed", path)?;
         let initial_value = wire::field::<String>(&mut map, "initial_value", path)?;
-        let min_value = wire::field::<f64>(&mut map, "min_value", path)?;
-        let max_value = wire::field::<f64>(&mut map, "max_value", path)?;
+        let min_value = wire::field::<String>(&mut map, "min_value", path)?;
+        let max_value = wire::field::<String>(&mut map, "max_value", path)?;
         let dispatch_action_config =
             wire::field::<DispatchActionConfiguration>(&mut map, "dispatch_action_config", path)?;
         let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
