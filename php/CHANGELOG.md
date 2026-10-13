@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
+
 ## [2.7.0] — 2026-10-11
 
 - Introduce native PHP 8.2+ Slack Block Kit values, typed roles and enums, immutable edits and checked JSON serialization.

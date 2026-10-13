@@ -59,7 +59,7 @@ final readonly class ModalView extends Value
      */
     public string|null $externalId;
 
-    /** Sets whether the submit button starts disabled. Only valid in workflow configuration modals.
+    /** Sets whether the submit button starts disabled in workflow configuration modals only. Omit this field for ordinary views.open/views.push modals, including when false. The general ModalView value cannot infer its receiving workflow context.
      * @var bool|null
      */
     public bool|null $submitDisabled;
@@ -74,7 +74,7 @@ final readonly class ModalView extends Value
      * @param bool|null $clearOnClose Sets whether closing this modal closes every view in its stack.
      * @param bool|null $notifyOnClose Sets whether Slack sends a view_closed event when the user closes the modal.
      * @param string|null $externalId Sets a workspace-unique identifier you can use to update the view later.
-     * @param bool|null $submitDisabled Sets whether the submit button starts disabled. Only valid in workflow configuration modals.
+     * @param bool|null $submitDisabled Sets whether the submit button starts disabled in workflow configuration modals only. Omit this field for ordinary views.open/views.push modals, including when false. The general ModalView value cannot infer its receiving workflow context.
      * @param JsonObject|null $extensions Additional JSON fields; modeled names and type are reserved.
      */
     public function __construct(

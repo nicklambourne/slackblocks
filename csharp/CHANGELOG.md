@@ -10,6 +10,7 @@ lockstep with the Python, TypeScript, Go, and Java packages.
 ## [Unreleased]
 
 - Reject header dividers at the accordion helper boundary with a clear field path.
+- Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
 
 ## [2.6.0] — 2026-10-09
 
