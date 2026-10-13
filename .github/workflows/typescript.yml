@@ -89,6 +89,10 @@ jobs:
         if: needs.changes.outputs.relevant == 'true'
         run: pnpm --filter @nicklambourne/slackblocks check:package
 
+      - name: Check installed package with the official SDK
+        if: needs.changes.outputs.relevant == 'true'
+        run: pnpm --filter @nicklambourne/slackblocks check:sdk-consumer
+
       - name: Pack package
         if: needs.changes.outputs.relevant == 'true'
         run: |

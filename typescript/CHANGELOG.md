@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Preserve the required channel in message return types for strict official SDK handoff.
+
 - Expose confirmation style and emoji skin tone through typed native builders.
 
 ## [2.6.0] — 2026-10-09
