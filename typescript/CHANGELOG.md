@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Report path-aware missing/type errors before reading required chart, option and view fields.
+
 - Preserve the required channel in message return types for strict official SDK handoff.
 
 - Expose confirmation style and emoji skin tone through typed native builders.
