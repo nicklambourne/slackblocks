@@ -15,7 +15,7 @@ for (const language of languages) {
   assert.match(target, /<h1[^>]*>/, `${language}: target must be a rendered reference page`);
 }
 const recipeIndex = await readFile(path.join(root, "build/recipes.html"), "utf8");
-for (const recipe of ["multiselect-compatibility", "workflow-state", "reliable-delivery"]) {
+for (const recipe of ["multiselect-compatibility", "workflow-state", "reliable-delivery", "live-prerequisites"]) {
   assert.ok(recipeIndex.includes(`href="/slackblocks/recipes/${recipe}"`), `${recipe}: missing discovery link`);
   await readFile(path.join(root, `build/recipes/${recipe}.html`), "utf8");
 }

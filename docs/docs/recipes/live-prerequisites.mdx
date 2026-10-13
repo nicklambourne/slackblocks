@@ -1,0 +1,34 @@
+---
+title: Preflight privileged live fixtures
+---
+
+# Preflight privileged live fixtures
+
+A missing scope, unregistered file ID, synthetic trigger URL, or unavailable second user is a test prerequisite gap. It does not establish a slackblocks validation defect. Native construction, Slack API acceptance, visible rendering and business behavior need separate evidence.
+
+The [offline preflight checker and template](https://github.com/nicklambourne/slackblocks/tree/master/docs/examples/live-prerequisites) inventory the following capabilities without contacting Slack or changing app permissions:
+
+```sh
+python docs/examples/live-prerequisites/preflight.py docs/examples/live-prerequisites/template.json
+python -m unittest discover -s docs/examples/live-prerequisites -p 'test_*.py'
+```
+
+The empty template deliberately exits with status 2 and reports blocked gates. Copy it to private task storage, enter **observed effective scopes** and references to retained setup receipts, and run it again. Do not put tokens, incoming webhook URLs, or workflow trigger URLs in this manifest or commit real fixture IDs. The checker evaluates your declarations; `ready_for_live_attempt` is not independently verified setup and never a live pass. Keep the referenced receipts for review.
+
+| Gate | Authorized setup and decisive live evidence |
+| --- | --- |
+| File input | [FileInput requires `files:read`](https://docs.slack.dev/tools/node-slack-sdk/reference/types/interfaces/FileInput/). After authorized installation, open a native file-input form through a genuine fresh trigger, upload a real test file, submit and inspect the returned file value. A no-file form is not upload coverage. |
+| Slack file image | Verify an existing test file is accessible to this app, retain the file lookup receipt, then use its genuine ID/URL in the native SlackFile/image model. Record API and rendered-image evidence separately. |
+| Remote file | Register and share a genuine remote fixture through [the remote-file APIs](https://docs.slack.dev/messaging/working-with-files/) with the appropriate `remote_files:write` and `remote_files:share` permissions. Retain registration/share receipts; `remote_files:read` supports the readback preflight. Adding alone does not make it visible. |
+| Video | Obtain authorized [`links.embed:write`](https://docs.slack.dev/reference/block-kit/blocks/video-block/), a genuine HTTPS embeddable player, matching configured unfurl domain and verified viewer access. Verify actual playback, not just a thumbnail or successful JSON serialization. |
+| Workflow | Verify capability for the actual workspace/plan and a genuine authorized trigger. Store the trigger URL in protected configuration and reference it indirectly. Record actual workflow execution; synthetic URLs and constructor success do not test this. |
+| User group | Use a real group identifier with lookup evidence. Verify the native mention visibly resolves; an arbitrary string does not test group resolution. |
+| Second-user visibility | Use two distinct consenting users with separate authenticated sessions. Verify that an ephemeral response is visible to its intended user and absent for the other, and check private Home state independently. A bot impersonating a role or one actor changing a synthetic role flag does not establish isolation. |
+
+The [File block reference](https://docs.slack.dev/reference/block-kit/blocks/file-block/) explicitly describes File blocks as retrieved representations of remote files, not blocks to post directly to app surfaces. Test the supported register/share/readback flow; do not assume that replacing a synthetic `external_id` makes a direct `chat.postMessage` File block valid. Record native parsing/representation and remote-file delivery as distinct checks.
+
+Do not expand scopes merely to turn a blocked gate green. Prepare the exact requested permissions and fixture use for the workspace owner's approval, then reinstall only when authorized. A browser login alone does not prove the bot token has the new effective scopes. Keep failures and retries with their own timestamps and payloads.
+
+After an authorized setup change, rerun the **same native fixture-aware constructor** with the genuine resource and retain API, callback and visible-result evidence. Label missing fixtures `blocked`, a planned but unattempted check `unverified`, and only completed checks `passed`. Distinguish a fresh genuine user action from local replay or a synthetic backend event.
+
+Mobile testing remains **deferred** in this plan. Browser accessibility-tree/keyboard observations do not prove VoiceOver speech or mobile behavior. Notification badges also do not prove delivery when user permissions or Do Not Disturb prevent it; do not change user preferences to manufacture a passing result.
