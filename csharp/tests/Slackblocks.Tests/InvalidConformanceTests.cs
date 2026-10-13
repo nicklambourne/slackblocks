@@ -183,6 +183,7 @@ public sealed class InvalidConformanceTests
             "data-table-page-size-too-large" => DataTable(ValidRows(), "Names", "page_size", 101),
             "data-table-cell-text-empty" => DataTable(Items(Items(RawText("Name")), Items(RawText(""))), "Names"),
             "data-table-content-too-long" => DataTable(Items(Items(RawText("Name")), Items(RawText(Repeated("x", 20000)))), "Names"),
+            "message-too-many-charts" => Case("Message", Map("channel", "C123", "blocks", Enumerable.Repeat(Obj("data_visualization", "title", "Chart", "chart", Obj("pie", "segments", Items(Segment("A", 1)))), 3).ToList())),
             "data-visualization-title-too-long" => Typed("DataVisualizationBlock", "data_visualization", "title", Repeated("x", 51), "chart", Obj("pie", "segments", Items(Segment("A", 1)))),
             "pie-chart-empty" => Typed("PieChart", "pie", "segments", Items()),
             "pie-chart-too-many-segments" => Typed("PieChart", "pie", "segments", Copies(13, index => Segment("S", 1))),

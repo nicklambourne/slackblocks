@@ -153,6 +153,7 @@
     "provider_icon_url": { "max_length": 2000 }
   },
   "message": {
+    "data_visualizations": { "max_items": 2 },
     "channel": { "min_length": 1 },
     "blocks": { "max_items": 50 },
     "attachments": { "max_items": 100 }

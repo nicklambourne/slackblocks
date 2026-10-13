@@ -265,6 +265,8 @@ VIDEO_VIDEO_URL_MAX_LENGTH = 3000
 VIDEO_TITLE_URL_MAX_LENGTH = 2000
 # video.provider_icon_url.max_length
 VIDEO_PROVIDER_ICON_URL_MAX_LENGTH = 2000
+# message.data_visualizations.max_items
+MESSAGE_DATA_VISUALIZATIONS_MAX_ITEMS = 2
 # message.channel.min_length
 MESSAGE_CHANNEL_MIN_LENGTH = 1
 # message.blocks.max_items

@@ -82,6 +82,7 @@ const (
 	limitMessageAttachmentsMaxItems                          = 100   // message.attachments.max_items
 	limitMessageBlocksMaxItems                               = 50    // message.blocks.max_items
 	limitMessageChannelMinLength                             = 1     // message.channel.min_length
+	limitMessageDataVisualizationsMaxItems                   = 2     // message.data_visualizations.max_items
 	limitMultiSelectMaxSelectedItemsMin                      = 1     // multi_select.max_selected_items.min
 	limitNumberInputPlaceholderMaxLength                     = 150   // number_input.placeholder.max_length
 	limitOptionDescriptionMaxLength                          = 75    // option.description.max_length

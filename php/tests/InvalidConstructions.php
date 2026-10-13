@@ -130,6 +130,7 @@ final class InvalidConstructions
             'data-table-page-size-too-large' => static fn(): S\Value => new S\DataTableBlock(rows: [[new S\RawText(text: 'Name')], [new S\RawText(text: 'Alice')]], caption: 'Names', pageSize: 101),
             'data-table-cell-text-empty' => static fn(): S\Value => new S\DataTableBlock(rows: [[new S\RawText(text: 'Name')], [new S\RawText(text: '')]], caption: 'Names'),
             'data-table-content-too-long' => static fn(): S\Value => new S\DataTableBlock(rows: [[new S\RawText(text: 'Name')], [new S\RawText(text: str_repeat('x', 20000))]], caption: 'Names'),
+            'message-too-many-charts' => static fn(): S\Value => new S\MessagePayload(channel: 'C123', blocks: array_fill(0, 3, new S\DataVisualizationBlock(title: 'Chart', chart: new S\PieChart(segments: [new S\ChartSegment(label: 'A', value: 1)])))),
             'data-visualization-title-too-long' => static fn(): S\Value => new S\DataVisualizationBlock(title: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', chart: new S\PieChart(segments: [new S\ChartSegment(label: 'A', value: 1)])),
             'pie-chart-empty' => static fn(): S\Value => new S\PieChart(segments: []),
             'pie-chart-too-many-segments' => static fn(): S\Value => new S\PieChart(segments: array_fill(0, 13, new S\ChartSegment(label: 'S', value: 1))),

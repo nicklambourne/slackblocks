@@ -19,12 +19,20 @@ from slackblocks._limits import (
     MESSAGE_ATTACHMENTS_MAX_ITEMS,
     MESSAGE_BLOCKS_MAX_ITEMS,
     MESSAGE_CHANNEL_MIN_LENGTH,
+    MESSAGE_DATA_VISUALIZATIONS_MAX_ITEMS,
 )
 from slackblocks._surfaces import validate_surface_blocks
 from slackblocks.utils import coerce_to_list, validate_string_nonnull
 
 from .attachments import Attachment
-from .blocks import Block, DataTableBlock, MarkdownBlock, _text_character_count
+from .blocks import (
+    Block,
+    ContainerBlock,
+    DataTableBlock,
+    DataVisualizationBlock,
+    MarkdownBlock,
+    _text_character_count,
+)
 from .errors import LengthError, TypeMismatchError
 
 
@@ -53,6 +61,16 @@ def _validate_message_totals(
     Both totals count the message's blocks and the blocks of its attachments.
     """
     all_blocks = [*(blocks or []), *(block for att in attachments or [] for block in att.blocks)]
+
+    def chart_count(block: Block) -> int:
+        if isinstance(block, DataVisualizationBlock):
+            return 1
+        if isinstance(block, ContainerBlock):
+            return sum(chart_count(child) for child in block.child_blocks)
+        return 0
+
+    if sum(chart_count(block) for block in all_blocks) > MESSAGE_DATA_VISUALIZATIONS_MAX_ITEMS:
+        raise LengthError("A message may contain at most two data visualization blocks.")
     markdown = sum(len(block.text) for block in all_blocks if isinstance(block, MarkdownBlock))
     if markdown > MARKDOWN_TOTAL_TEXT_MAX_LENGTH:
         raise LengthError(

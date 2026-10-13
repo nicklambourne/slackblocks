@@ -190,9 +190,10 @@ module Slackblocks
 
     def self.message(wire, path)
       surface(wire["blocks"] || [], "message", "#{path}.blocks")
-      totals = {"markdown" => 0, "data_table" => 0}
+      totals = {"markdown" => 0, "data_table" => 0, "data_visualization" => 0}
       tally(wire["blocks"], totals)
       (wire["attachments"] || []).each { |attachment| tally(attachment["blocks"], totals) }
+      fail!("length-exceeded", path, "a message may contain at most two data visualization blocks") if totals["data_visualization"] > limit("message.data_visualizations.max_items")
       if totals["markdown"] > limit("markdown.total_text.max_length")
         fail!("length-exceeded", path, "message markdown total exceeded")
       end
@@ -206,6 +207,8 @@ module Slackblocks
       when Hash
         if node["type"] == "markdown"
           totals["markdown"] += node.fetch("text").length
+        elsif node["type"] == "data_visualization"
+          totals["data_visualization"] += 1
         elsif node["type"] == "data_table"
           totals["data_table"] += characters(node.fetch("rows"))
         elsif node["type"] == "container"

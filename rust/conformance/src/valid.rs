@@ -1357,6 +1357,33 @@ pub const VALID: &[ValidCase] = &[
         parse: |v| WorkflowButtonElement::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
     },
     ValidCase {
+        id: "messages/message_two_charts",
+        build: || {
+            let blocks = (0..2)
+                .map(|i| {
+                    DataVisualizationBlock::builder()
+                        .title("Chart")
+                        .block_id(format!("chart_{i}"))
+                        .chart(
+                            PieChart::builder()
+                                .segment(ChartSegment::builder().label("A").value(1).build()?)
+                                .build()?,
+                        )
+                        .build()
+                })
+                .collect::<Result<Vec<_>, ValidationError>>()?;
+            Ok(serde_json::to_value(
+                MessagePayload::builder("C123")
+                    .text("")
+                    .mrkdwn(true)
+                    .blocks(blocks)
+                    .build()?,
+            )
+            .unwrap())
+        },
+        parse: |v| MessagePayload::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
         id: "messages/message_basic",
         build: || {
             let value = MessagePayload::builder("#slackblocks")

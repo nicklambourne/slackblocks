@@ -340,6 +340,9 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewDataTableBlock().Rows([]slackblocks.DataTableCell{rawText("Name")}, []slackblocks.DataTableCell{rawText("")}).Caption("Names"))
 	case "data-table-content-too-long":
 		return buildError(slackblocks.NewDataTableBlock().Rows([]slackblocks.DataTableCell{rawText("Name")}, []slackblocks.DataTableCell{rawText(repeated("x", 20000))}).Caption("Names"))
+	case "message-too-many-charts":
+		chart := slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments(slackblocks.NewChartSegment().Label("A").Value(1)))
+		return buildError(slackblocks.NewMessage().Channel("C123").Blocks(chart, chart, chart))
 	case "data-visualization-title-too-long":
 		return buildError(slackblocks.NewDataVisualizationBlock().Title(repeated("x", 51)).Chart(slackblocks.NewPieChart().Segments(slackblocks.NewChartSegment().Label("A").Value(1))))
 	case "pie-chart-empty":
