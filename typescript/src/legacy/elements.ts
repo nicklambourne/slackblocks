@@ -136,7 +136,7 @@ export interface ExternalMultiSelectInput {
   confirm?: JsonObject;
   /** Maximum number of options that may be selected; the minimum is one. */
   maxSelectedItems?: number;
-  /** Whether this element receives focus when its containing view opens. */
+  /** @deprecated Unsupported by Slack for external multi-selects; omit this field. */
   focusOnLoad?: boolean;
   /** Plain-text prompt shown before a selection, up to 150 characters. */
   placeholder?: TextLike;

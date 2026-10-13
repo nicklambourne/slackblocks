@@ -37,7 +37,7 @@ final readonly class ExternalMultiSelectElement extends Value implements Element
      */
     public int|null $maxSelectedItems;
 
-    /** Sets whether the element receives focus when the view opens. Only one element per view may do so.
+    /** Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected.
      * @var bool|null
      */
     public bool|null $focusOnLoad;
@@ -53,7 +53,7 @@ final readonly class ExternalMultiSelectElement extends Value implements Element
      * @param list<Option>|null $initialOptions Adds options that are selected when the element loads. Each must match an option in the element.
      * @param Confirmation|null $confirm Sets a confirmation dialog shown before the action is sent.
      * @param int|null $maxSelectedItems Sets the maximum number of items a user can select.
-     * @param bool|null $focusOnLoad Sets whether the element receives focus when the view opens. Only one element per view may do so.
+     * @param bool|null $focusOnLoad Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected.
      * @param PlainText|string|null $placeholder Sets the placeholder text shown before a value is chosen.
      * @param JsonObject|null $extensions Additional JSON fields; modeled names and type are reserved.
      */

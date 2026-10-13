@@ -95,6 +95,8 @@ final class InvalidConstructions
             'number-bound-trailing-space' => static fn(): S\Value => new S\NumberInputElement(isDecimalAllowed: true, minValue: "1 "),
             'number-bound-nan' => static fn(): S\Value => new S\NumberInputElement(isDecimalAllowed: true, minValue: "NaN"),
             'number-bound-infinity' => static fn(): S\Value => new S\NumberInputElement(isDecimalAllowed: true, minValue: "Infinity"),
+            'external-multi-focus-false' => static fn(): S\Value => new S\ExternalMultiSelectElement(focusOnLoad: false),
+            'external-multi-focus-true' => static fn(): S\Value => new S\ExternalMultiSelectElement(focusOnLoad: true),
             'number-input-inverted-range' => static fn(): S\Value => new S\NumberInputElement(actionId: 'a', isDecimalAllowed: true, minValue: 2, maxValue: 1),
             'context-invalid-element' => static fn(): S\Value => S\ContextBlock::fromArray(['type' => 'context', 'elements' => [['type' => 'divider']]]),
             'input-invalid-element' => static fn(): S\Value => S\InputBlock::fromArray(['type' => 'input', 'label' => ['type' => 'plain_text', 'text' => 'Label'], 'element' => ['type' => 'button', 'text' => ['type' => 'plain_text', 'text' => 'A'], 'action_id' => 'a']]),

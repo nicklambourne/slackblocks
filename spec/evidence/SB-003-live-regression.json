@@ -1,0 +1,410 @@
+{
+  "finding": "SB-003",
+  "checked": "2026-10-13",
+  "description": "Native external multi-select modals from all eight implementations omit focus_on_load.",
+  "limitations": "Single workspace; structural and actual write-path results are recorded separately. Native constructor behavior is covered by local tests. Lexical controls are transport probes, not claims of native acceptance.",
+  "payloads": {
+    "dec6e23cbfa4386c0cfb0b0141c956e5e26aa1f858f24d22a50e4a7fa58cab25": {
+      "view": {
+        "type": "modal",
+        "blocks": [
+          {
+            "type": "input",
+            "block_id": "options",
+            "label": {
+              "type": "plain_text",
+              "text": "Options"
+            },
+            "element": {
+              "type": "multi_external_select",
+              "action_id": "options",
+              "placeholder": {
+                "type": "plain_text",
+                "text": "Search"
+              }
+            }
+          }
+        ],
+        "callback_id": "remediation|python|external",
+        "title": {
+          "type": "plain_text",
+          "text": "External options"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        }
+      }
+    },
+    "d4c322bb0b6b53e8237ae6934222e1fbe703627d3a2e47a6f15c17fea742e608": {
+      "view": {
+        "title": {
+          "text": "External options",
+          "type": "plain_text"
+        },
+        "submit": {
+          "text": "Submit",
+          "type": "plain_text"
+        },
+        "callback_id": "remediation|typescript|external",
+        "blocks": [
+          {
+            "label": {
+              "text": "Options",
+              "type": "plain_text"
+            },
+            "block_id": "options",
+            "element": {
+              "action_id": "options",
+              "placeholder": {
+                "text": "Search",
+                "type": "plain_text"
+              },
+              "type": "multi_external_select"
+            },
+            "type": "input"
+          }
+        ],
+        "type": "modal"
+      }
+    },
+    "59ca23dd3772c6a0568ecb9f11c8c798498fba9aced05440d00556a650a1d348": {
+      "view": {
+        "blocks": [
+          {
+            "block_id": "options",
+            "element": {
+              "action_id": "options",
+              "placeholder": {
+                "text": "Search",
+                "type": "plain_text"
+              },
+              "type": "multi_external_select"
+            },
+            "label": {
+              "text": "Options",
+              "type": "plain_text"
+            },
+            "type": "input"
+          }
+        ],
+        "callback_id": "remediation|go|external",
+        "submit": {
+          "text": "Submit",
+          "type": "plain_text"
+        },
+        "title": {
+          "text": "External options",
+          "type": "plain_text"
+        },
+        "type": "modal"
+      }
+    },
+    "84d00f0c949a0d059f10cf7ac6a7495efe94de7824869d3d955c848b5e22def9": {
+      "view": {
+        "type": "modal",
+        "title": {
+          "type": "plain_text",
+          "text": "External options"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        },
+        "callback_id": "remediation|java|external",
+        "blocks": [
+          {
+            "type": "input",
+            "label": {
+              "type": "plain_text",
+              "text": "Options"
+            },
+            "block_id": "options",
+            "element": {
+              "type": "multi_external_select",
+              "action_id": "options",
+              "placeholder": {
+                "type": "plain_text",
+                "text": "Search"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "46f455e4ee49f78f1c6c982d4ba67cbcca1d3891ae3e868c6284fd6e41ba9a6c": {
+      "view": {
+        "type": "modal",
+        "title": {
+          "type": "plain_text",
+          "text": "External options"
+        },
+        "blocks": [
+          {
+            "type": "input",
+            "label": {
+              "type": "plain_text",
+              "text": "Options"
+            },
+            "element": {
+              "type": "multi_external_select",
+              "action_id": "options",
+              "placeholder": {
+                "type": "plain_text",
+                "text": "Search"
+              }
+            },
+            "block_id": "options"
+          }
+        ],
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        },
+        "callback_id": "remediation|csharp|external"
+      }
+    },
+    "9812f844334e0f8e98d811ed2e5d8c806a31bcf476e869817dcad7579d559782": {
+      "view": {
+        "type": "modal",
+        "title": {
+          "type": "plain_text",
+          "text": "External options"
+        },
+        "blocks": [
+          {
+            "type": "input",
+            "label": {
+              "type": "plain_text",
+              "text": "Options"
+            },
+            "element": {
+              "type": "multi_external_select",
+              "action_id": "options",
+              "placeholder": {
+                "type": "plain_text",
+                "text": "Search"
+              }
+            },
+            "block_id": "options"
+          }
+        ],
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        },
+        "callback_id": "remediation|ruby|external"
+      }
+    },
+    "d1f13bddd3c9ffb8a3c6cc5ec0f2ba235893d93d61c6543c0f1b056a23389f6e": {
+      "view": {
+        "blocks": [
+          {
+            "block_id": "options",
+            "element": {
+              "action_id": "options",
+              "placeholder": {
+                "text": "Search",
+                "type": "plain_text"
+              },
+              "type": "multi_external_select"
+            },
+            "label": {
+              "text": "Options",
+              "type": "plain_text"
+            },
+            "type": "input"
+          }
+        ],
+        "callback_id": "remediation|rust|external",
+        "submit": {
+          "text": "Submit",
+          "type": "plain_text"
+        },
+        "title": {
+          "text": "External options",
+          "type": "plain_text"
+        },
+        "type": "modal"
+      }
+    },
+    "76c57066d704ca8d483e584e7f9adbbff8fa0db7c4a03d2dc51845fc035d2030": {
+      "view": {
+        "type": "modal",
+        "title": {
+          "type": "plain_text",
+          "text": "External options"
+        },
+        "blocks": [
+          {
+            "type": "input",
+            "label": {
+              "type": "plain_text",
+              "text": "Options"
+            },
+            "element": {
+              "type": "multi_external_select",
+              "action_id": "options",
+              "placeholder": {
+                "type": "plain_text",
+                "text": "Search"
+              }
+            },
+            "block_id": "options"
+          }
+        ],
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        },
+        "callback_id": "remediation|php|external"
+      }
+    }
+  },
+  "observations": [
+    {
+      "case": "sb003-python",
+      "method": "blocks.validate",
+      "payload_sha256": "dec6e23cbfa4386c0cfb0b0141c956e5e26aa1f858f24d22a50e4a7fa58cab25",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-typescript",
+      "method": "blocks.validate",
+      "payload_sha256": "d4c322bb0b6b53e8237ae6934222e1fbe703627d3a2e47a6f15c17fea742e608",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-go",
+      "method": "blocks.validate",
+      "payload_sha256": "59ca23dd3772c6a0568ecb9f11c8c798498fba9aced05440d00556a650a1d348",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-java",
+      "method": "blocks.validate",
+      "payload_sha256": "84d00f0c949a0d059f10cf7ac6a7495efe94de7824869d3d955c848b5e22def9",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-csharp",
+      "method": "blocks.validate",
+      "payload_sha256": "46f455e4ee49f78f1c6c982d4ba67cbcca1d3891ae3e868c6284fd6e41ba9a6c",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-ruby",
+      "method": "blocks.validate",
+      "payload_sha256": "9812f844334e0f8e98d811ed2e5d8c806a31bcf476e869817dcad7579d559782",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-rust",
+      "method": "blocks.validate",
+      "payload_sha256": "d1f13bddd3c9ffb8a3c6cc5ec0f2ba235893d93d61c6543c0f1b056a23389f6e",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-php",
+      "method": "blocks.validate",
+      "payload_sha256": "76c57066d704ca8d483e584e7f9adbbff8fa0db7c4a03d2dc51845fc035d2030",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-python",
+      "method": "views.open",
+      "payload_sha256": "dec6e23cbfa4386c0cfb0b0141c956e5e26aa1f858f24d22a50e4a7fa58cab25",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-typescript",
+      "method": "views.open",
+      "payload_sha256": "d4c322bb0b6b53e8237ae6934222e1fbe703627d3a2e47a6f15c17fea742e608",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-go",
+      "method": "views.open",
+      "payload_sha256": "59ca23dd3772c6a0568ecb9f11c8c798498fba9aced05440d00556a650a1d348",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-java",
+      "method": "views.open",
+      "payload_sha256": "84d00f0c949a0d059f10cf7ac6a7495efe94de7824869d3d955c848b5e22def9",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-csharp",
+      "method": "views.open",
+      "payload_sha256": "46f455e4ee49f78f1c6c982d4ba67cbcca1d3891ae3e868c6284fd6e41ba9a6c",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-ruby",
+      "method": "views.open",
+      "payload_sha256": "9812f844334e0f8e98d811ed2e5d8c806a31bcf476e869817dcad7579d559782",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-rust",
+      "method": "views.open",
+      "payload_sha256": "d1f13bddd3c9ffb8a3c6cc5ec0f2ba235893d93d61c6543c0f1b056a23389f6e",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb003-php",
+      "method": "views.open",
+      "payload_sha256": "76c57066d704ca8d483e584e7f9adbbff8fa0db7c4a03d2dc51845fc035d2030",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    }
+  ]
+}

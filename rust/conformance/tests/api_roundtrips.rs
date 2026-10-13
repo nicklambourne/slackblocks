@@ -5974,12 +5974,22 @@ fn external_multi_select_element_editing_and_ingress() -> Result<(), ValidationE
             .unwrap_or(Value::Null)
     );
     {
-        let edited = original
-            .clone()
-            .into_builder()
-            .focus_on_load(true)
-            .build()?;
-        assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
+        assert!(
+            original
+                .clone()
+                .into_builder()
+                .focus_on_load(true)
+                .build()
+                .is_err()
+        );
+        assert!(
+            original
+                .clone()
+                .into_builder()
+                .focus_on_load(false)
+                .build()
+                .is_err()
+        );
     }
     {
         let edited = original

@@ -16,6 +16,9 @@ final class Rules
         if ($value instanceof S\SlackIcon && !in_array($value->name, Schema::VOCABULARY['slack_icon_names'], true)) {
             Validator::fail(C::TypeMismatch, $path . '.name', 'unknown Slack icon');
         }
+        if ($value instanceof S\ExternalMultiSelectElement && $value->focusOnLoad !== null) {
+            Validator::fail(C::InvalidUsage, $path . '.focus_on_load', 'unsupported for external multi-select menus; omit this field');
+        }
         if ($value instanceof S\SectionBlock) {
             if ($value->text === null && ($value->fields === null || $value->fields === [])) {
                 Validator::fail(C::MissingRequired, $path, 'expected text or fields');

@@ -108,8 +108,7 @@ public final class ExternalMultiSelectElement extends BlockElement implements In
   }
 
   /**
-   * Returns whether the element receives focus when the view opens. Only one element per view may
-   * do so.
+   * Returns the {@code focus_on_load} field.
    *
    * @return the value, or an empty optional when it was not set
    * @throws IllegalStateException if the field was set through a raw wire field to a value this
@@ -232,8 +231,8 @@ public final class ExternalMultiSelectElement extends BlockElement implements In
     }
 
     /**
-     * Sets whether the element receives focus when the view opens. Only one element per view may do
-     * so.
+     * Deprecated compatibility parameter. Slack external multi-select menus do not support
+     * focus_on_load; omit it. Explicit true or false is rejected.
      *
      * @param value value for Slack's {@code focus_on_load} field
      * @return this builder

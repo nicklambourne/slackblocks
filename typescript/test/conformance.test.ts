@@ -750,6 +750,8 @@ const invalidCases: Record<string, () => unknown> = {
   "number-bound-trailing-space": () => numberInput({isDecimalAllowed:true,minValue:"1 "}),
   "number-bound-nan": () => numberInput({isDecimalAllowed:true,minValue:"NaN"}),
   "number-bound-infinity": () => numberInput({isDecimalAllowed:true,minValue:"Infinity"}),
+  "external-multi-focus-false": () => externalMultiSelect({ focusOnLoad: false }),
+  "external-multi-focus-true": () => externalMultiSelect({ focusOnLoad: true }),
   "number-input-inverted-range": () =>
     numberInput({ actionId: "a", isDecimalAllowed: true, minValue: 2, maxValue: 1 }),
   "context-invalid-element": () => contextBlock({ elements: [dividerBlock()] }),

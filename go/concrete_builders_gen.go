@@ -1808,8 +1808,8 @@ func (b *ExternalMultiSelectBuilder) MaxSelectedItems(value int) *ExternalMultiS
 	return b
 }
 
-// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
-// view may do so.
+// FocusOnLoad Deprecated compatibility parameter. Slack external multi-select menus do not
+// support focus_on_load; omit it. Explicit true or false is rejected.
 func (b *ExternalMultiSelectBuilder) FocusOnLoad(value bool) *ExternalMultiSelectBuilder {
 	b.core.FocusOnLoad(value)
 	return b
