@@ -687,3 +687,28 @@ Slack reserves `submit_disabled` for [workflow configuration modals](https://doc
 | PHP | Leave `submitDisabled:` unspecified on `new ModalView(...)`. |
 
 The shared `views/modal_with_blocks` and `views/modal_without_blocks` fixtures exercise ordinary modal omission through every native conformance consumer. Configuration-specific acceptance needs an enabled workflow configuration context; an ordinary-modal rejection is not evidence that Slack removed configuration support.
+
+## Decimal input values rejected only when opening a view
+
+Slack documents number-input `initial_value` as a string. Six paired minimal
+native Python modals on 13 October 2026 isolated a receiving-path discrepancy:
+`blocks.validate` accepted `42.50`, `42.5`, `42.00`, `42`, `0.50`, and `0.5`,
+while fresh `views.open` requests accepted only `42.5`, `42`, and `0.5`.
+The trailing-zero forms received `initial_value` errors. These otherwise
+identical controls contained no bounds, file input, or configuration-only fields.
+Structural validation alone does not prove that a view can be opened.
+
+As an application compatibility workaround, explicitly supply a decimal string
+without redundant fractional zeros, such as `"42.5"` instead of `"42.50"` or
+`"42"` instead of `"42.00"`. Keep a zero before the decimal point (`"0.5"`). Use
+the native `initial_value` argument in Python/Ruby/Rust, `initialValue` in
+TypeScript/Java/C#/PHP, or `InitialValue` in Go. No JSON editing is required.
+
+This is not a normative formatting restriction: the official
+[number-input reference](https://docs.slack.dev/reference/block-kit/block-elements/number-input-element/)
+does not establish one. The library therefore preserves caller-supplied
+initial-value strings. The paired observations are recorded in
+`spec/evidence/SB-017-decimal-format.json`; they establish these six cases in one
+workspace, not a universal lexical rule. Do not conflate this runtime discrepancy
+with the confirmed requirement that `min_value` and `max_value` use JSON strings.
+Recheck the actual write path before changing library normalization.

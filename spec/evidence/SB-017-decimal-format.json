@@ -1,0 +1,1017 @@
+{
+  "finding": "SB-017",
+  "checked": "2026-10-13",
+  "status": "isolated receiving-path discrepancy confirmed in six paired minimal controls; preserve caller strings",
+  "reference": "https://docs.slack.dev/reference/block-kit/block-elements/number-input-element/",
+  "observations": [
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/api.jsonl",
+      "line": 330,
+      "record": {
+        "at": "2026-10-12T11:09:53.373Z",
+        "method": "views.open",
+        "request": {
+          "trigger_id": "[redacted]",
+          "view": {
+            "blocks": [
+              {
+                "level": "info",
+                "text": {
+                  "text": "Synthetic expenses only; no money moves",
+                  "type": "mrkdwn"
+                },
+                "type": "alert"
+              },
+              {
+                "block_id": "sb01|go|S10|amount",
+                "element": {
+                  "action_id": "sb01|go|S10|amount",
+                  "initial_value": "42.50",
+                  "is_decimal_allowed": true,
+                  "placeholder": {
+                    "text": "0.00",
+                    "type": "plain_text"
+                  },
+                  "type": "number_input"
+                },
+                "hint": {
+                  "text": "Synthetic data only",
+                  "type": "plain_text"
+                },
+                "label": {
+                  "text": "Amount",
+                  "type": "plain_text"
+                },
+                "optional": false,
+                "type": "input"
+              },
+              {
+                "block_id": "sb01|go|S10|category",
+                "element": {
+                  "action_id": "sb01|go|S10|category",
+                  "initial_option": {
+                    "text": {
+                      "text": "Travel",
+                      "type": "plain_text"
+                    },
+                    "value": "travel"
+                  },
+                  "options": [
+                    {
+                      "text": {
+                        "text": "Travel",
+                        "type": "plain_text"
+                      },
+                      "value": "travel"
+                    },
+                    {
+                      "text": {
+                        "text": "Supplies",
+                        "type": "plain_text"
+                      },
+                      "value": "supplies"
+                    }
+                  ],
+                  "type": "static_select"
+                },
+                "hint": {
+                  "text": "Synthetic data only",
+                  "type": "plain_text"
+                },
+                "label": {
+                  "text": "Category",
+                  "type": "plain_text"
+                },
+                "optional": false,
+                "type": "input"
+              },
+              {
+                "block_id": "sb01|go|S10|reason",
+                "element": {
+                  "action_id": "sb01|go|S10|reason",
+                  "initial_value": "Team visit",
+                  "multiline": true,
+                  "type": "plain_text_input"
+                },
+                "hint": {
+                  "text": "Synthetic data only",
+                  "type": "plain_text"
+                },
+                "label": {
+                  "text": "Justification",
+                  "type": "plain_text"
+                },
+                "optional": false,
+                "type": "input"
+              },
+              {
+                "block_id": "sb01|go|S10|email",
+                "element": {
+                  "action_id": "sb01|go|S10|email",
+                  "initial_value": "test@example.com",
+                  "type": "email_text_input"
+                },
+                "hint": {
+                  "text": "Synthetic data only",
+                  "type": "plain_text"
+                },
+                "label": {
+                  "text": "Email",
+                  "type": "plain_text"
+                },
+                "optional": false,
+                "type": "input"
+              },
+              {
+                "block_id": "sb01|go|S10|url",
+                "element": {
+                  "action_id": "sb01|go|S10|url",
+                  "initial_value": "https://example.com/receipt/42",
+                  "type": "url_text_input"
+                },
+                "hint": {
+                  "text": "Synthetic data only",
+                  "type": "plain_text"
+                },
+                "label": {
+                  "text": "Receipt URL",
+                  "type": "plain_text"
+                },
+                "optional": false,
+                "type": "input"
+              },
+              {
+                "block_id": "sb01|go|S10|receipt",
+                "element": {
+                  "action_id": "sb01|go|S10|receipt",
+                  "filetypes": [
+                    "png",
+                    "pdf"
+                  ],
+                  "max_files": 1,
+                  "type": "file_input"
+                },
+                "hint": {
+                  "text": "Synthetic data only",
+                  "type": "plain_text"
+                },
+                "label": {
+                  "text": "Receipt file",
+                  "type": "plain_text"
+                },
+                "optional": true,
+                "type": "input"
+              }
+            ],
+            "callback_id": "sb01|go|S10|submit",
+            "clear_on_close": false,
+            "close": {
+              "text": "Cancel",
+              "type": "plain_text"
+            },
+            "notify_on_close": true,
+            "private_metadata": "{\"record\":42}",
+            "submit": {
+              "text": "Submit",
+              "type": "plain_text"
+            },
+            "title": {
+              "text": "S10 Go workflow",
+              "type": "plain_text"
+            },
+            "type": "modal"
+          }
+        },
+        "http": 200,
+        "result": {
+          "ok": false,
+          "error": "invalid_arguments",
+          "response_metadata": {
+            "messages": [
+              "[ERROR] initial_value is not a valid number (integer or float) [json-pointer:view/blocks/1/element/initial_value]",
+              "[ERROR] file_input block element requires the files:read scope [json-pointer:view/blocks/6/element]"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/api.jsonl",
+      "line": 333,
+      "record": {
+        "at": "2026-10-12T11:09:56.705Z",
+        "method": "views.open",
+        "request": {
+          "trigger_id": "[redacted]",
+          "view": {
+            "blocks": [
+              {
+                "level": "info",
+                "text": {
+                  "text": "Synthetic expenses only; no money moves",
+                  "type": "mrkdwn"
+                },
+                "type": "alert"
+              },
+              {
+                "block_id": "sb01|rust|S10|amount",
+                "element": {
+                  "action_id": "sb01|rust|S10|amount",
+                  "initial_value": "84.25",
+                  "is_decimal_allowed": true,
+                  "placeholder": {
+                    "text": "0.00",
+                    "type": "plain_text"
+                  },
+                  "type": "number_input"
+                },
+                "hint": {
+                  "text": "Synthetic input",
+                  "type": "plain_text"
+                },
+                "label": {
+                  "text": "Amount",
+                  "type": "plain_text"
+                },
+                "optional": false,
+                "type": "input"
+              },
+              {
+                "block_id": "sb01|rust|S10|category",
+                "element": {
+                  "action_id": "sb01|rust|S10|category",
+                  "initial_option": {
+                    "text": {
+                      "text": "Travel",
+                      "type": "plain_text"
+                    },
+                    "value": "travel"
+                  },
+                  "options": [
+                    {
+                      "text": {
+                        "text": "Travel",
+                        "type": "plain_text"
+                      },
+                      "value": "travel"
+                    },
+                    {
+                      "text": {
+                        "text": "Supplies",
+                        "type": "plain_text"
+                      },
+                      "value": "supplies"
+                    }
+                  ],
+                  "type": "static_select"
+                },
+                "hint": {
+                  "text": "Synthetic input",
+                  "type": "plain_text"
+                },
+                "label": {
+                  "text": "Category",
+                  "type": "plain_text"
+                },
+                "optional": false,
+                "type": "input"
+              },
+              {
+                "block_id": "sb01|rust|S10|reason",
+                "element": {
+                  "action_id": "sb01|rust|S10|reason",
+                  "initial_value": "Operations visit",
+                  "multiline": true,
+                  "type": "plain_text_input"
+                },
+                "hint": {
+                  "text": "Synthetic input",
+                  "type": "plain_text"
+                },
+                "label": {
+                  "text": "Justification",
+                  "type": "plain_text"
+                },
+                "optional": false,
+                "type": "input"
+              },
+              {
+                "block_id": "sb01|rust|S10|email",
+                "element": {
+                  "action_id": "sb01|rust|S10|email",
+                  "initial_value": "test@example.com",
+                  "type": "email_text_input"
+                },
+                "hint": {
+                  "text": "Synthetic input",
+                  "type": "plain_text"
+                },
+                "label": {
+                  "text": "Email",
+                  "type": "plain_text"
+                },
+                "optional": false,
+                "type": "input"
+              },
+              {
+                "block_id": "sb01|rust|S10|url",
+                "element": {
+                  "action_id": "sb01|rust|S10|url",
+                  "initial_value": "https://example.com/receipt/84",
+                  "type": "url_text_input"
+                },
+                "hint": {
+                  "text": "Synthetic input",
+                  "type": "plain_text"
+                },
+                "label": {
+                  "text": "Receipt URL",
+                  "type": "plain_text"
+                },
+                "optional": false,
+                "type": "input"
+              },
+              {
+                "block_id": "sb01|rust|S10|receipt",
+                "element": {
+                  "action_id": "sb01|rust|S10|receipt",
+                  "filetypes": [
+                    "png",
+                    "pdf"
+                  ],
+                  "max_files": 1,
+                  "type": "file_input"
+                },
+                "hint": {
+                  "text": "Synthetic input",
+                  "type": "plain_text"
+                },
+                "label": {
+                  "text": "Receipt file",
+                  "type": "plain_text"
+                },
+                "optional": true,
+                "type": "input"
+              }
+            ],
+            "callback_id": "sb01|rust|S10|submit",
+            "clear_on_close": false,
+            "close": {
+              "text": "Cancel",
+              "type": "plain_text"
+            },
+            "notify_on_close": true,
+            "private_metadata": "{\"record\":84}",
+            "submit": {
+              "text": "Submit",
+              "type": "plain_text"
+            },
+            "title": {
+              "text": "S10 Rust workflow",
+              "type": "plain_text"
+            },
+            "type": "modal"
+          }
+        },
+        "http": 200,
+        "result": {
+          "ok": false,
+          "error": "invalid_arguments",
+          "response_metadata": {
+            "messages": [
+              "[ERROR] file_input block element requires the files:read scope [json-pointer:view/blocks/6/element]"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 53,
+      "record": {
+        "source": "go/decimal-format-probes.jsonl",
+        "case_id": "go-number-decimal-42.50",
+        "variant": "NumberInputElement",
+        "surface": "modal",
+        "validation_field": "view",
+        "payload_sha256": "daa5d2cfd5c6167c12d21b156addbb80a343ea4c2d2630f472eaf0153e71a079",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 54,
+      "record": {
+        "source": "go/decimal-format-probes.jsonl",
+        "case_id": "go-number-decimal-42.5",
+        "variant": "NumberInputElement",
+        "surface": "modal",
+        "validation_field": "view",
+        "payload_sha256": "7927b23534097cb08549cde4e36343bbd363f7f564735b6ac6d2232198ffbbe2",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 55,
+      "record": {
+        "source": "go/decimal-format-probes.jsonl",
+        "case_id": "go-number-decimal-42.00",
+        "variant": "NumberInputElement",
+        "surface": "modal",
+        "validation_field": "view",
+        "payload_sha256": "d56d6a5a07ab1aaa9f5b55ec41f728f2c770745b252552f5027e80578ebc8a11",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 56,
+      "record": {
+        "source": "go/decimal-format-probes.jsonl",
+        "case_id": "go-number-decimal-42",
+        "variant": "NumberInputElement",
+        "surface": "modal",
+        "validation_field": "view",
+        "payload_sha256": "9c8279585e030acba48437b0b8c4ab2909248170e648a837461fad9184d762fb",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 57,
+      "record": {
+        "source": "go/decimal-format-probes.jsonl",
+        "case_id": "go-number-decimal-0.50",
+        "variant": "NumberInputElement",
+        "surface": "modal",
+        "validation_field": "view",
+        "payload_sha256": "c124085cf8a76c548b97e5aa7ed970cb06d1a1611b359e1083d5dabde8a4e6dd",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 58,
+      "record": {
+        "source": "go/decimal-format-probes.jsonl",
+        "case_id": "go-number-decimal-0.5",
+        "variant": "NumberInputElement",
+        "surface": "modal",
+        "validation_field": "view",
+        "payload_sha256": "67023bda1a4ad9c603c6d07b88609e0a8d30112e9ebfbfe7110445ad5d87cd35",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 59,
+      "record": {
+        "source": "rust/decimal-format-probes.jsonl",
+        "case_id": "rust-number-decimal-42.50",
+        "variant": "NumberInputElement",
+        "surface": "modal",
+        "validation_field": "view",
+        "payload_sha256": "1779a21088f99c1bfe0591fbf3bc7a107ec7d7a9fefcd0d55bc8bafa033623b0",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 60,
+      "record": {
+        "source": "rust/decimal-format-probes.jsonl",
+        "case_id": "rust-number-decimal-42.5",
+        "variant": "NumberInputElement",
+        "surface": "modal",
+        "validation_field": "view",
+        "payload_sha256": "1c6ac85d00cdf00827bd43978fd6c23c461ccf55b9e72460009e97d877e41af0",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 61,
+      "record": {
+        "source": "rust/decimal-format-probes.jsonl",
+        "case_id": "rust-number-decimal-42.00",
+        "variant": "NumberInputElement",
+        "surface": "modal",
+        "validation_field": "view",
+        "payload_sha256": "d5fed122b23629eadd084c396eea514295f2e7509bccd1c962e98909c32a3d65",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 62,
+      "record": {
+        "source": "rust/decimal-format-probes.jsonl",
+        "case_id": "rust-number-decimal-42",
+        "variant": "NumberInputElement",
+        "surface": "modal",
+        "validation_field": "view",
+        "payload_sha256": "61e74022a8725a743692a5437f53ee3a1758f760a271eae25ca8ab4c54fa174b",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 63,
+      "record": {
+        "source": "rust/decimal-format-probes.jsonl",
+        "case_id": "rust-number-decimal-0.50",
+        "variant": "NumberInputElement",
+        "surface": "modal",
+        "validation_field": "view",
+        "payload_sha256": "03e956900937bec65b3c798584985f7ec830e5d644f9d36fa2f25d24cfc752c5",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 64,
+      "record": {
+        "source": "rust/decimal-format-probes.jsonl",
+        "case_id": "rust-number-decimal-0.5",
+        "variant": "NumberInputElement",
+        "surface": "modal",
+        "validation_field": "view",
+        "payload_sha256": "1f1d72bc1af746970b74d8a843fbcda45a2616c6c57c2e42ccfa2dec2b1d7351",
+        "result": {
+          "ok": true
+        }
+      }
+    }
+  ],
+  "acceptance_gate": [
+    "Paired minimal controls completed for 42.50/42.5/42.00/42/0.50/0.5.",
+    "Recheck Slack write behavior before changing library normalization; structural validation is insufficient."
+  ],
+  "minimal_paired_controls": {
+    "checked": "2026-10-13",
+    "producer": "Python native constructors; synthetic content; same workspace; fresh trigger per modal",
+    "observations": [
+      {
+        "case": "sb017-trailing",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "type": "modal",
+          "blocks": [
+            {
+              "type": "input",
+              "block_id": "amount",
+              "label": {
+                "type": "plain_text",
+                "text": "Amount"
+              },
+              "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "amount",
+                "initial_value": "42.50"
+              }
+            }
+          ],
+          "title": {
+            "type": "plain_text",
+            "text": "Decimal control"
+          },
+          "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+          }
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb017-canonical",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "type": "modal",
+          "blocks": [
+            {
+              "type": "input",
+              "block_id": "amount",
+              "label": {
+                "type": "plain_text",
+                "text": "Amount"
+              },
+              "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "amount",
+                "initial_value": "42.5"
+              }
+            }
+          ],
+          "title": {
+            "type": "plain_text",
+            "text": "Decimal control"
+          },
+          "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+          }
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb017-zero-trailing",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "type": "modal",
+          "blocks": [
+            {
+              "type": "input",
+              "block_id": "amount",
+              "label": {
+                "type": "plain_text",
+                "text": "Amount"
+              },
+              "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "amount",
+                "initial_value": "42.00"
+              }
+            }
+          ],
+          "title": {
+            "type": "plain_text",
+            "text": "Decimal control"
+          },
+          "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+          }
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb017-integer",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "type": "modal",
+          "blocks": [
+            {
+              "type": "input",
+              "block_id": "amount",
+              "label": {
+                "type": "plain_text",
+                "text": "Amount"
+              },
+              "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "amount",
+                "initial_value": "42"
+              }
+            }
+          ],
+          "title": {
+            "type": "plain_text",
+            "text": "Decimal control"
+          },
+          "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+          }
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb017-canonical",
+        "method": "views.open",
+        "http": 200,
+        "payload": {
+          "type": "modal",
+          "blocks": [
+            {
+              "type": "input",
+              "block_id": "amount",
+              "label": {
+                "type": "plain_text",
+                "text": "Amount"
+              },
+              "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "amount",
+                "initial_value": "42.5"
+              }
+            }
+          ],
+          "title": {
+            "type": "plain_text",
+            "text": "Decimal control"
+          },
+          "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+          }
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb017-trailing",
+        "method": "views.open",
+        "http": 200,
+        "payload": {
+          "type": "modal",
+          "blocks": [
+            {
+              "type": "input",
+              "block_id": "amount",
+              "label": {
+                "type": "plain_text",
+                "text": "Amount"
+              },
+              "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "amount",
+                "initial_value": "42.50"
+              }
+            }
+          ],
+          "title": {
+            "type": "plain_text",
+            "text": "Decimal control"
+          },
+          "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+          }
+        },
+        "result": {
+          "ok": false,
+          "error": "invalid_arguments",
+          "response_metadata": {
+            "messages": [
+              "[ERROR] initial_value is not a valid number (integer or float) [json-pointer:view/blocks/0/element/initial_value]"
+            ]
+          }
+        }
+      },
+      {
+        "case": "sb017-integer",
+        "method": "views.open",
+        "http": 200,
+        "payload": {
+          "type": "modal",
+          "blocks": [
+            {
+              "type": "input",
+              "block_id": "amount",
+              "label": {
+                "type": "plain_text",
+                "text": "Amount"
+              },
+              "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "amount",
+                "initial_value": "42"
+              }
+            }
+          ],
+          "title": {
+            "type": "plain_text",
+            "text": "Decimal control"
+          },
+          "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+          }
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb017-zero-trailing",
+        "method": "views.open",
+        "http": 200,
+        "payload": {
+          "type": "modal",
+          "blocks": [
+            {
+              "type": "input",
+              "block_id": "amount",
+              "label": {
+                "type": "plain_text",
+                "text": "Amount"
+              },
+              "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "amount",
+                "initial_value": "42.00"
+              }
+            }
+          ],
+          "title": {
+            "type": "plain_text",
+            "text": "Decimal control"
+          },
+          "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+          }
+        },
+        "result": {
+          "ok": false,
+          "error": "invalid_arguments",
+          "response_metadata": {
+            "messages": [
+              "[ERROR] initial_value is not a valid number (integer or float) [json-pointer:view/blocks/0/element/initial_value]"
+            ]
+          }
+        }
+      },
+      {
+        "case": "sb017-subunit-trailing",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "type": "modal",
+          "blocks": [
+            {
+              "type": "input",
+              "block_id": "amount",
+              "label": {
+                "type": "plain_text",
+                "text": "Amount"
+              },
+              "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "amount",
+                "initial_value": "0.50"
+              }
+            }
+          ],
+          "title": {
+            "type": "plain_text",
+            "text": "Decimal control"
+          },
+          "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+          }
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb017-subunit-canonical",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "type": "modal",
+          "blocks": [
+            {
+              "type": "input",
+              "block_id": "amount",
+              "label": {
+                "type": "plain_text",
+                "text": "Amount"
+              },
+              "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "amount",
+                "initial_value": "0.5"
+              }
+            }
+          ],
+          "title": {
+            "type": "plain_text",
+            "text": "Decimal control"
+          },
+          "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+          }
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb017-subunit-trailing",
+        "method": "views.open",
+        "http": 200,
+        "payload": {
+          "type": "modal",
+          "blocks": [
+            {
+              "type": "input",
+              "block_id": "amount",
+              "label": {
+                "type": "plain_text",
+                "text": "Amount"
+              },
+              "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "amount",
+                "initial_value": "0.50"
+              }
+            }
+          ],
+          "title": {
+            "type": "plain_text",
+            "text": "Decimal control"
+          },
+          "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+          }
+        },
+        "result": {
+          "ok": false,
+          "error": "invalid_arguments",
+          "response_metadata": {
+            "messages": [
+              "[ERROR] initial_value is not a valid number (integer or float) [json-pointer:view/blocks/0/element/initial_value]"
+            ]
+          }
+        }
+      },
+      {
+        "case": "sb017-subunit-canonical",
+        "method": "views.open",
+        "http": 200,
+        "payload": {
+          "type": "modal",
+          "blocks": [
+            {
+              "type": "input",
+              "block_id": "amount",
+              "label": {
+                "type": "plain_text",
+                "text": "Amount"
+              },
+              "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "amount",
+                "initial_value": "0.5"
+              }
+            }
+          ],
+          "title": {
+            "type": "plain_text",
+            "text": "Decimal control"
+          },
+          "submit": {
+            "type": "plain_text",
+            "text": "Submit"
+          }
+        },
+        "result": {
+          "ok": true
+        }
+      }
+    ]
+  }
+}
