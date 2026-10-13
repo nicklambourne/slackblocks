@@ -20,6 +20,23 @@ import org.junit.jupiter.api.Test;
 
 final class ComponentsTest {
   @Test
+  void accordionRejectsHeaderDividerBeforeContainerExpansion() {
+    for (boolean expanded : new boolean[] {false, true}) {
+      ValidationException error =
+          assertThrows(
+              ValidationException.class,
+              () ->
+                  AccordionSection.builder("Details")
+                      .blocks(DividerBlock.create())
+                      .expanded(expanded)
+                      .hasHeaderDivider(true)
+                      .build());
+      assertEquals(ErrorCategory.MUTUALLY_EXCLUSIVE, error.getCategory());
+      assertEquals("AccordionSection.hasHeaderDivider", error.getPath());
+    }
+  }
+
+  @Test
   void accordionBuildsSlackNativeContainerBlocks() {
     List<Block> blocks =
         Accordion.builder()

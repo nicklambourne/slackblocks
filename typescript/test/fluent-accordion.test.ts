@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   Accordion,
   AccordionSection,
+  MutualExclusivityError,
   Message,
   SectionBlock,
   containerBlock,
@@ -11,6 +12,12 @@ import {
 } from "../src/index.js";
 
 describe("Accordion", () => {
+  it.each([false, true])("rejects an incompatible header divider when expanded=%s", (expanded) => {
+    const builder = AccordionSection().title("Details").blocks(SectionBlock().text("Body")).expanded(expanded);
+    expect(builder.hasHeaderDivider(false).build().has_header_divider).toBe(false);
+    expect(() => builder.hasHeaderDivider(true).build()).toThrow(MutualExclusivityError);
+    expect(() => builder.build()).toThrow("AccordionSection.hasHeaderDivider");
+  });
   it("renders Slack-native collapsible containers", () => {
     expect(
       Accordion()

@@ -1,5 +1,6 @@
 package io.github.nicklambourne.slackblocks.component;
 
+import io.github.nicklambourne.slackblocks.ErrorCategory;
 import io.github.nicklambourne.slackblocks.ValidationException;
 import io.github.nicklambourne.slackblocks.block.Block;
 import io.github.nicklambourne.slackblocks.block.ContainerBlock;
@@ -106,9 +107,9 @@ public final class AccordionSection {
     }
 
     /**
-     * Controls the divider below the section header.
+     * Compatibility option: collapsible accordions require false; prefer omitting this option.
      *
-     * @param value whether to show the divider
+     * @param value false (true conflicts with the always-collapsible accordion)
      * @return this builder
      */
     public Builder hasHeaderDivider(boolean value) {
@@ -135,6 +136,12 @@ public final class AccordionSection {
      *     blocks or more than ten
      */
     public ContainerBlock build() {
+      if (hasHeaderDivider) {
+        throw new ValidationException(
+            ErrorCategory.MUTUALLY_EXCLUSIVE,
+            "AccordionSection.hasHeaderDivider",
+            "a collapsible accordion cannot have a header divider; omit this option or use false");
+      }
       ContainerBlock.Builder result =
           ContainerBlock.builder()
               .title(title)
