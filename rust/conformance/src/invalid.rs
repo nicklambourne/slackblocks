@@ -4429,6 +4429,26 @@ pub const INVALID: &[InvalidCase] = &[
         },
     },
     InvalidCase {
+        id: "message-too-many-charts",
+        build: || {
+            let chart = DataVisualizationBlock::builder()
+                .title("Chart")
+                .chart(
+                    PieChart::builder()
+                        .segment(ChartSegment::builder().label("A").value(1).build()?)
+                        .build()?,
+                )
+                .build()?;
+            MessagePayload::builder("C123")
+                .blocks(vec![chart; 3])
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            MessagePayload::try_from(serde_json::json!({"channel":"C123","blocks":vec![serde_json::json!({"type":"data_visualization","title":"Chart","chart":{"type":"pie","segments":[{"label":"A","value":1}]}});3]})).map(|_| ())
+        },
+    },
+    InvalidCase {
         id: "data-visualization-title-too-long",
         build: || {
             let _ = DataVisualizationBlock::builder()

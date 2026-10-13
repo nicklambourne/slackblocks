@@ -648,6 +648,12 @@
       "description": "Exact decimal bounds: large_exponent",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/number-input-element/",
       "since": "1.3.0"
+    },
+    {
+      "id": "messages/message_two_charts",
+      "description": "Message with the maximum two data visualization blocks",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block/",
+      "since": "1.3.0"
     }
   ]
 }

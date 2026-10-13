@@ -905,6 +905,7 @@ const invalidCases: Record<string, () => unknown> = {
       rows: [[rawText("Name")], [rawText("x".repeat(limits.data_table.content.max_length))]],
       caption: "Names",
     }),
+  "message-too-many-charts": () => message({channel:"C123", blocks:Array.from({length:3}, () => dataVisualizationBlock({title:"Chart",chart:pieChart([chartSegment({label:"A",value:1})])}))}),
   "data-visualization-title-too-long": () =>
     dataVisualizationBlock({
       title: "x".repeat(limits.data_visualization.title.max_length + 1),

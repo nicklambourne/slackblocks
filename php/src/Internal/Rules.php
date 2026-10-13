@@ -134,6 +134,9 @@ final class Rules
             foreach ($value->attachments ?? [] as $attachment) {
                 array_push($blocks, ...$attachment->blocks);
             }
+            if (self::chartCount($blocks) > Schema::LIMITS['message.data_visualizations.max_items']) {
+                Validator::fail(C::LengthExceeded, $path, 'a message may contain at most two data visualization blocks');
+            }
             [$markdown, $table] = self::totals($blocks);
             if ($markdown > Schema::LIMITS['markdown.total_text.max_length']) {
                 Validator::fail(C::LengthExceeded, $path, 'message markdown total exceeded');
@@ -239,6 +242,24 @@ final class Rules
     }
 
     /** @param list<S\Block> $blocks
+     * @return int
+     */
+    private static function chartCount(array $blocks): int
+    {
+        $count = 0;
+        foreach ($blocks as $block) {
+            if ($block instanceof S\DataVisualizationBlock) {
+                $count++;
+            }
+            if ($block instanceof S\ContainerBlock) {
+                $count += self::chartCount($block->childBlocks);
+            }
+        }
+        return $count;
+    }
+
+    /**
+     * @param list<S\Block> $blocks
      * @return array{int, int}
      */
     private static function totals(array $blocks): array

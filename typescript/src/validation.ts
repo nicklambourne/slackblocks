@@ -1301,6 +1301,12 @@ function validateMessagePayload(payload: JsonObject): void {
       }
     });
   }
+  const chartCount = typedTotal(payload.blocks ?? [], "data_visualization", () => 1) +
+    (Array.isArray(payload.attachments) ? payload.attachments.reduce<number>((total, attachment) =>
+      total + typedTotal(objectAt(attachment, "attachments").blocks ?? [], "data_visualization", () => 1), 0) : 0);
+  if (chartCount > limits.message.data_visualizations.max_items) {
+    throw new LengthError("blocks", "a message may contain at most two data visualization blocks");
+  }
   const markdown = typedTotal(payload, "markdown", (block) =>
     typeof block.text === "string" ? codePointLength(block.text) : 0,
   );

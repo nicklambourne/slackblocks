@@ -237,6 +237,9 @@ public final class SlackLimits {
   /** {@code message.channel.min_length} */
   public static final int MESSAGE_CHANNEL_MIN_LENGTH = 1;
 
+  /** {@code message.data_visualizations.max_items} */
+  public static final int MESSAGE_DATA_VISUALIZATIONS_MAX_ITEMS = 2;
+
   /** {@code multi_select.max_selected_items.min} */
   public static final int MULTI_SELECT_MAX_SELECTED_ITEMS_MIN = 1;
 

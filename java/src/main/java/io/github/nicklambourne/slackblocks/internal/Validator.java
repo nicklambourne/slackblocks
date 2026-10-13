@@ -1080,12 +1080,18 @@ public final class Validator {
       }
     }
     // Slack limits markdown block text and data table cell text across the whole message.
-    int[] totals = new int[2];
+    int[] totals = new int[3];
     addMessageTotals(value.get("blocks"), totals);
     if (value.get("attachments") instanceof List<?> attachments) {
       for (Object attachment : attachments) {
         addMessageTotals(objectAt(attachment, path).get("blocks"), totals);
       }
+    }
+    if (totals[2] > SlackLimits.MESSAGE_DATA_VISUALIZATIONS_MAX_ITEMS) {
+      fail(
+          ErrorCategory.LENGTH_EXCEEDED,
+          path,
+          "a message may contain at most two data visualization blocks");
     }
     if (totals[0] > SlackLimits.MARKDOWN_TOTAL_TEXT_MAX_LENGTH) {
       fail(
@@ -1107,14 +1113,14 @@ public final class Validator {
     }
   }
 
-  /**
-   * Adds markdown block text to {@code totals[0]} and data table cell text to {@code totals[1]}.
-   */
+  /** Adds markdown text, data table text and data visualization counts to the three totals. */
   private static void addMessageTotals(@Nullable Object value, int[] totals) {
     if (value instanceof Map<?, ?> map) {
       Object type = map.get("type");
       if ("markdown".equals(type) && map.get("text") instanceof String text) {
         totals[0] += text.codePointCount(0, text.length());
+      } else if ("data_visualization".equals(type)) {
+        totals[2]++;
       } else if ("data_table".equals(type)) {
         totals[1] += textCharacterCount(map.get("rows"));
       } else if ("container".equals(type)) {
