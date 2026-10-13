@@ -1100,6 +1100,7 @@ module ValidConstructions
         action_id: "run_workflow"
       )
     },
+    "messages/message_two_charts" => -> { Slackblocks::MessagePayload.new(channel: "C123", text: "", mrkdwn: true, blocks: 2.times.map { |i| Slackblocks::DataVisualizationBlock.new(title: "Chart", chart: Slackblocks::PieChart.new(segments: [Slackblocks::ChartSegment.new(label: "A", value: 1)]), block_id: "chart_#{i}") }) },
     "messages/message_basic" => -> {
       Slackblocks::MessagePayload.new(
         channel: "#slackblocks",

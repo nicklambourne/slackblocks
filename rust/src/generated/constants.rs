@@ -86,6 +86,7 @@ pub(crate) const LIMITS: &[(&str, i64)] = &[
     ("message.attachments.max_items", 100),
     ("message.blocks.max_items", 50),
     ("message.channel.min_length", 1),
+    ("message.data_visualizations.max_items", 2),
     ("multi_select.max_selected_items.min", 1),
     ("number_input.placeholder.max_length", 150),
     ("option.description.max_length", 75),

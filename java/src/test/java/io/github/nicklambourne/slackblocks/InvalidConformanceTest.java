@@ -593,6 +593,26 @@ final class InvalidConformanceTest {
       case "data-table-content-too-long" ->
           dataTable(
               List.of(List.of(rawText("Name")), List.of(rawText(repeated("x", 20000)))), "Names");
+      case "message-too-many-charts" ->
+          invalid(
+              "Message",
+              map(
+                  "channel",
+                  "C123",
+                  "blocks",
+                  java.util.Collections.nCopies(
+                      3,
+                      map(
+                          "type",
+                          "data_visualization",
+                          "title",
+                          "Chart",
+                          "chart",
+                          map(
+                              "type",
+                              "pie",
+                              "segments",
+                              List.of(map("label", "A", "value", 1)))))));
       case "data-visualization-title-too-long" ->
           typed(
               "DataVisualizationBlock",

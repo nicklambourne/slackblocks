@@ -119,6 +119,7 @@ module InvalidCases
     data-table-page-size-too-large
     data-table-cell-text-empty
     data-table-content-too-long
+    message-too-many-charts
     data-visualization-title-too-long
     pie-chart-empty
     pie-chart-too-many-segments
@@ -302,6 +303,7 @@ module InvalidCases
     when "data-table-page-size-too-large" then data_table_case(valid_rows, "Names", "page_size", 101)
     when "data-table-cell-text-empty" then data_table_case(items(items(raw_text("Name")), items(raw_text(""))), "Names")
     when "data-table-content-too-long" then data_table_case(items(items(raw_text("Name")), items(raw_text(repeated("x", 20000)))), "Names")
+    when "message-too-many-charts" then invalid_case("Message", {"channel" => "C123", "blocks" => Array.new(3) { obj("data_visualization", "title", "Chart", "chart", obj("pie", "segments", items(segment("A", 1)))) }})
     when "data-visualization-title-too-long" then typed("DataVisualizationBlock", "data_visualization", "title", repeated("x", 51), "chart", obj("pie", "segments", items(segment("A", 1))))
     when "pie-chart-empty" then typed("PieChart", "pie", "segments", items)
     when "pie-chart-too-many-segments" then typed("PieChart", "pie", "segments", copies(13, ->(index) { segment("S", 1) }))

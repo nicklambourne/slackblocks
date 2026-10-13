@@ -609,6 +609,12 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         ],
         caption="Names",
     ),
+    "message-too-many-charts": lambda: Message(
+        channel="C123",
+        blocks=[
+            DataVisualizationBlock("Chart", PieChart([ChartSegment("A", 1)])) for _ in range(3)
+        ],
+    ),
     "data-visualization-title-too-long": lambda: DataVisualizationBlock(
         "x" * (LIMITS["data_visualization"]["title"]["max_length"] + 1),
         PieChart([ChartSegment("A", 1)]),

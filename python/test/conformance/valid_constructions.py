@@ -619,6 +619,13 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
             )
         ),
     ),
+    "messages/message_two_charts": lambda: Message(
+        channel="C123",
+        blocks=[
+            DataVisualizationBlock("Chart", PieChart([ChartSegment("A", 1)]), block_id=f"chart_{i}")
+            for i in range(2)
+        ],
+    ),
     "messages/message_basic": lambda: Message(
         channel="#slackblocks",
         blocks=SectionBlock("Hello, world!", block_id="fake_block_id"),
