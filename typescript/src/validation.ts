@@ -252,6 +252,8 @@ const REQUIRED_FIELDS: Record<string, readonly string[]> = {
   line: ["series", "axis_config"],
   link: ["url"],
   markdown: ["text"],
+  mrkdwn: ["text"],
+  plain_text: ["text"],
   modal: ["title", "blocks"],
   number_input: ["is_decimal_allowed"],
   overflow: ["options"],
