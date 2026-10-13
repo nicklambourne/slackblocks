@@ -1050,6 +1050,18 @@
       "category": "type-mismatch",
       "constraint": "number_input.bounds.infinity",
       "description": "Number bound decimal contract rejects infinity"
+    },
+    {
+      "id": "external-multi-focus-false",
+      "category": "invalid-usage",
+      "constraint": "external_multi_select.focus_on_load.unsupported.false",
+      "description": "External multi-select must omit focus_on_load, including explicit false"
+    },
+    {
+      "id": "external-multi-focus-true",
+      "category": "invalid-usage",
+      "constraint": "external_multi_select.focus_on_load.unsupported.true",
+      "description": "External multi-select must omit focus_on_load, including explicit true"
     }
   ]
 }

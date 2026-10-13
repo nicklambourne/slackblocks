@@ -1662,7 +1662,7 @@
           "goMethod": "FocusOnLoad",
           "wire": "focus_on_load",
           "kind": "boolean",
-          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+          "description": "Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected."
         },
         {
           "method": "placeholder",

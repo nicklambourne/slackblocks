@@ -225,6 +225,12 @@ public final class Validator {
           objectAt(value.get("dispatch_action_config"), child(path, "dispatch_action_config")),
           child(path, "dispatch_action_config"));
     }
+    if (type.equals("multi_external_select") && value.containsKey("focus_on_load")) {
+      fail(
+          ErrorCategory.INVALID_USAGE,
+          child(path, "focus_on_load"),
+          "unsupported for external multi-select menus; omit this field");
+    }
     if (MULTI_SELECT_TYPES.contains(type)) {
       checkRange(
           value,
