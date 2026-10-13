@@ -20275,7 +20275,7 @@ impl ModalView {
     pub fn external_id(&self) -> Option<&str> {
         self.external_id.as_deref()
     }
-    /// Borrows or copies `submit_disabled`. Sets whether the submit button starts disabled. Only valid in workflow configuration modals.
+    /// Borrows or copies `submit_disabled`. Sets whether the submit button starts disabled in workflow configuration modals only. Omit this field for ordinary views.open/views.push modals, including when false. The general ModalView value cannot infer its receiving workflow context.
     pub fn submit_disabled(&self) -> Option<bool> {
         self.submit_disabled
     }
@@ -20409,7 +20409,7 @@ impl ModalViewBuilder {
         self.external_id = None;
         self
     }
-    /// Sets whether the submit button starts disabled. Only valid in workflow configuration modals.
+    /// Sets whether the submit button starts disabled in workflow configuration modals only. Omit this field for ordinary views.open/views.push modals, including when false. The general ModalView value cannot infer its receiving workflow context.
     pub fn submit_disabled(mut self, value: bool) -> Self {
         self.submit_disabled = Some(value);
         self

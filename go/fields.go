@@ -497,7 +497,8 @@ func (b *builder) Strike(value bool) *builder { return b.set("strike", value) }
 // Submit sets a modal submit-button label.
 func (b *builder) Submit(value any) *builder { return b.set("submit", value) }
 
-// SubmitDisabled controls the initial modal submit state.
+// SubmitDisabled controls the initial submit state in workflow configuration modals only.
+// Omit this field for ordinary views.open/views.push modals, including when false.
 func (b *builder) SubmitDisabled(value bool) *builder {
 	return b.set("submit_disabled", value)
 }

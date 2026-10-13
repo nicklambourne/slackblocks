@@ -6,6 +6,8 @@
 
 ## [Unreleased]
 
+- Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
+
 ## [2.6.0] — 2026-10-09
 
 - Introduce the native Rust 2024 implementation of shared Block Kit specification

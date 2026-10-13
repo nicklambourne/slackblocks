@@ -670,3 +670,20 @@ code and PHP/package versions in the [issue tracker](https://github.com/nicklamb
 
 </PHP>
 </LanguageContent>
+
+## `submit_disabled` on ordinary modals
+
+Slack reserves `submit_disabled` for [workflow configuration modals](https://docs.slack.dev/reference/views/modal-views/). An ordinary `views.open` or `views.push` request should omit the field. Explicit `false` still supplies an unsupported field; it is not equivalent to omission. The general modal constructor retains the field because configuration views use the same wire type, and cannot infer the receiving workflow from the value alone.
+
+| Language | Ordinary-modal construction |
+| --- | --- |
+| Python | Leave `submit_disabled` unspecified on `Modal`. |
+| TypeScript | Do not call `.submitDisabled(...)` on `Modal()`. |
+| Go | Do not call `.SubmitDisabled(...)` on `NewModal()`. |
+| Java | Do not call `.submitDisabled(...)` on `ModalView.builder()`. |
+| C# | Leave `submitDisabled` unspecified on `new ModalView(...)`. |
+| Ruby | Leave `submit_disabled:` unspecified on `Slackblocks::ModalView.new`. |
+| Rust | Do not call `.submit_disabled(...)` on `ModalView::builder()`. |
+| PHP | Leave `submitDisabled:` unspecified on `new ModalView(...)`. |
+
+The shared `views/modal_with_blocks` and `views/modal_without_blocks` fixtures exercise ordinary modal omission through every native conformance consumer. Configuration-specific acceptance needs an enabled workflow configuration context; an ordinary-modal rejection is not evidence that Slack removed configuration support.
