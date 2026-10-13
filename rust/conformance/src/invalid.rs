@@ -7574,4 +7574,34 @@ pub const INVALID: &[InvalidCase] = &[
             .map(|_| ())
         },
     },
+    InvalidCase {
+        id: "external-multi-focus-false",
+        build: || {
+            ExternalMultiSelectElement::builder()
+                .focus_on_load(false)
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            ExternalMultiSelectElement::try_from(
+                serde_json::json!({"type":"multi_external_select","focus_on_load":false}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "external-multi-focus-true",
+        build: || {
+            ExternalMultiSelectElement::builder()
+                .focus_on_load(true)
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            ExternalMultiSelectElement::try_from(
+                serde_json::json!({"type":"multi_external_select","focus_on_load":true}),
+            )
+            .map(|_| ())
+        },
+    },
 ];

@@ -356,6 +356,11 @@ func validateObject(object Object, path string) error {
 			}
 		}
 	}
+	if typeName == "multi_external_select" {
+		if _, present := object["focus_on_load"]; present {
+			return validationError(InvalidUsage, child(path, "focus_on_load"), "unsupported for external multi-select menus; omit this field")
+		}
+	}
 	if multiSelectTypes[typeName] {
 		if err := numberBetween(object, "max_selected_items", path, limitMultiSelectMaxSelectedItemsMin, math.MaxInt); err != nil {
 			return err

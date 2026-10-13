@@ -266,6 +266,10 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewNumberInput().IsDecimalAllowed(true).MinValue("NaN"))
 	case "number-bound-infinity":
 		return buildError(slackblocks.NewNumberInput().IsDecimalAllowed(true).MinValue("Infinity"))
+	case "external-multi-focus-false":
+		return buildError(slackblocks.NewExternalMultiSelect().FocusOnLoad(false))
+	case "external-multi-focus-true":
+		return buildError(slackblocks.NewExternalMultiSelect().FocusOnLoad(true))
 	case "number-input-inverted-range":
 		return buildError(slackblocks.NewNumberInput().ActionID("a").IsDecimalAllowed(true).MinValue(2).MaxValue(1))
 	case "context-invalid-element":
