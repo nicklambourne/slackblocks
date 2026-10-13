@@ -202,6 +202,14 @@ class Message(BaseMessage):
 class MessageResponse(BaseMessage):
     """
     A required, immediate response that confirms your app received the payload.
+
+    Args:
+        ephemeral: ``True`` explicitly requests a private response; ``False``
+            explicitly requests an ``in_channel`` response. Omitting the argument
+            (or passing ``None``) preserves the transport's default visibility.
+            Slash-command responses default to private when no response type is sent.
+
+    See: <https://docs.slack.dev/interactivity/implementing-slash-commands/#responding_to_commands>.
     """
 
     def __init__(
@@ -212,7 +220,7 @@ class MessageResponse(BaseMessage):
         thread_ts: str | None = None,
         mrkdwn: bool = True,
         replace_original: bool = False,
-        ephemeral: bool = False,
+        ephemeral: bool | None = None,
     ) -> None:
         super().__init__(
             text=text,
@@ -229,7 +237,13 @@ class MessageResponse(BaseMessage):
             {
                 **super()._resolve(),
                 "replace_original": self.replace_original,
-                "response_type": "ephemeral" if self.ephemeral else None,
+                "response_type": (
+                    None
+                    if self.ephemeral is None
+                    else "ephemeral"
+                    if self.ephemeral
+                    else "in_channel"
+                ),
             }
         )
 
