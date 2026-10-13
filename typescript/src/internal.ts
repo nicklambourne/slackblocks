@@ -4,6 +4,7 @@ import type {
   JsonValue,
   SlackObject,
 } from "./types.js";
+import { MissingRequiredError, TypeMismatchError } from "./errors.js";
 import { assertValid } from "./validation.js";
 
 function snakeCase(key: string): string {
@@ -102,4 +103,10 @@ export function textValue(value: unknown): string | undefined {
     return value.text;
   }
   return undefined;
+}
+
+/** Validate collection shape before a factory reads length or iterates it. */
+export function requireArray(value: unknown, path: string): asserts value is readonly unknown[] {
+  if (value === undefined) throw new MissingRequiredError(path, "required field is missing");
+  if (!Array.isArray(value)) throw new TypeMismatchError(path, "expected an array");
 }

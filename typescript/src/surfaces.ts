@@ -1,4 +1,5 @@
 import { TypeMismatchError } from "./errors.js";
+import { requireArray } from "./internal.js";
 import type { JsonValue } from "./types.js";
 
 export type BlockSurface = "home" | "message" | "modal";
@@ -63,6 +64,7 @@ export function validateSurfaceBlocks(
   surface: BlockSurface,
   path: string,
 ): void {
+  requireArray(blocks, path);
   const allowed = BLOCK_TYPES_BY_SURFACE[surface];
   blocks.forEach((block, index) => {
     if (block === null || Array.isArray(block) || typeof block !== "object") {

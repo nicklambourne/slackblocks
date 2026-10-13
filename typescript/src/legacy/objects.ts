@@ -16,7 +16,7 @@ import {
   OutOfRangeError,
   TypeMismatchError,
 } from "../errors.js";
-import { codePointLength, create, createObject, textValue } from "../internal.js";
+import { codePointLength, create, createObject, textValue, requireArray } from "../internal.js";
 import type { FactorySettings, JsonObject, SlackObject } from "../types.js";
 import { validateConversationFilter, validateSlackFile } from "../composition.js";
 
@@ -46,11 +46,20 @@ export interface MarkdownOptions {
 
 const OPTION_URL_MAX_LENGTH = 3000;
 
-function ensureLength(value: string, path: string, maximum: number): void {
+function ensureLength(value: string | undefined, path: string, maximum: number): void {
+  if (value === undefined) throw new MissingRequiredError(path, "required field is missing");
+  if (typeof value !== "string") throw new TypeMismatchError(path, "expected a string");
   const size = codePointLength(value);
   if (size > maximum) {
     throw new LengthError(path, `${size} exceeds maximum ${maximum}`);
   }
+}
+
+function ensureTextLength(value: TextLike | undefined, path: string, maximum: number): void {
+  if (value === undefined) throw new MissingRequiredError(path, "required field is missing");
+  const text = textValue(value);
+  if (text === undefined) throw new TypeMismatchError(path, "expected a string or text object");
+  ensureLength(text, path, maximum);
 }
 
 /**
@@ -143,8 +152,7 @@ export function confirmation(
     ["confirm", limits.confirmation.confirm.max_length],
     ["deny", limits.confirmation.deny.max_length],
   ] as const) {
-    const value = textValue(input[field]);
-    if (value !== undefined) ensureLength(value, field, maximum);
+    ensureTextLength(input[field], `confirmation.${field}`, maximum);
   }
   return createObject(
     {
@@ -180,7 +188,7 @@ export interface OptionInput {
  */
 export function option(input: OptionInput, settings: FactorySettings = {}): JsonObject {
   const text = asText(input.text, "plain_text", settings);
-  ensureLength(textValue(text) ?? "", "option.text", limits.option.text.max_length);
+  ensureTextLength(text, "option.text", limits.option.text.max_length);
   ensureLength(input.value, "option.value", limits.option.value.max_length);
   if (input.description !== undefined) {
     ensureLength(
@@ -225,8 +233,9 @@ export function optionGroup(
   input: OptionGroupInput,
   settings: FactorySettings = {},
 ): JsonObject {
-  ensureLength(
-    textValue(asText(input.label, "plain_text", settings)) ?? "",
+  requireArray(input.options, "optionGroup.options");
+  ensureTextLength(
+    asText(input.label, "plain_text", settings),
     "optionGroup.label",
     limits.option_group.label.max_length,
   );
@@ -325,6 +334,8 @@ export function inputParameter(
   },
   settings: FactorySettings = {},
 ): JsonObject {
+  ensureLength(input.name, "inputParameter.name", Infinity);
+  ensureLength(input.value, "inputParameter.value", Infinity);
   return createObject({ ...input }, settings);
 }
 
@@ -344,6 +355,7 @@ export function trigger(
   },
   settings: FactorySettings = {},
 ): JsonObject {
+  ensureLength(input.url, "trigger.url", Infinity);
   return createObject({ ...input }, settings);
 }
 
@@ -361,6 +373,8 @@ export function workflow(
   },
   settings: FactorySettings = {},
 ): JsonObject {
+  if (input.trigger === undefined) throw new MissingRequiredError("workflow.trigger", "required field is missing");
+  if (input.trigger === null || typeof input.trigger !== "object" || Array.isArray(input.trigger)) throw new TypeMismatchError("workflow.trigger", "expected a trigger object");
   return createObject(input, settings);
 }
 
@@ -423,6 +437,7 @@ export function rawText(
   text: string,
   settings: FactorySettings = {},
 ): SlackObject<"raw_text"> {
+  ensureLength(text, "rawText.text", Infinity);
   return create("raw_text", { text }, settings);
 }
 
@@ -440,6 +455,8 @@ export function rawNumber(
   text: string,
   settings: FactorySettings = {},
 ): SlackObject<"raw_number"> {
+  ensureLength(text, "rawNumber.text", Infinity);
+  if (value === undefined) throw new MissingRequiredError("rawNumber.value", "required field is missing");
   if (!Number.isFinite(value)) {
     throw new TypeMismatchError("rawNumber.value", "expected a finite number");
   }
@@ -560,6 +577,7 @@ export function chartSegment(
     "chartSegment.label",
     limits.data_visualization.segment.label.max_length,
   );
+  if (input.value === undefined) throw new MissingRequiredError("chartSegment.value", "required field is missing");
   if (!Number.isFinite(input.value)) {
     throw new TypeMismatchError("chartSegment.value", "expected a finite number");
   }
@@ -590,6 +608,7 @@ export function dataPoint(
   settings: FactorySettings = {},
 ): JsonObject {
   ensureLength(input.label, "dataPoint.label", limits.data_visualization.point_label.max_length);
+  if (input.value === undefined) throw new MissingRequiredError("dataPoint.value", "required field is missing");
   if (!Number.isFinite(input.value)) {
     throw new TypeMismatchError("dataPoint.value", "expected a finite number");
   }
@@ -616,6 +635,7 @@ export function dataSeries(
   input: DataSeriesInput,
   settings: FactorySettings = {},
 ): JsonObject {
+  requireArray(input.data, "dataSeries.data");
   ensureLength(input.name, "dataSeries.name", limits.data_visualization.series_name.max_length);
   if (
     input.data.length < limits.data_visualization.data.min_items ||
@@ -655,6 +675,7 @@ export function axisConfig(
   input: AxisConfigInput,
   settings: FactorySettings = {},
 ): JsonObject {
+  requireArray(input.categories, "axisConfig.categories");
   if (
     input.categories.length < limits.data_visualization.categories.min_items ||
     input.categories.length > limits.data_visualization.categories.max_items
