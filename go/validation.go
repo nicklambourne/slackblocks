@@ -75,6 +75,15 @@ var confirmTypes = stringSet(
 )
 
 var inputPlaceholderMaxLengths = map[string]int{
+	"external_select":            limitSelectPlaceholderMaxLength,
+	"multi_external_select":      limitSelectPlaceholderMaxLength,
+	"users_select":               limitSelectPlaceholderMaxLength,
+	"multi_users_select":         limitSelectPlaceholderMaxLength,
+	"channels_select":            limitSelectPlaceholderMaxLength,
+	"multi_channels_select":      limitSelectPlaceholderMaxLength,
+	"conversations_select":       limitSelectPlaceholderMaxLength,
+	"multi_conversations_select": limitSelectPlaceholderMaxLength,
+
 	"plain_text_input": limitPlainTextInputPlaceholderMaxLength,
 	"email_text_input": limitEmailInputPlaceholderMaxLength,
 	"url_text_input":   limitURLInputPlaceholderMaxLength,
