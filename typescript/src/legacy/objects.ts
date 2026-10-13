@@ -118,6 +118,8 @@ export interface ConfirmationInput {
   confirm: TextLike;
   /** Plain-text cancel-button label, up to 30 characters. */
   deny: TextLike;
+  /** Emphasis of the confirm button; Slack defaults to primary when omitted. */
+  style?: "primary" | "danger";
 }
 
 /**
@@ -132,6 +134,9 @@ export function confirmation(
   input: ConfirmationInput,
   settings: FactorySettings = {},
 ): JsonObject {
+  if (input.style !== undefined && input.style !== "primary" && input.style !== "danger") {
+    throw new TypeMismatchError("style", "expected primary or danger");
+  }
   for (const [field, maximum] of [
     ["title", limits.confirmation.title.max_length],
     ["text", limits.confirmation.text.max_length],
@@ -147,6 +152,7 @@ export function confirmation(
       text: asText(input.text, "mrkdwn", settings),
       confirm: asText(input.confirm, "plain_text", settings),
       deny: asText(input.deny, "plain_text", settings),
+      style: input.style,
     },
     settings,
   );

@@ -3388,6 +3388,12 @@ func (b *RichTextLinkBuilder) Style(value RichTextStyle) *RichTextLinkBuilder {
 	return b
 }
 
+// Unsafe sets whether Slack treats the link as unsafe.
+func (b *RichTextLinkBuilder) Unsafe(value bool) *RichTextLinkBuilder {
+	b.core.Unsafe(value)
+	return b
+}
+
 // RichTextListBuilder is the concrete fluent builder returned by NewRichTextList.
 //
 // A bulleted or numbered list inside rich text.

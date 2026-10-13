@@ -3782,7 +3782,7 @@
         },
         {
           "method": "unsafe",
-          "goMethod": null,
+          "goMethod": "Unsafe",
           "wire": "unsafe",
           "kind": "boolean",
           "description": "Sets whether Slack treats the link as unsafe."

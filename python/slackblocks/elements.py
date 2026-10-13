@@ -1909,6 +1909,7 @@ class WorkflowButton(Element):
         accessibility_label: a string label for longer descriptive text about
             a button element. Used by screen readers (max 75 chars).
         action_id: an identifier so the source of the action can be known (required).
+        confirm: an optional confirmation dialog shown before starting the workflow.
 
     Throws:
         InvalidUsageError: if any of the provided arguments fail validation.
@@ -1921,6 +1922,7 @@ class WorkflowButton(Element):
         style: ButtonStyleLike | None = ButtonStyle.DEFAULT,
         accessibility_label: str | None = None,
         action_id: str | None = None,
+        confirm: ConfirmationDialogue | None = None,
     ) -> None:
         super().__init__(type_=ElementType.WORKFLOW_BUTTON)
         self.action_id = validate_action_id(action_id)
@@ -1928,6 +1930,7 @@ class WorkflowButton(Element):
             text, force_plaintext=True, max_length=WORKFLOW_BUTTON_TEXT_MAX_LENGTH
         )
         self.workflow = workflow
+        self.confirm = validate_type(confirm, ConfirmationDialogue, "confirm", allow_none=True)
         self.style = ButtonStyle.to_button_style(style).value
         self.accessibility_label = validate_string(
             accessibility_label,
@@ -1943,6 +1946,7 @@ class WorkflowButton(Element):
                 "text": self.text,
                 "action_id": self.action_id,
                 "workflow": self.workflow,
+                "confirm": self.confirm,
                 "style": self.style,
                 "accessibility_label": self.accessibility_label
                 if self.accessibility_label
