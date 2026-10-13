@@ -14,7 +14,6 @@ import io.github.nicklambourne.slackblocks.object.PlainText;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalDouble;
 
 /**
  * An input that accepts whole or decimal numbers.
@@ -87,25 +86,27 @@ public final class NumberInputElement extends BlockElement implements InputEleme
   }
 
   /**
-   * Returns the smallest accepted number.
+   * Returns the smallest accepted number. Sent as a finite numeric string; native numeric
+   * convenience arguments are converted to strings.
    *
    * @return the value, or an empty optional when it was not set
    * @throws IllegalStateException if the field was set through a raw wire field to a value this
    *     type cannot represent
    */
-  public OptionalDouble getMinValue() {
-    return TypedFields.optionalDouble(fields, "NumberInputElement", "min_value");
+  public Optional<String> getMinValue() {
+    return TypedFields.optional(fields, "NumberInputElement", "min_value", String.class);
   }
 
   /**
-   * Returns the largest accepted number.
+   * Returns the largest accepted number. Sent as a finite numeric string; native numeric
+   * convenience arguments are converted to strings.
    *
    * @return the value, or an empty optional when it was not set
    * @throws IllegalStateException if the field was set through a raw wire field to a value this
    *     type cannot represent
    */
-  public OptionalDouble getMaxValue() {
-    return TypedFields.optionalDouble(fields, "NumberInputElement", "max_value");
+  public Optional<String> getMaxValue() {
+    return TypedFields.optional(fields, "NumberInputElement", "max_value", String.class);
   }
 
   /**
@@ -214,24 +215,74 @@ public final class NumberInputElement extends BlockElement implements InputEleme
     }
 
     /**
-     * Sets the smallest accepted number.
+     * Sets the smallest accepted number. Sent as a finite numeric string; native numeric
+     * convenience arguments are converted to strings.
      *
-     * @param value value for Slack's {@code min_value} field
+     * @param value numeric string or numeric convenience value
      * @return this builder
      */
-    public Builder minValue(double value) {
-      state.set("min_value", value);
+    public Builder minValue(String value) {
+      state.set("min_value", String.valueOf(value));
       return this;
     }
 
     /**
-     * Sets the largest accepted number.
+     * Sets the smallest accepted number. Sent as a finite numeric string; native numeric
+     * convenience arguments are converted to strings.
      *
-     * @param value value for Slack's {@code max_value} field
+     * @param value numeric string or numeric convenience value
+     * @return this builder
+     */
+    public Builder minValue(double value) {
+      state.set("min_value", String.valueOf(value));
+      return this;
+    }
+
+    /**
+     * Sets the smallest accepted number. Sent as a finite numeric string; native numeric
+     * convenience arguments are converted to strings.
+     *
+     * @param value numeric string or numeric convenience value
+     * @return this builder
+     */
+    public Builder minValue(long value) {
+      state.set("min_value", String.valueOf(value));
+      return this;
+    }
+
+    /**
+     * Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience
+     * arguments are converted to strings.
+     *
+     * @param value numeric string or numeric convenience value
+     * @return this builder
+     */
+    public Builder maxValue(String value) {
+      state.set("max_value", String.valueOf(value));
+      return this;
+    }
+
+    /**
+     * Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience
+     * arguments are converted to strings.
+     *
+     * @param value numeric string or numeric convenience value
      * @return this builder
      */
     public Builder maxValue(double value) {
-      state.set("max_value", value);
+      state.set("max_value", String.valueOf(value));
+      return this;
+    }
+
+    /**
+     * Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience
+     * arguments are converted to strings.
+     *
+     * @param value numeric string or numeric convenience value
+     * @return this builder
+     */
+    public Builder maxValue(long value) {
+      state.set("max_value", String.valueOf(value));
       return this;
     }
 

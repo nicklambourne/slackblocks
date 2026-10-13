@@ -196,9 +196,9 @@ export interface NumberElementInput {
   /** Numeric text present when the input first loads. */
   initialValue?: string;
   /** Minimum accepted value; it cannot exceed `maxValue`. */
-  minValue?: number;
+  minValue?: string | number;
   /** Maximum accepted value; it cannot be less than `minValue`. */
-  maxValue?: number;
+  maxValue?: string | number;
   /** Configuration controlling when typing dispatches a `block_actions` payload. */
   dispatchActionConfig?: JsonObject;
   /** Whether this element receives focus when its containing view opens. */
@@ -861,7 +861,10 @@ export function userMultiSelect(
  * @throws InvalidUsageError when an identifier, placeholder, or numeric range is invalid.
  */
 export function numberInput(input: NumberElementInput, settings: FactorySettings = {}) {
-  return element("number_input", { ...input }, settings);
+  return element("number_input", { ...input,
+    minValue: input.minValue === undefined ? undefined : String(input.minValue),
+    maxValue: input.maxValue === undefined ? undefined : String(input.maxValue),
+  }, settings);
 }
 
 /**

@@ -45,6 +45,8 @@ module Slackblocks
     def self.text_limit: (untyped value, String key, String path) -> untyped
     def self.max_items: (untyped items, String key, String path) -> untyped
     def self.special: (untyped klass, Hash[String, untyped] wire, String path) -> untyped
+    def self.decimal_bound: (String text, String path) -> [Integer, Integer, String]
+    def self.compare_decimal_bounds: ([Integer, Integer, String] left, [Integer, Integer, String] right) -> Integer
     def self.surface: (Array[untyped] blocks, String name, String path) -> untyped
     def self.standalone_task: (untyped value, String path) -> untyped
     def self.message: (Hash[String, untyped] wire, String path) -> untyped

@@ -38,6 +38,7 @@ assert.match(pages.get("blocks"), /```csharp\npublic IElement\? Accessory \{ get
 assert.match(pages.get("objects"), /public static implicit operator PlainText\?\(string\? text\)/, "string conversions must be documented");
 assert.match(pages.get("components"), /^## Paginator$/m);
 assert.match(pages.get("core"), /^## SlackObject$/m);
+assert.match(pages.get("core"), /^## NumberInputBound$/m);
 assert.match(pages.get("errors"), /^## ValidationException$/m);
 assert.match(pages.get("blocks"), /generated from the XML documentation of the compiled library/);
 assert.doesNotMatch(rendered, /^## (?:WireBuilder|Validator|SlackJson|WireValues|\w+Extensions)$/m);

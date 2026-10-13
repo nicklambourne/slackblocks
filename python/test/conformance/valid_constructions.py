@@ -558,6 +558,15 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
         placeholder=Text("Select one or more users", type_=TextType.PLAINTEXT),
         initial_users=["U064B5H1309", "U063JR973UP"],
     ),
+    "elements/number_input_scientific_bounds": lambda: NumberInput(
+        True, min_value="0.1000", max_value="1e-1"
+    ),
+    "elements/number_input_large_exponent": lambda: NumberInput(
+        True, min_value="1e309", max_value="2e309"
+    ),
+    "elements/number_input_bounds": lambda: NumberInput(
+        action_id="bounds", is_decimal_allowed=True, min_value="-1.5", max_value="10.25"
+    ),
     "elements/number_input_basic": lambda: NumberInput(
         action_id="number_input", is_decimal_allowed=False
     ),

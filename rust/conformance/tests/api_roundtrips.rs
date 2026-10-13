@@ -6933,7 +6933,7 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
     );
     {
         let edited = original.clone().into_builder().min_value(1.0_f64).build()?;
-        assert_eq!(wire(edited)["min_value"], serde_json::json!(1.0));
+        assert_eq!(wire(edited)["min_value"], serde_json::json!("1"));
     }
     {
         let edited = original.clone().into_builder().clear_min_value().build()?;
@@ -6948,7 +6948,7 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
     );
     {
         let edited = original.clone().into_builder().max_value(1.0_f64).build()?;
-        assert_eq!(wire(edited)["max_value"], serde_json::json!(1.0));
+        assert_eq!(wire(edited)["max_value"], serde_json::json!("1"));
     }
     {
         let edited = original.clone().into_builder().clear_max_value().build()?;

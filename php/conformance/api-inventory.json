@@ -4529,11 +4529,11 @@
                 "readonly": true
             },
             "minValue": {
-                "type": "int|float|null",
+                "type": "?string",
                 "readonly": true
             },
             "maxValue": {
-                "type": "int|float|null",
+                "type": "?string",
                 "readonly": true
             },
             "dispatchActionConfig": {
@@ -4579,7 +4579,7 @@
                         "default": null
                     },
                     "minValue": {
-                        "type": "int|float|null",
+                        "type": "string|int|float|null",
                         "optional": true,
                         "variadic": false,
                         "byReference": false,
@@ -4587,7 +4587,7 @@
                         "default": null
                     },
                     "maxValue": {
-                        "type": "int|float|null",
+                        "type": "string|int|float|null",
                         "optional": true,
                         "variadic": false,
                         "byReference": false,
@@ -7648,7 +7648,7 @@
         "methods": [],
         "constants": {
             "PACKAGE": "2.7.0",
-            "SPEC": "1.2.0"
+            "SPEC": "1.3.0"
         }
     },
     "VideoBlock": {

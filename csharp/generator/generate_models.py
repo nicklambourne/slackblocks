@@ -199,7 +199,9 @@ class Field:
 
         kind, t = self.kind, self.target
         optional = "" if self.required else "?"
-        if kind == "string":
+        if field.get("coerce") == "decimal_string":
+            self.parameter_type, self.property_type = "global::Slackblocks.NumberInputBound?", "string?"
+        elif kind == "string":
             self.parameter_type, self.property_type = f"string{optional}", f"string{optional}"
         elif kind == "boolean":
             self.parameter_type = self.property_type = "bool?"
@@ -249,7 +251,9 @@ class Field:
 
     def assignment(self) -> str:
         kind, wire, value = self.kind, json.dumps(self.wire), self.argument()
-        if kind == "string":
+        if self.field.get("coerce") == "decimal_string":
+            call = f"wire.String({wire}, {value}?.Value)"
+        elif kind == "string":
             call = f"wire.String({wire}, {value})"
         elif kind == "boolean":
             call = f"wire.Boolean({wire}, {value})"

@@ -376,6 +376,54 @@ final class InvalidConformanceTest {
               "https://example.com/image.png",
               "slack_file",
               map("id", "F0123ABC456"));
+      case "number-bound-inverted-large-integer" ->
+          invalid(
+              "NumberInputElement",
+              map(
+                  "type",
+                  "number_input",
+                  "is_decimal_allowed",
+                  true,
+                  "min_value",
+                  "9007199254740993",
+                  "max_value",
+                  "9007199254740992"));
+      case "number-bound-inverted-long-fraction" ->
+          invalid(
+              "NumberInputElement",
+              map(
+                  "type",
+                  "number_input",
+                  "is_decimal_allowed",
+                  true,
+                  "min_value",
+                  "0.10000000000000001",
+                  "max_value",
+                  "0.1"));
+      case "number-bound-hex" ->
+          invalid(
+              "NumberInputElement",
+              map("type", "number_input", "is_decimal_allowed", true, "min_value", "0x10"));
+      case "number-bound-underscore" ->
+          invalid(
+              "NumberInputElement",
+              map("type", "number_input", "is_decimal_allowed", true, "min_value", "1_000"));
+      case "number-bound-leading-space" ->
+          invalid(
+              "NumberInputElement",
+              map("type", "number_input", "is_decimal_allowed", true, "min_value", " 1"));
+      case "number-bound-trailing-space" ->
+          invalid(
+              "NumberInputElement",
+              map("type", "number_input", "is_decimal_allowed", true, "min_value", "1 "));
+      case "number-bound-nan" ->
+          invalid(
+              "NumberInputElement",
+              map("type", "number_input", "is_decimal_allowed", true, "min_value", "NaN"));
+      case "number-bound-infinity" ->
+          invalid(
+              "NumberInputElement",
+              map("type", "number_input", "is_decimal_allowed", true, "min_value", "Infinity"));
       case "number-input-inverted-range" ->
           typed(
               "NumberInput",

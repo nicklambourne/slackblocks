@@ -2859,6 +2859,112 @@ pub const INVALID: &[InvalidCase] = &[
         },
     },
     InvalidCase {
+        id: "number-bound-inverted-large-integer",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("9007199254740993")
+                .max_value("9007199254740992")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "9007199254740993", "max_value": "9007199254740992"})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-inverted-long-fraction",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("0.10000000000000001")
+                .max_value("0.1")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "0.10000000000000001", "max_value": "0.1"})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-hex",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("0x10")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "0x10"})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-underscore",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("1_000")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "1_000"})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-leading-space",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value(" 1")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": " 1"})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-trailing-space",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("1 ")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "1 "})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-nan",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("NaN")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "NaN"})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-infinity",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("Infinity")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "Infinity"})).map(|_| ())
+        },
+    },
+    InvalidCase {
         id: "number-input-inverted-range",
         build: || {
             let _ = NumberInputElement::builder()
@@ -2875,8 +2981,8 @@ pub const INVALID: &[InvalidCase] = &[
                     ("type".into(), Value::from("number_input")),
                     ("action_id".into(), Value::from("a")),
                     ("is_decimal_allowed".into(), Value::from(true)),
-                    ("min_value".into(), serde_json::json!(2)),
-                    ("max_value".into(), serde_json::json!(1)),
+                    ("min_value".into(), serde_json::json!("2")),
+                    ("max_value".into(), serde_json::json!("1")),
                 ]
                 .into_iter()
                 .collect(),
