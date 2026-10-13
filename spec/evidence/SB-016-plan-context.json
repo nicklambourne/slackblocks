@@ -1,0 +1,911 @@
+{
+  "finding": "SB-016",
+  "checked": "2026-10-13",
+  "status": "isolated message coexistence and same-task details/output ID reuse discrepancies confirmed; no broader cross-surface rule inferred",
+  "reference": "https://docs.slack.dev/reference/block-kit/blocks/plan-block/",
+  "observations": [
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/api.jsonl",
+      "line": 44,
+      "record": {
+        "at": "2026-10-12T10:04:33.915Z",
+        "method": "chat.postMessage",
+        "request": {
+          "channel": "C0C8MN0BQ12",
+          "mrkdwn": true,
+          "blocks": [
+            {
+              "type": "header",
+              "block_id": "sb01|python|S20|ordinary|0|heading",
+              "text": {
+                "type": "plain_text",
+                "text": "S20 Investigation assistant"
+              }
+            },
+            {
+              "type": "plan",
+              "block_id": "sb01|python|S20|ordinary|0|plan",
+              "title": "Investigation plan",
+              "tasks": [
+                {
+                  "task_id": "inspect",
+                  "title": "Inspect service",
+                  "status": "in_progress"
+                },
+                {
+                  "task_id": "summarize",
+                  "title": "Summarize evidence",
+                  "status": "pending"
+                }
+              ]
+            },
+            {
+              "type": "task_card",
+              "block_id": "sb01|python|S20|ordinary|0|task",
+              "task_id": "answer",
+              "title": "Investigation result",
+              "details": {
+                "type": "rich_text",
+                "block_id": "7b4cc7ea-199a-40a8-aae8-21690dca99b3",
+                "elements": [
+                  {
+                    "type": "rich_text_section",
+                    "elements": [
+                      {
+                        "type": "text",
+                        "text": "Checked synthetic health signals"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "output": {
+                "type": "rich_text",
+                "block_id": "7b4cc7ea-199a-40a8-aae8-21690dca99b3",
+                "elements": [
+                  {
+                    "type": "rich_text_section",
+                    "elements": [
+                      {
+                        "type": "text",
+                        "text": "Checked synthetic health signals"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "sources": [
+                {
+                  "type": "url",
+                  "url": "https://example.com/evidence",
+                  "text": "Synthetic evidence"
+                }
+              ],
+              "status": "complete"
+            },
+            {
+              "type": "markdown",
+              "block_id": "sb01|python|S20|ordinary|0|markdown",
+              "text": "## Result\nNo customer data was accessed.\n- Synthetic service is healthy."
+            },
+            {
+              "type": "context_actions",
+              "block_id": "sb01|python|S20|ordinary|0|feedback",
+              "elements": [
+                {
+                  "type": "feedback_buttons",
+                  "positive_button": {
+                    "text": {
+                      "type": "plain_text",
+                      "text": "Helpful"
+                    },
+                    "value": "yes"
+                  },
+                  "negative_button": {
+                    "text": {
+                      "type": "plain_text",
+                      "text": "Unhelpful"
+                    },
+                    "value": "no"
+                  },
+                  "action_id": "sb01|python|S20|feedback"
+                }
+              ]
+            }
+          ],
+          "text": "S20 Investigation assistant",
+          "unfurl_links": false,
+          "unfurl_media": false
+        },
+        "http": 200,
+        "result": {
+          "ok": false,
+          "error": "invalid_blocks",
+          "errors": [
+            "`block_id` 7b4cc7ea-199a-40a8-aae8-21690dca99b3 already exists [json-pointer:/blocks/2/output]"
+          ],
+          "response_metadata": {
+            "messages": [
+              "[ERROR] `block_id` 7b4cc7ea-199a-40a8-aae8-21690dca99b3 already exists [json-pointer:/blocks/2/output]"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/api.jsonl",
+      "line": 55,
+      "record": {
+        "at": "2026-10-12T10:04:59.844Z",
+        "method": "chat.postMessage",
+        "request": {
+          "mrkdwn": true,
+          "text": "S20: Investigation assistant",
+          "channel": "C0C8BQJUTU3",
+          "blocks": [
+            {
+              "text": {
+                "text": "S20: Investigation assistant",
+                "type": "plain_text"
+              },
+              "block_id": "sb01|typescript|S20|header|ordinary|0",
+              "type": "header"
+            },
+            {
+              "title": "Investigation plan",
+              "tasks": [
+                {
+                  "task_id": "inspect",
+                  "title": "Inspect service",
+                  "status": "in_progress"
+                },
+                {
+                  "task_id": "summarize",
+                  "title": "Summarize evidence",
+                  "status": "pending"
+                }
+              ],
+              "block_id": "sb01|typescript|S20|plan|ordinary|0",
+              "type": "plan"
+            },
+            {
+              "task_id": "answer",
+              "title": "Investigation result",
+              "status": "complete",
+              "details": {
+                "elements": [
+                  {
+                    "elements": [
+                      {
+                        "text": "Checked synthetic health signals",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "rich_text_section"
+                  }
+                ],
+                "type": "rich_text"
+              },
+              "output": {
+                "elements": [
+                  {
+                    "elements": [
+                      {
+                        "text": "Checked synthetic health signals",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "rich_text_section"
+                  }
+                ],
+                "type": "rich_text"
+              },
+              "sources": [
+                {
+                  "url": "https://example.com/evidence",
+                  "text": "Synthetic evidence",
+                  "type": "url"
+                }
+              ],
+              "block_id": "sb01|typescript|S20|answer|ordinary|0",
+              "type": "task_card"
+            },
+            {
+              "text": "## Result\nNo customer data accessed.\n- Synthetic service healthy.",
+              "block_id": "sb01|typescript|S20|markdown|ordinary|0",
+              "type": "markdown"
+            },
+            {
+              "elements": [
+                {
+                  "action_id": "sb01|typescript|S20|feedback",
+                  "positive_button": {
+                    "text": {
+                      "text": "Helpful",
+                      "type": "plain_text"
+                    },
+                    "value": "yes"
+                  },
+                  "negative_button": {
+                    "text": {
+                      "text": "Unhelpful",
+                      "type": "plain_text"
+                    },
+                    "value": "no"
+                  },
+                  "type": "feedback_buttons"
+                }
+              ],
+              "block_id": "sb01|typescript|S20|feedback|ordinary|0",
+              "type": "context_actions"
+            }
+          ],
+          "unfurl_links": false,
+          "unfurl_media": false
+        },
+        "http": 200,
+        "result": {
+          "ok": false,
+          "error": "invalid_blocks",
+          "errors": [
+            "Plan block and task blocks are mutually exclusive"
+          ],
+          "response_metadata": {
+            "messages": [
+              "[ERROR] Plan block and task blocks are mutually exclusive"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 2,
+      "record": {
+        "source": "go/platform-probes.jsonl",
+        "case_id": "go-S20-plan-and-task",
+        "variant": "plan-and-task",
+        "surface": "message",
+        "validation_field": "blocks",
+        "payload_sha256": "dc8fb7b0479e94b8baf013fd6aee250b684a2fe301ab2c945e9d49381ca2cd2a",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 3,
+      "record": {
+        "source": "go/platform-probes.jsonl",
+        "case_id": "go-S18-duplicate-rich-ids",
+        "variant": "duplicate-rich-ids",
+        "surface": "message",
+        "validation_field": "blocks",
+        "payload_sha256": "82dbc82edaf7b2c3b8599e737352a1127d8bdf9c6964fd8946eec5202354be8c",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 10,
+      "record": {
+        "source": "rust/platform-probes.jsonl",
+        "case_id": "rust-S20-plan-and-task",
+        "variant": "plan-and-task",
+        "surface": "message",
+        "validation_field": "blocks",
+        "payload_sha256": "b0b9b023235dcfd688bf0d2b69c51af67e6352f1da3c80f1bb390058a8ec5908",
+        "result": {
+          "ok": true
+        }
+      }
+    },
+    {
+      "source": "stress run 2026-10-12-full-01 evidence/live/schema-validation.jsonl",
+      "line": 11,
+      "record": {
+        "source": "rust/platform-probes.jsonl",
+        "case_id": "rust-S18-duplicate-rich-ids",
+        "variant": "duplicate-rich-ids",
+        "surface": "message",
+        "validation_field": "blocks",
+        "payload_sha256": "e22c572e34dd0c7359507ecd322634c1c375dabfeebf0e4acc7bde61386d6351",
+        "result": {
+          "ok": true
+        }
+      }
+    }
+  ],
+  "acceptance_gate": [
+    "Minimal Plan-only/root-Task-only/combined controls completed.",
+    "Plan and root-task details/output ID reuse each paired against unique-ID positive controls.",
+    "Other recursive ID reuse locations and other surfaces remain unprobed; do not generalize."
+  ],
+  "minimal_paired_controls": {
+    "checked": "2026-10-13",
+    "producer": "Python native constructors; synthetic content; same workspace; fresh trigger per modal",
+    "observations": [
+      {
+        "case": "sb016-plan-only",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "plan",
+              "block_id": "plan",
+              "title": "Synthetic plan",
+              "tasks": [
+                {
+                  "task_id": "nested",
+                  "title": "Synthetic task",
+                  "status": "complete"
+                }
+              ]
+            }
+          ]
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb016-plan-only",
+        "method": "chat.postMessage",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "plan",
+              "block_id": "plan",
+              "title": "Synthetic plan",
+              "tasks": [
+                {
+                  "task_id": "nested",
+                  "title": "Synthetic task",
+                  "status": "complete"
+                }
+              ]
+            }
+          ]
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb016-task-only",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "task_card",
+              "block_id": "task",
+              "task_id": "task",
+              "title": "Synthetic task",
+              "status": "complete"
+            }
+          ]
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb016-task-only",
+        "method": "chat.postMessage",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "task_card",
+              "block_id": "task",
+              "task_id": "task",
+              "title": "Synthetic task",
+              "status": "complete"
+            }
+          ]
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb016-combined",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "plan",
+              "block_id": "plan",
+              "title": "Synthetic plan",
+              "tasks": [
+                {
+                  "task_id": "nested",
+                  "title": "Synthetic task",
+                  "status": "complete"
+                }
+              ]
+            },
+            {
+              "type": "task_card",
+              "block_id": "task",
+              "task_id": "task",
+              "title": "Synthetic task",
+              "status": "complete"
+            }
+          ]
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb016-combined",
+        "method": "chat.postMessage",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "plan",
+              "block_id": "plan",
+              "title": "Synthetic plan",
+              "tasks": [
+                {
+                  "task_id": "nested",
+                  "title": "Synthetic task",
+                  "status": "complete"
+                }
+              ]
+            },
+            {
+              "type": "task_card",
+              "block_id": "task",
+              "task_id": "task",
+              "title": "Synthetic task",
+              "status": "complete"
+            }
+          ]
+        },
+        "result": {
+          "ok": false,
+          "error": "invalid_blocks",
+          "response_metadata": {
+            "messages": [
+              "[ERROR] Plan block and task blocks are mutually exclusive"
+            ]
+          }
+        }
+      },
+      {
+        "case": "sb016-plan-nested-unique",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "plan",
+              "block_id": "plan",
+              "title": "Synthetic plan",
+              "tasks": [
+                {
+                  "task_id": "nested",
+                  "title": "Synthetic task",
+                  "details": {
+                    "type": "rich_text",
+                    "block_id": "detail",
+                    "elements": [
+                      {
+                        "type": "rich_text_section",
+                        "elements": [
+                          {
+                            "type": "text",
+                            "text": "Synthetic detail"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "output": {
+                    "type": "rich_text",
+                    "block_id": "output",
+                    "elements": [
+                      {
+                        "type": "rich_text_section",
+                        "elements": [
+                          {
+                            "type": "text",
+                            "text": "Synthetic detail"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "status": "complete"
+                }
+              ]
+            }
+          ]
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb016-plan-nested-unique",
+        "method": "chat.postMessage",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "plan",
+              "block_id": "plan",
+              "title": "Synthetic plan",
+              "tasks": [
+                {
+                  "task_id": "nested",
+                  "title": "Synthetic task",
+                  "details": {
+                    "type": "rich_text",
+                    "block_id": "detail",
+                    "elements": [
+                      {
+                        "type": "rich_text_section",
+                        "elements": [
+                          {
+                            "type": "text",
+                            "text": "Synthetic detail"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "output": {
+                    "type": "rich_text",
+                    "block_id": "output",
+                    "elements": [
+                      {
+                        "type": "rich_text_section",
+                        "elements": [
+                          {
+                            "type": "text",
+                            "text": "Synthetic detail"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "status": "complete"
+                }
+              ]
+            }
+          ]
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb016-plan-nested-reuse",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "plan",
+              "block_id": "plan",
+              "title": "Synthetic plan",
+              "tasks": [
+                {
+                  "task_id": "nested",
+                  "title": "Synthetic task",
+                  "details": {
+                    "type": "rich_text",
+                    "block_id": "detail",
+                    "elements": [
+                      {
+                        "type": "rich_text_section",
+                        "elements": [
+                          {
+                            "type": "text",
+                            "text": "Synthetic detail"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "output": {
+                    "type": "rich_text",
+                    "block_id": "detail",
+                    "elements": [
+                      {
+                        "type": "rich_text_section",
+                        "elements": [
+                          {
+                            "type": "text",
+                            "text": "Synthetic detail"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "status": "complete"
+                }
+              ]
+            }
+          ]
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb016-plan-nested-reuse",
+        "method": "chat.postMessage",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "plan",
+              "block_id": "plan",
+              "title": "Synthetic plan",
+              "tasks": [
+                {
+                  "task_id": "nested",
+                  "title": "Synthetic task",
+                  "details": {
+                    "type": "rich_text",
+                    "block_id": "detail",
+                    "elements": [
+                      {
+                        "type": "rich_text_section",
+                        "elements": [
+                          {
+                            "type": "text",
+                            "text": "Synthetic detail"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "output": {
+                    "type": "rich_text",
+                    "block_id": "detail",
+                    "elements": [
+                      {
+                        "type": "rich_text_section",
+                        "elements": [
+                          {
+                            "type": "text",
+                            "text": "Synthetic detail"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "status": "complete"
+                }
+              ]
+            }
+          ]
+        },
+        "result": {
+          "ok": false,
+          "error": "invalid_blocks",
+          "response_metadata": {
+            "messages": [
+              "[ERROR] `block_id` detail already exists [json-pointer:/blocks/0/tasks/0/output]"
+            ]
+          }
+        }
+      },
+      {
+        "case": "sb016-task-nested-unique",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "task_card",
+              "block_id": "task",
+              "task_id": "task",
+              "title": "Synthetic task",
+              "details": {
+                "type": "rich_text",
+                "block_id": "detail",
+                "elements": [
+                  {
+                    "type": "rich_text_section",
+                    "elements": [
+                      {
+                        "type": "text",
+                        "text": "Synthetic detail"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "output": {
+                "type": "rich_text",
+                "block_id": "output",
+                "elements": [
+                  {
+                    "type": "rich_text_section",
+                    "elements": [
+                      {
+                        "type": "text",
+                        "text": "Synthetic detail"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "status": "complete"
+            }
+          ]
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb016-task-nested-unique",
+        "method": "chat.postMessage",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "task_card",
+              "block_id": "task",
+              "task_id": "task",
+              "title": "Synthetic task",
+              "details": {
+                "type": "rich_text",
+                "block_id": "detail",
+                "elements": [
+                  {
+                    "type": "rich_text_section",
+                    "elements": [
+                      {
+                        "type": "text",
+                        "text": "Synthetic detail"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "output": {
+                "type": "rich_text",
+                "block_id": "output",
+                "elements": [
+                  {
+                    "type": "rich_text_section",
+                    "elements": [
+                      {
+                        "type": "text",
+                        "text": "Synthetic detail"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "status": "complete"
+            }
+          ]
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb016-task-nested-reuse",
+        "method": "blocks.validate",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "task_card",
+              "block_id": "task",
+              "task_id": "task",
+              "title": "Synthetic task",
+              "details": {
+                "type": "rich_text",
+                "block_id": "detail",
+                "elements": [
+                  {
+                    "type": "rich_text_section",
+                    "elements": [
+                      {
+                        "type": "text",
+                        "text": "Synthetic detail"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "output": {
+                "type": "rich_text",
+                "block_id": "detail",
+                "elements": [
+                  {
+                    "type": "rich_text_section",
+                    "elements": [
+                      {
+                        "type": "text",
+                        "text": "Synthetic detail"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "status": "complete"
+            }
+          ]
+        },
+        "result": {
+          "ok": true
+        }
+      },
+      {
+        "case": "sb016-task-nested-reuse",
+        "method": "chat.postMessage",
+        "http": 200,
+        "payload": {
+          "blocks": [
+            {
+              "type": "task_card",
+              "block_id": "task",
+              "task_id": "task",
+              "title": "Synthetic task",
+              "details": {
+                "type": "rich_text",
+                "block_id": "detail",
+                "elements": [
+                  {
+                    "type": "rich_text_section",
+                    "elements": [
+                      {
+                        "type": "text",
+                        "text": "Synthetic detail"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "output": {
+                "type": "rich_text",
+                "block_id": "detail",
+                "elements": [
+                  {
+                    "type": "rich_text_section",
+                    "elements": [
+                      {
+                        "type": "text",
+                        "text": "Synthetic detail"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "status": "complete"
+            }
+          ]
+        },
+        "result": {
+          "ok": false,
+          "error": "invalid_blocks",
+          "response_metadata": {
+            "messages": [
+              "[ERROR] `block_id` detail already exists [json-pointer:/blocks/0/output]"
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
