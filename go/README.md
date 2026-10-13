@@ -54,6 +54,11 @@ Builder methods are typed, so a value of the wrong kind fails to compile:
   Untyped string constants still work: `Style("primary")`.
 - Rich text styles take `RichTextStyle{"bold": true}`.
 
+Passing a typed nil nested builder (for example, `Confirm(nil)`) returns a
+`ValidationError` with category `TypeMismatch` and the field path when the parent
+is built or marshalled. Omit an optional setter to omit that field; nil does not
+mean omission. `MustBuild` still panics on validation errors by design.
+
 `Set(field, value)` remains the raw wire-format escape hatch for fields slackblocks does not
 model yet.
 
