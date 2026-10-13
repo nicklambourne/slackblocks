@@ -1,0 +1,41 @@
+---
+title: Test workflow content and effects
+---
+
+# Test workflow content and effects
+
+A valid Block Kit message is not a completed application workflow. A status such as “created” or an incremented revision can hide an unchanged task list, a discarded delivery effect, or a reply posted to the wrong channel.
+
+The [native Python task example and tests](https://github.com/nicklambourne/slackblocks/tree/master/docs/examples/workflow-state) demonstrate a small state machine with actual task creation, completion, derived totals, terminal controls, and a native thread-summary message. It uses public constructors and can be run against an installed package without reading library source:
+
+```sh
+python -m pip install slackblocks
+python -m unittest discover -s docs/examples/workflow-state -p 'test_*.py'
+```
+
+For a source checkout, set `PYTHONPATH=python`. The example does not authenticate callbacks, contact Slack, or persist state; these remain receiver responsibilities. It is a worked Python application example, not a new application framework or a claim that all eight libraries implement workflow state.
+
+## Keep domain state, payloads and transport separate
+
+The receiver authenticates Slack's request, then supplies an event ID, actor, expected revision, action and validated form values. Save the original message's **channel and timestamp together** when opening a modal. Recover both from that trusted mapping on submission; do not use a default channel or a form-supplied timestamp. A modal's view ID does not identify its source message.
+
+The transition returns a new state and explicit effects. The example builds each effect's blocks through slackblocks. `ts` and `thread_ts` are transport metadata in the effect, deliberately separate from the native Message model. A reply succeeds only when its receipt's channel and parent timestamp match the saved origin and the client displays it in that thread.
+
+Hold a per-workflow lock or database transaction across reading state, checking the revision, applying the transition and committing state plus effects. The example's lock handles concurrent callbacks in one process; a multi-process receiver needs transactional comparison-and-swap or equivalent serialization. Do not let a delayed field callback overwrite a completed form submission.
+
+## Assert observable business changes
+
+| Action | Meaningful assertion |
+| --- | --- |
+| Create task | Task count increases, title and stable task ID appear in state and native output |
+| Complete task | The selected task changes, totals update, and its completion control disappears |
+| Refresh report | New source data changes the actual rows and chart values, with a fixed test oracle |
+| Assistant finishes | Task lifecycle and final answer content change; a new status label alone is insufficient |
+| Send announcement | Queue an effect; mark sent only after an accepted delivery receipt |
+| Correct a request | Stable request identity remains; changed values rehydrate into the next form |
+| Cancel or close | Terminal controls disappear and a delayed mutation preserves prior state |
+| Reply from a modal | Channel and parent timestamp both match the original message |
+
+The runnable tests cover the task rows, ownership, missing actor, duplicate/stale/cancel guards, simultaneous events at one revision, immutable prior state, and exact thread metadata. The report/assistant/announcement rows are acceptance patterns for your own application; this task example does not claim to implement them.
+
+Retain four separate evidence records: local domain transition, native payload construction, genuine callback plus API receipt, and visible client result. Keep original failures when repairing a harness. A fresh fixture reset does not erase historical success, and a local replay does not become a genuine Slack interaction. Mobile and multiple-user visibility need their own checks.
