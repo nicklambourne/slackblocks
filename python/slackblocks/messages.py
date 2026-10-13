@@ -7,6 +7,7 @@ See: <https://api.slack.com/messaging>
 
 from __future__ import annotations
 
+from copy import deepcopy
 from enum import Enum
 from json import dumps
 from typing import Any
@@ -166,6 +167,7 @@ class Message(BaseMessage):
             unfurled.
         unfurl_media: if `True`, media from links (e.g. images) will
             automatically unfurl.
+        metadata: optional message metadata, including `event_type` and `event_payload`.
     Throws:
         InvalidUsageException: in the event that the items passed to `blocks`
             are not valid [`Blocks`](/slackblocks/latest/reference/blocks).
@@ -181,6 +183,7 @@ class Message(BaseMessage):
         mrkdwn: bool = True,
         unfurl_links: bool | None = None,
         unfurl_media: bool | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         channel = validate_string_nonnull(
             channel, field_name="channel", min_length=MESSAGE_CHANNEL_MIN_LENGTH
@@ -188,15 +191,20 @@ class Message(BaseMessage):
         super().__init__(channel, text, blocks, attachments, thread_ts, mrkdwn)
         self.unfurl_links = unfurl_links
         self.unfurl_media = unfurl_media
+        self.metadata = metadata
 
     def _resolve(self) -> dict[str, Any]:
-        return resolve(
+        payload = resolve(
             {
                 **super()._resolve(),
                 "unfurl_links": self.unfurl_links,
                 "unfurl_media": self.unfurl_media,
             }
         )
+        if self.metadata is not None:
+            # Application JSON nulls carry data; Block Kit's omission rule does not apply.
+            payload["metadata"] = deepcopy(self.metadata)
+        return payload
 
 
 class MessageResponse(BaseMessage):

@@ -103,7 +103,9 @@ export function Markdown(): FluentBuilder<MarkdownBuilderInput, TextObject> {
  * See: <https://docs.slack.dev/reference/block-kit/composition-objects/confirmation-dialog-object>.
  */
 export function Confirmation(): FluentBuilder<ConfirmationInput, JsonObject> {
-  return createFluentBuilder(createConfirmation);
+  return createFluentBuilder(createConfirmation, {
+    fields: ["title", "text", "confirm", "deny", "style"],
+  });
 }
 
 /**
@@ -418,8 +420,16 @@ export function RichTextChannel(): FluentBuilder<RichTextMentionBuilderInput, Js
  *
  * See: <https://docs.slack.dev/reference/block-kit/blocks/rich-text-block#emoji-element-type>.
  */
-export function RichTextEmoji(): FluentBuilder<{ name: string }, JsonObject> {
-  return createFluentBuilder(({ name }, settings) => createRichTextEmoji(name, settings));
+export function RichTextEmoji(): FluentBuilder<{
+  /** Emoji shortcode without colons. */
+  name: string;
+  /** Optional Slack skin-tone index (1-6). */
+  skinTone?: number;
+}, JsonObject> {
+  return createFluentBuilder(
+    ({ name, skinTone }, settings) => createRichTextEmoji(name, settings, skinTone),
+    { fields: ["name", "skinTone"] },
+  );
 }
 
 /**
