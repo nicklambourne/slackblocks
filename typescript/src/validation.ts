@@ -1,6 +1,6 @@
 import limits from "../../spec/limits.json" with { type: "json" };
 
-import { validateConversationFilter, validateSlackFile } from "./composition.js";
+import { validateConversationFilter, validateSlackFile, validateFeedbackButton } from "./composition.js";
 import {
   InvalidUsageError,
   LengthError,
@@ -590,27 +590,7 @@ function validateKnownObject(
     case "feedback_buttons": {
       for (const field of ["positive_button", "negative_button"] as const) {
         const buttonPath = child(path, field);
-        const feedback = objectAt(object[field], buttonPath);
-        length(
-          textValue(feedback.text),
-          child(buttonPath, "text.text"),
-          undefined,
-          limits.feedback_button.text.max_length,
-        );
-        length(
-          typeof feedback.value === "string" ? feedback.value : undefined,
-          child(buttonPath, "value"),
-          undefined,
-          limits.feedback_button.value.max_length,
-        );
-        if (typeof feedback.accessibility_label === "string") {
-          length(
-            feedback.accessibility_label,
-            child(buttonPath, "accessibility_label"),
-            undefined,
-            limits.feedback_button.accessibility_label.max_length,
-          );
-        }
+        validateFeedbackButton(object[field]!, buttonPath);
       }
       break;
     }

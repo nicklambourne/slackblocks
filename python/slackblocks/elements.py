@@ -1874,18 +1874,18 @@ class ButtonStyle(Enum):
 
     @staticmethod
     def to_button_style(style: ButtonStyle | str | None) -> ButtonStyle:
-        # NOTE: this implementation uses ``ButtonStyle[style]`` which looks
-        # up the enum *name* (e.g. "PRIMARY"), not the value (e.g. "primary").
-        # Preserved here for backwards compatibility -- ``Button.style`` takes
-        # the value form via ``ButtonStyleName``. The two paths are not
-        # symmetric; see the planned Phase 7 ergonomics work for cleanup.
         if isinstance(style, ButtonStyle):
             return style
+        if style is None:
+            return ButtonStyle.DEFAULT
         if isinstance(style, str):
-            return ButtonStyle[style]
-        raise TypeMismatchError(
-            f"Can only coerce to ButtonStyle from ButtonStyle or string, not {type(style)}."
-        )
+            if style in ButtonStyle.__members__:
+                return ButtonStyle[style]
+            try:
+                return ButtonStyle(style)
+            except ValueError:
+                pass
+        raise TypeMismatchError("style must be primary, danger, a ButtonStyle member, or None.")
 
 
 ButtonStyleLike: TypeAlias = ButtonStyle | str

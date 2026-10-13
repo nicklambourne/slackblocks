@@ -46,3 +46,18 @@ export function validateSlackFile(value: JsonValue, path: string): void {
     );
   }
 }
+
+/** Same feedback-choice contract for standalone factories and typed parents. */
+export function validateFeedbackButton(value: JsonValue, path: string): void {
+  const object = objectAt(value, path);
+  const text = objectAt(object.text!, `${path}.text`);
+  for (const [field, entry, maximum] of [
+    ["text.text", text.text, limits.feedback_button.text.max_length],
+    ["value", object.value, limits.feedback_button.value.max_length],
+    ["accessibility_label", object.accessibility_label, limits.feedback_button.accessibility_label.max_length],
+  ] as const) {
+    if (field === "accessibility_label" && entry === undefined) continue;
+    if (typeof entry !== "string") throw new TypeMismatchError(`${path}.${field}`, "expected a string");
+    if ([...entry].length > maximum) throw new LengthError(`${path}.${field}`, `exceeds maximum ${maximum}`);
+  }
+}

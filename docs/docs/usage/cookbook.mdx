@@ -350,9 +350,26 @@ for raw_block in incoming.get("blocks", []):
         print("Section text:", block.text.text if block.text else None)
 ```
 
-`Block.from_dict` reads `data["type"]` and dispatches to the right subclass. The composition objects (`Text`, `Option`, `Confirm`, etc.) round-trip fully via their own `from_dict` classmethods.
+`Block.from_dict` dispatches by `type`; direct typed parsers also require the
+matching discriminator. This is a partial parser, not a general Slack JSON loader:
 
-In the current release, blocks containing interactive elements (`ActionsBlock`, `InputBlock`, `SectionBlock` with an `accessory`, `ContextBlock` with image elements) raise `NotImplementedError` — this is on the roadmap for a follow-up release.
+| Parse support | Block types |
+| --- | --- |
+| Supported | Alert, Divider, File, Header, Image, Markdown, Video |
+| Supported subset | Section without accessory; Context with text elements only |
+| Raises `NotImplementedError` | Actions, Input, RichText, Table, Card, Carousel, Container, ContextActions, DataTable, DataVisualization, TaskCard, Plan; Section with accessory; Context with images |
+
+Unknown future fields are ignored, so this is not a lossless storage format.
+Keep the original JSON when forwarding or archiving unsupported or future fields.
+`Text`, `ConfirmationDialogue`, `Option`, `OptionGroup`,
+`DispatchActionConfiguration`, `ConversationFilter`, `InputParameter`, `SlackFile`,
+`Trigger`, and `Workflow` have composition-object parsers; check individual
+references rather than assuming every composition type is parseable.
+
+For workflow button styles, use `"primary"`, `"danger"`, a `ButtonStyle` member
+(imported from `slackblocks.elements`), or `None` (default). Uppercase enum-name
+strings remain accepted for compatibility.
+
 
 
 ## One-line workflow trigger
