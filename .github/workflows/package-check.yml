@@ -50,3 +50,6 @@ jobs:
 
       - name: Smoke test source distribution
         run: uv run --isolated --no-project --with dist/*.tar.gz python -P -c "import slackblocks; print(slackblocks.__name__)"
+
+      - name: Strict installed-wheel typing contracts
+        run: uv run --isolated --no-project --with dist/*.whl --with "mypy>=1.14.1,<2.5.0" python -P test/typing/check_installed.py
