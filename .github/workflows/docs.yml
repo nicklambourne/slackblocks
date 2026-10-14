@@ -121,7 +121,7 @@ jobs:
           rustup default stable
 
       - name: Install PHP for native reference and executable guide examples
-        uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           php-version: "8.2"
           tools: composer:v2
