@@ -91,7 +91,7 @@ jobs:
           ruby-version: "3.4"
 
       - name: Configure RubyGems trusted publishing credentials
-        uses: rubygems/configure-rubygems-credentials@8674aee7f9f9055a8b771794d6f1e66b5fad36a9
+        uses: rubygems/configure-rubygems-credentials@f5a32efa94076b80b28556b2d3b04cb3707b6df1
 
       - name: Publish to RubyGems
         run: gem push "dist/slackblocks-${GITHUB_REF_NAME#ruby/v}.gem"
