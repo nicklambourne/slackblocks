@@ -167,3 +167,30 @@ review the native API and complete train before authorizing merge; branch
 protection is updated only after stable check names exist on the default branch.
 Protected Hex readiness, release approval and verified registry consumers are
 separate from these credential-free preparation checks.
+
+## Review remediation (16 October 2026)
+
+The implementation review found and corrected four gaps in the existing train:
+
+- **PR 1:** Accordion expansion now validates a complete struct before reading its
+  fields. Damaged structs return tagged `ValidationError` values, and nested
+  errors retain the `sections` index. Regressions cover tagged and raising APIs.
+- **PR 2:** Checked JSON conversion uses BEAM's float parser after Decimal has
+  preserved the token, retaining the exact decimal round-trip check. This accepts
+  representable subnormal floats and returns tagged overflow/underflow errors.
+  Explicit signed-zero conversion also avoids OTP 26 folding away the sign.
+  Tests cover both float boundaries, decimal scale, negative zero, long escaped
+  strings and deeply nested JSON/duplicate keys.
+- **PRs 1 and 5:** ExDoc source URLs now interpolate the actual source ref and
+  include the monorepo's `elixir/` directory. `%{ref}` was not an ExDoc-supported
+  placeholder. The credential-free docs gate checks rendered source links,
+  including exact commit identity, rather than only successful HTML generation.
+- **PR 5:** Artifact preparation rejects untracked and ignored files within the
+  package allowlist. A tracked-clean checkout can otherwise package source that
+  is absent from the recorded commit. Generated docs/dist outputs remain allowed;
+  regressions exercise real isolated Git repositories.
+
+Fixes are propagated through the dependent PR branches. The monitoring companion
+required no changes: its 36 collector/dashboard tests and seven project metadata
+tests passed again. Publication and monitoring activation remain disabled, and
+merge/release approval remains pending.

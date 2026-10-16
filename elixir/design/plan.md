@@ -473,10 +473,11 @@ The implementation is ready for review only when the complete inventory has stat
 - [x] Erlang example, Rebar3 artifact consumer, consolidated protocols and standalone OTP release pass minimum/current runtimes.
 - [x] Real local HTTP sending tests execute from displayed source; transport remains optional to core.
 - [x] Both license texts/metadata ship; production consumers need no dev tools, Git or monorepo files.
-- [ ] Full docs, collapsed README accordions, both badge rows/palette, official logo, ExDoc/HexDocs, actual snippets and historical browser checks pass.
+- [x] Pre-publication docs, collapsed README accordions, both badge rows/palette, official logo, rendered ExDoc source links, actual snippets and historical browser checks pass.
 - [ ] Stable hosted checks and branch protection are validated on relevant and unrelated changes.
 - [x] Nine-language versions and disabled strict guards advance atomically; real Mix declarations/lock semantics and partial-failure tests pass.
-- [ ] PR artifact/docs checks require no credentials; protected full dry run and readiness precede coordinated tags.
+- [x] PR artifact/docs checks require no credentials and verify committed package inputs and rendered source links.
+- [ ] Protected full dry run and registry readiness are verified before coordinated tags.
 - [ ] Hex ownership/environment/bootstrap credentials are verified; OIDC configuration is independently proven before claiming tokenless operation.
 - [ ] Maintainer authorizes merge/release; all publishers and exact registry installs succeed.
 - [ ] Post-release badges/HexDocs and dashboard/project entry are activated and verified.
