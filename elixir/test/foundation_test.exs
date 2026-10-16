@@ -185,7 +185,7 @@ defmodule Slackblocks.FoundationTest do
           {"1.2300", 1.23},
           {"5e-324", 5.0e-324},
           {"-5e-324", -5.0e-324},
-          {"1.7976931348623157e308", 1.7976931348623157e308}
+          {"1.7976931348623157e308", 1.797_693_134_862_315_7e308}
         ] do
       json = ~s({"type":"raw_number","text":"n","value":#{token}})
       assert Slackblocks.decode!(RawNumber, json).value === expected
