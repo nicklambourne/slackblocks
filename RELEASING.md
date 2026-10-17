@@ -406,9 +406,11 @@ maintainer approval. Do not attempt to work around the shared disabled guard.
 1. Finish review of all six PRs and the disabled monitoring companion. Verify
    the complete native/contract/API, quality, HTTP, artifact, Erlang release and
    documentation gates, preserving all existing language support floors.
-2. Create a personal Hex account and verify its email. Confirm that the public
-   `slackblocks` name is available, or belongs to that account. Set the verified
-   username in `elixir/release.json`'s `owner` field; do not guess it from GitHub.
+2. Create a personal Hex account. GitHub signup automatically confirms the
+   imported email; no separate Hex verification email is required. For password
+   signup, follow the verification link Hex emails you. Confirm that the public
+   `slackblocks` name is available, or belongs to that account. Set the confirmed
+   Hex username in `elixir/release.json`'s `owner` field; do not guess it from GitHub.
 3. Create the protected GitHub environment **hex**, permitting the coordinated
    master readiness job and `elixir/v*` publisher tags. Store **HEX_API_KEY** there.
    The first release needs `api:write`. Later key-based releases can use package
