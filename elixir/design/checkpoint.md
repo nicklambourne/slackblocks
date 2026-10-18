@@ -63,3 +63,16 @@ property and coverage checks, Dialyzer, sending integrations, complete site/READ
 integration and disabled coordinated-release wiring remain assigned to later PRs.
 Publication is disabled in `release.json`; no coordinator or active package
 versions have changed. Merge and release require explicit maintainer approval.
+
+## Complete modeled contract (PR 2)
+
+Generation now includes all 89 models. Independently maintained native
+construction registries cover all 105 valid fixtures and 167 invalid cases, with
+exact error categories, duplicate/obsolete ID checks and no exclusions. Valid
+cases also round-trip through both checked map and JSON ingress. The registry
+checks limits, vocabulary, capability references and scalar constraint coverage.
+
+Full-corpus testing corrected standalone pending-task errors to `type_mismatch`
+and added the chart segment's positive-value rule. The suite has 283 passing
+tests. Public-producer discovery, helper parity, property testing, coverage and
+Dialyzer remain PR 3 gates; corpus completeness alone does not establish those.

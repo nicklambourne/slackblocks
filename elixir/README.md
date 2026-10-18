@@ -3,9 +3,9 @@
 Native immutable values for constructing validated Slack Block Kit payloads.
 The library builds messages; your application chooses the HTTP client that sends them.
 
-**Unreleased foundation:** this branch is the native API checkpoint of the Elixir
-implementation train. Full conformance, integrations and release activation are
-tracked in [the implementation plan](https://github.com/nicklambourne/slackblocks/blob/codex/elixir-1-foundation/elixir/design/plan.md). No Hex release is available.
+**Unreleased implementation:** all 89 shared models and the complete conformance
+corpus are implemented. Further quality, integrations and release activation are
+tracked in [the implementation plan](https://github.com/nicklambourne/slackblocks/blob/codex/elixir-2-contract/elixir/design/plan.md). No Hex release is available.
 
 ## Requirements
 
@@ -97,11 +97,10 @@ mix deps.get
 mix run tools/check.exs
 ```
 
-The foundation checker verifies deterministic generation, formatting, compilation,
-native tests, lint, ExDoc and an actual Hex archive installed into an independent
+The checker verifies deterministic generation, formatting, compilation,
+native and full conformance tests, lint, ExDoc and an actual Hex archive installed into an independent
 consumer. `--profile runtime` checks native and archive behavior on another
-compiler without changing the pinned formatter. Full conformance, coverage,
-Dialyzer and integration gates are added by the following PRs.
+compiler without changing the pinned formatter. Coverage, Dialyzer and integration gates are added by the following PRs.
 
 On the maintainer's Mac, keep durable build/dependency caches under `/Volumes/Cache`
 and disposable consumers under `/Volumes/Scratch`. The package does not need these

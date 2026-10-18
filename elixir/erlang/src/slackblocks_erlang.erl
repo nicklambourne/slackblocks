@@ -35,7 +35,7 @@ verify() ->
     {ok, Task} = 'Elixir.Slackblocks.Blocks.TaskCard':new([
         {task_id, <<"queued">>}, {title, <<"Queued">>}, {status, pending}
     ]),
-    {error, #{category := invalid_usage}} = 'Elixir.Slackblocks':to_map(Task),
+    {error, #{category := type_mismatch}} = 'Elixir.Slackblocks':to_map(Task),
     {ok, Plan} = 'Elixir.Slackblocks.Blocks.Plan':new([{title, <<"Plan">>}, {tasks, [Task]}]),
     {ok, #{<<"tasks">> := [TaskWire]}} = 'Elixir.Slackblocks':to_map(Plan),
     false = maps:is_key(<<"type">>, TaskWire),

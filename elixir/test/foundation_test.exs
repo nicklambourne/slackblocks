@@ -33,7 +33,7 @@ defmodule Slackblocks.FoundationTest do
   test "local task context is resolved by a complete plan" do
     pending = TaskCard.new!(task_id: "task_1", title: "Queued", status: :pending)
 
-    assert {:error, %ValidationError{category: :invalid_usage, path: ["status"]}} =
+    assert {:error, %ValidationError{category: :type_mismatch, path: ["status"]}} =
              Slackblocks.to_map(pending)
 
     plan = Plan.new!(title: "Work", tasks: [pending])
@@ -178,6 +178,54 @@ defmodule Slackblocks.FoundationTest do
                DataTable,
                ~s({"type":"data_table","caption":"c","rows":[[{"type":"raw_text","text":"h"}],[{"type":"raw_text","text":"v"}]],"page_size":1.0})
              )
+  end
+
+  test "checked numbers cover float boundaries, scale and negative zero" do
+    for {token, expected} <- [
+          {"1.2300", 1.23},
+          {"5e-324", 5.0e-324},
+          {"-5e-324", -5.0e-324},
+          {"1.7976931348623157e308", 1.797_693_134_862_315_7e308}
+        ] do
+      json = ~s({"type":"raw_number","text":"n","value":#{token}})
+      assert Slackblocks.decode!(RawNumber, json).value === expected
+    end
+
+    zero = Slackblocks.decode!(RawNumber, ~s({"type":"raw_number","text":"n","value":-0.0})).value
+    assert <<zero::float-64>> == <<1::1, 0::63>>
+
+    for token <- ["1e-324", "1.7976931348623159e308"] do
+      json = ~s({"type":"raw_number","text":"n","value":#{token}})
+
+      assert {:error, %ValidationError{category: :out_of_range}} =
+               Slackblocks.decode(RawNumber, json)
+    end
+  end
+
+  test "escaped opaque strings and deep JSON do not bypass precision or duplicate checks" do
+    prefix = String.duplicate("quote: \" slash: \\ digits: 1e999\n", 1_000)
+
+    json =
+      ~s({"channel":"C123","metadata":{"prefix":#{Jason.encode!(prefix)},"value":0.123456789012345678901}})
+
+    assert {:error, %ValidationError{category: :out_of_range, path: ["metadata", "value"]}} =
+             Slackblocks.decode(Message, json)
+
+    nested =
+      Enum.reduce(1..64, %{"empty" => %{}, "null" => nil}, fn _, child -> %{"child" => child} end)
+
+    message = Message.new!(channel: "C123", metadata: %{"prefix" => prefix, "nested" => nested})
+
+    assert Slackblocks.decode!(Message, Slackblocks.encode!(message)).metadata ===
+             message.metadata
+
+    duplicate =
+      String.duplicate(~s({"child":), 64) <> ~s({"key":1,"key":2}) <> String.duplicate("}", 64)
+
+    assert {:error, %ValidationError{category: :invalid_usage, path: path}} =
+             Slackblocks.decode(Message, ~s({"channel":"C123","metadata":#{duplicate}}))
+
+    assert path == ["metadata"] ++ List.duplicate("child", 64) ++ ["key"]
   end
 
   test "duplicate objects, syntax errors, roles and codepoint limits" do

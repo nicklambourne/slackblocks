@@ -2,6 +2,226 @@
 defmodule Slackblocks.Internal.Schema do
   @moduledoc false
   @models %{
+    Slackblocks.Blocks.Actions => %{
+      :name => "ActionsBlock",
+      :wire => "actions",
+      :fields => [
+        %{
+          :key => :elements,
+          :wire => "elements",
+          :kind => :list,
+          :type => "Element",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "actions.elements",
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
+    Slackblocks.Blocks.Alert => %{
+      :name => "AlertBlock",
+      :wire => "alert",
+      :fields => [
+        %{
+          :key => :text,
+          :wire => "text",
+          :kind => :text,
+          :type => "Text",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => "mrkdwn",
+          :limits => "alert.text",
+          :flags => []
+        },
+        %{
+          :key => :level,
+          :wire => "level",
+          :kind => :enum,
+          :type => "AlertLevel",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
+    Slackblocks.Blocks.Card => %{
+      :name => "CardBlock",
+      :wire => "card",
+      :fields => [
+        %{
+          :key => :hero_image,
+          :wire => "hero_image",
+          :kind => :object,
+          :type => "ImageElement",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :icon,
+          :wire => "icon",
+          :kind => :object,
+          :type => "ImageElement",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :title,
+          :wire => "title",
+          :kind => :text,
+          :type => "Text",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "mrkdwn",
+          :limits => "card.title",
+          :flags => []
+        },
+        %{
+          :key => :subtitle,
+          :wire => "subtitle",
+          :kind => :text,
+          :type => "Text",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "mrkdwn",
+          :limits => "card.subtitle",
+          :flags => []
+        },
+        %{
+          :key => :body,
+          :wire => "body",
+          :kind => :text,
+          :type => "Text",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "mrkdwn",
+          :limits => "card.body",
+          :flags => []
+        },
+        %{
+          :key => :actions,
+          :wire => "actions",
+          :kind => :list,
+          :type => "ButtonElement",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "card.actions",
+          :flags => []
+        },
+        %{
+          :key => :slack_icon,
+          :wire => "slack_icon",
+          :kind => :object,
+          :type => "SlackIcon",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :subtext,
+          :wire => "subtext",
+          :kind => :text,
+          :type => "Text",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "mrkdwn",
+          :limits => "card.subtext",
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
+    Slackblocks.Blocks.Carousel => %{
+      :name => "CarouselBlock",
+      :wire => "carousel",
+      :fields => [
+        %{
+          :key => :elements,
+          :wire => "elements",
+          :kind => :list,
+          :type => "CardBlock",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "carousel.elements",
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
     Slackblocks.Blocks.Container => %{
       :name => "ContainerBlock",
       :wire => "container",
@@ -129,6 +349,68 @@ defmodule Slackblocks.Internal.Schema do
       ],
       :roles => ["Block"]
     },
+    Slackblocks.Blocks.ContextActions => %{
+      :name => "ContextActionsBlock",
+      :wire => "context_actions",
+      :fields => [
+        %{
+          :key => :elements,
+          :wire => "elements",
+          :kind => :list,
+          :type => "ContextActionsElement",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "context_actions.elements",
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
+    Slackblocks.Blocks.Context => %{
+      :name => "ContextBlock",
+      :wire => "context",
+      :fields => [
+        %{
+          :key => :elements,
+          :wire => "elements",
+          :kind => :list,
+          :type => "ContextElement",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "context.elements",
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
     Slackblocks.Blocks.DataTable => %{
       :name => "DataTableBlock",
       :wire => "data_table",
@@ -196,10 +478,304 @@ defmodule Slackblocks.Internal.Schema do
       ],
       :roles => ["Block"]
     },
+    Slackblocks.Blocks.DataVisualization => %{
+      :name => "DataVisualizationBlock",
+      :wire => "data_visualization",
+      :fields => [
+        %{
+          :key => :title,
+          :wire => "title",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "data_visualization.title",
+          :flags => []
+        },
+        %{
+          :key => :chart,
+          :wire => "chart",
+          :kind => :object,
+          :type => "Chart",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
     Slackblocks.Blocks.Divider => %{
       :name => "DividerBlock",
       :wire => "divider",
       :fields => [
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
+    Slackblocks.Blocks.File => %{
+      :name => "FileBlock",
+      :wire => "file",
+      :fields => [
+        %{
+          :key => :external_id,
+          :wire => "external_id",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :source,
+          :wire => "source",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => "remote",
+          :has_default => true,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
+    Slackblocks.Blocks.Header => %{
+      :name => "HeaderBlock",
+      :wire => "header",
+      :fields => [
+        %{
+          :key => :text,
+          :wire => "text",
+          :kind => :text,
+          :type => "PlainText",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "header.text",
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
+    Slackblocks.Blocks.Image => %{
+      :name => "ImageBlock",
+      :wire => "image",
+      :fields => [
+        %{
+          :key => :image_url,
+          :wire => "image_url",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "image.image_url",
+          :flags => []
+        },
+        %{
+          :key => :slack_file,
+          :wire => "slack_file",
+          :kind => :object,
+          :type => "SlackFile",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :alt_text,
+          :wire => "alt_text",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "image.alt_text",
+          :flags => []
+        },
+        %{
+          :key => :title,
+          :wire => "title",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "image.title",
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
+    Slackblocks.Blocks.Input => %{
+      :name => "InputBlock",
+      :wire => "input",
+      :fields => [
+        %{
+          :key => :label,
+          :wire => "label",
+          :kind => :text,
+          :type => "PlainText",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "input.label",
+          :flags => []
+        },
+        %{
+          :key => :element,
+          :wire => "element",
+          :kind => :object,
+          :type => "InputElement",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :dispatch_action,
+          :wire => "dispatch_action",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        },
+        %{
+          :key => :hint,
+          :wire => "hint",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "input.hint",
+          :flags => []
+        },
+        %{
+          :key => :optional,
+          :wire => "optional",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
+    Slackblocks.Blocks.Markdown => %{
+      :name => "MarkdownBlock",
+      :wire => "markdown",
+      :fields => [
+        %{
+          :key => :text,
+          :wire => "text",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "markdown.text",
+          :flags => []
+        },
         %{
           :key => :block_id,
           :wire => "block_id",
@@ -478,6 +1054,133 @@ defmodule Slackblocks.Internal.Schema do
       ],
       :roles => ["Block"]
     },
+    Slackblocks.Blocks.Video => %{
+      :name => "VideoBlock",
+      :wire => "video",
+      :fields => [
+        %{
+          :key => :alt_text,
+          :wire => "alt_text",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "video.alt_text",
+          :flags => []
+        },
+        %{
+          :key => :thumbnail_url,
+          :wire => "thumbnail_url",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "video.thumbnail_url",
+          :flags => []
+        },
+        %{
+          :key => :title,
+          :wire => "title",
+          :kind => :text,
+          :type => "PlainText",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "video.title",
+          :flags => []
+        },
+        %{
+          :key => :video_url,
+          :wire => "video_url",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "video.video_url",
+          :flags => []
+        },
+        %{
+          :key => :block_id,
+          :wire => "block_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "block_id",
+          :flags => []
+        },
+        %{
+          :key => :author_name,
+          :wire => "author_name",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "video.author_name",
+          :flags => []
+        },
+        %{
+          :key => :description,
+          :wire => "description",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "video.description",
+          :flags => []
+        },
+        %{
+          :key => :provider_icon_url,
+          :wire => "provider_icon_url",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "video.provider_icon_url",
+          :flags => []
+        },
+        %{
+          :key => :provider_name,
+          :wire => "provider_name",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "video.provider_name",
+          :flags => []
+        },
+        %{
+          :key => :title_url,
+          :wire => "title_url",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "video.title_url",
+          :flags => []
+        }
+      ],
+      :roles => ["Block"]
+    },
     Slackblocks.Elements.Button => %{
       :name => "ButtonElement",
       :wire => "button",
@@ -569,6 +1272,973 @@ defmodule Slackblocks.Internal.Schema do
       ],
       :roles => ["Element"]
     },
+    Slackblocks.Elements.ChannelMultiSelect => %{
+      :name => "ChannelMultiSelectElement",
+      :wire => "multi_channels_select",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_channels,
+          :wire => "initial_channels",
+          :kind => :stringList,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :max_selected_items,
+          :wire => "max_selected_items",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "multi_select.max_selected_items",
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "select.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.ChannelSelect => %{
+      :name => "ChannelSelectElement",
+      :wire => "channels_select",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_channel,
+          :wire => "initial_channel",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :response_url_enabled,
+          :wire => "response_url_enabled",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "select.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.Checkboxes => %{
+      :name => "CheckboxesElement",
+      :wire => "checkboxes",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :options,
+          :wire => "options",
+          :kind => :list,
+          :type => "Option",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "checkboxes.options",
+          :flags => []
+        },
+        %{
+          :key => :initial_options,
+          :wire => "initial_options",
+          :kind => :list,
+          :type => "Option",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.ConversationMultiSelect => %{
+      :name => "ConversationMultiSelectElement",
+      :wire => "multi_conversations_select",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_conversations,
+          :wire => "initial_conversations",
+          :kind => :stringList,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :default_to_current_conversation,
+          :wire => "default_to_current_conversation",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :filter,
+          :wire => "filter",
+          :kind => :object,
+          :type => "ConversationFilter",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :max_selected_items,
+          :wire => "max_selected_items",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "multi_select.max_selected_items",
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "select.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.ConversationSelect => %{
+      :name => "ConversationSelectElement",
+      :wire => "conversations_select",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_conversation,
+          :wire => "initial_conversation",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :default_to_current_conversation,
+          :wire => "default_to_current_conversation",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :filter,
+          :wire => "filter",
+          :kind => :object,
+          :type => "ConversationFilter",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :response_url_enabled,
+          :wire => "response_url_enabled",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "select.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.DatePicker => %{
+      :name => "DatePickerElement",
+      :wire => "datepicker",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_date,
+          :wire => "initial_date",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "date_picker.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.DateTimePicker => %{
+      :name => "DateTimePickerElement",
+      :wire => "datetimepicker",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_date_time,
+          :wire => "initial_date_time",
+          :kind => :long,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.EmailInput => %{
+      :name => "EmailInputElement",
+      :wire => "email_text_input",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_value,
+          :wire => "initial_value",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :dispatch_action_config,
+          :wire => "dispatch_action_config",
+          :kind => :object,
+          :type => "DispatchActionConfiguration",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "email_input.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.ExternalMultiSelect => %{
+      :name => "ExternalMultiSelectElement",
+      :wire => "multi_external_select",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :min_query_length,
+          :wire => "min_query_length",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :initial_options,
+          :wire => "initial_options",
+          :kind => :list,
+          :type => "Option",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :max_selected_items,
+          :wire => "max_selected_items",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "multi_select.max_selected_items",
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "select.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.ExternalSelect => %{
+      :name => "ExternalSelectElement",
+      :wire => "external_select",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :min_query_length,
+          :wire => "min_query_length",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :initial_option,
+          :wire => "initial_option",
+          :kind => :object,
+          :type => "Option",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "select.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.FeedbackButtons => %{
+      :name => "FeedbackButtonsElement",
+      :wire => "feedback_buttons",
+      :fields => [
+        %{
+          :key => :positive_button,
+          :wire => "positive_button",
+          :kind => :object,
+          :type => "FeedbackButton",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :negative_button,
+          :wire => "negative_button",
+          :kind => :object,
+          :type => "FeedbackButton",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        }
+      ],
+      :roles => ["ContextActionsElement", "Element"]
+    },
+    Slackblocks.Elements.FileInput => %{
+      :name => "FileInputElement",
+      :wire => "file_input",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :filetypes,
+          :wire => "filetypes",
+          :kind => :stringList,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :max_files,
+          :wire => "max_files",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "file_input.max_files",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.IconButton => %{
+      :name => "IconButtonElement",
+      :wire => "icon_button",
+      :fields => [
+        %{
+          :key => :text,
+          :wire => "text",
+          :kind => :text,
+          :type => "PlainText",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :icon,
+          :wire => "icon",
+          :kind => :enum,
+          :type => "IconButtonIcon",
+          :required => true,
+          :default => :trash,
+          :has_default => true,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :value,
+          :wire => "value",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "icon_button.value",
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :accessibility_label,
+          :wire => "accessibility_label",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "icon_button.accessibility_label",
+          :flags => []
+        },
+        %{
+          :key => :visible_to_user_ids,
+          :wire => "visible_to_user_ids",
+          :kind => :stringList,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "icon_button.visible_to_user_ids",
+          :flags => []
+        }
+      ],
+      :roles => ["ContextActionsElement", "Element"]
+    },
     Slackblocks.Elements.Image => %{
       :name => "ImageElement",
       :wire => "image",
@@ -611,6 +2281,1114 @@ defmodule Slackblocks.Internal.Schema do
         }
       ],
       :roles => ["ContextElement", "Element"]
+    },
+    Slackblocks.Elements.NumberInput => %{
+      :name => "NumberInputElement",
+      :wire => "number_input",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :is_decimal_allowed,
+          :wire => "is_decimal_allowed",
+          :kind => :boolean,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :initial_value,
+          :wire => "initial_value",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :min_value,
+          :wire => "min_value",
+          :kind => :double,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :max_value,
+          :wire => "max_value",
+          :kind => :double,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :dispatch_action_config,
+          :wire => "dispatch_action_config",
+          :kind => :object,
+          :type => "DispatchActionConfiguration",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "number_input.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.Overflow => %{
+      :name => "OverflowElement",
+      :wire => "overflow",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :options,
+          :wire => "options",
+          :kind => :list,
+          :type => "Option",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "overflow.options",
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => ["Element"]
+    },
+    Slackblocks.Elements.PlainTextInput => %{
+      :name => "PlainTextInputElement",
+      :wire => "plain_text_input",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_value,
+          :wire => "initial_value",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :multiline,
+          :wire => "multiline",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :min_length,
+          :wire => "min_length",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "plain_text_input.min_length",
+          :flags => []
+        },
+        %{
+          :key => :max_length,
+          :wire => "max_length",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "plain_text_input.max_length",
+          :flags => []
+        },
+        %{
+          :key => :dispatch_action_config,
+          :wire => "dispatch_action_config",
+          :kind => :object,
+          :type => "DispatchActionConfiguration",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "plain_text_input.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.RadioButtons => %{
+      :name => "RadioButtonsElement",
+      :wire => "radio_buttons",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :options,
+          :wire => "options",
+          :kind => :list,
+          :type => "Option",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "radio_buttons.options",
+          :flags => []
+        },
+        %{
+          :key => :initial_option,
+          :wire => "initial_option",
+          :kind => :object,
+          :type => "Option",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.RichTextInput => %{
+      :name => "RichTextInputElement",
+      :wire => "rich_text_input",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_value,
+          :wire => "initial_value",
+          :kind => :object,
+          :type => "RichTextBlock",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :dispatch_action_config,
+          :wire => "dispatch_action_config",
+          :kind => :object,
+          :type => "DispatchActionConfiguration",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "rich_text_input.placeholder",
+          :flags => []
+        },
+        %{
+          :key => :min_lines,
+          :wire => "min_lines",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "rich_text_input.min_lines",
+          :flags => []
+        },
+        %{
+          :key => :max_lines,
+          :wire => "max_lines",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "rich_text_input.max_lines",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.StaticMultiSelect => %{
+      :name => "StaticMultiSelectElement",
+      :wire => "multi_static_select",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :options,
+          :wire => "options",
+          :kind => :list,
+          :type => "Option",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "select.options",
+          :flags => []
+        },
+        %{
+          :key => :option_groups,
+          :wire => "option_groups",
+          :kind => :list,
+          :type => "OptionGroup",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "select.option_groups",
+          :flags => []
+        },
+        %{
+          :key => :initial_options,
+          :wire => "initial_options",
+          :kind => :list,
+          :type => "Option",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :max_selected_items,
+          :wire => "max_selected_items",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "multi_select.max_selected_items",
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "select.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.StaticSelect => %{
+      :name => "StaticSelectElement",
+      :wire => "static_select",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :options,
+          :wire => "options",
+          :kind => :list,
+          :type => "Option",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "select.options",
+          :flags => []
+        },
+        %{
+          :key => :option_groups,
+          :wire => "option_groups",
+          :kind => :list,
+          :type => "OptionGroup",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "select.option_groups",
+          :flags => []
+        },
+        %{
+          :key => :initial_option,
+          :wire => "initial_option",
+          :kind => :object,
+          :type => "Option",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "select.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.TimePicker => %{
+      :name => "TimePickerElement",
+      :wire => "timepicker",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_time,
+          :wire => "initial_time",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :timezone,
+          :wire => "timezone",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "time_picker.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.UrlInput => %{
+      :name => "UrlInputElement",
+      :wire => "url_text_input",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_value,
+          :wire => "initial_value",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :dispatch_action_config,
+          :wire => "dispatch_action_config",
+          :kind => :object,
+          :type => "DispatchActionConfiguration",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "url_input.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.UserMultiSelect => %{
+      :name => "UserMultiSelectElement",
+      :wire => "multi_users_select",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_users,
+          :wire => "initial_users",
+          :kind => :stringList,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :max_selected_items,
+          :wire => "max_selected_items",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "multi_select.max_selected_items",
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "select.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.UserSelect => %{
+      :name => "UserSelectElement",
+      :wire => "users_select",
+      :fields => [
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :initial_user,
+          :wire => "initial_user",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :focus_on_load,
+          :wire => "focus_on_load",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :placeholder,
+          :wire => "placeholder",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "select.placeholder",
+          :flags => []
+        }
+      ],
+      :roles => ["InputElement", "Element"]
+    },
+    Slackblocks.Elements.WorkflowButton => %{
+      :name => "WorkflowButtonElement",
+      :wire => "workflow_button",
+      :fields => [
+        %{
+          :key => :text,
+          :wire => "text",
+          :kind => :text,
+          :type => "PlainText",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "workflow_button.text",
+          :flags => []
+        },
+        %{
+          :key => :workflow,
+          :wire => "workflow",
+          :kind => :object,
+          :type => "Workflow",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :action_id,
+          :wire => "action_id",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "action_id",
+          :flags => []
+        },
+        %{
+          :key => :confirm,
+          :wire => "confirm",
+          :kind => :object,
+          :type => "Confirmation",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :style,
+          :wire => "style",
+          :kind => :enum,
+          :type => "ButtonStyle",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :accessibility_label,
+          :wire => "accessibility_label",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "workflow_button.accessibility_label",
+          :flags => []
+        }
+      ],
+      :roles => ["Element"]
+    },
+    Slackblocks.Objects.AreaChart => %{
+      :name => "AreaChart",
+      :wire => "area",
+      :fields => [
+        %{
+          :key => :series,
+          :wire => "series",
+          :kind => :list,
+          :type => "DataSeries",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "data_visualization.series",
+          :flags => []
+        },
+        %{
+          :key => :axis_config,
+          :wire => "axis_config",
+          :kind => :object,
+          :type => "AxisConfig",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => ["Chart"]
+    },
+    Slackblocks.Objects.AxisConfig => %{
+      :name => "AxisConfig",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :categories,
+          :wire => "categories",
+          :kind => :stringList,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "data_visualization.categories",
+          :flags => []
+        },
+        %{
+          :key => :x_label,
+          :wire => "x_label",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "data_visualization.axis_label",
+          :flags => []
+        },
+        %{
+          :key => :y_label,
+          :wire => "y_label",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "data_visualization.axis_label",
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Objects.BarChart => %{
+      :name => "BarChart",
+      :wire => "bar",
+      :fields => [
+        %{
+          :key => :series,
+          :wire => "series",
+          :kind => :list,
+          :type => "DataSeries",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "data_visualization.series",
+          :flags => []
+        },
+        %{
+          :key => :axis_config,
+          :wire => "axis_config",
+          :kind => :object,
+          :type => "AxisConfig",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => ["Chart"]
+    },
+    Slackblocks.Objects.ChartSegment => %{
+      :name => "ChartSegment",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :label,
+          :wire => "label",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "data_visualization.segment.label",
+          :flags => []
+        },
+        %{
+          :key => :value,
+          :wire => "value",
+          :kind => :number,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => []
     },
     Slackblocks.Objects.ColumnSettings => %{
       :name => "ColumnSettings",
@@ -710,6 +3488,235 @@ defmodule Slackblocks.Internal.Schema do
       ],
       :roles => []
     },
+    Slackblocks.Objects.ConversationFilter => %{
+      :name => "ConversationFilter",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :include,
+          :wire => "include",
+          :kind => :stringList,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "conversation_filter.include",
+          :flags => []
+        },
+        %{
+          :key => :exclude_external_shared_channels,
+          :wire => "exclude_external_shared_channels",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :exclude_bot_users,
+          :wire => "exclude_bot_users",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Objects.DataPoint => %{
+      :name => "DataPoint",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :label,
+          :wire => "label",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "data_visualization.point_label",
+          :flags => []
+        },
+        %{
+          :key => :value,
+          :wire => "value",
+          :kind => :number,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Objects.DataSeries => %{
+      :name => "DataSeries",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :name,
+          :wire => "name",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "data_visualization.series_name",
+          :flags => []
+        },
+        %{
+          :key => :data,
+          :wire => "data",
+          :kind => :list,
+          :type => "DataPoint",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "data_visualization.data",
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Objects.DispatchActionConfiguration => %{
+      :name => "DispatchActionConfiguration",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :trigger_actions_on,
+          :wire => "trigger_actions_on",
+          :kind => :stringList,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "dispatch_action_configuration.trigger_actions_on",
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Objects.FeedbackButton => %{
+      :name => "FeedbackButton",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :text,
+          :wire => "text",
+          :kind => :text,
+          :type => "PlainText",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "feedback_button.text",
+          :flags => []
+        },
+        %{
+          :key => :value,
+          :wire => "value",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "feedback_button.value",
+          :flags => []
+        },
+        %{
+          :key => :accessibility_label,
+          :wire => "accessibility_label",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "feedback_button.accessibility_label",
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Objects.InputParameter => %{
+      :name => "InputParameter",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :name,
+          :wire => "name",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :value,
+          :wire => "value",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Objects.LineChart => %{
+      :name => "LineChart",
+      :wire => "line",
+      :fields => [
+        %{
+          :key => :series,
+          :wire => "series",
+          :kind => :list,
+          :type => "DataSeries",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "data_visualization.series",
+          :flags => []
+        },
+        %{
+          :key => :axis_config,
+          :wire => "axis_config",
+          :kind => :object,
+          :type => "AxisConfig",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => ["Chart"]
+    },
     Slackblocks.Objects.MarkdownText => %{
       :name => "MarkdownText",
       :wire => "mrkdwn",
@@ -740,6 +3747,111 @@ defmodule Slackblocks.Internal.Schema do
         }
       ],
       :roles => ["Text", "ContextElement"]
+    },
+    Slackblocks.Objects.Option => %{
+      :name => "Option",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :text,
+          :wire => "text",
+          :kind => :text,
+          :type => "Text",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "option.text",
+          :flags => []
+        },
+        %{
+          :key => :value,
+          :wire => "value",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "option.value",
+          :flags => []
+        },
+        %{
+          :key => :description,
+          :wire => "description",
+          :kind => :text,
+          :type => "Text",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "option.description",
+          :flags => []
+        },
+        %{
+          :key => :url,
+          :wire => "url",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "option.url",
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Objects.OptionGroup => %{
+      :name => "OptionGroup",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :label,
+          :wire => "label",
+          :kind => :text,
+          :type => "PlainText",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "option_group.label",
+          :flags => []
+        },
+        %{
+          :key => :options,
+          :wire => "options",
+          :kind => :list,
+          :type => "Option",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "option_group.options",
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Objects.PieChart => %{
+      :name => "PieChart",
+      :wire => "pie",
+      :fields => [
+        %{
+          :key => :segments,
+          :wire => "segments",
+          :kind => :list,
+          :type => "ChartSegment",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "data_visualization.segments",
+          :flags => []
+        }
+      ],
+      :roles => ["Chart"]
     },
     Slackblocks.Objects.PlainText => %{
       :name => "PlainText",
@@ -822,6 +3934,99 @@ defmodule Slackblocks.Internal.Schema do
       ],
       :roles => ["TableCell", "DataTableCell"]
     },
+    Slackblocks.RichText.Channel => %{
+      :name => "RichTextChannel",
+      :wire => "channel",
+      :fields => [
+        %{
+          :key => :channel_id,
+          :wire => "channel_id",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :style,
+          :wire => "style",
+          :kind => :style,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => ["bold", "italic", "strike", "highlight", "client_highlight", "unlink"]
+        }
+      ],
+      :roles => ["RichTextSectionElement"]
+    },
+    Slackblocks.RichText.CodeBlock => %{
+      :name => "RichTextCodeBlock",
+      :wire => "rich_text_preformatted",
+      :fields => [
+        %{
+          :key => :elements,
+          :wire => "elements",
+          :kind => :list,
+          :type => "RichTextSectionElement",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :border,
+          :wire => "border",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "rich_text_preformatted.border",
+          :flags => []
+        }
+      ],
+      :roles => ["RichTextBlockElement"]
+    },
+    Slackblocks.RichText.Emoji => %{
+      :name => "RichTextEmoji",
+      :wire => "emoji",
+      :fields => [
+        %{
+          :key => :name,
+          :wire => "name",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :skin_tone,
+          :wire => "skin_tone",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => ["RichTextSectionElement"]
+    },
     Slackblocks.RichText.Link => %{
       :name => "RichTextLink",
       :wire => "link",
@@ -877,6 +4082,104 @@ defmodule Slackblocks.Internal.Schema do
       ],
       :roles => ["RichTextSectionElement"]
     },
+    Slackblocks.RichText.List => %{
+      :name => "RichTextList",
+      :wire => "rich_text_list",
+      :fields => [
+        %{
+          :key => :style,
+          :wire => "style",
+          :kind => :enum,
+          :type => "RichTextListStyle",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :elements,
+          :wire => "elements",
+          :kind => :list,
+          :type => "RichTextSection",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :indent,
+          :wire => "indent",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "rich_text_list.indent",
+          :flags => []
+        },
+        %{
+          :key => :offset,
+          :wire => "offset",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "rich_text_list.offset",
+          :flags => []
+        },
+        %{
+          :key => :border,
+          :wire => "border",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "rich_text_list.border",
+          :flags => []
+        }
+      ],
+      :roles => ["RichTextBlockElement"]
+    },
+    Slackblocks.RichText.Quote => %{
+      :name => "RichTextQuote",
+      :wire => "rich_text_quote",
+      :fields => [
+        %{
+          :key => :elements,
+          :wire => "elements",
+          :kind => :list,
+          :type => "RichTextSectionElement",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :border,
+          :wire => "border",
+          :kind => :int,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "rich_text_quote.border",
+          :flags => []
+        }
+      ],
+      :roles => ["RichTextBlockElement"]
+    },
     Slackblocks.RichText.Section => %{
       :name => "RichTextSection",
       :wire => "rich_text_section",
@@ -927,6 +4230,68 @@ defmodule Slackblocks.Internal.Schema do
       ],
       :roles => ["RichTextSectionElement"]
     },
+    Slackblocks.RichText.User => %{
+      :name => "RichTextUser",
+      :wire => "user",
+      :fields => [
+        %{
+          :key => :user_id,
+          :wire => "user_id",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :style,
+          :wire => "style",
+          :kind => :style,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => ["bold", "italic", "strike", "highlight", "client_highlight", "unlink"]
+        }
+      ],
+      :roles => ["RichTextSectionElement"]
+    },
+    Slackblocks.RichText.UserGroup => %{
+      :name => "RichTextUserGroup",
+      :wire => "usergroup",
+      :fields => [
+        %{
+          :key => :usergroup_id,
+          :wire => "usergroup_id",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :style,
+          :wire => "style",
+          :kind => :style,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => ["bold", "italic", "strike", "highlight", "client_highlight", "unlink"]
+        }
+      ],
+      :roles => ["RichTextSectionElement"]
+    },
     Slackblocks.Objects.SlackFile => %{
       :name => "SlackFile",
       :wire => "",
@@ -958,6 +4323,56 @@ defmodule Slackblocks.Internal.Schema do
       ],
       :roles => []
     },
+    Slackblocks.Objects.SlackIcon => %{
+      :name => "SlackIcon",
+      :wire => "icon",
+      :fields => [
+        %{
+          :key => :name,
+          :wire => "name",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Objects.Trigger => %{
+      :name => "Trigger",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :url,
+          :wire => "url",
+          :kind => :string,
+          :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :customizable_input_parameters,
+          :wire => "customizable_input_parameters",
+          :kind => :list,
+          :type => "InputParameter",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
     Slackblocks.Objects.UrlSource => %{
       :name => "UrlSource",
       :wire => "url",
@@ -979,6 +4394,25 @@ defmodule Slackblocks.Internal.Schema do
           :wire => "text",
           :kind => :string,
           :type => nil,
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Objects.Workflow => %{
+      :name => "Workflow",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :trigger,
+          :wire => "trigger",
+          :kind => :object,
+          :type => "Trigger",
           :required => true,
           :default => nil,
           :has_default => false,
@@ -1027,6 +4461,61 @@ defmodule Slackblocks.Internal.Schema do
           :has_default => false,
           :coerce => nil,
           :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Views.Home => %{
+      :name => "HomeTabView",
+      :wire => "home",
+      :fields => [
+        %{
+          :key => :blocks,
+          :wire => "blocks",
+          :kind => :list,
+          :type => "Block",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "view.blocks",
+          :flags => []
+        },
+        %{
+          :key => :private_metadata,
+          :wire => "private_metadata",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "view.private_metadata",
+          :flags => []
+        },
+        %{
+          :key => :callback_id,
+          :wire => "callback_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "view.callback_id",
+          :flags => []
+        },
+        %{
+          :key => :external_id,
+          :wire => "external_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "view.external_id",
           :flags => []
         }
       ],
@@ -1134,37 +4623,441 @@ defmodule Slackblocks.Internal.Schema do
         }
       ],
       :roles => []
+    },
+    Slackblocks.MessageResponse => %{
+      :name => "MessageResponse",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :blocks,
+          :wire => "blocks",
+          :kind => :list,
+          :type => "Block",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "message.blocks",
+          :flags => []
+        },
+        %{
+          :key => :attachments,
+          :wire => "attachments",
+          :kind => :list,
+          :type => "Attachment",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "message.attachments",
+          :flags => []
+        },
+        %{
+          :key => :text,
+          :wire => "text",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => "",
+          :has_default => true,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :mrkdwn,
+          :wire => "mrkdwn",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => true,
+          :has_default => true,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :replace_original,
+          :wire => "replace_original",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => false,
+          :has_default => true,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :response_type,
+          :wire => "response_type",
+          :kind => :enum,
+          :type => "ResponseType",
+          :required => false,
+          :default => :in_channel,
+          :has_default => true,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.Views.Modal => %{
+      :name => "ModalView",
+      :wire => "modal",
+      :fields => [
+        %{
+          :key => :title,
+          :wire => "title",
+          :kind => :text,
+          :type => "PlainText",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "view.title",
+          :flags => []
+        },
+        %{
+          :key => :blocks,
+          :wire => "blocks",
+          :kind => :list,
+          :type => "Block",
+          :required => true,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "view.blocks",
+          :flags => []
+        },
+        %{
+          :key => :close,
+          :wire => "close",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "view.close",
+          :flags => []
+        },
+        %{
+          :key => :submit,
+          :wire => "submit",
+          :kind => :text,
+          :type => "PlainText",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => "plain_text",
+          :limits => "view.submit",
+          :flags => []
+        },
+        %{
+          :key => :private_metadata,
+          :wire => "private_metadata",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "view.private_metadata",
+          :flags => []
+        },
+        %{
+          :key => :callback_id,
+          :wire => "callback_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "view.callback_id",
+          :flags => []
+        },
+        %{
+          :key => :clear_on_close,
+          :wire => "clear_on_close",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :notify_on_close,
+          :wire => "notify_on_close",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :external_id,
+          :wire => "external_id",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "view.external_id",
+          :flags => []
+        },
+        %{
+          :key => :submit_disabled,
+          :wire => "submit_disabled",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => []
+    },
+    Slackblocks.WebhookMessage => %{
+      :name => "WebhookMessage",
+      :wire => "",
+      :fields => [
+        %{
+          :key => :blocks,
+          :wire => "blocks",
+          :kind => :list,
+          :type => "Block",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "message.blocks",
+          :flags => []
+        },
+        %{
+          :key => :attachments,
+          :wire => "attachments",
+          :kind => :list,
+          :type => "Attachment",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "message.attachments",
+          :flags => []
+        },
+        %{
+          :key => :text,
+          :wire => "text",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :response_type,
+          :wire => "response_type",
+          :kind => :enum,
+          :type => "ResponseType",
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :replace_original,
+          :wire => "replace_original",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :delete_original,
+          :wire => "delete_original",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :unfurl_links,
+          :wire => "unfurl_links",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :unfurl_media,
+          :wire => "unfurl_media",
+          :kind => :boolean,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        },
+        %{
+          :key => :metadata,
+          :wire => "metadata",
+          :kind => :map,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
+        }
+      ],
+      :roles => []
     }
   }
   @roles %{
     "Block" => [
+      Slackblocks.Blocks.Actions,
+      Slackblocks.Blocks.Alert,
+      Slackblocks.Blocks.Card,
+      Slackblocks.Blocks.Carousel,
       Slackblocks.Blocks.Container,
+      Slackblocks.Blocks.ContextActions,
+      Slackblocks.Blocks.Context,
       Slackblocks.Blocks.DataTable,
+      Slackblocks.Blocks.DataVisualization,
       Slackblocks.Blocks.Divider,
+      Slackblocks.Blocks.File,
+      Slackblocks.Blocks.Header,
+      Slackblocks.Blocks.Image,
+      Slackblocks.Blocks.Input,
+      Slackblocks.Blocks.Markdown,
       Slackblocks.Blocks.Plan,
       Slackblocks.Blocks.RichText,
       Slackblocks.Blocks.Section,
       Slackblocks.Blocks.Table,
-      Slackblocks.Blocks.TaskCard
+      Slackblocks.Blocks.TaskCard,
+      Slackblocks.Blocks.Video
     ],
     "ContextElement" => [
       Slackblocks.Elements.Image,
       Slackblocks.Objects.MarkdownText,
       Slackblocks.Objects.PlainText
     ],
-    "ContextActionsElement" => [],
+    "ContextActionsElement" => [
+      Slackblocks.Elements.FeedbackButtons,
+      Slackblocks.Elements.IconButton
+    ],
     "TableCell" => [Slackblocks.Blocks.RichText, Slackblocks.Objects.RawText],
     "DataTableCell" => [
       Slackblocks.Blocks.RichText,
       Slackblocks.Objects.RawNumber,
       Slackblocks.Objects.RawText
     ],
-    "Element" => [Slackblocks.Elements.Button, Slackblocks.Elements.Image],
-    "InputElement" => [],
+    "Element" => [
+      Slackblocks.Elements.Button,
+      Slackblocks.Elements.ChannelMultiSelect,
+      Slackblocks.Elements.ChannelSelect,
+      Slackblocks.Elements.Checkboxes,
+      Slackblocks.Elements.ConversationMultiSelect,
+      Slackblocks.Elements.ConversationSelect,
+      Slackblocks.Elements.DatePicker,
+      Slackblocks.Elements.DateTimePicker,
+      Slackblocks.Elements.EmailInput,
+      Slackblocks.Elements.ExternalMultiSelect,
+      Slackblocks.Elements.ExternalSelect,
+      Slackblocks.Elements.FeedbackButtons,
+      Slackblocks.Elements.FileInput,
+      Slackblocks.Elements.IconButton,
+      Slackblocks.Elements.Image,
+      Slackblocks.Elements.NumberInput,
+      Slackblocks.Elements.Overflow,
+      Slackblocks.Elements.PlainTextInput,
+      Slackblocks.Elements.RadioButtons,
+      Slackblocks.Elements.RichTextInput,
+      Slackblocks.Elements.StaticMultiSelect,
+      Slackblocks.Elements.StaticSelect,
+      Slackblocks.Elements.TimePicker,
+      Slackblocks.Elements.UrlInput,
+      Slackblocks.Elements.UserMultiSelect,
+      Slackblocks.Elements.UserSelect,
+      Slackblocks.Elements.WorkflowButton
+    ],
+    "InputElement" => [
+      Slackblocks.Elements.ChannelMultiSelect,
+      Slackblocks.Elements.ChannelSelect,
+      Slackblocks.Elements.Checkboxes,
+      Slackblocks.Elements.ConversationMultiSelect,
+      Slackblocks.Elements.ConversationSelect,
+      Slackblocks.Elements.DatePicker,
+      Slackblocks.Elements.DateTimePicker,
+      Slackblocks.Elements.EmailInput,
+      Slackblocks.Elements.ExternalMultiSelect,
+      Slackblocks.Elements.ExternalSelect,
+      Slackblocks.Elements.FileInput,
+      Slackblocks.Elements.NumberInput,
+      Slackblocks.Elements.PlainTextInput,
+      Slackblocks.Elements.RadioButtons,
+      Slackblocks.Elements.RichTextInput,
+      Slackblocks.Elements.StaticMultiSelect,
+      Slackblocks.Elements.StaticSelect,
+      Slackblocks.Elements.TimePicker,
+      Slackblocks.Elements.UrlInput,
+      Slackblocks.Elements.UserMultiSelect,
+      Slackblocks.Elements.UserSelect
+    ],
     "Text" => [Slackblocks.Objects.MarkdownText, Slackblocks.Objects.PlainText],
-    "Chart" => [],
-    "RichTextBlockElement" => [Slackblocks.RichText.Section],
-    "RichTextSectionElement" => [Slackblocks.RichText.Link, Slackblocks.RichText.Text]
+    "Chart" => [
+      Slackblocks.Objects.AreaChart,
+      Slackblocks.Objects.BarChart,
+      Slackblocks.Objects.LineChart,
+      Slackblocks.Objects.PieChart
+    ],
+    "RichTextBlockElement" => [
+      Slackblocks.RichText.CodeBlock,
+      Slackblocks.RichText.List,
+      Slackblocks.RichText.Quote,
+      Slackblocks.RichText.Section
+    ],
+    "RichTextSectionElement" => [
+      Slackblocks.RichText.Channel,
+      Slackblocks.RichText.Emoji,
+      Slackblocks.RichText.Link,
+      Slackblocks.RichText.Text,
+      Slackblocks.RichText.User,
+      Slackblocks.RichText.UserGroup
+    ]
   }
   @enums %{
     "AlertLevel" => %{
