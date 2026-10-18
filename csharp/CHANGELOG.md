@@ -3,6 +3,10 @@
 All notable changes to the C# package are documented here. C# versions move in
 lockstep with the Python, TypeScript, Go, and Java packages.
 
+## [2.8.0] — Unreleased
+
+- Coordinate the first Elixir implementation release; existing language support remains unchanged.
+
 ## [2.7.0] — 2026-10-11
 
 - Add the PHP implementation to the coordinated release and documentation.

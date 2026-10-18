@@ -3,7 +3,7 @@ name: Elixir
 on:
   push:
     branches: [master]
-    paths: ["elixir/**", "spec/**", "docs/**", "README.md", "AGENTS.md", ".github/workflows/elixir.yml"]
+    paths: ["elixir/**", "spec/**", "docs/**", "README.md", "AGENTS.md", ".github/workflows/elixir.yml", ".github/workflows/publish-hex.yml", ".github/workflows/coordinated-release.yml", ".github/scripts/**", "RELEASING.md"]
   pull_request:
   workflow_dispatch:
 
@@ -242,3 +242,23 @@ jobs:
           CHANGE_RESULT: ${{ needs.changes.result }}
           NATIVE_RESULT: ${{ needs.native.result }}
         run: test "$CHANGE_RESULT" = success && test "$NATIVE_RESULT" = success
+
+  release-checks:
+    name: Elixir release checks
+    needs: changes
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Exercise disabled release gates and immutable recovery without credentials
+        if: needs.changes.outputs.relevant == 'true'
+        run: python -m unittest discover -s .github/scripts -p 'test_*.py'
+      - name: Validate the complete unreleased train
+        if: needs.changes.outputs.relevant == 'true'
+        env:
+          GITHUB_EVENT_NAME: pull_request
+        run: python .github/scripts/verify-release.py coordinator

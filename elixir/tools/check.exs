@@ -40,6 +40,8 @@ if profile == "full" do
   run.("mix", ["docs", "--warnings-as-errors"])
   run.("mix", ["dialyzer"])
   run.(python, ["tools/docs_check.py"])
+  run.(python, ["-m", "unittest", "discover", "-s", "../.github/scripts", "-p", "test_*.py"])
+  run.("mix", ["run", "tools/release_metadata.exs"])
 end
 
 run.("mix", ["compile", "--warnings-as-errors"])

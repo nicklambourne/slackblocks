@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only, shared preflight for the eight-language release train (Python 3.11+)."""
+"""Read-only, shared preflight for the nine-language release train (Python 3.11+)."""
 
 import argparse
 import datetime
@@ -28,6 +28,7 @@ LANGUAGES = {
     "ruby": "ruby",
     "rust": "rust",
     "php": "php",
+    "elixir": "elixir",
 }
 
 
@@ -78,6 +79,7 @@ def validate(root, requested=None, strict=False):
         ),
         "PHP": match(root / "php/src/Version.php", r"PACKAGE = '([^']+)'"),
     }
+    versions["Elixir"] = match(root / "elixir/mix.exs", r'version:\s*"([^"]+)"')
     version = requested or versions["Rust"]
     require(re.fullmatch(r"\d+\.\d+\.\d+", version), "Use a stable X.Y.Z version")
     require(
@@ -146,6 +148,35 @@ def validate(root, requested=None, strict=False):
             policy.get("enabled") is True,
             "PHP publication is disabled; verify monorepo registration, Packagist and protected environment before releasing any language",
         )
+    elixir = json.loads((root / "elixir/release.json").read_text())
+    require(type(elixir.get("enabled")) is bool, "Elixir activation must be boolean")
+    require(
+        elixir.get("auth_mode") == "api-key"
+        and elixir.get("package") == "slackblocks"
+        and elixir.get("environment") == "hex",
+        "Elixir publication requires explicit api-key authentication and Hex identity",
+    )
+    require(
+        match(root / "elixir/integrations/mix.exs", r'\{:slackblocks, "== ([^"]+)", path: "\.\."\}') == version,
+        "Elixir integration requirement must match package version",
+    )
+    require(
+        match(root / "elixir/erlang/rebar.config", r'\{slackblocks, "([^"]+)"\}') == version,
+        "Erlang consumer requirement must match Elixir version",
+    )
+    require(
+        match(root / "elixir/lib/slackblocks.ex", r'def spec_version, do: "([^"]+)"')
+        == json.loads((root / "spec/manifest.json").read_text())["spec_version"],
+        "Elixir spec version differs from the shared manifest",
+    )
+    require(
+        not any(line.strip() and not line.lstrip().startswith("#") for line in
+                (root / "elixir/conformance/skiplist.txt").read_text().splitlines()),
+        "Elixir release skip list must be empty",
+    )
+    if strict:
+        require(elixir["enabled"], "Elixir publication is disabled; complete the train and Hex readiness before releasing any language")
+        require(isinstance(elixir.get("owner"), str) and re.fullmatch(r"[a-zA-Z0-9_-]+", elixir["owner"]), "Elixir release requires the verified Hex owner username")
     major = version.split(".")[0]
     require(
         match(root / "go/go.mod", r"^module (.+)$")
@@ -293,7 +324,7 @@ def publisher(root, language, ref):
     )
     require(
         tag_state(root, version, head) == len(LANGUAGES),
-        "Create the complete eight-tag set before publishing",
+        "Create the complete nine-tag set before publishing",
     )
     return version
 
@@ -319,7 +350,7 @@ def main():
         if output := os.environ.get("GITHUB_OUTPUT"):
             with open(output, "a") as stream:
                 stream.write(f"version={version}\n")
-        print(f"Verified eight-language {args.command} preflight for {version}")
+        print(f"Verified nine-language {args.command} preflight for {version}")
     except (ReleaseError, subprocess.CalledProcessError) as error:
         raise SystemExit(str(error)) from error
 

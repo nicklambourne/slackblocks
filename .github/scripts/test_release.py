@@ -26,6 +26,14 @@ cargo = load("cargo_release", ROOT / "rust/bin/release.py")
 SOURCE_VERSION = release.rust_package(ROOT)["version"]
 VERSION = "2.6.0"
 FILES = [
+    "elixir/mix.exs",
+    "elixir/mix.lock",
+    "elixir/release.json",
+    "elixir/integrations/mix.exs",
+    "elixir/erlang/rebar.config",
+    "elixir/lib/slackblocks.ex",
+    "elixir/conformance/skiplist.txt",
+    "spec/manifest.json",
     "composer.json",
     "python/pyproject.toml",
     "python/uv.lock",
@@ -74,6 +82,10 @@ class ReleaseTests(unittest.TestCase):
         settings = json.loads(policy.read_text())
         settings["enabled"] = True
         policy.write_text(json.dumps(settings))
+        elixir_policy = self.root / "elixir/release.json"
+        elixir_settings = json.loads(elixir_policy.read_text())
+        elixir_settings.update(enabled=True, owner="maintainer")
+        elixir_policy.write_text(json.dumps(elixir_settings))
         manifest = self.root / "rust/Cargo.toml"
         text = re.sub(
             r"^publish = .+$",
@@ -141,7 +153,7 @@ class ReleaseTests(unittest.TestCase):
             VERSION,
         )
 
-    def test_all_eight_publishers_require_their_own_tag(self):
+    def test_all_nine_publishers_require_their_own_tag(self):
         self.tags()
         for language, prefix in release.LANGUAGES.items():
             with self.subTest(language=language):
@@ -389,6 +401,7 @@ class WorkflowTests(unittest.TestCase):
             "csharp": "publish-nuget",
             "ruby": "publish-rubygems",
             "php": "publish-packagist",
+            "elixir": "publish-hex",
         }
         for language, name in names.items():
             text = (ROOT / f".github/workflows/{name}.yml").read_text()
