@@ -331,13 +331,15 @@ def publisher(root, language, ref):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("coordinator", "publisher"))
+    parser.add_argument("command", choices=("validate", "coordinator", "publisher"))
     parser.add_argument("--language", choices=LANGUAGES)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     ref = os.environ.get("GITHUB_REF", "")
     try:
-        if args.command == "coordinator":
+        if args.command == "validate":
+            version = validate(root)
+        elif args.command == "coordinator":
             version = coordinator(
                 root,
                 os.environ.get("REQUESTED_VERSION") or None,

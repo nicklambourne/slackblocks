@@ -197,6 +197,37 @@ class ReleaseTests(unittest.TestCase):
             VERSION,
         )
 
+    def test_validate_cli_works_for_all_native_ci_events_without_git_mutations(self):
+        self.edit("rust/Cargo.toml", 'publish = ["crates-io"]', "publish = false")
+        for language in release.LANGUAGES:
+            self.edit(language + "/CHANGELOG.md", "2026-10-04", "Unreleased")
+        before = self.git("show-ref")
+        for event in ("pull_request", "push", "workflow_dispatch"):
+            with (
+                self.subTest(event=event),
+                patch.dict(os.environ, {"GITHUB_EVENT_NAME": event}, clear=True),
+                patch("sys.argv", ["verify-release.py", "validate"]),
+                patch.object(release, "__file__", str(self.root / ".github/scripts/verify-release.py")),
+                patch("sys.stdout", new_callable=io.StringIO) as output,
+            ):
+                release.main()
+                self.assertIn(f"preflight for {VERSION}", output.getvalue())
+        self.assertEqual(before, self.git("show-ref"))
+
+    def test_validate_cli_rejects_inconsistent_package_versions(self):
+        self.edit("rust/Cargo.toml", f'version = "{VERSION}"', 'version = "9.9.9"')
+        with (
+            patch.dict(os.environ, {"GITHUB_EVENT_NAME": "push"}, clear=True),
+            patch("sys.argv", ["verify-release.py", "validate"]),
+            patch.object(release, "__file__", str(self.root / ".github/scripts/verify-release.py")),
+            self.assertRaisesRegex(SystemExit, "versions differ"),
+        ):
+            release.main()
+
+    def test_coordinator_still_rejects_push_events(self):
+        with self.assertRaisesRegex(release.ReleaseError, "Unsupported coordinator event"):
+            release.coordinator(self.root, VERSION, "push", "refs/heads/master")
+
     def test_requested_version_mismatch(self):
         with self.assertRaisesRegex(release.ReleaseError, "versions differ"):
             release.validate(self.root, "9.9.9")
