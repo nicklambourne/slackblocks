@@ -4,8 +4,9 @@ Native immutable values for constructing validated Slack Block Kit payloads.
 The library builds messages; your application chooses the HTTP client that sends them.
 
 **Unreleased implementation:** all 89 shared models and the complete conformance
-corpus are implemented. Full site documentation and release activation are
-tracked in [the implementation plan](https://github.com/nicklambourne/slackblocks/blob/codex/elixir-4-sending/elixir/design/plan.md). No Hex release is available.
+corpus are implemented. Site documentation, Hex packaging, Erlang consumers and sending integrations are
+prepared in this train; release activation remains a separate approval gate. See
+[the implementation plan](https://github.com/nicklambourne/slackblocks/blob/master/elixir/design/plan.md) and [API reference](https://nicklambourne.github.io/slackblocks/reference/elixir). No Hex release is available.
 
 ## Requirements
 
@@ -123,8 +124,8 @@ The same BEAM modules are callable from Erlang:
 ```
 
 Use UTF-8 binaries and keyword tuples. The Erlang consumer requires Elixir runtime
-libraries and the declared package dependencies. Rebar3/Mix integration and a
-standalone OTP release test are part of this train; successful direct calls alone
+libraries and the declared package dependencies. The [Erlang guide](https://nicklambourne.github.io/slackblocks/usage/erlang) covers
+the tested Rebar3/Mix configuration and standalone OTP release; successful direct calls alone
 are not a promise that every Erlang build configuration works.
 
 ## Development

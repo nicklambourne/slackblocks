@@ -45,7 +45,8 @@ API/coverage guards, docs generation, Dialyzer, archive checks and Rebar3 releas
 checks. Set `SLACKBLOCKS_PLT_PATH` for an external durable runtime-specific PLT
 cache on the maintainer host. Source packages have no dependency on those paths.
 
-Remaining train work: executable sending examples and dependency co-installation,
+Remaining work at the PR 3 checkpoint (now completed in later draft PRs; see
+[checkpoint.md](checkpoint.md)): executable sending examples and dependency co-installation,
 complete current-site/root-README documentation, outgoing documentation freeze,
 disabled release wiring and monitoring preparation. Do not merge or publish this
 train without maintainer approval.

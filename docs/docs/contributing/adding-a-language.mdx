@@ -12,7 +12,7 @@ shared contract, useful helpers, tested documentation, and working package and
 release integration. Passing the JSON fixtures is one part of that work.
 
 The maintained implementations are currently Python, TypeScript, Go, Java, C#,
-Ruby, Rust (introduced in 2.6.0), and PHP (introduced in 2.7.0). Recheck that list against the packages and coordinated release at the
+Ruby, Rust (introduced in 2.6.0), PHP (introduced in 2.7.0), and Elixir (prepared for 2.8.0). Recheck that list against the packages and coordinated release at the
 start of the project. A plan or an unfinished implementation does not add a
 language to the release set.
 
@@ -380,6 +380,7 @@ associated with the language, not a shared registry blue. The current palette is
 | Ruby | RubyGems | `CC342D` |
 | Rust | crates.io | `CE422B` |
 | PHP | Packagist | `777BB4` |
+| Elixir | Hex | `8847B9` |
 
 Choose and record a recognisable language colour when extending this table.
 Keep the shared Docs highlight purple (`4A154B`) and Licence highlight green
@@ -656,3 +657,35 @@ Copy this completion record into the final PR or implementation plan:
   separately documented JSON. Reflect handwritten helper comments as well as
   generated constructors into the reference; API member tables need defaults,
   collection types and error boundaries.
+
+
+## Lessons verified while adding Elixir
+
+- Audit ignore rules with `git check-ignore` and inspect `git ls-files` in every
+  nested consumer project. A root `lib/` ignore can hide native sources even
+  when local tests pass. Validate a fresh checkout and the actual registry archive.
+- Test required struct fields through construction behavior. Compiler metadata
+  formats may change between supported releases without changing runtime behavior.
+- Test adding the library to an application with already compiled dependencies.
+  Jason's optional Decimal decoder is selected at compile time; install-time
+  coexistence alone does not prove checked parsing works. Document and test the
+  exact rebuild command in each environment and consolidated release.
+- Read the published client artifact, not only upstream source. A helper that
+  sends form data may flatten or mishandle nested JSON; exercise real HTTP bytes
+  against a local server with the complete payload and failure responses.
+- Native API references must account for default-argument arities, struct fields,
+  typespecs and explicit hidden compiler/internal functions. Compare compiled
+  exports against an independent inventory and rendered reference anchors.
+- Preserve outgoing docs before adding current panels. Execute literal README
+  and guide code, compare every block to its JSON tab, and verify older snapshots
+  retain their original language set. Use a pending package badge before the
+  registry has a release; activate the live version badge and download source
+  only after publication is verified.
+- A coordinated version bump must update version constants in independent API
+  inventories as well as package manifests, integration requirements and locks.
+- Register stable aggregate checks in branch protection only after those names
+  exist on the default branch, preserving the existing required-check set.
+  Elixir adds `Elixir native checks`, `Elixir quality and package`,
+  `Elixir Erlang compatibility`, `Elixir sending` and `Elixir release checks`.
+  Read protection back and verify actual GitHub-hosted runner metadata; do not
+  weaken existing protection to merge the new implementation.

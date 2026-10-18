@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Installation
 
@@ -353,4 +353,50 @@ echo $message->toJson();
 ```
 
 </PHP>
+<Elixir>
+
+Elixir support is being prepared for **2.8.0**. The Hex release is not published yet.
+Elixir 1.16.3+ (below 2.0), compatible OTP 26.2+, and a 64-bit runtime are required.
+Jason and Decimal are runtime dependencies; HTTP clients are optional.
+
+For review, add a local path entry to the dependency list in your application's `mix.exs`:
+
+```elixir
+{:slackblocks, path: "../slackblocks/elixir"}
+```
+
+After publication, replace it with the [Hex package](https://hex.pm/packages/slackblocks) dependency:
+
+```elixir
+{:slackblocks, "~> 2.8"}
+```
+
+Then fetch and compile dependencies:
+
+```sh
+mix deps.get
+mix compile
+```
+
+**Existing Jason builds:** if Jason was compiled before Decimal was installed,
+run `mix deps.compile jason --force` in each build environment (including
+`MIX_ENV=prod`), then rebuild your application and releases. Jason chooses its
+optional Decimal decoder at compile time. Checked slackblocks decoding returns
+an actionable tagged error until that integration is rebuilt. Fresh dependency
+builds include Decimal normally.
+
+Verify construction and serialization:
+
+```elixir
+alias Slackblocks.Blocks.Section
+section = Section.new!(text: "Hello, *world*!")
+Slackblocks.to_map!(section)
+```
+
+Use `mix deps.update slackblocks` to update within your declared version range.
+Commit your application's `mix.lock`. To uninstall, remove the dependency entry
+and run `mix deps.clean slackblocks --unlock`. The library starts no processes
+and needs no supervision-tree entry. For Rebar3 projects, see [Erlang integration](erlang).
+
+</Elixir>
 </LanguageContent>
