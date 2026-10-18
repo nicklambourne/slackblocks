@@ -66,10 +66,9 @@ never converted to atoms during checked decoding.
 
 ## Rebar3 and Mix
 
-Build with compatible Elixir/OTP installed. The first slackblocks Hex release
-is being prepared for 2.8.0; this registry configuration becomes usable after
-publication. Before then, `elixir/tools/erlang_check.py` serves the actual locally
-built archive to a temporary consumer. It does not substitute the source checkout.
+Build with compatible Elixir/OTP installed. This configuration installs version
+2.8.0 from Hex. The repository's `elixir/tools/erlang_check.py` also tests a locally
+built archive in a temporary consumer before publication.
 
 ```erlang title="elixir/erlang/rebar.config"
 {erl_opts, [debug_info, warnings_as_errors]}.

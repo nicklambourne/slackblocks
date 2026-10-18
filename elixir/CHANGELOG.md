@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.8.0] — Unreleased
+## [2.8.0] — 2026-10-18
 
 - Add all 89 modeled Block Kit values, 360 fields, shared validation and checked JSON ingress/egress as native immutable Elixir structs.
 - Add tagged and raising constructors/changes, Jason encoding, components, colors, workflows and Block Kit Builder URLs.

@@ -7,12 +7,11 @@ The Python (`slackblocks` on PyPI), TypeScript
 packages are released together and always carry the same version
 number.
 
-**Prepared release:** 2.8.0 adds Elixir as the ninth language. Publication is
-**disabled** in `elixir/release.json`; every publisher and the coordinator fail
-before tags or credentials until the complete train and Hex setup are approved.
-The outgoing nine-language 2.7.0 docs are frozen, with source/file hashes in
-`docs/release-snapshots/2.7.0.json`. Keep the changelogs `Unreleased` until
-activation. Resolve the previously blocked NuGet 2.7 publication before the next
+**Release 2.8.0** adds Elixir as the ninth language. Publication is enabled in
+`elixir/release.json` with the confirmed Hex owner `nicklambourne`. The coordinator
+checks authenticated Hex readiness before creating any tags. The outgoing
+eight-language 2.7.0 docs are frozen, with source/file hashes in
+`docs/release-snapshots/2.7.0.json`. Resolve the previously blocked NuGet 2.7 publication before the next
 release; the planning audit found source 2.7 ahead of the published C# package.
 
 The recommended entry point is the **Coordinated Release** workflow in GitHub
@@ -399,9 +398,10 @@ Keep the audit and comprehensive implementation plan in scratch.
 
 ## Elixir activation and first publication
 
-Elixir is prepared for **2.8.0** but `elixir/release.json` stays `enabled: false`
-throughout the implementation train. Merge and publication require separate
-maintainer approval. Do not attempt to work around the shared disabled guard.
+The first Elixir release is **2.8.0**. The implementation train kept
+`elixir/release.json` disabled; the maintainer approved merge and publication on
+18 October 2026. The activation change enables the API-key publisher. The
+checklist below records the required setup and gates for the first publication.
 
 1. Finish review of all six PRs and the disabled monitoring companion. Verify
    the complete native/contract/API, quality, HTTP, artifact, Erlang release and
