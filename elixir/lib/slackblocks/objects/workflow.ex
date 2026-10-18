@@ -29,4 +29,26 @@ defmodule Slackblocks.Objects.Workflow do
   @doc "Replaces fields or raises `Slackblocks.ValidationError`."
   @spec change!(t(), keyword()) :: t()
   def change!(value, options), do: Value.unwrap(change(value, options))
+  alias Slackblocks.Objects.Trigger
+
+  @doc "Builds a workflow trigger URL with a list of `Slackblocks.Objects.InputParameter` values (empty by default)."
+  @spec from_url(binary(), [Slackblocks.Objects.InputParameter.t()]) ::
+          {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+  def from_url(url, parameters \\ []) do
+    Value.capture(fn ->
+      Value.list!(parameters, ["customizable_input_parameters"])
+
+      trigger =
+        Trigger.new!(
+          url: url,
+          customizable_input_parameters: if(parameters == [], do: nil, else: parameters)
+        )
+
+      new!(trigger: trigger)
+    end)
+  end
+
+  @doc "Like `from_url/2`, raising on invalid input."
+  @spec from_url!(binary(), [Slackblocks.Objects.InputParameter.t()]) :: t()
+  def from_url!(url, parameters \\ []), do: Value.unwrap(from_url(url, parameters))
 end

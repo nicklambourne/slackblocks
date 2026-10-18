@@ -4,11 +4,22 @@ defmodule Slackblocks do
 
   Use model constructors for text conveniences and `to_map/1` for a complete
   validated Slack payload. Every output boundary rechecks edited structs.
+
+  ## Examples
+
+      iex> Slackblocks.Blocks.Divider.new!() |> Slackblocks.to_map!()
+      %{"type" => "divider"}
+
+      iex> {:error, error} = Slackblocks.Blocks.Section.new([])
+      iex> error.category
+      :missing_required
   """
-  alias Slackblocks.Internal.{Codec, Value}
+  alias Slackblocks.Internal.{Builder, Codec, Value}
   @version Mix.Project.config()[:version]
+  @doc "The version of the installed package."
   @spec version() :: String.t()
   def version, do: @version
+  @doc "The shared Slack Block Kit contract version implemented by this package."
   @spec spec_version() :: String.t()
   def spec_version, do: "1.2.0"
 
@@ -83,4 +94,22 @@ defmodule Slackblocks do
   @doc "Like `decode/2`, raising on failure."
   @spec decode!(module() | atom(), binary()) :: struct()
   def decode!(selector, json), do: Value.unwrap(decode(selector, json))
+
+  @doc """
+  Returns a Block Kit Builder URL without making network requests.
+
+  Accepts a block, list of blocks, message/view payload, or explicit string-keyed
+  JSON map. Blocks are wrapped in `blocks`; maps are validated as JSON data only.
+  Optional `team_id` is encoded as one URL path segment. The fragment preserves
+  list order and Unicode; JSON object key order is unspecified.
+  """
+  @spec block_kit_builder_url(struct() | list() | map(), keyword()) ::
+          {:ok, binary()} | {:error, Slackblocks.ValidationError.t()}
+  def block_kit_builder_url(value, options \\ []),
+    do: Builder.url(value, options)
+
+  @doc "Like `block_kit_builder_url/2`, raising on invalid input."
+  @spec block_kit_builder_url!(struct() | list() | map(), keyword()) :: binary()
+  def block_kit_builder_url!(value, options \\ []),
+    do: Value.unwrap(block_kit_builder_url(value, options))
 end

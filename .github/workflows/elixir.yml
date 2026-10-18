@@ -41,7 +41,7 @@ jobs:
 
   native:
     needs: changes
-    name: Elixir native (${{ matrix.os }}, ${{ matrix.elixir }})
+    name: Elixir native (${{ matrix.os }}, ${{ matrix.elixir }}, OTP ${{ matrix.otp }})
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -54,6 +54,15 @@ jobs:
           - {os: ubuntu-24.04, elixir: "1.16.3", otp: "26.2"}
           - {os: macos-latest, elixir: "1.16.3", otp: "26.2"}
           - {os: windows-2025, elixir: "1.16.3", otp: "26.2"}
+          - {os: ubuntu-24.04, elixir: "1.17.3", otp: "26.2"}
+          - {os: ubuntu-24.04, elixir: "1.17.3", otp: "27.0"}
+          - {os: ubuntu-24.04, elixir: "1.18.5", otp: "26.2"}
+          - {os: ubuntu-24.04, elixir: "1.18.5", otp: "27.0"}
+          - {os: ubuntu-24.04, elixir: "1.19.6", otp: "26.2"}
+          - {os: ubuntu-24.04, elixir: "1.19.6", otp: "27.0"}
+          - {os: ubuntu-24.04, elixir: "1.19.6", otp: "28.0"}
+          - {os: ubuntu-24.04, elixir: "1.20.4", otp: "27.0"}
+          - {os: ubuntu-24.04, elixir: "1.20.4", otp: "28.0"}
           - {os: ubuntu-24.04, elixir: "1.20.4", otp: "29.1"}
           - {os: macos-latest, elixir: "1.20.4", otp: "29.1"}
           - {os: windows-2025, elixir: "1.20.4", otp: "29.1"}
@@ -72,7 +81,9 @@ jobs:
           python-version: "3.13"
       - name: Resolve dependencies
         if: needs.changes.outputs.relevant == 'true'
-        run: mix deps.get
+        run: |
+          mix local.hex 2.5.1 --force
+          mix deps.get
       - name: Test native API and actual package consumer
         if: needs.changes.outputs.relevant == 'true'
         run: mix run tools/check.exs --profile runtime
@@ -92,6 +103,7 @@ jobs:
         with:
           elixir-version: "1.16.3"
           otp-version: "26.2"
+          rebar3-version: "3.27.1"
           version-type: strict
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         if: needs.changes.outputs.relevant == 'true'
@@ -99,7 +111,12 @@ jobs:
           python-version: "3.13"
       - name: Resolve dependencies
         if: needs.changes.outputs.relevant == 'true'
-        run: mix deps.get
+        run: |
+          mix local.hex 2.5.1 --force
+          mix deps.get
+      - name: Install pinned Python quality tooling
+        if: needs.changes.outputs.relevant == 'true'
+        run: python -m pip install ruff==0.15.12
       - name: Native and contract quality gates
         if: needs.changes.outputs.relevant == 'true'
         run: mix run tools/check.exs
@@ -107,6 +124,11 @@ jobs:
         if: needs.changes.outputs.relevant == 'true'
         env:
           SLACKBLOCKS_DECIMAL: "== 2.4.0"
+        run: python tools/package_check.py
+      - name: Decimal 3 lower-bound artifact consumer
+        if: needs.changes.outputs.relevant == 'true'
+        env:
+          SLACKBLOCKS_DECIMAL: "== 3.0.0"
         run: python tools/package_check.py
 
   erlang:
@@ -139,7 +161,9 @@ jobs:
           python-version: "3.13"
       - name: Resolve dependencies
         if: needs.changes.outputs.relevant == 'true'
-        run: mix deps.get
+        run: |
+          mix local.hex 2.5.1 --force
+          mix deps.get
       - name: EUnit and standalone OTP release from the Hex artifact
         if: needs.changes.outputs.relevant == 'true'
         env:

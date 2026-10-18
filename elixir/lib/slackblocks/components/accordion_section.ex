@@ -7,14 +7,7 @@ defmodule Slackblocks.Components.AccordionSection do
   @spec new(keyword()) :: {:ok, Container.t()} | {:error, Slackblocks.ValidationError.t()}
   def new(options) do
     Value.capture(fn ->
-      unless is_list(options) and Keyword.keyword?(options),
-        do: Value.fail(:type_mismatch, [], "expected keyword options")
-
-      allowed = ~w(title blocks subtitle icon expanded width block_id)a
-      keys = Keyword.keys(options)
-
-      unless Enum.all?(keys, &(&1 in allowed)) and length(keys) == length(Enum.uniq(keys)),
-        do: Value.fail(:invalid_usage, [], "unknown or duplicate option")
+      Value.options(options, ~w(title blocks subtitle icon expanded width block_id)a)
 
       expanded = Keyword.get(options, :expanded, false)
 
