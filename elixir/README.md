@@ -4,8 +4,8 @@ Native immutable values for constructing validated Slack Block Kit payloads.
 The library builds messages; your application chooses the HTTP client that sends them.
 
 **Unreleased implementation:** all 89 shared models and the complete conformance
-corpus are implemented. Sending integrations, site documentation and release activation are
-tracked in [the implementation plan](https://github.com/nicklambourne/slackblocks/blob/codex/elixir-3-quality/elixir/design/plan.md). No Hex release is available.
+corpus are implemented. Full site documentation and release activation are
+tracked in [the implementation plan](https://github.com/nicklambourne/slackblocks/blob/codex/elixir-4-sending/elixir/design/plan.md). No Hex release is available.
 
 ## Requirements
 
@@ -18,6 +18,22 @@ For review, add a path dependency to this directory:
 ```elixir
 {:slackblocks, path: "../slackblocks/elixir"}
 ```
+
+If this application already compiled Jason before adding slackblocks/Decimal,
+refresh Jason's optional Decimal integration in each build environment:
+
+```sh
+mix deps.get
+mix deps.compile jason --force
+mix compile
+# Repeat with MIX_ENV=prod before building a production release.
+```
+
+Checked decoding requires this integration to preserve decimal tokens. An old
+Jason build returns an actionable `ArgumentError` through `decode/2` (`decode!/2`
+raises); it never silently switches to lossy float parsing. Fresh builds resolve
+both runtime dependencies normally. CI tests an actual pre-Decimal Jason beam,
+the diagnostic, these rebuild commands and the resulting consolidated release.
 
 ## Quick start
 
@@ -126,7 +142,10 @@ native and full conformance tests, lint, ExDoc and an actual Hex archive install
 consumer. `--profile runtime` checks native and archive behavior on another
 compiler without changing the pinned formatter. The full profile includes Dialyzer, doctests, properties, a separate 90% handwritten
 coverage gate, API/coverage mutation probes, credential-free HexDocs packaging and
-a standalone Erlang release. Sending integration gates follow in the next PR.
+a standalone Erlang release. It also runs the separately resolved sending examples in locked, lower-bound and
+latest-compatible profiles. `--profile runtime` includes locked sending checks;
+`--profile native` is the narrower native/archive lane used by CI alongside its
+separate sending jobs.
 
 On the maintainer's Mac, keep durable build/dependency caches under `/Volumes/Cache`
 and disposable consumers under `/Volumes/Scratch`. The package does not need these

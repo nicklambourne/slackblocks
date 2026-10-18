@@ -76,3 +76,30 @@ Full-corpus testing corrected standalone pending-task errors to `type_mismatch`
 and added the chart segment's positive-value rule. The suite has 283 passing
 tests. Public-producer discovery, helper parity, property testing, coverage and
 Dialyzer remain PR 3 gates; corpus completeness alone does not establish those.
+
+## Sending and ecosystem integration (PR 4)
+
+The separate integration project executes the community client's Req request,
+direct Req, incoming webhooks and a pure map suitable for a Phoenix response.
+Eleven tests inspect actual localhost HTTP bytes, authentication, complete nested
+values, error responses, bounded 429 retry counts/delays, redirects and timeouts.
+Both displayed Req README snippets are extracted and executed by those tests.
+
+Consumers resolve independently against the actual Hex archive: committed lock,
+explicit direct lower bounds, and clean latest-compatible resolution. Ecto 3.14
+and Decimal 3 coexist. A production Jason-only consumer is compiled first, then
+adds slackblocks without cleaning; checked decimal decoding and consolidated
+protocols succeed. Transport errors are returned unchanged across Req/Finch
+versions. No HTTP client or framework dependency was added to the core package.
+
+### Existing Jason build caches
+
+Hosted CI exposed an intermittent optional-dependency invalidation in Jason 1.4.5:
+its Decimal decoder is selected when Jason compiles. Adding Decimal later does
+not reliably replace the existing BEAM module. Preserve native Mix dependency
+management: document `mix deps.compile jason --force` in each build environment
+and rebuilding the release. Checked decode returns an actionable tagged error
+for this specific state; it never falls back to precision-losing parsing. The
+consumer restores a genuine Jason-without-Decimal beam to make the regression
+deterministic, then executes the documented repair and complete JSON/protocol
+checks. No runtime compilation, dependency patching or alternate parser is added.

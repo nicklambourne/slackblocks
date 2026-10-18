@@ -86,7 +86,7 @@ jobs:
           mix deps.get
       - name: Test native API and actual package consumer
         if: needs.changes.outputs.relevant == 'true'
-        run: mix run tools/check.exs --profile runtime
+        run: mix run tools/check.exs --profile native
 
   quality:
     needs: changes
@@ -169,6 +169,55 @@ jobs:
         env:
           SLACKBLOCKS_ERLANG_DECIMAL: ${{ matrix.decimal }}
         run: python tools/erlang_check.py
+
+  sending:
+    needs: changes
+    name: Elixir HTTP (${{ matrix.runtime.elixir }}, ${{ matrix.profile }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [locked, lower, latest]
+        runtime:
+          - {elixir: "1.16.3", otp: "26.2"}
+          - {elixir: "1.20.4", otp: "29.1"}
+    defaults:
+      run:
+        working-directory: elixir
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          elixir-version: ${{ matrix.runtime.elixir }}
+          otp-version: ${{ matrix.runtime.otp }}
+          rebar3-version: "3.27.1"
+          version-type: strict
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Resolve package tooling
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          mix local.hex 2.5.1 --force
+          mix deps.get
+      - name: Send from the actual archive with independent dependencies
+        if: needs.changes.outputs.relevant == 'true'
+        run: python tools/integration_check.py --profile "${{ matrix.profile }}"
+
+  sending-result:
+    name: Elixir sending
+    needs: [changes, sending]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every sending profile
+        env:
+          CHANGE_RESULT: ${{ needs.changes.result }}
+          SENDING_RESULT: ${{ needs.sending.result }}
+        run: test "$CHANGE_RESULT" = success && test "$SENDING_RESULT" = success
 
   erlang-result:
     name: Elixir Erlang compatibility
