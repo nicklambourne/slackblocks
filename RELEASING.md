@@ -11,8 +11,9 @@ number.
 `elixir/release.json` with the confirmed Hex owner `nicklambourne`. The coordinator
 checks authenticated Hex readiness before creating any tags. The outgoing
 eight-language 2.7.0 docs are frozen, with source/file hashes in
-`docs/release-snapshots/2.7.0.json`. Resolve the previously blocked NuGet 2.7 publication before the next
-release; the planning audit found source 2.7 ahead of the published C# package.
+`docs/release-snapshots/2.7.0.json`. The missing NuGet 2.7.0 publication was
+recovered on 18 October 2026 using the corrected trusted-publishing policy;
+all eight previous implementations are publicly available at 2.7.0.
 
 The recommended entry point is the **Coordinated Release** workflow in GitHub
 Actions. Run it from `master` with one `X.Y.Z` input; it validates the shared
@@ -138,7 +139,8 @@ These must be in place before the workflows can publish:
       two-factor authentication enabled.
    2. Under **Trusted Publishing**, add a policy for repository owner
       `nicklambourne`, repository `slackblocks`, workflow file
-      `publish-nuget.yml`, and environment `nuget`.
+      `publish-nuget.yml`, and environment `nuget`. Use the exact package glob
+      `Slackblocks` and allow publishing new versions of existing packages.
    3. Set the repository (or `nuget` environment) variable `NUGET_USER` to the
       nuget.org username. `NuGet/login` exchanges the workflow's OIDC token for
       a short-lived API key for that user, so no long-lived key is stored.
