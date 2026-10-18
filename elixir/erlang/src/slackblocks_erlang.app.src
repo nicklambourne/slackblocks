@@ -1,0 +1,8 @@
+{application, slackblocks_erlang, [
+  {description, "Erlang consumer of the Slackblocks Hex artifact"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {applications, [kernel, stdlib, slackblocks]},
+  {env, []},
+  {modules, []}
+]}.

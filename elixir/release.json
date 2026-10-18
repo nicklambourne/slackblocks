@@ -1,0 +1,6 @@
+{
+  "enabled": false,
+  "auth_mode": "api-key",
+  "environment": "hex",
+  "package": "slackblocks"
+}
