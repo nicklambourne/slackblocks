@@ -12,7 +12,7 @@
 [![RubyGems version](https://img.shields.io/gem/v/slackblocks?style=flat&labelColor=555&label=RubyGems&color=CC342D&logo=rubygems&logoColor=white)](https://rubygems.org/gems/slackblocks)
 [![crates.io version](https://img.shields.io/crates/v/slackblocks?style=flat&labelColor=555&label=crates.io&color=CE422B&logo=rust&logoColor=white)](https://crates.io/crates/slackblocks)
 [![Packagist version](https://img.shields.io/packagist/v/nicklambourne/slackblocks?style=flat&labelColor=555&label=Packagist&color=777BB4&logo=php&logoColor=white)](https://packagist.org/packages/nicklambourne/slackblocks)
-[![Hex release: pending](https://img.shields.io/badge/Hex-pending-8847B9?style=flat&labelColor=555&logo=elixir&logoColor=white)](elixir/README.md)
+[![Hex version](https://img.shields.io/hexpm/v/slackblocks?style=flat&labelColor=555&label=Hex&color=8847B9&logo=elixir&logoColor=white)](https://hex.pm/packages/slackblocks)
 
 [![Python CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/unit-tests.yml?style=flat&labelColor=555&branch=master&event=push&label=Python+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml?query=branch%3Amaster)
 [![TypeScript CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/typescript.yml?style=flat&labelColor=555&branch=master&event=push&label=TypeScript+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml?query=branch%3Amaster)
@@ -145,13 +145,13 @@ PHP support begins with coordinated version 2.7.0. See the
 <details>
 <summary>Elixir (1.16.3+, compatible OTP 26.2+, 64-bit)</summary>
 
-The first Hex release is being prepared for 2.8.0. For review, add a path dependency in `mix.exs`:
+Add the [Hex package](https://hex.pm/packages/slackblocks) to your dependencies in `mix.exs`:
 
 ```elixir
-{:slackblocks, path: "../slackblocks/elixir"}
+{:slackblocks, "~> 2.8"}
 ```
 
-After publication use `{:slackblocks, "~> 2.8"}`. If Jason was compiled before Decimal was installed,
+Run `mix deps.get`. If Jason was compiled before Decimal was installed,
 run `mix deps.compile jason --force` in each build environment and rebuild the application/release.
 See the [Elixir package guide](elixir/README.md).
 
@@ -477,7 +477,7 @@ and [Erlang example](elixir/erlang/src/slackblocks_erlang.erl).
 - [`ruby/`](ruby/) — the Ruby gem (`slackblocks` on RubyGems from 2.5.0).
 - [`rust/`](rust/) — the Rust crate (`slackblocks` on crates.io from 2.6.0).
 - [`php/`](php/) — native PHP values and Composer package (`nicklambourne/slackblocks` on Packagist from 2.7.0).
-- [`elixir/`](elixir/) — native Elixir values and Erlang integration (first Hex release planned for 2.8.0).
+- [`elixir/`](elixir/) — native Elixir values and Erlang integration (`slackblocks` on Hex from 2.8.0).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
   and capability coverage that all nine implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.

@@ -3,7 +3,7 @@
 All notable changes to the Java package are documented here. Java versions move
 in lockstep with the Python, TypeScript, and Go packages.
 
-## [2.8.0] — Unreleased
+## [2.8.0] — 2026-10-18
 
 - Coordinate the first Elixir implementation release; existing language support remains unchanged.
 

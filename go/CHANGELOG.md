@@ -3,7 +3,7 @@
 All notable changes to the Go module are documented here. Go releases use the
 same version number as the Python, TypeScript, and Java packages.
 
-## [2.8.0] — Unreleased
+## [2.8.0] — 2026-10-18
 
 - Coordinate the first Elixir implementation release; existing language support remains unchanged.
 
