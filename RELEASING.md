@@ -423,11 +423,12 @@ checklist below records the required setup and gates for the first publication.
    for existing packages. They cannot bootstrap a new package. A later reviewed
    change may implement/test OIDC and revoke the bootstrap key; the present
    workflow deliberately implements only the tested API-key path.
-5. After the new workflow exists on master, add **Elixir native checks**, **Elixir
-   quality and package**, **Elixir Erlang compatibility**, **Elixir sending** and
-   **Elixir release checks** to branch protection/rulesets. Preserve the existing
-   51 required checks and strictness. Inspect real relevant/unrelated runs and
-   actual GitHub-provided runner metadata before calling protection complete.
+5. Keep **Elixir native checks**, **Elixir quality and package**, **Elixir Erlang
+   compatibility**, **Elixir sending** and **Elixir release checks** required in
+   branch protection/rulesets. They were added on 18 October 2026, preserving the
+   existing 51 checks and strictness for a total of 56 required checks. Inspect
+   real relevant/unrelated runs and actual GitHub-provided runner metadata when
+   changing this configuration.
 6. In a separate activation change, resolve any previous registry discrepancy,
    date all nine changelogs together, align Java's output timestamp, populate the
    verified Hex owner and set `enabled: true`. Review the complete change before
