@@ -157,6 +157,7 @@ export function message(
   input: MessageInput,
   settings: FactorySettings = {},
 ): MessagePayload {
+  if (input.channel === undefined) throw new MissingRequiredError("message.channel", "required field is missing");
   if (typeof input.channel !== "string") {
     throw new TypeMismatchError("message.channel", "expected a string");
   }
