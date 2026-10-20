@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "models, helpers, quality and sending implemented; docs/release remain",
+  "status": "complete implementation prepared for review; merge, account setup, publication and monitoring activation await approval",
   "baseline_commit": "70ffab589935d98d8fe63bb532d65d3e2b5d48a1",
   "spec_version": "1.2.0",
   "proposed_package_version": "2.8.0",
@@ -113,9 +113,9 @@
     "erlang_consumer": "implemented and locally verified",
     "erlang_release": "implemented and locally verified",
     "sending": "actual archive, locked/lower/latest dependencies and real localhost HTTP verified",
-    "documentation": "planned",
-    "disabled_release": "planned",
-    "monitoring": "planned"
+    "documentation": "97 public modules, 360 fields and 46 literal examples checked; 21 block payload comparisons; all nine reference renderers and historical snapshot guards pass",
+    "disabled_release": "nine-language 2.8 preparation; exact outgoing 2.7 snapshot; 61 release tests and actual artifact reproduction pass; Hex remains disabled",
+    "monitoring": "disabled Hex provider/dashboard/website companion: nicklambourne/noodle#1316; 36 exporter and 7 project tests pass"
   },
   "helper_dispositions": {
     "Accordion": "Slackblocks.Components.Accordion",
@@ -130,7 +130,9 @@
   "evidence": {
     "contract": "elixir/test/conformance_test.exs (283 tests including foundation)",
     "quality": "elixir/design/quality.md",
-    "sending": "elixir/integrations/README.md and elixir/integrations/test/sending_test.exs"
+    "sending": "elixir/integrations/README.md and elixir/integrations/test/sending_test.exs",
+    "documentation": "docs/scripts/check_elixir_guide_snippets.mjs, check_elixir_api_rendering.mjs and design/checkpoint.md",
+    "release": "elixir/tools/release.py, .github/scripts/test_elixir_release.py and RELEASING.md"
   },
   "source_hashes": {
     "spec/model.json": "f99f3c03dd338ab382ee99e547ce824977254477068a59efcf7e96832e74c72d",
@@ -152,7 +154,7 @@
       "source": "spec/manifest.json",
       "implementation": "elixir/test/support/valid_constructions.ex",
       "tests": "elixir/test/conformance_test.exs",
-      "docs": "docs/docs/contributing/conformance.mdx",
+      "docs": "docs/docs/contributing/maintaining-block-kit.mdx",
       "status": "105 native constructions pass exact fixture comparisons"
     },
     "invalid_cases_and_limits": {

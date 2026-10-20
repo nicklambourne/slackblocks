@@ -7,13 +7,13 @@ The Python (`slackblocks` on PyPI), TypeScript
 packages are released together and always carry the same version
 number.
 
-**Prepared release:** 2.8.0 adds Elixir as the ninth language. Publication is
-**disabled** in `elixir/release.json`; every publisher and the coordinator fail
-before tags or credentials until the complete train and Hex setup are approved.
-The outgoing nine-language 2.7.0 docs are frozen, with source/file hashes in
-`docs/release-snapshots/2.7.0.json`. Keep the changelogs `Unreleased` until
-activation. Resolve the previously blocked NuGet 2.7 publication before the next
-release; the planning audit found source 2.7 ahead of the published C# package.
+**Release 2.8.0** adds Elixir as the ninth language. Publication is enabled in
+`elixir/release.json` with the confirmed Hex owner `nicklambourne`. The coordinator
+checks authenticated Hex readiness before creating any tags. The outgoing
+eight-language 2.7.0 docs are frozen, with source/file hashes in
+`docs/release-snapshots/2.7.0.json`. The missing NuGet 2.7.0 publication was
+recovered on 18 October 2026 using the corrected trusted-publishing policy;
+all eight previous implementations are publicly available at 2.7.0.
 
 The recommended entry point is the **Coordinated Release** workflow in GitHub
 Actions. Run it from `master` with one `X.Y.Z` input; it validates the shared
@@ -139,7 +139,8 @@ These must be in place before the workflows can publish:
       two-factor authentication enabled.
    2. Under **Trusted Publishing**, add a policy for repository owner
       `nicklambourne`, repository `slackblocks`, workflow file
-      `publish-nuget.yml`, and environment `nuget`.
+      `publish-nuget.yml`, and environment `nuget`. Use the exact package glob
+      `Slackblocks` and allow publishing new versions of existing packages.
    3. Set the repository (or `nuget` environment) variable `NUGET_USER` to the
       nuget.org username. `NuGet/login` exchanges the workflow's OIDC token for
       a short-lived API key for that user, so no long-lived key is stored.
@@ -399,16 +400,19 @@ Keep the audit and comprehensive implementation plan in scratch.
 
 ## Elixir activation and first publication
 
-Elixir is prepared for **2.8.0** but `elixir/release.json` stays `enabled: false`
-throughout the implementation train. Merge and publication require separate
-maintainer approval. Do not attempt to work around the shared disabled guard.
+The first Elixir release is **2.8.0**. The implementation train kept
+`elixir/release.json` disabled; the maintainer approved merge and publication on
+18 October 2026. The activation change enables the API-key publisher. The
+checklist below records the required setup and gates for the first publication.
 
 1. Finish review of all six PRs and the disabled monitoring companion. Verify
    the complete native/contract/API, quality, HTTP, artifact, Erlang release and
    documentation gates, preserving all existing language support floors.
-2. Create a personal Hex account and verify its email. Confirm that the public
-   `slackblocks` name is available, or belongs to that account. Set the verified
-   username in `elixir/release.json`'s `owner` field; do not guess it from GitHub.
+2. Create a personal Hex account. GitHub signup automatically confirms the
+   imported email; no separate Hex verification email is required. For password
+   signup, follow the verification link Hex emails you. Confirm that the public
+   `slackblocks` name is available, or belongs to that account. Set the confirmed
+   Hex username in `elixir/release.json`'s `owner` field; do not guess it from GitHub.
 3. Create the protected GitHub environment **hex**, permitting the coordinated
    master readiness job and `elixir/v*` publisher tags. Store **HEX_API_KEY** there.
    The first release needs `api:write`. Later key-based releases can use package
@@ -419,11 +423,12 @@ maintainer approval. Do not attempt to work around the shared disabled guard.
    for existing packages. They cannot bootstrap a new package. A later reviewed
    change may implement/test OIDC and revoke the bootstrap key; the present
    workflow deliberately implements only the tested API-key path.
-5. After the new workflow exists on master, add **Elixir native checks**, **Elixir
-   quality and package**, **Elixir Erlang compatibility**, **Elixir sending** and
-   **Elixir release checks** to branch protection/rulesets. Preserve the existing
-   51 required checks and strictness. Inspect real relevant/unrelated runs and
-   actual GitHub-provided runner metadata before calling protection complete.
+5. Keep **Elixir native checks**, **Elixir quality and package**, **Elixir Erlang
+   compatibility**, **Elixir sending** and **Elixir release checks** required in
+   branch protection/rulesets. They were added on 18 October 2026, preserving the
+   existing 51 checks and strictness for a total of 56 required checks. Inspect
+   real relevant/unrelated runs and actual GitHub-provided runner metadata when
+   changing this configuration.
 6. In a separate activation change, resolve any previous registry discrepancy,
    date all nine changelogs together, align Java's output timestamp, populate the
    verified Hex owner and set `enabled: true`. Review the complete change before

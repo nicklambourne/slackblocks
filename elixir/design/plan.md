@@ -1,7 +1,7 @@
 # Elixir implementation plan for slackblocks
 
-**Prepared and audited:** 11 October 2026 (Australia/Sydney). Revision 3; implementation evidence is recorded in [checkpoint.md](checkpoint.md); [audit findings and resolutions](audit.md).
-**Status:** implementation authorized on 11 October 2026. Prepare the stacked PR train; do not merge or publish until the maintainer approves. The foundation PR carries this design and a portable parity inventory.
+**Prepared and audited:** 11 October 2026 (Australia/Sydney). Revision 4; implementation evidence is recorded in [checkpoint.md](checkpoint.md); [audit findings and resolutions](audit.md).
+**Status:** implementation prepared on 11–12 October 2026 in the stacked draft PR train. Do not merge or publish until the maintainer approves. The foundation PR carries this design and a portable parity inventory.
 
 ## 1. Outcome and baseline
 
@@ -464,25 +464,26 @@ PRs are stacked in dependency order, each describing its actual delivered scope.
 The implementation is ready for review only when the complete inventory has statuses and evidence, rather than just a large generated diff. Release completion additionally requires actual publication and registry consumers.
 
 - [ ] Native checkpoint reviewed; minimum/runtime/dependency and naming decisions confirmed.
-- [ ] Every live model/field/role, valid/invalid ID, capability, limit and vocabulary is covered.
-- [ ] Helpers, aliases and exclusions have explicit dispositions; release skip list empty.
-- [ ] Local versus complete validation, required/optional parse defaults, duplicate keys, role dispatch and forged structs have explicit passing/failing tests.
-- [ ] Tagged APIs and direct Jason exception behavior are documented/tested; both Decimal majors and current Ecto resolve; numeric policy is proven on minimum/current OTP.
-- [ ] Independent public API/default coverage, docs/comments and meaningful handwritten coverage pass.
-- [ ] Actual Hex archive and fresh consumers pass minimum/current, clean and lower-bound modes.
-- [ ] Erlang example, Rebar3 artifact consumer, consolidated protocols and standalone OTP release pass minimum/current runtimes.
-- [ ] Real local HTTP sending tests execute from displayed source; transport remains optional to core.
-- [ ] Both license texts/metadata ship; production consumers need no dev tools, Git or monorepo files.
-- [ ] Full docs, collapsed README accordions, both badge rows/palette, official logo, ExDoc/HexDocs, actual snippets and historical browser checks pass.
+- [x] Every live model/field/role, valid/invalid ID, capability, limit and vocabulary is covered.
+- [x] Helpers, aliases and exclusions have explicit dispositions; release skip list empty.
+- [x] Local versus complete validation, required/optional parse defaults, duplicate keys, role dispatch and forged structs have explicit passing/failing tests.
+- [x] Tagged APIs and direct Jason exception behavior are documented/tested; both Decimal majors and current Ecto resolve; numeric policy is proven on minimum/current OTP.
+- [x] Independent public API/default coverage, docs/comments and meaningful handwritten coverage pass.
+- [x] Actual Hex archive and fresh consumers pass minimum/current, clean and lower-bound modes.
+- [x] Erlang example, Rebar3 artifact consumer, consolidated protocols and standalone OTP release pass minimum/current runtimes.
+- [x] Real local HTTP sending tests execute from displayed source; transport remains optional to core.
+- [x] Both license texts/metadata ship; production consumers need no dev tools, Git or monorepo files.
+- [x] Pre-publication docs, collapsed README accordions, both badge rows/palette, official logo, rendered ExDoc source links, actual snippets and historical browser checks pass.
 - [ ] Stable hosted checks and branch protection are validated on relevant and unrelated changes.
-- [ ] Nine-language versions and disabled strict guards advance atomically; real Mix declarations/lock semantics and partial-failure tests pass.
-- [ ] PR artifact/docs checks require no credentials; protected full dry run and readiness precede coordinated tags.
+- [x] Nine-language versions and disabled strict guards advance atomically; real Mix declarations/lock semantics and partial-failure tests pass.
+- [x] PR artifact/docs checks require no credentials and verify committed package inputs and rendered source links.
+- [ ] Protected full dry run and registry readiness are verified before coordinated tags.
 - [ ] Hex ownership/environment/bootstrap credentials are verified; OIDC configuration is independently proven before claiming tokenless operation.
 - [ ] Maintainer authorizes merge/release; all publishers and exact registry installs succeed.
 - [ ] Post-release badges/HexDocs and dashboard/project entry are activated and verified.
 
-**Decisions to settle at the API checkpoint:** validate the minimum OTP policy and proposed API ergonomics; prove checked decimal-to-float/resource behavior on both Decimal majors; confirm dependency bounds; demonstrate independent export discovery and complete handwritten-module coverage accounting. The proposed defaults above give the implementation a concrete starting point.
+**Decisions exercised by the implemented checkpoint (maintainer review pending):** validate the minimum OTP policy and proposed API ergonomics; prove checked decimal-to-float/resource behavior on both Decimal majors; confirm dependency bounds; demonstrate independent export discovery and complete handwritten-module coverage accounting. The proposed defaults above give the implementation a concrete starting point.
 
 **Account action needed later:** Hex ownership and the protected publishing environment/key. No account setup, credentials or release approval is needed to review this plan.
 
-**Evidence limits:** This work inspected repository source and guidance, computed inventories, checked live package/registry metadata and read primary ecosystem documentation. It did not compile Elixir, test the proposed APIs, authenticate to Hex, reserve a name or send a Slack message. Exact compiler patches, dependency bounds, package checksums and OIDC behavior must be verified when those implementation gates are executed.
+**Evidence limits:** The original planning audit was read-only. Implementation now compiles and tests the native API, actual archives, minimum/current consumers, consolidated Erlang releases, local HTTP integrations and docs; see [checkpoint.md](checkpoint.md). It has not authenticated to Hex, reserved a name, published, sent a real Slack message or changed branch protection. Protected readiness, OIDC activation (if adopted), production monitoring and registry installs remain explicit post-approval gates.

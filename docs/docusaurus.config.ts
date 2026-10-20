@@ -363,7 +363,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.vsDark,
-      additionalLanguages: ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "json", "toml"],
+      additionalLanguages: ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir", "erlang", "json", "toml"],
     },
     navbar: {
       title: "slackblocks",

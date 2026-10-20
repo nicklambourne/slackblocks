@@ -3,9 +3,10 @@
 Native immutable values for constructing validated Slack Block Kit payloads.
 The library builds messages; your application chooses the HTTP client that sends them.
 
-**Unreleased implementation:** all 89 shared models and the complete conformance
-corpus are implemented. Full site documentation and release activation are
-tracked in [the implementation plan](https://github.com/nicklambourne/slackblocks/blob/codex/elixir-4-sending/elixir/design/plan.md). No Hex release is available.
+Available from version **2.8.0** on [Hex](https://hex.pm/packages/slackblocks),
+with all 89 shared models and the complete conformance corpus. See the
+[API reference](https://nicklambourne.github.io/slackblocks/reference/elixir) and
+[HexDocs](https://hexdocs.pm/slackblocks).
 
 ## Requirements
 
@@ -13,10 +14,10 @@ Elixir 1.16.3 or newer (below 2.0), with a compatible Erlang/OTP version startin
 at 26.2, on 64-bit systems. CI checks Elixir 1.16–1.20 on their compatible OTP versions, with Linux, macOS and Windows endpoint lanes.
 Runtime dependencies are Jason and Decimal; HTTP clients and frameworks are optional.
 
-For review, add a path dependency to this directory:
+Add the package to the dependencies in your application's `mix.exs`, then run `mix deps.get`:
 
 ```elixir
-{:slackblocks, path: "../slackblocks/elixir"}
+{:slackblocks, "~> 2.8"}
 ```
 
 If this application already compiled Jason before adding slackblocks/Decimal,
@@ -123,8 +124,8 @@ The same BEAM modules are callable from Erlang:
 ```
 
 Use UTF-8 binaries and keyword tuples. The Erlang consumer requires Elixir runtime
-libraries and the declared package dependencies. Rebar3/Mix integration and a
-standalone OTP release test are part of this train; successful direct calls alone
+libraries and the declared package dependencies. The [Erlang guide](https://nicklambourne.github.io/slackblocks/usage/erlang) covers
+the tested Rebar3/Mix configuration and standalone OTP release; successful direct calls alone
 are not a promise that every Erlang build configuration works.
 
 ## Development
