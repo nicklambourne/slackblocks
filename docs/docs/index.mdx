@@ -3,7 +3,7 @@ sidebar_label: Welcome
 sidebar_position: 1
 ---
 
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Welcome to `slackblocks`!
 
@@ -265,6 +265,24 @@ backed enums and typed role interfaces. Constructors validate immediately;
 No HTTP or framework package is required. Choose a transport in [Sending Messages](usage/sending_messages).
 
 </PHP>
+<Elixir>
+
+Elixir uses immutable structs, keyword options, atom enums and native typespecs.
+`new/1` and `change/2` return tagged results; their bang variants raise validation errors.
+Every map or JSON output validates the complete value again.
+
+- [Blocks](reference/elixir/blocks) group message content.
+- [Elements](reference/elixir/elements) provide interactive controls.
+- [Composition objects and rich text](reference/elixir/objects) describe nested values.
+- [Payloads and views](reference/elixir/payloads) enforce message and view rules.
+- [Components and utilities](reference/elixir/components) provide accordions, pagination and colors.
+- [JSON, validation and types](reference/elixir/core) define checked wire boundaries.
+- [Validation errors](reference/elixir/errors) expose categories and wire paths.
+
+Choose a transport in [Sending Messages](usage/sending_messages); the same BEAM modules
+are callable from [Erlang](usage/erlang).
+
+</Elixir>
 </LanguageContent>
 
 ## Guides
@@ -353,4 +371,17 @@ No HTTP or framework package is required. Choose a transport in [Sending Message
 - [Contributing](contributing)
 
 </PHP>
+<Elixir>
+
+- [Installation](usage/installation)
+- [Using Blocks](usage/using_blocks)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook)
+- [Erlang integration](usage/erlang)
+- [Troubleshooting](usage/troubleshooting)
+- [Compatibility](usage/compatibility)
+- [Migration](usage/migration)
+- [Contributing](contributing)
+
+</Elixir>
 </LanguageContent>
