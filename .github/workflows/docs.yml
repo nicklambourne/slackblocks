@@ -16,6 +16,7 @@ on:
       - "ruby/**"
       - "rust/**"
       - "php/**"
+      - "elixir/**"
       - "README.md"
       - "spec/**"
       - "package.json"
@@ -54,7 +55,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(docs/|python/|typescript/src/|typescript/package\.json$|typescript/tsconfig\.json$|typescript/tsconfig\.typedoc\.json$|go/|java/|csharp/|ruby/|rust/|php/|README\.md$|spec/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/docs\.yml$)' <<<"$files"; then
+          if grep -qE '^(docs/|python/|typescript/src/|typescript/package\.json$|typescript/tsconfig\.json$|typescript/tsconfig\.typedoc\.json$|go/|java/|csharp/|ruby/|rust/|php/|elixir/|README\.md$|spec/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/docs\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -85,7 +86,7 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install uv and Python
-        uses: astral-sh/setup-uv@v10.2.0
+        uses: astral-sh/setup-uv@v10.3.0
         with:
           enable-cache: false
           cache-dependency-glob: python/uv.lock
@@ -111,7 +112,7 @@ jobs:
           dotnet-version: "10.0.x"
 
       - name: Install Ruby for executable guide examples
-        uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 # v1
+        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1
         with:
           ruby-version: "3.4"
 
@@ -121,7 +122,7 @@ jobs:
           rustup default stable
 
       - name: Install PHP for native reference and executable guide examples
-        uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea # v2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           php-version: "8.2"
           tools: composer:v2
@@ -129,6 +130,19 @@ jobs:
 
       - name: Install PHP dependencies
         run: composer install --working-dir=php --no-interaction --prefer-dist
+
+      - name: Install Elixir for native docs and executable examples
+        uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        with:
+          elixir-version: "1.16.3"
+          otp-version: "26.2"
+          version-type: strict
+
+      - name: Install Elixir documentation dependencies
+        working-directory: elixir
+        run: |
+          mix local.hex 2.5.1 --force
+          mix deps.get --check-locked
 
       - name: Install JavaScript dependencies
         run: pnpm install --frozen-lockfile
