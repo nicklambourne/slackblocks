@@ -96,6 +96,24 @@ updates:
       - dependency-name: symfony/http-client
         update-types: ["version-update:semver-major"]
 
+  - package-ecosystem: mix
+    directory: /elixir
+    schedule:
+      interval: weekly
+    groups:
+      elixir-development:
+        dependency-type: development
+    # Keep manifest ranges compatible with Elixir 1.16.3 / OTP 26.2.
+    # CI checks the minimum runtime and independent dependency resolutions.
+
+  - package-ecosystem: mix
+    directory: /elixir/integrations
+    schedule:
+      interval: weekly
+    groups:
+      elixir-sending-examples:
+        patterns: ["*"]
+
   - package-ecosystem: github-actions
     directory: /
     schedule:

@@ -1,4 +1,4 @@
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Troubleshooting & FAQ
 
@@ -669,4 +669,55 @@ tested transports, deadlines and rate-limit behavior. Report minimal reproductio
 code and PHP/package versions in the [issue tracker](https://github.com/nicklambourne/slackblocks/issues).
 
 </PHP>
+<Elixir>
+
+## Validation errors
+
+Tagged APIs allow ordinary pattern matching. Paths use wire keys and zero-based
+list indexes; categories are atoms. Bang variants raise `Slackblocks.ValidationError`.
+
+```elixir
+case Slackblocks.Blocks.Section.new([]) do
+  {:ok, section} -> Slackblocks.to_map!(section)
+  {:error, %Slackblocks.ValidationError{category: category, path: path}} ->
+    %{category: category, path: path}
+end
+```
+
+`Jason.encode/1` may raise a validation error through a model's protocol implementation.
+Use `Slackblocks.encode/1` when you need tagged validation and JSON errors together.
+For whole-message limits, construct a `Message` or view: a model nested in an
+arbitrary application map cannot validate that map's message semantics.
+
+## Checked decoding and old Jason builds
+
+An error mentioning Decimal support means Jason was compiled before Decimal was
+available. Run `mix deps.compile jason --force` in the affected `MIX_ENV`, recompile
+your application, and rebuild the release. See [Installation](installation).
+Lossy numbers and duplicate JSON keys are rejected intentionally; ordinary
+`Jason.decode/1` followed by map ingress cannot recover information already lost.
+
+## Structs, lists and enums
+
+Use atom enum values such as `:primary`, UTF-8 binaries, proper lists and keyword
+options. Unknown or duplicate constructor keywords are errors. Do not convert
+untrusted JSON keys to atoms. JSON output has string keys and omits optional `nil`
+fields while preserving false, zero and metadata nulls.
+
+## Sending and interactions
+
+Check both HTTP status and Slack's `ok` value. A successful HTTP 200 can still be
+a Slack API error. Do not retry an ambiguous timed-out POST automatically.
+Webhook success is plain text `ok`. Signature verification, acknowledgement,
+interaction routing and state are application responsibilities.
+
+## Pending task cards and helpers
+
+A pending task card is valid inside a plan; standalone serialization rejects it.
+Expand accordion/paginator helpers into a final message or view to check the total
+block count. Helpers do not keep process state or register event handlers.
+For missing modules or unconsolidated protocols in Rebar3 releases, use the
+[Erlang integration guide](erlang).
+
+</Elixir>
 </LanguageContent>

@@ -1,0 +1,1476 @@
+---
+sidebar_position: 4
+toc_max_heading_level: 3
+---
+
+# Payloads and Views
+
+Generated from the actual Rust signatures and rustdoc comments. Builders validate on `build()`; `into_builder()` preserves omissions. Error categories and paths are stable; prose may improve.
+
+## Attachment
+
+A legacy message attachment containing blocks and an optional color bar.
+
+[Slack reference](https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments).
+Only blocks supported in messages are accepted.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> AttachmentBuilder
+```
+
+**Related types:** [`AttachmentBuilder`](/reference/rust/payloads#attachmentbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> AttachmentBuilder
+```
+
+**Related types:** [`AttachmentBuilder`](/reference/rust/payloads#attachmentbuilder)
+
+### blocks
+
+Borrows or copies `blocks`. Adds the attachment's blocks in display order.
+
+```rust
+fn blocks(&self) -> &[Block]
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### color
+
+Borrows or copies `color`. Sets the attachment's left border color: a six-digit hex color or good, warning, or danger.
+
+```rust
+fn color(&self) -> Option<&str>
+```
+
+### fallback
+
+Borrows or copies `fallback`. Sets plain-text summary shown in clients that cannot display attachments.
+
+```rust
+fn fallback(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## AttachmentBuilder
+
+Consuming builder for [`Attachment`](/reference/rust/payloads#attachment). Validation runs in `Self::build`.
+
+### blocks
+
+Adds the attachment's blocks in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn blocks<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Block>,
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### block
+
+Appends one item to the collection.
+
+```rust
+fn block(mut self, value: impl Into<Block>) -> Self
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### color
+
+Sets the attachment's left border color: a six-digit hex color or good, warning, or danger.
+
+```rust
+fn color(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_color
+
+Omits `color`, including any model default.
+
+```rust
+fn clear_color(mut self) -> Self
+```
+
+### fallback
+
+Sets plain-text summary shown in clients that cannot display attachments.
+
+```rust
+fn fallback(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_fallback
+
+Omits `fallback`, including any model default.
+
+```rust
+fn clear_fallback(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<Attachment, ValidationError>
+```
+
+**Related types:** [`Attachment`](/reference/rust/payloads#attachment), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## HomeTabView
+
+The payload for publishing an App Home tab with views.publish.
+
+[Slack reference](https://docs.slack.dev/surfaces/app-home).
+Only blocks supported on the App Home tab are accepted.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> HomeTabViewBuilder
+```
+
+**Related types:** [`HomeTabViewBuilder`](/reference/rust/payloads#hometabviewbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> HomeTabViewBuilder
+```
+
+**Related types:** [`HomeTabViewBuilder`](/reference/rust/payloads#hometabviewbuilder)
+
+### blocks
+
+Borrows or copies `blocks`. Adds the blocks shown on the App Home tab, in display order.
+
+```rust
+fn blocks(&self) -> &[Block]
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### private_metadata
+
+Borrows or copies `private_metadata`. Sets application-defined data returned in view payloads.
+
+```rust
+fn private_metadata(&self) -> Option<&str>
+```
+
+### callback_id
+
+Borrows or copies `callback_id`. Sets an identifier returned in view payloads so your app can recognize the view.
+
+```rust
+fn callback_id(&self) -> Option<&str>
+```
+
+### external_id
+
+Borrows or copies `external_id`. Sets a workspace-unique identifier you can use to update the view later.
+
+```rust
+fn external_id(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## HomeTabViewBuilder
+
+Consuming builder for [`HomeTabView`](/reference/rust/payloads#hometabview). Validation runs in `Self::build`.
+
+### blocks
+
+Adds the blocks shown on the App Home tab, in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn blocks<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Block>,
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### block
+
+Appends one item to the collection.
+
+```rust
+fn block(mut self, value: impl Into<Block>) -> Self
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### private_metadata
+
+Sets application-defined data returned in view payloads.
+
+```rust
+fn private_metadata(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_private_metadata
+
+Omits `private_metadata`, including any model default.
+
+```rust
+fn clear_private_metadata(mut self) -> Self
+```
+
+### callback_id
+
+Sets an identifier returned in view payloads so your app can recognize the view.
+
+```rust
+fn callback_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_callback_id
+
+Omits `callback_id`, including any model default.
+
+```rust
+fn clear_callback_id(mut self) -> Self
+```
+
+### external_id
+
+Sets a workspace-unique identifier you can use to update the view later.
+
+```rust
+fn external_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_external_id
+
+Omits `external_id`, including any model default.
+
+```rust
+fn clear_external_id(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<HomeTabView, ValidationError>
+```
+
+**Related types:** [`HomeTabView`](/reference/rust/payloads#hometabview), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## MessagePayload
+
+A complete payload for chat.postMessage and related Web API methods.
+
+[Slack reference](https://docs.slack.dev/reference/methods/chat.postMessage).
+Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder(channel: impl Into<String>) -> MessagePayloadBuilder
+```
+
+**Related types:** [`MessagePayloadBuilder`](/reference/rust/payloads#messagepayloadbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> MessagePayloadBuilder
+```
+
+**Related types:** [`MessagePayloadBuilder`](/reference/rust/payloads#messagepayloadbuilder)
+
+### channel
+
+Borrows or copies `channel`. Sets the ID of the channel, private group, or conversation that receives the message.
+
+```rust
+fn channel(&self) -> &str
+```
+
+### blocks
+
+Borrows or copies `blocks`. Adds the message blocks in display order.
+
+```rust
+fn blocks(&self) -> Option<&[Block]>
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### attachments
+
+Borrows or copies `attachments`. Adds legacy attachments in display order.
+
+```rust
+fn attachments(&self) -> Option<&[Attachment]>
+```
+
+**Related types:** [`Attachment`](/reference/rust/payloads#attachment)
+
+### text
+
+Borrows or copies `text`. Sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```rust
+fn text(&self) -> Option<&str>
+```
+
+### mrkdwn
+
+Borrows or copies `mrkdwn`. Sets whether Slack formats the top-level text as mrkdwn.
+
+```rust
+fn mrkdwn(&self) -> Option<bool>
+```
+
+### unfurl_links
+
+Borrows or copies `unfurl_links`. Sets whether Slack unfurls text-based links.
+
+```rust
+fn unfurl_links(&self) -> Option<bool>
+```
+
+### unfurl_media
+
+Borrows or copies `unfurl_media`. Sets whether Slack unfurls media links.
+
+```rust
+fn unfurl_media(&self) -> Option<bool>
+```
+
+### metadata
+
+Borrows or copies `metadata`. Sets message metadata as a JSON-compatible map, such as event_type and event_payload.
+
+```rust
+fn metadata(&self) -> Option<&Map<String, Value>>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## MessagePayloadBuilder
+
+Consuming builder for [`MessagePayload`](/reference/rust/payloads#messagepayload). Validation runs in `Self::build`.
+
+### channel
+
+Sets the ID of the channel, private group, or conversation that receives the message.
+
+```rust
+fn channel(mut self, value: impl Into<String>) -> Self
+```
+
+### blocks
+
+Adds the message blocks in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn blocks<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Block>,
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### block
+
+Appends one item to the collection.
+
+```rust
+fn block(mut self, value: impl Into<Block>) -> Self
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### clear_blocks
+
+Omits `blocks`, including any model default.
+
+```rust
+fn clear_blocks(mut self) -> Self
+```
+
+### attachments
+
+Adds legacy attachments in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn attachments<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Attachment>,
+```
+
+**Related types:** [`Attachment`](/reference/rust/payloads#attachment)
+
+### attachment
+
+Appends one item to the collection.
+
+```rust
+fn attachment(mut self, value: impl Into<Attachment>) -> Self
+```
+
+**Related types:** [`Attachment`](/reference/rust/payloads#attachment)
+
+### clear_attachments
+
+Omits `attachments`, including any model default.
+
+```rust
+fn clear_attachments(mut self) -> Self
+```
+
+### text
+
+Sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```rust
+fn text(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_text
+
+Omits `text`, including any model default.
+
+```rust
+fn clear_text(mut self) -> Self
+```
+
+### mrkdwn
+
+Sets whether Slack formats the top-level text as mrkdwn.
+
+```rust
+fn mrkdwn(mut self, value: bool) -> Self
+```
+
+### clear_mrkdwn
+
+Omits `mrkdwn`, including any model default.
+
+```rust
+fn clear_mrkdwn(mut self) -> Self
+```
+
+### unfurl_links
+
+Sets whether Slack unfurls text-based links.
+
+```rust
+fn unfurl_links(mut self, value: bool) -> Self
+```
+
+### clear_unfurl_links
+
+Omits `unfurl_links`, including any model default.
+
+```rust
+fn clear_unfurl_links(mut self) -> Self
+```
+
+### unfurl_media
+
+Sets whether Slack unfurls media links.
+
+```rust
+fn unfurl_media(mut self, value: bool) -> Self
+```
+
+### clear_unfurl_media
+
+Omits `unfurl_media`, including any model default.
+
+```rust
+fn clear_unfurl_media(mut self) -> Self
+```
+
+### metadata
+
+Sets message metadata as a JSON-compatible map, such as event_type and event_payload.
+
+```rust
+fn metadata(mut self, value: Map<String, Value>) -> Self
+```
+
+### clear_metadata
+
+Omits `metadata`, including any model default.
+
+```rust
+fn clear_metadata(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<MessagePayload, ValidationError>
+```
+
+**Related types:** [`MessagePayload`](/reference/rust/payloads#messagepayload), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## MessageResponse
+
+A response body for slash commands and interaction response URLs.
+
+[Slack reference](https://docs.slack.dev/interactivity/handling-user-interaction#message_responses).
+Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> MessageResponseBuilder
+```
+
+**Related types:** [`MessageResponseBuilder`](/reference/rust/payloads#messageresponsebuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> MessageResponseBuilder
+```
+
+**Related types:** [`MessageResponseBuilder`](/reference/rust/payloads#messageresponsebuilder)
+
+### blocks
+
+Borrows or copies `blocks`. Adds the response blocks in display order.
+
+```rust
+fn blocks(&self) -> Option<&[Block]>
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### attachments
+
+Borrows or copies `attachments`. Adds legacy attachments in display order.
+
+```rust
+fn attachments(&self) -> Option<&[Attachment]>
+```
+
+**Related types:** [`Attachment`](/reference/rust/payloads#attachment)
+
+### text
+
+Borrows or copies `text`. Sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```rust
+fn text(&self) -> Option<&str>
+```
+
+### mrkdwn
+
+Borrows or copies `mrkdwn`. Sets whether Slack formats the top-level text as mrkdwn.
+
+```rust
+fn mrkdwn(&self) -> Option<bool>
+```
+
+### replace_original
+
+Borrows or copies `replace_original`. Sets whether the response replaces the message that triggered it.
+
+```rust
+fn replace_original(&self) -> Option<bool>
+```
+
+### response_type
+
+Borrows or copies `response_type`. Sets who can see the response.
+
+```rust
+fn response_type(&self) -> Option<ResponseType>
+```
+
+**Related types:** [`ResponseType`](/reference/rust/core#responsetype)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## MessageResponseBuilder
+
+Consuming builder for [`MessageResponse`](/reference/rust/payloads#messageresponse). Validation runs in `Self::build`.
+
+### blocks
+
+Adds the response blocks in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn blocks<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Block>,
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### block
+
+Appends one item to the collection.
+
+```rust
+fn block(mut self, value: impl Into<Block>) -> Self
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### clear_blocks
+
+Omits `blocks`, including any model default.
+
+```rust
+fn clear_blocks(mut self) -> Self
+```
+
+### attachments
+
+Adds legacy attachments in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn attachments<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Attachment>,
+```
+
+**Related types:** [`Attachment`](/reference/rust/payloads#attachment)
+
+### attachment
+
+Appends one item to the collection.
+
+```rust
+fn attachment(mut self, value: impl Into<Attachment>) -> Self
+```
+
+**Related types:** [`Attachment`](/reference/rust/payloads#attachment)
+
+### clear_attachments
+
+Omits `attachments`, including any model default.
+
+```rust
+fn clear_attachments(mut self) -> Self
+```
+
+### text
+
+Sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```rust
+fn text(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_text
+
+Omits `text`, including any model default.
+
+```rust
+fn clear_text(mut self) -> Self
+```
+
+### mrkdwn
+
+Sets whether Slack formats the top-level text as mrkdwn.
+
+```rust
+fn mrkdwn(mut self, value: bool) -> Self
+```
+
+### clear_mrkdwn
+
+Omits `mrkdwn`, including any model default.
+
+```rust
+fn clear_mrkdwn(mut self) -> Self
+```
+
+### replace_original
+
+Sets whether the response replaces the message that triggered it.
+
+```rust
+fn replace_original(mut self, value: bool) -> Self
+```
+
+### clear_replace_original
+
+Omits `replace_original`, including any model default.
+
+```rust
+fn clear_replace_original(mut self) -> Self
+```
+
+### response_type
+
+Sets who can see the response.
+
+```rust
+fn response_type(mut self, value: ResponseType) -> Self
+```
+
+**Related types:** [`ResponseType`](/reference/rust/core#responsetype)
+
+### clear_response_type
+
+Omits `response_type`, including any model default.
+
+```rust
+fn clear_response_type(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<MessageResponse, ValidationError>
+```
+
+**Related types:** [`MessageResponse`](/reference/rust/payloads#messageresponse), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ModalView
+
+The view payload for views.open, views.push, and views.update.
+
+[Slack reference](https://docs.slack.dev/surfaces/modals).
+Only blocks supported in modals are accepted. A modal that contains an input block must have a submit label.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ModalViewBuilder
+```
+
+**Related types:** [`ModalViewBuilder`](/reference/rust/payloads#modalviewbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ModalViewBuilder
+```
+
+**Related types:** [`ModalViewBuilder`](/reference/rust/payloads#modalviewbuilder)
+
+### title
+
+Borrows or copies `title`. Sets the title in the modal's top bar.
+
+```rust
+fn title(&self) -> &PlainText
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### blocks
+
+Borrows or copies `blocks`. Adds the blocks shown in the modal, in display order.
+
+```rust
+fn blocks(&self) -> &[Block]
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### close
+
+Borrows or copies `close`. Sets the label of the button that closes the modal.
+
+```rust
+fn close(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### submit
+
+Borrows or copies `submit`. Sets the label of the button that submits the modal.
+
+```rust
+fn submit(&self) -> Option<&PlainText>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### private_metadata
+
+Borrows or copies `private_metadata`. Sets application-defined data returned in view payloads.
+
+```rust
+fn private_metadata(&self) -> Option<&str>
+```
+
+### callback_id
+
+Borrows or copies `callback_id`. Sets an identifier returned in view payloads so your app can recognize the view.
+
+```rust
+fn callback_id(&self) -> Option<&str>
+```
+
+### clear_on_close
+
+Borrows or copies `clear_on_close`. Sets whether closing this modal closes every view in its stack.
+
+```rust
+fn clear_on_close(&self) -> Option<bool>
+```
+
+### notify_on_close
+
+Borrows or copies `notify_on_close`. Sets whether Slack sends a view_closed event when the user closes the modal.
+
+```rust
+fn notify_on_close(&self) -> Option<bool>
+```
+
+### external_id
+
+Borrows or copies `external_id`. Sets a workspace-unique identifier you can use to update the view later.
+
+```rust
+fn external_id(&self) -> Option<&str>
+```
+
+### submit_disabled
+
+Borrows or copies `submit_disabled`. Sets whether the submit button starts disabled. Only valid in workflow configuration modals.
+
+```rust
+fn submit_disabled(&self) -> Option<bool>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ModalViewBuilder
+
+Consuming builder for [`ModalView`](/reference/rust/payloads#modalview). Validation runs in `Self::build`.
+
+### title
+
+Sets the title in the modal's top bar.
+
+```rust
+fn title(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### blocks
+
+Adds the blocks shown in the modal, in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn blocks<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Block>,
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### block
+
+Appends one item to the collection.
+
+```rust
+fn block(mut self, value: impl Into<Block>) -> Self
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### close
+
+Sets the label of the button that closes the modal.
+
+```rust
+fn close(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_close
+
+Omits `close`, including any model default.
+
+```rust
+fn clear_close(mut self) -> Self
+```
+
+### submit
+
+Sets the label of the button that submits the modal.
+
+```rust
+fn submit(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### clear_submit
+
+Omits `submit`, including any model default.
+
+```rust
+fn clear_submit(mut self) -> Self
+```
+
+### private_metadata
+
+Sets application-defined data returned in view payloads.
+
+```rust
+fn private_metadata(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_private_metadata
+
+Omits `private_metadata`, including any model default.
+
+```rust
+fn clear_private_metadata(mut self) -> Self
+```
+
+### callback_id
+
+Sets an identifier returned in view payloads so your app can recognize the view.
+
+```rust
+fn callback_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_callback_id
+
+Omits `callback_id`, including any model default.
+
+```rust
+fn clear_callback_id(mut self) -> Self
+```
+
+### clear_on_close
+
+Sets whether closing this modal closes every view in its stack.
+
+```rust
+fn clear_on_close(mut self, value: bool) -> Self
+```
+
+### clear_clear_on_close
+
+Omits `clear_on_close`, including any model default.
+
+```rust
+fn clear_clear_on_close(mut self) -> Self
+```
+
+### notify_on_close
+
+Sets whether Slack sends a view_closed event when the user closes the modal.
+
+```rust
+fn notify_on_close(mut self, value: bool) -> Self
+```
+
+### clear_notify_on_close
+
+Omits `notify_on_close`, including any model default.
+
+```rust
+fn clear_notify_on_close(mut self) -> Self
+```
+
+### external_id
+
+Sets a workspace-unique identifier you can use to update the view later.
+
+```rust
+fn external_id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_external_id
+
+Omits `external_id`, including any model default.
+
+```rust
+fn clear_external_id(mut self) -> Self
+```
+
+### submit_disabled
+
+Sets whether the submit button starts disabled. Only valid in workflow configuration modals.
+
+```rust
+fn submit_disabled(mut self, value: bool) -> Self
+```
+
+### clear_submit_disabled
+
+Omits `submit_disabled`, including any model default.
+
+```rust
+fn clear_submit_disabled(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ModalView, ValidationError>
+```
+
+**Related types:** [`ModalView`](/reference/rust/payloads#modalview), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## WebhookMessage
+
+A payload for incoming webhooks.
+
+[Slack reference](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks).
+Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> WebhookMessageBuilder
+```
+
+**Related types:** [`WebhookMessageBuilder`](/reference/rust/payloads#webhookmessagebuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> WebhookMessageBuilder
+```
+
+**Related types:** [`WebhookMessageBuilder`](/reference/rust/payloads#webhookmessagebuilder)
+
+### blocks
+
+Borrows or copies `blocks`. Adds the message blocks in display order.
+
+```rust
+fn blocks(&self) -> Option<&[Block]>
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### attachments
+
+Borrows or copies `attachments`. Adds legacy attachments in display order.
+
+```rust
+fn attachments(&self) -> Option<&[Attachment]>
+```
+
+**Related types:** [`Attachment`](/reference/rust/payloads#attachment)
+
+### text
+
+Borrows or copies `text`. Sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```rust
+fn text(&self) -> Option<&str>
+```
+
+### response_type
+
+Borrows or copies `response_type`. Sets who can see the response.
+
+```rust
+fn response_type(&self) -> Option<ResponseType>
+```
+
+**Related types:** [`ResponseType`](/reference/rust/core#responsetype)
+
+### replace_original
+
+Borrows or copies `replace_original`. Sets whether the response replaces the message that triggered it.
+
+```rust
+fn replace_original(&self) -> Option<bool>
+```
+
+### delete_original
+
+Borrows or copies `delete_original`. Sets whether the response deletes the message that triggered it.
+
+```rust
+fn delete_original(&self) -> Option<bool>
+```
+
+### unfurl_links
+
+Borrows or copies `unfurl_links`. Sets whether Slack unfurls text-based links.
+
+```rust
+fn unfurl_links(&self) -> Option<bool>
+```
+
+### unfurl_media
+
+Borrows or copies `unfurl_media`. Sets whether Slack unfurls media links.
+
+```rust
+fn unfurl_media(&self) -> Option<bool>
+```
+
+### metadata
+
+Borrows or copies `metadata`. Sets message metadata as a JSON-compatible map, such as event_type and event_payload.
+
+```rust
+fn metadata(&self) -> Option<&Map<String, Value>>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## WebhookMessageBuilder
+
+Consuming builder for [`WebhookMessage`](/reference/rust/payloads#webhookmessage). Validation runs in `Self::build`.
+
+### blocks
+
+Adds the message blocks in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn blocks<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Block>,
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### block
+
+Appends one item to the collection.
+
+```rust
+fn block(mut self, value: impl Into<Block>) -> Self
+```
+
+**Related types:** [`Block`](/reference/rust/core#block)
+
+### clear_blocks
+
+Omits `blocks`, including any model default.
+
+```rust
+fn clear_blocks(mut self) -> Self
+```
+
+### attachments
+
+Adds legacy attachments in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn attachments<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<Attachment>,
+```
+
+**Related types:** [`Attachment`](/reference/rust/payloads#attachment)
+
+### attachment
+
+Appends one item to the collection.
+
+```rust
+fn attachment(mut self, value: impl Into<Attachment>) -> Self
+```
+
+**Related types:** [`Attachment`](/reference/rust/payloads#attachment)
+
+### clear_attachments
+
+Omits `attachments`, including any model default.
+
+```rust
+fn clear_attachments(mut self) -> Self
+```
+
+### text
+
+Sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```rust
+fn text(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_text
+
+Omits `text`, including any model default.
+
+```rust
+fn clear_text(mut self) -> Self
+```
+
+### response_type
+
+Sets who can see the response.
+
+```rust
+fn response_type(mut self, value: ResponseType) -> Self
+```
+
+**Related types:** [`ResponseType`](/reference/rust/core#responsetype)
+
+### clear_response_type
+
+Omits `response_type`, including any model default.
+
+```rust
+fn clear_response_type(mut self) -> Self
+```
+
+### replace_original
+
+Sets whether the response replaces the message that triggered it.
+
+```rust
+fn replace_original(mut self, value: bool) -> Self
+```
+
+### clear_replace_original
+
+Omits `replace_original`, including any model default.
+
+```rust
+fn clear_replace_original(mut self) -> Self
+```
+
+### delete_original
+
+Sets whether the response deletes the message that triggered it.
+
+```rust
+fn delete_original(mut self, value: bool) -> Self
+```
+
+### clear_delete_original
+
+Omits `delete_original`, including any model default.
+
+```rust
+fn clear_delete_original(mut self) -> Self
+```
+
+### unfurl_links
+
+Sets whether Slack unfurls text-based links.
+
+```rust
+fn unfurl_links(mut self, value: bool) -> Self
+```
+
+### clear_unfurl_links
+
+Omits `unfurl_links`, including any model default.
+
+```rust
+fn clear_unfurl_links(mut self) -> Self
+```
+
+### unfurl_media
+
+Sets whether Slack unfurls media links.
+
+```rust
+fn unfurl_media(mut self, value: bool) -> Self
+```
+
+### clear_unfurl_media
+
+Omits `unfurl_media`, including any model default.
+
+```rust
+fn clear_unfurl_media(mut self) -> Self
+```
+
+### metadata
+
+Sets message metadata as a JSON-compatible map, such as event_type and event_payload.
+
+```rust
+fn metadata(mut self, value: Map<String, Value>) -> Self
+```
+
+### clear_metadata
+
+Omits `metadata`, including any model default.
+
+```rust
+fn clear_metadata(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<WebhookMessage, ValidationError>
+```
+
+**Related types:** [`ValidationError`](/reference/rust/errors#validationerror), [`WebhookMessage`](/reference/rust/payloads#webhookmessage)
