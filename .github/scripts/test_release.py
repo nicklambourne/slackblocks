@@ -112,6 +112,9 @@ class ReleaseTests(unittest.TestCase):
             )
         )
         self.git("init", "--quiet")
+        # Keep background maintenance from racing temporary-repository cleanup.
+        self.git("config", "maintenance.auto", "false")
+        self.git("config", "gc.auto", "0")
         self.git("config", "user.name", "Release guard tests")
         self.git("config", "user.email", "release-tests@example.invalid")
         self.commit()

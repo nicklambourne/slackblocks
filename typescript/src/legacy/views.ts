@@ -37,7 +37,7 @@ export function modal(
     notifyOnClose?: boolean;
     /** Application-defined external identifier. */
     externalId?: string;
-    /** Keep the submit button disabled until an input changes. */
+    /** Configuration modals only. Omit for ordinary views.open/views.push, even when false. */
     submitDisabled?: boolean;
   },
   settings: FactorySettings = {},

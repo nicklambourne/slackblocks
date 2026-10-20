@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Preserve the required channel in message return types for strict official SDK handoff.
 
 - Expose confirmation style and emoji skin tone through typed native builders.
+- Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
 
 ## [2.6.0] — 2026-10-09
 

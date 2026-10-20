@@ -28,7 +28,7 @@ public sealed partial class ModalView : global::Slackblocks.SlackObject
     /// <param name="clearOnClose">Whether closing this modal closes every view in its stack.</param>
     /// <param name="notifyOnClose">Whether Slack sends a view_closed event when the user closes the modal.</param>
     /// <param name="externalId">A workspace-unique identifier you can use to update the view later. Slack allows at most 255 characters.</param>
-    /// <param name="submitDisabled">Whether the submit button starts disabled. Only valid in workflow configuration modals.</param>
+    /// <param name="submitDisabled">Whether the submit button starts disabled in workflow configuration modals only. Omit this field for ordinary views.open/views.push modals, including when false. The general ModalView value cannot infer its receiving workflow context.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
@@ -94,7 +94,7 @@ public sealed partial class ModalView : global::Slackblocks.SlackObject
     /// <value>The value, or <see langword="null"/> when it was not set.</value>
     public string? ExternalId { get; }
 
-    /// <summary>Gets whether the submit button starts disabled. Only valid in workflow configuration modals.</summary>
+    /// <summary>Gets whether the submit button starts disabled in workflow configuration modals only. Omit this field for ordinary views.open/views.push modals, including when false. The general ModalView value cannot infer its receiving workflow context.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>
     public bool? SubmitDisabled { get; }
 }

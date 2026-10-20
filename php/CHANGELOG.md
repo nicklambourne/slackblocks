@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
+
 ## [2.8.0] — 2026-10-18
 
 - Coordinate the first Elixir implementation release; existing language support remains unchanged.

@@ -14,6 +14,7 @@ same version number as the Python, TypeScript, and Java packages.
 ## [Unreleased]
 
 - Expose the existing rich-text link unsafe field on its concrete native builder.
+- Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
 
 ## [2.6.0] — 2026-10-09
 

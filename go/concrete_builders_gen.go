@@ -2681,8 +2681,9 @@ func (b *ModalBuilder) ExternalID(value string) *ModalBuilder {
 	return b
 }
 
-// SubmitDisabled sets whether the submit button starts disabled. Only valid in workflow
-// configuration modals.
+// SubmitDisabled sets whether the submit button starts disabled in workflow configuration
+// modals only. Omit this field for ordinary views.open/views.push modals, including when false.
+// The general ModalView value cannot infer its receiving workflow context.
 func (b *ModalBuilder) SubmitDisabled(value bool) *ModalBuilder {
 	b.core.SubmitDisabled(value)
 	return b

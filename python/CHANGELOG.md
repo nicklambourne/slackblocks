@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Distinguish omitted response visibility from explicit `ephemeral=False`, which
   now emits `response_type: "in_channel"`. The no-argument wire default is unchanged.
 - Explicitly re-export the public Python API for strict installed-package type checking.
+- Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
 
 ## [2.6.0] — 2026-10-09
 
