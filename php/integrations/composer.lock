@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "188c849a8e34fde050e399edc245f18e",
+    "content-hash": "0e47c5c7913d77f7ca67c098bd720f12",
     "packages": [
         {
             "name": "brick/math",
@@ -3196,11 +3196,11 @@
         },
         {
             "name": "nicklambourne/slackblocks",
-            "version": "2.7.0",
+            "version": "2.8.0",
             "dist": {
                 "type": "path",
                 "url": "..",
-                "reference": "73ff595da61bc256ef8075bf2b51212df3ab0a8c"
+                "reference": "fa52436e3a5315d4f26d89828dfb4278fb454573"
             },
             "require": {
                 "ext-json": "*",
@@ -3242,7 +3242,9 @@
                     "/.php-cs-fixer.cache",
                     "/.phpstan",
                     "/.phpunit.cache",
-                    "/coverage"
+                    "/coverage",
+                    "/dist",
+                    "/release.json"
                 ]
             },
             "scripts": {
@@ -5122,16 +5124,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v7.4.20",
+            "version": "v7.4.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "750a420b8dd0af3d6e1c6c1412802abf2cdd2b6c"
+                "reference": "121bf3a973bfd852db85ec32d0d64e9fbed4449b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/750a420b8dd0af3d6e1c6c1412802abf2cdd2b6c",
-                "reference": "750a420b8dd0af3d6e1c6c1412802abf2cdd2b6c",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/121bf3a973bfd852db85ec32d0d64e9fbed4449b",
+                "reference": "121bf3a973bfd852db85ec32d0d64e9fbed4449b",
                 "shasum": ""
             },
             "require": {
@@ -5199,7 +5201,7 @@
                 "http"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v7.4.20"
+                "source": "https://github.com/symfony/http-client/tree/v7.4.21"
             },
             "funding": [
                 {
@@ -5219,7 +5221,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-24T11:02:13+00:00"
+            "time": "2026-10-13T15:31:38+00:00"
         },
         {
             "name": "symfony/http-client-contracts",

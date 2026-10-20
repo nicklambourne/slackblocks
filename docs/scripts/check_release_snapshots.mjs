@@ -10,7 +10,8 @@
 // rather than discovered by a reader.
 
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -67,6 +68,28 @@ function releasedVersions() {
   ];
 }
 
+// Recorded language-introduction snapshots are immutable source artifacts.
+function verifyRecordedSnapshots() {
+  const root = resolve(docsRoot, "..");
+  const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+  const walk = (directory) => readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const target = join(directory, entry.name);
+    return entry.isDirectory() ? walk(target) : [target];
+  });
+  for (const name of readdirSync(join(docsRoot, "release-snapshots"))) {
+    if (!name.endsWith(".json")) continue;
+    const record = JSON.parse(readFileSync(join(docsRoot, "release-snapshots", name), "utf8"));
+    const paths = [...walk(join(docsRoot, "versioned_docs", `version-${record.version}`)),
+      join(docsRoot, "versioned_sidebars", `version-${record.version}-sidebars.json`)];
+    const files = Object.fromEntries(paths.map((file) => [file.slice(root.length + 1).replaceAll("\\", "/"), hash(readFileSync(file))]).sort(([a], [b]) => a.localeCompare(b, "en")));
+    const ordered = Object.fromEntries(Object.entries(files).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0));
+    if (JSON.stringify(ordered) !== JSON.stringify(record.files) || hash(JSON.stringify(ordered)) !== record.sha256) {
+      throw new Error(`Frozen ${record.version} documentation differs from its recorded source snapshot`);
+    }
+  }
+}
+
+verifyRecordedSnapshots();
 const current = currentVersion();
 const released = releasedVersions();
 
