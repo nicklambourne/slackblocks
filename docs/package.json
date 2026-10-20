@@ -56,13 +56,13 @@
     "@nicklambourne/slackblocks": "workspace:*",
     "typedoc": "0.28.20",
     "typedoc-docusaurus-theme": "1.4.3",
-    "typedoc-plugin-markdown": "4.13.1"
+    "typedoc-plugin-markdown": "4.14.0"
   },
   "devDependencies": {
     "@docusaurus/tsconfig": "^3.10.2",
     "@types/react": "^19.3.0",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "typescript": "^5.9.3"
   }
 }

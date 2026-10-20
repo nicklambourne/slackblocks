@@ -37,7 +37,7 @@ defmodule Slackblocks.MixProject do
     [
       {:jason, ">= 1.4.5 and < 2.0.0"},
       {:decimal, "~> 2.4 or ~> 3.0"},
-      {:ex_doc, "~> 0.38.0", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.40.4", only: :dev, runtime: false},
       {:credo, "~> 1.7.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: :dev, runtime: false},
       {:stream_data, "~> 1.2", only: :test}
