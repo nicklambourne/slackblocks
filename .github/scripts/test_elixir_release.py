@@ -363,6 +363,8 @@ class ElixirWorkflowTests(unittest.TestCase):
         native = (fixtures.ROOT / ".github/workflows/elixir.yml").read_text()
         self.assertIn("  pull_request:\n", native)
         self.assertIn("name: Elixir release checks", native)
+        self.assertIn("verify-release.py validate", native)
+        self.assertNotIn("GITHUB_EVENT_NAME:", native)
 
 
 class ElixirGitHubRecoveryTests(unittest.TestCase):

@@ -257,8 +257,6 @@ jobs:
       - name: Exercise disabled release gates and immutable recovery without credentials
         if: needs.changes.outputs.relevant == 'true'
         run: python -m unittest discover -s .github/scripts -p 'test_*.py'
-      - name: Validate the complete unreleased train
+      - name: Validate coordinated package metadata
         if: needs.changes.outputs.relevant == 'true'
-        env:
-          GITHUB_EVENT_NAME: pull_request
-        run: python .github/scripts/verify-release.py coordinator
+        run: python .github/scripts/verify-release.py validate

@@ -355,17 +355,11 @@ echo $message->toJson();
 </PHP>
 <Elixir>
 
-Elixir support is being prepared for **2.8.0**. The Hex release is not published yet.
+Elixir support begins with **2.8.0**, published on [Hex](https://hex.pm/packages/slackblocks).
 Elixir 1.16.3+ (below 2.0), compatible OTP 26.2+, and a 64-bit runtime are required.
 Jason and Decimal are runtime dependencies; HTTP clients are optional.
 
-For review, add a local path entry to the dependency list in your application's `mix.exs`:
-
-```elixir
-{:slackblocks, path: "../slackblocks/elixir"}
-```
-
-After publication, replace it with the [Hex package](https://hex.pm/packages/slackblocks) dependency:
+Add the package to the dependency list in your application's `mix.exs`:
 
 ```elixir
 {:slackblocks, "~> 2.8"}

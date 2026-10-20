@@ -39,7 +39,7 @@ and protected `packagist` environment; see `RELEASING.md`. Generate
 the root Composer descriptor with `php/bin/package_manifest.py` after changing
 PHP package metadata. Verify trimmed archives and native source installs.
 
-Elixir joins the implementation set in the prepared 2.8.0 train. Include `elixir/`
+Elixir joins the implementation set in 2.8.0. Include `elixir/`
 when updating shared features. Use immutable structs, keyword constructors,
 native typespecs and atom enums. Elixir 1.16.3 is the pinned formatter; the full
 `mix run tools/check.exs` gate covers conformance, independent API inventory,

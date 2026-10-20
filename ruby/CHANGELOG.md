@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.8.0] — Unreleased
+## [2.8.0] — 2026-10-18
 
 - Coordinate the first Elixir implementation release; existing language support remains unchanged.
 
