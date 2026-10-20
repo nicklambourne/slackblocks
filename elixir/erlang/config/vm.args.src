@@ -1,0 +1,2 @@
+-sname slackblocks_erlang
+-pa releases/${RELEASE_VSN}/consolidated
