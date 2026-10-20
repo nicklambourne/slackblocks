@@ -45,7 +45,7 @@ jobs:
           ref: ${{ inputs.release_tag }}
           fetch-depth: 0
 
-      - name: Verify seven-language release activation, tags and commit
+      - name: Verify nine-language release activation, tags and commit
         working-directory: .
         env:
           RELEASE_REF: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || github.ref }}

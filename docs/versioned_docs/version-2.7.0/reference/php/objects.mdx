@@ -1,0 +1,1652 @@
+---
+sidebar_position: 3
+toc_max_heading_level: 3
+---
+
+# Composition Objects
+
+Generated from actual PHP reflection and PHPDoc. Names live in the `Slackblocks` namespace. Use named arguments and `declare(strict_types=1)`; values validate before construction returns.
+
+## AreaChart
+
+An area chart for a data visualization block. Every series needs exactly one data point for each axis category. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### $series
+
+Adds data series in display order. Series names must be unique.
+
+```php
+/** @var list<DataSeries> */
+public readonly array $series;
+```
+
+**Related types:** [`DataSeries`](/reference/php/objects#dataseries)
+
+### $axisConfig
+
+Sets the axis categories and labels. Every series needs exactly one point per category.
+
+```php
+public readonly AxisConfig $axisConfig;
+```
+
+**Related types:** [`AxisConfig`](/reference/php/objects#axisconfig)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $series, AxisConfig $axisConfig, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `series` | list&lt;DataSeries&gt; — Adds data series in display order. Series names must be unique. |
+| `axisConfig` | AxisConfig — Sets the axis categories and labels. Every series needs exactly one point per category. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`AxisConfig`](/reference/php/objects#axisconfig), [`JsonObject`](/reference/php/core#jsonobject)
+
+## AxisConfig
+
+The categories and labels shared by bar, area, and line chart axes. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### $categories
+
+Adds axis categories in display order. Labels must be unique.
+
+```php
+/** @var list<string> */
+public readonly array $categories;
+```
+
+### $xLabel
+
+Sets the horizontal axis label.
+
+```php
+public readonly ?string $xLabel;
+```
+
+### $yLabel
+
+Sets the vertical axis label.
+
+```php
+public readonly ?string $yLabel;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $categories, ?string $xLabel = NULL, ?string $yLabel = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `categories` | list&lt;string&gt; — Adds axis categories in display order. Labels must be unique. |
+| `xLabel` | string\|null — Sets the horizontal axis label. |
+| `yLabel` | string\|null — Sets the vertical axis label. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## BarChart
+
+A bar chart for a data visualization block. Every series needs exactly one data point for each axis category. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### $series
+
+Adds data series in display order. Series names must be unique.
+
+```php
+/** @var list<DataSeries> */
+public readonly array $series;
+```
+
+**Related types:** [`DataSeries`](/reference/php/objects#dataseries)
+
+### $axisConfig
+
+Sets the axis categories and labels. Every series needs exactly one point per category.
+
+```php
+public readonly AxisConfig $axisConfig;
+```
+
+**Related types:** [`AxisConfig`](/reference/php/objects#axisconfig)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $series, AxisConfig $axisConfig, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `series` | list&lt;DataSeries&gt; — Adds data series in display order. Series names must be unique. |
+| `axisConfig` | AxisConfig — Sets the axis categories and labels. Every series needs exactly one point per category. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`AxisConfig`](/reference/php/objects#axisconfig), [`JsonObject`](/reference/php/core#jsonobject)
+
+## ChartSegment
+
+One labelled segment of a pie chart. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### $label
+
+Sets the segment label.
+
+```php
+public readonly string $label;
+```
+
+### $value
+
+Sets the segment's size. Must be greater than zero.
+
+```php
+public readonly int|float $value;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $label, int|float $value, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `label` | string — Sets the segment label. |
+| `value` | int\|float — Sets the segment's size. Must be greater than zero. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## ColumnSettings
+
+Alignment and wrapping settings for one table column. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+### $align
+
+Sets how cell content in the column is aligned.
+
+```php
+public readonly ?ColumnAlign $align;
+```
+
+**Related types:** [`ColumnAlign`](/reference/php/core#columnalign)
+
+### $isWrapped
+
+Sets whether long cell content wraps instead of being truncated.
+
+```php
+public readonly ?bool $isWrapped;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?ColumnAlign $align = NULL, ?bool $isWrapped = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `align` | ColumnAlign\|null — Sets how cell content in the column is aligned. |
+| `isWrapped` | bool\|null — Sets whether long cell content wraps instead of being truncated. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`ColumnAlign`](/reference/php/core#columnalign), [`JsonObject`](/reference/php/core#jsonobject)
+
+## Confirmation
+
+A dialog that asks users to confirm an action before it is sent. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/confirmation-dialog-object).
+
+### $title
+
+Sets the dialog title.
+
+```php
+public readonly PlainText $title;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $text
+
+Sets the explanatory text in the dialog body.
+
+```php
+public readonly Text $text;
+```
+
+**Related types:** [`Text`](/reference/php/core#text)
+
+### $confirm
+
+Sets the label of the button that confirms the action.
+
+```php
+public readonly PlainText $confirm;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $deny
+
+Sets the label of the button that cancels the action.
+
+```php
+public readonly PlainText $deny;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $style
+
+Sets the emphasis of the confirm button.
+
+```php
+public readonly ?ButtonStyle $style;
+```
+
+**Related types:** [`ButtonStyle`](/reference/php/core#buttonstyle)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(PlainText|string $title, Text|string $text, PlainText|string $confirm, PlainText|string $deny, ?ButtonStyle $style = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | PlainText\|string — Sets the dialog title. |
+| `text` | Text\|string — Sets the explanatory text in the dialog body. |
+| `confirm` | PlainText\|string — Sets the label of the button that confirms the action. |
+| `deny` | PlainText\|string — Sets the label of the button that cancels the action. |
+| `style` | ButtonStyle\|null — Sets the emphasis of the confirm button. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`ButtonStyle`](/reference/php/core#buttonstyle), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext), [`Text`](/reference/php/core#text)
+
+## ConversationFilter
+
+Limits which conversations a conversation menu offers. Set at least one filter. Include only im, mpim, private, and public. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/conversation-filter-object).
+
+### $include
+
+Adds conversation types to offer: im, mpim, private, or public.
+
+```php
+/** @var list<string>|null */
+public readonly ?array $include;
+```
+
+### $excludeExternalSharedChannels
+
+Sets whether externally shared channels are excluded.
+
+```php
+public readonly ?bool $excludeExternalSharedChannels;
+```
+
+### $excludeBotUsers
+
+Sets whether bot users are excluded.
+
+```php
+public readonly ?bool $excludeBotUsers;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?array $include = NULL, ?bool $excludeExternalSharedChannels = NULL, ?bool $excludeBotUsers = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `include` | list&lt;string&gt;\|null — Adds conversation types to offer: im, mpim, private, or public. |
+| `excludeExternalSharedChannels` | bool\|null — Sets whether externally shared channels are excluded. |
+| `excludeBotUsers` | bool\|null — Sets whether bot users are excluded. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## DataPoint
+
+One value of a chart series, keyed by axis category. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### $label
+
+Sets the axis category this point belongs to.
+
+```php
+public readonly string $label;
+```
+
+### $value
+
+Sets the point's value.
+
+```php
+public readonly int|float $value;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $label, int|float $value, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `label` | string — Sets the axis category this point belongs to. |
+| `value` | int\|float — Sets the point's value. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## DataSeries
+
+A named series of chart data points. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### $name
+
+Sets the series name shown in the legend.
+
+```php
+public readonly string $name;
+```
+
+### $data
+
+Adds data points in axis-category order.
+
+```php
+/** @var list<DataPoint> */
+public readonly array $data;
+```
+
+**Related types:** [`DataPoint`](/reference/php/objects#datapoint)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $name, array $data, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `name` | string — Sets the series name shown in the legend. |
+| `data` | list&lt;DataPoint&gt; — Adds data points in axis-category order. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## DispatchActionConfiguration
+
+Chooses which interactions with an input send a block_actions payload. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/dispatch-action-configuration-object).
+
+### $triggerActionsOn
+
+Adds the interactions that send a payload: on_enter_pressed or on_character_entered.
+
+```php
+/** @var list<string>|null */
+public readonly ?array $triggerActionsOn;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?array $triggerActionsOn = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `triggerActionsOn` | list&lt;string&gt;\|null — Adds the interactions that send a payload: on_enter_pressed or on_character_entered. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## FeedbackButton
+
+One button of a feedback buttons element. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+### $text
+
+Sets the button label.
+
+```php
+public readonly PlainText $text;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $value
+
+Sets the application-defined value sent in interaction payloads.
+
+```php
+public readonly string $value;
+```
+
+### $accessibilityLabel
+
+Sets the label read by screen readers in place of the visible text.
+
+```php
+public readonly ?string $accessibilityLabel;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(PlainText|string $text, string $value, ?string $accessibilityLabel = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | PlainText\|string — Sets the button label. |
+| `value` | string — Sets the application-defined value sent in interaction payloads. |
+| `accessibilityLabel` | string\|null — Sets the label read by screen readers in place of the visible text. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## InputParameter
+
+A named value passed to a workflow trigger. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object).
+
+### $name
+
+Sets the workflow input parameter name.
+
+```php
+public readonly string $name;
+```
+
+### $value
+
+Sets the value passed to the workflow input.
+
+```php
+public readonly string $value;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $name, string $value, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `name` | string — Sets the workflow input parameter name. |
+| `value` | string — Sets the value passed to the workflow input. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## LineChart
+
+A line chart for a data visualization block. Every series needs exactly one data point for each axis category. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### $series
+
+Adds data series in display order. Series names must be unique.
+
+```php
+/** @var list<DataSeries> */
+public readonly array $series;
+```
+
+**Related types:** [`DataSeries`](/reference/php/objects#dataseries)
+
+### $axisConfig
+
+Sets the axis categories and labels. Every series needs exactly one point per category.
+
+```php
+public readonly AxisConfig $axisConfig;
+```
+
+**Related types:** [`AxisConfig`](/reference/php/objects#axisconfig)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $series, AxisConfig $axisConfig, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `series` | list&lt;DataSeries&gt; — Adds data series in display order. Series names must be unique. |
+| `axisConfig` | AxisConfig — Sets the axis categories and labels. Every series needs exactly one point per category. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`AxisConfig`](/reference/php/objects#axisconfig), [`JsonObject`](/reference/php/core#jsonobject)
+
+## MarkdownText
+
+A mrkdwn text composition object. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/text-object).
+
+### $text
+
+Sets the mrkdwn-formatted text content.
+
+```php
+public readonly string $text;
+```
+
+### $verbatim
+
+Sets whether Slack leaves URLs, mentions, and channel names unlinked.
+
+```php
+public readonly ?bool $verbatim;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $text, ?bool $verbatim = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | string — Sets the mrkdwn-formatted text content. |
+| `verbatim` | bool\|null — Sets whether Slack leaves URLs, mentions, and channel names unlinked. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+### getText
+
+Returns the text content through the Text interface.
+
+```php
+public function getText(): string
+```
+
+## Option
+
+A selectable option for menus, checkboxes, radio buttons, and overflow menus. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/option-object).
+
+### $text
+
+Sets the option label shown to users.
+
+```php
+public readonly Text $text;
+```
+
+**Related types:** [`Text`](/reference/php/core#text)
+
+### $value
+
+Sets the value sent in interaction payloads when this option is chosen.
+
+```php
+public readonly string $value;
+```
+
+### $description
+
+Sets supporting text shown below the label. Only rendered by checkboxes and radio buttons.
+
+```php
+public readonly ?Text $description;
+```
+
+**Related types:** [`Text`](/reference/php/core#text)
+
+### $url
+
+Sets a URL loaded in the user's browser when an overflow menu option is chosen.
+
+```php
+public readonly ?string $url;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(Text|string $text, string $value, Text|string|null $description = NULL, ?string $url = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Text\|string — Sets the option label shown to users. |
+| `value` | string — Sets the value sent in interaction payloads when this option is chosen. |
+| `description` | Text\|string\|null — Sets supporting text shown below the label. Only rendered by checkboxes and radio buttons. |
+| `url` | string\|null — Sets a URL loaded in the user's browser when an overflow menu option is chosen. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`Text`](/reference/php/core#text)
+
+## OptionGroup
+
+A labelled group of options in a static select menu. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/option-group-object).
+
+### $label
+
+Sets the group heading.
+
+```php
+public readonly PlainText $label;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $options
+
+Adds selectable options in display order.
+
+```php
+/** @var list<Option> */
+public readonly array $options;
+```
+
+**Related types:** [`Option`](/reference/php/objects#option)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(PlainText|string $label, array $options, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `label` | PlainText\|string — Sets the group heading. |
+| `options` | list&lt;Option&gt; — Adds selectable options in display order. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## PieChart
+
+A pie chart for a data visualization block. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### $segments
+
+Adds pie segments in display order.
+
+```php
+/** @var list<ChartSegment> */
+public readonly array $segments;
+```
+
+**Related types:** [`ChartSegment`](/reference/php/objects#chartsegment)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $segments, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `segments` | list&lt;ChartSegment&gt; — Adds pie segments in display order. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## PlainText
+
+A plain-text composition object. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/text-object).
+
+### $text
+
+Sets the text content.
+
+```php
+public readonly string $text;
+```
+
+### $emoji
+
+Sets whether emoji shortcodes such as :tada: are rendered as emoji.
+
+```php
+public readonly ?bool $emoji;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $text, ?bool $emoji = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | string — Sets the text content. |
+| `emoji` | bool\|null — Sets whether emoji shortcodes such as :tada: are rendered as emoji. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+### getText
+
+Returns the text content through the Text interface.
+
+```php
+public function getText(): string
+```
+
+## RawNumber
+
+A numeric data table cell with display text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+
+### $value
+
+Sets the numeric value used for sorting.
+
+```php
+public readonly int|float $value;
+```
+
+### $text
+
+Sets the formatted text displayed for the number, such as 1,234.5.
+
+```php
+public readonly string $text;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(int|float $value, string $text, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | int\|float — Sets the numeric value used for sorting. |
+| `text` | string — Sets the formatted text displayed for the number, such as 1,234.5. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## RawText
+
+An unformatted table cell. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+### $text
+
+Sets the cell text.
+
+```php
+public readonly string $text;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $text, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | string — Sets the cell text. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## RichTextChannel
+
+A channel mention inside rich text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### $channelId
+
+Sets the ID of the mentioned channel.
+
+```php
+public readonly string $channelId;
+```
+
+### $style
+
+Sets the mention style.
+
+```php
+public readonly ?RichTextStyle $style;
+```
+
+**Related types:** [`RichTextStyle`](/reference/php/core#richtextstyle)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $channelId, ?RichTextStyle $style = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `channelId` | string — Sets the ID of the mentioned channel. |
+| `style` | RichTextStyle\|null — Sets the mention style. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`RichTextStyle`](/reference/php/core#richtextstyle)
+
+## RichTextCodeBlock
+
+A preformatted code block inside rich text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### $elements
+
+Adds inline rich text elements in display order.
+
+```php
+/** @var list<RichTextSectionElement> */
+public readonly array $elements;
+```
+
+**Related types:** [`RichTextSectionElement`](/reference/php/core#richtextsectionelement)
+
+### $border
+
+Sets the width of the left border, in pixels.
+
+```php
+public readonly ?int $border;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $elements, ?int $border = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | list&lt;RichTextSectionElement&gt; — Adds inline rich text elements in display order. |
+| `border` | int\|null — Sets the width of the left border, in pixels. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## RichTextEmoji
+
+An emoji inside rich text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### $name
+
+Sets the emoji shortcode name, without colons.
+
+```php
+public readonly string $name;
+```
+
+### $skinTone
+
+Sets the emoji skin tone, from 1 to 6.
+
+```php
+public readonly ?int $skinTone;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $name, ?int $skinTone = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `name` | string — Sets the emoji shortcode name, without colons. |
+| `skinTone` | int\|null — Sets the emoji skin tone, from 1 to 6. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## RichTextLink
+
+A hyperlink inside rich text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### $url
+
+Sets the link target.
+
+```php
+public readonly string $url;
+```
+
+### $text
+
+Sets the visible link text. Slack shows the URL when omitted.
+
+```php
+public readonly ?string $text;
+```
+
+### $style
+
+Sets the visual style.
+
+```php
+public readonly ?RichTextStyle $style;
+```
+
+**Related types:** [`RichTextStyle`](/reference/php/core#richtextstyle)
+
+### $unsafe
+
+Sets whether Slack treats the link as unsafe.
+
+```php
+public readonly ?bool $unsafe;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $url, ?string $text = NULL, ?RichTextStyle $style = NULL, ?bool $unsafe = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `url` | string — Sets the link target. |
+| `text` | string\|null — Sets the visible link text. Slack shows the URL when omitted. |
+| `style` | RichTextStyle\|null — Sets the visual style. |
+| `unsafe` | bool\|null — Sets whether Slack treats the link as unsafe. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`RichTextStyle`](/reference/php/core#richtextstyle)
+
+## RichTextList
+
+A bulleted or numbered list inside rich text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### $style
+
+Sets whether the list is bulleted or numbered.
+
+```php
+public readonly RichTextListStyle $style;
+```
+
+**Related types:** [`RichTextListStyle`](/reference/php/core#richtextliststyle)
+
+### $elements
+
+Adds list items, one rich text section per item.
+
+```php
+/** @var list<RichTextSection> */
+public readonly array $elements;
+```
+
+**Related types:** [`RichTextSection`](/reference/php/objects#richtextsection)
+
+### $indent
+
+Sets the list's indentation level.
+
+```php
+public readonly ?int $indent;
+```
+
+### $offset
+
+Sets the number of items to skip when numbering an ordered list.
+
+```php
+public readonly ?int $offset;
+```
+
+### $border
+
+Sets the width of the left border, in pixels.
+
+```php
+public readonly ?int $border;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(RichTextListStyle $style, array $elements, ?int $indent = NULL, ?int $offset = NULL, ?int $border = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `style` | RichTextListStyle — Sets whether the list is bulleted or numbered. |
+| `elements` | list&lt;RichTextSection&gt; — Adds list items, one rich text section per item. |
+| `indent` | int\|null — Sets the list's indentation level. |
+| `offset` | int\|null — Sets the number of items to skip when numbering an ordered list. |
+| `border` | int\|null — Sets the width of the left border, in pixels. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`RichTextListStyle`](/reference/php/core#richtextliststyle)
+
+## RichTextQuote
+
+A quotation inside rich text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### $elements
+
+Adds inline rich text elements in display order.
+
+```php
+/** @var list<RichTextSectionElement> */
+public readonly array $elements;
+```
+
+**Related types:** [`RichTextSectionElement`](/reference/php/core#richtextsectionelement)
+
+### $border
+
+Sets the width of the left border, in pixels.
+
+```php
+public readonly ?int $border;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $elements, ?int $border = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | list&lt;RichTextSectionElement&gt; — Adds inline rich text elements in display order. |
+| `border` | int\|null — Sets the width of the left border, in pixels. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## RichTextSection
+
+A paragraph of inline rich text elements. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### $elements
+
+Adds inline rich text elements in display order.
+
+```php
+/** @var list<RichTextSectionElement> */
+public readonly array $elements;
+```
+
+**Related types:** [`RichTextSectionElement`](/reference/php/core#richtextsectionelement)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $elements, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | list&lt;RichTextSectionElement&gt; — Adds inline rich text elements in display order. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## RichTextText
+
+A run of optionally styled text inside rich text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### $text
+
+Sets the text content.
+
+```php
+public readonly string $text;
+```
+
+### $style
+
+Sets the visual style.
+
+```php
+public readonly ?RichTextStyle $style;
+```
+
+**Related types:** [`RichTextStyle`](/reference/php/core#richtextstyle)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $text, ?RichTextStyle $style = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | string — Sets the text content. |
+| `style` | RichTextStyle\|null — Sets the visual style. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`RichTextStyle`](/reference/php/core#richtextstyle)
+
+## RichTextUser
+
+A user mention inside rich text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### $userId
+
+Sets the ID of the mentioned user.
+
+```php
+public readonly string $userId;
+```
+
+### $style
+
+Sets the visual style.
+
+```php
+public readonly ?RichTextStyle $style;
+```
+
+**Related types:** [`RichTextStyle`](/reference/php/core#richtextstyle)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $userId, ?RichTextStyle $style = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `userId` | string — Sets the ID of the mentioned user. |
+| `style` | RichTextStyle\|null — Sets the visual style. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`RichTextStyle`](/reference/php/core#richtextstyle)
+
+## RichTextUserGroup
+
+A user group mention inside rich text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### $userGroupId
+
+Sets the ID of the mentioned user group.
+
+```php
+public readonly string $userGroupId;
+```
+
+### $style
+
+Sets the visual style.
+
+```php
+public readonly ?RichTextStyle $style;
+```
+
+**Related types:** [`RichTextStyle`](/reference/php/core#richtextstyle)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $userGroupId, ?RichTextStyle $style = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `userGroupId` | string — Sets the ID of the mentioned user group. |
+| `style` | RichTextStyle\|null — Sets the visual style. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`RichTextStyle`](/reference/php/core#richtextstyle)
+
+## SlackFile
+
+A reference to an image file hosted in Slack. Provide exactly one of an ID or a URL. An ID must match ^F[A-Z0-9]&#123;8,&#125;$. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/slack-file-object).
+
+### $id
+
+Sets the ID of a file previously uploaded to Slack. Cannot be combined with a URL.
+
+```php
+public readonly ?string $id;
+```
+
+### $url
+
+Sets the URL of a file hosted in Slack. Cannot be combined with an ID.
+
+```php
+public readonly ?string $url;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $id = NULL, ?string $url = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `id` | string\|null — Sets the ID of a file previously uploaded to Slack. Cannot be combined with a URL. |
+| `url` | string\|null — Sets the URL of a file hosted in Slack. Cannot be combined with an ID. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## SlackIcon
+
+A Slack-provided icon, referenced by name. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+
+### $name
+
+Sets the name of the Slack-provided icon, such as rocket.
+
+```php
+public readonly string $name;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $name, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `name` | string — Sets the name of the Slack-provided icon, such as rocket. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## Trigger
+
+A link trigger that starts a workflow. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object).
+
+### $url
+
+Sets the link trigger URL.
+
+```php
+public readonly string $url;
+```
+
+### $customizableInputParameters
+
+Adds the input values passed to the workflow's trigger.
+
+```php
+/** @var list<InputParameter>|null */
+public readonly ?array $customizableInputParameters;
+```
+
+**Related types:** [`InputParameter`](/reference/php/objects#inputparameter)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $url, ?array $customizableInputParameters = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `url` | string — Sets the link trigger URL. |
+| `customizableInputParameters` | list&lt;InputParameter&gt;\|null — Adds the input values passed to the workflow's trigger. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## UrlSource
+
+A linked source cited by a task card. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+
+### $url
+
+Sets the source URL.
+
+```php
+public readonly string $url;
+```
+
+### $text
+
+Sets the source link text.
+
+```php
+public readonly string $text;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $url, string $text, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `url` | string — Sets the source URL. |
+| `text` | string — Sets the source link text. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## Workflow
+
+The workflow started by a workflow button. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/workflow-object).
+
+### $trigger
+
+Sets the link trigger that starts the workflow.
+
+```php
+public readonly Trigger $trigger;
+```
+
+**Related types:** [`Trigger`](/reference/php/objects#trigger)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(Trigger $trigger, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `trigger` | Trigger — Sets the link trigger that starts the workflow. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`Trigger`](/reference/php/objects#trigger)
+
+### fromUrl
+
+Builds a workflow trigger from a Slack workflow URL.
+
+```php
+public static function fromUrl(string $url, array $parameters = []): self
+```
+
+| Parameter | Description |
+| --- | --- |
+| `url` | string — Slack workflow trigger URL. |
+| `parameters` | list&lt;InputParameter&gt; — Ordered customizable workflow inputs; an empty list is omitted. |
+
+**Returns:** self Workflow containing the validated trigger and supplied inputs.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | The URL or customizable inputs are invalid. |
