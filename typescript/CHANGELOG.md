@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Reject header dividers at the accordion helper boundary with a clear field path.
+
 - Report path-aware missing/type errors before reading required chart, option and view fields.
 
 - Preserve the required channel in message return types for strict official SDK handoff.
