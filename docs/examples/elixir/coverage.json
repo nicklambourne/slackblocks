@@ -1,0 +1,11 @@
+{
+  "README.md": 2,
+  "elixir/README.md": 4,
+  "docs/docs/quick-start.mdx": 1,
+  "docs/docs/usage/sending_messages.mdx": 3,
+  "docs/docs/usage/using_blocks.mdx": 22,
+  "docs/docs/usage/cookbook.mdx": 13,
+  "docs/docs/usage/migration.mdx": 1,
+  "docs/docs/usage/troubleshooting.mdx": 1,
+  "docs/docs/usage/installation.mdx": 2
+}
