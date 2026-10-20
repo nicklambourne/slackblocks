@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Expose confirmation style and emoji skin tone through typed native builders.
+
 ## [2.6.0] — 2026-10-09
 
 - Release alongside the new native Rust implementation; supported language versions are unchanged.

@@ -4,6 +4,7 @@
  * @module fluent
  */
 import type { FactorySettings } from "../types.js";
+import { InvalidUsageError } from "../errors.js";
 
 const FLUENT_BUILDER = Symbol("slackblocks.fluent-builder");
 const FLUENT_GROUP = Symbol("slackblocks.fluent-group");
@@ -50,6 +51,7 @@ type FluentFactory<Input extends object, Output> = (
 type CollectionMode = "flat" | "nested";
 
 interface FluentBuilderOptions<Input extends object> {
+  fields?: readonly (keyof Input)[];
   collections?: Partial<Record<keyof Input, CollectionMode>>;
   groupOutput?: boolean;
 }
@@ -125,7 +127,11 @@ export function createFluentBuilder<Input extends object, Output>(
       if (Reflect.has(target, property)) {
         return Reflect.get(target, property, receiver);
       }
-      if (typeof property !== "string") return undefined;
+      if (typeof property !== "string" || property === "then") return undefined;
+
+      if (options.fields && !options.fields.includes(property as keyof Input)) {
+        throw new InvalidUsageError(property, "unknown fluent field");
+      }
 
       return (...values: unknown[]) => {
         if (values.length === 0) {

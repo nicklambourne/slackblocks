@@ -166,17 +166,19 @@ class RichTextEmoji(RichTextElement):
 
     Args:
         name: the unique name of the emoji to represent e.g. "wave".
+        skin_tone: optional Slack skin-tone index (1-6), omitted by default.
 
     Throws:
         InvalidUsageError: if the emoji `name` provided is empty.
     """
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, skin_tone: int | None = None) -> None:
         super().__init__(RichTextElementType.EMOJI)
         self.name = validate_string(name, field_name="name", min_length=1)
+        self.skin_tone = skin_tone
 
     def _resolve(self) -> dict[str, Any]:
-        return {**super()._resolve(), "name": self.name}
+        return omit_none({**super()._resolve(), "name": self.name, "skin_tone": self.skin_tone})
 
 
 class RichTextLink(RichTextElement):

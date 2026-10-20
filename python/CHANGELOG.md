@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Add native confirmation style, workflow confirmation, emoji skin tone and message metadata fields.
+
 - Preserve accepted legacy `Attachment.fields` values as JSON objects, including
   `short=False`. Fields-only legacy content uses an explicit `blocks=[]`.
 - Distinguish omitted response visibility from explicit `ephemeral=False`, which

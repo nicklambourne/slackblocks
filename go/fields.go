@@ -534,7 +534,7 @@ func (b *builder) UnfurlMedia(value bool) *builder { return b.set("unfurl_media"
 // Unlink enables rich-text unlink styling.
 func (b *builder) Unlink(value bool) *builder { return b.set("unlink", value) }
 
-// Unsafe marks raw text as unsafe where Slack supports it.
+// Unsafe marks content as unsafe where Slack supports it.
 func (b *builder) Unsafe(value bool) *builder { return b.set("unsafe", value) }
 
 // VideoURL sets the hosted video URL.
