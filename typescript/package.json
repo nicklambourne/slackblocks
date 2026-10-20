@@ -34,7 +34,8 @@
     "build": "tsdown",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "check:package": "pnpm build && publint && attw --pack --profile esm-only ."
+    "check:package": "pnpm build && publint && attw --pack --profile esm-only .",
+    "check:sdk-consumer": "pnpm build && node scripts/check-sdk-consumer.mjs"
   },
   "keywords": [
     "slack",
@@ -48,6 +49,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
+    "@slack/web-api": "8.2.0",
     "@types/node": "^26.6.5",
     "@vitest/coverage-v8": "^5.0.5",
     "publint": "^0.3.25",

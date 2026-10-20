@@ -75,7 +75,9 @@ const payload = Message()
   .build();
 ```
 
-`payload` can be sent in one line with the official Slack SDK:
+`Message().build()` preserves the required `channel: string` in its return type,
+so this direct handoff is checked by TypeScript without an assertion. `payload`
+can be sent in one line with the official Slack SDK:
 
 ```ts
 import { WebClient } from "@slack/web-api";
