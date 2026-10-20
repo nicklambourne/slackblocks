@@ -2,7 +2,7 @@
 
 [![License: MIT OR BSD-3-Clause](https://img.shields.io/badge/License-MIT_OR_BSD--3--Clause-2E8B57?style=flat&labelColor=555)](#licensing)
 [![Docs: read](https://img.shields.io/badge/Docs-read-4A154B?style=flat&labelColor=555)](https://nicklambourne.github.io/slackblocks)
-[![Downloads across PyPI, npm, NuGet, RubyGems, crates.io and Packagist](https://img.shields.io/endpoint?url=https%3A%2F%2Fwatch.ndl.au%2Fbadges%2Fslackblocks-downloads.json&style=flat&labelColor=555&label=Downloads)](#download-statistics)
+[![Downloads across PyPI, npm, NuGet, RubyGems, crates.io, Packagist and Hex](https://img.shields.io/endpoint?url=https%3A%2F%2Fwatch.ndl.au%2Fbadges%2Fslackblocks-downloads.json&style=flat&labelColor=555&label=Downloads)](#download-statistics)
 
 [![PyPI version](https://img.shields.io/pypi/v/slackblocks?style=flat&labelColor=555&label=PyPI&color=3776AB&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/)
 [![npm version](https://img.shields.io/npm/v/%40nicklambourne%2Fslackblocks?style=flat&labelColor=555&label=npm&color=3178C6&logo=npm&logoColor=white)](https://www.npmjs.com/package/@nicklambourne/slackblocks)
@@ -12,6 +12,7 @@
 [![RubyGems version](https://img.shields.io/gem/v/slackblocks?style=flat&labelColor=555&label=RubyGems&color=CC342D&logo=rubygems&logoColor=white)](https://rubygems.org/gems/slackblocks)
 [![crates.io version](https://img.shields.io/crates/v/slackblocks?style=flat&labelColor=555&label=crates.io&color=CE422B&logo=rust&logoColor=white)](https://crates.io/crates/slackblocks)
 [![Packagist version](https://img.shields.io/packagist/v/nicklambourne/slackblocks?style=flat&labelColor=555&label=Packagist&color=777BB4&logo=php&logoColor=white)](https://packagist.org/packages/nicklambourne/slackblocks)
+[![Hex version](https://img.shields.io/hexpm/v/slackblocks?style=flat&labelColor=555&label=Hex&color=8847B9&logo=elixir&logoColor=white)](https://hex.pm/packages/slackblocks)
 
 [![Python CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/unit-tests.yml?style=flat&labelColor=555&branch=master&event=push&label=Python+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml?query=branch%3Amaster)
 [![TypeScript CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/typescript.yml?style=flat&labelColor=555&branch=master&event=push&label=TypeScript+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml?query=branch%3Amaster)
@@ -21,8 +22,9 @@
 [![Ruby CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/ruby.yml?style=flat&labelColor=555&branch=master&event=push&label=Ruby+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/ruby.yml?query=branch%3Amaster)
 [![Rust CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/rust.yml?style=flat&labelColor=555&branch=master&event=push&label=Rust+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/rust.yml?query=branch%3Amaster)
 [![PHP CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/php.yml?style=flat&labelColor=555&branch=master&event=push&label=PHP+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/php.yml?query=branch%3Amaster)
+[![Elixir CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/elixir.yml?style=flat&labelColor=555&branch=master&event=push&label=Elixir+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/elixir.yml?query=branch%3Amaster)
 
-> **Build Slack messages in Python, TypeScript, Go, Java, C#, Ruby, Rust, or PHP — without writing JSON by hand.**
+> **Build Slack messages in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, or Elixir — without writing JSON by hand.**
 
 Anyone who has built a non-trivial Slack message knows the drill: a wall of nested
 [Block Kit](https://docs.slack.dev/block-kit/) JSON, five levels deep, where a typo'd
@@ -40,20 +42,20 @@ your tests, rather than in production.
   out *before* hitting Slack's API.
 - **Typed** — full type hints and `py.typed` in Python, strict types in TypeScript,
   compile-checked concrete fluent builders in Go and Java, and typed constructors with
-  nullable annotations in C#, RBS signatures in Ruby, and consuming builders with typed role enums in Rust, and readonly classes with backed enums in PHP.
+  nullable annotations in C#, RBS signatures in Ruby, and consuming builders with typed role enums in Rust, readonly classes with backed enums in PHP, and immutable structs with typespecs and atom enums in Elixir.
 - **Plays well with established Slack clients** — unpack a `Message` straight into
   `client.chat_postMessage(**message)` with [`slack-sdk`](https://pypi.org/project/slack-sdk/),
   pass a payload directly to [`@slack/web-api`](https://www.npmjs.com/package/@slack/web-api),
   pass Go block builders directly to [`slack-go/slack`](https://github.com/slack-go/slack),
   pass Java blocks directly to the [official Slack Java SDK](https://slack.dev/java-slack-sdk/),
-  serialize C# values with `System.Text.Json`, call `to_json` on Ruby values, use Serde with Rust values, or pass PHP JSON to JoliCode, cURL or Laravel.
-- **One contract across eight implementations** — the same blocks, validation rules, and version
-  numbers in Python, TypeScript, Go, Java, C#, Ruby, Rust, and PHP. A shared conformance corpus keeps the implementations emitting the same Slack JSON.
+  serialize C# values with `System.Text.Json`, call `to_json` on Ruby values, use Serde with Rust values, pass PHP JSON to JoliCode, cURL or Laravel, or send Elixir maps with Req or the community Slack client.
+- **One contract across nine implementations** — the same blocks, validation rules, and version
+  numbers in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, and Elixir. A shared conformance corpus keeps the implementations emitting the same Slack JSON.
 - **Everything Block Kit ships today** — all current blocks and elements, rich text,
   modals and Home tabs, and the 2025 block families (tables, cards, carousels, charts).
 - **Light** — zero runtime dependencies in Python, a self-contained ESM module on npm,
   one direct Go dependency (`slack-go/slack`), Java integration through the official Slack model interfaces,
-  no dependencies beyond .NET itself in C#, Ruby's default JSON gem, Serde/serde_json in Rust, and only built-in JSON/PCRE extensions in PHP.
+  no dependencies beyond .NET itself in C#, Ruby's default JSON gem, Serde/serde_json in Rust, built-in JSON/PCRE extensions in PHP, and Jason/Decimal in Elixir.
 
 ## Installation
 
@@ -137,6 +139,21 @@ composer require nicklambourne/slackblocks:^2.7
 
 PHP support begins with coordinated version 2.7.0. See the
 [PHP package guide](php/README.md) for native usage and development setup.
+
+</details>
+
+<details>
+<summary>Elixir (1.16.3+, compatible OTP 26.2+, 64-bit)</summary>
+
+Add the [Hex package](https://hex.pm/packages/slackblocks) to your dependencies in `mix.exs`:
+
+```elixir
+{:slackblocks, "~> 2.8"}
+```
+
+Run `mix deps.get`. If Jason was compiled before Decimal was installed,
+run `mix deps.compile jason --force` in each build environment and rebuild the application/release.
+See the [Elixir package guide](elixir/README.md).
 
 </details>
 
@@ -395,6 +412,33 @@ See the [PHP package guide](php/README.md), [sending integrations](php/integrati
 
 </details>
 
+<details>
+<summary>Elixir</summary>
+
+Native structs use keyword constructors and atom enums. Tagged functions return `{:ok, value}` or `{:error, error}`; bang functions raise.
+
+```elixir
+alias Slackblocks.{Message, Blocks, Elements}
+message = Message.new!(
+  channel: "C0123456789",
+  text: "Build #482 passed",
+  blocks: [
+    Blocks.Header.new!(text: "Build #482 passed"),
+    Blocks.Section.new!(fields: ["*Branch*\n`main`", "*Tests*\n1,247 passed"]),
+    Blocks.Actions.new!(elements: [
+      Elements.Button.new!(text: "View build", action_id: "view", url: "https://ci.example.com/482")
+    ])
+  ]
+)
+Slackblocks.to_map!(message)
+```
+
+Send the resulting map with Req or the community client. See the [Elixir package guide](elixir/README.md),
+[sending integrations](elixir/integrations/README.md), [API reference](https://nicklambourne.github.io/slackblocks/reference/elixir)
+and [Erlang example](elixir/erlang/src/slackblocks_erlang.erl).
+
+</details>
+
 <p align="center">
   <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/usage/build_notification.png" alt="The build notification rendered in Slack" width="600px" />
 </p>
@@ -404,7 +448,7 @@ See the [PHP package guide](php/README.md), [sending integrations](php/integrati
 - **Full docs:** <https://nicklambourne.github.io/slackblocks/>
 - [Installation](https://nicklambourne.github.io/slackblocks/usage/installation)
 - [Using Blocks](https://nicklambourne.github.io/slackblocks/usage/using_blocks) — every
-  block type with code in all eight languages, the JSON it produces, and screenshots.
+  block type with code in all nine languages, the JSON it produces, and screenshots.
 - [Sending Messages](https://nicklambourne.github.io/slackblocks/usage/sending_messages)
 - [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end
   recipes for build notifications, approval requests, modals, and more.
@@ -416,10 +460,11 @@ See the [PHP package guide](php/README.md), [sending integrations](php/integrati
   [C#](https://nicklambourne.github.io/slackblocks/reference/csharp),
   [Ruby](https://nicklambourne.github.io/slackblocks/reference/ruby), and
   [Rust](https://nicklambourne.github.io/slackblocks/reference/rust),
-  [PHP](https://nicklambourne.github.io/slackblocks/reference/php).
+  [PHP](https://nicklambourne.github.io/slackblocks/reference/php), and
+  [Elixir](https://nicklambourne.github.io/slackblocks/reference/elixir).
 - [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/usage/migration) ·
   [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/usage/troubleshooting)
-- Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md) · [Go](go/CHANGELOG.md) · [Java](java/CHANGELOG.md) · [C#](csharp/CHANGELOG.md) · [Ruby](ruby/CHANGELOG.md) · [Rust](rust/CHANGELOG.md) · [PHP](php/CHANGELOG.md)
+- Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md) · [Go](go/CHANGELOG.md) · [Java](java/CHANGELOG.md) · [C#](csharp/CHANGELOG.md) · [Ruby](ruby/CHANGELOG.md) · [Rust](rust/CHANGELOG.md) · [PHP](php/CHANGELOG.md) · [Elixir](elixir/CHANGELOG.md)
 - [Roadmap](ROADMAP.md) — including the TypeScript legacy API removal planned for v3.0.
 
 ## Repository layout
@@ -430,16 +475,17 @@ See the [PHP package guide](php/README.md), [sending integrations](php/integrati
 - [`java/`](java/) — the Java artifact (`io.github.nicklambourne:slackblocks` on Maven Central).
 - [`csharp/`](csharp/) — the .NET package (`Slackblocks` on NuGet).
 - [`ruby/`](ruby/) — the Ruby gem (`slackblocks` on RubyGems from 2.5.0).
-- [`php/`](php/) — native PHP values and Composer package (`nicklambourne/slackblocks` on Packagist from 2.7.0).
 - [`rust/`](rust/) — the Rust crate (`slackblocks` on crates.io from 2.6.0).
+- [`php/`](php/) — native PHP values and Composer package (`nicklambourne/slackblocks` on Packagist from 2.7.0).
+- [`elixir/`](elixir/) — native Elixir values and Erlang integration (`slackblocks` on Hex from 2.8.0).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
-  and capability coverage that all eight implementations are tested against.
+  and capability coverage that all nine implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.
 
 ## Download statistics
 
 The **Downloads** badge sums all-time counts from PyPI (via Pepy), npm,
-NuGet, RubyGems, crates.io, and Packagist. Go and Maven Central have no comparable public
+NuGet, RubyGems, crates.io, Packagist, and Hex. Go and Maven Central have no comparable public
 all-time download counters and are excluded. Registry counting rules differ;
 these counts include automated downloads and do not represent unique users.
 The total refreshes hourly and shows unavailable if any contributing count is
@@ -481,6 +527,9 @@ cd ../ruby
 bundle install
 bundle exec ruby -I test -e 'Dir[File.expand_path("test/*_test.rb")].sort.each { |path| require path }'
 ```
+
+Elixir contributors use the pinned formatter toolchain and `mix run tools/check.exs` from `elixir/`;
+see [native checks](elixir/README.md#development) for packaging, Erlang, sending and quality prerequisites.
 
 For the full development guide — testing conventions, the conformance-fixture workflow,
 docstring style, and the release process — see the

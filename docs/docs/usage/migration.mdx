@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Migration
 
@@ -347,4 +347,36 @@ native plain-text or mrkdwn default. Enums use cases such as
 a field; explicit null inside a `JsonObject` is preserved.
 
 </PHP>
+<Elixir>
+
+## Starting with Elixir
+
+2.8.0 is the first planned Elixir release, so there is no older Elixir API to migrate.
+Use native constructors, lists and atom enums rather than translating another
+language's builder chains. Names use Slack's wire `snake_case`.
+
+```elixir
+alias Slackblocks.{Blocks.Section, Objects.MarkdownText}
+original = Section.new!(text: "Before")
+{:ok, updated} = Section.change(original, text: "After", block_id: "status")
+%MarkdownText{text: "Before"} = original.text
+%MarkdownText{text: "After"} = updated.text
+Slackblocks.to_map!(updated)
+```
+
+Constructor binaries are converted to the correct text object. Direct struct
+edits require the actual typed value and are checked on output. `change/2`
+retains unspecified fields and validates an edit atomically. Explicit `nil`
+clears optional fields; it cannot clear a required field.
+
+Parsing preserves absent optional fields as `nil`, while construction applies
+declared defaults. `Message` defaults to `text: ""` and `mrkdwn: true`;
+block IDs are never generated. Use checked `decode/2` for known model/role JSON.
+Arbitrary Slack event payloads belong to your application's event decoder.
+
+When adding slackblocks to an existing application, rebuild Jason's optional
+Decimal support as described in [Installation](installation). Keep application
+locks and recompile dependencies/protocols before producing an OTP release.
+
+</Elixir>
 </LanguageContent>
