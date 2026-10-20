@@ -736,5 +736,6 @@ Slack reserves `submit_disabled` for [workflow configuration modals](https://doc
 | Ruby | Leave `submit_disabled:` unspecified on `Slackblocks::ModalView.new`. |
 | Rust | Do not call `.submit_disabled(...)` on `ModalView::builder()`. |
 | PHP | Leave `submitDisabled:` unspecified on `new ModalView(...)`. |
+| Elixir | Leave `submit_disabled:` unspecified on `Slackblocks.Views.Modal.new/1` or `new!/1`; `nil` also omits it. |
 
-The shared `views/modal_with_blocks` and `views/modal_without_blocks` fixtures exercise ordinary modal omission through every native conformance consumer. Configuration-specific acceptance needs an enabled workflow configuration context; an ordinary-modal rejection is not evidence that Slack removed configuration support.
+The shared `views/modal_with_blocks` and `views/modal_without_blocks` fixtures exercise ordinary modal omission through every native conformance consumer. Slack's configuration-modal link now redirects to the [legacy Steps from Apps retirement notice](https://docs.slack.dev/changelog/2023-08-workflow-steps-from-apps-step-back/). Keeping this field preserves the documented wire API; it does not establish that a configuration workflow is currently available. Configuration-specific delivery remains unverified.

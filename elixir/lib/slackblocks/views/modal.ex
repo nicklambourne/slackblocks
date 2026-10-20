@@ -16,7 +16,7 @@ defmodule Slackblocks.Views.Modal do
   * `clear_on_close` — Sets whether closing this modal closes every view in its stack. Optional; `nil` omits the field.
   * `notify_on_close` — Sets whether Slack sends a view_closed event when the user closes the modal. Optional; `nil` omits the field.
   * `external_id` — Sets a workspace-unique identifier you can use to update the view later. Optional; `nil` omits the field.
-  * `submit_disabled` — Sets whether the submit button starts disabled. Only valid in workflow configuration modals. Optional; `nil` omits the field.
+  * `submit_disabled` — Sets whether the submit button starts disabled in workflow configuration modals only. Omit this field for ordinary views.open/views.push modals, including when false. The general ModalView value cannot infer its receiving workflow context. Optional; `nil` omits the field.
   """
   alias Slackblocks.Internal.Value
   @enforce_keys [:title, :blocks]
