@@ -254,6 +254,13 @@ class Block(RenderableMixin, ABC):
         return registry[type_str](data)
 
 
+def _require_block_type(data: dict[str, Any], expected: str) -> None:
+    if "type" not in data:
+        raise MissingRequiredError(f"{expected}.type is required.")
+    if data["type"] != expected:
+        raise TypeMismatchError(f"{expected}.type must be {expected!r}, got {data['type']!r}.")
+
+
 def _block_from_dict_registry() -> dict[str, Any]:
     """Lazy registry mapping ``BlockType`` values to subclass ``from_dict``
     callables. Built on first call to avoid forward-reference issues."""
@@ -363,6 +370,7 @@ class ContextBlock(Block):
         elements raise ``NotImplementedError`` because ``Element.from_dict``
         has not yet shipped (Phase 7.4b).
         """
+        _require_block_type(data, "context")
         elements: list[Element | CompositionObject] = []
         for raw in data.get("elements", []):
             etype = raw.get("type")
@@ -394,6 +402,7 @@ class DividerBlock(Block):
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> DividerBlock:
         """Parse a Slack ``divider`` block payload."""
+        _require_block_type(data, "divider")
         return cls(block_id=data.get("block_id"))
 
 
@@ -430,6 +439,7 @@ class FileBlock(Block):
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> FileBlock:
         """Parse a Slack ``file`` block payload."""
+        _require_block_type(data, "file")
         if "external_id" not in data:
             raise MissingRequiredError("FileBlock payload is missing required `external_id` field.")
         return cls(
@@ -460,6 +470,7 @@ class HeaderBlock(Block):
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> HeaderBlock:
         """Parse a Slack ``header`` block payload."""
+        _require_block_type(data, "header")
         if "text" not in data:
             raise MissingRequiredError("HeaderBlock payload is missing required `text` field.")
         return cls(text=Text.from_dict(data["text"]), block_id=data.get("block_id"))
@@ -527,6 +538,7 @@ class ImageBlock(Block):
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> ImageBlock:
         """Parse a Slack ``image`` block payload."""
+        _require_block_type(data, "image")
         title_raw = data.get("title")
         slack_file_raw = data.get("slack_file")
         return cls(
@@ -644,6 +656,7 @@ class MarkdownBlock(Block):
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> MarkdownBlock:
         """Parse a Slack ``markdown`` block payload."""
+        _require_block_type(data, "markdown")
         if "text" not in data:
             raise MissingRequiredError("MarkdownBlock payload is missing required `text` field.")
         return cls(text=data["text"], block_id=data.get("block_id"))
@@ -776,6 +789,7 @@ class SectionBlock(Block):
         ``Element`` and ``Element.from_dict`` is not yet implemented
         (Phase 7.4b).
         """
+        _require_block_type(data, "section")
         if data.get("accessory") is not None:
             raise NotImplementedError(
                 "SectionBlock.from_dict cannot yet parse an `accessory`; "
@@ -988,6 +1002,7 @@ class VideoBlock(Block):
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> VideoBlock:
         """Parse a Slack ``video`` block payload."""
+        _require_block_type(data, "video")
         required = ("alt_text", "thumbnail_url", "title", "video_url")
         for field in required:
             if field not in data:
@@ -1046,6 +1061,7 @@ class AlertBlock(Block):
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> AlertBlock:
+        _require_block_type(data, "alert")
         if "text" not in data:
             raise MissingRequiredError("AlertBlock payload is missing required `text` field.")
         return cls(

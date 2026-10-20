@@ -8,6 +8,7 @@
 import limits from "../../../spec/limits.json" with { type: "json" };
 
 import { LengthError, MissingRequiredError, OutOfRangeError, TypeMismatchError } from "../errors.js";
+import { validateFeedbackButton } from "../composition.js";
 import { create, createObject, dropEmpty } from "../internal.js";
 import { asText, type TextLike } from "./objects.js";
 import type { FactorySettings, JsonObject, SlackObject } from "../types.js";
@@ -540,10 +541,12 @@ export function feedbackButton(
   for (const field of ["text", "value"] as const) {
     if (input[field] === undefined) throw new MissingRequiredError(`feedbackButton.${field}`, "required field is missing");
   }
-  return createObject(
+  const output = createObject(
     { ...input, text: asText(input.text, "plain_text", settings) },
     settings,
   );
+  if (settings.validate !== false) validateFeedbackButton(output, "feedbackButton");
+  return output;
 }
 
 /**

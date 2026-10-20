@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Validate feedback-choice limits when standalone choices are built, using the same checks as the parent element.
+
 - Reject header dividers at the accordion helper boundary with a clear field path.
 
 - Report path-aware missing/type errors before reading required chart, option and view fields.

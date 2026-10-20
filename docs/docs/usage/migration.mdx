@@ -190,15 +190,21 @@ block = Block.from_dict(incoming["blocks"][0])
 print(block.text.text)  # for a SectionBlock, etc.
 ```
 
-`Block.from_dict` reads `data["type"]` and dispatches to the right subclass.
-Composition objects (`Text`, `Option`, `Confirm`, etc.) and the simple
-blocks (`DividerBlock`, `FileBlock`, `HeaderBlock`, `MarkdownBlock`,
-`ImageBlock`, `SectionBlock`, `ContextBlock`, `VideoBlock`) round-trip fully.
+`Block.from_dict` dispatches by `type`; direct typed parsers also require the
+matching discriminator. This is a partial parser, not a general Slack JSON loader:
 
-Blocks that contain interactive elements (`ActionsBlock`, `InputBlock`,
-`SectionBlock` with an `accessory`, `ContextBlock` with image elements)
-raise `NotImplementedError` for now; these depend on `Element.from_dict`
-which is planned for a follow-up release.
+| Parse support | Block types |
+| --- | --- |
+| Supported | Alert, Divider, File, Header, Image, Markdown, Video |
+| Supported subset | Section without accessory; Context with text elements only |
+| Raises `NotImplementedError` | Actions, Input, RichText, Table, Card, Carousel, Container, ContextActions, DataTable, DataVisualization, TaskCard, Plan; Section with accessory; Context with images |
+
+Unknown future fields are ignored, so this is not a lossless storage format.
+Keep the original JSON when forwarding or archiving unsupported or future fields.
+`Text`, `ConfirmationDialogue`, `Option`, `OptionGroup`,
+`DispatchActionConfiguration`, `ConversationFilter`, `InputParameter`, `SlackFile`,
+`Trigger`, and `Workflow` have composition-object parsers; check individual
+references rather than assuming every composition type is parseable.
 
 ### Two new block types
 
