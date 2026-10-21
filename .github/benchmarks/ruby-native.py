@@ -63,7 +63,7 @@ else:
     assert metadata["bundle_specs"]["minitest"] == "5.27.0"
     for name in ("rbs", "standard", "steep"):
         assert (name in metadata["bundle_specs"]) == (metadata["mode"] == "baseline")
-    cache = ROOT / "ruby/vendor/bundle"
+    cache = Path(os.environ.get("BUNDLE_PATH", str(ROOT / "ruby/vendor/bundle")))
     metadata["installed_cache_bytes"] = sum(p.stat().st_size for p in cache.rglob("*") if p.is_file())
     META.write_text(json.dumps(metadata, indent=2) + "\n")
     # Both timed profiles use the same locked Minitest and complete test inventory.
