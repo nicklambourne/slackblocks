@@ -101,6 +101,18 @@ module Slackblocks
         end
       when "DispatchActionConfiguration"
         fail!("missing-required", "#{path}.trigger_actions_on", "required") unless wire.key?("trigger_actions_on")
+      when "DatePickerElement"
+        if wire.key?("initial_date") && !wire["initial_date"].match?(/\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/)
+          fail!("type-mismatch", "#{path}.initial_date", "expected YYYY-MM-DD")
+        end
+      when "TimePickerElement"
+        if wire.key?("initial_time") && !wire["initial_time"].match?(/\A([01][0-9]|2[0-3]):[0-5][0-9]\z/)
+          fail!("type-mismatch", "#{path}.initial_time", "expected HH:mm in 24-hour time")
+        end
+      when "PlainTextInputElement"
+        if wire["min_length"] && wire["max_length"] && wire["min_length"] > wire["max_length"]
+          fail!("out-of-range", "#{path}.min_length", "cannot exceed max_length")
+        end
       when "NumberInputElement"
         minimum, maximum = %w[min_value max_value].map do |field|
           text = wire[field]

@@ -188,6 +188,8 @@ public final class ExternalMultiSelectElement extends BlockElement implements In
     /**
      * Sets how many characters the user must type before Slack queries your options endpoint.
      *
+     * <p>Must be at least 0.
+     *
      * @param value value for Slack's {@code min_query_length} field
      * @return this builder
      */

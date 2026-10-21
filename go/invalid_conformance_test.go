@@ -270,6 +270,26 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewExternalMultiSelect().FocusOnLoad(false))
 	case "external-multi-focus-true":
 		return buildError(slackblocks.NewExternalMultiSelect().FocusOnLoad(true))
+	case "external-query-negative":
+		return buildError(slackblocks.NewExternalSelect().MinQueryLength(-1))
+	case "external-multi-query-negative":
+		return buildError(slackblocks.NewExternalMultiSelect().MinQueryLength(-1))
+	case "date-picker-invalid-format":
+		return buildError(slackblocks.NewDatePicker().InitialDate("February 29, 2028"))
+	case "time-picker-invalid-format":
+		return buildError(slackblocks.NewTimePicker().InitialTime("9:00"))
+	case "time-picker-invalid-range":
+		return buildError(slackblocks.NewTimePicker().InitialTime("25:99"))
+	case "static-select-empty-options":
+		return buildError(slackblocks.NewStaticSelect().Options())
+	case "static-multi-select-empty-options":
+		return buildError(slackblocks.NewStaticMultiSelect().Options())
+	case "static-select-empty-groups":
+		return buildError(slackblocks.NewStaticSelect().OptionGroups())
+	case "static-multi-select-empty-groups":
+		return buildError(slackblocks.NewStaticMultiSelect().OptionGroups())
+	case "plain-text-input-inverted-range":
+		return buildError(slackblocks.NewPlainTextInput().MinLength(20).MaxLength(10))
 	case "number-input-inverted-range":
 		return buildError(slackblocks.NewNumberInput().ActionID("a").IsDecimalAllowed(true).MinValue(2).MaxValue(1))
 	case "context-invalid-element":

@@ -1917,7 +1917,7 @@ defmodule Slackblocks.Internal.Schema do
           :default => nil,
           :has_default => false,
           :coerce => nil,
-          :limits => nil,
+          :limits => "select.min_query_length",
           :flags => []
         },
         %{
@@ -2008,7 +2008,7 @@ defmodule Slackblocks.Internal.Schema do
           :default => nil,
           :has_default => false,
           :coerce => nil,
-          :limits => nil,
+          :limits => "select.min_query_length",
           :flags => []
         },
         %{
@@ -5106,8 +5106,11 @@ defmodule Slackblocks.Internal.Schema do
     "option_group.options.min_items" => 1,
     "option_group.options.max_items" => 100,
     "select.placeholder.max_length" => 150,
+    "select.options.min_items" => 1,
     "select.options.max_items" => 100,
+    "select.option_groups.min_items" => 1,
     "select.option_groups.max_items" => 100,
+    "select.min_query_length.min" => 0,
     "overflow.options.min_items" => 1,
     "overflow.options.max_items" => 5,
     "checkboxes.options.min_items" => 1,

@@ -231,6 +231,29 @@ public final class Validator {
           child(path, "focus_on_load"),
           "unsupported for external multi-select menus; omit this field");
     }
+    if (type.equals("external_select") || type.equals("multi_external_select")) {
+      checkRange(
+          value,
+          "min_query_length",
+          path,
+          SlackLimits.SELECT_MIN_QUERY_LENGTH_MIN,
+          Integer.MAX_VALUE);
+    }
+    if (type.equals("datepicker")
+        && value.containsKey("initial_date")
+        && (!(value.get("initial_date") instanceof String text)
+            || !text.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}"))) {
+      fail(ErrorCategory.TYPE_MISMATCH, child(path, "initial_date"), "expected YYYY-MM-DD");
+    }
+    if (type.equals("timepicker")
+        && value.containsKey("initial_time")
+        && (!(value.get("initial_time") instanceof String text)
+            || !text.matches("([01][0-9]|2[0-3]):[0-5][0-9]"))) {
+      fail(
+          ErrorCategory.TYPE_MISMATCH,
+          child(path, "initial_time"),
+          "expected HH:mm in 24-hour time");
+    }
     if (MULTI_SELECT_TYPES.contains(type)) {
       checkRange(
           value,
@@ -283,6 +306,11 @@ public final class Validator {
         }
       }
       case "plain_text_input" -> {
+        Double minimum = number(value.get("min_length"));
+        Double maximum = number(value.get("max_length"));
+        if (minimum != null && maximum != null && minimum > maximum) {
+          fail(ErrorCategory.OUT_OF_RANGE, child(path, "min_length"), "cannot exceed max_length");
+        }
         checkRange(
             value,
             "min_length",
@@ -549,13 +577,20 @@ public final class Validator {
     }
     if (hasOptions) {
       List<?> options = listAt(value.get("options"), child(path, "options"));
-      sliceLength(options, child(path, "options"), 0, SlackLimits.SELECT_OPTIONS_MAX_ITEMS);
+      sliceLength(
+          options,
+          child(path, "options"),
+          SlackLimits.SELECT_OPTIONS_MIN_ITEMS,
+          SlackLimits.SELECT_OPTIONS_MAX_ITEMS);
       validateOptions(options, child(path, "options"));
     }
     if (hasGroups) {
       List<?> groups = listAt(value.get("option_groups"), child(path, "option_groups"));
       sliceLength(
-          groups, child(path, "option_groups"), 0, SlackLimits.SELECT_OPTION_GROUPS_MAX_ITEMS);
+          groups,
+          child(path, "option_groups"),
+          SlackLimits.SELECT_OPTION_GROUPS_MIN_ITEMS,
+          SlackLimits.SELECT_OPTION_GROUPS_MAX_ITEMS);
       for (int index = 0; index < groups.size(); index++) {
         validateOptionGroup(
             objectAt(groups.get(index), child(path, "option_groups") + "[" + index + "]"),

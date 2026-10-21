@@ -9,6 +9,7 @@ namespace Slackblocks;
 /**
  * A time-of-day picker.
  * @see https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element
+ * initial_time must be HH:mm in 24-hour time, from 00:00 through 23:59.
  */
 final readonly class TimePickerElement extends Value implements Element, InputElement
 {

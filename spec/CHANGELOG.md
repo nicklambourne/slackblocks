@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add the probe-confirmed nonnegative external-query threshold, nonempty supplied static options/groups, date-shape and 24-hour-time rules in all nine implementations. Retain `2028-02-30` and empty image alt text as structurally accepted controls; Python retains its existing stricter calendar parser. See `evidence/SB-013-validation-boundary.json` and the validation-boundary guide (SB-013).
+
+- Declare plain-text input bounds must be satisfiable when both are supplied: `min_length <= max_length`. Reject inverted bounds as `out-of-range`, with native positive controls for equality, zero and omission in every implementation (SB-013). This is an explicit library consistency rule derived from the documented minimum/maximum meanings, not a newly observed Slack write-path guarantee.
+
 - Register and enforce the two-chart message limit across composed message and attachment blocks in all nine native implementations (SB-006). Official Slack reference reconfirmed 2026-10-21; historical eight-language live receipts are retained without claiming new live acceptance.
 
 - Reject explicit `focus_on_load` on external multi-selects while retaining the compatibility parameter (SB-003). Slack's external-data multi-select field table omits it; recorded 2026-10-13 write-path probes reject both true and false. Checked the official reference again on 2026-10-21; no new live traffic. All nine native APIs reject explicit booleans and preserve omission and supported selector focus.

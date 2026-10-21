@@ -496,6 +496,15 @@ function validateKnownObject(
         placeholderMaximum,
       );
     }
+    if (type === "external_select" || type === "multi_external_select") {
+      range(numberField(object.min_query_length), child(path, "min_query_length"), limits.select.min_query_length.min);
+    }
+    if (type === "datepicker" && object.initial_date !== undefined && (typeof object.initial_date !== "string" || object.initial_date.length !== 10 || !/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(object.initial_date))) {
+      throw new TypeMismatchError(child(path, "initial_date"), "expected YYYY-MM-DD");
+    }
+    if (type === "timepicker" && object.initial_time !== undefined && (typeof object.initial_time !== "string" || object.initial_time.length !== 5 || !/^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(object.initial_time))) {
+      throw new TypeMismatchError(child(path, "initial_time"), "expected HH:mm in 24-hour time");
+    }
     if (MULTI_SELECT_TYPES.has(type)) {
       range(
         numberField(object.max_selected_items),
@@ -634,6 +643,9 @@ function validateKnownObject(
       );
       break;
     case "plain_text_input":
+      if (typeof object.min_length === "number" && typeof object.max_length === "number" && object.min_length > object.max_length) {
+        throw new OutOfRangeError(child(path, "min_length"), "cannot exceed max_length");
+      }
       range(
         numberField(object.min_length),
         child(path, "min_length"),
@@ -721,7 +733,7 @@ function validateKnownObject(
         length(
           object.options,
           child(path, "options"),
-          undefined,
+          limits.select.options.min_items,
           limits.select.options.max_items,
         );
       }
@@ -729,7 +741,7 @@ function validateKnownObject(
         length(
           object.option_groups,
           child(path, "option_groups"),
-          undefined,
+          limits.select.option_groups.min_items,
           limits.select.option_groups.max_items,
         );
       }

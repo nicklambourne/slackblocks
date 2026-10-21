@@ -8,6 +8,9 @@ namespace Slackblocks.Elements;
 
 /// <summary>A calendar date picker.</summary>
 /// <remarks>
+/// <list type="bullet">
+/// <item><description>initial_date must have the YYYY-MM-DD shape. Calendar validity is application-owned; some language date parsers additionally reject impossible calendar dates.</description></item>
+/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
