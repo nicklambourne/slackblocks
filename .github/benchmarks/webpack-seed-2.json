@@ -1,0 +1,12 @@
+{
+  "client-production-en/0.pack": "0d4ca440b846f9bde7d49b1cf0154daff4010bcadb6140d4802d70bbb945ae63",
+  "client-production-en/1.pack": "4d0642a6a4d4760530a276d1e3f8a851c0c08356ea432f46b1c86da7cc0fb250",
+  "client-production-en/2.pack": "248af02dbf126896d642289780501e6aef8801a1d8d3b736b3ad3b8cf794827c",
+  "client-production-en/3.pack": "0e862e1602b5d9a9faec8b0fa10f5b2b0d255a68f93c6fd2f9369e615bf50da4",
+  "client-production-en/4.pack": "35cc5612d330da0bf55acd9e94a3b5e427fff3b73927c3eb889be45703e07c07",
+  "client-production-en/index.pack": "203f383aeb7a567f31885d10bf380ca1638f85280c5b390df04c96d00c015a70",
+  "server-production-en/0.pack": "bf2b9bcbebacae59e9c675c7ddd1a49fc16589340837995833e8f825356f816e",
+  "server-production-en/1.pack": "945ec0bd55512bfc73149e67012be2738990566a5818b4699a07dd707f0ee67b",
+  "server-production-en/2.pack": "b14de5ace6b14c844b7c3afb48b15b7f7fa99c1b1571ddc96e4580c3fdc868da",
+  "server-production-en/index.pack": "c4aa64c7683d9ae558c272d8e0db5928692af74f001997a11005ebd089975444"
+}

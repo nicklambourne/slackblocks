@@ -1,15 +1,15 @@
 # Measurement-only branch. Never deploys or publishes; not intended for merging.
-name: Documentation webpack cache comparison
+name: Documentation webpack stale-cache controls
 on:
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: docs-webpack-cache-${{ github.ref }}
+  group: docs-webpack-invalidation-${{ github.ref }}
   cancel-in-progress: false
 jobs:
   paired:
-    name: Webpack baseline/candidate pair ${{ matrix.pair }}
+    name: Webpack invalidation control ${{ matrix.pair }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
@@ -78,105 +78,55 @@ jobs:
           git rev-parse HEAD > runtime-evidence/harness-commit.txt
           df -h > runtime-evidence/disk-before.txt
           python3 .github/benchmarks/dotnet-receipts.py
-      - name: Prepare first-cold fresh full-site checkout
+      - name: Prepare first changed-source checkout
         env:
           POLICY: ${{ matrix.pair == 2 && 'candidate' || 'baseline' }}
-        run: python3 .github/benchmarks/docs-webpack-cache.py prepare "$POLICY" cold
-      - name: Restore first-cold private compiler cache
-        id: first-cold-cache
+        run: python3 .github/benchmarks/docs-webpack-invalidation.py prepare "$POLICY" cold
+      - name: Restore first deliberately stale compiler cache
+        id: first-cache
         if: matrix.pair == 2
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: ${{ runner.temp }}/docs-webpack-pair-${{ matrix.pair }}/work/docs/node_modules/.cache/webpack
-          key: docs-webpack-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-v1
-      - name: Measure first-cold full nine-language build
+          key: docs-webpack-eval-39610141273-1-${{ matrix.pair }}-v1
+          fail-on-cache-miss: true
+      - name: Build and verify first complete nine-language site
         env:
           POLICY: ${{ matrix.pair == 2 && 'candidate' || 'baseline' }}
-          CACHE_HIT: ${{ steps.first-cold-cache.outputs.cache-hit }}
-        run: python3 .github/benchmarks/docs-webpack-cache.py build "$POLICY" cold
-      - name: Save first candidate compiler cache
-        if: matrix.pair == 2
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
-        with:
-          path: ${{ runner.temp }}/docs-webpack-pair-${{ matrix.pair }}/work/docs/node_modules/.cache/webpack
-          key: docs-webpack-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-v1
-      - name: Finish first-cold and remove only its checkout
+          CACHE_HIT: ${{ steps.first-cache.outputs.cache-hit }}
+        run: python3 .github/benchmarks/docs-webpack-invalidation.py build "$POLICY" cold
+      - name: Finish first and remove only its checkout
         env:
           POLICY: ${{ matrix.pair == 2 && 'candidate' || 'baseline' }}
-        run: python3 .github/benchmarks/docs-webpack-cache.py finish "$POLICY" cold
-      - name: Prepare first-warm fresh full-site checkout
-        env:
-          POLICY: ${{ matrix.pair == 2 && 'candidate' || 'baseline' }}
-        run: python3 .github/benchmarks/docs-webpack-cache.py prepare "$POLICY" warm
-      - name: Restore first-warm private compiler cache
-        id: first-warm-cache
-        if: matrix.pair == 2
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
-        with:
-          path: ${{ runner.temp }}/docs-webpack-pair-${{ matrix.pair }}/work/docs/node_modules/.cache/webpack
-          key: docs-webpack-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-v1
-      - name: Measure first-warm full nine-language build
-        env:
-          POLICY: ${{ matrix.pair == 2 && 'candidate' || 'baseline' }}
-          CACHE_HIT: ${{ steps.first-warm-cache.outputs.cache-hit }}
-        run: python3 .github/benchmarks/docs-webpack-cache.py build "$POLICY" warm
-      - name: Finish first-warm and remove only its checkout
-        env:
-          POLICY: ${{ matrix.pair == 2 && 'candidate' || 'baseline' }}
-        run: python3 .github/benchmarks/docs-webpack-cache.py finish "$POLICY" warm
-      - name: Prepare second-cold fresh full-site checkout
+        run: python3 .github/benchmarks/docs-webpack-invalidation.py finish "$POLICY" cold
+      - name: Prepare second changed-source checkout
         env:
           POLICY: ${{ matrix.pair != 2 && 'candidate' || 'baseline' }}
-        run: python3 .github/benchmarks/docs-webpack-cache.py prepare "$POLICY" cold
-      - name: Restore second-cold private compiler cache
-        id: second-cold-cache
+        run: python3 .github/benchmarks/docs-webpack-invalidation.py prepare "$POLICY" cold
+      - name: Restore second deliberately stale compiler cache
+        id: second-cache
         if: matrix.pair != 2
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: ${{ runner.temp }}/docs-webpack-pair-${{ matrix.pair }}/work/docs/node_modules/.cache/webpack
-          key: docs-webpack-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-v1
-      - name: Measure second-cold full nine-language build
+          key: docs-webpack-eval-39610141273-1-${{ matrix.pair }}-v1
+          fail-on-cache-miss: true
+      - name: Build and verify second complete nine-language site
         env:
           POLICY: ${{ matrix.pair != 2 && 'candidate' || 'baseline' }}
-          CACHE_HIT: ${{ steps.second-cold-cache.outputs.cache-hit }}
-        run: python3 .github/benchmarks/docs-webpack-cache.py build "$POLICY" cold
-      - name: Save second candidate compiler cache
-        if: matrix.pair != 2
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
-        with:
-          path: ${{ runner.temp }}/docs-webpack-pair-${{ matrix.pair }}/work/docs/node_modules/.cache/webpack
-          key: docs-webpack-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-v1
-      - name: Finish second-cold and remove only its checkout
+          CACHE_HIT: ${{ steps.second-cache.outputs.cache-hit }}
+        run: python3 .github/benchmarks/docs-webpack-invalidation.py build "$POLICY" cold
+      - name: Finish second and remove only its checkout
         env:
           POLICY: ${{ matrix.pair != 2 && 'candidate' || 'baseline' }}
-        run: python3 .github/benchmarks/docs-webpack-cache.py finish "$POLICY" cold
-      - name: Prepare second-warm fresh full-site checkout
-        env:
-          POLICY: ${{ matrix.pair != 2 && 'candidate' || 'baseline' }}
-        run: python3 .github/benchmarks/docs-webpack-cache.py prepare "$POLICY" warm
-      - name: Restore second-warm private compiler cache
-        id: second-warm-cache
-        if: matrix.pair != 2
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
-        with:
-          path: ${{ runner.temp }}/docs-webpack-pair-${{ matrix.pair }}/work/docs/node_modules/.cache/webpack
-          key: docs-webpack-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-v1
-      - name: Measure second-warm full nine-language build
-        env:
-          POLICY: ${{ matrix.pair != 2 && 'candidate' || 'baseline' }}
-          CACHE_HIT: ${{ steps.second-warm-cache.outputs.cache-hit }}
-        run: python3 .github/benchmarks/docs-webpack-cache.py build "$POLICY" warm
-      - name: Finish second-warm and remove only its checkout
-        env:
-          POLICY: ${{ matrix.pair != 2 && 'candidate' || 'baseline' }}
-        run: python3 .github/benchmarks/docs-webpack-cache.py finish "$POLICY" warm
-      - name: Audit all four full-site outputs and dependency receipts
-        run: python3 .github/benchmarks/docs-webpack-cache.py audit
-      - name: Retain successful and failed measurements
+        run: python3 .github/benchmarks/docs-webpack-invalidation.py finish "$POLICY" cold
+      - name: Compare all changed-source outputs and dependency receipts
+        run: python3 .github/benchmarks/docs-webpack-invalidation.py audit
+      - name: Retain successful and failed controls
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: docs-webpack-pair-${{ matrix.pair }}
+          name: docs-webpack-invalidation-${{ matrix.pair }}
           path: |
             benchmark-results
             runtime-evidence
