@@ -1,0 +1,56 @@
+name: Java signed bundle controlled comparison
+on:
+  push:
+    branches: [codex/ci-java-bundle-benchmarks]
+permissions:
+  contents: read
+concurrency:
+  group: java-bundle-benchmarks-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  compare:
+    name: Bundle (${{ matrix.variant }}, pair ${{ matrix.pair }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - {variant: baseline, pair: 1}
+          - {variant: candidate, pair: 1}
+          - {variant: candidate, pair: 2}
+          - {variant: baseline, pair: 2}
+          - {variant: baseline, pair: 3}
+          - {variant: candidate, pair: 3}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: harness
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: cad324be440c1585424469c5bed85fc404ed63b4
+          path: source
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6
+        with:
+          distribution: temurin
+          java-version: '17.0.20+1'
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13.16'
+      - name: Run cold and warm bundle checks with isolated downloads
+        env:
+          VARIANT: ${{ matrix.variant }}
+          PAIR: ${{ matrix.pair }}
+        run: |
+          python harness/.github/benchmarks/java-bundle.py --source source \
+            --output evidence --cache "$RUNNER_TEMP/java-bundle-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-$VARIANT-$PAIR" \
+            --variant "$VARIANT" --pair "$PAIR"
+      - name: Retain every sample and any setup failures
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: java-bundle-${{ matrix.variant }}-${{ matrix.pair }}
+          path: evidence
+          if-no-files-found: warn
+          retention-days: 14
