@@ -75,6 +75,8 @@ defmodule Slackblocks.RulesTest do
 
   defp cases do
     [
+      {"ExternalMultiSelectElement", 0,
+       fn -> change("ExternalMultiSelectElement", focus_on_load: false) end, :invalid_usage},
       {"CardBlock", 0,
        fn -> change("CardBlock", hero_image: nil, title: nil, actions: nil, body: nil) end,
        :missing_required},

@@ -424,6 +424,14 @@ final class InvalidConformanceTest {
           invalid(
               "NumberInputElement",
               map("type", "number_input", "is_decimal_allowed", true, "min_value", "Infinity"));
+      case "external-multi-focus-false" ->
+          invalid(
+              "ExternalMultiSelectElement",
+              map("type", "multi_external_select", "focus_on_load", false));
+      case "external-multi-focus-true" ->
+          invalid(
+              "ExternalMultiSelectElement",
+              map("type", "multi_external_select", "focus_on_load", true));
       case "number-input-inverted-range" ->
           typed(
               "NumberInput",

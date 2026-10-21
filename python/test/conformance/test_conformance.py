@@ -31,6 +31,7 @@ from slackblocks import (
     DispatchActionConfiguration,
     DividerBlock,
     EmailInput,
+    ExternalMultiSelectMenu,
     FeedbackButton,
     FeedbackButtons,
     FileInput,
@@ -474,6 +475,8 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "number-bound-trailing-space": lambda: NumberInput(True, min_value="1 "),
     "number-bound-nan": lambda: NumberInput(True, min_value="NaN"),
     "number-bound-infinity": lambda: NumberInput(True, min_value="Infinity"),
+    "external-multi-focus-false": lambda: ExternalMultiSelectMenu(focus_on_load=False),
+    "external-multi-focus-true": lambda: ExternalMultiSelectMenu(focus_on_load=True),
     "number-input-inverted-range": lambda: NumberInput(
         is_decimal_allowed=True, min_value=2, max_value=1
     ),

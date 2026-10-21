@@ -1763,6 +1763,8 @@ func (b *EmailInputBuilder) PlaceholderObject(value *PlainTextBuilder) *EmailInp
 //
 // A menu for selecting multiple options loaded from your app.
 //
+//   - focus_on_load is unsupported and must be omitted, including explicit false.
+//
 // See https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element for Slack's reference.
 type ExternalMultiSelectBuilder struct{ *concreteBuilder }
 
@@ -1808,8 +1810,8 @@ func (b *ExternalMultiSelectBuilder) MaxSelectedItems(value int) *ExternalMultiS
 	return b
 }
 
-// FocusOnLoad sets whether the element receives focus when the view opens. Only one element per
-// view may do so.
+// FocusOnLoad Deprecated compatibility parameter. Slack external multi-select menus do not
+// support focus_on_load; omit it. Explicit true or false is rejected.
 func (b *ExternalMultiSelectBuilder) FocusOnLoad(value bool) *ExternalMultiSelectBuilder {
 	b.core.FocusOnLoad(value)
 	return b
