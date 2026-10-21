@@ -32,8 +32,11 @@ jobs:
             echo 'relevant=true' >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          files=$(gh api "repos/${{ github.repository }}/pulls/$PR/files" --paginate -q '.[].filename') || files=""
-          if [ -z "$files" ] || grep -qE '^(elixir/|spec/|docs/|README\.md$|AGENTS\.md$|\.github/(workflows/|scripts/))' <<<"$files"; then
+          files=$(gh api "repos/${{ github.repository }}/pulls/$PR/files" --paginate -q '.[] | .filename, (.previous_filename // empty)') || files=""
+          # Native guide checks read documentation text, not site styles or images.
+          # Keep old paths from renames so moving a native input cannot hide it.
+          native_files=$(grep -vE '^docs/(src/.*\.css|static/img/.*\.(png|jpg|jpeg|gif|webp|svg|ico))$' <<<"$files" || true)
+          if [ -z "$files" ] || grep -qE '^(elixir/|spec/|docs/|README\.md$|AGENTS\.md$|\.github/(workflows/|scripts/))' <<<"$native_files"; then
             echo 'relevant=true' >> "$GITHUB_OUTPUT"
           else
             echo 'relevant=false' >> "$GITHUB_OUTPUT"
