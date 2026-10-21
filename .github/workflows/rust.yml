@@ -1,137 +1,51 @@
-name: Rust
-
+name: Rust archive controlled benchmark
 on:
-  push:
-    branches: [master]
-    paths:
-      - "rust/**"
-      - "spec/**"
-      - "docs/**"
-      - "README.md"
-      - ".github/dependabot.yml"
-      - ".github/workflows/rust.yml"
-  pull_request:
   workflow_dispatch:
-
 permissions:
   contents: read
-
-concurrency:
-  group: rust-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  changes:
-    name: Detect relevant Rust changes
+  paired:
+    name: Rust archive baseline/candidate pair ${{ matrix.pair }}
     runs-on: ubuntu-latest
-    outputs:
-      relevant: ${{ steps.filter.outputs.relevant }}
-    steps:
-      - name: Compare changed files against Rust workflow scope
-        id: filter
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
-          if [ -z "$files" ] || grep -qE '^(rust/|spec/|docs/|README\.md$|\.github/dependabot\.yml$|\.github/workflows/rust\.yml$)' <<<"$files"; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "relevant=false" >> "$GITHUB_OUTPUT"
-          fi
-
-  test:
-    needs: changes
-    name: Rust tests (${{ matrix.os }}, ${{ matrix.toolchain }})
-    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
     strategy:
       fail-fast: false
+      max-parallel: 3
       matrix:
-        include:
-          - {os: ubuntu-latest, toolchain: "1.85.0"}
-          - {os: ubuntu-latest, toolchain: stable}
-          - {os: macos-latest, toolchain: stable}
-          - {os: windows-latest, toolchain: stable}
-    defaults:
-      run:
-        shell: bash
+        pair: [1, 2, 3]
     steps:
-      - name: Check out repository
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Install the supported Rust toolchain
-        if: needs.changes.outputs.relevant == 'true'
-        run: rustup toolchain install "${{ matrix.toolchain }}" --profile minimal
-      - name: Cache Rust dependencies and build outputs
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - name: Check out measurement-only harness
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          path: |
-            ~/.cargo/registry/index
-            ~/.cargo/registry/cache
-            ~/.cargo/git/db
-            rust/target
-            rust/integrations/target
-          key: rust-${{ runner.os }}-${{ matrix.toolchain }}-${{ hashFiles('rust/Cargo.lock', 'rust/integrations/Cargo.lock') }}
-          restore-keys: rust-${{ runner.os }}-${{ matrix.toolchain }}-
-      - name: Run unit, integration and documentation tests
-        if: needs.changes.outputs.relevant == 'true'
-        run: |
-          cargo +${{ matrix.toolchain }} test --manifest-path rust/Cargo.toml --workspace --all-targets --locked
-          cargo +${{ matrix.toolchain }} test --manifest-path rust/Cargo.toml --workspace --doc --locked
-          cargo +${{ matrix.toolchain }} run --manifest-path rust/Cargo.toml --example api_checkpoint --locked
-
-      - name: Test runnable Slack Morphism and reqwest integrations locally
-        if: needs.changes.outputs.relevant == 'true'
-        run: cargo +${{ matrix.toolchain }} test --manifest-path rust/integrations/Cargo.toml --all-targets --locked
-
-  quality:
-    needs: changes
-    name: Rust quality and package
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Install Python for generation and archive checks
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+          persist-credentials: false
+          path: harness
+      - name: Check out fixed candidate source for both variants
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          python-version: "3.13"
-      - name: Install Rust tooling
-        if: needs.changes.outputs.relevant == 'true'
-        run: |
-          rustup toolchain install stable 1.85.0 --profile minimal --component rustfmt,clippy
-          rustup default stable
-          echo "RUSTFMT=$(rustup which --toolchain 1.85.0 rustfmt)" >> "$GITHUB_ENV"
-      - name: Cache Rust dependencies and build outputs
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+          ref: 15f4d11eecffad125ceb164edf68d0dd3e1aaaa3
+          persist-credentials: false
+          path: source
+      - name: Install fixed Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
-          path: |
-            ~/.cargo/registry/index
-            ~/.cargo/registry/cache
-            ~/.cargo/git/db
-            rust/target
-            rust/integrations/target
-          key: rust-${{ runner.os }}-quality-${{ hashFiles('rust/Cargo.lock', 'rust/integrations/Cargo.lock') }}
-          restore-keys: rust-${{ runner.os }}-quality-
-      - name: Verify generated sources, lints, tests, and rustdoc
-        if: needs.changes.outputs.relevant == 'true'
-        run: rust/bin/check
-      - name: Verify archive and fresh consumers on minimum and stable Rust
-        if: needs.changes.outputs.relevant == 'true'
+          python-version: '3.13.16'
+      - name: Install fixed minimum and current stable compilers
         run: |
-          python3 rust/bin/check-package.py --toolchain 1.85.0
-          python3 rust/bin/check-package.py --toolchain stable
-          python3 rust/bin/check-package.py --toolchain 1.85.0 --lower-bounds
-          python3 rust/bin/check-package.py --toolchain 1.85.0 --json-features
-      - name: Enforce overall and handwritten line and region coverage
-        if: needs.changes.outputs.relevant == 'true'
-        run: |
-          rustup component add llvm-tools-preview --toolchain stable
-          cargo +stable install cargo-llvm-cov --version 0.9.1 --locked
-          python3 rust/bin/check-coverage.py
+          rustup toolchain install 1.85.0 1.99.0 --profile minimal
+          rustc +1.85.0 -Vv
+          rustc +1.99.0 -Vv
+      - name: Measure two cold and two warm complete archive sequences
+        run: >-
+          python harness/.github/benchmarks/benchmark-rust.py
+          --source source
+          --baseline-checker harness/.github/benchmarks/rust-baseline-check-package.py
+          --pair ${{ matrix.pair }}
+          --output ${{ runner.temp }}/rust-archive-bench/pair-${{ matrix.pair }}/evidence
+      - name: Preserve all measurements and failures
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: rust-archive-pair-${{ matrix.pair }}
+          path: ${{ runner.temp }}/rust-archive-bench/pair-${{ matrix.pair }}/evidence
+          if-no-files-found: error
+          retention-days: 14
