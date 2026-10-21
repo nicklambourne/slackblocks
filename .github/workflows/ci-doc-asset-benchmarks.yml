@@ -17,7 +17,7 @@ jobs:
         lane: [rust, elixir]
         pair: [1, 2, 3]
     env:
-      SOURCE_SHA: 4cb0201f995ae682083ab2f6a7b1bcef1d29972b
+      SOURCE_SHA: da831d906a6c4f98798b8da65c003c3f96f08ab4
       PAIR: ${{ matrix.pair }}
       LANE: ${{ matrix.lane }}
     steps:
@@ -26,7 +26,7 @@ jobs:
           path: harness
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: 4cb0201f995ae682083ab2f6a7b1bcef1d29972b
+          ref: da831d906a6c4f98798b8da65c003c3f96f08ab4
           fetch-depth: 0
           path: source
       - name: Private benchmark locations

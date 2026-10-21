@@ -3,7 +3,7 @@ import hashlib,json,os,subprocess,tempfile,time
 from pathlib import Path
 ROOT=Path(os.environ.get('FILTER_REPO','/Volumes/Repos/Codex-worktrees/ci-windows-dotnet-runtime/slackblocks'))
 OUT=Path(os.environ.get('FILTER_OUT','/Volumes/Scratch/slackblocks-ci-speedups-20261021/doc-asset-detection'))
-BASE='7f1370f78daf0be94364769843f221b663706fe4'
+BASE='6d023b9bee3346542fd42982a574886b6f8b43ad'
 
 def extract(text):
     tail=text.split('        run: |\n',1)[1]
