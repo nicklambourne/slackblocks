@@ -22,7 +22,7 @@ jobs:
       - name: Check out fixed candidate source for both variants
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: 15f4d11eecffad125ceb164edf68d0dd3e1aaaa3
+          ref: 455b4174eadc570f75cefa6b67ee36b279131c21
           persist-credentials: false
           path: source
       - name: Install fixed Python
