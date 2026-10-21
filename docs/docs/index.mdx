@@ -11,18 +11,20 @@ import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, Typ
   <img width="30%" src="/slackblocks/img/sb.png" alt="slackblocks logo" />
 </p>
 
-`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, C#, Ruby, Rust, and PHP — without writing JSON by hand.
+`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, and Elixir — without writing JSON by hand.
 
 It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control. `slackblocks` gives you:
 
-- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, C#, Ruby, Rust, and PHP.
+- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, and Elixir.
 - **Validation as you build** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
 - **Drop-in compatibility** with established Slack SDKs and clients and their plain JSON payloads.
-- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, C# depends on nothing beyond .NET, Ruby uses the default `json` gem, Rust depends only on Serde and serde_json, and PHP needs only its built-in JSON and PCRE extensions.
+- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, C# depends on nothing beyond .NET, Ruby uses the default `json` gem, Rust depends only on Serde and serde_json, PHP needs only its built-in JSON and PCRE extensions, and Elixir uses Jason and Decimal.
 
 ## Quick Start
 
 Ready to build your first message? The [Quick Start guide](quick-start) takes you from installation to a validated Slack payload using the language selected in the top navigation.
+
+Find exact native names in the [current API reference index](/reference), or choose a working pattern from the [recipe index](/recipes). Both indexes cover the maintained implementation set.
 
 ## Components
 
