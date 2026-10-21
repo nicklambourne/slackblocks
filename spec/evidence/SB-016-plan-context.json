@@ -11,7 +11,7 @@
         "at": "2026-10-12T10:04:33.915Z",
         "method": "chat.postMessage",
         "request": {
-          "channel": "C0C8MN0BQ12",
+          "channel": "C_REDACTED_1",
           "mrkdwn": true,
           "blocks": [
             {
@@ -141,7 +141,7 @@
         "request": {
           "mrkdwn": true,
           "text": "S20: Investigation assistant",
-          "channel": "C0C8BQJUTU3",
+          "channel": "C_REDACTED_2",
           "blocks": [
             {
               "text": {
@@ -326,7 +326,7 @@
   ],
   "minimal_paired_controls": {
     "checked": "2026-10-13",
-    "producer": "Python native constructors; synthetic content; same workspace; fresh trigger per modal",
+    "producer": "Python native constructors; synthetic content; same workspace",
     "observations": [
       {
         "case": "sb016-plan-only",
@@ -907,5 +907,6 @@
         }
       }
     ]
-  }
+  },
+  "sanitization": "Test-channel IDs in the historical requests are replaced with distinct placeholders. Block IDs, payload content, timestamps, source line references and response errors are preserved."
 }

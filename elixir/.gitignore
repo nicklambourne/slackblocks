@@ -1,0 +1,11 @@
+/_build/
+/deps/
+/doc/
+/cover/
+/*.tar
+*.ez
+/integrations/_build/
+/integrations/deps/
+/erlang/_build/
+/erlang/_checkouts/
+/dist/

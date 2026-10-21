@@ -193,7 +193,7 @@ class PHPReleaseTests(unittest.TestCase):
             php.preflight.tag_state(
                 self.root, fixtures.VERSION, self.record["source_commit"]
             ),
-            8,
+            len(fixtures.release.LANGUAGES),
         )
         self.fixture.git("tag", "-f", tag, "HEAD")
         with self.assertRaisesRegex(php.preflight.ReleaseError, "annotated"):
@@ -616,7 +616,7 @@ class PHPReleaseTests(unittest.TestCase):
         coordinator = (
             fixtures.ROOT / ".github/workflows/coordinated-release.yml"
         ).read_text()
-        self.assertIn("needs: [validate, php-readiness]", coordinator)
+        self.assertIn("needs: [validate, php-readiness, hex-readiness]", coordinator)
         self.assertIn("release.py readiness", coordinator)
         self.assertIn("workflow: publish-packagist.yml", coordinator)
         self.assertNotIn("secrets.PHP_DIST", coordinator)

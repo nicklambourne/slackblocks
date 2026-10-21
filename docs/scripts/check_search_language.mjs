@@ -143,11 +143,20 @@ assert.doesNotMatch(rustText, /Python 3\.10 or newer is required/);
 assert.ok(rustDocuments.some(({u}) => u.includes("/reference/rust")));
 assert.ok(rustDocuments.some(({u}) => u.endsWith("/usage/compatibility")));
 
-const allLanguages = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php"];
+const allLanguages = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir"];
 for (const language of allLanguages) {
   const documents = await readDocuments(language);
   for (const other of allLanguages.filter((candidate) => candidate !== language)) {
     assert.equal(documents.some(({ u }) => u.includes(`/reference/${other}`)), false, `${language} leaked ${other} reference`);
+  }
+  if (language === "elixir") {
+    const text = documents.map(({ t }) => t).join("\n");
+    assert.ok(/Elixir 1\.16\.3\+/.test(text), "Elixir installation requirements absent from search");
+    assert.ok(documents.some(({ u }) => u.includes("/reference/elixir/blocks")));
+    assert.ok(documents.some(({ u }) => u.endsWith("/usage/erlang")));
+    assert.doesNotMatch(text, /PHP 8\.2 or newer is required/);
+  } else {
+    assert.equal(documents.some(({ u }) => u.endsWith("/usage/erlang")), false);
   }
   if (language === "php") {
     const text = documents.map(({ t }) => t).join("\n");
