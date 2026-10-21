@@ -315,6 +315,42 @@ return slack.PostWebhookContext(ctx, os.Getenv("SLACK_WEBHOOK_URL"), message)
 
 Use `NewMessageResponse()` for the immediate JSON body returned by a slash-command or interaction endpoint. `Build()` returns an [`Object`](/reference/go/core#object), so encode it with `encoding/json` and return it through your web framework.
 
+### Visibility, replacement and deletion via `response_url`
+
+POST one selected JSON payload below to the genuine interaction's `response_url`
+with `Content-Type: application/json`. These control flags belong to that response
+URL, not the incoming webhook URL. Choose visibility when creating the response;
+replacement keeps the original visibility. To delete the source app message, use
+`WebhookMessage` with only `delete_original`. The user's slash-command message
+cannot be replaced or deleted this way. See Slack's
+[interaction response guide](https://docs.slack.dev/interactivity/handling-user-interaction/#message-responses).
+
+The following example constructs the four alternatives and prints them; it sends no requests.
+
+```go title="docs/examples/go/response_url_payloads.go"
+package main
+
+import (
+	"encoding/json"
+	"os"
+
+	sb "github.com/nicklambourne/slackblocks/go/v2"
+)
+
+func main() {
+	payloads := []sb.Object{
+		sb.NewMessageResponse().Text("Only you").ResponseType(sb.ResponseTypeEphemeral).MustBuild(),
+		sb.NewMessageResponse().Text("Everyone").ResponseType(sb.ResponseTypeInChannel).MustBuild(),
+		sb.NewWebhookMessage().Text("Updated").ReplaceOriginal(true).MustBuild(),
+		sb.NewWebhookMessage().DeleteOriginal(true).MustBuild(),
+	}
+	// POST one selected payload to the genuine interaction's response_url.
+	if err := json.NewEncoder(os.Stdout).Encode(payloads); err != nil {
+		panic(err)
+	}
+}
+```
+
 ## Modals and App Home
 
 Use slack-go's native view request types for the view envelope and slackblocks builders for its blocks:
@@ -849,6 +885,41 @@ command or interaction response. Wrap a serialized `ModalView` under `view` with
 its `trigger_id` for `views.open`; wrap `HomeTabView` with `user_id` for
 `views.publish`. These are request envelopes, separate from the view itself.
 The owned values are `Send + Sync` and can be used with your chosen async client.
+
+### Visibility, replacement and deletion via `response_url`
+
+POST one selected JSON payload below to the genuine interaction's `response_url`
+with `Content-Type: application/json`. These control flags belong to that response
+URL, not the incoming webhook URL. Choose visibility when creating the response;
+replacement keeps the original visibility. To delete the source app message, use
+`WebhookMessage` with only `delete_original`. The user's slash-command message
+cannot be replaced or deleted this way. See Slack's
+[interaction response guide](https://docs.slack.dev/interactivity/handling-user-interaction/#message-responses).
+
+This standalone example constructs and checks each payload without sending requests:
+
+```rust
+use slackblocks::{MessageResponse, ResponseType, WebhookMessage};
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let payloads = vec![
+        serde_json::to_value(MessageResponse::builder()
+            .text("Only you").response_type(ResponseType::Ephemeral).build()?)?,
+        serde_json::to_value(MessageResponse::builder()
+            .text("Everyone").response_type(ResponseType::InChannel).build()?)?,
+        serde_json::to_value(WebhookMessage::builder()
+            .text("Updated").replace_original(true).build()?)?,
+        serde_json::to_value(WebhookMessage::builder().delete_original(true).build()?)?,
+    ];
+    assert_eq!(payloads[0]["response_type"], "ephemeral");
+    assert_eq!(payloads[1]["response_type"], "in_channel");
+    assert_eq!(payloads[2], serde_json::json!({"text":"Updated", "replace_original":true}));
+    assert_eq!(payloads[3], serde_json::json!({"delete_original":true}));
+    // POST one selected payload to the genuine interaction's response_url.
+    println!("{}", serde_json::to_string(&payloads)?);
+    Ok(())
+}
+```
 
 
 </Rust>

@@ -73,3 +73,7 @@ go get github.com/nicklambourne/slackblocks/go/v2
 This directory is part of the coordinated slackblocks monorepo. The Go module
 implements the same shared JSON fixtures and validation categories as the
 other language packages.
+
+For explicit response visibility, replacement and delete-only payloads, see the
+[response URL recipes](https://nicklambourne.github.io/slackblocks/usage/sending_messages?language=go).
+`WebhookMessage` supports native `delete_original`; `MessageResponse` does not expose that field.
