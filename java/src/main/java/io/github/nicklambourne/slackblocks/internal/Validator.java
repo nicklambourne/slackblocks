@@ -297,6 +297,15 @@ public final class Validator {
               SlackLimits.PLAIN_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH);
         }
       }
+      case "external_select",
+          "multi_external_select",
+          "users_select",
+          "multi_users_select",
+          "channels_select",
+          "multi_channels_select",
+          "conversations_select",
+          "multi_conversations_select" ->
+          checkOptionalText(value, "placeholder", path, SlackLimits.SELECT_PLACEHOLDER_MAX_LENGTH);
       case "email_text_input" ->
           checkOptionalText(
               value, "placeholder", path, SlackLimits.EMAIL_INPUT_PLACEHOLDER_MAX_LENGTH);
