@@ -82,5 +82,8 @@ defmodule Slackblocks.Internal.Value do
         Enum.map(values, &coerce(&1, %{field | kind: :text}))
       )
 
+  defp coerce(value, %{coerce: "decimal_string"}) when is_number(value),
+    do: to_string(value)
+
   defp coerce(value, _field), do: value
 end

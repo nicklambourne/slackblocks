@@ -112,8 +112,17 @@ defmodule Slackblocks.Internal.Rules do
   end
 
   defp local("NumberInputElement", w, p) do
-    if w["min_value"] != nil and w["max_value"] != nil and w["min_value"] > w["max_value"],
-      do: fail(:out_of_range, p, "minimum exceeds maximum")
+    for field <- ["min_value", "max_value"], text = w[field], text != nil do
+      unless Regex.match?(
+               ~r/\A[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?\z/,
+               text
+             ),
+             do: fail(:type_mismatch, p ++ [field], "expected a decimal string")
+    end
+
+    if w["min_value"] != nil and w["max_value"] != nil and
+         decimal_greater?(w["min_value"], w["max_value"]),
+       do: fail(:out_of_range, p, "minimum exceeds maximum")
   end
 
   defp local("ChartSegment", w, p),
@@ -145,6 +154,40 @@ defmodule Slackblocks.Internal.Rules do
   end
 
   defp local(_name, _wire, _path), do: :ok
+
+  # Compare coefficients and arbitrary-size exponent ranks, without expanding exponent zeros.
+  defp decimal_greater?(left, right) do
+    {a, rank_a, x} = decimal_parts(left)
+    {b, rank_b, y} = decimal_parts(right)
+    width = max(byte_size(x), byte_size(y))
+    left_magnitude = {rank_a, String.pad_trailing(x, width, "0")}
+    right_magnitude = {rank_b, String.pad_trailing(y, width, "0")}
+
+    cond do
+      a != b -> a > b
+      a == 0 -> false
+      a > 0 -> left_magnitude > right_magnitude
+      true -> left_magnitude < right_magnitude
+    end
+  end
+
+  defp decimal_parts(text) do
+    [mantissa | exponent] = Regex.split(~r/[eE]/, text)
+    rank = String.to_integer(List.first(exponent) || "0")
+    unsigned = String.trim_leading(String.trim_leading(mantissa, "-"), "+")
+    [whole | fraction] = String.split(unsigned, ".")
+    fraction = List.first(fraction) || ""
+    digits = String.trim_leading(whole <> fraction, "0")
+
+    sign =
+      cond do
+        digits == "" -> 0
+        String.starts_with?(mantissa, "-") -> -1
+        true -> 1
+      end
+
+    {sign, rank + byte_size(digits) - byte_size(fraction), digits}
+  end
 
   defp exclusive(w, a, b, p) do
     if Map.has_key?(w, a) and Map.has_key?(w, b),

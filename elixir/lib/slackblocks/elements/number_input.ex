@@ -10,8 +10,8 @@ defmodule Slackblocks.Elements.NumberInput do
   * `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
   * `is_decimal_allowed` — Sets whether the input accepts decimal numbers. Required.
   * `initial_value` — Sets the number present when the input loads, as a string such as 42 or 3.5. Optional; `nil` omits the field.
-  * `min_value` — Sets the smallest accepted number. Optional; `nil` omits the field.
-  * `max_value` — Sets the largest accepted number. Optional; `nil` omits the field.
+  * `min_value` — Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings. Optional; `nil` omits the field.
+  * `max_value` — Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings. Optional; `nil` omits the field.
   * `dispatch_action_config` — Sets which user interactions send a block_actions payload. Optional; `nil` omits the field.
   * `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
   * `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
@@ -31,8 +31,8 @@ defmodule Slackblocks.Elements.NumberInput do
           action_id: binary() | nil,
           is_decimal_allowed: boolean(),
           initial_value: binary() | nil,
-          min_value: number() | nil,
-          max_value: number() | nil,
+          min_value: binary() | nil,
+          max_value: binary() | nil,
           dispatch_action_config: Slackblocks.Objects.DispatchActionConfiguration.t() | nil,
           focus_on_load: boolean() | nil,
           placeholder: Slackblocks.Objects.PlainText.t() | nil
