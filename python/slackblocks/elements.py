@@ -49,8 +49,11 @@ from ._limits import (
     RICH_TEXT_INPUT_MIN_LINES_MAX,
     RICH_TEXT_INPUT_MIN_LINES_MIN,
     RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
+    SELECT_MIN_QUERY_LENGTH_MIN,
     SELECT_OPTION_GROUPS_MAX_ITEMS,
+    SELECT_OPTION_GROUPS_MIN_ITEMS,
     SELECT_OPTIONS_MAX_ITEMS,
+    SELECT_OPTIONS_MIN_ITEMS,
     SELECT_PLACEHOLDER_MAX_LENGTH,
     TIME_PICKER_PLACEHOLDER_MAX_LENGTH,
     URL_INPUT_PLACEHOLDER_MAX_LENGTH,
@@ -499,6 +502,11 @@ class DatePicker(Element):
         super().__init__(type_=ElementType.DATE_PICKER)
         self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_date: str | None = None
+        if initial_date is not None and (
+            not isinstance(initial_date, str)
+            or not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", initial_date)
+        ):
+            raise TypeMismatchError("DatePicker.initial_date must have YYYY-MM-DD format")
         if initial_date:
             self.initial_date = datetime.strptime(initial_date, "%Y-%m-%d").strftime("%Y-%m-%d")
         self.confirm = confirm
@@ -773,12 +781,17 @@ class StaticMultiSelectMenu(Element):
                 "Cannot set both `options` and `option_groups` parameters."
             )
         self.options = coerce_to_list(
-            options, class_=Option, allow_none=True, max_size=SELECT_OPTIONS_MAX_ITEMS
+            options,
+            class_=Option,
+            allow_none=True,
+            min_size=SELECT_OPTIONS_MIN_ITEMS,
+            max_size=SELECT_OPTIONS_MAX_ITEMS,
         )
         self.option_groups = coerce_to_list(
             option_groups,
             class_=OptionGroup,
             allow_none=True,
+            min_size=SELECT_OPTION_GROUPS_MIN_ITEMS,
             max_size=SELECT_OPTION_GROUPS_MAX_ITEMS,
         )
         self.initial_options = coerce_to_list(
@@ -884,7 +897,9 @@ class ExternalMultiSelectMenu(Element):
     ) -> None:
         super().__init__(type_=ElementType.MULTI_SELECT_EXTERNAL)
         self.action_id = validate_action_id(action_id, allow_none=True)
-        self.min_query_length = min_query_length
+        self.min_query_length = validate_int(
+            min_query_length, min_value=SELECT_MIN_QUERY_LENGTH_MIN, allow_none=True
+        )
         self.initial_options = coerce_to_list(
             initial_options,  # type: ignore
             class_=(Option, OptionGroup),
@@ -1347,6 +1362,12 @@ class PlainTextInput(Element):
             max_value=PLAIN_TEXT_INPUT_MAX_LENGTH_MAX,
             allow_none=True,
         )
+        if (
+            self.min_length is not None
+            and self.max_length is not None
+            and self.min_length > self.max_length
+        ):
+            raise RangeError("PlainTextInput.min_length cannot exceed max_length")
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
@@ -1479,12 +1500,17 @@ class StaticSelectMenu(Element):
                 "Cannot set both `options` and `option_groups` parameters."
             )
         self.options: list[Option] | None = coerce_to_list(
-            options, class_=Option, allow_none=True, max_size=SELECT_OPTIONS_MAX_ITEMS
+            options,
+            class_=Option,
+            allow_none=True,
+            min_size=SELECT_OPTIONS_MIN_ITEMS,
+            max_size=SELECT_OPTIONS_MAX_ITEMS,
         )
         self.option_groups: list[OptionGroup] | None = coerce_to_list(
             option_groups,
             class_=OptionGroup,
             allow_none=True,
+            min_size=SELECT_OPTION_GROUPS_MIN_ITEMS,
             max_size=SELECT_OPTION_GROUPS_MAX_ITEMS,
         )
         if options and initial_option and not isinstance(initial_option, Option):
@@ -1574,7 +1600,9 @@ class ExternalSelectMenu(Element):
         super().__init__(type_=ElementType.EXTERNAL_SELECT_MENU)
         self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_option = initial_option
-        self.min_query_length = min_query_length
+        self.min_query_length = validate_int(
+            min_query_length, min_value=SELECT_MIN_QUERY_LENGTH_MIN, allow_none=True
+        )
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
@@ -1827,6 +1855,11 @@ class TimePicker(Element):
     ) -> None:
         super().__init__(type_=ElementType.TIME_PICKER)
         self.action_id = validate_action_id(action_id, allow_none=True)
+        if initial_time is not None and (
+            not isinstance(initial_time, str)
+            or not re.fullmatch(r"([01][0-9]|2[0-3]):[0-5][0-9]", initial_time)
+        ):
+            raise TypeMismatchError("TimePicker.initial_time must have HH:mm 24-hour format")
         self.initial_time = initial_time
         self.confirm = confirm
         self.focus_on_load = focus_on_load

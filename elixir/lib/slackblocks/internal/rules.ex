@@ -122,6 +122,24 @@ defmodule Slackblocks.Internal.Rules do
       do: fail(:missing_required, p ++ ["trigger_actions_on"], "required field is missing")
   end
 
+  defp local("DatePickerElement", w, p) do
+    if w["initial_date"] != nil and
+         not Regex.match?(~r/\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/, w["initial_date"]),
+       do: fail(:type_mismatch, p ++ ["initial_date"], "expected YYYY-MM-DD")
+  end
+
+  defp local("TimePickerElement", w, p) do
+    if w["initial_time"] != nil and
+         not Regex.match?(~r/\A([01][0-9]|2[0-3]):[0-5][0-9]\z/, w["initial_time"]),
+       do: fail(:type_mismatch, p ++ ["initial_time"], "expected HH:mm in 24-hour time")
+  end
+
+  defp local("PlainTextInputElement", w, p) do
+    if w["min_length"] != nil and w["max_length"] != nil and
+         w["min_length"] > w["max_length"],
+       do: fail(:out_of_range, p ++ ["min_length"], "cannot exceed max_length")
+  end
+
   defp local("NumberInputElement", w, p) do
     for field <- ["min_value", "max_value"], text = w[field], text != nil do
       unless Regex.match?(

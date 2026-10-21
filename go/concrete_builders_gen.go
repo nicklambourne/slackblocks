@@ -1581,6 +1581,8 @@ func (b *DataVisualizationBlockBuilder) BlockID(value string) *DataVisualization
 //
 // A calendar date picker.
 //
+//   - initial_date must have the YYYY-MM-DD shape. Calendar validity is application-owned; some language date parsers additionally reject impossible calendar dates.
+//
 // See https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element for Slack's reference.
 type DatePickerBuilder struct{ *concreteBuilder }
 
@@ -1781,7 +1783,7 @@ func (b *ExternalMultiSelectBuilder) ActionID(value string) *ExternalMultiSelect
 }
 
 // MinQueryLength sets how many characters the user must type before Slack queries your options
-// endpoint.
+// endpoint. Must be at least 0.
 func (b *ExternalMultiSelectBuilder) MinQueryLength(value int) *ExternalMultiSelectBuilder {
 	b.core.MinQueryLength(value)
 	return b
@@ -1852,7 +1854,7 @@ func (b *ExternalSelectBuilder) ActionID(value string) *ExternalSelectBuilder {
 }
 
 // MinQueryLength sets how many characters the user must type before Slack queries your options
-// endpoint.
+// endpoint. Must be at least 0.
 func (b *ExternalSelectBuilder) MinQueryLength(value int) *ExternalSelectBuilder {
 	b.core.MinQueryLength(value)
 	return b
@@ -2952,6 +2954,8 @@ func (b *PlainTextBuilder) Emoji(value bool) *PlainTextBuilder {
 //
 // A single-line or multi-line free-text input.
 //
+//   - When both min_length and max_length are supplied, min_length must not exceed max_length; otherwise the input cannot be satisfied.
+//
 // See https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element for Slack's reference.
 type PlainTextInputBuilder struct{ *concreteBuilder }
 
@@ -3683,8 +3687,8 @@ func (b *StaticMultiSelectBuilder) ActionID(value string) *StaticMultiSelectBuil
 	return b
 }
 
-// Options adds selectable options in display order. Slack allows at most 100 items. Each call
-// appends to any values already added.
+// Options adds selectable options in display order. Must contain between 1 and 100 items. Each
+// call appends to any values already added.
 func (b *StaticMultiSelectBuilder) Options(values ...*OptionBuilder) *StaticMultiSelectBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -3695,8 +3699,8 @@ func (b *StaticMultiSelectBuilder) Options(values ...*OptionBuilder) *StaticMult
 }
 
 // OptionGroups adds labelled groups of options in display order. Cannot be combined with
-// ungrouped options. Slack allows at most 100 items. Each call appends to any values already
-// added.
+// ungrouped options. Must contain between 1 and 100 items. Each call appends to any values
+// already added.
 func (b *StaticMultiSelectBuilder) OptionGroups(values ...*OptionGroupBuilder) *StaticMultiSelectBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -3772,8 +3776,8 @@ func (b *StaticSelectBuilder) ActionID(value string) *StaticSelectBuilder {
 	return b
 }
 
-// Options adds selectable options in display order. Slack allows at most 100 items. Each call
-// appends to any values already added.
+// Options adds selectable options in display order. Must contain between 1 and 100 items. Each
+// call appends to any values already added.
 func (b *StaticSelectBuilder) Options(values ...*OptionBuilder) *StaticSelectBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -3784,8 +3788,8 @@ func (b *StaticSelectBuilder) Options(values ...*OptionBuilder) *StaticSelectBui
 }
 
 // OptionGroups adds labelled groups of options in display order. Cannot be combined with
-// ungrouped options. Slack allows at most 100 items. Each call appends to any values already
-// added.
+// ungrouped options. Must contain between 1 and 100 items. Each call appends to any values
+// already added.
 func (b *StaticSelectBuilder) OptionGroups(values ...*OptionGroupBuilder) *StaticSelectBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -3942,6 +3946,8 @@ func (b *TaskCardBlockBuilder) BlockID(value string) *TaskCardBlockBuilder {
 // TimePickerBuilder is the concrete fluent builder returned by NewTimePicker.
 //
 // A time-of-day picker.
+//
+//   - initial_time must be HH:mm in 24-hour time, from 00:00 through 23:59.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element for Slack's reference.
 type TimePickerBuilder struct{ *concreteBuilder }

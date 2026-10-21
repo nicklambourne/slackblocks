@@ -432,6 +432,26 @@ final class InvalidConformanceTest {
           invalid(
               "ExternalMultiSelectElement",
               map("type", "multi_external_select", "focus_on_load", true));
+      case "external-query-negative" ->
+          typed("ExternalSelectElement", "external_select", "min_query_length", -1);
+      case "external-multi-query-negative" ->
+          typed("ExternalMultiSelectElement", "multi_external_select", "min_query_length", -1);
+      case "date-picker-invalid-format" ->
+          typed("DatePickerElement", "datepicker", "initial_date", "February 29, 2028");
+      case "time-picker-invalid-format" ->
+          typed("TimePickerElement", "timepicker", "initial_time", "9:00");
+      case "time-picker-invalid-range" ->
+          typed("TimePickerElement", "timepicker", "initial_time", "25:99");
+      case "static-select-empty-options" ->
+          typed("StaticSelectElement", "static_select", "options", List.of());
+      case "static-multi-select-empty-options" ->
+          typed("StaticMultiSelectElement", "multi_static_select", "options", List.of());
+      case "static-select-empty-groups" ->
+          typed("StaticSelectElement", "static_select", "option_groups", List.of());
+      case "static-multi-select-empty-groups" ->
+          typed("StaticMultiSelectElement", "multi_static_select", "option_groups", List.of());
+      case "plain-text-input-inverted-range" ->
+          typed("PlainTextInput", "plain_text_input", "min_length", 20, "max_length", 10);
       case "number-input-inverted-range" ->
           typed(
               "NumberInput",

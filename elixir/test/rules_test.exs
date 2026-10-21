@@ -118,6 +118,12 @@ defmodule Slackblocks.RulesTest do
            slack_file: sample("SlackFile")
          )
        end, :mutually_exclusive},
+      {"DatePickerElement", 0, fn -> change("DatePickerElement", initial_date: "not a date") end,
+       :type_mismatch},
+      {"TimePickerElement", 0, fn -> change("TimePickerElement", initial_time: "25:99") end,
+       :type_mismatch},
+      {"PlainTextInputElement", 0,
+       fn -> change("PlainTextInputElement", min_length: 20, max_length: 10) end, :out_of_range},
       {"NumberInputElement", 0,
        fn -> change("NumberInputElement", min_value: 2, max_value: 1) end, :out_of_range},
       {"StaticMultiSelectElement", 0,
