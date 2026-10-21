@@ -1,0 +1,71 @@
+name: CI doc asset scoped benchmarks (never merge)
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  native-scope:
+    name: Scoped ${{ matrix.lane }} pair ${{ matrix.pair }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        lane: [rust, elixir]
+        pair: [1, 2, 3]
+    env:
+      SOURCE_SHA: 4cb0201f995ae682083ab2f6a7b1bcef1d29972b
+      PAIR: ${{ matrix.pair }}
+      LANE: ${{ matrix.lane }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: harness
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 4cb0201f995ae682083ab2f6a7b1bcef1d29972b
+          fetch-depth: 0
+          path: source
+      - name: Private benchmark locations
+        run: |
+          root="$RUNNER_TEMP/doc-asset-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-$LANE-$PAIR"
+          test ! -e "$root"
+          mkdir -p "$root" "$GITHUB_WORKSPACE/evidence"
+          {
+            echo "SOURCE=$GITHUB_WORKSPACE/source"
+            echo "EVIDENCE=$GITHUB_WORKSPACE/evidence"
+            echo "CARGO_HOME=$root/cargo"
+            echo "HEX_HOME=$root/hex"
+            echo "MIX_HOME=$root/mix"
+            echo "SLACKBLOCKS_PYTHON=$GITHUB_WORKSPACE/harness/.github/benchmarks/doc-asset-package-observer.py"
+            echo "SLACKBLOCKS_DECIMAL=== 3.2.0"
+          } >> "$GITHUB_ENV"
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13.16"
+      - name: Pinned Rust minimum compiler
+        if: matrix.lane == 'rust'
+        run: |
+          rustup toolchain install 1.85.0 --profile minimal
+          rustc +1.85.0 --version | tee evidence/compiler.txt
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124
+        if: matrix.lane == 'elixir'
+        with:
+          elixir-version: "1.16.3"
+          otp-version: "26.2"
+          rebar3-version: "3.27.1"
+          version-type: strict
+      - name: Pinned Hex and compiler evidence
+        if: matrix.lane == 'elixir'
+        run: |
+          mix local.hex 2.5.1 --force
+          elixir --version | tee evidence/compiler.txt
+      - name: Interleaved cold and warm baseline/candidate scoped execution
+        run: python harness/.github/benchmarks/doc-asset-native.py
+      - name: Preserve every result and failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: doc-asset-${{ matrix.lane }}-${{ matrix.pair }}
+          path: evidence
+          retention-days: 30
