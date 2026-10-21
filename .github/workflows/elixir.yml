@@ -119,7 +119,8 @@ jobs:
         run: python -m pip install ruff==0.15.12
       - name: Native and contract quality gates
         if: needs.changes.outputs.relevant == 'true'
-        run: mix run tools/check.exs
+        # Dedicated required sending/Erlang jobs execute the same commit independently.
+        run: mix run tools/check.exs --profile ci-quality
       - name: Decimal 2 lower-bound artifact consumer
         if: needs.changes.outputs.relevant == 'true'
         env:

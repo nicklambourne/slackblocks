@@ -146,7 +146,11 @@ coverage gate, API/coverage mutation probes, credential-free HexDocs packaging a
 a standalone Erlang release. It also runs the separately resolved sending examples in locked, lower-bound and
 latest-compatible profiles. `--profile runtime` includes locked sending checks;
 `--profile native` is the narrower native/archive lane used by CI alongside its
-separate sending jobs.
+separate sending jobs. `--profile ci-quality` retains the full quality, coverage,
+mutation and package gates while relying on the same-commit required
+`Elixir sending` and `Elixir Erlang compatibility` jobs for the three independent
+HTTP resolutions and standalone Erlang consumer. Use the default full profile
+for comprehensive local verification. Checker phase timings are printed with the results.
 
 On the maintainer's Mac, keep durable build/dependency caches under `/Volumes/Cache`
 and disposable consumers under `/Volumes/Scratch`. The package does not need these
