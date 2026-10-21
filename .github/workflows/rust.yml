@@ -34,7 +34,7 @@ jobs:
       - name: Check out identical fixed source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: c80ea3fc00f20cb2e34ac481f2a9926223335f47
+          ref: 496b9cbde202d5891b2721bd79c6446dacba76f3
           path: source
       - name: Install fixed Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
@@ -103,7 +103,7 @@ jobs:
       - name: Check out identical fixed source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: c80ea3fc00f20cb2e34ac481f2a9926223335f47
+          ref: 496b9cbde202d5891b2721bd79c6446dacba76f3
           path: source
       - name: Install fixed Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97

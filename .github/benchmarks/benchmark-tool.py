@@ -25,7 +25,7 @@ def run(name,cmd):
  phase={'name':name,'seconds':time.perf_counter()-started,'returncode':result.returncode,'command':cmd};record['phases'].append(phase);result.check_returncode()
 started=time.perf_counter()
 try:
- assert record['source']=='c80ea3fc00f20cb2e34ac481f2a9926223335f47'
+ assert record['source']=='496b9cbde202d5891b2721bd79c6446dacba76f3'
  assert record['dependency_hit']==('true' if condition=='warm' else '')
  assert record['tool_hit']==('true' if condition=='warm' and variant=='candidate' else '')
  if condition=='cold':assert record['before']['cargo_bytes']==record['before']['target_bytes']==0
