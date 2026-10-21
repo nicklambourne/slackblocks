@@ -9,6 +9,7 @@ namespace Slackblocks;
 /**
  * A menu for selecting multiple options loaded from your app.
  * @see https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element
+ * focus_on_load is unsupported and must be omitted, including explicit false.
  */
 final readonly class ExternalMultiSelectElement extends Value implements Element, InputElement
 {

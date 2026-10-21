@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Sending Messages
 
@@ -314,7 +314,6 @@ return slack.PostWebhookContext(ctx, os.Getenv("SLACK_WEBHOOK_URL"), message)
 ## Slash-command and interaction responses
 
 Use `NewMessageResponse()` for the immediate JSON body returned by a slash-command or interaction endpoint. `Build()` returns an [`Object`](/reference/go/core#object), so encode it with `encoding/json` and return it through your web framework.
-
 
 ### Visibility, replacement and deletion via `response_url`
 
@@ -1024,4 +1023,81 @@ with `toJson()`; transport credentials, trigger IDs and application routing stay
 in the sending application. Do not put a bot token into a preview URL or payload.
 
 </PHP>
+<Elixir>
+
+## Choose a transport
+
+slackblocks constructs validated maps and JSON and starts no HTTP client.
+There is no official Slack Elixir SDK in this integration. The community
+[slack_elixir 1.2.2 package](https://hex.pm/packages/slack_elixir/1.2.2) provides
+`Slack.API.client(token)`, a configured Req client. Its published `Slack.API.post/3`
+uses form parameters, so send nested payloads through Req's `json:` option.
+
+The following two snippets assume `token`, a native `message`, and `base_url`
+(`"https://slack.com/api"` in your application). They are copied from the separately
+tested [sending examples](https://github.com/nicklambourne/slackblocks/tree/master/elixir/integrations).
+Those tests provide a localhost server and a test token; docs builds never contact Slack.
+
+## Community Slack client
+
+Add `slack_elixir` and Req to your application's dependencies, then:
+
+```elixir title="Community client (integration-tested)"
+client = Slack.API.client(token) |> Req.merge(base_url: base_url)
+Req.post(client,
+  url: "chat.postMessage",
+  json: Slackblocks.to_map!(message),
+  retry: false
+)
+```
+
+## Direct HTTP with Req
+
+With Req installed, the same validated payload can be sent directly:
+
+```elixir title="Direct Req (integration-tested)"
+Req.post(base_url <> "/chat.postMessage",
+  auth: {:bearer, token},
+  json: Slackblocks.to_map!(message),
+  retry: false
+)
+```
+
+Inspect both HTTP status and the response's `ok` field. The executable example
+handles HTTP failures, Slack errors, invalid JSON and ambiguous timeouts, and
+retries only explicit 429 responses with a bounded Retry-After policy. Redirects
+and automatic POST retries are disabled there. Choose an application policy
+appropriate to interaction acknowledgement deadlines.
+
+## Incoming webhooks
+
+Construct `Slackblocks.WebhookMessage` and use Req's `json:` option with your
+webhook URL. Successful webhook responses are plain text `ok`; do not expect a
+Web API `ok` JSON field. Webhooks require no bearer authorization header.
+The executable integration project exercises this flow and verifies its exact
+payload and response contract.
+
+## Phoenix and interaction responses
+
+Return an ordinary validated map from your Phoenix JSON endpoint:
+
+```elixir
+Slackblocks.MessageResponse.new!(text: "Acknowledged", response_type: :ephemeral)
+|> Slackblocks.to_map!()
+```
+
+Pass that map to `Phoenix.Controller.json/2` in your controller. This boundary
+needs no Phoenix-specific serializer. Verify Slack signatures, acknowledge
+promptly, and route later work in your application. The core does not provide
+a bot framework, supervision tree or interaction state store.
+
+## Integration compatibility
+
+The isolated project tests slack_elixir 1.2.2, Req 0.5+ (below 1.0) and Ecto 3.14+
+with locked, explicit lower-bound and latest-compatible resolutions on minimum
+and current Elixir. It installs the actual Hex archive, including a consumer
+that already compiled Jason before Decimal became available. Follow the
+[installation rebuild step](installation) for that existing-build case.
+
+</Elixir>
 </LanguageContent>

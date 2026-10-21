@@ -1708,7 +1708,9 @@
           "limits": "select.placeholder"
         }
       ],
-      "rules": [],
+      "rules": [
+        "focus_on_load is unsupported and must be omitted, including explicit false."
+      ],
       "rustName": "ExternalMultiSelectElement"
     },
     {

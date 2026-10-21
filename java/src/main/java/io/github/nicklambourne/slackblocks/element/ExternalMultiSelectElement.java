@@ -24,6 +24,10 @@ import java.util.OptionalInt;
  * <p>Start with {@link #builder()}, set fields with the named fluent methods, and call {@link
  * Builder#build()} to validate and create an immutable value.
  *
+ * <ul>
+ *   <li>focus_on_load is unsupported and must be omitted, including explicit false.
+ * </ul>
+ *
  * @see <a
  *     href="https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element">Slack
  *     reference</a>

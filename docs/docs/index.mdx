@@ -3,7 +3,7 @@ sidebar_label: Welcome
 sidebar_position: 1
 ---
 
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Welcome to `slackblocks`!
 
@@ -11,14 +11,14 @@ import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript 
   <img width="30%" src="/slackblocks/img/sb.png" alt="slackblocks logo" />
 </p>
 
-`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, C#, Ruby, Rust, and PHP — without writing JSON by hand.
+`slackblocks` builds Slack messages with the [Block Kit API](https://api.slack.com/block-kit) in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, and Elixir — without writing JSON by hand.
 
 It exists because Block Kit JSON is verbose, easy to get subtly wrong, and unpleasant to maintain in source control. `slackblocks` gives you:
 
-- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, C#, Ruby, Rust, and PHP.
+- **Typed, idiomatic APIs** for Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, and Elixir.
 - **Validation as you build** — character limits, required fields, mutually-exclusive options, and element-type restrictions are enforced at construction time, so you find out *before* hitting Slack's API.
 - **Drop-in compatibility** with established Slack SDKs and clients and their plain JSON payloads.
-- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, C# depends on nothing beyond .NET, Ruby uses the default `json` gem, Rust depends only on Serde and serde_json, and PHP needs only its built-in JSON and PCRE extensions.
+- **A small runtime footprint.** Python has no runtime dependencies, TypeScript emits a self-contained ESM module, Go integrates with `slack-go/slack`, Java implements the official Slack SDK block interfaces, C# depends on nothing beyond .NET, Ruby uses the default `json` gem, Rust depends only on Serde and serde_json, PHP needs only its built-in JSON and PCRE extensions, and Elixir uses Jason and Decimal.
 
 ## Quick Start
 
@@ -267,6 +267,24 @@ backed enums and typed role interfaces. Constructors validate immediately;
 No HTTP or framework package is required. Choose a transport in [Sending Messages](usage/sending_messages).
 
 </PHP>
+<Elixir>
+
+Elixir uses immutable structs, keyword options, atom enums and native typespecs.
+`new/1` and `change/2` return tagged results; their bang variants raise validation errors.
+Every map or JSON output validates the complete value again.
+
+- [Blocks](reference/elixir/blocks) group message content.
+- [Elements](reference/elixir/elements) provide interactive controls.
+- [Composition objects and rich text](reference/elixir/objects) describe nested values.
+- [Payloads and views](reference/elixir/payloads) enforce message and view rules.
+- [Components and utilities](reference/elixir/components) provide accordions, pagination and colors.
+- [JSON, validation and types](reference/elixir/core) define checked wire boundaries.
+- [Validation errors](reference/elixir/errors) expose categories and wire paths.
+
+Choose a transport in [Sending Messages](usage/sending_messages); the same BEAM modules
+are callable from [Erlang](usage/erlang).
+
+</Elixir>
 </LanguageContent>
 
 ## Guides
@@ -355,4 +373,17 @@ No HTTP or framework package is required. Choose a transport in [Sending Message
 - [Contributing](contributing)
 
 </PHP>
+<Elixir>
+
+- [Installation](usage/installation)
+- [Using Blocks](usage/using_blocks)
+- [Sending Messages](usage/sending_messages)
+- [Recipe Book](usage/cookbook)
+- [Erlang integration](usage/erlang)
+- [Troubleshooting](usage/troubleshooting)
+- [Compatibility](usage/compatibility)
+- [Migration](usage/migration)
+- [Contributing](contributing)
+
+</Elixir>
 </LanguageContent>

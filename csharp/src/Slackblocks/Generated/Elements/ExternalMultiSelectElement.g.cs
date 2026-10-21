@@ -8,6 +8,9 @@ namespace Slackblocks.Elements;
 
 /// <summary>A menu for selecting multiple options loaded from your app.</summary>
 /// <remarks>
+/// <list type="bullet">
+/// <item><description>focus_on_load is unsupported and must be omitted, including explicit false.</description></item>
+/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]

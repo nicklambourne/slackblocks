@@ -70,6 +70,9 @@ def main():
     parser.add_argument("--attempts", type=int, default=1, choices=range(1, 7), help="Bounded indexing-delay retries")
     args = parser.parse_args()
     root = args.workdir.resolve()
+    checkout = Path(__file__).resolve().parents[2]
+    if root == checkout or checkout in root.parents:
+        parser.error("--workdir must be outside the checkout")
     # Never reuse a prior restore or a locally populated package cache.
     root.mkdir(parents=True, exist_ok=False)
     env = os.environ.copy()
@@ -91,7 +94,8 @@ def main():
             receipt["attempts"].append({"number": attempt, "restore_exit_code": restore.returncode})
             if restore.returncode:
                 # Only a missing version can be an indexing delay; auth/network/build errors fail immediately.
-                if "NU1102" in restore.stdout and attempt < args.attempts:
+                errors = set(re.findall(r"error (NU\d+|MSB\d+|NETSDK\d+)", restore.stdout))
+                if errors == {"NU1102"} and attempt < args.attempts:
                     time.sleep(10)
                     continue
                 raise RuntimeError(f"Restore failed; inspect {work / 'restore.log'}")
