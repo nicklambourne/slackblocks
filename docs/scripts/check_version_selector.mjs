@@ -18,7 +18,7 @@ for (const version of versions) {
 
 console.log(`The version selector offers all ${versions.length} documentation snapshots.`);
 
-// PHP starts in the current 2.7.0 docs; frozen versions must not advertise it.
+// PHP starts in 2.7.0; frozen versions must not advertise it.
 for (const version of versions.filter((value) => {
   const [major, minor] = value.split(".").map(Number);
   return major < 2 || (major === 2 && minor < 7);
@@ -28,3 +28,11 @@ for (const version of versions.filter((value) => {
 }
 const currentPhp = await readFile(new URL("../build/reference/php.html", import.meta.url), "utf8");
 assert.match(currentPhp, /PHP API reference/);
+
+// Elixir begins in 2.8.0; older source snapshots contain no Elixir panels/reference.
+for (const version of versions.filter(value => Number(value.split(".")[0]) < 2 || (Number(value.split(".")[0]) === 2 && Number(value.split(".")[1]) < 8))) {
+  const guide = await readFile(new URL(`../versioned_docs/version-${version}/index.mdx`, import.meta.url), "utf8");
+  assert.doesNotMatch(guide, /<Elixir>|reference\/elixir/, `${version} gained Elixir content`);
+}
+const currentElixir = await readFile(new URL("../build/reference/elixir.html", import.meta.url), "utf8");
+assert.match(currentElixir, /Elixir API reference/);

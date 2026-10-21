@@ -13,6 +13,7 @@ const languageLabels: Record<Language, string> = {
   ruby: "Ruby",
   rust: "Rust",
   php: "PHP",
+  elixir: "Elixir",
 };
 
 export default function DocVersionBadge({ className }: Props): ReactNode {

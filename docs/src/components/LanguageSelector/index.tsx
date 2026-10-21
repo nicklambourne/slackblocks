@@ -20,10 +20,12 @@ const languageLabels: Record<Language, string> = {
   ruby: "Ruby",
   rust: "Rust",
   php: "PHP",
+  elixir: "Elixir",
 };
 
 function LanguageLogo({ language }: { language: Language }) {
   const logoUrl = useBaseUrl(`/img/languages/${language}.svg`);
+  const elixirDarkUrl = useBaseUrl("/img/languages/elixir-dark-background.svg");
   if (language === "python") {
     return (
       <svg
@@ -101,6 +103,11 @@ function LanguageLogo({ language }: { language: Language }) {
       </text>
     </svg>
   );
+
+  if (language === "elixir") return <>
+    <img alt="" aria-hidden="true" className="language-selector__logo language-selector__logo--elixir-light" src={logoUrl} />
+    <img alt="" aria-hidden="true" className="language-selector__logo language-selector__logo--elixir-dark" src={elixirDarkUrl} />
+  </>;
 
   // Official artwork and attribution: static/img/languages/README.md.
   if (language === "ruby" || language === "rust" || language === "php") return (

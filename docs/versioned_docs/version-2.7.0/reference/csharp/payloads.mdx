@@ -1,0 +1,647 @@
+---
+sidebar_position: 4
+toc_max_heading_level: 3
+---
+
+# Payloads And Views
+
+This page documents the public C# API for payloads and views, generated from the XML documentation of the compiled library. Values are immutable, constructors take named arguments and validate them, and read-only properties return what was passed.
+
+## Attachment
+
+A legacy message attachment containing blocks and an optional color bar.
+
+- Required: `blocks`.
+- Only blocks supported in messages are accepted.
+
+See the [Slack reference](https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments).
+
+### Attachment
+
+Creates and validates a [`Attachment`](/reference/csharp/payloads#attachment).
+
+```csharp
+public Attachment(IEnumerable<IBlock>? blocks = null, string? color = null, string? fallback = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blocks` | The attachment's blocks in display order. Required. |
+| `color` | The attachment's left border color: a six-digit hex color or good, warning, or danger. |
+| `fallback` | Plain-text summary shown in clients that cannot display attachments. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Attachment`](/reference/csharp/payloads#attachment), [`IBlock`](/reference/csharp/blocks#iblock)
+
+### Blocks
+
+Gets the attachment's blocks in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IBlock> Blocks { get; }
+```
+
+**Related types:** [`IBlock`](/reference/csharp/blocks#iblock)
+
+### Color
+
+Gets the attachment's left border color: a six-digit hex color or good, warning, or danger.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? Color { get; }
+```
+
+### Fallback
+
+Gets plain-text summary shown in clients that cannot display attachments.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? Fallback { get; }
+```
+
+## HomeTabView
+
+The payload for publishing an App Home tab with views.publish.
+
+- Required: `blocks`.
+- Only blocks supported on the App Home tab are accepted.
+
+See the [Slack reference](https://docs.slack.dev/surfaces/app-home).
+
+### HomeTabView
+
+Creates and validates a [`HomeTabView`](/reference/csharp/payloads#hometabview).
+
+```csharp
+public HomeTabView(IEnumerable<IBlock> blocks, string? privateMetadata = null, string? callbackId = null, string? externalId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blocks` | The blocks shown on the App Home tab, in display order. Required. Slack allows at most 100 items. |
+| `privateMetadata` | Application-defined data returned in view payloads. Slack allows at most 3000 characters. |
+| `callbackId` | An identifier returned in view payloads so your app can recognize the view. Slack allows at most 255 characters. |
+| `externalId` | A workspace-unique identifier you can use to update the view later. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`HomeTabView`](/reference/csharp/payloads#hometabview), [`IBlock`](/reference/csharp/blocks#iblock)
+
+### Blocks
+
+Gets the blocks shown on the App Home tab, in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IBlock> Blocks { get; }
+```
+
+**Related types:** [`IBlock`](/reference/csharp/blocks#iblock)
+
+### PrivateMetadata
+
+Gets application-defined data returned in view payloads.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? PrivateMetadata { get; }
+```
+
+### CallbackId
+
+Gets an identifier returned in view payloads so your app can recognize the view.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? CallbackId { get; }
+```
+
+### ExternalId
+
+Gets a workspace-unique identifier you can use to update the view later.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ExternalId { get; }
+```
+
+## MessagePayload
+
+A complete payload for chat.postMessage and related Web API methods.
+
+- Required: `channel`.
+- Only blocks supported in messages are accepted.
+- Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+
+See the [Slack reference](https://docs.slack.dev/reference/methods/chat.postMessage).
+
+### MessagePayload
+
+Creates and validates a [`MessagePayload`](/reference/csharp/payloads#messagepayload).
+
+```csharp
+public MessagePayload(string channel, IEnumerable<IBlock>? blocks = null, IEnumerable<Attachment>? attachments = null, string? text = null, bool? mrkdwn = null, bool? unfurlLinks = null, bool? unfurlMedia = null, IReadOnlyDictionary<string, object?>? metadata = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `channel` | The ID of the channel, private group, or conversation that receives the message. Required. Must not be empty. |
+| `blocks` | The message blocks in display order. Slack allows at most 50 items. |
+| `attachments` | Legacy attachments in display order. Slack allows at most 100 items. |
+| `text` | The fallback text used in notifications and by clients that cannot display blocks. |
+| `mrkdwn` | Whether Slack formats the top-level text as mrkdwn. |
+| `unfurlLinks` | Whether Slack unfurls text-based links. |
+| `unfurlMedia` | Whether Slack unfurls media links. |
+| `metadata` | Message metadata as a JSON-compatible map, such as event_type and event_payload. Values must be strings, numbers, booleans, lists, dictionaries, or JSON nodes. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Attachment`](/reference/csharp/payloads#attachment), [`IBlock`](/reference/csharp/blocks#iblock), [`MessagePayload`](/reference/csharp/payloads#messagepayload)
+
+### Channel
+
+Gets the ID of the channel, private group, or conversation that receives the message.
+
+```csharp
+public string Channel { get; }
+```
+
+### Blocks
+
+Gets the message blocks in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IBlock> Blocks { get; }
+```
+
+**Related types:** [`IBlock`](/reference/csharp/blocks#iblock)
+
+### Attachments
+
+Gets legacy attachments in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Attachment> Attachments { get; }
+```
+
+**Related types:** [`Attachment`](/reference/csharp/payloads#attachment)
+
+### Text
+
+Gets the fallback text used in notifications and by clients that cannot display blocks.
+
+```csharp
+public string? Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Mrkdwn
+
+Gets whether Slack formats the top-level text as mrkdwn.
+
+```csharp
+public bool? Mrkdwn { get; }
+```
+
+### UnfurlLinks
+
+Gets whether Slack unfurls text-based links.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? UnfurlLinks { get; }
+```
+
+### UnfurlMedia
+
+Gets whether Slack unfurls media links.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? UnfurlMedia { get; }
+```
+
+### Metadata
+
+Gets message metadata as a JSON-compatible map, such as event_type and event_payload.
+
+The value, or `null` when it was not set.
+
+```csharp
+public IReadOnlyDictionary<string, object?>? Metadata { get; }
+```
+
+## MessageResponse
+
+A response body for slash commands and interaction response URLs.
+
+- Only blocks supported in messages are accepted.
+- Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+
+See the [Slack reference](https://docs.slack.dev/interactivity/handling-user-interaction#message_responses).
+
+### MessageResponse
+
+Creates and validates a [`MessageResponse`](/reference/csharp/payloads#messageresponse).
+
+```csharp
+public MessageResponse(IEnumerable<IBlock>? blocks = null, IEnumerable<Attachment>? attachments = null, string? text = null, bool? mrkdwn = null, bool? replaceOriginal = null, ResponseType? responseType = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blocks` | The response blocks in display order. Slack allows at most 50 items. |
+| `attachments` | Legacy attachments in display order. Slack allows at most 100 items. |
+| `text` | The fallback text used in notifications and by clients that cannot display blocks. |
+| `mrkdwn` | Whether Slack formats the top-level text as mrkdwn. |
+| `replaceOriginal` | Whether the response replaces the message that triggered it. |
+| `responseType` | Who can see the response. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Attachment`](/reference/csharp/payloads#attachment), [`IBlock`](/reference/csharp/blocks#iblock), [`MessageResponse`](/reference/csharp/payloads#messageresponse), [`ResponseType`](/reference/csharp/payloads#responsetype)
+
+### Blocks
+
+Gets the response blocks in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IBlock> Blocks { get; }
+```
+
+**Related types:** [`IBlock`](/reference/csharp/blocks#iblock)
+
+### Attachments
+
+Gets legacy attachments in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Attachment> Attachments { get; }
+```
+
+**Related types:** [`Attachment`](/reference/csharp/payloads#attachment)
+
+### Text
+
+Gets the fallback text used in notifications and by clients that cannot display blocks.
+
+```csharp
+public string? Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Mrkdwn
+
+Gets whether Slack formats the top-level text as mrkdwn.
+
+```csharp
+public bool? Mrkdwn { get; }
+```
+
+### ReplaceOriginal
+
+Gets whether the response replaces the message that triggered it.
+
+```csharp
+public bool? ReplaceOriginal { get; }
+```
+
+### ResponseType
+
+Gets who can see the response.
+
+```csharp
+public ResponseType? ResponseType { get; }
+```
+
+**Related types:** [`ResponseType`](/reference/csharp/payloads#responsetype)
+
+## ModalView
+
+The view payload for views.open, views.push, and views.update.
+
+- Required: `title`, `blocks`.
+- Only blocks supported in modals are accepted.
+- A modal that contains an input block must have a submit label.
+
+See the [Slack reference](https://docs.slack.dev/surfaces/modals).
+
+### ModalView
+
+Creates and validates a [`ModalView`](/reference/csharp/payloads#modalview).
+
+```csharp
+public ModalView(PlainText title, IEnumerable<IBlock> blocks, PlainText? close = null, PlainText? submit = null, string? privateMetadata = null, string? callbackId = null, bool? clearOnClose = null, bool? notifyOnClose = null, string? externalId = null, bool? submitDisabled = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | The title in the modal's top bar. Required. Slack allows at most 24 characters. A string is sent as a `plain_text` text object. |
+| `blocks` | The blocks shown in the modal, in display order. Required. Slack allows at most 100 items. |
+| `close` | The label of the button that closes the modal. Slack allows at most 24 characters. A string is sent as a `plain_text` text object. |
+| `submit` | The label of the button that submits the modal. Slack allows at most 24 characters. A string is sent as a `plain_text` text object. |
+| `privateMetadata` | Application-defined data returned in view payloads. Slack allows at most 3000 characters. |
+| `callbackId` | An identifier returned in view payloads so your app can recognize the view. Slack allows at most 255 characters. |
+| `clearOnClose` | Whether closing this modal closes every view in its stack. |
+| `notifyOnClose` | Whether Slack sends a view_closed event when the user closes the modal. |
+| `externalId` | A workspace-unique identifier you can use to update the view later. Slack allows at most 255 characters. |
+| `submitDisabled` | Whether the submit button starts disabled. Only valid in workflow configuration modals. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`IBlock`](/reference/csharp/blocks#iblock), [`ModalView`](/reference/csharp/payloads#modalview), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Title
+
+Gets the title in the modal's top bar.
+
+```csharp
+public PlainText Title { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Blocks
+
+Gets the blocks shown in the modal, in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IBlock> Blocks { get; }
+```
+
+**Related types:** [`IBlock`](/reference/csharp/blocks#iblock)
+
+### Close
+
+Gets the label of the button that closes the modal.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Close { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Submit
+
+Gets the label of the button that submits the modal.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Submit { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### PrivateMetadata
+
+Gets application-defined data returned in view payloads.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? PrivateMetadata { get; }
+```
+
+### CallbackId
+
+Gets an identifier returned in view payloads so your app can recognize the view.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? CallbackId { get; }
+```
+
+### ClearOnClose
+
+Gets whether closing this modal closes every view in its stack.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? ClearOnClose { get; }
+```
+
+### NotifyOnClose
+
+Gets whether Slack sends a view_closed event when the user closes the modal.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? NotifyOnClose { get; }
+```
+
+### ExternalId
+
+Gets a workspace-unique identifier you can use to update the view later.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ExternalId { get; }
+```
+
+### SubmitDisabled
+
+Gets whether the submit button starts disabled. Only valid in workflow configuration modals.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? SubmitDisabled { get; }
+```
+
+## ResponseType
+
+Visibility of a slash-command or interaction response.
+
+`ToWireValue()` returns the value Slack expects in JSON.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `InChannel` | `in_channel` | Visible to everyone in the channel. |
+| `Ephemeral` | `ephemeral` | Visible only to the user who triggered the response. |
+
+## WebhookMessage
+
+A payload for incoming webhooks.
+
+- Only blocks supported in messages are accepted.
+- Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+
+See the [Slack reference](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks).
+
+### WebhookMessage
+
+Creates and validates a [`WebhookMessage`](/reference/csharp/payloads#webhookmessage).
+
+```csharp
+public WebhookMessage(IEnumerable<IBlock>? blocks = null, IEnumerable<Attachment>? attachments = null, string? text = null, ResponseType? responseType = null, bool? replaceOriginal = null, bool? deleteOriginal = null, bool? unfurlLinks = null, bool? unfurlMedia = null, IReadOnlyDictionary<string, object?>? metadata = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blocks` | The message blocks in display order. Slack allows at most 50 items. |
+| `attachments` | Legacy attachments in display order. Slack allows at most 100 items. |
+| `text` | The fallback text used in notifications and by clients that cannot display blocks. |
+| `responseType` | Who can see the response. |
+| `replaceOriginal` | Whether the response replaces the message that triggered it. |
+| `deleteOriginal` | Whether the response deletes the message that triggered it. |
+| `unfurlLinks` | Whether Slack unfurls text-based links. |
+| `unfurlMedia` | Whether Slack unfurls media links. |
+| `metadata` | Message metadata as a JSON-compatible map, such as event_type and event_payload. Values must be strings, numbers, booleans, lists, dictionaries, or JSON nodes. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`Attachment`](/reference/csharp/payloads#attachment), [`IBlock`](/reference/csharp/blocks#iblock), [`ResponseType`](/reference/csharp/payloads#responsetype), [`WebhookMessage`](/reference/csharp/payloads#webhookmessage)
+
+### Blocks
+
+Gets the message blocks in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IBlock> Blocks { get; }
+```
+
+**Related types:** [`IBlock`](/reference/csharp/blocks#iblock)
+
+### Attachments
+
+Gets legacy attachments in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Attachment> Attachments { get; }
+```
+
+**Related types:** [`Attachment`](/reference/csharp/payloads#attachment)
+
+### Text
+
+Gets the fallback text used in notifications and by clients that cannot display blocks.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### ResponseType
+
+Gets who can see the response.
+
+The value, or `null` when it was not set.
+
+```csharp
+public ResponseType? ResponseType { get; }
+```
+
+**Related types:** [`ResponseType`](/reference/csharp/payloads#responsetype)
+
+### ReplaceOriginal
+
+Gets whether the response replaces the message that triggered it.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? ReplaceOriginal { get; }
+```
+
+### DeleteOriginal
+
+Gets whether the response deletes the message that triggered it.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? DeleteOriginal { get; }
+```
+
+### UnfurlLinks
+
+Gets whether Slack unfurls text-based links.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? UnfurlLinks { get; }
+```
+
+### UnfurlMedia
+
+Gets whether Slack unfurls media links.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? UnfurlMedia { get; }
+```
+
+### Metadata
+
+Gets message metadata as a JSON-compatible map, such as event_type and event_payload.
+
+The value, or `null` when it was not set.
+
+```csharp
+public IReadOnlyDictionary<string, object?>? Metadata { get; }
+```
