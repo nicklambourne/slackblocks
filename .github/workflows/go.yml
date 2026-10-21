@@ -48,7 +48,9 @@ jobs:
           key: docs-go-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-first-v1
       - name: Discard only this sample's private Go cache
         if: matrix.pair == 2
-        run: rm -rf "$RUNNER_TEMP/docs-go-cache-first/cache"
+        run: |
+          chmod -R u+w "$RUNNER_TEMP/docs-go-cache-first/cache"
+          rm -rf "$RUNNER_TEMP/docs-go-cache-first/cache"
       - name: Restore first-warm candidate Go cache
         id: first-warm-cache
         if: matrix.pair == 2
@@ -86,7 +88,9 @@ jobs:
           key: docs-go-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-second-v1
       - name: Discard only this sample's private Go cache
         if: matrix.pair != 2
-        run: rm -rf "$RUNNER_TEMP/docs-go-cache-second/cache"
+        run: |
+          chmod -R u+w "$RUNNER_TEMP/docs-go-cache-second/cache"
+          rm -rf "$RUNNER_TEMP/docs-go-cache-second/cache"
       - name: Restore second-warm candidate Go cache
         id: second-warm-cache
         if: matrix.pair != 2

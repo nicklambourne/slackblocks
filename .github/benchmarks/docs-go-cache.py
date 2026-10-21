@@ -40,4 +40,6 @@ try:
  r['success']=True
 finally:save()
 shutil.rmtree(work)
-if a.variant=='baseline':shutil.rmtree(cache)
+if a.variant=='baseline':
+ subprocess.run(['chmod','-R','u+w',str(cache)],check=True)
+ shutil.rmtree(cache)
