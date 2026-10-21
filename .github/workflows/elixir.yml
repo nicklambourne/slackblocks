@@ -21,7 +21,7 @@ jobs:
       VARIANT: ${{ matrix.variant }}
       PAIR: ${{ matrix.pair }}
       PYTHONPATH: ${{ github.workspace }}/harness/.github/benchmarks
-      SOURCE_SHA: 64549806024f17be7a602abbf4ef9728495f84ad
+      SOURCE_SHA: 3150e685f6a735a83e412ff9a95c792eccf67911
       CONDITION: cold
     steps:
       - name: Check out measurement harness
@@ -31,7 +31,7 @@ jobs:
       - name: Check out fixed identical source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: 64549806024f17be7a602abbf4ef9728495f84ad
+          ref: 3150e685f6a735a83e412ff9a95c792eccf67911
           path: source
       - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124
         with:
@@ -92,7 +92,7 @@ jobs:
       VARIANT: ${{ matrix.variant }}
       PAIR: ${{ matrix.pair }}
       PYTHONPATH: ${{ github.workspace }}/harness/.github/benchmarks
-      SOURCE_SHA: 64549806024f17be7a602abbf4ef9728495f84ad
+      SOURCE_SHA: 3150e685f6a735a83e412ff9a95c792eccf67911
       CONDITION: warm
     steps:
       - name: Check out measurement harness
@@ -102,7 +102,7 @@ jobs:
       - name: Check out fixed identical source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: 64549806024f17be7a602abbf4ef9728495f84ad
+          ref: 3150e685f6a735a83e412ff9a95c792eccf67911
           path: source
       - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124
         with:
