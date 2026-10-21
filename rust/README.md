@@ -119,10 +119,8 @@ Formatting is pinned to Rust 1.85.0; current stable owns Clippy and rustdoc chec
 export RUSTFMT="$(rustup which --toolchain 1.85.0 rustfmt)"
 python3 rust/generator/generate.py
 rust/bin/check
-python3 rust/bin/check-package.py --toolchain 1.85.0
+python3 rust/bin/check-package.py --toolchain 1.85.0 --all-consumers
 python3 rust/bin/check-package.py --toolchain stable
-python3 rust/bin/check-package.py --toolchain 1.85.0 --lower-bounds
-python3 rust/bin/check-package.py --toolchain 1.85.0 --json-features
 ```
 
 CI runs stable on Linux, macOS, and Windows and the minimum toolchain on Linux.
