@@ -1,0 +1,1684 @@
+---
+sidebar_position: 1
+toc_max_heading_level: 3
+---
+
+# Blocks
+
+This page documents the public C# API for blocks, generated from the XML documentation of the compiled library. Values are immutable, constructors take named arguments and validate them, and read-only properties return what was passed.
+
+Every block implements `IBlock`, so blocks of any kind share one collection type, and values serialize as Slack JSON with `ToJson()` or `System.Text.Json`.
+
+## ActionsBlock
+
+A block that holds interactive elements such as buttons and menus.
+
+- Required: `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/actions-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### ActionsBlock
+
+Creates and validates a [`ActionsBlock`](/reference/csharp/blocks#actionsblock).
+
+```csharp
+public ActionsBlock(IEnumerable<IElement> elements, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Interactive elements in display order. Required. Slack allows at most 25 items. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ActionsBlock`](/reference/csharp/blocks#actionsblock), [`IElement`](/reference/csharp/elements#ielement)
+
+### Elements
+
+Gets interactive elements in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IElement> Elements { get; }
+```
+
+**Related types:** [`IElement`](/reference/csharp/elements#ielement)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## AlertBlock
+
+A severity-labelled alert, available in modals.
+
+- Required: `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/alert-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### AlertBlock
+
+Creates and validates a [`AlertBlock`](/reference/csharp/blocks#alertblock).
+
+```csharp
+public AlertBlock(Text text, AlertLevel? level = null, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The alert message. Required. Slack allows at most 200 characters. A string is sent as a `mrkdwn` text object. |
+| `level` | The alert severity, which controls its color and icon. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`AlertBlock`](/reference/csharp/blocks#alertblock), [`AlertLevel`](/reference/csharp/blocks#alertlevel), [`Text`](/reference/csharp/objects#text)
+
+### Text
+
+Gets the alert message.
+
+```csharp
+public Text Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Level
+
+Gets the alert severity, which controls its color and icon.
+
+The value, or `null` when it was not set.
+
+```csharp
+public AlertLevel? Level { get; }
+```
+
+**Related types:** [`AlertLevel`](/reference/csharp/blocks#alertlevel)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## AlertLevel
+
+Severity levels supported by alert blocks.
+
+`ToWireValue()` returns the value Slack expects in JSON.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Default` | `default` | Neutral styling. |
+| `Info` | `info` | Informational styling. |
+| `Warning` | `warning` | Warning styling. |
+| `Error` | `error` | Error styling. |
+| `Success` | `success` | Success styling. |
+
+## CardBlock
+
+A compact card with an image, text, and up to three buttons.
+
+- Provide at least one of a hero image, title, actions, or body.
+- An image icon and a Slack icon cannot be combined.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### CardBlock
+
+Creates and validates a [`CardBlock`](/reference/csharp/blocks#cardblock).
+
+```csharp
+public CardBlock(ImageElement? heroImage = null, ImageElement? icon = null, Text? title = null, Text? subtitle = null, Text? body = null, IEnumerable<ButtonElement>? actions = null, SlackIcon? slackIcon = null, Text? subtext = null, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `heroImage` | The image displayed prominently at the top of the card. |
+| `icon` | The image displayed beside the title. |
+| `title` | The card title. Slack allows at most 150 characters. A string is sent as a `mrkdwn` text object. |
+| `subtitle` | The supporting text shown below the title. Slack allows at most 150 characters. A string is sent as a `mrkdwn` text object. |
+| `body` | The main body text of the card. Slack allows at most 200 characters. A string is sent as a `mrkdwn` text object. |
+| `actions` | Buttons displayed at the bottom of the card, in display order. Slack allows at most 3 items. |
+| `slackIcon` | A Slack-provided icon displayed beside the title. Cannot be combined with an image icon. |
+| `subtext` | The small print shown at the bottom of the card. Slack allows at most 200 characters. A string is sent as a `mrkdwn` text object. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ButtonElement`](/reference/csharp/elements#buttonelement), [`CardBlock`](/reference/csharp/blocks#cardblock), [`ImageElement`](/reference/csharp/elements#imageelement), [`SlackIcon`](/reference/csharp/objects#slackicon), [`Text`](/reference/csharp/objects#text)
+
+### HeroImage
+
+Gets the image displayed prominently at the top of the card.
+
+The value, or `null` when it was not set.
+
+```csharp
+public ImageElement? HeroImage { get; }
+```
+
+**Related types:** [`ImageElement`](/reference/csharp/elements#imageelement)
+
+### Icon
+
+Gets the image displayed beside the title.
+
+The value, or `null` when it was not set.
+
+```csharp
+public ImageElement? Icon { get; }
+```
+
+**Related types:** [`ImageElement`](/reference/csharp/elements#imageelement)
+
+### Title
+
+Gets the card title.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Text? Title { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Subtitle
+
+Gets the supporting text shown below the title.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Text? Subtitle { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Body
+
+Gets the main body text of the card.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Text? Body { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Actions
+
+Gets buttons displayed at the bottom of the card, in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<ButtonElement> Actions { get; }
+```
+
+**Related types:** [`ButtonElement`](/reference/csharp/elements#buttonelement)
+
+### SlackIcon
+
+Gets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon.
+
+The value, or `null` when it was not set.
+
+```csharp
+public SlackIcon? SlackIcon { get; }
+```
+
+**Related types:** [`SlackIcon`](/reference/csharp/objects#slackicon)
+
+### Subtext
+
+Gets the small print shown at the bottom of the card.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Text? Subtext { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## CarouselBlock
+
+A horizontally scrolling set of cards, available in messages and App Home.
+
+- Required: `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/carousel-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### CarouselBlock
+
+Creates and validates a [`CarouselBlock`](/reference/csharp/blocks#carouselblock).
+
+```csharp
+public CarouselBlock(IEnumerable<CardBlock> elements, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | The cards in display order. Required. Must contain between 1 and 10 items. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`CardBlock`](/reference/csharp/blocks#cardblock), [`CarouselBlock`](/reference/csharp/blocks#carouselblock)
+
+### Elements
+
+Gets the cards in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<CardBlock> Elements { get; }
+```
+
+**Related types:** [`CardBlock`](/reference/csharp/blocks#cardblock)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## ContainerBlock
+
+A titled group of blocks that can optionally collapse.
+
+- Required: `childBlocks`.
+- Provide a title or a rich text title.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/container-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### ContainerBlock
+
+Creates and validates a [`ContainerBlock`](/reference/csharp/blocks#containerblock).
+
+```csharp
+public ContainerBlock(IEnumerable<IBlock> childBlocks, PlainText? title = null, RichTextBlock? richTextTitle = null, Text? subtitle = null, ContainerWidth? width = null, ImageElement? icon = null, bool? isCollapsible = null, bool? defaultCollapsed = null, bool? hasHeaderDivider = null, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `childBlocks` | The blocks grouped inside the container, in display order. Required. Must contain between 1 and 10 items. |
+| `title` | The container title. Provide either a title or a rich text title. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `richTextTitle` | A rich text block used as the title in place of a plain-text title. |
+| `subtitle` | The supporting text shown below the title. Slack allows at most 150 characters. A string is sent as a `mrkdwn` text object. |
+| `width` | The horizontal width of the container. |
+| `icon` | The image displayed beside the title. |
+| `isCollapsible` | Whether users can collapse and expand the container. |
+| `defaultCollapsed` | Whether a collapsible container starts collapsed. Requires the container to be collapsible. |
+| `hasHeaderDivider` | Whether Slack draws a divider below the container header. Only valid for non-collapsible containers. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ContainerBlock`](/reference/csharp/blocks#containerblock), [`ContainerWidth`](/reference/csharp/blocks#containerwidth), [`IBlock`](/reference/csharp/blocks#iblock), [`ImageElement`](/reference/csharp/elements#imageelement), [`PlainText`](/reference/csharp/objects#plaintext), [`RichTextBlock`](/reference/csharp/blocks#richtextblock), [`Text`](/reference/csharp/objects#text)
+
+### ChildBlocks
+
+Gets the blocks grouped inside the container, in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IBlock> ChildBlocks { get; }
+```
+
+**Related types:** [`IBlock`](/reference/csharp/blocks#iblock)
+
+### Title
+
+Gets the container title. Provide either a title or a rich text title.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Title { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### RichTextTitle
+
+Gets a rich text block used as the title in place of a plain-text title.
+
+The value, or `null` when it was not set.
+
+```csharp
+public RichTextBlock? RichTextTitle { get; }
+```
+
+**Related types:** [`RichTextBlock`](/reference/csharp/blocks#richtextblock)
+
+### Subtitle
+
+Gets the supporting text shown below the title.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Text? Subtitle { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Width
+
+Gets the horizontal width of the container.
+
+The value, or `null` when it was not set.
+
+```csharp
+public ContainerWidth? Width { get; }
+```
+
+**Related types:** [`ContainerWidth`](/reference/csharp/blocks#containerwidth)
+
+### Icon
+
+Gets the image displayed beside the title.
+
+The value, or `null` when it was not set.
+
+```csharp
+public ImageElement? Icon { get; }
+```
+
+**Related types:** [`ImageElement`](/reference/csharp/elements#imageelement)
+
+### IsCollapsible
+
+Gets whether users can collapse and expand the container.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? IsCollapsible { get; }
+```
+
+### DefaultCollapsed
+
+Gets whether a collapsible container starts collapsed. Requires the container to be collapsible.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? DefaultCollapsed { get; }
+```
+
+### HasHeaderDivider
+
+Gets whether Slack draws a divider below the container header. Only valid for non-collapsible containers.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? HasHeaderDivider { get; }
+```
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## ContainerWidth
+
+Widths supported by Slack container blocks.
+
+`ToWireValue()` returns the value Slack expects in JSON.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Narrow` | `narrow` | A compact container. |
+| `Standard` | `standard` | Slack's standard container width. |
+| `Wide` | `wide` | A wide container. |
+| `Full` | `full` | The full available width. |
+
+## ContextActionsBlock
+
+A row of feedback or icon buttons, usually shown below AI-generated content.
+
+- Required: `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/context-actions-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### ContextActionsBlock
+
+Creates and validates a [`ContextActionsBlock`](/reference/csharp/blocks#contextactionsblock).
+
+```csharp
+public ContextActionsBlock(IEnumerable<IContextActionsElement> elements, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Feedback buttons or icon buttons in display order. Required. Slack allows at most 5 items. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ContextActionsBlock`](/reference/csharp/blocks#contextactionsblock), [`IContextActionsElement`](/reference/csharp/blocks#icontextactionselement)
+
+### Elements
+
+Gets feedback buttons or icon buttons in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IContextActionsElement> Elements { get; }
+```
+
+**Related types:** [`IContextActionsElement`](/reference/csharp/blocks#icontextactionselement)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## ContextBlock
+
+A block of small, secondary images and text.
+
+- Required: `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/context-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### ContextBlock
+
+Creates and validates a [`ContextBlock`](/reference/csharp/blocks#contextblock).
+
+```csharp
+public ContextBlock(IEnumerable<IContextElement> elements, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Images and text in display order. Required. Slack allows at most 10 items. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ContextBlock`](/reference/csharp/blocks#contextblock), [`IContextElement`](/reference/csharp/blocks#icontextelement)
+
+### Elements
+
+Gets images and text in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IContextElement> Elements { get; }
+```
+
+**Related types:** [`IContextElement`](/reference/csharp/blocks#icontextelement)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## DataTableBlock
+
+A sortable, paginated table of raw text, numbers, and rich text.
+
+- Required: `rows`, `caption`.
+- The first row is the header row and cannot contain rich text.
+- Every row must have the same number of cells, and all cell text together is limited to 20,000 characters.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### DataTableBlock
+
+Creates and validates a [`DataTableBlock`](/reference/csharp/blocks#datatableblock).
+
+```csharp
+public DataTableBlock(IEnumerable<IEnumerable<IDataTableCell>> rows, string caption, int? pageSize = null, int? rowHeaderColumnIndex = null, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `rows` | Complete table rows in display order. Every row must have the same number of cells. Required. Must contain between 2 and 201 items. |
+| `caption` | The caption that describes the table's contents. Required. |
+| `pageSize` | How many rows Slack shows per page. Must be between 1 and 100. |
+| `rowHeaderColumnIndex` | The zero-based index of the column whose cells act as row headers. Must be at least 0. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`DataTableBlock`](/reference/csharp/blocks#datatableblock), [`IDataTableCell`](/reference/csharp/blocks#idatatablecell)
+
+### Rows
+
+Gets complete table rows in display order. Every row must have the same number of cells.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IReadOnlyList<IDataTableCell>> Rows { get; }
+```
+
+**Related types:** [`IDataTableCell`](/reference/csharp/blocks#idatatablecell)
+
+### Caption
+
+Gets the caption that describes the table's contents.
+
+```csharp
+public string Caption { get; }
+```
+
+### PageSize
+
+Gets how many rows Slack shows per page.
+
+```csharp
+public int? PageSize { get; }
+```
+
+### RowHeaderColumnIndex
+
+Gets the zero-based index of the column whose cells act as row headers.
+
+```csharp
+public int? RowHeaderColumnIndex { get; }
+```
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## DataVisualizationBlock
+
+A titled pie, bar, area, or line chart.
+
+- Required: `title`, `chart`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### DataVisualizationBlock
+
+Creates and validates a [`DataVisualizationBlock`](/reference/csharp/blocks#datavisualizationblock).
+
+```csharp
+public DataVisualizationBlock(string title, IChart chart, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | The chart title. Required. Slack allows at most 50 characters. |
+| `chart` | The chart to display. Required. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`DataVisualizationBlock`](/reference/csharp/blocks#datavisualizationblock), [`IChart`](/reference/csharp/objects#ichart)
+
+### Title
+
+Gets the chart title.
+
+```csharp
+public string Title { get; }
+```
+
+### Chart
+
+Gets the chart to display.
+
+```csharp
+public IChart Chart { get; }
+```
+
+**Related types:** [`IChart`](/reference/csharp/objects#ichart)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## DividerBlock
+
+A horizontal rule that separates blocks.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/divider-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### DividerBlock
+
+Creates and validates a [`DividerBlock`](/reference/csharp/blocks#dividerblock).
+
+```csharp
+public DividerBlock(string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`DividerBlock`](/reference/csharp/blocks#dividerblock)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## FileBlock
+
+A remote file previously added with the files.remote API.
+
+- Required: `externalId`, `source`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/file-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### FileBlock
+
+Creates and validates a [`FileBlock`](/reference/csharp/blocks#fileblock).
+
+```csharp
+public FileBlock(string externalId, string? source = null, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `externalId` | The external identifier of a remote file previously added with the files.remote API. Required. |
+| `source` | The file source. Slack currently supports only remote files. Required. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`FileBlock`](/reference/csharp/blocks#fileblock)
+
+### ExternalId
+
+Gets the external identifier of a remote file previously added with the files.remote API.
+
+```csharp
+public string ExternalId { get; }
+```
+
+### Source
+
+Gets the file source. Slack currently supports only remote files.
+
+```csharp
+public string? Source { get; }
+```
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## HeaderBlock
+
+Large, bold plain text that introduces a group of blocks.
+
+- Required: `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/header-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### HeaderBlock
+
+Creates and validates a [`HeaderBlock`](/reference/csharp/blocks#headerblock).
+
+```csharp
+public HeaderBlock(PlainText text, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The header text, shown in a larger bold font. Required. Slack allows at most 150 characters. A string is sent as a `plain_text` text object. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`HeaderBlock`](/reference/csharp/blocks#headerblock), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Text
+
+Gets the header text, shown in a larger bold font.
+
+```csharp
+public PlainText Text { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext), [`Text`](/reference/csharp/objects#text)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## IBlock
+
+A validated Slack layout block accepted directly by Slack's official Java SDK.
+
+Implemented by [`ActionsBlock`](/reference/csharp/blocks#actionsblock), [`AlertBlock`](/reference/csharp/blocks#alertblock), [`CardBlock`](/reference/csharp/blocks#cardblock), [`CarouselBlock`](/reference/csharp/blocks#carouselblock), [`ContainerBlock`](/reference/csharp/blocks#containerblock), [`ContextActionsBlock`](/reference/csharp/blocks#contextactionsblock), [`ContextBlock`](/reference/csharp/blocks#contextblock), [`DataTableBlock`](/reference/csharp/blocks#datatableblock), [`DataVisualizationBlock`](/reference/csharp/blocks#datavisualizationblock), [`DividerBlock`](/reference/csharp/blocks#dividerblock), [`FileBlock`](/reference/csharp/blocks#fileblock), [`HeaderBlock`](/reference/csharp/blocks#headerblock), [`ImageBlock`](/reference/csharp/blocks#imageblock), [`InputBlock`](/reference/csharp/blocks#inputblock), [`MarkdownBlock`](/reference/csharp/blocks#markdownblock), [`PlanBlock`](/reference/csharp/blocks#planblock), [`RichTextBlock`](/reference/csharp/blocks#richtextblock), [`SectionBlock`](/reference/csharp/blocks#sectionblock), [`TableBlock`](/reference/csharp/blocks#tableblock), [`TaskCardBlock`](/reference/csharp/blocks#taskcardblock), [`VideoBlock`](/reference/csharp/blocks#videoblock).
+
+## IContextActionsElement
+
+A value that can appear in a context actions block: feedback buttons or an icon button.
+
+Implemented by [`FeedbackButtonsElement`](/reference/csharp/elements#feedbackbuttonselement), [`IconButtonElement`](/reference/csharp/elements#iconbuttonelement).
+
+## IContextElement
+
+A value that can appear in a context block: an image element or a text object.
+
+Implemented by [`ImageElement`](/reference/csharp/elements#imageelement), [`MarkdownText`](/reference/csharp/objects#markdowntext), [`PlainText`](/reference/csharp/objects#plaintext).
+
+## IDataTableCell
+
+A value that can appear as a data table cell: raw text, a raw number, or a rich text block.
+
+Implemented by [`RawNumber`](/reference/csharp/objects#rawnumber), [`RawText`](/reference/csharp/objects#rawtext), [`RichTextBlock`](/reference/csharp/blocks#richtextblock).
+
+## ImageBlock
+
+A standalone image with alternative text and an optional title.
+
+- Required: `altText`.
+- Provide exactly one of an image URL or a Slack file.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/image-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### ImageBlock
+
+Creates and validates a [`ImageBlock`](/reference/csharp/blocks#imageblock).
+
+```csharp
+public ImageBlock(string? imageUrl, string altText, PlainText? title = null, string? blockId = null, SlackFile? slackFile = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `imageUrl` | The publicly accessible URL of the image. Cannot be combined with a Slack file. Slack allows at most 3000 characters. |
+| `altText` | A plain-text summary of the image or video for assistive technology. Required. Slack allows at most 2000 characters. |
+| `title` | The title shown above the image. Slack allows at most 2000 characters. A string is sent as a `plain_text` text object. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `slackFile` | A file hosted in Slack as the image source. Cannot be combined with an image URL. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ImageBlock`](/reference/csharp/blocks#imageblock), [`PlainText`](/reference/csharp/objects#plaintext), [`SlackFile`](/reference/csharp/objects#slackfile)
+
+### ImageUrl
+
+Gets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ImageUrl { get; }
+```
+
+### SlackFile
+
+Gets a file hosted in Slack as the image source. Cannot be combined with an image URL.
+
+The value, or `null` when it was not set.
+
+```csharp
+public SlackFile? SlackFile { get; }
+```
+
+**Related types:** [`SlackFile`](/reference/csharp/objects#slackfile)
+
+### AltText
+
+Gets a plain-text summary of the image or video for assistive technology.
+
+```csharp
+public string AltText { get; }
+```
+
+### Title
+
+Gets the title shown above the image.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Title { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## InputBlock
+
+A labelled input that collects a value in a modal, App Home, or message.
+
+- Required: `label`, `element`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/input-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### InputBlock
+
+Creates and validates a [`InputBlock`](/reference/csharp/blocks#inputblock).
+
+```csharp
+public InputBlock(PlainText label, IInputElement element, bool? dispatchAction = null, string? blockId = null, PlainText? hint = null, bool? optional = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `label` | The label shown above the input. Required. Slack allows at most 2000 characters. A string is sent as a `plain_text` text object. |
+| `element` | The input element that collects the user's value. Required. |
+| `dispatchAction` | Whether changing the element sends a block_actions payload immediately. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `hint` | Helper text shown below the input. Slack allows at most 2000 characters. A string is sent as a `plain_text` text object. |
+| `optional` | Whether the modal can be submitted when this input is empty. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`IInputElement`](/reference/csharp/elements#iinputelement), [`InputBlock`](/reference/csharp/blocks#inputblock), [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Label
+
+Gets the label shown above the input.
+
+```csharp
+public PlainText Label { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Element
+
+Gets the input element that collects the user's value.
+
+```csharp
+public IInputElement Element { get; }
+```
+
+**Related types:** [`IInputElement`](/reference/csharp/elements#iinputelement)
+
+### DispatchAction
+
+Gets whether changing the element sends a block_actions payload immediately.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? DispatchAction { get; }
+```
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+### Hint
+
+Gets helper text shown below the input.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Hint { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### Optional
+
+Gets whether the modal can be submitted when this input is empty.
+
+The value, or `null` when it was not set.
+
+```csharp
+public bool? Optional { get; }
+```
+
+## ITableCell
+
+A value that can appear as a table block cell: raw text or a rich text block.
+
+Implemented by [`RawText`](/reference/csharp/objects#rawtext), [`RichTextBlock`](/reference/csharp/blocks#richtextblock).
+
+## MarkdownBlock
+
+Standard markdown rendered by Slack, intended for AI-generated content.
+
+- Required: `text`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/markdown-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### MarkdownBlock
+
+Creates and validates a [`MarkdownBlock`](/reference/csharp/blocks#markdownblock).
+
+```csharp
+public MarkdownBlock(string text, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Standard markdown content, which Slack renders directly. Required. Slack allows at most 12000 characters. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`MarkdownBlock`](/reference/csharp/blocks#markdownblock)
+
+### Text
+
+Gets standard markdown content, which Slack renders directly.
+
+```csharp
+public string Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## PlanBlock
+
+A titled sequence of task cards.
+
+- Required: `title`, `tasks`.
+- Task IDs must be unique within a plan.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/plan-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### PlanBlock
+
+Creates and validates a [`PlanBlock`](/reference/csharp/blocks#planblock).
+
+```csharp
+public PlanBlock(string title, IEnumerable<TaskCardBlock>? tasks = null, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | The plan title. Required. |
+| `tasks` | Task cards in display order. Required. Slack allows at most 50 items. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`PlanBlock`](/reference/csharp/blocks#planblock), [`TaskCardBlock`](/reference/csharp/blocks#taskcardblock)
+
+### Title
+
+Gets the plan title.
+
+```csharp
+public string Title { get; }
+```
+
+### Tasks
+
+Gets task cards in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<TaskCardBlock> Tasks { get; }
+```
+
+**Related types:** [`TaskCardBlock`](/reference/csharp/blocks#taskcardblock)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## RichTextBlock
+
+Formatted text built from sections, lists, preformatted blocks, and quotes.
+
+- Required: `elements`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock), [`IDataTableCell`](/reference/csharp/blocks#idatatablecell), [`ITableCell`](/reference/csharp/blocks#itablecell).
+
+### RichTextBlock
+
+Creates and validates a [`RichTextBlock`](/reference/csharp/blocks#richtextblock).
+
+```csharp
+public RichTextBlock(IEnumerable<IRichTextBlockElement> elements, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Sections, lists, preformatted blocks, and quotes in display order. Required. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`IRichTextBlockElement`](/reference/csharp/objects#irichtextblockelement), [`RichTextBlock`](/reference/csharp/blocks#richtextblock)
+
+### Elements
+
+Gets sections, lists, preformatted blocks, and quotes in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IRichTextBlockElement> Elements { get; }
+```
+
+**Related types:** [`IRichTextBlockElement`](/reference/csharp/objects#irichtextblockelement)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## SectionBlock
+
+Text, a grid of fields, or both, with an optional accessory element.
+
+- Provide text, fields, or both.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/section-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### SectionBlock
+
+Creates and validates a [`SectionBlock`](/reference/csharp/blocks#sectionblock).
+
+```csharp
+public SectionBlock(Text? text = null, IEnumerable<Text>? fields = null, IElement? accessory = null, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | The main text of the section. Slack allows at most 3000 characters. A string is sent as a `mrkdwn` text object. |
+| `fields` | Section fields, shown in a two-column grid, in display order. Slack allows at most 10 items, each at most 2000 characters. Strings are sent as `mrkdwn` text objects. |
+| `accessory` | The element displayed beside the section text. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`IElement`](/reference/csharp/elements#ielement), [`SectionBlock`](/reference/csharp/blocks#sectionblock), [`Text`](/reference/csharp/objects#text)
+
+### Text
+
+Gets the main text of the section.
+
+The value, or `null` when it was not set.
+
+```csharp
+public Text? Text { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Fields
+
+Gets section fields, shown in a two-column grid, in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<Text> Fields { get; }
+```
+
+**Related types:** [`Text`](/reference/csharp/objects#text)
+
+### Accessory
+
+Gets the element displayed beside the section text.
+
+The value, or `null` when it was not set.
+
+```csharp
+public IElement? Accessory { get; }
+```
+
+**Related types:** [`IElement`](/reference/csharp/elements#ielement)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## TableBlock
+
+A simple table of raw text and rich text cells.
+
+- Required: `rows`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### TableBlock
+
+Creates and validates a [`TableBlock`](/reference/csharp/blocks#tableblock).
+
+```csharp
+public TableBlock(IEnumerable<IEnumerable<ITableCell>> rows, IEnumerable<ColumnSettings>? columnSettings = null, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `rows` | Complete table rows in display order. Required. Slack allows at most 100 items. |
+| `columnSettings` | Per-column settings in column order. Provide one entry for every column. Slack allows at most 20 items. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`ColumnSettings`](/reference/csharp/objects#columnsettings), [`ITableCell`](/reference/csharp/blocks#itablecell), [`TableBlock`](/reference/csharp/blocks#tableblock)
+
+### Rows
+
+Gets complete table rows in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<IReadOnlyList<ITableCell>> Rows { get; }
+```
+
+**Related types:** [`ITableCell`](/reference/csharp/blocks#itablecell)
+
+### ColumnSettings
+
+Gets per-column settings in column order. Provide one entry for every column.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<ColumnSettings> ColumnSettings { get; }
+```
+
+**Related types:** [`ColumnSettings`](/reference/csharp/objects#columnsettings)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## TaskCardBlock
+
+One task with its status, details, output, and sources.
+
+- Required: `taskId`, `title`, `status`.
+- A standalone task card's status cannot be pending; pending is only valid for plan tasks.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### TaskCardBlock
+
+Creates and validates a [`TaskCardBlock`](/reference/csharp/blocks#taskcardblock).
+
+```csharp
+public TaskCardBlock(string taskId, string title, RichTextBlock? details = null, RichTextBlock? output = null, IEnumerable<UrlSource>? sources = null, TaskCardStatus? status = null, string? blockId = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `taskId` | The identifier of the task. Required. |
+| `title` | The task title. Required. |
+| `details` | A rich text description of the task. |
+| `output` | Rich text describing the task's output. |
+| `sources` | Links to the sources the task used, in display order. |
+| `status` | The task's current state. Required. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`RichTextBlock`](/reference/csharp/blocks#richtextblock), [`TaskCardBlock`](/reference/csharp/blocks#taskcardblock), [`TaskCardStatus`](/reference/csharp/blocks#taskcardstatus), [`UrlSource`](/reference/csharp/objects#urlsource)
+
+### TaskId
+
+Gets the identifier of the task.
+
+```csharp
+public string TaskId { get; }
+```
+
+### Title
+
+Gets the task title.
+
+```csharp
+public string Title { get; }
+```
+
+### Details
+
+Gets a rich text description of the task.
+
+The value, or `null` when it was not set.
+
+```csharp
+public RichTextBlock? Details { get; }
+```
+
+**Related types:** [`RichTextBlock`](/reference/csharp/blocks#richtextblock)
+
+### Output
+
+Gets rich text describing the task's output.
+
+The value, or `null` when it was not set.
+
+```csharp
+public RichTextBlock? Output { get; }
+```
+
+**Related types:** [`RichTextBlock`](/reference/csharp/blocks#richtextblock)
+
+### Sources
+
+Gets links to the sources the task used, in display order.
+
+The values in order, or an empty list when none were set.
+
+```csharp
+public IReadOnlyList<UrlSource> Sources { get; }
+```
+
+**Related types:** [`UrlSource`](/reference/csharp/objects#urlsource)
+
+### Status
+
+Gets the task's current state.
+
+The value, or `null` when it was not set.
+
+```csharp
+public TaskCardStatus? Status { get; }
+```
+
+**Related types:** [`TaskCardStatus`](/reference/csharp/blocks#taskcardstatus)
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+## TaskCardStatus
+
+States supported by task card blocks.
+
+`ToWireValue()` returns the value Slack expects in JSON.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `Pending` | `pending` | The task has not started. |
+| `InProgress` | `in_progress` | The task is running. |
+| `Complete` | `complete` | The task finished successfully. |
+| `Error` | `error` | The task failed. |
+
+## VideoBlock
+
+An embedded video player.
+
+- Required: `altText`, `thumbnailUrl`, `title`, `videoUrl`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/video-block).
+
+Implements [`IBlock`](/reference/csharp/blocks#iblock).
+
+### VideoBlock
+
+Creates and validates a [`VideoBlock`](/reference/csharp/blocks#videoblock).
+
+```csharp
+public VideoBlock(string altText, string thumbnailUrl, PlainText title, string videoUrl, string? blockId = null, string? authorName = null, PlainText? description = null, string? providerIconUrl = null, string? providerName = null, string? titleUrl = null, IReadOnlyDictionary<string, object?>? additionalFields = null)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `altText` | A plain-text summary of the image or video for assistive technology. Required. Slack allows at most 2000 characters. |
+| `thumbnailUrl` | The URL of the image shown before the video plays. Required. Slack allows at most 3000 characters. |
+| `title` | The video title. Required. Slack allows at most 200 characters. A string is sent as a `plain_text` text object. |
+| `videoUrl` | The embeddable URL of the video. The domain must be listed in the app's unfurl domains. Required. Slack allows at most 3000 characters. |
+| `blockId` | A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters. |
+| `authorName` | The name of the video's author. Slack allows at most 50 characters. |
+| `description` | The video description. Slack allows at most 200 characters. A string is sent as a `plain_text` text object. |
+| `providerIconUrl` | The URL of the video provider's icon. Slack allows at most 2000 characters. |
+| `providerName` | The name of the video provider, such as YouTube. Slack allows at most 50 characters. |
+| `titleUrl` | The HTTPS URL opened when the title is clicked. Slack allows at most 2000 characters. |
+| `additionalFields` | Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationException`](/reference/csharp/errors#validationexception) | The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit. |
+| `ArgumentException` | A collection contains `null`, or an additional field cannot be written as JSON or repeats a named parameter. |
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext), [`VideoBlock`](/reference/csharp/blocks#videoblock)
+
+### AltText
+
+Gets a plain-text summary of the image or video for assistive technology.
+
+```csharp
+public string AltText { get; }
+```
+
+### ThumbnailUrl
+
+Gets the URL of the image shown before the video plays.
+
+```csharp
+public string ThumbnailUrl { get; }
+```
+
+### Title
+
+Gets the video title.
+
+```csharp
+public PlainText Title { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### VideoUrl
+
+Gets the embeddable URL of the video. The domain must be listed in the app's unfurl domains.
+
+```csharp
+public string VideoUrl { get; }
+```
+
+### BlockId
+
+Gets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? BlockId { get; }
+```
+
+### AuthorName
+
+Gets the name of the video's author.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? AuthorName { get; }
+```
+
+### Description
+
+Gets the video description.
+
+The value, or `null` when it was not set.
+
+```csharp
+public PlainText? Description { get; }
+```
+
+**Related types:** [`PlainText`](/reference/csharp/objects#plaintext)
+
+### ProviderIconUrl
+
+Gets the URL of the video provider's icon.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ProviderIconUrl { get; }
+```
+
+### ProviderName
+
+Gets the name of the video provider, such as YouTube.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? ProviderName { get; }
+```
+
+### TitleUrl
+
+Gets the HTTPS URL opened when the title is clicked.
+
+The value, or `null` when it was not set.
+
+```csharp
+public string? TitleUrl { get; }
+```

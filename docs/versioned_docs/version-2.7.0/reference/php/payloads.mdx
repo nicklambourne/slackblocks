@@ -1,0 +1,553 @@
+---
+sidebar_position: 4
+toc_max_heading_level: 3
+---
+
+# Payloads and Views
+
+Generated from actual PHP reflection and PHPDoc. Names live in the `Slackblocks` namespace. Use named arguments and `declare(strict_types=1)`; values validate before construction returns.
+
+## Attachment
+
+A legacy message attachment containing blocks and an optional color bar. Only blocks supported in messages are accepted. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/messaging/formatting-message-text#when-to-use-attachments).
+
+### $blocks
+
+Adds the attachment's blocks in display order.
+
+```php
+/** @var list<Block> */
+public readonly array $blocks;
+```
+
+**Related types:** [`Block`](/reference/php/core#block)
+
+### $color
+
+Sets the attachment's left border color: a six-digit hex color or good, warning, or danger.
+
+```php
+public readonly ?string $color;
+```
+
+### $fallback
+
+Sets plain-text summary shown in clients that cannot display attachments.
+
+```php
+public readonly ?string $fallback;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $blocks, ?string $color = NULL, ?string $fallback = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blocks` | list&lt;Block&gt; — Adds the attachment's blocks in display order. |
+| `color` | string\|null — Sets the attachment's left border color: a six-digit hex color or good, warning, or danger. |
+| `fallback` | string\|null — Sets plain-text summary shown in clients that cannot display attachments. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## HomeTabView
+
+The payload for publishing an App Home tab with views.publish. Only blocks supported on the App Home tab are accepted. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/surfaces/app-home).
+
+### $blocks
+
+Adds the blocks shown on the App Home tab, in display order.
+
+```php
+/** @var list<Block> */
+public readonly array $blocks;
+```
+
+**Related types:** [`Block`](/reference/php/core#block)
+
+### $privateMetadata
+
+Sets application-defined data returned in view payloads.
+
+```php
+public readonly ?string $privateMetadata;
+```
+
+### $callbackId
+
+Sets an identifier returned in view payloads so your app can recognize the view.
+
+```php
+public readonly ?string $callbackId;
+```
+
+### $externalId
+
+Sets a workspace-unique identifier you can use to update the view later.
+
+```php
+public readonly ?string $externalId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $blocks, ?string $privateMetadata = NULL, ?string $callbackId = NULL, ?string $externalId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blocks` | list&lt;Block&gt; — Adds the blocks shown on the App Home tab, in display order. |
+| `privateMetadata` | string\|null — Sets application-defined data returned in view payloads. |
+| `callbackId` | string\|null — Sets an identifier returned in view payloads so your app can recognize the view. |
+| `externalId` | string\|null — Sets a workspace-unique identifier you can use to update the view later. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## MessagePayload
+
+A complete payload for chat.postMessage and related Web API methods. Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/methods/chat.postMessage).
+
+### $channel
+
+Sets the ID of the channel, private group, or conversation that receives the message.
+
+```php
+public readonly string $channel;
+```
+
+### $blocks
+
+Adds the message blocks in display order.
+
+```php
+/** @var list<Block>|null */
+public readonly ?array $blocks;
+```
+
+**Related types:** [`Block`](/reference/php/core#block)
+
+### $attachments
+
+Adds legacy attachments in display order.
+
+```php
+/** @var list<Attachment>|null */
+public readonly ?array $attachments;
+```
+
+**Related types:** [`Attachment`](/reference/php/payloads#attachment)
+
+### $text
+
+Sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```php
+public readonly ?string $text;
+```
+
+### $mrkdwn
+
+Sets whether Slack formats the top-level text as mrkdwn.
+
+```php
+public readonly ?bool $mrkdwn;
+```
+
+### $unfurlLinks
+
+Sets whether Slack unfurls text-based links.
+
+```php
+public readonly ?bool $unfurlLinks;
+```
+
+### $unfurlMedia
+
+Sets whether Slack unfurls media links.
+
+```php
+public readonly ?bool $unfurlMedia;
+```
+
+### $metadata
+
+Sets message metadata as a JSON-compatible map, such as event_type and event_payload.
+
+```php
+public readonly ?JsonObject $metadata;
+```
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $channel, ?array $blocks = NULL, ?array $attachments = NULL, ?string $text = '', ?bool $mrkdwn = true, ?bool $unfurlLinks = NULL, ?bool $unfurlMedia = NULL, ?JsonObject $metadata = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `channel` | string — Sets the ID of the channel, private group, or conversation that receives the message. |
+| `blocks` | list&lt;Block&gt;\|null — Adds the message blocks in display order. |
+| `attachments` | list&lt;Attachment&gt;\|null — Adds legacy attachments in display order. |
+| `text` | string\|null — Sets the fallback text used in notifications and by clients that cannot display blocks. |
+| `mrkdwn` | bool\|null — Sets whether Slack formats the top-level text as mrkdwn. |
+| `unfurlLinks` | bool\|null — Sets whether Slack unfurls text-based links. |
+| `unfurlMedia` | bool\|null — Sets whether Slack unfurls media links. |
+| `metadata` | JsonObject\|null — Sets message metadata as a JSON-compatible map, such as event_type and event_payload. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## MessageResponse
+
+A response body for slash commands and interaction response URLs. Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/interactivity/handling-user-interaction#message_responses).
+
+### $blocks
+
+Adds the response blocks in display order.
+
+```php
+/** @var list<Block>|null */
+public readonly ?array $blocks;
+```
+
+**Related types:** [`Block`](/reference/php/core#block)
+
+### $attachments
+
+Adds legacy attachments in display order.
+
+```php
+/** @var list<Attachment>|null */
+public readonly ?array $attachments;
+```
+
+**Related types:** [`Attachment`](/reference/php/payloads#attachment)
+
+### $text
+
+Sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```php
+public readonly ?string $text;
+```
+
+### $mrkdwn
+
+Sets whether Slack formats the top-level text as mrkdwn.
+
+```php
+public readonly ?bool $mrkdwn;
+```
+
+### $replaceOriginal
+
+Sets whether the response replaces the message that triggered it.
+
+```php
+public readonly ?bool $replaceOriginal;
+```
+
+### $responseType
+
+Sets who can see the response.
+
+```php
+public readonly ?ResponseType $responseType;
+```
+
+**Related types:** [`ResponseType`](/reference/php/core#responsetype)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?array $blocks = NULL, ?array $attachments = NULL, ?string $text = '', ?bool $mrkdwn = true, ?bool $replaceOriginal = false, ?ResponseType $responseType = ResponseType::InChannel, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blocks` | list&lt;Block&gt;\|null — Adds the response blocks in display order. |
+| `attachments` | list&lt;Attachment&gt;\|null — Adds legacy attachments in display order. |
+| `text` | string\|null — Sets the fallback text used in notifications and by clients that cannot display blocks. |
+| `mrkdwn` | bool\|null — Sets whether Slack formats the top-level text as mrkdwn. |
+| `replaceOriginal` | bool\|null — Sets whether the response replaces the message that triggered it. |
+| `responseType` | ResponseType\|null — Sets who can see the response. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`ResponseType`](/reference/php/core#responsetype)
+
+## ModalView
+
+The view payload for views.open, views.push, and views.update. Only blocks supported in modals are accepted. A modal that contains an input block must have a submit label. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/surfaces/modals).
+
+### $title
+
+Sets the title in the modal's top bar.
+
+```php
+public readonly PlainText $title;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $blocks
+
+Adds the blocks shown in the modal, in display order.
+
+```php
+/** @var list<Block> */
+public readonly array $blocks;
+```
+
+**Related types:** [`Block`](/reference/php/core#block)
+
+### $close
+
+Sets the label of the button that closes the modal.
+
+```php
+public readonly ?PlainText $close;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $submit
+
+Sets the label of the button that submits the modal.
+
+```php
+public readonly ?PlainText $submit;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $privateMetadata
+
+Sets application-defined data returned in view payloads.
+
+```php
+public readonly ?string $privateMetadata;
+```
+
+### $callbackId
+
+Sets an identifier returned in view payloads so your app can recognize the view.
+
+```php
+public readonly ?string $callbackId;
+```
+
+### $clearOnClose
+
+Sets whether closing this modal closes every view in its stack.
+
+```php
+public readonly ?bool $clearOnClose;
+```
+
+### $notifyOnClose
+
+Sets whether Slack sends a view_closed event when the user closes the modal.
+
+```php
+public readonly ?bool $notifyOnClose;
+```
+
+### $externalId
+
+Sets a workspace-unique identifier you can use to update the view later.
+
+```php
+public readonly ?string $externalId;
+```
+
+### $submitDisabled
+
+Sets whether the submit button starts disabled. Only valid in workflow configuration modals.
+
+```php
+public readonly ?bool $submitDisabled;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(PlainText|string $title, array $blocks, PlainText|string|null $close = NULL, PlainText|string|null $submit = NULL, ?string $privateMetadata = NULL, ?string $callbackId = NULL, ?bool $clearOnClose = NULL, ?bool $notifyOnClose = NULL, ?string $externalId = NULL, ?bool $submitDisabled = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | PlainText\|string — Sets the title in the modal's top bar. |
+| `blocks` | list&lt;Block&gt; — Adds the blocks shown in the modal, in display order. |
+| `close` | PlainText\|string\|null — Sets the label of the button that closes the modal. |
+| `submit` | PlainText\|string\|null — Sets the label of the button that submits the modal. |
+| `privateMetadata` | string\|null — Sets application-defined data returned in view payloads. |
+| `callbackId` | string\|null — Sets an identifier returned in view payloads so your app can recognize the view. |
+| `clearOnClose` | bool\|null — Sets whether closing this modal closes every view in its stack. |
+| `notifyOnClose` | bool\|null — Sets whether Slack sends a view_closed event when the user closes the modal. |
+| `externalId` | string\|null — Sets a workspace-unique identifier you can use to update the view later. |
+| `submitDisabled` | bool\|null — Sets whether the submit button starts disabled. Only valid in workflow configuration modals. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## WebhookMessage
+
+A payload for incoming webhooks. Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks).
+
+### $blocks
+
+Adds the message blocks in display order.
+
+```php
+/** @var list<Block>|null */
+public readonly ?array $blocks;
+```
+
+**Related types:** [`Block`](/reference/php/core#block)
+
+### $attachments
+
+Adds legacy attachments in display order.
+
+```php
+/** @var list<Attachment>|null */
+public readonly ?array $attachments;
+```
+
+**Related types:** [`Attachment`](/reference/php/payloads#attachment)
+
+### $text
+
+Sets the fallback text used in notifications and by clients that cannot display blocks.
+
+```php
+public readonly ?string $text;
+```
+
+### $responseType
+
+Sets who can see the response.
+
+```php
+public readonly ?ResponseType $responseType;
+```
+
+**Related types:** [`ResponseType`](/reference/php/core#responsetype)
+
+### $replaceOriginal
+
+Sets whether the response replaces the message that triggered it.
+
+```php
+public readonly ?bool $replaceOriginal;
+```
+
+### $deleteOriginal
+
+Sets whether the response deletes the message that triggered it.
+
+```php
+public readonly ?bool $deleteOriginal;
+```
+
+### $unfurlLinks
+
+Sets whether Slack unfurls text-based links.
+
+```php
+public readonly ?bool $unfurlLinks;
+```
+
+### $unfurlMedia
+
+Sets whether Slack unfurls media links.
+
+```php
+public readonly ?bool $unfurlMedia;
+```
+
+### $metadata
+
+Sets message metadata as a JSON-compatible map, such as event_type and event_payload.
+
+```php
+public readonly ?JsonObject $metadata;
+```
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?array $blocks = NULL, ?array $attachments = NULL, ?string $text = NULL, ?ResponseType $responseType = NULL, ?bool $replaceOriginal = NULL, ?bool $deleteOriginal = NULL, ?bool $unfurlLinks = NULL, ?bool $unfurlMedia = NULL, ?JsonObject $metadata = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blocks` | list&lt;Block&gt;\|null — Adds the message blocks in display order. |
+| `attachments` | list&lt;Attachment&gt;\|null — Adds legacy attachments in display order. |
+| `text` | string\|null — Sets the fallback text used in notifications and by clients that cannot display blocks. |
+| `responseType` | ResponseType\|null — Sets who can see the response. |
+| `replaceOriginal` | bool\|null — Sets whether the response replaces the message that triggered it. |
+| `deleteOriginal` | bool\|null — Sets whether the response deletes the message that triggered it. |
+| `unfurlLinks` | bool\|null — Sets whether Slack unfurls text-based links. |
+| `unfurlMedia` | bool\|null — Sets whether Slack unfurls media links. |
+| `metadata` | JsonObject\|null — Sets message metadata as a JSON-compatible map, such as event_type and event_payload. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`ResponseType`](/reference/php/core#responsetype)
