@@ -104,7 +104,9 @@ def main():
                         "-s",
                         str(settings),
                         "-Prelease",
-                        "-DskipTests",
+                        # Every supported JDK compiles and runs tests in Java CI.
+                        # This isolated lane verifies the signed production bundle.
+                        "-Dmaven.test.skip=true",
                         f"-DcentralBaseUrl=http://127.0.0.1:{server.server_port}",
                         "clean",
                         "deploy",
