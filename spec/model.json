@@ -2206,15 +2206,17 @@
           "method": "minValue",
           "goMethod": "MinValue",
           "wire": "min_value",
-          "kind": "double",
-          "description": "Sets the smallest accepted number."
+          "kind": "string",
+          "description": "Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.",
+          "coerce": "decimal_string"
         },
         {
           "method": "maxValue",
           "goMethod": "MaxValue",
           "wire": "max_value",
-          "kind": "double",
-          "description": "Sets the largest accepted number."
+          "kind": "string",
+          "description": "Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.",
+          "coerce": "decimal_string"
         },
         {
           "method": "dispatchActionConfig",

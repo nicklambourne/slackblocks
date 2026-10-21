@@ -6,6 +6,7 @@ See: <https://api.slack.com/reference/block-kit/block-elements>
 
 from __future__ import annotations
 
+import re
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
@@ -1133,8 +1134,8 @@ class NumberInput(Element):
         is_decimal_allowed: whether to accept decimal values as input.
         action_id: an identifier so the source of the action can be known.
         initial_value: the initial value in the number input when it is loaded.
-        min_value: minimum accepted value for the input field.
-        max_value: maximum accepted value for the input field.
+        min_value: finite numeric string or number; sent as a string.
+        max_value: finite numeric string or number; sent as a string.
         dispatch_action_config: a `DispatchActionConfiguration` object that
             determines when during text input the element returns a
             `block_actions` payload.
@@ -1152,8 +1153,8 @@ class NumberInput(Element):
         is_decimal_allowed: bool,
         action_id: str | None = None,
         initial_value: str | None = None,
-        min_value: float | int | None = None,
-        max_value: float | int | None = None,
+        min_value: str | float | int | None = None,
+        max_value: str | float | int | None = None,
         dispatch_action_config: DispatchActionConfiguration | None = None,
         focus_on_load: bool = False,
         placeholder: TextLike | None = None,
@@ -1164,17 +1165,13 @@ class NumberInput(Element):
         self.is_decimal_allowed = is_decimal_allowed
         self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_value = initial_value
-        self.min_value = min_value
-        self.max_value = max_value
-        if min_value and not is_decimal_allowed and isinstance(min_value, float):
-            raise TypeMismatchError(
-                f"`min_value` ({min_value}) cannot be a float when `is_decimal_allowed` is `False`"
-            )
-        if max_value and not is_decimal_allowed and isinstance(max_value, float):
-            raise TypeMismatchError(
-                f"`max_value` ({max_value}) cannot be a float when `is_decimal_allowed` is `False`"
-            )
-        if min_value is not None and max_value is not None and min_value > max_value:
+        self.min_value = self._bound(min_value, "min_value")
+        self.max_value = self._bound(max_value, "max_value")
+        if (
+            self.min_value is not None
+            and self.max_value is not None
+            and self._compare_bounds(self.min_value, self.max_value) > 0
+        ):
             raise RangeError(
                 f"`min_value` ({min_value}) cannot be greater than `max_value` ({max_value})"
             )
@@ -1186,6 +1183,49 @@ class NumberInput(Element):
             force_plaintext=True,
             allow_none=True,
         )
+
+    @staticmethod
+    def _bound(value: str | int | float | None, field: str) -> str | None:
+        if value is None:
+            return None
+        if isinstance(value, bool) or not isinstance(value, (str, int, float)):
+            raise TypeMismatchError(f"`{field}` must be a numeric string or number")
+        text = str(value)
+        if re.fullmatch(r"[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?", text) is None:
+            raise TypeMismatchError(f"`{field}` must be a decimal string")
+        return text
+
+    @staticmethod
+    def _compare_bounds(left: str, right: str) -> int:
+        def parts(value: str) -> tuple[int, str, int]:
+            mantissa, *exponent_parts = re.split("[eE]", value)
+            exponent_text = exponent_parts[0] if exponent_parts else "0"
+            exponent_digits = exponent_text.lstrip("+-")
+            exponent = 0
+            # Parse in bounded chunks; Python's decimal-int conversion cap must not
+            # turn a long but valid exponent into an unrelated ValueError.
+            for i in range(0, len(exponent_digits), 1000):
+                chunk = exponent_digits[i : i + 1000]
+                exponent = exponent * 10 ** len(chunk) + int(chunk)
+            if exponent_text.startswith("-"):
+                exponent = -exponent
+            unsigned = mantissa.lstrip("+-")
+            fraction = len(unsigned.split(".")[1]) if "." in unsigned else 0
+            digits = unsigned.replace(".", "").lstrip("0")
+            sign = 0 if not digits else -1 if mantissa.startswith("-") else 1
+            return sign, digits, exponent + len(digits) - fraction
+
+        a, x, rank_x = parts(left)
+        b, y, rank_y = parts(right)
+        if a != b:
+            return (a > b) - (a < b)
+        if not a:
+            return 0
+        if rank_x != rank_y:
+            return ((rank_x > rank_y) - (rank_x < rank_y)) * a
+        width = max(len(x), len(y))
+        x, y = x.ljust(width, "0"), y.ljust(width, "0")
+        return ((x > y) - (x < y)) * a
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(

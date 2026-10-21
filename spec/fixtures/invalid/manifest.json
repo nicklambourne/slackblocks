@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.2.0",
+  "spec_version": "1.3.0",
   "cases": [
     {
       "id": "text-empty",
@@ -1002,6 +1002,54 @@
       "category": "missing-required",
       "constraint": "attachment.blocks.required",
       "description": "An attachment without blocks must be rejected"
+    },
+    {
+      "id": "number-bound-inverted-large-integer",
+      "category": "out-of-range",
+      "constraint": "number_input.bounds.inverted_large_integer",
+      "description": "Number bound decimal contract rejects inverted-large-integer"
+    },
+    {
+      "id": "number-bound-inverted-long-fraction",
+      "category": "out-of-range",
+      "constraint": "number_input.bounds.inverted_long_fraction",
+      "description": "Number bound decimal contract rejects inverted-long-fraction"
+    },
+    {
+      "id": "number-bound-hex",
+      "category": "type-mismatch",
+      "constraint": "number_input.bounds.hex",
+      "description": "Number bound decimal contract rejects hex"
+    },
+    {
+      "id": "number-bound-underscore",
+      "category": "type-mismatch",
+      "constraint": "number_input.bounds.underscore",
+      "description": "Number bound decimal contract rejects underscore"
+    },
+    {
+      "id": "number-bound-leading-space",
+      "category": "type-mismatch",
+      "constraint": "number_input.bounds.leading_space",
+      "description": "Number bound decimal contract rejects leading-space"
+    },
+    {
+      "id": "number-bound-trailing-space",
+      "category": "type-mismatch",
+      "constraint": "number_input.bounds.trailing_space",
+      "description": "Number bound decimal contract rejects trailing-space"
+    },
+    {
+      "id": "number-bound-nan",
+      "category": "type-mismatch",
+      "constraint": "number_input.bounds.nan",
+      "description": "Number bound decimal contract rejects nan"
+    },
+    {
+      "id": "number-bound-infinity",
+      "category": "type-mismatch",
+      "constraint": "number_input.bounds.infinity",
+      "description": "Number bound decimal contract rejects infinity"
     }
   ]
 }

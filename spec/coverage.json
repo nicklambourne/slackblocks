@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.2.0",
+  "spec_version": "1.3.0",
   "capabilities": {
     "blocks.actions": ["blocks/actions_block_checkboxes"],
     "blocks.alert": ["blocks/alert_block"],
@@ -52,7 +52,7 @@
     "elements.multi_select_external": ["elements/multi_select_external"],
     "elements.multi_select_static": ["elements/multi_select_static"],
     "elements.multi_select_users": ["elements/multi_select_user"],
-    "elements.number_input": ["elements/number_input_basic"],
+    "elements.number_input": ["elements/number_input_basic", "elements/number_input_scientific_bounds", "elements/number_input_large_exponent", "elements/number_input_bounds"],
     "elements.overflow": ["elements/overflow_menu_basic"],
     "elements.plain_text_input": ["elements/plaintext_input_basic"],
     "elements.radio_buttons": ["elements/radio_button_group_basic"],

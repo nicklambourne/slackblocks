@@ -182,6 +182,11 @@ internal sealed class FixtureDriver
         argument = null;
         var kind = field["kind"]!.GetValue<string>();
         var target = field["type"] is { } typeNode ? Type(typeNode.GetValue<string>()) : typeof(object);
+        if (parameterType == typeof(NumberInputBound) && value is JsonValue scalar)
+        {
+            argument = new NumberInputBound(scalar.GetValueKind() == JsonValueKind.String ? scalar.GetValue<string>() : scalar.ToJsonString());
+            return true;
+        }
         switch (kind)
         {
             case "string":

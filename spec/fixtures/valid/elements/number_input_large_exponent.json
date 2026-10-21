@@ -1,0 +1,6 @@
+{
+  "type": "number_input",
+  "is_decimal_allowed": true,
+  "min_value": "1e309",
+  "max_value": "2e309"
+}

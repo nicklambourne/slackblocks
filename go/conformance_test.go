@@ -32,8 +32,21 @@ func TestSharedValidFixtures(t *testing.T) {
 	if manifest.SpecVersion != slackblocks.SpecVersion {
 		t.Fatalf("spec version = %q, want %q", slackblocks.SpecVersion, manifest.SpecVersion)
 	}
-	if len(manifest.Fixtures) != 105 {
-		t.Fatalf("expected the complete 105-fixture corpus, got %d", len(manifest.Fixtures))
+	files := 0
+	err = filepath.WalkDir(filepath.Join(root, "fixtures", "valid"), func(_ string, entry os.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".json" {
+			files++
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(manifest.Fixtures) != files {
+		t.Fatalf("manifest has %d fixtures, disk has %d", len(manifest.Fixtures), files)
 	}
 	assertEmptySkipList(t)
 

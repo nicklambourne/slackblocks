@@ -1563,6 +1563,34 @@ defmodule Slackblocks.Test.InvalidConstructions do
            external_id: String.duplicate("x", 256)
          )
        end},
+      {"number-bound-inverted-large-integer",
+       fn ->
+         Elements.NumberInput.new!(
+           is_decimal_allowed: true,
+           min_value: "9007199254740993",
+           max_value: "9007199254740992"
+         )
+       end},
+      {"number-bound-inverted-long-fraction",
+       fn ->
+         Elements.NumberInput.new!(
+           is_decimal_allowed: true,
+           min_value: "0.10000000000000001",
+           max_value: "0.1"
+         )
+       end},
+      {"number-bound-hex",
+       fn -> Elements.NumberInput.new!(is_decimal_allowed: true, min_value: "0x10") end},
+      {"number-bound-underscore",
+       fn -> Elements.NumberInput.new!(is_decimal_allowed: true, min_value: "1_000") end},
+      {"number-bound-leading-space",
+       fn -> Elements.NumberInput.new!(is_decimal_allowed: true, min_value: " 1") end},
+      {"number-bound-trailing-space",
+       fn -> Elements.NumberInput.new!(is_decimal_allowed: true, min_value: "1 ") end},
+      {"number-bound-nan",
+       fn -> Elements.NumberInput.new!(is_decimal_allowed: true, min_value: "NaN") end},
+      {"number-bound-infinity",
+       fn -> Elements.NumberInput.new!(is_decimal_allowed: true, min_value: "Infinity") end},
       {"attachment-missing-blocks",
        fn -> Slackblocks.from_map!(Slackblocks.Attachment, %{"fallback" => "Summary"}) end}
     ]

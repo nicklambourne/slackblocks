@@ -14,6 +14,8 @@ in lockstep with the Python, TypeScript, and Go packages.
 ## [Unreleased]
 
 - Reject header dividers at the accordion helper boundary with a clear field path.
+- Correct number-input bounds to string wire values, retain native numeric convenience arguments, and reject nonfinite/inverted bounds (SB-001, spec 1.3.0). Bound getters now return strings; reflection/signature consumers must migrate. Package version unchanged.
+
 - Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
 
 ## [2.6.0] — 2026-10-09

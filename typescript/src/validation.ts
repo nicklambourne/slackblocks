@@ -25,6 +25,25 @@ function textValue(value: unknown): string | undefined {
   return undefined;
 }
 
+// Compare decimal strings without rounding their coefficients through binary floating point.
+function compareDecimal(left: string, right: string): number {
+  const parts = (value: string) => {
+    const [mantissa = "", exponent = "0"] = value.toLowerCase().split("e");
+    const unsigned = mantissa.replace(/^[+-]/, "");
+    const fraction = unsigned.split(".")[1]?.length ?? 0;
+    const digits = unsigned.replace(".", "").replace(/^0+/, "");
+    return { sign: digits === "" ? 0 : mantissa.startsWith("-") ? -1 : 1,
+      digits, rank: BigInt(exponent) + BigInt(digits.length - fraction) };
+  };
+  const a = parts(left), b = parts(right);
+  if (a.sign !== b.sign) return a.sign - b.sign;
+  if (a.sign === 0) return 0;
+  if (a.rank !== b.rank) return (a.rank > b.rank ? 1 : -1) * a.sign;
+  const width = Math.max(a.digits.length, b.digits.length);
+  const x = a.digits.padEnd(width, "0"), y = b.digits.padEnd(width, "0");
+  return (x === y ? 0 : x > y ? 1 : -1) * a.sign;
+}
+
 function codePointLength(value: string): number {
   let length = 0;
   for (const _ of value) {
@@ -712,15 +731,20 @@ function validateKnownObject(
         );
       }
       break;
-    case "number_input":
-      if (
-        typeof object.min_value === "number" &&
-        typeof object.max_value === "number" &&
-        object.min_value > object.max_value
-      ) {
+    case "number_input": {
+      for (const field of ["min_value", "max_value"]) {
+        const value = object[field];
+        if (value === undefined) continue;
+        if (typeof value !== "string" || !/^[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?$(?![\s\S])/.test(value)) {
+          throw new TypeMismatchError(child(path, field), "expected a numeric string");
+        }
+      }
+      if (object.min_value !== undefined && object.max_value !== undefined &&
+          compareDecimal(object.min_value as string, object.max_value as string) > 0) {
         throw new OutOfRangeError(path, "min_value cannot exceed max_value");
       }
       break;
+    }
     case "image": {
       if (object.image_url === undefined && object.slack_file === undefined) {
         throw new MissingRequiredError(path, "expected image_url or slack_file");

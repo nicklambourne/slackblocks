@@ -1,0 +1,7 @@
+{
+  "type": "number_input",
+  "is_decimal_allowed": true,
+  "action_id": "bounds",
+  "min_value": "-1.5",
+  "max_value": "10.25"
+}

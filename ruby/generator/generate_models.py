@@ -74,6 +74,8 @@ def limit_leaves(node: dict, prefix: str = "") -> list[tuple[str, int]]:
 
 def field_type(field: dict, enum_values: dict[str, list[str]]) -> str:
     kind, target = field["kind"], field.get("type")
+    if field.get("coerce") == "decimal_string":
+        return "String | Integer | Float"
     if kind == "string":
         return "String"
     if kind == "boolean":
@@ -105,6 +107,8 @@ def field_type(field: dict, enum_values: dict[str, list[str]]) -> str:
 
 def reader_type(field: dict, enum_values: dict[str, list[str]]) -> str:
     kind = field["kind"]
+    if field.get("coerce") == "decimal_string":
+        return "String"
     if kind == "text":
         return field["type"]
     if kind == "textList":

@@ -1413,7 +1413,7 @@ def self.new: (?action_id: (String)?, ?min_query_length: (Integer)?, ?initial_op
 | `initial_options` | Adds options that are selected when the element loads. Each must match an option in the element. |
 | `confirm` | Sets a confirmation dialog shown before the action is sent. |
 | `max_selected_items` | Sets the maximum number of items a user can select. |
-| `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
+| `focus_on_load` | Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected. |
 | `placeholder` | Sets the placeholder text shown before a value is chosen. |
 | `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
 
@@ -1493,7 +1493,7 @@ def max_selected_items: () -> (Integer)?
 
 ### focus_on_load
 
-Sets whether the element receives focus when the view opens. Only one element per view may do so. Wire key: focus_on_load.
+Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected. Wire key: focus_on_load.
 
 ```ruby
 def focus_on_load: () -> (bool)?
@@ -2248,7 +2248,7 @@ See the [Slack reference](https://docs.slack.dev/reference/block-kit/block-eleme
 Construct an immutable, validated value with keyword arguments. Required keywords: is_decimal_allowed.
 
 ```ruby
-def self.new: (?action_id: (String)?, is_decimal_allowed: bool, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
+def self.new: (?action_id: (String)?, is_decimal_allowed: bool, ?initial_value: (String)?, ?min_value: (String | Integer | Float)?, ?max_value: (String | Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
 ```
 
 | Parameter | Description |
@@ -2256,8 +2256,8 @@ def self.new: (?action_id: (String)?, is_decimal_allowed: bool, ?initial_value: 
 | `action_id` | Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. |
 | `is_decimal_allowed` | Sets whether the input accepts decimal numbers. |
 | `initial_value` | Sets the number present when the input loads, as a string such as 42 or 3.5. |
-| `min_value` | Sets the smallest accepted number. |
-| `max_value` | Sets the largest accepted number. |
+| `min_value` | Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings. |
+| `max_value` | Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings. |
 | `dispatch_action_config` | Sets which user interactions send a block_actions payload. |
 | `focus_on_load` | Sets whether the element receives focus when the view opens. Only one element per view may do so. |
 | `placeholder` | Sets the placeholder text shown before a value is chosen. |
@@ -2276,7 +2276,7 @@ def self.new: (?action_id: (String)?, is_decimal_allowed: bool, ?initial_value: 
 Keyword-only alias for .new.
 
 ```ruby
-def self.[]: (?action_id: (String)?, is_decimal_allowed: bool, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
+def self.[]: (?action_id: (String)?, is_decimal_allowed: bool, ?initial_value: (String)?, ?min_value: (String | Integer | Float)?, ?max_value: (String | Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
 ```
 
 **Returns:** NumberInputElement
@@ -2315,23 +2315,23 @@ def initial_value: () -> (String)?
 
 ### min_value
 
-Sets the smallest accepted number. Wire key: min_value.
+Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings. Wire key: min_value.
 
 ```ruby
-def min_value: () -> (Integer | Float)?
+def min_value: () -> (String)?
 ```
 
-**Returns:** (Integer \| Float)?
+**Returns:** (String)?
 
 ### max_value
 
-Sets the largest accepted number. Wire key: max_value.
+Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings. Wire key: max_value.
 
 ```ruby
-def max_value: () -> (Integer | Float)?
+def max_value: () -> (String)?
 ```
 
-**Returns:** (Integer \| Float)?
+**Returns:** (String)?
 
 ### dispatch_action_config
 

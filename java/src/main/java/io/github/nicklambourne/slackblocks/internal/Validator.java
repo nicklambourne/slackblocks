@@ -384,9 +384,9 @@ public final class Validator {
       case "url" -> stringAt(value.get("url"), child(path, "url"));
       case "static_select", "multi_static_select" -> validateStaticSelect(value, path);
       case "number_input" -> {
-        Double minimum = number(value.get("min_value"));
-        Double maximum = number(value.get("max_value"));
-        if (minimum != null && maximum != null && minimum > maximum) {
+        String minimum = decimalBound(value.get("min_value"), child(path, "min_value"));
+        String maximum = decimalBound(value.get("max_value"), child(path, "max_value"));
+        if (minimum != null && maximum != null && compareDecimal(minimum, maximum) > 0) {
           fail(ErrorCategory.OUT_OF_RANGE, path, "min_value cannot exceed max_value");
         }
         checkOptionalText(
@@ -1276,5 +1276,42 @@ public final class Validator {
 
   private static void fail(ErrorCategory category, String path, String message) {
     throw new ValidationException(category, path, message);
+  }
+
+  private record DecimalParts(int sign, String digits, java.math.BigInteger rank) {}
+
+  private static DecimalParts decimalParts(String text) {
+    String[] parts = text.toLowerCase(java.util.Locale.ROOT).split("e", -1);
+    java.math.BigInteger exponent =
+        parts.length == 2 ? new java.math.BigInteger(parts[1]) : java.math.BigInteger.ZERO;
+    String mantissa = parts[0].replaceFirst("^[+-]", "");
+    int dot = mantissa.indexOf('.');
+    int fraction = dot < 0 ? 0 : mantissa.length() - dot - 1;
+    String digits = mantissa.replace(".", "").replaceFirst("^0+", "");
+    int sign = digits.isEmpty() ? 0 : parts[0].startsWith("-") ? -1 : 1;
+    return new DecimalParts(
+        sign, digits, exponent.add(java.math.BigInteger.valueOf(digits.length() - fraction)));
+  }
+
+  private static int compareDecimal(String left, String right) {
+    DecimalParts a = decimalParts(left), b = decimalParts(right);
+    if (a.sign() != b.sign()) return Integer.compare(a.sign(), b.sign());
+    if (a.sign() == 0) return 0;
+    int rank = a.rank().compareTo(b.rank());
+    if (rank != 0) return rank * a.sign();
+    int width = Math.max(a.digits().length(), b.digits().length());
+    return (a.digits() + "0".repeat(width - a.digits().length()))
+            .compareTo(b.digits() + "0".repeat(width - b.digits().length()))
+        * a.sign();
+  }
+
+  private static @Nullable String decimalBound(@Nullable Object value, String path) {
+    if (value == null) return null;
+    if (!(value instanceof String))
+      fail(ErrorCategory.TYPE_MISMATCH, path, "expected a decimal string");
+    String text = (String) value;
+    if (!text.matches("[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?"))
+      fail(ErrorCategory.TYPE_MISMATCH, path, "expected a decimal string");
+    return text;
   }
 }
