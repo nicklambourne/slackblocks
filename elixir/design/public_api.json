@@ -1,0 +1,2067 @@
+{
+  "modules": {
+    "Slackblocks.WebhookMessage": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "messages.webhook_message"
+    },
+    "Slackblocks.Elements.RichTextInput": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.rich_text_input"
+    },
+    "Jason.Encoder.Slackblocks.Objects.PieChart": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.ExternalSelect": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.select_external"
+    },
+    "Slackblocks.Objects.AxisConfig": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.axis_config"
+    },
+    "Slackblocks.Views.Modal": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "views.modal"
+    },
+    "Jason.Encoder.Slackblocks.Elements.Overflow": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Input": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Elements.TimePicker": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Elements.DatePicker": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.RichText.Channel": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Blocks.Input": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.input"
+    },
+    "Slackblocks.Elements.Overflow": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.overflow"
+    },
+    "Slackblocks.Objects.Option": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.option"
+    },
+    "Jason.Encoder.Slackblocks.RichText.Link": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Elements.ConversationMultiSelect": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Internal.Rules": {
+      "functions": [
+        "validate/4"
+      ],
+      "reason": "Hidden implementation detail; exercised through public checked boundaries and included in handwritten coverage unless generated.",
+      "kind": "internal"
+    },
+    "Jason.Encoder.Slackblocks.Elements.ChannelMultiSelect": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Elements.DateTimePicker": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.RichText.CodeBlock": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Objects.RawNumber": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Blocks.DataVisualization": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.data_visualization"
+    },
+    "Slackblocks.Objects.MarkdownText": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.markdown_text"
+    },
+    "Jason.Encoder.Slackblocks.Elements.ConversationSelect": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Blocks.ContextActions": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.context_actions"
+    },
+    "Jason.Encoder.Slackblocks.Elements.UserSelect": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.RichText.List": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "rich_text.list"
+    },
+    "Jason.Encoder.Slackblocks.Message": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.RichText.Text": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "rich_text.text"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Card": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Blocks.Divider": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.divider"
+    },
+    "Jason.Encoder.Slackblocks.Elements.Checkboxes": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Types": {
+      "functions": [],
+      "reason": "Documented type aliases for receiving roles, enums and JSON; checked against the shared model.",
+      "kind": "support"
+    },
+    "Jason.Encoder.Slackblocks.Objects.BarChart": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Blocks.Plan": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.plan"
+    },
+    "Jason.Encoder.Slackblocks.Objects.UrlSource": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.ConversationSelect": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.select_conversations"
+    },
+    "Slackblocks.Objects.Confirmation": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.confirmation"
+    },
+    "Jason.Encoder.Slackblocks.RichText.Section": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Blocks.TaskCard": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.task_card"
+    },
+    "Slackblocks.Blocks.Card": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.card"
+    },
+    "Slackblocks.Objects.PieChart": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.data_visualization"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Divider": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.ConversationMultiSelect": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.multi_select_conversations"
+    },
+    "Slackblocks.Blocks.Carousel": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.carousel"
+    },
+    "Slackblocks.Elements.Checkboxes": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.checkboxes"
+    },
+    "Jason.Encoder.Slackblocks.RichText.Text": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.RichText.CodeBlock": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "rich_text.code_block"
+    },
+    "Slackblocks.Blocks.File": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.file"
+    },
+    "Slackblocks.Objects.DispatchActionConfiguration": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.dispatch_action_configuration"
+    },
+    "Jason.Encoder.Slackblocks.Views.Home": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Objects.UrlSource": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.url_source"
+    },
+    "Slackblocks.Objects.Workflow": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "from_url!/1",
+        "from_url!/2",
+        "from_url/1",
+        "from_url/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.workflow"
+    },
+    "Jason.Encoder.Slackblocks.RichText.UserGroup": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Container": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.FeedbackButtons": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.feedback_buttons"
+    },
+    "Slackblocks.RichText.User": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "rich_text.user"
+    },
+    "Slackblocks.Blocks.Context": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.context"
+    },
+    "Jason.Encoder.Slackblocks.Objects.SlackFile": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Objects.AreaChart": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.data_visualization"
+    },
+    "Slackblocks.RichText.UserGroup": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "rich_text.user_group"
+    },
+    "Slackblocks.Elements.FileInput": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.file_input"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.TaskCard": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Color": {
+      "functions": [
+        "hex!/1",
+        "hex/1",
+        "named!/1",
+        "named/1",
+        "rgb!/3",
+        "rgb/3"
+      ],
+      "reason": "Native composition or formatting helper; helpers_test.exs and foundation_test.exs exercise valid and invalid behavior.",
+      "kind": "helper"
+    },
+    "Slackblocks.MessageResponse": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "messages.message_response"
+    },
+    "Jason.Encoder.Slackblocks.Elements.NumberInput": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Message": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "messages.message"
+    },
+    "Jason.Encoder.Slackblocks.Objects.ChartSegment": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Blocks.Video": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.video"
+    },
+    "Jason.Encoder.Slackblocks.Elements.ChannelSelect": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Blocks.RichText": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.rich_text"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Alert": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Objects.DataPoint": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Objects.ConversationFilter": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.RichText.Channel": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "rich_text.channel"
+    },
+    "Slackblocks.Blocks.Alert": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.alert"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Video": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Elements.Image": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.WebhookMessage": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.StaticSelect": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.select_static"
+    },
+    "Slackblocks.RichText.Section": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "rich_text.section"
+    },
+    "Slackblocks.Elements.Image": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.image"
+    },
+    "Slackblocks.Objects.ChartSegment": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.chart_segment"
+    },
+    "Jason.Encoder.Slackblocks.Objects.DispatchActionConfiguration": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Objects.ConversationFilter": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.conversation_filter"
+    },
+    "Slackblocks.Objects.BarChart": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.data_visualization"
+    },
+    "Slackblocks.Blocks.DataTable": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.data_table"
+    },
+    "Jason.Encoder.Slackblocks.Elements.RichTextInput": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Table": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.StaticMultiSelect": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.multi_select_static"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Image": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Elements.IconButton": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.DataVisualization": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Actions": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Internal.Schema": {
+      "functions": [
+        "enums/0",
+        "limits/0",
+        "model/1",
+        "models/0",
+        "roles/0",
+        "vocabulary/0"
+      ],
+      "reason": "Hidden implementation detail; exercised through public checked boundaries and included in handwritten coverage unless generated.",
+      "kind": "internal"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.File": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Objects.RawText": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.raw_text"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Section": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Elements.ExternalMultiSelect": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Plan": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.RichText.Emoji": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "rich_text.emoji"
+    },
+    "Slackblocks.Elements.RadioButtons": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.radio_buttons"
+    },
+    "Jason.Encoder.Slackblocks.Attachment": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Header": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks": {
+      "functions": [
+        "block_kit_builder_url!/1",
+        "block_kit_builder_url!/2",
+        "block_kit_builder_url/1",
+        "block_kit_builder_url/2",
+        "decode!/2",
+        "decode/2",
+        "encode!/1",
+        "encode/1",
+        "from_map!/2",
+        "from_map/2",
+        "spec_version/0",
+        "to_map!/1",
+        "to_map/1",
+        "validate/1",
+        "version/0"
+      ],
+      "reason": "Public validation, map/JSON ingress/output and preview URLs; foundation/helper/property tests.",
+      "kind": "boundary"
+    },
+    "Slackblocks.Blocks.Table": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.table"
+    },
+    "Jason.Encoder.Slackblocks.Elements.UserMultiSelect": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.TimePicker": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.time_picker"
+    },
+    "Jason.Encoder.Slackblocks.Elements.RadioButtons": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Elements.WorkflowButton": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.DataTable": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Context": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Objects.FeedbackButton": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.feedback_button"
+    },
+    "Slackblocks.RichText.Style": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1",
+        "parse/2",
+        "wire/3"
+      ],
+      "reason": "Native composition or formatting helper; helpers_test.exs and foundation_test.exs exercise valid and invalid behavior.",
+      "kind": "helper"
+    },
+    "Slackblocks.Elements.UrlInput": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.url_input"
+    },
+    "Slackblocks.Objects.PlainText": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.plain_text"
+    },
+    "Slackblocks.Internal.Builder": {
+      "functions": [
+        "url/2"
+      ],
+      "reason": "Hidden implementation detail; exercised through public checked boundaries and included in handwritten coverage unless generated.",
+      "kind": "internal"
+    },
+    "Slackblocks.ValidationError": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "exception/1",
+        "message/1"
+      ],
+      "reason": "Categorized exception data; tested by native invalid cases.",
+      "kind": "support"
+    },
+    "Slackblocks.Components.AccordionSection": {
+      "functions": [
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Native composition or formatting helper; helpers_test.exs and foundation_test.exs exercise valid and invalid behavior.",
+      "kind": "helper"
+    },
+    "Slackblocks.Internal.Value": {
+      "functions": [
+        "capture/1",
+        "change/3",
+        "fail/3",
+        "list!/2",
+        "new/2",
+        "options/2",
+        "unwrap/1"
+      ],
+      "reason": "Hidden implementation detail; exercised through public checked boundaries and included in handwritten coverage unless generated.",
+      "kind": "internal"
+    },
+    "Jason.Encoder.Slackblocks.Objects.Trigger": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Elements.Button": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Views.Modal": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Objects.Workflow": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.EmailInput": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.email_input"
+    },
+    "Slackblocks.Objects.ColumnSettings": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.column_settings"
+    },
+    "Slackblocks.Objects.Trigger": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.trigger"
+    },
+    "Jason.Encoder.Slackblocks.Elements.FeedbackButtons": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Objects.SlackIcon": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.slack_icon"
+    },
+    "Slackblocks.Elements.IconButton": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.icon_button"
+    },
+    "Jason.Encoder.Slackblocks.Objects.InputParameter": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Carousel": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Blocks.Actions": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.actions"
+    },
+    "Slackblocks.Elements.ChannelSelect": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.select_channels"
+    },
+    "Jason.Encoder.Slackblocks.Objects.PlainText": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Elements.StaticSelect": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.RichText.Link": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "rich_text.link"
+    },
+    "Slackblocks.Objects.DataSeries": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.data_series"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.ContextActions": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Objects.LineChart": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Objects.ColumnSettings": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.Markdown": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.UserSelect": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.select_users"
+    },
+    "Jason.Encoder.Slackblocks.RichText.Quote": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Objects.LineChart": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.data_visualization"
+    },
+    "Slackblocks.Elements.ChannelMultiSelect": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.multi_select_channels"
+    },
+    "Slackblocks.Blocks.Container": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.container"
+    },
+    "Jason.Encoder.Slackblocks.Objects.Option": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Components.Accordion": {
+      "functions": [
+        "to_blocks!/1",
+        "to_blocks/1"
+      ],
+      "reason": "Native composition or formatting helper; helpers_test.exs and foundation_test.exs exercise valid and invalid behavior.",
+      "kind": "helper"
+    },
+    "Slackblocks.Blocks.Markdown": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.markdown"
+    },
+    "Jason.Encoder.Slackblocks.Objects.OptionGroup": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Objects.RawNumber": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.raw_number"
+    },
+    "Slackblocks.Views.Home": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "views.home_tab"
+    },
+    "Jason.Encoder.Slackblocks.Elements.UrlInput": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Objects.Confirmation": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.DatePicker": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.date_picker"
+    },
+    "Slackblocks.RichText.Quote": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "rich_text.quote"
+    },
+    "Jason.Encoder.Slackblocks.Elements.EmailInput": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.RichText.Emoji": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.DateTimePicker": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.datetime_picker"
+    },
+    "Slackblocks.Internal.Codec": {
+      "functions": [
+        "json/2",
+        "json/3",
+        "length_codepoints/1",
+        "limits/3",
+        "parse/3",
+        "shape!/4",
+        "string!/2",
+        "wire/3"
+      ],
+      "reason": "Hidden implementation detail; exercised through public checked boundaries and included in handwritten coverage unless generated.",
+      "kind": "internal"
+    },
+    "Jason.Encoder.Slackblocks.Objects.FeedbackButton": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Components.Paginator": {
+      "functions": [
+        "to_blocks!/2",
+        "to_blocks/2"
+      ],
+      "reason": "Native composition or formatting helper; helpers_test.exs and foundation_test.exs exercise valid and invalid behavior.",
+      "kind": "helper"
+    },
+    "Slackblocks.Objects.OptionGroup": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.option_group"
+    },
+    "Jason.Encoder.Slackblocks.Objects.MarkdownText": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Objects.DataPoint": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.data_point"
+    },
+    "Jason.Encoder.Slackblocks.Objects.RawText": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.UserMultiSelect": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.multi_select_users"
+    },
+    "Slackblocks.Blocks.Section": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.section"
+    },
+    "Jason.Encoder.Slackblocks.RichText.User": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Blocks.Image": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.image"
+    },
+    "Slackblocks.Elements.Button": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.button"
+    },
+    "Jason.Encoder.Slackblocks.Objects.AreaChart": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Objects.AxisConfig": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Blocks.Header": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "blocks.header"
+    },
+    "Jason.Encoder.Slackblocks.Elements.ExternalSelect": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Objects.SlackIcon": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.RichText.List": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.MessageResponse": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Elements.PlainTextInput": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Attachment": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "messages.attachment"
+    },
+    "Slackblocks.Objects.SlackFile": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.slack_file"
+    },
+    "Jason.Encoder.Slackblocks.Objects.DataSeries": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.PlainTextInput": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.plain_text_input"
+    },
+    "Slackblocks.Elements.WorkflowButton": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.workflow_button"
+    },
+    "Slackblocks.Elements.NumberInput": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.number_input"
+    },
+    "Jason.Encoder.Slackblocks.Elements.StaticMultiSelect": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.RichText.Style": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Jason.Encoder.Slackblocks.Elements.FileInput": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Elements.ExternalMultiSelect": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/0",
+        "new!/1",
+        "new/0",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "elements.multi_select_external"
+    },
+    "Jason.Encoder.Slackblocks.Blocks.RichText": {
+      "functions": [
+        "__impl__/1",
+        "encode/2"
+      ],
+      "reason": "Jason dispatch delegates to checked output; direct protocol tests and native consumers cover it.",
+      "kind": "protocol"
+    },
+    "Slackblocks.Objects.InputParameter": {
+      "functions": [
+        "__struct__/0",
+        "__struct__/1",
+        "change!/2",
+        "change/2",
+        "new!/1",
+        "new/1"
+      ],
+      "reason": "Shared model; constructors and immutable edits checked by native conformance and API contract tests.",
+      "kind": "model",
+      "capability": "objects.input_parameter"
+    }
+  },
+  "schema_version": 1
+}

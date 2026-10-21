@@ -1,0 +1,64 @@
+---
+sidebar_position: 6
+toc_max_heading_level: 3
+---
+
+# Core Types
+
+This page documents the public C# API for core types, generated from the XML documentation of the compiled library. Values are immutable, constructors take named arguments and validate them, and read-only properties return what was passed.
+
+## ISlackObject
+
+A value that can be written as Slack Block Kit JSON.
+
+Every slackblocks type implements this interface, including the role interfaces such as [`IBlock`](/reference/csharp/blocks#iblock), so a collection of blocks can be serialized without knowing each concrete type.
+
+### ToJson
+
+Returns this value as compact Slack JSON.
+
+```csharp
+string ToJson()
+```
+
+**Returns:** Compact JSON text.
+
+### ToJsonNode
+
+Returns a mutable copy of this value's Slack JSON.
+
+```csharp
+JsonObject ToJsonNode()
+```
+
+**Returns:** A new JSON object.
+
+## SlackblocksInfo
+
+Package metadata shared with the slackblocks conformance corpus.
+
+## SlackObject
+
+Base class for every immutable slackblocks value. A value is validated once, when it is constructed, and cannot change afterwards.
+
+Two values are equal when they are the same type and produce the same Slack JSON, ignoring object key order. `Object.ToString` returns the compact JSON.
+
+### ToJson
+
+Returns this value as compact Slack JSON.
+
+```csharp
+public string ToJson()
+```
+
+**Returns:** Compact JSON text.
+
+### ToJsonNode
+
+Returns a mutable copy of this value's Slack JSON.
+
+```csharp
+public JsonObject ToJsonNode()
+```
+
+**Returns:** A new JSON object.

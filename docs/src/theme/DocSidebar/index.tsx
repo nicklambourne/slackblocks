@@ -19,6 +19,7 @@ const USAGE_ORDER = [
   "usage/installation",
   "usage/using_blocks",
   "usage/sending_messages",
+  "usage/erlang",
   "usage/cookbook",
   "usage/troubleshooting",
   "usage/compatibility",
@@ -101,12 +102,14 @@ function filterUsage(
 ): PropSidebarItemCategory {
   const positions = new Map(USAGE_ORDER.map((docId, index) => [docId, index]));
   const items = item.items
+    .filter(child => child.type !== "link" || child.docId !== "usage/erlang" || language === "elixir")
     .filter(
       (child) =>
         child.type !== "link" ||
         language === "python" ||
         language === "rust" ||
         language === "php" ||
+        language === "elixir" ||
         !child.docId ||
         !NON_PYTHON_HIDDEN_DOCS.has(child.docId),
     )
@@ -189,7 +192,8 @@ function filterReference(
       !isLanguageReference(child, "csharp") &&
       !isLanguageReference(child, "ruby") &&
       !isLanguageReference(child, "rust") &&
-      !isLanguageReference(child, "php"),
+      !isLanguageReference(child, "php") &&
+      !isLanguageReference(child, "elixir"),
   );
 
   return {
