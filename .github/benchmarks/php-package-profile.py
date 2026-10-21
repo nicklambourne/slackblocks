@@ -1,6 +1,6 @@
 """Observe existing PHP package checker commands; do not skip any verification."""
 from pathlib import Path
-import hashlib,json,os,runpy,subprocess,sys,tarfile,tempfile,time,zipfile
+import hashlib,json,os,runpy,shutil,subprocess,sys,tarfile,tempfile,time,zipfile
 source=Path(os.environ['SOURCE']).resolve(); root=Path(os.environ.get('PROFILE_ROOT') or str(Path(os.environ['RUNNER_TEMP'])/('php-package-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']+'-'+os.environ['PAIR']))).resolve();out=Path(os.environ['EVIDENCE']).resolve()/sys.argv[1];out.mkdir(parents=True)
 condition=sys.argv[1];sha='92740b4bf585de5b1a0c7619ce4f082a97d90532';root.mkdir(parents=True,exist_ok=True)
 original_run=subprocess.run
@@ -13,7 +13,7 @@ cache_before=sum(p.stat().st_size for p in cache.rglob('*') if p.is_file())
 assert (cache_before==0) if condition=='cold' else cache_before>=0
 record=dict(source=sha,condition=condition,pair=os.environ['PAIR'],runner=os.environ.get('RUNNER_NAME','local'),image=os.environ.get('ImageVersion'),success=False,commands=[],cache_bytes_before=cache_before)
 record['php']=subprocess.check_output(['php','-r','echo PHP_VERSION;'],text=True)
-record['composer']=subprocess.check_output(['composer','--version','--no-ansi'],text=True).strip()
+record['composer']=subprocess.check_output([shutil.which('composer'),'--version','--no-ansi'],text=True).strip()
 record['source_inputs']={p:hashlib.sha256(subprocess.check_output(['git','show',sha+':'+p],cwd=source)).hexdigest() for p in subprocess.check_output(['git','ls-files','composer.json','php'],cwd=source,text=True).splitlines()}
 start=time.monotonic()
 def timed(*args,**kwargs):
