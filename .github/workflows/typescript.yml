@@ -75,7 +75,7 @@ jobs:
 
       - name: Install dependencies
         if: needs.changes.outputs.relevant == 'true'
-        run: pnpm install --frozen-lockfile
+        run: pnpm --filter @nicklambourne/slackblocks... install --frozen-lockfile
 
       - name: Type check
         if: needs.changes.outputs.relevant == 'true'
