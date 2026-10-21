@@ -8126,7 +8126,7 @@ impl<'de> Deserialize<'de> for ConversationSelectElement {
 /// A calendar date picker.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element).
-
+/// initial_date must have the YYYY-MM-DD shape. Calendar validity is application-owned; some language date parsers additionally reject impossible calendar dates.
 #[derive(Clone, Debug, PartialEq)]
 pub struct DatePickerElement {
     action_id: Option<String>,
@@ -8330,6 +8330,14 @@ impl DatePickerElementBuilder {
                 "DatePickerElement.placeholder",
             )?;
         }
+        let wire = serde_json::to_value(&value).map_err(|e| {
+            ValidationError::new(
+                ErrorCategory::TypeMismatch,
+                "DatePickerElement",
+                e.to_string(),
+            )
+        })?;
+        crate::rules::validate("DatePickerElement", &wire, "DatePickerElement")?;
         Ok(value)
     }
 }
@@ -8825,7 +8833,7 @@ impl<'de> Deserialize<'de> for EmailInputElement {
 /// A menu for selecting multiple options loaded from your app.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
-
+/// focus_on_load is unsupported and must be omitted, including explicit false.
 #[derive(Clone, Debug, PartialEq)]
 pub struct ExternalMultiSelectElement {
     action_id: Option<String>,
@@ -8901,7 +8909,7 @@ impl ExternalMultiSelectElement {
     pub fn max_selected_items(&self) -> Option<i64> {
         self.max_selected_items
     }
-    /// Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+    /// Borrows or copies `focus_on_load`. Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected.
     pub fn focus_on_load(&self) -> Option<bool> {
         self.focus_on_load
     }
@@ -9006,7 +9014,7 @@ impl ExternalMultiSelectElementBuilder {
         self.max_selected_items = None;
         self
     }
-    /// Sets whether the element receives focus when the view opens. Only one element per view may do so.
+    /// Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected.
     pub fn focus_on_load(mut self, value: bool) -> Self {
         self.focus_on_load = Some(value);
         self
@@ -9081,6 +9089,15 @@ impl ExternalMultiSelectElementBuilder {
                 "ExternalMultiSelectElement.action_id",
             )?;
         }
+        if let Some(v) = &value.min_query_length {
+            if *v < 0 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "ExternalMultiSelectElement.min_query_length",
+                    "number outside field bounds",
+                ));
+            }
+        }
         if let Some(v) = &value.max_selected_items {
             if *v < 1 {
                 return Err(ValidationError::new(
@@ -9098,6 +9115,18 @@ impl ExternalMultiSelectElementBuilder {
                 "ExternalMultiSelectElement.placeholder",
             )?;
         }
+        let wire = serde_json::to_value(&value).map_err(|e| {
+            ValidationError::new(
+                ErrorCategory::TypeMismatch,
+                "ExternalMultiSelectElement",
+                e.to_string(),
+            )
+        })?;
+        crate::rules::validate(
+            "ExternalMultiSelectElement",
+            &wire,
+            "ExternalMultiSelectElement",
+        )?;
         Ok(value)
     }
 }
@@ -9365,6 +9394,15 @@ impl ExternalSelectElementBuilder {
                 Some(255),
                 "ExternalSelectElement.action_id",
             )?;
+        }
+        if let Some(v) = &value.min_query_length {
+            if *v < 0 {
+                return Err(ValidationError::new(
+                    ErrorCategory::OutOfRange,
+                    "ExternalSelectElement.min_query_length",
+                    "number outside field bounds",
+                ));
+            }
         }
         if let Some(v) = &value.placeholder {
             crate::rules::length(
@@ -10295,8 +10333,8 @@ pub struct NumberInputElement {
     action_id: Option<String>,
     is_decimal_allowed: bool,
     initial_value: Option<String>,
-    min_value: Option<f64>,
-    max_value: Option<f64>,
+    min_value: Option<String>,
+    max_value: Option<String>,
     dispatch_action_config: Option<DispatchActionConfiguration>,
     focus_on_load: Option<bool>,
     placeholder: Option<PlainText>,
@@ -10308,8 +10346,8 @@ pub struct NumberInputElementBuilder {
     action_id: Option<String>,
     is_decimal_allowed: Option<bool>,
     initial_value: Option<String>,
-    min_value: Option<f64>,
-    max_value: Option<f64>,
+    min_value: Option<String>,
+    max_value: Option<String>,
     dispatch_action_config: Option<DispatchActionConfiguration>,
     focus_on_load: Option<bool>,
     placeholder: Option<PlainTextInput>,
@@ -10361,13 +10399,13 @@ impl NumberInputElement {
     pub fn initial_value(&self) -> Option<&str> {
         self.initial_value.as_deref()
     }
-    /// Borrows or copies `min_value`. Sets the smallest accepted number.
-    pub fn min_value(&self) -> Option<f64> {
-        self.min_value
+    /// Borrows or copies `min_value`. Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+    pub fn min_value(&self) -> Option<&str> {
+        self.min_value.as_deref()
     }
-    /// Borrows or copies `max_value`. Sets the largest accepted number.
-    pub fn max_value(&self) -> Option<f64> {
-        self.max_value
+    /// Borrows or copies `max_value`. Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+    pub fn max_value(&self) -> Option<&str> {
+        self.max_value.as_deref()
     }
     /// Borrows or copies `dispatch_action_config`. Sets which user interactions send a block_actions payload.
     pub fn dispatch_action_config(&self) -> Option<&DispatchActionConfiguration> {
@@ -10442,9 +10480,9 @@ impl NumberInputElementBuilder {
         self.initial_value = None;
         self
     }
-    /// Sets the smallest accepted number.
-    pub fn min_value(mut self, value: f64) -> Self {
-        self.min_value = Some(value);
+    /// Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+    pub fn min_value(mut self, value: impl std::fmt::Display) -> Self {
+        self.min_value = Some(value.to_string());
         self
     }
     /// Omits `min_value`, including any model default.
@@ -10452,9 +10490,9 @@ impl NumberInputElementBuilder {
         self.min_value = None;
         self
     }
-    /// Sets the largest accepted number.
-    pub fn max_value(mut self, value: f64) -> Self {
-        self.max_value = Some(value);
+    /// Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.
+    pub fn max_value(mut self, value: impl std::fmt::Display) -> Self {
+        self.max_value = Some(value.to_string());
         self
     }
     /// Omits `max_value`, including any model default.
@@ -10510,21 +10548,7 @@ impl NumberInputElementBuilder {
         )?;
         let initial_value = self.initial_value;
         let min_value = self.min_value;
-        if min_value.is_some_and(|v| !v.is_finite()) {
-            return Err(ValidationError::new(
-                ErrorCategory::OutOfRange,
-                "NumberInputElement.min_value",
-                "expected a finite number",
-            ));
-        }
         let max_value = self.max_value;
-        if max_value.is_some_and(|v| !v.is_finite()) {
-            return Err(ValidationError::new(
-                ErrorCategory::OutOfRange,
-                "NumberInputElement.max_value",
-                "expected a finite number",
-            ));
-        }
         let dispatch_action_config = self.dispatch_action_config;
         let focus_on_load = self.focus_on_load;
         let placeholder = self
@@ -10597,8 +10621,8 @@ impl FromWire for NumberInputElement {
         let action_id = wire::field::<String>(&mut map, "action_id", path)?;
         let is_decimal_allowed = wire::field::<bool>(&mut map, "is_decimal_allowed", path)?;
         let initial_value = wire::field::<String>(&mut map, "initial_value", path)?;
-        let min_value = wire::field::<f64>(&mut map, "min_value", path)?;
-        let max_value = wire::field::<f64>(&mut map, "max_value", path)?;
+        let min_value = wire::field::<String>(&mut map, "min_value", path)?;
+        let max_value = wire::field::<String>(&mut map, "max_value", path)?;
         let dispatch_action_config =
             wire::field::<DispatchActionConfiguration>(&mut map, "dispatch_action_config", path)?;
         let focus_on_load = wire::field::<bool>(&mut map, "focus_on_load", path)?;
@@ -10818,7 +10842,7 @@ impl<'de> Deserialize<'de> for OverflowElement {
 /// A single-line or multi-line free-text input.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element).
-
+/// When both min_length and max_length are supplied, min_length must not exceed max_length; otherwise the input cannot be satisfied.
 #[derive(Clone, Debug, PartialEq)]
 pub struct PlainTextInputElement {
     action_id: Option<String>,
@@ -11126,6 +11150,14 @@ impl PlainTextInputElementBuilder {
                 "PlainTextInputElement.placeholder",
             )?;
         }
+        let wire = serde_json::to_value(&value).map_err(|e| {
+            ValidationError::new(
+                ErrorCategory::TypeMismatch,
+                "PlainTextInputElement",
+                e.to_string(),
+            )
+        })?;
+        crate::rules::validate("PlainTextInputElement", &wire, "PlainTextInputElement")?;
         Ok(value)
     }
 }
@@ -12047,12 +12079,17 @@ impl StaticMultiSelectElementBuilder {
             )?;
         }
         if let Some(v) = &value.options {
-            crate::rules::length(v.len(), None, Some(100), "StaticMultiSelectElement.options")?;
+            crate::rules::length(
+                v.len(),
+                Some(1),
+                Some(100),
+                "StaticMultiSelectElement.options",
+            )?;
         }
         if let Some(v) = &value.option_groups {
             crate::rules::length(
                 v.len(),
-                None,
+                Some(1),
                 Some(100),
                 "StaticMultiSelectElement.option_groups",
             )?;
@@ -12403,12 +12440,12 @@ impl StaticSelectElementBuilder {
             )?;
         }
         if let Some(v) = &value.options {
-            crate::rules::length(v.len(), None, Some(100), "StaticSelectElement.options")?;
+            crate::rules::length(v.len(), Some(1), Some(100), "StaticSelectElement.options")?;
         }
         if let Some(v) = &value.option_groups {
             crate::rules::length(
                 v.len(),
-                None,
+                Some(1),
                 Some(100),
                 "StaticSelectElement.option_groups",
             )?;
@@ -12477,7 +12514,7 @@ impl<'de> Deserialize<'de> for StaticSelectElement {
 /// A time-of-day picker.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element).
-
+/// initial_time must be HH:mm in 24-hour time, from 00:00 through 23:59.
 #[derive(Clone, Debug, PartialEq)]
 pub struct TimePickerElement {
     action_id: Option<String>,
@@ -12705,6 +12742,14 @@ impl TimePickerElementBuilder {
                 "TimePickerElement.placeholder",
             )?;
         }
+        let wire = serde_json::to_value(&value).map_err(|e| {
+            ValidationError::new(
+                ErrorCategory::TypeMismatch,
+                "TimePickerElement",
+                e.to_string(),
+            )
+        })?;
+        crate::rules::validate("TimePickerElement", &wire, "TimePickerElement")?;
         Ok(value)
     }
 }
@@ -19556,7 +19601,7 @@ impl<'de> Deserialize<'de> for HomeTabView {
 /// A complete payload for chat.postMessage and related Web API methods.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/methods/chat.postMessage).
-/// Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+/// Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message. At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
 #[derive(Clone, Debug, PartialEq)]
 pub struct MessagePayload {
     channel: String,
@@ -19888,7 +19933,7 @@ impl<'de> Deserialize<'de> for MessagePayload {
 /// A response body for slash commands and interaction response URLs.
 ///
 /// [Slack reference](https://docs.slack.dev/interactivity/handling-user-interaction#message_responses).
-/// Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+/// Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message. At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
 #[derive(Clone, Debug, PartialEq)]
 pub struct MessageResponse {
     blocks: Option<Vec<Block>>,
@@ -20570,7 +20615,7 @@ impl<'de> Deserialize<'de> for ModalView {
 /// A payload for incoming webhooks.
 ///
 /// [Slack reference](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks).
-/// Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+/// Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message. At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
 #[derive(Clone, Debug, PartialEq)]
 pub struct WebhookMessage {
     blocks: Option<Vec<Block>>,

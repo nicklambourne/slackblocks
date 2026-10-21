@@ -225,6 +225,35 @@ public final class Validator {
           objectAt(value.get("dispatch_action_config"), child(path, "dispatch_action_config")),
           child(path, "dispatch_action_config"));
     }
+    if (type.equals("multi_external_select") && value.containsKey("focus_on_load")) {
+      fail(
+          ErrorCategory.INVALID_USAGE,
+          child(path, "focus_on_load"),
+          "unsupported for external multi-select menus; omit this field");
+    }
+    if (type.equals("external_select") || type.equals("multi_external_select")) {
+      checkRange(
+          value,
+          "min_query_length",
+          path,
+          SlackLimits.SELECT_MIN_QUERY_LENGTH_MIN,
+          Integer.MAX_VALUE);
+    }
+    if (type.equals("datepicker")
+        && value.containsKey("initial_date")
+        && (!(value.get("initial_date") instanceof String text)
+            || !text.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}"))) {
+      fail(ErrorCategory.TYPE_MISMATCH, child(path, "initial_date"), "expected YYYY-MM-DD");
+    }
+    if (type.equals("timepicker")
+        && value.containsKey("initial_time")
+        && (!(value.get("initial_time") instanceof String text)
+            || !text.matches("([01][0-9]|2[0-3]):[0-5][0-9]"))) {
+      fail(
+          ErrorCategory.TYPE_MISMATCH,
+          child(path, "initial_time"),
+          "expected HH:mm in 24-hour time");
+    }
     if (MULTI_SELECT_TYPES.contains(type)) {
       checkRange(
           value,
@@ -277,6 +306,11 @@ public final class Validator {
         }
       }
       case "plain_text_input" -> {
+        Double minimum = number(value.get("min_length"));
+        Double maximum = number(value.get("max_length"));
+        if (minimum != null && maximum != null && minimum > maximum) {
+          fail(ErrorCategory.OUT_OF_RANGE, child(path, "min_length"), "cannot exceed max_length");
+        }
         checkRange(
             value,
             "min_length",
@@ -297,6 +331,15 @@ public final class Validator {
               SlackLimits.PLAIN_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH);
         }
       }
+      case "external_select",
+          "multi_external_select",
+          "users_select",
+          "multi_users_select",
+          "channels_select",
+          "multi_channels_select",
+          "conversations_select",
+          "multi_conversations_select" ->
+          checkOptionalText(value, "placeholder", path, SlackLimits.SELECT_PLACEHOLDER_MAX_LENGTH);
       case "email_text_input" ->
           checkOptionalText(
               value, "placeholder", path, SlackLimits.EMAIL_INPUT_PLACEHOLDER_MAX_LENGTH);
@@ -384,9 +427,9 @@ public final class Validator {
       case "url" -> stringAt(value.get("url"), child(path, "url"));
       case "static_select", "multi_static_select" -> validateStaticSelect(value, path);
       case "number_input" -> {
-        Double minimum = number(value.get("min_value"));
-        Double maximum = number(value.get("max_value"));
-        if (minimum != null && maximum != null && minimum > maximum) {
+        String minimum = decimalBound(value.get("min_value"), child(path, "min_value"));
+        String maximum = decimalBound(value.get("max_value"), child(path, "max_value"));
+        if (minimum != null && maximum != null && compareDecimal(minimum, maximum) > 0) {
           fail(ErrorCategory.OUT_OF_RANGE, path, "min_value cannot exceed max_value");
         }
         checkOptionalText(
@@ -534,13 +577,20 @@ public final class Validator {
     }
     if (hasOptions) {
       List<?> options = listAt(value.get("options"), child(path, "options"));
-      sliceLength(options, child(path, "options"), 0, SlackLimits.SELECT_OPTIONS_MAX_ITEMS);
+      sliceLength(
+          options,
+          child(path, "options"),
+          SlackLimits.SELECT_OPTIONS_MIN_ITEMS,
+          SlackLimits.SELECT_OPTIONS_MAX_ITEMS);
       validateOptions(options, child(path, "options"));
     }
     if (hasGroups) {
       List<?> groups = listAt(value.get("option_groups"), child(path, "option_groups"));
       sliceLength(
-          groups, child(path, "option_groups"), 0, SlackLimits.SELECT_OPTION_GROUPS_MAX_ITEMS);
+          groups,
+          child(path, "option_groups"),
+          SlackLimits.SELECT_OPTION_GROUPS_MIN_ITEMS,
+          SlackLimits.SELECT_OPTION_GROUPS_MAX_ITEMS);
       for (int index = 0; index < groups.size(); index++) {
         validateOptionGroup(
             objectAt(groups.get(index), child(path, "option_groups") + "[" + index + "]"),
@@ -1065,12 +1115,18 @@ public final class Validator {
       }
     }
     // Slack limits markdown block text and data table cell text across the whole message.
-    int[] totals = new int[2];
+    int[] totals = new int[3];
     addMessageTotals(value.get("blocks"), totals);
     if (value.get("attachments") instanceof List<?> attachments) {
       for (Object attachment : attachments) {
         addMessageTotals(objectAt(attachment, path).get("blocks"), totals);
       }
+    }
+    if (totals[2] > SlackLimits.MESSAGE_DATA_VISUALIZATIONS_MAX_ITEMS) {
+      fail(
+          ErrorCategory.LENGTH_EXCEEDED,
+          path,
+          "a message may contain at most two data visualization blocks");
     }
     if (totals[0] > SlackLimits.MARKDOWN_TOTAL_TEXT_MAX_LENGTH) {
       fail(
@@ -1092,14 +1148,14 @@ public final class Validator {
     }
   }
 
-  /**
-   * Adds markdown block text to {@code totals[0]} and data table cell text to {@code totals[1]}.
-   */
+  /** Adds markdown text, data table text and data visualization counts to the three totals. */
   private static void addMessageTotals(@Nullable Object value, int[] totals) {
     if (value instanceof Map<?, ?> map) {
       Object type = map.get("type");
       if ("markdown".equals(type) && map.get("text") instanceof String text) {
         totals[0] += text.codePointCount(0, text.length());
+      } else if ("data_visualization".equals(type)) {
+        totals[2]++;
       } else if ("data_table".equals(type)) {
         totals[1] += textCharacterCount(map.get("rows"));
       } else if ("container".equals(type)) {
@@ -1276,5 +1332,42 @@ public final class Validator {
 
   private static void fail(ErrorCategory category, String path, String message) {
     throw new ValidationException(category, path, message);
+  }
+
+  private record DecimalParts(int sign, String digits, java.math.BigInteger rank) {}
+
+  private static DecimalParts decimalParts(String text) {
+    String[] parts = text.toLowerCase(java.util.Locale.ROOT).split("e", -1);
+    java.math.BigInteger exponent =
+        parts.length == 2 ? new java.math.BigInteger(parts[1]) : java.math.BigInteger.ZERO;
+    String mantissa = parts[0].replaceFirst("^[+-]", "");
+    int dot = mantissa.indexOf('.');
+    int fraction = dot < 0 ? 0 : mantissa.length() - dot - 1;
+    String digits = mantissa.replace(".", "").replaceFirst("^0+", "");
+    int sign = digits.isEmpty() ? 0 : parts[0].startsWith("-") ? -1 : 1;
+    return new DecimalParts(
+        sign, digits, exponent.add(java.math.BigInteger.valueOf(digits.length() - fraction)));
+  }
+
+  private static int compareDecimal(String left, String right) {
+    DecimalParts a = decimalParts(left), b = decimalParts(right);
+    if (a.sign() != b.sign()) return Integer.compare(a.sign(), b.sign());
+    if (a.sign() == 0) return 0;
+    int rank = a.rank().compareTo(b.rank());
+    if (rank != 0) return rank * a.sign();
+    int width = Math.max(a.digits().length(), b.digits().length());
+    return (a.digits() + "0".repeat(width - a.digits().length()))
+            .compareTo(b.digits() + "0".repeat(width - b.digits().length()))
+        * a.sign();
+  }
+
+  private static @Nullable String decimalBound(@Nullable Object value, String path) {
+    if (value == null) return null;
+    if (!(value instanceof String))
+      fail(ErrorCategory.TYPE_MISMATCH, path, "expected a decimal string");
+    String text = (String) value;
+    if (!text.matches("[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?"))
+      fail(ErrorCategory.TYPE_MISMATCH, path, "expected a decimal string");
+    return text;
   }
 }

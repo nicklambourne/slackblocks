@@ -2,6 +2,16 @@
 # Each case is constructed through the public Ruby API by FixtureDriver.
 module InvalidCases
   IDS = %w[
+    external-query-negative
+    external-multi-query-negative
+    date-picker-invalid-format
+    time-picker-invalid-format
+    time-picker-invalid-range
+    static-select-empty-options
+    static-multi-select-empty-options
+    static-select-empty-groups
+    static-multi-select-empty-groups
+
     text-empty
     text-too-long
     button-action-id-too-long
@@ -76,6 +86,17 @@ module InvalidCases
     section-empty-fields
     static-select-options-and-groups
     image-url-and-slack-file
+    number-bound-inverted-large-integer
+    number-bound-inverted-long-fraction
+    number-bound-hex
+    number-bound-underscore
+    number-bound-leading-space
+    number-bound-trailing-space
+    number-bound-nan
+    number-bound-infinity
+    external-multi-focus-false
+    external-multi-focus-true
+    plain-text-input-inverted-range
     number-input-inverted-range
     context-invalid-element
     input-invalid-element
@@ -109,6 +130,7 @@ module InvalidCases
     data-table-page-size-too-large
     data-table-cell-text-empty
     data-table-content-too-long
+    message-too-many-charts
     data-visualization-title-too-long
     pie-chart-empty
     pie-chart-too-many-segments
@@ -249,6 +271,26 @@ module InvalidCases
     when "section-empty-fields" then typed("SectionBlock", "section", "fields", items)
     when "static-select-options-and-groups" then typed("StaticSelect", "static_select", "action_id", "a", "options", items(option("A", "a")), "option_groups", items(map("label", plain("A"), "options", items(option("B", "b")))))
     when "image-url-and-slack-file" then typed("ImageElement", "image", "alt_text", "image", "image_url", "https://example.com/image.png", "slack_file", map("id", "F0123ABC456"))
+    when "number-bound-inverted-large-integer" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "9007199254740993", "max_value", "9007199254740992")
+    when "number-bound-inverted-long-fraction" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "0.10000000000000001", "max_value", "0.1")
+    when "number-bound-hex" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "0x10")
+    when "number-bound-underscore" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "1_000")
+    when "number-bound-leading-space" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", " 1")
+    when "number-bound-trailing-space" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "1 ")
+    when "number-bound-nan" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "NaN")
+    when "number-bound-infinity" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "Infinity")
+    when "external-multi-focus-false" then typed("ExternalMultiSelectElement", "multi_external_select", "focus_on_load", false)
+    when "external-multi-focus-true" then typed("ExternalMultiSelectElement", "multi_external_select", "focus_on_load", true)
+    when "external-query-negative" then typed("ExternalSelectElement", "external_select", "min_query_length", -1)
+    when "external-multi-query-negative" then typed("ExternalMultiSelectElement", "multi_external_select", "min_query_length", -1)
+    when "date-picker-invalid-format" then typed("DatePickerElement", "datepicker", "initial_date", "February 29, 2028")
+    when "time-picker-invalid-format" then typed("TimePickerElement", "timepicker", "initial_time", "9:00")
+    when "time-picker-invalid-range" then typed("TimePickerElement", "timepicker", "initial_time", "25:99")
+    when "static-select-empty-options" then typed("StaticSelectElement", "static_select", "options", [])
+    when "static-multi-select-empty-options" then typed("StaticMultiSelectElement", "multi_static_select", "options", [])
+    when "static-select-empty-groups" then typed("StaticSelectElement", "static_select", "option_groups", [])
+    when "static-multi-select-empty-groups" then typed("StaticMultiSelectElement", "multi_static_select", "option_groups", [])
+    when "plain-text-input-inverted-range" then typed("PlainTextInput", "plain_text_input", "min_length", 20, "max_length", 10)
     when "number-input-inverted-range" then typed("NumberInput", "number_input", "action_id", "a", "is_decimal_allowed", true, "min_value", 2, "max_value", 1)
     when "context-invalid-element" then typed("ContextBlock", "context", "elements", items(divider))
     when "input-invalid-element" then typed("InputBlock", "input", "label", plain("Label"), "element", button)
@@ -282,6 +324,7 @@ module InvalidCases
     when "data-table-page-size-too-large" then data_table_case(valid_rows, "Names", "page_size", 101)
     when "data-table-cell-text-empty" then data_table_case(items(items(raw_text("Name")), items(raw_text(""))), "Names")
     when "data-table-content-too-long" then data_table_case(items(items(raw_text("Name")), items(raw_text(repeated("x", 20000)))), "Names")
+    when "message-too-many-charts" then invalid_case("Message", {"channel" => "C123", "blocks" => Array.new(3) { obj("data_visualization", "title", "Chart", "chart", obj("pie", "segments", items(segment("A", 1)))) }})
     when "data-visualization-title-too-long" then typed("DataVisualizationBlock", "data_visualization", "title", repeated("x", 51), "chart", obj("pie", "segments", items(segment("A", 1))))
     when "pie-chart-empty" then typed("PieChart", "pie", "segments", items)
     when "pie-chart-too-many-segments" then typed("PieChart", "pie", "segments", copies(13, ->(index) { segment("S", 1) }))

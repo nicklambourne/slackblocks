@@ -1,0 +1,21 @@
+[
+  {
+    "mrkdwn": true,
+    "text": "Only you",
+    "replace_original": false,
+    "response_type": "ephemeral"
+  },
+  {
+    "mrkdwn": true,
+    "text": "Everyone",
+    "replace_original": false,
+    "response_type": "in_channel"
+  },
+  {
+    "text": "Updated",
+    "replace_original": true
+  },
+  {
+    "delete_original": true
+  }
+]

@@ -9,6 +9,7 @@ namespace Slackblocks;
 /**
  * A calendar date picker.
  * @see https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element
+ * initial_date must have the YYYY-MM-DD shape. Calendar validity is application-owned; some language date parsers additionally reject impossible calendar dates.
  */
 final readonly class DatePickerElement extends Value implements Element, InputElement
 {

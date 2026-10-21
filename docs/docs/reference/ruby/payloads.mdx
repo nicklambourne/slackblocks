@@ -603,7 +603,7 @@ def self.new: (title: String | PlainText, blocks: Array[Block], ?close: (String 
 | `clear_on_close` | Sets whether closing this modal closes every view in its stack. |
 | `notify_on_close` | Sets whether Slack sends a view_closed event when the user closes the modal. |
 | `external_id` | Sets a workspace-unique identifier you can use to update the view later. |
-| `submit_disabled` | Sets whether the submit button starts disabled. Only valid in workflow configuration modals. |
+| `submit_disabled` | Sets whether the submit button starts disabled in workflow configuration modals only. Omit this field for ordinary views.open/views.push modals, including when false. The general ModalView value cannot infer its receiving workflow context. |
 | `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
 
 **Returns:** ModalView
@@ -726,7 +726,7 @@ def external_id: () -> (String)?
 
 ### submit_disabled
 
-Sets whether the submit button starts disabled. Only valid in workflow configuration modals. Wire key: submit_disabled.
+Sets whether the submit button starts disabled in workflow configuration modals only. Omit this field for ordinary views.open/views.push modals, including when false. The general ModalView value cannot infer its receiving workflow context. Wire key: submit_disabled.
 
 ```ruby
 def submit_disabled: () -> (bool)?

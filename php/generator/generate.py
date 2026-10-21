@@ -65,6 +65,8 @@ def signature(field, parameter=False):
         "textList": "array",
         "stringList": "array",
     }.get(kind, field.get("type"))
+    if field.get("coerce") == "decimal_string" and parameter:
+        base = "string|int|float"
     if kind == "text" and parameter:
         base += "|string"
     if not field.get("required"):
@@ -179,6 +181,8 @@ def generate(model, limits, vocab, spec_version):
         for f in fields:
             key = f["method"]
             val = "$" + key
+            if f.get("coerce") == "decimal_string":
+                val = f"Internal\\Rules::numberBound(${key}, '{name}.{f['wire']}')"
             if f["kind"] == "text":
                 val = f"is_string(${key}) ? new {'PlainText' if f.get('coerce') == 'plain_text' else 'MarkdownText'}(${key}) : ${key}"
             if f["kind"] in ("list", "rows", "stringList"):

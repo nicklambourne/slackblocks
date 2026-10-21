@@ -257,6 +257,23 @@ internal static partial class Validator
                 Child(path, "dispatch_action_config"));
         }
 
+        if (type == "multi_external_select" && value.ContainsKey("focus_on_load"))
+        {
+            Fail(ErrorCategory.InvalidUsage, Child(path, "focus_on_load"), "unsupported for external multi-select menus; omit this field");
+        }
+        if (type is "external_select" or "multi_external_select")
+        {
+            CheckRange(value, "min_query_length", path, SlackLimits.SelectMinQueryLengthMin, int.MaxValue);
+        }
+        if (type == "datepicker" && value.ContainsKey("initial_date") && (!JsonValues.IsString(value["initial_date"], out var date) || !Regex.IsMatch(date, "\\A[0-9]{4}-[0-9]{2}-[0-9]{2}\\z")))
+        {
+            Fail(ErrorCategory.TypeMismatch, Child(path, "initial_date"), "expected YYYY-MM-DD");
+        }
+        if (type == "timepicker" && value.ContainsKey("initial_time") && (!JsonValues.IsString(value["initial_time"], out var time) || !Regex.IsMatch(time, "\\A([01][0-9]|2[0-3]):[0-5][0-9]\\z")))
+        {
+            Fail(ErrorCategory.TypeMismatch, Child(path, "initial_time"), "expected HH:mm in 24-hour time");
+        }
+
         if (MultiSelectTypes.Contains(type))
         {
             CheckRange(value, "max_selected_items", path, SlackLimits.MultiSelectMaxSelectedItemsMin, int.MaxValue);
@@ -314,6 +331,11 @@ internal static partial class Validator
 
                 break;
             case "plain_text_input":
+                if (JsonValues.Number(value["min_length"]) is double minLength && JsonValues.Number(value["max_length"]) is double maxLength && minLength > maxLength)
+                {
+                    Fail(ErrorCategory.OutOfRange, Child(path, "min_length"), "cannot exceed max_length");
+                }
+
                 CheckRange(value, "min_length", path, SlackLimits.PlainTextInputMinLengthMin, SlackLimits.PlainTextInputMinLengthMax);
                 CheckRange(value, "max_length", path, SlackLimits.PlainTextInputMaxLengthMin, SlackLimits.PlainTextInputMaxLengthMax);
                 if (value.ContainsKey("placeholder"))
@@ -321,6 +343,16 @@ internal static partial class Validator
                     TextLength(value["placeholder"], Child(path, "placeholder.text"), 0, SlackLimits.PlainTextInputPlaceholderMaxLength);
                 }
 
+                break;
+            case "external_select":
+            case "multi_external_select":
+            case "users_select":
+            case "multi_users_select":
+            case "channels_select":
+            case "multi_channels_select":
+            case "conversations_select":
+            case "multi_conversations_select":
+                CheckOptionalText(value, "placeholder", path, SlackLimits.SelectPlaceholderMaxLength);
                 break;
             case "email_text_input":
                 CheckOptionalText(value, "placeholder", path, SlackLimits.EmailInputPlaceholderMaxLength);
@@ -385,13 +417,12 @@ internal static partial class Validator
                 ValidateStaticSelect(value, path);
                 break;
             case "number_input":
-                if (JsonValues.Number(value["min_value"]) is double minimum
-                    && JsonValues.Number(value["max_value"]) is double maximum
-                    && minimum > maximum)
+                var minimum = DecimalBound(value["min_value"], Child(path, "min_value"));
+                var maximum = DecimalBound(value["max_value"], Child(path, "max_value"));
+                if (minimum is not null && maximum is not null && CompareDecimal(value["min_value"]!.GetValue<string>(), value["max_value"]!.GetValue<string>()) > 0)
                 {
                     Fail(ErrorCategory.OutOfRange, path, "min_value cannot exceed max_value");
                 }
-
                 CheckOptionalText(value, "placeholder", path, SlackLimits.NumberInputPlaceholderMaxLength);
                 break;
             case "image":
@@ -549,14 +580,14 @@ internal static partial class Validator
         if (hasOptions)
         {
             var options = ListAt(value["options"], Child(path, "options"));
-            SliceLength(options, Child(path, "options"), 0, SlackLimits.SelectOptionsMaxItems);
+            SliceLength(options, Child(path, "options"), SlackLimits.SelectOptionsMinItems, SlackLimits.SelectOptionsMaxItems);
             ValidateOptions(options, Child(path, "options"));
         }
 
         if (hasGroups)
         {
             var groups = ListAt(value["option_groups"], Child(path, "option_groups"));
-            SliceLength(groups, Child(path, "option_groups"), 0, SlackLimits.SelectOptionGroupsMaxItems);
+            SliceLength(groups, Child(path, "option_groups"), SlackLimits.SelectOptionGroupsMinItems, SlackLimits.SelectOptionGroupsMaxItems);
             for (var index = 0; index < groups.Count; index++)
             {
                 var groupPath = $"{Child(path, "option_groups")}[{index}]";
@@ -1083,6 +1114,13 @@ internal static partial class Validator
         }
 
         // Slack limits markdown block text and data table cell text across the whole message.
+        var charts = ChartCount(value["blocks"]);
+        if (value["attachments"] is JsonArray chartAttachments)
+        {
+            foreach (var attachment in chartAttachments) charts += ChartCount(ObjectAt(attachment, path)["blocks"]);
+        }
+        if (charts > SlackLimits.MessageDataVisualizationsMaxItems)
+            Fail(ErrorCategory.LengthExceeded, path, "a message may contain at most two data visualization blocks");
         var markdownTotal = 0;
         var dataTableTotal = 0;
         AddMessageTotals(value["blocks"], ref markdownTotal, ref dataTableTotal);
@@ -1102,6 +1140,22 @@ internal static partial class Validator
         {
             Fail(ErrorCategory.LengthExceeded, path, $"data table content totals {dataTableTotal}, exceeding maximum {SlackLimits.DataTableTotalContentMaxLength}");
         }
+    }
+
+    private static int ChartCount(JsonNode? value)
+    {
+        if (value is JsonObject obj)
+        {
+            if (ObjectType(obj) == "data_visualization") return 1;
+            if (ObjectType(obj) == "container") return ChartCount(obj["child_blocks"]);
+        }
+        if (value is JsonArray array)
+        {
+            var total = 0;
+            foreach (var child in array) total += ChartCount(child);
+            return total;
+        }
+        return 0;
     }
 
     private static void AddMessageTotals(JsonNode? value, ref int markdownTotal, ref int dataTableTotal)
@@ -1308,4 +1362,34 @@ internal static partial class Validator
 
     private static void Fail(ErrorCategory category, string path, string reason) =>
         throw new ValidationException(category, path, reason);
+    private static int CompareDecimal(string left, string right)
+    {
+        static (int Sign, string Digits, System.Numerics.BigInteger Rank) Parts(string text)
+        {
+            var parts = text.Trim().ToLowerInvariant().Split('e');
+            var exponent = parts.Length == 2 ? System.Numerics.BigInteger.Parse(parts[1], System.Globalization.CultureInfo.InvariantCulture) : System.Numerics.BigInteger.Zero;
+            var mantissa = parts[0].TrimStart('+', '-');
+            var dot = mantissa.IndexOf('.');
+            var fraction = dot < 0 ? 0 : mantissa.Length - dot - 1;
+            var digits = mantissa.Replace(".", "", StringComparison.Ordinal).TrimStart('0');
+            var sign = digits.Length == 0 ? 0 : parts[0].StartsWith('-') ? -1 : 1;
+            return (sign, digits, exponent + digits.Length - fraction);
+        }
+        var a = Parts(left); var b = Parts(right);
+        if (a.Sign != b.Sign) return a.Sign.CompareTo(b.Sign);
+        if (a.Sign == 0) return 0;
+        var rank = a.Rank.CompareTo(b.Rank);
+        if (rank != 0) return rank * a.Sign;
+        var width = Math.Max(a.Digits.Length, b.Digits.Length);
+        return StringComparer.Ordinal.Compare(a.Digits.PadRight(width, '0'), b.Digits.PadRight(width, '0')) * a.Sign;
+    }
+
+    private static string? DecimalBound(JsonNode? value, string path)
+    {
+        if (value is null) return null;
+        if (!JsonValues.IsString(value, out var text) || !Regex.IsMatch(text, @"\A[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?\z"))
+        { Fail(ErrorCategory.TypeMismatch, path, "expected a decimal string"); return null; }
+        return text;
+    }
+
 }

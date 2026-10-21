@@ -1,5 +1,7 @@
 package slackblocks
 
+import "fmt"
+
 // Text sets a text-bearing field. Constructors coerce strings to the Slack
 // text-object form required by that field.
 func (b *builder) Text(value any) *builder { return b.set("text", value) }
@@ -388,7 +390,7 @@ func (b *builder) MaxSelectedItems(value int) *builder {
 }
 
 // MaxValue sets a numeric input maximum.
-func (b *builder) MaxValue(value float64) *builder { return b.set("max_value", value) }
+func (b *builder) MaxValue(value any) *builder { return b.numberBound("max_value", value) }
 
 // Metadata sets message metadata.
 func (b *builder) Metadata(value any) *builder { return b.set("metadata", value) }
@@ -403,7 +405,7 @@ func (b *builder) MinLines(value int) *builder { return b.set("min_lines", value
 func (b *builder) MinQueryLength(value int) *builder { return b.set("min_query_length", value) }
 
 // MinValue sets a numeric input minimum.
-func (b *builder) MinValue(value float64) *builder { return b.set("min_value", value) }
+func (b *builder) MinValue(value any) *builder { return b.numberBound("min_value", value) }
 
 // Mrkdwn controls fallback text parsing.
 func (b *builder) Mrkdwn(value bool) *builder { return b.set("mrkdwn", value) }
@@ -558,3 +560,16 @@ func (b *builder) Workflow(value any) *builder { return b.set("workflow", value)
 
 // Bold enables rich-text bold styling.
 func (b *builder) Bold(value bool) *builder { return b.set("bold", value) }
+
+// numberBound preserves decimal strings and accepts the existing numeric convenience inputs.
+func (b *builder) numberBound(field string, value any) *builder {
+	switch value.(type) {
+	case string, int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64:
+		return b.set(field, fmt.Sprint(value))
+	default:
+		if b.err == nil {
+			b.err = validationError(TypeMismatch, b.name+"."+field, "expected a numeric string or number")
+		}
+		return b
+	}
+}

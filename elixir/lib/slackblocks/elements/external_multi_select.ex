@@ -12,7 +12,7 @@ defmodule Slackblocks.Elements.ExternalMultiSelect do
   * `initial_options` — Adds options that are selected when the element loads. Each must match an option in the element. Optional; `nil` omits the field.
   * `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
   * `max_selected_items` — Sets the maximum number of items a user can select. Optional; `nil` omits the field.
-  * `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+  * `focus_on_load` — Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected. Optional; `nil` omits the field.
   * `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
   """
   alias Slackblocks.Internal.Value

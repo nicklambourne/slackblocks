@@ -12,6 +12,16 @@ defmodule Slackblocks.Internal.Rules do
     :ok
   end
 
+  defp local("ExternalMultiSelectElement", w, p) do
+    if Map.has_key?(w, "focus_on_load"),
+      do:
+        fail(
+          :invalid_usage,
+          p ++ ["focus_on_load"],
+          "unsupported for external multi-select menus; omit this field"
+        )
+  end
+
   defp local("SectionBlock", w, p) do
     if not Map.has_key?(w, "text") and Map.get(w, "fields", []) == [],
       do: fail(:missing_required, p, "expected text or fields")
@@ -32,6 +42,7 @@ defmodule Slackblocks.Internal.Rules do
     blocks = Map.get(w, "blocks", [])
     surface(blocks, "message", p ++ ["blocks"])
     combined = blocks ++ Enum.flat_map(Map.get(w, "attachments", []), &Map.get(&1, "blocks", []))
+    max_size(chart_count(combined), "message.data_visualizations.max_items", p)
     {markdown, cells} = totals(combined)
     max_size(markdown, "markdown.total_text.max_length", p)
     max_size(cells, "data_table.total_content.max_length", p)
@@ -111,9 +122,36 @@ defmodule Slackblocks.Internal.Rules do
       do: fail(:missing_required, p ++ ["trigger_actions_on"], "required field is missing")
   end
 
+  defp local("DatePickerElement", w, p) do
+    if w["initial_date"] != nil and
+         not Regex.match?(~r/\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/, w["initial_date"]),
+       do: fail(:type_mismatch, p ++ ["initial_date"], "expected YYYY-MM-DD")
+  end
+
+  defp local("TimePickerElement", w, p) do
+    if w["initial_time"] != nil and
+         not Regex.match?(~r/\A([01][0-9]|2[0-3]):[0-5][0-9]\z/, w["initial_time"]),
+       do: fail(:type_mismatch, p ++ ["initial_time"], "expected HH:mm in 24-hour time")
+  end
+
+  defp local("PlainTextInputElement", w, p) do
+    if w["min_length"] != nil and w["max_length"] != nil and
+         w["min_length"] > w["max_length"],
+       do: fail(:out_of_range, p ++ ["min_length"], "cannot exceed max_length")
+  end
+
   defp local("NumberInputElement", w, p) do
-    if w["min_value"] != nil and w["max_value"] != nil and w["min_value"] > w["max_value"],
-      do: fail(:out_of_range, p, "minimum exceeds maximum")
+    for field <- ["min_value", "max_value"], text = w[field], text != nil do
+      unless Regex.match?(
+               ~r/\A[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?\z/,
+               text
+             ),
+             do: fail(:type_mismatch, p ++ [field], "expected a decimal string")
+    end
+
+    if w["min_value"] != nil and w["max_value"] != nil and
+         decimal_greater?(w["min_value"], w["max_value"]),
+       do: fail(:out_of_range, p, "minimum exceeds maximum")
   end
 
   defp local("ChartSegment", w, p),
@@ -145,6 +183,40 @@ defmodule Slackblocks.Internal.Rules do
   end
 
   defp local(_name, _wire, _path), do: :ok
+
+  # Compare coefficients and arbitrary-size exponent ranks, without expanding exponent zeros.
+  defp decimal_greater?(left, right) do
+    {a, rank_a, x} = decimal_parts(left)
+    {b, rank_b, y} = decimal_parts(right)
+    width = max(byte_size(x), byte_size(y))
+    left_magnitude = {rank_a, String.pad_trailing(x, width, "0")}
+    right_magnitude = {rank_b, String.pad_trailing(y, width, "0")}
+
+    cond do
+      a != b -> a > b
+      a == 0 -> false
+      a > 0 -> left_magnitude > right_magnitude
+      true -> left_magnitude < right_magnitude
+    end
+  end
+
+  defp decimal_parts(text) do
+    [mantissa | exponent] = Regex.split(~r/[eE]/, text)
+    rank = String.to_integer(List.first(exponent) || "0")
+    unsigned = String.trim_leading(String.trim_leading(mantissa, "-"), "+")
+    [whole | fraction] = String.split(unsigned, ".")
+    fraction = List.first(fraction) || ""
+    digits = String.trim_leading(whole <> fraction, "0")
+
+    sign =
+      cond do
+        digits == "" -> 0
+        String.starts_with?(mantissa, "-") -> -1
+        true -> 1
+      end
+
+    {sign, rank + byte_size(digits) - byte_size(fraction), digits}
+  end
 
   defp exclusive(w, a, b, p) do
     if Map.has_key?(w, a) and Map.has_key?(w, b),
@@ -216,6 +288,16 @@ defmodule Slackblocks.Internal.Rules do
     do: Enum.sum(Enum.map(children, &cell_characters/1))
 
   defp cell_characters(_), do: 0
+
+  defp chart_count(blocks) do
+    Enum.reduce(blocks, 0, fn block, count ->
+      case block["type"] do
+        "data_visualization" -> count + 1
+        "container" -> count + chart_count(block["child_blocks"])
+        _ -> count
+      end
+    end)
+  end
 
   defp totals(blocks) do
     Enum.reduce(blocks, {0, 0}, fn block, {markdown, table} ->

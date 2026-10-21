@@ -5974,12 +5974,22 @@ fn external_multi_select_element_editing_and_ingress() -> Result<(), ValidationE
             .unwrap_or(Value::Null)
     );
     {
-        let edited = original
-            .clone()
-            .into_builder()
-            .focus_on_load(true)
-            .build()?;
-        assert_eq!(wire(edited)["focus_on_load"], Value::from(true));
+        assert!(
+            original
+                .clone()
+                .into_builder()
+                .focus_on_load(true)
+                .build()
+                .is_err()
+        );
+        assert!(
+            original
+                .clone()
+                .into_builder()
+                .focus_on_load(false)
+                .build()
+                .is_err()
+        );
     }
     {
         let edited = original
@@ -6933,7 +6943,7 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
     );
     {
         let edited = original.clone().into_builder().min_value(1.0_f64).build()?;
-        assert_eq!(wire(edited)["min_value"], serde_json::json!(1.0));
+        assert_eq!(wire(edited)["min_value"], serde_json::json!("1"));
     }
     {
         let edited = original.clone().into_builder().clear_min_value().build()?;
@@ -6948,7 +6958,7 @@ fn number_input_element_editing_and_ingress() -> Result<(), ValidationError> {
     );
     {
         let edited = original.clone().into_builder().max_value(1.0_f64).build()?;
-        assert_eq!(wire(edited)["max_value"], serde_json::json!(1.0));
+        assert_eq!(wire(edited)["max_value"], serde_json::json!("1"));
     }
     {
         let edited = original.clone().into_builder().clear_max_value().build()?;

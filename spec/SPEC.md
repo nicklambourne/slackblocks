@@ -1,6 +1,6 @@
 # slackblocks conformance specification
 
-Version 1.2.0 defines the language-neutral contract for slackblocks implementations.
+Version 1.3.0 defines the language-neutral contract for slackblocks implementations.
 
 For the end-to-end maintenance workflow, follow
 [Adding New Block Kit Features](../docs/docs/contributing/maintaining-block-kit.mdx),
@@ -48,3 +48,28 @@ Each implementation keeps a `conformance/skiplist.txt`. In any released state ev
 Every scalar leaf in `limits.json` must have a corresponding invalid case whose `constraint` is the leaf's dotted path, so every implementation demonstrably rejects values beyond each limit. Structural rules that are not scalar limits may have additional invalid cases. Implementations take their limit values from this file, by direct import or as checked-in generated constants that CI regenerates and diffs (see ADR 0002); the shared invalid-case corpus is what pins cross-language agreement.
 
 Character limits count Unicode code points in every implementation; the corpus includes astral-plane fixtures that pin this.
+
+### Number-input bound wire correction (1.3.0)
+
+`NumberInputElement.min_value` and `max_value` are optional finite numeric
+strings; native numeric convenience arguments must be converted before wire
+serialization. Compare supplied bounds numerically and reject a minimum greater
+than the maximum. Preserve omission, including when the other bound is zero.
+The shared string-bound fixture complements the omitted-bound fixture; native
+regressions cover numeric construction, invalid/nonfinite values, inversion,
+and existing supported parsing APIs.
+
+Evidence checked 2026-10-13: <https://docs.slack.dev/reference/block-kit/block-elements/number-input-element/>
+marks both bounds String. The stress run's eight ordinary S10 requests rejected
+numeric JSON bounds. Fresh `views.open` accepted conventional string bounds `0` and `100` from all
+eight native implementations; no live calls are part of deterministic conformance.
+The `decimal_string` coercion metadata describes native convenience inputs,
+not an extra Slack field.
+
+Number bound strings use slackblocks' explicit ASCII decimal grammar: `[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?`. Leading/trailing whitespace, hexadecimal, underscores, NaN and Infinity are rejected. This is the library's decimal-input policy, not a claim that Slack's structural `blocks.validate` endpoint rejects those spellings. Coefficients and exponent ranks are compared exactly without allocating zeros proportional to the exponent; original strings are preserved. Thus `0.1000` equals `1e-1`, and `1e309` is a finite decimal string even though it cannot be represented by a binary double. Slack delivery acceptance of unusual magnitudes remains an external gate.
+
+A fresh `views.open` control on 2026-10-13 rejected min-value strings `1e2`, `1e309`, `+10`, `.5`, `0x10`, `1_0`, ` 10 ` and `1.` as invalid numbers while `blocks.validate` accepted the same fields. Therefore shared decimal-grammar conformance is explicitly not a successful-delivery claim for these spellings. Conventional decimal bounds `0` and `100` passed all eight native modal probes. String preservation and numeric convenience source compatibility remain deliberate; no unverified universal magnitude/format limit is imposed.
+
+### Message chart count (SB-006)
+
+The [official data visualization reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block/) states a maximum of two data visualization blocks per message (checked 2026-10-13, reconfirmed 2026-10-21). Enforce `message.data_visualizations.max_items` across the message and attachment blocks after helper expansion, while leaving application metadata opaque. This is a message context rule, not a standalone chart or view rule. Prior live `chat.postMessage` rejected three charts even though `blocks.validate` accepted them; the stricter confirmed delivery rule governs this contract.

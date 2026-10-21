@@ -15,7 +15,7 @@ public sealed partial class ExternalSelectElement : global::Slackblocks.SlackObj
 {
     /// <summary>Creates and validates a <see cref="ExternalSelectElement"/>.</summary>
     /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
-    /// <param name="minQueryLength">How many characters the user must type before Slack queries your options endpoint.</param>
+    /// <param name="minQueryLength">How many characters the user must type before Slack queries your options endpoint. Must be at least 0.</param>
     /// <param name="initialOption">The option selected when the element loads. It must match an option in the element.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
     /// <param name="focusOnLoad">Whether the element receives focus when the view opens. Only one element per view may do so.</param>

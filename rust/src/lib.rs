@@ -3,6 +3,7 @@
 #![warn(missing_docs, unreachable_pub)]
 
 mod components;
+mod decimal_bound;
 mod error;
 mod generated;
 mod helpers;

@@ -1,0 +1,43 @@
+# Validation boundaries
+
+Slackblocks checks the shared model and its declared contextual rules. Successful
+local construction is not a Slack API receipt: permissions, enabled features,
+receiving surfaces and write-path rules still apply. The implementations also
+have different native normalization behavior.
+
+The following rules were reviewed against official Slack references and minimal
+`blocks.validate` view probes on 2026-10-13. The sanitized requests and responses
+are retained in
+[`spec/evidence/SB-013-validation-boundary.json`](https://github.com/nicklambourne/slackblocks/blob/master/spec/evidence/SB-013-validation-boundary.json).
+Those probes establish structural validation results, not `views.open` or message
+posting results.
+
+| Field or combination | Library guarantee | Evidence and boundary |
+| --- | --- | --- |
+| Plain-text input `min_length` and `max_length` | Each retains its documented scalar range; when both are supplied, minimum must not exceed maximum. Equality, zero minimum and omitted bounds are supported. | This is an explicit library consistency rule derived from the [minimum/maximum meanings](https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element/). Slack's structural validator accepted the reversed pair 20/10; this stricter library rule prevents an unsatisfiable input. |
+| External select `min_query_length`, single and multi | An explicitly supplied threshold must be nonnegative; zero is preserved. | Slack's [select](https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element/) and [multi-select](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element/) docs describe a character count. The validator accepted zero and rejected minus one for both families. |
+| Static select `options` and `option_groups`, single and multi | Each supplied list must contain at least one item; the existing maximum and mutual-exclusion rules still apply. | Empty lists were rejected with `min_items: 1`; corresponding one-item lists passed. This does not make an external options-response payload subject to static-menu constraints. |
+| Date picker `initial_date` | The string must have the ASCII `YYYY-MM-DD` shape. | The [date-picker reference](https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element/) specifies this format. The validator rejected a prose date but accepted `2028-02-30`. Python's existing calendar parser additionally rejects that impossible date; the other implementations preserve it. Validate calendar/business constraints in the application. |
+| Time picker `initial_time` | The string must be an ASCII, zero-padded 24-hour time from `00:00` through `23:59`. | The [time-picker reference](https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element/) specifies `HH:mm`; the validator rejected `9:00` and `25:99`, and accepted `23:59`. |
+| Image-element `alt_text` | The existing maximum remains; an empty string is permitted. | The [image reference](https://docs.slack.dev/reference/block-kit/block-elements/image-element/) does not establish a positive minimum. Empty and nonempty controls both passed structural validation. |
+
+Invalid ordered bounds and negative query thresholds use `out-of-range`;
+malformed dates/times use `type-mismatch`; empty static lists use
+`length-exceeded`. Go, TypeScript, Java, C#, Ruby, Rust, PHP and Elixir expose a field
+path with these categories. Python exposes the corresponding `RangeError`,
+`TypeMismatchError` or `LengthError` class and a diagnostic message; its existing
+calendar parser may raise `ValueError` for an impossible date.
+
+These checks deliberately change previously accepted invalid configurations.
+Remove an optional field to omit it. Native factories that accept an explicit
+empty static list now reject it, including the TypeScript legacy factories that
+previously omitted it. TypeScript `.options([])` records an empty list on a fresh
+builder and is rejected; on a populated builder it appends nothing. Java varargs
+setters treat zero arguments as no additions and leave an unset field omitted.
+The shared contract does not infer new calendar-validity or positive
+image-alt-text minimum rules from an application failure.
+
+Elixir constructors and immutable changes preserve omitted (`nil`) fields and
+explicit zero thresholds, reject supplied empty static lists, and validate the
+same rules on checked JSON decoding and serialization. Its date picker checks
+the documented shape; application code owns calendar and business constraints.
