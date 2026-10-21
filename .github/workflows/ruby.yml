@@ -1,197 +1,109 @@
-name: Ruby
-
+# Measurement-only branch: never merge, publish or deploy.
+name: Ruby controlled dependency benchmark
 on:
-  push:
-    branches: [master]
-    paths:
-      - "ruby/**"
-      - "spec/**"
-      - "docs/**"
-      - "README.md"
-      - "AGENTS.md"
-      - ".github/workflows/ruby.yml"
-  pull_request:
   workflow_dispatch:
-
 permissions:
   contents: read
-
 concurrency:
-  group: ruby-${{ github.ref }}
-  cancel-in-progress: true
-
+  group: ruby-controlled-benchmark-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
-  changes:
-    name: Detect relevant Ruby changes
-    runs-on: ubuntu-latest
-    outputs:
-      relevant: ${{ steps.filter.outputs.relevant }}
-    steps:
-      - name: Compare changed files against Ruby workflow scope
-        id: filter
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
-          if [ -z "$files" ]; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          if grep -qE '^(ruby/|spec/|docs/|README\.md$|AGENTS\.md$|\.github/workflows/ruby\.yml$)' <<<"$files"; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "relevant=false" >> "$GITHUB_OUTPUT"
-          fi
-
-  tests:
-    needs: changes
-    name: Ruby tests (${{ matrix.os }}, ${{ matrix.ruby }})
-    runs-on: ${{ matrix.os }}
-    env:
-      BUNDLE_WITHOUT: quality
-    defaults:
-      run:
-        shell: bash
-        working-directory: ruby
+  cold:
+    name: Ruby ${{ matrix.mode }} cold pair ${{ matrix.pair }}
+    runs-on: windows-2025
+    timeout-minutes: 30
     strategy:
       fail-fast: false
+      max-parallel: 3
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-2025]
-        ruby: ["3.3", "3.4", "4.0"]
-    steps:
-      - name: Check out repository
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-
-      - name: Install Ruby ${{ matrix.ruby }}
-        if: needs.changes.outputs.relevant == 'true'
-        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
-          working-directory: ruby
-
-      - name: Install Python for the model generator
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version: "3.13"
-
-      - name: Run Ruby unit and conformance tests
-        if: needs.changes.outputs.relevant == 'true'
-        run: bundle exec ruby -I test -e 'Dir[File.expand_path("test/*_test.rb")].sort.each { |path| require path }'
-
-  quality:
-    needs: changes
-    name: Ruby quality and package
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ruby
-    steps:
-      - name: Check out repository
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-
-      - name: Install Ruby 3.4
-        if: needs.changes.outputs.relevant == 'true'
-        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1
-        with:
-          ruby-version: "3.4"
-          bundler-cache: true
-          working-directory: ruby
-
-      - name: Install Python for the model generator
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version: "3.13"
-
-      - name: Verify generated sources
-        if: needs.changes.outputs.relevant == 'true'
-        run: python generator/generate_models.py --check
-
-      - name: Check Ruby formatting
-        if: needs.changes.outputs.relevant == 'true'
-        run: bundle exec standardrb
-
-      - name: Enforce branch coverage
-        if: needs.changes.outputs.relevant == 'true'
-        run: ruby bin/coverage
-
-      - name: Check library and consumer signatures
-        if: needs.changes.outputs.relevant == 'true'
-        run: bundle exec steep check --group=lib --group=consumer
-
-      - name: Confirm invalid consumer signatures fail for the expected reasons
-        if: needs.changes.outputs.relevant == 'true'
-        run: |
-          if bundle exec steep check --group=negative > "$RUNNER_TEMP/slackblocks-negative.log" 2>&1; then
-            echo "Steep accepted intentionally invalid examples" >&2
-            exit 1
-          fi
-          grep -Eq 'keyword.rb.*Unexpected keyword argument|Unexpected keyword argument' "$RUNNER_TEMP/slackblocks-negative.log"
-          grep -Eq 'enum.rb:.*Cannot pass a value' "$RUNNER_TEMP/slackblocks-negative.log"
-          grep -Eq 'nested.rb:.*Cannot pass a value' "$RUNNER_TEMP/slackblocks-negative.log"
-
-      - name: Check ActiveSupport JSON integration
-        if: needs.changes.outputs.relevant == 'true'
-        run: |
-          # shellcheck disable=SC2016
-          bundle exec ruby -I lib -e '
-            require "slackblocks"
-            abort "ActiveSupport loaded by slackblocks" if $LOADED_FEATURES.any? { |path| path.include?("active_support") }
-            require "active_support/json"
-            block = Slackblocks::SectionBlock.new(text: "Hello")
-            abort "ActiveSupport serialization differs" unless JSON.parse(ActiveSupport::JSON.encode(block)) == JSON.parse(block.to_json)
-          '
-          # shellcheck disable=SC2016
-          bundle exec ruby -I lib -e '
-            require "active_support/json"
-            require "slackblocks"
-            block = Slackblocks::SectionBlock.new(text: "Hello")
-            abort "Reverse ActiveSupport require order differs" unless JSON.parse(ActiveSupport::JSON.encode(block)) == JSON.parse(block.to_json)
-          '
-
-      - name: Build, install, and typecheck the gem outside the checkout
-        if: needs.changes.outputs.relevant == 'true'
-        run: bash bin/package-smoke
-
-  head:
-    needs: changes
-    name: Ruby head (informational)
-    runs-on: ubuntu-latest
-    continue-on-error: true
+        pair: [1, 2, 3]
+        mode: [baseline, candidate]
     env:
-      BUNDLE_WITHOUT: quality
-    defaults:
-      run:
-        shell: bash
-        working-directory: ruby
+      BENCH_PAIR: ${{ matrix.pair }}
+      BENCH_MODE: ${{ matrix.mode }}
+      BENCH_TEMP: cold
+      BUNDLE_WITHOUT: ${{ matrix.mode == 'candidate' && 'quality' || '' }}
     steps:
-      - name: Check out repository
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-
-      - name: Install Ruby head
-        if: needs.changes.outputs.relevant == 'true'
-        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1
+      - name: Check out measurement harness
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ruby-version: head
+          path: harness
+      - name: Check out fixed source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 34237ba0b90cec56618788cd4f559b90fd0febbf
+          path: source
+          fetch-depth: 0
+      - name: Install Python for the retained generator test
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13.16"
+      - name: Verify fixed inputs and select bundle
+        run: python harness/.github/benchmarks/ruby-native.py prepare
+      - name: Install Ruby and restore or populate bounded bundle cache
+        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a
+        with:
+          ruby-version: "3.4.11"
           bundler-cache: true
-          working-directory: ruby
-
-      - name: Install Python for the model generator
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+          working-directory: source/ruby
+          cache-version: ruby-groups-${{ github.run_id }}-pair-${{ matrix.pair }}-${{ matrix.mode }}
+      - name: Measure complete native tests and isolated package consumer
+        run: python harness/.github/benchmarks/ruby-native.py measure
+      - name: Preserve successful and failed evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          python-version: "3.13"
-
-      - name: Run Ruby tests
-        if: needs.changes.outputs.relevant == 'true'
-        run: bundle exec ruby -I test -e 'Dir[File.expand_path("test/*_test.rb")].sort.each { |path| require path }'
+          name: ruby-groups-${{ matrix.mode }}-cold-pair-${{ matrix.pair }}
+          path: benchmark-results
+          if-no-files-found: error
+          retention-days: 7
+  warm:
+    needs: cold
+    name: Ruby ${{ matrix.mode }} warm pair ${{ matrix.pair }}
+    runs-on: windows-2025
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        pair: [1, 2, 3]
+        mode: [baseline, candidate]
+    env:
+      BENCH_PAIR: ${{ matrix.pair }}
+      BENCH_MODE: ${{ matrix.mode }}
+      BENCH_TEMP: warm
+      BUNDLE_WITHOUT: ${{ matrix.mode == 'candidate' && 'quality' || '' }}
+    steps:
+      - name: Check out measurement harness
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: harness
+      - name: Check out fixed source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 34237ba0b90cec56618788cd4f559b90fd0febbf
+          path: source
+          fetch-depth: 0
+      - name: Install Python for the retained generator test
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13.16"
+      - name: Verify fixed inputs and select bundle
+        run: python harness/.github/benchmarks/ruby-native.py prepare
+      - name: Install Ruby and restore or populate bounded bundle cache
+        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a
+        with:
+          ruby-version: "3.4.11"
+          bundler-cache: true
+          working-directory: source/ruby
+          cache-version: ruby-groups-${{ github.run_id }}-pair-${{ matrix.pair }}-${{ matrix.mode }}
+      - name: Measure complete native tests and isolated package consumer
+        run: python harness/.github/benchmarks/ruby-native.py measure
+      - name: Preserve successful and failed evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ruby-groups-${{ matrix.mode }}-warm-pair-${{ matrix.pair }}
+          path: benchmark-results
+          if-no-files-found: error
+          retention-days: 7
