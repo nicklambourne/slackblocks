@@ -1,4 +1,5 @@
-// Identical, observation-only instrumentation in both benchmark variants.
+// Identical timing instrumentation in both variants. Stabilize only the default
+// cache-busting hash input traversal; filesystem enumeration order is not content.
 const Module = require('node:module');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -12,6 +13,11 @@ const readPromise = promises.readFile;
 promises.readFile = function(file, ...args) { if (String(file).endsWith('.html')) metrics.html_reads++; return readPromise.call(this, file, ...args); };
 Module._load = function(request, ...args) {
   const value = original.call(this, request, ...args);
+  if (request === 'klaw-sync' && args[0]?.filename.endsWith('/getIndexHash.js')) {
+    return function(...params) {
+      return value(...params).sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+    };
+  }
   if (!value || (typeof value !== 'object' && typeof value !== 'function') || wrapped.has(value)) return value;
   for (const [name, metric, async] of [['scanDocuments', 'scan_s', true], ['buildIndex', 'index_s', false]]) {
     if (typeof value[name] !== 'function') continue;

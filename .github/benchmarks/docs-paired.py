@@ -5,8 +5,10 @@ import json
 import os
 import subprocess
 import time
+import tarfile
+import re
 
-SOURCE = 'c4d3e55997d1015abd8e13d11e607fc00fb61490'
+SOURCE = '8213ece8b89d58bc4b0fdd06fcb1b47775b31c70'
 repo = Path.cwd()
 harness = repo / '.github/benchmarks'
 pair = int(os.environ['BENCH_PAIR'])
@@ -38,13 +40,14 @@ def size(folder):
 modes = ['baseline', 'candidate'] if pair % 2 else ['candidate', 'baseline']
 # Cold means empty task-owned dependency/application caches. Hosted image/tool caches and
 # OS page caches cannot be cleared and are not claimed cold. Warm uses a fresh checkout.
+# Checkout and active cache paths stay identical across variants to avoid path-derived bundle IDs.
 for mode in modes:
-    cache = base / f'{mode}-cache'
+    cache = base / 'active-cache'
     cache.mkdir()
     for state in ['cold', 'warm']:
         dest = results / f'{mode}-{state}'
         dest.mkdir()
-        work = base / f'{mode}-{state}'
+        work = base / 'work'
         env = os.environ.copy()
         env.update(UV_CACHE_DIR=str(cache/'uv'), CARGO_HOME=str(cache/'cargo'),
                    GOMODCACHE=str(cache/'gomod'), GOCACHE=str(cache/'gobuild'),
@@ -81,6 +84,12 @@ for mode in modes:
             command(['git','diff','--exit-code','--','docs/legacy/manifest.json','docs/versioned_docs','docs/versioned_sidebars','docs/static/img/legacy'],work,env,dest,'frozen-output')
             command(['git','diff','--exit-code','--','pnpm-lock.yaml','python/uv.lock','rust/Cargo.lock','docs/examples/rust/Cargo.lock','php/composer.lock','elixir/mix.lock'],work,env,dest,'dependency-inputs')
             command(['node',str(harness/'docs-manifest.cjs'),str(work),str(dest/'manifest.json')],work,env,dest,'manifest')
+            # Retain actual non-index files for diagnosing any comparison failure.
+            # Full search documents/postings/rankings remain in the canonical manifest.
+            with tarfile.open(dest/'published-files.tar.gz', 'w:gz') as archive:
+                for item in sorted((work/'docs/build').rglob('*')):
+                    if item.is_file() and not re.fullmatch(r'search-index(?:-[a-z]+)?\.json', item.name):
+                        archive.add(item, arcname=str(item.relative_to(work/'docs/build')), recursive=False)
             record['success'] = True
         finally:
             record['cache_bytes_after'] = size(cache)
@@ -89,6 +98,8 @@ for mode in modes:
             (results/'runs.json').write_text(json.dumps(records,indent=2))
         # Only this benchmark's successful disposable checkout is removed, after evidence capture.
         command(['git','worktree','remove','--force',str(work)],repo,env,dest,'cleanup')
+
+    cache.rename(base / f'{mode}-cache')
 
 reference = json.loads((results/'baseline-cold/manifest.json').read_text())
 for row in records:
