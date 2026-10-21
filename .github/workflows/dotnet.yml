@@ -1,185 +1,135 @@
-name: .NET CI
-
+# Measurement-only workflow. Never merge or publish.
+name: Windows runtime controlled benchmark
 on:
-  push:
-    branches: [master]
-    paths:
-      - "csharp/**"
-      - "spec/**"
-      - "java/generator/generate_models.py"
-      - "docs/docs/**"
-      - "docs/examples/csharp/**"
-      - "docs/examples/section_hello.json"
-      - "README.md"
-      - ".github/workflows/dotnet.yml"
-  pull_request:
   workflow_dispatch:
-
 permissions:
   contents: read
-
-concurrency:
-  group: dotnet-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
-  DOTNET_NOLOGO: "1"
-
 jobs:
-  changes:
-    name: Detect relevant changes
-    runs-on: ubuntu-latest
-    outputs:
-      relevant: ${{ steps.filter.outputs.relevant }}
+  locks:
+    name: Freeze NuGet dependency inputs
+    runs-on: windows-latest
     steps:
-      - name: Compare changed files against this workflow's scope
-        id: filter
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: dfd1d4bab345abfe150ab56d8268479aaf56bcf2
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          dotnet-version: '10.0.402'
+      - name: Freeze exact dependency locks
+        shell: pwsh
         run: |
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
-          if [ -z "$files" ]; then
-            # Fail open: if the file list cannot be read, run the real checks.
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          if grep -qE '^(csharp/|spec/|java/generator/generate_models\.py$|docs/docs/|docs/examples/csharp/|docs/examples/section_hello\.json$|README\.md$|\.github/workflows/dotnet\.yml$)' <<<"$files"; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "relevant=false" >> "$GITHUB_OUTPUT"
-          fi
-
-  test:
-    needs: changes
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
+          dotnet restore csharp/Slackblocks.sln --use-lock-file --force-evaluate
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          New-Item -ItemType Directory -Force locks/src/Slackblocks, locks/tests/Slackblocks.Tests | Out-Null
+          Copy-Item csharp/src/Slackblocks/packages.lock.json locks/src/Slackblocks/packages.lock.json
+          Copy-Item csharp/tests/Slackblocks.Tests/packages.lock.json locks/tests/Slackblocks.Tests/packages.lock.json
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: fixed-nuget-locks
+          path: locks
+          if-no-files-found: error
+          retention-days: 14
+  compare:
+    needs: locks
+    name: Windows runtime ${{ matrix.pair }} ${{ matrix.variant }}
+    runs-on: windows-latest
+    timeout-minutes: 35
     strategy:
       fail-fast: false
+      max-parallel: 3
       matrix:
-        include:
-          # The oldest supported SDK builds and tests net8.0 only.
-          - name: .NET 8 SDK
-            os: ubuntu-latest
-            sdk: "8.0.x"
-            pin: true
-          # The current SDK also runs the suite on the .NET 10 runtime, and owns the
-          # formatting and generated-source checks.
-          - name: .NET 10 SDK
-            os: ubuntu-latest
-            sdk: |
-              8.0.x
-              10.0.x
-            pin: false
-            checks: true
-          - name: .NET 10 SDK on Windows
-            os: windows-latest
-            sdk: "10.0.x"
-            runtime: "8.0"
-            pin: false
-    # Every step is gated, not the job: a skipped matrix job reports one check under its
-    # unexpanded name, which would leave the required checks pending.
+        pair: [1, 2, 3]
+        variant: [baseline, candidate]
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+      DOTNET_MULTILEVEL_LOOKUP: '0'
+      VARIANT: ${{ matrix.variant }}
+      PAIR: ${{ matrix.pair }}
+      SOURCE: ${{ github.workspace }}/source
+      EVIDENCE: ${{ github.workspace }}/evidence
+      LOCKS: ${{ github.workspace }}/locks
     steps:
-      - name: Check out repository
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/checkout@v7
-
-      - name: Install .NET
-        if: needs.changes.outputs.relevant == 'true'
-        id: dotnet
-        uses: actions/setup-dotnet@v6
+      - name: Check out measurement harness
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          dotnet-version: ${{ matrix.sdk }}
-
-      - name: Install the older Windows test runtime
-        if: needs.changes.outputs.relevant == 'true' && matrix.runtime
+          path: harness
+      - name: Check out fixed source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: dfd1d4bab345abfe150ab56d8268479aaf56bcf2
+          path: source
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13.16'
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53
+        with:
+          name: fixed-nuget-locks
+          path: locks
+      - name: Set fresh private install and cache paths
         shell: pwsh
-        env:
-          RUNTIME_CHANNEL: ${{ matrix.runtime }}
         run: |
-          # Keep SDK10's host; restore obtains net8 targeting packs for compilation.
-          $installer = Join-Path $env:RUNNER_TEMP "dotnet-install-runtime.ps1"
-          Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/install-scripts/e5cf1dd2d1540ed05ac84f8eb8c5cdec2807621e/src/dotnet-install.ps1" -OutFile $installer
-          $expected = "3bb07bc8025211836c1e4f9d3f6a044e55b1fb6eec518a6c78851d04e210442b"
-          if ((Get-FileHash $installer -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) {
-            throw "Unexpected Microsoft runtime installer checksum"
-          }
-          & $installer -Runtime dotnet -Channel $env:RUNTIME_CHANNEL -InstallDir $env:DOTNET_ROOT -Architecture x64 -NoPath -SkipNonVersionedFiles
+          $root = Join-Path $env:RUNNER_TEMP 'windows-runtime-benchmark'
+          if (Test-Path $root) { throw 'Private benchmark root already exists' }
+          New-Item -ItemType Directory $root | Out-Null
+          "BENCH_ROOT=$root" >> $env:GITHUB_ENV
+          "DOTNET_INSTALL_DIR=$root/dotnet" >> $env:GITHUB_ENV
+          "DOTNET_CLI_HOME=$root/cli-home" >> $env:GITHUB_ENV
+          "NUGET_PACKAGES=$root/nuget" >> $env:GITHUB_ENV
+          "NUGET_HTTP_CACHE_PATH=$root/nuget-http" >> $env:GITHUB_ENV
+          New-Item -ItemType Directory evidence | Out-Null
+          git -C harness rev-parse HEAD > evidence/harness-commit.txt
+      - name: cold setup baseline SDK8 and SDK10
+        if: matrix.variant == 'baseline'
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          dotnet-version: |
+            8.0.426
+            10.0.402
+      - name: cold setup candidate SDK10
+        if: matrix.variant == 'candidate'
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          dotnet-version: '10.0.402'
+      - name: cold install candidate runtime8
+        if: matrix.variant == 'candidate'
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:BENCH_ROOT 'dotnet-install.ps1'
+          Invoke-WebRequest 'https://raw.githubusercontent.com/dotnet/install-scripts/e5cf1dd2d1540ed05ac84f8eb8c5cdec2807621e/src/dotnet-install.ps1' -OutFile $installer
+          if ((Get-FileHash $installer -Algorithm SHA256).Hash.ToLowerInvariant() -ne '3bb07bc8025211836c1e4f9d3f6a044e55b1fb6eec518a6c78851d04e210442b') { throw 'Unexpected installer checksum' }
+          & $installer -Runtime dotnet -Version '8.0.32' -InstallDir $env:DOTNET_INSTALL_DIR -Architecture x64 -NoPath -SkipNonVersionedFiles
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          dotnet --info
-          dotnet --list-runtimes
-
-      - name: Pin the SDK under test
-        if: needs.changes.outputs.relevant == 'true' && matrix.pin
-        working-directory: csharp
-        run: dotnet new globaljson --sdk-version "${{ steps.dotnet.outputs.dotnet-version }}" --roll-forward latestPatch --force
-
-      - name: Verify generated model sources are current
-        if: needs.changes.outputs.relevant == 'true' && matrix.checks
-        run: |
-          python3 csharp/generator/generate_models.py
-          git diff --exit-code -- csharp/src/Slackblocks/Generated
-
-      - name: Check formatting
-        if: needs.changes.outputs.relevant == 'true' && matrix.checks
-        working-directory: csharp
-        run: dotnet format Slackblocks.sln --verify-no-changes
-
-      - name: Build and test
-        if: needs.changes.outputs.relevant == 'true'
-        working-directory: csharp
-        run: dotnet test Slackblocks.sln --configuration Release --collect "XPlat Code Coverage" --results-directory artifacts/coverage
-
-  package:
-    needs: changes
-    name: NuGet package
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/checkout@v7
-
-      - name: Install .NET
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/setup-dotnet@v6
+      - name: cold full checks and isolated local package consumer
+        run: python harness/.github/benchmarks/windows-benchmark.py cold
+      - name: warm setup baseline SDK8 and SDK10
+        if: matrix.variant == 'baseline'
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
         with:
-          dotnet-version: "10.0.x"
-
-      - name: Pack with package validation
-        if: needs.changes.outputs.relevant == 'true'
-        working-directory: csharp
-        run: dotnet pack src/Slackblocks/Slackblocks.csproj --configuration Release --output artifacts/package
-
-      - name: Verify package contents
-        if: needs.changes.outputs.relevant == 'true'
-        working-directory: csharp/artifacts/package
-        run: |
-          set -euo pipefail
-          version=$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' ../../src/Slackblocks/Slackblocks.csproj)
-          package="Slackblocks.$version.nupkg"
-          test -f "$package"
-          test -f "Slackblocks.$version.snupkg"
-          contents=$(unzip -Z1 "$package")
-          for expected in README.md LICENSE LICENSE.BSD-3-Clause lib/net8.0/Slackblocks.dll lib/net8.0/Slackblocks.xml; do
-            grep -qx "$expected" <<<"$contents" || { echo "::error::$package is missing $expected"; exit 1; }
-          done
-
-      - name: Push to a local feed without publishing
-        if: needs.changes.outputs.relevant == 'true'
-        working-directory: csharp/artifacts
-        run: |
-          mkdir -p local-feed
-          dotnet nuget push "package/*.nupkg" --source "$PWD/local-feed"
-          test -n "$(find local-feed -name '*.nupkg' -print -quit)"
-
-      - name: Upload package
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/upload-artifact@v7
+          dotnet-version: |
+            8.0.426
+            10.0.402
+      - name: warm setup candidate SDK10
+        if: matrix.variant == 'candidate'
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
         with:
-          name: nuget-package
-          path: csharp/artifacts/package/*
+          dotnet-version: '10.0.402'
+      - name: warm install candidate runtime8
+        if: matrix.variant == 'candidate'
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:BENCH_ROOT 'dotnet-install.ps1'
+          Invoke-WebRequest 'https://raw.githubusercontent.com/dotnet/install-scripts/e5cf1dd2d1540ed05ac84f8eb8c5cdec2807621e/src/dotnet-install.ps1' -OutFile $installer
+          if ((Get-FileHash $installer -Algorithm SHA256).Hash.ToLowerInvariant() -ne '3bb07bc8025211836c1e4f9d3f6a044e55b1fb6eec518a6c78851d04e210442b') { throw 'Unexpected installer checksum' }
+          & $installer -Runtime dotnet -Version '8.0.32' -InstallDir $env:DOTNET_INSTALL_DIR -Architecture x64 -NoPath -SkipNonVersionedFiles
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: warm full checks and isolated local package consumer
+        run: python harness/.github/benchmarks/windows-benchmark.py warm
+      - name: Preserve complete results and failures
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: windows-runtime-${{ matrix.pair }}-${{ matrix.variant }}
+          path: evidence
           if-no-files-found: error
+          retention-days: 14
