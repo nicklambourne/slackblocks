@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Migration
 
@@ -353,6 +353,38 @@ native plain-text or mrkdwn default. Enums use cases such as
 a field; explicit null inside a `JsonObject` is preserved.
 
 </PHP>
+<Elixir>
+
+## Starting with Elixir
+
+2.8.0 is the first planned Elixir release, so there is no older Elixir API to migrate.
+Use native constructors, lists and atom enums rather than translating another
+language's builder chains. Names use Slack's wire `snake_case`.
+
+```elixir
+alias Slackblocks.{Blocks.Section, Objects.MarkdownText}
+original = Section.new!(text: "Before")
+{:ok, updated} = Section.change(original, text: "After", block_id: "status")
+%MarkdownText{text: "Before"} = original.text
+%MarkdownText{text: "After"} = updated.text
+Slackblocks.to_map!(updated)
+```
+
+Constructor binaries are converted to the correct text object. Direct struct
+edits require the actual typed value and are checked on output. `change/2`
+retains unspecified fields and validates an edit atomically. Explicit `nil`
+clears optional fields; it cannot clear a required field.
+
+Parsing preserves absent optional fields as `nil`, while construction applies
+declared defaults. `Message` defaults to `text: ""` and `mrkdwn: true`;
+block IDs are never generated. Use checked `decode/2` for known model/role JSON.
+Arbitrary Slack event payloads belong to your application's event decoder.
+
+When adding slackblocks to an existing application, rebuild Jason's optional
+Decimal support as described in [Installation](installation). Keep application
+locks and recompile dependencies/protocols before producing an OTP release.
+
+</Elixir>
 </LanguageContent>
 
 ## Number-input bounds in spec 1.3.0
@@ -363,7 +395,7 @@ numbers, which ordinary Slack modal writes rejected. The native APIs now emit
 strings and compare the bounds numerically, rejecting inverted ranges, invalid
 strings, and nonfinite numeric values. Omitted bounds remain omitted.
 
-Numeric construction remains available: Python, TypeScript, Go, Ruby and PHP
+Numeric construction remains available: Python, TypeScript, Go, Ruby, PHP and Elixir
 accept a numeric convenience argument or a string; Java has string and numeric
 builder overloads; Rust setters accept a displayable numeric value or string.
 C# uses the public `NumberInputBound` scalar with implicit string, integer,
@@ -374,14 +406,15 @@ capability and is exercised by its constructor and conformance tests.
 
 Getters and serialized values now expose strings in every language. In
 particular, Java's `getMinValue`/`getMaxValue` now return `Optional<String>`,
-C# properties return `string?`, and Rust getters return `Option<&str>`. This is
+C# properties return `string?`, and Rust getters return `Option<&str>`.
+Elixir struct fields contain `binary() | nil`; keyword constructors and `change/2` retain numeric conveniences, while parsed maps and direct struct edits must use strings. This is
 a deliberate source/wire contract correction: callers that inspect numeric
 getters or JSON numbers must migrate. Pass strings when decimal spelling or
 integer precision matters. This does not normalize `initial_value` or establish
 a trailing-zero prohibition; that separate Slack runtime discrepancy remains
 documented in [troubleshooting](./troubleshooting.mdx). Package versions remain
-2.7.0 during unreleased remediation; no release is implied by the spec bump.
+2.8.0 during unreleased remediation; no release is implied by the spec bump.
 
 Bounds use signed ASCII decimal/scientific strings (for example `-1.25`, `.5`, `2.` or `1e-3`). Whitespace, underscores, hex and nonfinite spellings are rejected. Comparisons preserve precision beyond floating point, including long fractions and integers above 2^53. Equivalent strings such as `0.1000` and `1e-1` remain unchanged on the wire. The library accepts mathematically finite strings such as `1e309`; this does not establish Slack delivery support for every magnitude.
 
-Fresh `views.open` probes rejected bound strings `1e2`, `1e309`, `+10`, `.5`, `0x10`, `1_0`, ` 10 ` and `1.`, although `blocks.validate` accepted them. For ordinary delivery, use conventional decimal strings such as `"0"`, `"12.5"` and `"100"`; the preserved scientific/alternate forms remain library inputs rather than a Slack delivery guarantee. Native numeric convenience conversions may also produce scientific notation for very large or small values. Applications targeting those magnitudes should test their final native payload against the receiving Slack API.
+Recorded `views.open` probes on 2026-10-13 rejected bound strings `1e2`, `1e309`, `+10`, `.5`, `0x10`, `1_0`, ` 10 ` and `1.`, although `blocks.validate` accepted them. For ordinary delivery, use conventional decimal strings such as `"0"`, `"12.5"` and `"100"`; the preserved scientific/alternate forms remain library inputs rather than a Slack delivery guarantee. Native numeric convenience conversions may also produce scientific notation for very large or small values. Applications targeting those magnitudes should test their final native payload against the receiving Slack API.
