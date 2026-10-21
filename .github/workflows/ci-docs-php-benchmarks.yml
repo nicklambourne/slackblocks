@@ -1,0 +1,55 @@
+name: PHP documentation dependencies controlled comparison
+on:
+  push:
+    branches: [codex/ci-docs-php-benchmarks]
+    paths: [.github/workflows/ci-docs-php-benchmarks.yml, .github/benchmarks/docs-php-deps.py]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        pair: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: harness
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: eeddd9f19de4c22426527683b3331e9f2b864773
+          path: source
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962
+        with:
+          php-version: '8.2.34'
+          tools: composer:2.10.3
+          coverage: none
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22.23.3'
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13.16'
+      - name: Paired cold and warm installs with all PHP docs consumers
+        env:
+          SAMPLE_PAIR: ${{ matrix.pair }}
+          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ github.token }}"}}'
+        run: |
+          set -euo pipefail
+          policies="baseline candidate"
+          if [ "$SAMPLE_PAIR" = "2" ]; then policies="candidate baseline"; fi
+          for policy in $policies; do
+            python harness/.github/benchmarks/docs-php-deps.py --source source \
+              --output "evidence/$policy" --variant "$policy" --pair "$SAMPLE_PAIR" \
+              --cache "$RUNNER_TEMP/docs-php-${{ github.run_id }}-${{ github.run_attempt }}-$policy-$SAMPLE_PAIR"
+          done
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: php-docs-pair-${{ matrix.pair }}
+          path: evidence
+          if-no-files-found: warn
+          retention-days: 14
