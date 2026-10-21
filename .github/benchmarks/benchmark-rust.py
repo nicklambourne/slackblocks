@@ -78,9 +78,8 @@ for condition in ['cold','warm']:
             source=source.replace('ROOT=Path(__file__).resolve().parents[2]','ROOT=Path('+repr(str(root))+')')
             first=source.index('def run(');last=source.index('metadata=json.loads',first);source=source[:first]+instrument+source[last:]
             receipt=a.output/f'{sample}-{i}.json';program=a.output/f'{sample}-{i}.py';log=a.output/f'{sample}-{i}.log'
-            program.write_text("import hashlib\n_phases=[];_archives=[];_consumers=[]\ntry:\n"+''.join('    '+line+'\n' for line in source.splitlines())+"finally:\n    Path("+repr(str(receipt))+").write_text(json.dumps({'phases':_phases,'archives':_archives,'consumers':_consumers},indent=2))\n")
             # Indenting whole source would change multiline literal bytes; compile/exec preserves them.
-            program.write_text("import hashlib,json\nfrom pathlib import Path\n_phases=[];_archives=[];_consumers=[]\ntry:\n    exec(compile("+repr(source)+", __file__, 'exec'))\nfinally:\n    Path("+repr(str(receipt))+").write_text(json.dumps({'phases':_phases,'archives':_archives,'consumers':_consumers},indent=2))\n")
+            program.write_text("import hashlib,json,time\nfrom pathlib import Path\n_phases=[];_archives=[];_consumers=[]\ntry:\n    exec(compile("+repr(source)+", __file__, 'exec'))\nfinally:\n    Path("+repr(str(receipt))+").write_text(json.dumps({'phases':_phases,'archives':_archives,'consumers':_consumers},indent=2))\n")
             with log.open('w') as stream:
                 completed=subprocess.run([sys.executable,str(program),'--toolchain',*profile],cwd=root,env=env,stdout=stream,stderr=subprocess.STDOUT)
             result['profiles'].append({'arguments':profile,'receipt':receipt.name,'log':log.name,'returncode':completed.returncode})
