@@ -320,6 +320,15 @@ const CONFIRM_SUPPORTING_TYPES = new Set([
 const OPTION_URL_MAX_LENGTH = 3000;
 
 const INPUT_PLACEHOLDER_MAX_LENGTHS: Record<string, number> = {
+  external_select: limits.select.placeholder.max_length,
+  multi_external_select: limits.select.placeholder.max_length,
+  users_select: limits.select.placeholder.max_length,
+  multi_users_select: limits.select.placeholder.max_length,
+  channels_select: limits.select.placeholder.max_length,
+  multi_channels_select: limits.select.placeholder.max_length,
+  conversations_select: limits.select.placeholder.max_length,
+  multi_conversations_select: limits.select.placeholder.max_length,
+
   plain_text_input: limits.plain_text_input.placeholder.max_length,
   email_text_input: limits.email_input.placeholder.max_length,
   url_text_input: limits.url_input.placeholder.max_length,

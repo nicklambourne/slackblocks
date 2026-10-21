@@ -322,6 +322,16 @@ internal static partial class Validator
                 }
 
                 break;
+            case "external_select":
+            case "multi_external_select":
+            case "users_select":
+            case "multi_users_select":
+            case "channels_select":
+            case "multi_channels_select":
+            case "conversations_select":
+            case "multi_conversations_select":
+                CheckOptionalText(value, "placeholder", path, SlackLimits.SelectPlaceholderMaxLength);
+                break;
             case "email_text_input":
                 CheckOptionalText(value, "placeholder", path, SlackLimits.EmailInputPlaceholderMaxLength);
                 break;
