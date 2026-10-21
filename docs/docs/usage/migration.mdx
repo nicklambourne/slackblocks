@@ -419,7 +419,6 @@ Bounds use signed ASCII decimal/scientific strings (for example `-1.25`, `.5`, `
 
 Recorded `views.open` probes on 2026-10-13 rejected bound strings `1e2`, `1e309`, `+10`, `.5`, `0x10`, `1_0`, ` 10 ` and `1.`, although `blocks.validate` accepted them. For ordinary delivery, use conventional decimal strings such as `"0"`, `"12.5"` and `"100"`; the preserved scientific/alternate forms remain library inputs rather than a Slack delivery guarantee. Native numeric convenience conversions may also produce scientific notation for very large or small values. Applications targeting those magnitudes should test their final native payload against the receiving Slack API.
 
-
 ### External multi-select focus
 
 Slack's [external-data multi-select field table](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element/) does not support `focus_on_load`. Omit the parameter, including an explicit `false`, when constructing an external multi-select. The compatibility parameter remains callable but now raises `invalid-usage`; it is not silently ignored. This restriction does not apply to the other selector types whose Slack field tables include focus. Python's default changes from false to `None` so omission can be distinguished from an explicitly supplied false value.

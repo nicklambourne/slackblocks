@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject explicit `focus_on_load` on external multi-selects, including false (SB-003). The compatibility option remains available; omit it or use nil. Other selectors retain focus support.
+
 - Correct number-input bounds to preserved decimal strings, retaining numeric constructor/change conveniences and exact ordering (SB-001, spec 1.3.0). Stored fields now contain strings; package version unchanged.
 
 - Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).

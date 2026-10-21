@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reject explicit `focus_on_load` on external multi-selects while retaining the compatibility parameter (SB-003). Slack's external-data multi-select field table omits it; recorded 2026-10-13 write-path probes reject both true and false. Checked the official reference again on 2026-10-21; no new live traffic. All nine native APIs reject explicit booleans and preserve omission and supported selector focus.
+
 - Correct number-input bounds to string wire values, retain native numeric convenience arguments, and reject nonfinite/inverted bounds (SB-001, spec 1.3.0). Bound getters now return strings; reflection/signature consumers must migrate. Package version unchanged.
 
 - Preserve number-input initial strings while documenting a provisional trailing-zero workaround supported by six paired modal controls; broader receiving-path behavior remains unverified (`evidence/SB-017-decimal-format.json`, SB-017).
