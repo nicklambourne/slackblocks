@@ -84,6 +84,8 @@ module InvalidCases
     number-bound-trailing-space
     number-bound-nan
     number-bound-infinity
+    external-multi-focus-false
+    external-multi-focus-true
     number-input-inverted-range
     context-invalid-element
     input-invalid-element
@@ -265,6 +267,8 @@ module InvalidCases
     when "number-bound-trailing-space" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "1 ")
     when "number-bound-nan" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "NaN")
     when "number-bound-infinity" then typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "Infinity")
+    when "external-multi-focus-false" then typed("ExternalMultiSelectElement", "multi_external_select", "focus_on_load", false)
+    when "external-multi-focus-true" then typed("ExternalMultiSelectElement", "multi_external_select", "focus_on_load", true)
     when "number-input-inverted-range" then typed("NumberInput", "number_input", "action_id", "a", "is_decimal_allowed", true, "min_value", 2, "max_value", 1)
     when "context-invalid-element" then typed("ContextBlock", "context", "elements", items(divider))
     when "input-invalid-element" then typed("InputBlock", "input", "label", plain("Label"), "element", button)

@@ -12,6 +12,16 @@ defmodule Slackblocks.Internal.Rules do
     :ok
   end
 
+  defp local("ExternalMultiSelectElement", w, p) do
+    if Map.has_key?(w, "focus_on_load"),
+      do:
+        fail(
+          :invalid_usage,
+          p ++ ["focus_on_load"],
+          "unsupported for external multi-select menus; omit this field"
+        )
+  end
+
   defp local("SectionBlock", w, p) do
     if not Map.has_key?(w, "text") and Map.get(w, "fields", []) == [],
       do: fail(:missing_required, p, "expected text or fields")

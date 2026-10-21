@@ -40,6 +40,8 @@ module Slackblocks
 
     def self.special(klass, wire, path)
       case klass.name.split("::").last
+      when "ExternalMultiSelectElement"
+        fail!("invalid-usage", "#{path}.focus_on_load", "unsupported for external multi-select menus; omit this field") if wire.key?("focus_on_load")
       when "SlackIcon"
         unless Vocabulary::ICON_NAMES.include?(wire["name"])
           fail!("type-mismatch", "#{path}.name", "unknown Slack icon")

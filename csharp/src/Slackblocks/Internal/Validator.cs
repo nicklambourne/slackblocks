@@ -257,6 +257,10 @@ internal static partial class Validator
                 Child(path, "dispatch_action_config"));
         }
 
+        if (type == "multi_external_select" && value.ContainsKey("focus_on_load"))
+        {
+            Fail(ErrorCategory.InvalidUsage, Child(path, "focus_on_load"), "unsupported for external multi-select menus; omit this field");
+        }
         if (MultiSelectTypes.Contains(type))
         {
             CheckRange(value, "max_selected_items", path, SlackLimits.MultiSelectMaxSelectedItemsMin, int.MaxValue);

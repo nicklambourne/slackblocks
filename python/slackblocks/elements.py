@@ -58,6 +58,7 @@ from ._limits import (
     WORKFLOW_BUTTON_TEXT_MAX_LENGTH,
 )
 from .errors import (
+    InvalidUsageError,
     LengthError,
     MissingRequiredError,
     MutualExclusivityError,
@@ -863,8 +864,7 @@ class ExternalMultiSelectMenu(Element):
             the menu is used.
         max_selected_items: the highest number of items from the list that
             can be selected at one time.
-        focus_on_load: whether or not the menu will be set to autofocus
-            within the view object.
+        focus_on_load: deprecated; omit this unsupported external multi-select field.
         placeholder: a plain-text `Text` object (max 150 chars) that shows
             in the menu when it's initially rendered.
 
@@ -879,7 +879,7 @@ class ExternalMultiSelectMenu(Element):
         initial_options: Option | list[Option] | OptionGroup | list[OptionGroup] | None = None,
         confirm: ConfirmationDialogue | None = None,
         max_selected_items: int | None = None,
-        focus_on_load: bool = False,
+        focus_on_load: bool | None = None,
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.MULTI_SELECT_EXTERNAL)
@@ -894,6 +894,10 @@ class ExternalMultiSelectMenu(Element):
         self.max_selected_items = validate_int(
             max_selected_items, min_value=MULTI_SELECT_MAX_SELECTED_ITEMS_MIN, allow_none=True
         )
+        if focus_on_load is not None:
+            raise InvalidUsageError(
+                "`focus_on_load` is unsupported for external multi-select menus"
+            )
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,

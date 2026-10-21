@@ -467,6 +467,9 @@ function validateKnownObject(
   key: string | undefined,
 ): void {
   const type = object.type;
+  if (type === "multi_external_select" && object.focus_on_load !== undefined) {
+    throw new InvalidUsageError(child(path, "focus_on_load"), "unsupported for external multi-select menus; omit this field");
+  }
   const blockId = object.block_id;
   if (typeof blockId === "string") {
     length(blockId, child(path, "block_id"), undefined, limits.block_id.max_length);

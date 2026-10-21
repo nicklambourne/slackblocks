@@ -8825,7 +8825,7 @@ impl<'de> Deserialize<'de> for EmailInputElement {
 /// A menu for selecting multiple options loaded from your app.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
-
+/// focus_on_load is unsupported and must be omitted, including explicit false.
 #[derive(Clone, Debug, PartialEq)]
 pub struct ExternalMultiSelectElement {
     action_id: Option<String>,
@@ -8901,7 +8901,7 @@ impl ExternalMultiSelectElement {
     pub fn max_selected_items(&self) -> Option<i64> {
         self.max_selected_items
     }
-    /// Borrows or copies `focus_on_load`. Sets whether the element receives focus when the view opens. Only one element per view may do so.
+    /// Borrows or copies `focus_on_load`. Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected.
     pub fn focus_on_load(&self) -> Option<bool> {
         self.focus_on_load
     }
@@ -9006,7 +9006,7 @@ impl ExternalMultiSelectElementBuilder {
         self.max_selected_items = None;
         self
     }
-    /// Sets whether the element receives focus when the view opens. Only one element per view may do so.
+    /// Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected.
     pub fn focus_on_load(mut self, value: bool) -> Self {
         self.focus_on_load = Some(value);
         self
@@ -9098,6 +9098,18 @@ impl ExternalMultiSelectElementBuilder {
                 "ExternalMultiSelectElement.placeholder",
             )?;
         }
+        let wire = serde_json::to_value(&value).map_err(|e| {
+            ValidationError::new(
+                ErrorCategory::TypeMismatch,
+                "ExternalMultiSelectElement",
+                e.to_string(),
+            )
+        })?;
+        crate::rules::validate(
+            "ExternalMultiSelectElement",
+            &wire,
+            "ExternalMultiSelectElement",
+        )?;
         Ok(value)
     }
 }

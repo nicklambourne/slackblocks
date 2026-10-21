@@ -113,6 +113,13 @@ impl Serialize for PlanTasks<'_> {
 pub(crate) fn validate(kind: &str, v: &Value, path: &str) -> Result<(), ValidationError> {
     let has = |key| v.get(key).is_some();
     let at = |key| format!("{path}.{key}");
+    if kind == "ExternalMultiSelectElement" && has("focus_on_load") {
+        return Err(fail(
+            C::InvalidUsage,
+            &at("focus_on_load"),
+            "unsupported for external multi-select menus; omit this field",
+        ));
+    }
     match kind {
         "SlackIcon" => {
             if !ICONS.contains(&v["name"].as_str().unwrap_or("")) {

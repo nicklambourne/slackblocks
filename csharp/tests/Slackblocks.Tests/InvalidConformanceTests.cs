@@ -148,6 +148,8 @@ public sealed class InvalidConformanceTests
             "number-bound-trailing-space" => Typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "1 "),
             "number-bound-nan" => Typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "NaN"),
             "number-bound-infinity" => Typed("NumberInput", "number_input", "is_decimal_allowed", true, "min_value", "Infinity"),
+            "external-multi-focus-false" => Typed("ExternalMultiSelectElement", "multi_external_select", "focus_on_load", false),
+            "external-multi-focus-true" => Typed("ExternalMultiSelectElement", "multi_external_select", "focus_on_load", true),
             "number-input-inverted-range" => Typed("NumberInput", "number_input", "action_id", "a", "is_decimal_allowed", true, "min_value", 2, "max_value", 1),
             "context-invalid-element" => Typed("ContextBlock", "context", "elements", Items(Divider())),
             "input-invalid-element" => Typed("InputBlock", "input", "label", Plain("Label"), "element", Button()),

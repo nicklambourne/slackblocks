@@ -1591,6 +1591,10 @@ defmodule Slackblocks.Test.InvalidConstructions do
        fn -> Elements.NumberInput.new!(is_decimal_allowed: true, min_value: "NaN") end},
       {"number-bound-infinity",
        fn -> Elements.NumberInput.new!(is_decimal_allowed: true, min_value: "Infinity") end},
+      {"external-multi-focus-false",
+       fn -> Elements.ExternalMultiSelect.new!(focus_on_load: false) end},
+      {"external-multi-focus-true",
+       fn -> Elements.ExternalMultiSelect.new!(focus_on_load: true) end},
       {"attachment-missing-blocks",
        fn -> Slackblocks.from_map!(Slackblocks.Attachment, %{"fallback" => "Summary"}) end}
     ]
