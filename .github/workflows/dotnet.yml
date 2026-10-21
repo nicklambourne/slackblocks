@@ -1,185 +1,110 @@
-name: .NET CI
-
+# Measurement only; never merge or dispatch a publisher.
+name: NuGet package cache controlled comparison
 on:
-  push:
-    branches: [master]
-    paths:
-      - "csharp/**"
-      - "spec/**"
-      - "java/generator/generate_models.py"
-      - "docs/docs/**"
-      - "docs/examples/csharp/**"
-      - "docs/examples/section_hello.json"
-      - "README.md"
-      - ".github/workflows/dotnet.yml"
-  pull_request:
   workflow_dispatch:
-
 permissions:
   contents: read
-
-concurrency:
-  group: dotnet-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
-  DOTNET_NOLOGO: "1"
-
 jobs:
-  changes:
-    name: Detect relevant changes
+  compare:
     runs-on: ubuntu-latest
-    outputs:
-      relevant: ${{ steps.filter.outputs.relevant }}
-    steps:
-      - name: Compare changed files against this workflow's scope
-        id: filter
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
-          if [ -z "$files" ]; then
-            # Fail open: if the file list cannot be read, run the real checks.
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          if grep -qE '^(csharp/|spec/|java/generator/generate_models\.py$|docs/docs/|docs/examples/csharp/|docs/examples/section_hello\.json$|README\.md$|\.github/workflows/dotnet\.yml$)' <<<"$files"; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "relevant=false" >> "$GITHUB_OUTPUT"
-          fi
-
-  test:
-    needs: changes
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
-        include:
-          # The oldest supported SDK builds and tests net8.0 only.
-          - name: .NET 8 SDK
-            os: ubuntu-latest
-            sdk: "8.0.x"
-            pin: true
-          # The current SDK also runs the suite on the .NET 10 runtime, and owns the
-          # formatting and generated-source checks.
-          - name: .NET 10 SDK
-            os: ubuntu-latest
-            sdk: |
-              8.0.x
-              10.0.x
-            pin: false
-            checks: true
-          - name: .NET 10 SDK on Windows
-            os: windows-latest
-            sdk: "10.0.x"
-            runtime: "8.0"
-            pin: false
-    # Every step is gated, not the job: a skipped matrix job reports one check under its
-    # unexpanded name, which would leave the required checks pending.
+        pair: [1, 2, 3]
+    env:
+      DOTNET_MULTILEVEL_LOOKUP: '0'
     steps:
-      - name: Check out repository
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/checkout@v7
-
-      - name: Install .NET
-        if: needs.changes.outputs.relevant == 'true'
-        id: dotnet
-        uses: actions/setup-dotnet@v6
+      - name: Select private SDK installation
+        run: echo "DOTNET_INSTALL_DIR=$RUNNER_TEMP/fixed-dotnet" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          dotnet-version: ${{ matrix.sdk }}
-
-      - name: Install the older Windows test runtime
-        if: needs.changes.outputs.relevant == 'true' && matrix.runtime
-        shell: pwsh
+          path: harness
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: source
+          ref: fc44939dffecb7437e41f670e2f9a726de0ed0ac
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13.16'
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          dotnet-version: |
+            8.0.426
+            10.0.402
+      - name: Restore first-cold candidate packages
+        id: first-cold-cache
+        if: matrix.pair == 2
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ runner.temp }}/nuget-cache-first/cache/packages
+          key: nuget-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-first-v1
+      - name: Measure first-cold complete canonical checks
         env:
-          RUNTIME_CHANNEL: ${{ matrix.runtime }}
-        run: |
-          # Keep SDK10's host; restore obtains net8 targeting packs for compilation.
-          $installer = Join-Path $env:RUNNER_TEMP "dotnet-install-runtime.ps1"
-          Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/install-scripts/e5cf1dd2d1540ed05ac84f8eb8c5cdec2807621e/src/dotnet-install.ps1" -OutFile $installer
-          $expected = "3bb07bc8025211836c1e4f9d3f6a044e55b1fb6eec518a6c78851d04e210442b"
-          if ((Get-FileHash $installer -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) {
-            throw "Unexpected Microsoft runtime installer checksum"
-          }
-          & $installer -Runtime dotnet -Channel $env:RUNTIME_CHANNEL -InstallDir $env:DOTNET_ROOT -Architecture x64 -NoPath -SkipNonVersionedFiles
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          dotnet --info
-          dotnet --list-runtimes
-
-      - name: Pin the SDK under test
-        if: needs.changes.outputs.relevant == 'true' && matrix.pin
-        working-directory: csharp
-        run: dotnet new globaljson --sdk-version "${{ steps.dotnet.outputs.dotnet-version }}" --roll-forward latestPatch --force
-
-      - name: Verify generated model sources are current
-        if: needs.changes.outputs.relevant == 'true' && matrix.checks
-        run: |
-          python3 csharp/generator/generate_models.py
-          git diff --exit-code -- csharp/src/Slackblocks/Generated
-
-      - name: Check formatting
-        if: needs.changes.outputs.relevant == 'true' && matrix.checks
-        working-directory: csharp
-        run: dotnet format Slackblocks.sln --verify-no-changes
-
-      - name: Build and test
-        if: needs.changes.outputs.relevant == 'true'
-        working-directory: csharp
-        run: dotnet test Slackblocks.sln --configuration Release --collect "XPlat Code Coverage" --results-directory artifacts/coverage
-
-  package:
-    needs: changes
-    name: NuGet package
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/checkout@v7
-
-      - name: Install .NET
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/setup-dotnet@v6
+          CACHE_HIT: ${{ steps.first-cold-cache.outputs.cache-hit }}
+        run: python harness/.github/benchmarks/nuget-cache.py --source source --locks harness/.github/benchmarks/fixed-nuget-locks --root "$RUNNER_TEMP/nuget-cache-first" --output evidence/first-cold --pair "${{ matrix.pair }}" --variant "${{ matrix.pair == 2 && 'candidate' || 'baseline' }}" --condition cold
+      - name: Save first candidate packages
+        if: matrix.pair == 2
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
-          dotnet-version: "10.0.x"
-
-      - name: Pack with package validation
-        if: needs.changes.outputs.relevant == 'true'
-        working-directory: csharp
-        run: dotnet pack src/Slackblocks/Slackblocks.csproj --configuration Release --output artifacts/package
-
-      - name: Verify package contents
-        if: needs.changes.outputs.relevant == 'true'
-        working-directory: csharp/artifacts/package
-        run: |
-          set -euo pipefail
-          version=$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' ../../src/Slackblocks/Slackblocks.csproj)
-          package="Slackblocks.$version.nupkg"
-          test -f "$package"
-          test -f "Slackblocks.$version.snupkg"
-          contents=$(unzip -Z1 "$package")
-          for expected in README.md LICENSE LICENSE.BSD-3-Clause lib/net8.0/Slackblocks.dll lib/net8.0/Slackblocks.xml; do
-            grep -qx "$expected" <<<"$contents" || { echo "::error::$package is missing $expected"; exit 1; }
-          done
-
-      - name: Push to a local feed without publishing
-        if: needs.changes.outputs.relevant == 'true'
-        working-directory: csharp/artifacts
-        run: |
-          mkdir -p local-feed
-          dotnet nuget push "package/*.nupkg" --source "$PWD/local-feed"
-          test -n "$(find local-feed -name '*.nupkg' -print -quit)"
-
-      - name: Upload package
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/upload-artifact@v7
+          path: ${{ runner.temp }}/nuget-cache-first/cache/packages
+          key: nuget-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-first-v1
+      - name: Discard only this sample's private packages
+        if: matrix.pair == 2
+        run: rm -rf "$RUNNER_TEMP/nuget-cache-first/cache/packages"
+      - name: Restore first-warm candidate packages
+        id: first-warm-cache
+        if: matrix.pair == 2
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
-          name: nuget-package
-          path: csharp/artifacts/package/*
-          if-no-files-found: error
+          path: ${{ runner.temp }}/nuget-cache-first/cache/packages
+          key: nuget-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-first-v1
+      - name: Measure first-warm complete canonical checks
+        env:
+          CACHE_HIT: ${{ steps.first-warm-cache.outputs.cache-hit }}
+        run: python harness/.github/benchmarks/nuget-cache.py --source source --locks harness/.github/benchmarks/fixed-nuget-locks --root "$RUNNER_TEMP/nuget-cache-first" --output evidence/first-warm --pair "${{ matrix.pair }}" --variant "${{ matrix.pair == 2 && 'candidate' || 'baseline' }}" --condition warm
+      - name: Preserve first successes and failures
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: nuget-cache-${{ matrix.pair }}-first
+          path: evidence/first-*
+          if-no-files-found: warn
+      - name: Restore second-cold candidate packages
+        id: second-cold-cache
+        if: matrix.pair != 2
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ runner.temp }}/nuget-cache-second/cache/packages
+          key: nuget-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-second-v1
+      - name: Measure second-cold complete canonical checks
+        env:
+          CACHE_HIT: ${{ steps.second-cold-cache.outputs.cache-hit }}
+        run: python harness/.github/benchmarks/nuget-cache.py --source source --locks harness/.github/benchmarks/fixed-nuget-locks --root "$RUNNER_TEMP/nuget-cache-second" --output evidence/second-cold --pair "${{ matrix.pair }}" --variant "${{ matrix.pair != 2 && 'candidate' || 'baseline' }}" --condition cold
+      - name: Save second candidate packages
+        if: matrix.pair != 2
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ runner.temp }}/nuget-cache-second/cache/packages
+          key: nuget-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-second-v1
+      - name: Discard only this sample's private packages
+        if: matrix.pair != 2
+        run: rm -rf "$RUNNER_TEMP/nuget-cache-second/cache/packages"
+      - name: Restore second-warm candidate packages
+        id: second-warm-cache
+        if: matrix.pair != 2
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ runner.temp }}/nuget-cache-second/cache/packages
+          key: nuget-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-second-v1
+      - name: Measure second-warm complete canonical checks
+        env:
+          CACHE_HIT: ${{ steps.second-warm-cache.outputs.cache-hit }}
+        run: python harness/.github/benchmarks/nuget-cache.py --source source --locks harness/.github/benchmarks/fixed-nuget-locks --root "$RUNNER_TEMP/nuget-cache-second" --output evidence/second-warm --pair "${{ matrix.pair }}" --variant "${{ matrix.pair != 2 && 'candidate' || 'baseline' }}" --condition warm
+      - name: Preserve second successes and failures
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: nuget-cache-${{ matrix.pair }}-second
+          path: evidence/second-*
+          if-no-files-found: warn
