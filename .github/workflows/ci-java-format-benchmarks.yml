@@ -1,0 +1,50 @@
+name: Java formatter controlled comparison
+on:
+  push:
+    branches: [codex/ci-java-format-benchmarks]
+    paths: [.github/workflows/ci-java-format-benchmarks.yml, .github/benchmarks/java-format.py]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        java: ['25.0.4+1', '27.0.0+35']
+        sample:
+          - {variant: baseline, pair: 1}
+          - {variant: candidate, pair: 1}
+          - {variant: candidate, pair: 2}
+          - {variant: baseline, pair: 2}
+          - {variant: baseline, pair: 3}
+          - {variant: candidate, pair: 3}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: harness
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 39a429f464428048f93deac54bdc385208e71d73
+          path: source
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13.16'
+      - name: Cold then warm full verifier
+        run: >-
+          python harness/.github/benchmarks/java-format.py --source source
+          --output evidence --cache "$RUNNER_TEMP/java-format-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.java }}-${{ matrix.sample.variant }}-${{ matrix.sample.pair }}"
+          --variant ${{ matrix.sample.variant }} --pair ${{ matrix.sample.pair }} --jdk '${{ matrix.java }}'
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: format-${{ matrix.java }}-${{ matrix.sample.variant }}-${{ matrix.sample.pair }}
+          path: evidence
+          if-no-files-found: warn
+          retention-days: 14
