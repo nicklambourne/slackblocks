@@ -1,158 +1,143 @@
-name: Rust
-
+name: Rust coverage tool controlled benchmark
 on:
-  push:
-    branches: [master]
-    paths:
-      - "rust/**"
-      - "spec/**"
-      - "docs/**"
-      - "README.md"
-      - ".github/dependabot.yml"
-      - ".github/workflows/rust.yml"
-  pull_request:
   workflow_dispatch:
-
 permissions:
   contents: read
-
-concurrency:
-  group: rust-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  changes:
-    name: Detect relevant Rust changes
-    runs-on: ubuntu-latest
-    outputs:
-      relevant: ${{ steps.filter.outputs.relevant }}
-    steps:
-      - name: Compare changed files against Rust workflow scope
-        id: filter
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
-          if [ -z "$files" ] || grep -qE '^(rust/|spec/|docs/|README\.md$|\.github/dependabot\.yml$|\.github/workflows/rust\.yml$)' <<<"$files"; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "relevant=false" >> "$GITHUB_OUTPUT"
-          fi
-
-  test:
-    needs: changes
-    name: Rust tests (${{ matrix.os }}, ${{ matrix.toolchain }})
-    runs-on: ${{ matrix.os }}
+  cold:
+    name: Rust tool ${{ matrix.pair }} ${{ matrix.variant }} cold
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - {os: ubuntu-latest, toolchain: "1.85.0"}
-          - {os: ubuntu-latest, toolchain: stable}
-          - {os: macos-latest, toolchain: stable}
-          - {os: windows-latest, toolchain: stable}
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - name: Check out repository
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Install the supported Rust toolchain
-        if: needs.changes.outputs.relevant == 'true'
-        run: rustup toolchain install "${{ matrix.toolchain }}" --profile minimal
-      - name: Cache Rust dependencies and build outputs
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: |
-            ~/.cargo/registry/index
-            ~/.cargo/registry/cache
-            ~/.cargo/git/db
-            rust/target
-            rust/integrations/target
-          key: rust-${{ runner.os }}-${{ matrix.toolchain }}-${{ hashFiles('rust/Cargo.lock', 'rust/integrations/Cargo.lock') }}
-          restore-keys: rust-${{ runner.os }}-${{ matrix.toolchain }}-
-      - name: Run unit, integration and documentation tests
-        if: needs.changes.outputs.relevant == 'true'
-        run: |
-          cargo +${{ matrix.toolchain }} test --manifest-path rust/Cargo.toml --workspace --all-targets --locked
-          cargo +${{ matrix.toolchain }} test --manifest-path rust/Cargo.toml --workspace --doc --locked
-          cargo +${{ matrix.toolchain }} run --manifest-path rust/Cargo.toml --example api_checkpoint --locked
-
-      - name: Test runnable Slack Morphism and reqwest integrations locally
-        if: needs.changes.outputs.relevant == 'true'
-        run: cargo +${{ matrix.toolchain }} test --manifest-path rust/integrations/Cargo.toml --all-targets --locked
-
-  quality:
-    needs: changes
-    name: Rust quality and package
+        pair: [1, 2, 3]
+        variant: [baseline, candidate]
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SOURCE: ${{ github.workspace }}/source
+      EVIDENCE: ${{ github.workspace }}/evidence
+      RUSTUP_TOOLCHAIN: 1.99.0
+      VARIANT: ${{ matrix.variant }}
+      PAIR: ${{ matrix.pair }}
+      CONDITION: cold
     steps:
-      - name: Check out repository
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Install Python for generation and archive checks
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version: "3.13"
-      - name: Install Rust tooling
-        if: needs.changes.outputs.relevant == 'true'
+      - name: Set private cache locations
         run: |
-          rustup toolchain install stable 1.85.0 --profile minimal --component rustfmt,clippy
-          rustup default stable
-          echo "RUSTFMT=$(rustup which --toolchain 1.85.0 rustfmt)" >> "$GITHUB_ENV"
-      - name: Cache Rust dependencies and build outputs
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+          test ! -e "$RUNNER_TEMP/coverage-tool"
+          test ! -e "$RUNNER_TEMP/coverage-cargo"
+          echo "TOOL_ROOT=$RUNNER_TEMP/coverage-tool" >> "$GITHUB_ENV"
+          echo "CARGO_HOME=$RUNNER_TEMP/coverage-cargo" >> "$GITHUB_ENV"
+      - name: Check out measurement-only harness
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: harness
+      - name: Check out identical fixed source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: c80ea3fc00f20cb2e34ac481f2a9926223335f47
+          path: source
+      - name: Install fixed Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: 3.13.16
+      - name: Install fixed Rust and LLVM tools
+        run: rustup toolchain install 1.99.0 --profile minimal --component llvm-tools-preview
+      - name: Restore isolated dependency and coverage build cache
+        id: dependencies
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: |
-            ~/.cargo/registry/index
-            ~/.cargo/registry/cache
-            ~/.cargo/git/db
-            rust/target
-            rust/integrations/target
-          key: rust-${{ runner.os }}-quality-${{ hashFiles('rust/Cargo.lock', 'rust/integrations/Cargo.lock') }}
-          restore-keys: rust-${{ runner.os }}-quality-
-      - name: Verify generated sources, lints, tests, and rustdoc
-        if: needs.changes.outputs.relevant == 'true'
-        run: rust/bin/check
-      - name: Verify archive and fresh consumers on minimum and stable Rust
-        if: needs.changes.outputs.relevant == 'true'
-        run: |
-          python3 rust/bin/check-package.py --toolchain 1.85.0
-          python3 rust/bin/check-package.py --toolchain stable
-          python3 rust/bin/check-package.py --toolchain 1.85.0 --lower-bounds
-          python3 rust/bin/check-package.py --toolchain 1.85.0 --json-features
-      - name: Identify the pinned coverage tool cache
-        if: needs.changes.outputs.relevant == 'true'
-        id: coverage-tool
-        run: |
-          echo "root=$RUNNER_TOOL_CACHE/slackblocks-cargo-llvm-cov-0.9.1" >> "$GITHUB_OUTPUT"
-          echo "compiler=$(rustc +stable -vV | sha256sum | cut -d ' ' -f1)" >> "$GITHUB_OUTPUT"
-      - name: Cache the pinned coverage tool
-        if: needs.changes.outputs.relevant == 'true'
-        id: coverage-tool-cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+            ${{ runner.temp }}/coverage-cargo/registry/index
+            ${{ runner.temp }}/coverage-cargo/registry/cache
+            ${{ runner.temp }}/coverage-cargo/git/db
+            source/rust/target
+          key: rust-tool-benchmark-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-${{ matrix.variant }}-dependencies-v1
+      - name: Restore isolated candidate tool cache
+        if: matrix.variant == 'candidate'
+        id: tool
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
-          path: ${{ steps.coverage-tool.outputs.root }}
-          key: rust-cargo-llvm-cov-${{ runner.os }}-${{ runner.arch }}-${{ steps.coverage-tool.outputs.compiler }}-0.9.1-v1
-      - name: Install the pinned coverage tool on a cache miss
-        if: needs.changes.outputs.relevant == 'true' && steps.coverage-tool-cache.outputs.cache-hit != 'true'
-        run: cargo +stable install cargo-llvm-cov --version 0.9.1 --locked --root "${{ steps.coverage-tool.outputs.root }}"
-      - name: Verify and activate the pinned coverage tool
-        if: needs.changes.outputs.relevant == 'true'
+          path: ${{ runner.temp }}/coverage-tool
+          key: rust-tool-benchmark-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-candidate-tool-1.99.0-0.9.1-v1
+      - name: Measure install and unchanged full coverage execution
+        env:
+          TOOL_HIT: ${{ steps.tool.outputs.cache-hit }}
+          DEPENDENCY_HIT: ${{ steps.dependencies.outputs.cache-hit }}
+        run: python3 harness/.github/benchmarks/benchmark-tool.py
+      - name: Preserve all evidence and failures
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: rust-tool-${{ matrix.pair }}-${{ matrix.variant }}-cold
+          path: evidence
+          if-no-files-found: warn
+          retention-days: 14
+  warm:
+    name: Rust tool ${{ matrix.pair }} ${{ matrix.variant }} warm
+    needs: cold
+    strategy:
+      fail-fast: false
+      matrix:
+        pair: [1, 2, 3]
+        variant: [baseline, candidate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SOURCE: ${{ github.workspace }}/source
+      EVIDENCE: ${{ github.workspace }}/evidence
+      RUSTUP_TOOLCHAIN: 1.99.0
+      VARIANT: ${{ matrix.variant }}
+      PAIR: ${{ matrix.pair }}
+      CONDITION: warm
+    steps:
+      - name: Set private cache locations
         run: |
-          tool_bin="${{ steps.coverage-tool.outputs.root }}/bin"
-          test "$("$tool_bin/cargo-llvm-cov" llvm-cov --version)" = "cargo-llvm-cov 0.9.1"
-          echo "$tool_bin" >> "$GITHUB_PATH"
-      - name: Enforce overall and handwritten line and region coverage
-        if: needs.changes.outputs.relevant == 'true'
-        run: |
-          rustup component add llvm-tools-preview --toolchain stable
-          python3 rust/bin/check-coverage.py
+          test ! -e "$RUNNER_TEMP/coverage-tool"
+          test ! -e "$RUNNER_TEMP/coverage-cargo"
+          echo "TOOL_ROOT=$RUNNER_TEMP/coverage-tool" >> "$GITHUB_ENV"
+          echo "CARGO_HOME=$RUNNER_TEMP/coverage-cargo" >> "$GITHUB_ENV"
+      - name: Check out measurement-only harness
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: harness
+      - name: Check out identical fixed source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: c80ea3fc00f20cb2e34ac481f2a9926223335f47
+          path: source
+      - name: Install fixed Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: 3.13.16
+      - name: Install fixed Rust and LLVM tools
+        run: rustup toolchain install 1.99.0 --profile minimal --component llvm-tools-preview
+      - name: Restore isolated dependency and coverage build cache
+        id: dependencies
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: |
+            ${{ runner.temp }}/coverage-cargo/registry/index
+            ${{ runner.temp }}/coverage-cargo/registry/cache
+            ${{ runner.temp }}/coverage-cargo/git/db
+            source/rust/target
+          key: rust-tool-benchmark-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-${{ matrix.variant }}-dependencies-v1
+      - name: Restore isolated candidate tool cache
+        if: matrix.variant == 'candidate'
+        id: tool
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ runner.temp }}/coverage-tool
+          key: rust-tool-benchmark-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-candidate-tool-1.99.0-0.9.1-v1
+      - name: Measure install and unchanged full coverage execution
+        env:
+          TOOL_HIT: ${{ steps.tool.outputs.cache-hit }}
+          DEPENDENCY_HIT: ${{ steps.dependencies.outputs.cache-hit }}
+        run: python3 harness/.github/benchmarks/benchmark-tool.py
+      - name: Preserve all evidence and failures
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: rust-tool-${{ matrix.pair }}-${{ matrix.variant }}-warm
+          path: evidence
+          if-no-files-found: warn
+          retention-days: 14
