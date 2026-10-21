@@ -9,8 +9,8 @@ import subprocess
 import sys
 import time
 
-BASE = "a96dcce13d921325716949e38953a0e02f0bc6c2"
-SOURCE = "34237ba0b90cec56618788cd4f559b90fd0febbf"
+BASE = "fc44939dffecb7437e41f670e2f9a726de0ed0ac"
+SOURCE = "3f224a6e89751d00c0391dc52d6578f0e943d0f5"
 ROOT = Path.cwd() / "source"
 RESULT = Path.cwd() / "benchmark-results"
 RESULT.mkdir(exist_ok=True)
@@ -71,7 +71,7 @@ else:
                     'Dir[File.expand_path("test/*_test.rb")].sort.each { |path| require path }'])
     test_log = (RESULT / "tests.log").read_text()
     counts = re.search(r"(\d+) runs, (\d+) assertions, (\d+) failures, (\d+) errors, (\d+) skips", test_log)
-    assert counts and tuple(map(int, counts.groups())) == (419, 1598, 0, 0, 0)
+    assert counts and tuple(map(int, counts.groups())) == (455, 1822, 0, 0, 0)
     metadata["tests"] = list(map(int, counts.groups()))
     package = RESULT / "slackblocks.gem"
     phase("package_build", ["ruby", "-S", "gem", "build", "slackblocks.gemspec", "--output", str(package)])

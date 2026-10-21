@@ -31,7 +31,7 @@ jobs:
       - name: Check out fixed source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: 34237ba0b90cec56618788cd4f559b90fd0febbf
+          ref: 3f224a6e89751d00c0391dc52d6578f0e943d0f5
           path: source
           fetch-depth: 0
       - name: Install Python for the retained generator test
@@ -81,7 +81,7 @@ jobs:
       - name: Check out fixed source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: 34237ba0b90cec56618788cd4f559b90fd0febbf
+          ref: 3f224a6e89751d00c0391dc52d6578f0e943d0f5
           path: source
           fetch-depth: 0
       - name: Install Python for the retained generator test
