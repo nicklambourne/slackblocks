@@ -622,7 +622,8 @@ python3 .github/scripts/verify-nuget-consumer.py --version X.Y.Z --workdir "$REL
 ```
 
 `--attempts 6` permits at most six clean restores, waiting ten seconds only after
-`NU1102` (version not found). Other restore/build errors fail immediately. Preserve
+`NU1102` (version not found), with no other restore errors. Other restore/build
+errors fail immediately. Preserve
 the receipt and failure logs; do not substitute an older version or a local feed.
 Registry indexing can take longer than this bound: investigate and rerun the
 verification, rather than repeatedly publishing or changing tags.
