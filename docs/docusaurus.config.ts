@@ -56,6 +56,10 @@ const phpSource = readFileSync(new URL("../php/src/Version.php", import.meta.url
 const phpVersion = phpSource.match(/PACKAGE = '([^']+)'/)?.[1];
 if (!phpVersion) throw new Error("Could not read the PHP package version");
 
+const elixirManifest = readFileSync(new URL("../elixir/mix.exs", import.meta.url), "utf8");
+const elixirVersion = elixirManifest.match(/version:\s*"([^"]+)"/)?.[1];
+if (!elixirVersion) throw new Error("Could not read the Elixir package version");
+
 const legacyManifest = JSON.parse(
   readFileSync(new URL("./legacy/manifest.json", import.meta.url), "utf8"),
 ) as {
@@ -123,10 +127,11 @@ if (
   csharpVersion !== pythonVersion ||
   rubyVersion !== pythonVersion ||
   rustVersion !== pythonVersion ||
-  phpVersion !== pythonVersion
+  phpVersion !== pythonVersion ||
+  elixirVersion !== pythonVersion
 ) {
   throw new Error(
-    `Package versions must match: Python is ${pythonVersion}, TypeScript is ${typescriptPackage.version}, Java is ${javaVersion}, C# is ${csharpVersion}, Ruby is ${rubyVersion}, Rust is ${rustVersion}, PHP is ${phpVersion}`,
+    `Package versions must match: Python is ${pythonVersion}, TypeScript is ${typescriptPackage.version}, Java is ${javaVersion}, C# is ${csharpVersion}, Ruby is ${rubyVersion}, Rust is ${rustVersion}, PHP is ${phpVersion}, Elixir is ${elixirVersion}`,
   );
 }
 
@@ -358,7 +363,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.vsDark,
-      additionalLanguages: ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "json", "toml"],
+      additionalLanguages: ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir", "erlang", "json", "toml"],
     },
     navbar: {
       title: "slackblocks",

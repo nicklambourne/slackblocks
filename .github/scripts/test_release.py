@@ -26,6 +26,14 @@ cargo = load("cargo_release", ROOT / "rust/bin/release.py")
 SOURCE_VERSION = release.rust_package(ROOT)["version"]
 VERSION = "2.6.0"
 FILES = [
+    "elixir/mix.exs",
+    "elixir/mix.lock",
+    "elixir/release.json",
+    "elixir/integrations/mix.exs",
+    "elixir/erlang/rebar.config",
+    "elixir/lib/slackblocks.ex",
+    "elixir/conformance/skiplist.txt",
+    "spec/manifest.json",
     "composer.json",
     "python/pyproject.toml",
     "python/uv.lock",
@@ -74,6 +82,10 @@ class ReleaseTests(unittest.TestCase):
         settings = json.loads(policy.read_text())
         settings["enabled"] = True
         policy.write_text(json.dumps(settings))
+        elixir_policy = self.root / "elixir/release.json"
+        elixir_settings = json.loads(elixir_policy.read_text())
+        elixir_settings.update(enabled=True, owner="maintainer")
+        elixir_policy.write_text(json.dumps(elixir_settings))
         manifest = self.root / "rust/Cargo.toml"
         text = re.sub(
             r"^publish = .+$",
@@ -100,6 +112,9 @@ class ReleaseTests(unittest.TestCase):
             )
         )
         self.git("init", "--quiet")
+        # Keep background maintenance from racing temporary-repository cleanup.
+        self.git("config", "maintenance.auto", "false")
+        self.git("config", "gc.auto", "0")
         self.git("config", "user.name", "Release guard tests")
         self.git("config", "user.email", "release-tests@example.invalid")
         self.commit()
@@ -141,7 +156,7 @@ class ReleaseTests(unittest.TestCase):
             VERSION,
         )
 
-    def test_all_eight_publishers_require_their_own_tag(self):
+    def test_all_nine_publishers_require_their_own_tag(self):
         self.tags()
         for language, prefix in release.LANGUAGES.items():
             with self.subTest(language=language):
@@ -184,6 +199,37 @@ class ReleaseTests(unittest.TestCase):
             ),
             VERSION,
         )
+
+    def test_validate_cli_works_for_all_native_ci_events_without_git_mutations(self):
+        self.edit("rust/Cargo.toml", 'publish = ["crates-io"]', "publish = false")
+        for language in release.LANGUAGES:
+            self.edit(language + "/CHANGELOG.md", "2026-10-04", "Unreleased")
+        before = self.git("show-ref")
+        for event in ("pull_request", "push", "workflow_dispatch"):
+            with (
+                self.subTest(event=event),
+                patch.dict(os.environ, {"GITHUB_EVENT_NAME": event}, clear=True),
+                patch("sys.argv", ["verify-release.py", "validate"]),
+                patch.object(release, "__file__", str(self.root / ".github/scripts/verify-release.py")),
+                patch("sys.stdout", new_callable=io.StringIO) as output,
+            ):
+                release.main()
+                self.assertIn(f"preflight for {VERSION}", output.getvalue())
+        self.assertEqual(before, self.git("show-ref"))
+
+    def test_validate_cli_rejects_inconsistent_package_versions(self):
+        self.edit("rust/Cargo.toml", f'version = "{VERSION}"', 'version = "9.9.9"')
+        with (
+            patch.dict(os.environ, {"GITHUB_EVENT_NAME": "push"}, clear=True),
+            patch("sys.argv", ["verify-release.py", "validate"]),
+            patch.object(release, "__file__", str(self.root / ".github/scripts/verify-release.py")),
+            self.assertRaisesRegex(SystemExit, "versions differ"),
+        ):
+            release.main()
+
+    def test_coordinator_still_rejects_push_events(self):
+        with self.assertRaisesRegex(release.ReleaseError, "Unsupported coordinator event"):
+            release.coordinator(self.root, VERSION, "push", "refs/heads/master")
 
     def test_requested_version_mismatch(self):
         with self.assertRaisesRegex(release.ReleaseError, "versions differ"):
@@ -389,6 +435,7 @@ class WorkflowTests(unittest.TestCase):
             "csharp": "publish-nuget",
             "ruby": "publish-rubygems",
             "php": "publish-packagist",
+            "elixir": "publish-hex",
         }
         for language, name in names.items():
             text = (ROOT / f".github/workflows/{name}.yml").read_text()

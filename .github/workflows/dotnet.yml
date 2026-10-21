@@ -78,9 +78,8 @@ jobs:
             checks: true
           - name: .NET 10 SDK on Windows
             os: windows-latest
-            sdk: |
-              8.0.x
-              10.0.x
+            sdk: "10.0.x"
+            runtime: "8.0"
             pin: false
     # Every step is gated, not the job: a skipped matrix job reports one check under its
     # unexpanded name, which would leave the required checks pending.
@@ -95,6 +94,24 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: ${{ matrix.sdk }}
+
+      - name: Install the older Windows test runtime
+        if: needs.changes.outputs.relevant == 'true' && matrix.runtime
+        shell: pwsh
+        env:
+          RUNTIME_CHANNEL: ${{ matrix.runtime }}
+        run: |
+          # Keep SDK10's host; restore obtains net8 targeting packs for compilation.
+          $installer = Join-Path $env:RUNNER_TEMP "dotnet-install-runtime.ps1"
+          Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/install-scripts/e5cf1dd2d1540ed05ac84f8eb8c5cdec2807621e/src/dotnet-install.ps1" -OutFile $installer
+          $expected = "3bb07bc8025211836c1e4f9d3f6a044e55b1fb6eec518a6c78851d04e210442b"
+          if ((Get-FileHash $installer -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) {
+            throw "Unexpected Microsoft runtime installer checksum"
+          }
+          & $installer -Runtime dotnet -Channel $env:RUNTIME_CHANNEL -InstallDir $env:DOTNET_ROOT -Architecture x64 -NoPath -SkipNonVersionedFiles
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet --info
+          dotnet --list-runtimes
 
       - name: Pin the SDK under test
         if: needs.changes.outputs.relevant == 'true' && matrix.pin

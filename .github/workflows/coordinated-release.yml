@@ -33,6 +33,8 @@ on:
       - ".github/scripts/**"
       - ".github/workflows/publish-packagist.yml"
       - "php/**"
+      - "elixir/**"
+      - ".github/workflows/publish-hex.yml"
       - "composer.json"
       - "rust/integrations/Cargo.lock"
   workflow_dispatch:
@@ -69,7 +71,7 @@ jobs:
       - name: Test release preflight and publisher wiring without credentials
         run: python -m unittest discover -s .github/scripts -p 'test_*.py' -v
 
-      - name: Validate all eight packages and release activation
+      - name: Validate all nine languages and release activation
         id: version
         env:
           REQUESTED_VERSION: ${{ inputs.version }}
@@ -96,10 +98,37 @@ jobs:
           gh auth setup-git --hostname github.com
           python3 php/bin/release.py readiness
 
+  hex-readiness:
+    name: Verify Hex readiness before tags
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: hex
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        with:
+          elixir-version: "1.16.3"
+          otp-version: "26.2"
+          version-type: strict
+      - name: Install pinned Hex and locked dependencies
+        working-directory: elixir
+        run: |
+          mix local.hex 2.5.1 --force
+          mix deps.get --check-locked
+      - name: Check account permissions, package identity and authenticated dry run
+        env:
+          HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
+        run: python3 elixir/tools/release.py readiness
+
   create-tags:
     name: Create coordinated tags
     if: github.event_name == 'workflow_dispatch'
-    needs: [validate, php-readiness]
+    needs: [validate, php-readiness, hex-readiness]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -115,7 +144,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          tags=("python/v$VERSION" "ts/v$VERSION" "go/v$VERSION" "java/v$VERSION" "csharp/v$VERSION" "ruby/v$VERSION" "rust/v$VERSION" "php/v$VERSION")
+          tags=("python/v$VERSION" "ts/v$VERSION" "go/v$VERSION" "java/v$VERSION" "csharp/v$VERSION" "ruby/v$VERSION" "rust/v$VERSION" "php/v$VERSION" "elixir/v$VERSION")
           existing=0
 
           for tag in "${tags[@]}"; do
@@ -148,6 +177,7 @@ jobs:
           git tag --annotate "ruby/v$VERSION" --message "slackblocks $VERSION (Ruby)"
           git tag --annotate "rust/v$VERSION" --message "slackblocks $VERSION (Rust)"
           git tag --annotate "php/v$VERSION" --message "slackblocks $VERSION (PHP)"
+          git tag --annotate "elixir/v$VERSION" --message "slackblocks $VERSION (Elixir)"
           git push --atomic origin "${tags[@]}"
 
   publish:
@@ -188,6 +218,9 @@ jobs:
           - language: PHP
             workflow: publish-packagist.yml
             tag_prefix: php/v
+          - language: Elixir
+            workflow: publish-hex.yml
+            tag_prefix: elixir/v
     steps:
       - name: Dispatch and monitor publisher
         env:

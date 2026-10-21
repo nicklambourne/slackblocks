@@ -3,7 +3,7 @@ sidebar_label: Quick Start
 sidebar_position: 2
 ---
 
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Quick Start
 
@@ -294,6 +294,37 @@ echo $message->toJson();
 Send the resulting payload with [JoliCode, cURL, or Laravel](usage/sending_messages).
 
 </PHP>
+<Elixir>
+
+## Install
+
+Elixir 1.16.3+, compatible OTP 26.2+ and a 64-bit runtime are required.
+Install `{:slackblocks, "~> 2.8"}` from Hex; follow [Installation](usage/installation)
+for setup and the existing-Jason rebuild step.
+
+## Build a message
+
+```elixir
+alias Slackblocks.{Message, Blocks, Elements}
+message = Message.new!(
+  channel: "C0123456789",
+  text: "Build #482 passed",
+  blocks: [
+    Blocks.Header.new!(text: "Build #482 passed"),
+    Blocks.Section.new!(fields: ["*Branch*\n`main`", "*Tests*\n1,247 passed"]),
+    Blocks.Actions.new!(elements: [
+      Elements.Button.new!(text: "View build", action_id: "view", url: "https://ci.example.com/482")
+    ])
+  ]
+)
+Slackblocks.to_map!(message)
+```
+
+Send the validated string-keyed map with the community Slack client or Req;
+see [Sending Messages](usage/sending_messages). Pattern matching, immutable edits
+and tagged errors are covered in the [Recipe Book](usage/cookbook).
+
+</Elixir>
 </LanguageContent>
 
 ## Where to go next

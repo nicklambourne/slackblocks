@@ -22,7 +22,9 @@ export default function LanguageContent({ children }: PropsWithChildren) {
                     ? "rust"
                     : child.type === PHP
                       ? "php"
-                      : null;
+                      : child.type === Elixir
+                        ? "elixir"
+                        : null;
     if (!childLanguage) return null;
 
     return (
@@ -68,5 +70,9 @@ export function Rust({ children }: PropsWithChildren) {
 }
 
 export function PHP({ children }: PropsWithChildren) {
+  return <>{children}</>;
+}
+
+export function Elixir({ children }: PropsWithChildren) {
   return <>{children}</>;
 }
