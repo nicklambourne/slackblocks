@@ -2,12 +2,17 @@
 if invalid != [], do: raise("unknown checker options: #{inspect(invalid)}")
 profile = Keyword.get(options, :profile, "full")
 
-unless profile in ["full", "runtime", "native"],
-  do: raise("profile must be full, runtime or native")
+unless profile in ["full", "ci-quality", "runtime", "native"],
+  do: raise("profile must be full, ci-quality, runtime or native")
+
+quality? = profile in ["full", "ci-quality"]
 
 run = fn command, args ->
   IO.puts("\nChecking: #{command} #{Enum.join(args, " ")}")
+  started = System.monotonic_time(:millisecond)
   {_, status} = System.cmd(command, args, into: IO.stream(:stdio, :line))
+  elapsed = System.monotonic_time(:millisecond) - started
+  IO.puts("Phase finished: #{command} #{Enum.join(args, " ")} (#{elapsed}ms, status #{status})")
   if status != 0, do: System.halt(status)
 end
 
@@ -16,9 +21,10 @@ python =
     System.find_executable("python3") || System.find_executable("python") ||
     raise("Python 3.11+ is required")
 
-if profile == "full" do
+if quality? do
   run.(python, ["generator/generate.py", "--check"])
   run.(python, ["generator/test_generate.py"])
+  run.(python, ["tools/test_check_profiles.py"])
 
   ruff =
     System.get_env("SLACKBLOCKS_RUFF") || System.find_executable("ruff") ||
@@ -46,7 +52,7 @@ end
 
 run.("mix", ["compile", "--warnings-as-errors"])
 
-if profile == "full" do
+if quality? do
   run.("mix", ["test", "--cover", "--export-coverage", "slackblocks", "--warnings-as-errors"])
   previous_env = System.get_env("MIX_ENV")
   System.put_env("MIX_ENV", "test")
@@ -60,7 +66,7 @@ end
 run.(python, ["tools/package_check.py"])
 if profile == "full", do: run.(python, ["tools/erlang_check.py"])
 
-if profile != "native" do
+if profile in ["full", "runtime"] do
   profiles = if profile == "full", do: ["locked", "lower", "latest"], else: ["locked"]
   Enum.each(profiles, &run.(python, ["tools/integration_check.py", "--profile", &1]))
 end
