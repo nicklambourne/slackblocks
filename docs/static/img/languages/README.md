@@ -23,3 +23,9 @@ inclusion does not imply endorsement by either language project.
 - Author: Colin Viebrock.
 - License: [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/), as stated on [PHP's logo page](https://www.php.net/download-logos.php).
 - Changes: none; renamed locally and scaled proportionally within the shared selector slot.
+
+## Elixir — `elixir.svg`, `elixir-dark-background.svg`
+
+- Source: official [dark artwork for light backgrounds](https://elixir-lang.org/downloads/logos/elixir-dark.svg) and [light artwork for dark backgrounds](https://elixir-lang.org/downloads/logos/elixir-light.svg).
+- Elixir and its logo are registered trademarks of the Elixir Team; used to identify the supported language under its [trademark policy](https://elixir-lang.org/trademarks/).
+- Changes: none; renamed locally and displayed proportionally in the shared selector slot. The theme selects the appropriate supplied variant.

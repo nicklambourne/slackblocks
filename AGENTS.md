@@ -38,3 +38,12 @@ PHP publication uses the monorepo's Packagist registration, GitHub update hook
 and protected `packagist` environment; see `RELEASING.md`. Generate
 the root Composer descriptor with `php/bin/package_manifest.py` after changing
 PHP package metadata. Verify trimmed archives and native source installs.
+
+Elixir joins the implementation set in 2.8.0. Include `elixir/`
+when updating shared features. Use immutable structs, keyword constructors,
+native typespecs and atom enums. Elixir 1.16.3 is the pinned formatter; the full
+`mix run tools/check.exs` gate covers conformance, independent API inventory,
+coverage, Dialyzer, actual Hex archives, Erlang releases and isolated HTTP tests.
+Current docs execute literal examples and render compiled native metadata.
+Keep Hex publication disabled until the protected environment, owner and scoped
+credential are verified and the maintainer approves activation; see `RELEASING.md`.
