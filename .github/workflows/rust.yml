@@ -129,9 +129,30 @@ jobs:
           python3 rust/bin/check-package.py --toolchain stable
           python3 rust/bin/check-package.py --toolchain 1.85.0 --lower-bounds
           python3 rust/bin/check-package.py --toolchain 1.85.0 --json-features
+      - name: Identify the pinned coverage tool cache
+        if: needs.changes.outputs.relevant == 'true'
+        id: coverage-tool
+        run: |
+          echo "root=$RUNNER_TOOL_CACHE/slackblocks-cargo-llvm-cov-0.9.1" >> "$GITHUB_OUTPUT"
+          echo "compiler=$(rustc +stable -vV | sha256sum | cut -d ' ' -f1)" >> "$GITHUB_OUTPUT"
+      - name: Cache the pinned coverage tool
+        if: needs.changes.outputs.relevant == 'true'
+        id: coverage-tool-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.coverage-tool.outputs.root }}
+          key: rust-cargo-llvm-cov-${{ runner.os }}-${{ runner.arch }}-${{ steps.coverage-tool.outputs.compiler }}-0.9.1-v1
+      - name: Install the pinned coverage tool on a cache miss
+        if: needs.changes.outputs.relevant == 'true' && steps.coverage-tool-cache.outputs.cache-hit != 'true'
+        run: cargo +stable install cargo-llvm-cov --version 0.9.1 --locked --root "${{ steps.coverage-tool.outputs.root }}"
+      - name: Verify and activate the pinned coverage tool
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          tool_bin="${{ steps.coverage-tool.outputs.root }}/bin"
+          test "$("$tool_bin/cargo-llvm-cov" llvm-cov --version)" = "cargo-llvm-cov 0.9.1"
+          echo "$tool_bin" >> "$GITHUB_PATH"
       - name: Enforce overall and handwritten line and region coverage
         if: needs.changes.outputs.relevant == 'true'
         run: |
           rustup component add llvm-tools-preview --toolchain stable
-          cargo +stable install cargo-llvm-cov --version 0.9.1 --locked
           python3 rust/bin/check-coverage.py
