@@ -8825,7 +8825,7 @@ impl<'de> Deserialize<'de> for EmailInputElement {
 /// A menu for selecting multiple options loaded from your app.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element).
-
+/// focus_on_load is unsupported and must be omitted, including explicit false.
 #[derive(Clone, Debug, PartialEq)]
 pub struct ExternalMultiSelectElement {
     action_id: Option<String>,

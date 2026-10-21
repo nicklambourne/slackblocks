@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Compatibility
 
@@ -160,4 +160,37 @@ UTF-8 and Slack string limits count Unicode code points. Opaque JSON is limited
 to 128 levels; cyclic graphs and custom object instances are rejected.
 
 </PHP>
+<Elixir>
+
+## Elixir support policy
+
+Elixir 1.16.3 or newer, below 2.0, with a compatible OTP version from 26.2,
+on 64-bit Linux, macOS and Windows. CI checks Elixir 1.16–1.20 against compatible
+OTP 26–29 combinations, with minimum/current compiler lanes on all three platforms.
+Elixir support begins with version 2.8.0. Other implementations' minimum
+language versions are unchanged.
+
+Runtime dependencies are Jason 1.4.5+ (below 2.0) and Decimal 2.4+ or 3.x.
+Existing Jason builds may need the [installation rebuild step](installation).
+Req, slack_elixir and Ecto integration tests use a separate project; they add no
+HTTP, database or web framework dependency to the core package.
+
+Public struct fields, constructor keywords, typespecs, enum atoms, JSON field
+names and validation categories form the compatibility surface. New optional
+fields or enum values are additive; match only fields you need and retain a
+catch-all branch for evolving enums. Error prose may improve. Persist Slack wire
+JSON instead of serialized BEAM structs across package upgrades.
+
+Integers use BEAM arbitrary precision. Checked JSON decoding preserves integer
+tokens, rejects duplicate keys and rejects decimal tokens that lose value in the
+shortest-decimal float round trip, overflow or underflow to nonzero values lost as zero.
+Integer fields reject decimal/exponent tokens. Decimal scale is not retained;
+negative zero remains a float. Map ingress cannot recover information discarded
+by another parser. Opaque JSON nesting is capped at 128 levels. UTF-8 strings are
+required and limits count Unicode code points, rather than bytes or graphemes.
+
+Erlang can call the same modules using binary strings and keyword tuples;
+see the tested [Rebar3 and standalone release configuration](erlang).
+
+</Elixir>
 </LanguageContent>

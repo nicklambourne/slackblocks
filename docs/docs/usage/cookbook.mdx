@@ -1,4 +1,4 @@
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Recipe Book
 
@@ -1254,4 +1254,167 @@ echo $edited->toJson();
 ```
 
 </PHP>
+<Elixir>
+
+Each example is a complete Elixir expression evaluated by the docs checks. Sending remains an application choice.
+
+## Build status notification
+
+```elixir
+alias Slackblocks.{Message, Blocks, Elements}
+message = Message.new!(
+  channel: "C0123456789",
+  text: "Build #482 passed",
+  blocks: [
+    Blocks.Header.new!(text: "Build #482 passed"),
+    Blocks.Section.new!(fields: ["*Branch*\n`main`", "*Tests*\n1,247 passed"]),
+    Blocks.Actions.new!(elements: [
+      Elements.Button.new!(text: "View build", action_id: "view", url: "https://ci.example.com/482")
+    ])
+  ]
+)
+Slackblocks.to_map!(message)
+```
+
+![Illustrative build status notification layout](/img/usage/build_notification.png)
+
+## Approval request with action buttons
+
+```elixir
+alias Slackblocks.{Message, Blocks, Elements.Button}
+Message.new!(channel: "C1", text: "Approval requested", blocks: [
+  Blocks.Section.new!(text: "*Approve deployment?*"),
+  Blocks.Actions.new!(elements: [
+    Button.new!(text: "Approve", action_id: "approve", value: "482", style: :primary),
+    Button.new!(text: "Reject", action_id: "reject", value: "482", style: :danger)
+  ])
+]) |> Slackblocks.to_map!()
+```
+
+
+
+## Rich-formatted alert
+
+```elixir
+alias Slackblocks.{Blocks, RichText, Views.Modal}
+Modal.new!(title: "Deployment", blocks: [
+  Blocks.Alert.new!(text: "*Attention:* deployment paused", level: :warning),
+  Blocks.RichText.new!(elements: [RichText.Section.new!(elements: [
+    RichText.Text.new!(text: "Review the checks", style: RichText.Style.new!(bold: true))
+  ])])
+]) |> Slackblocks.to_map!()
+```
+
+![Illustrative rich-formatted alert component](/img/usage/alert.png)
+
+## Confirmation modal
+
+```elixir
+alias Slackblocks.{Blocks.Input, Elements.PlainTextInput, Views.Modal}
+Modal.new!(title: "Confirm deployment", submit: "Deploy", callback_id: "deploy", blocks: [
+  Input.new!(label: "Reason", block_id: "reason", element: PlainTextInput.new!(action_id: "reason_input"))
+]) |> Slackblocks.to_map!()
+```
+
+![Illustrative confirmation modal component](/img/usage/input.png)
+
+## Threaded reply
+
+```elixir
+wire = Slackblocks.Message.new!(channel: "C1", text: "Deployment complete")
+|> Slackblocks.to_map!()
+Map.put(wire, "thread_ts", "1700000000.000001")
+```
+
+Transport-specific fields outside the shared model can be added to the validated map in application code. Such additions are not validated by slackblocks.
+
+## Ephemeral interaction response
+
+```elixir
+Slackblocks.MessageResponse.new!(text: "Only you can see this", response_type: :ephemeral)
+|> Slackblocks.to_map!()
+```
+
+
+
+## Multi-column status report (table)
+
+```elixir
+alias Slackblocks.{Message, Blocks.Table, Objects.RawText}
+rows = for row <- [["Service", "Status"], ["API", "Healthy"], ["Worker", "Degraded"]] do
+  for text <- row, do: RawText.new!(text: text)
+end
+Message.new!(channel: "C1", text: "Service status", blocks: [Table.new!(rows: rows)])
+|> Slackblocks.to_map!()
+```
+
+![Illustrative multi-column status table](/img/usage/table.png)
+
+## Colored attachment
+
+```elixir
+alias Slackblocks.{Message, Attachment, Color, Blocks.Section}
+attachment = Attachment.new!(color: Color.named!(:good), blocks: [Section.new!(text: "All checks passed")])
+Message.new!(channel: "C1", text: "Checks passed", attachments: [attachment]) |> Slackblocks.to_map!()
+```
+
+
+
+## Preview in Block Kit Builder
+
+```elixir
+Slackblocks.Blocks.Section.new!(text: "Preview *this*")
+|> Slackblocks.block_kit_builder_url!(team_id: "T123")
+```
+
+This constructs a URL locally; it sends no message or request.
+
+## Checked JSON and immutable edits
+
+```elixir
+alias Slackblocks.Blocks.Section
+original = Slackblocks.decode!(Section, ~s({"type":"section","text":{"type":"mrkdwn","text":"Before"}}))
+updated = Section.change!(original, text: "After", block_id: "edited")
+Slackblocks.to_map!(updated)
+```
+
+
+
+## Workflow button
+
+```elixir
+alias Slackblocks.{Elements.WorkflowButton, Objects.Workflow, Objects.InputParameter}
+workflow = Workflow.from_url!("https://slack.com/shortcuts/Ft123/abc", [
+  InputParameter.new!(name: "ticket", value: "INC-42")
+])
+WorkflowButton.new!(text: "Open workflow", workflow: workflow, action_id: "workflow")
+|> Slackblocks.to_map!()
+```
+
+
+
+## Accordion and paginator
+
+```elixir
+alias Slackblocks.{Blocks.Section, Components.Accordion, Components.AccordionSection, Components.Paginator}
+sections = Accordion.to_blocks!([AccordionSection.new!(title: "Details", blocks: [Section.new!(text: "Ready")])])
+page = Paginator.to_blocks!([Section.new!(text: "One"), Section.new!(text: "Two")], action_id_prefix: "items", page: 1, page_size: 1)
+Slackblocks.Message.new!(channel: "C1", text: "Items", blocks: sections ++ page) |> Slackblocks.to_map!()
+```
+
+
+
+## Opaque metadata preserves JSON values
+
+```elixir
+original = Slackblocks.Message.new!(channel: "C1", metadata: %{
+  "event_type" => "build", "event_payload" => %{"count" => 0, "enabled" => false, "missing" => nil, "object" => %{}, "array" => []}
+})
+updated = Slackblocks.Message.change!(original, text: "Updated")
+Slackblocks.to_map!(updated)
+```
+
+
+
+</Elixir>
 </LanguageContent>

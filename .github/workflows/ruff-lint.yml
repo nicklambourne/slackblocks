@@ -8,6 +8,9 @@ on:
       - "docs/scripts/**"
       - "php/generator/**"
       - "php/bin/**"
+      - "elixir/generator/**"
+      - "elixir/tools/**"
+      - "elixir/ruff.toml"
       - ".github/workflows/ruff-lint.yml"
   pull_request:
 
@@ -40,7 +43,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(python/|docs/scripts/|php/(generator|bin)/|\.github/workflows/ruff-lint\.yml$)' <<<"$files"; then
+          if grep -qE '^(python/|docs/scripts/|php/(generator|bin)/|elixir/((generator|tools)/|ruff\.toml$)|\.github/workflows/ruff-lint\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -59,7 +62,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Install uv and Python
-        uses: astral-sh/setup-uv@v10.2.0
+        uses: astral-sh/setup-uv@v10.3.0
         with:
           enable-cache: true
           cache-dependency-glob: python/uv.lock
@@ -69,4 +72,4 @@ jobs:
         run: uv sync --frozen --group dev
 
       - name: Lint
-        run: uv run --frozen ruff check slackblocks test generator ../docs/scripts ../php/generator ../php/bin
+        run: uv run --frozen ruff check slackblocks test generator ../docs/scripts ../php/generator ../php/bin ../elixir/generator ../elixir/tools
