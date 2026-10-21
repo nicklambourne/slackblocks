@@ -20,6 +20,7 @@ func TestTypedNilNestedBuildersReturnValidationErrors(t *testing.T) {
 		{"block collection", sb.NewMessage().Channel("C123").Blocks((*sb.SectionBlockBuilder)(nil)), "Message.blocks[0]"},
 		{"table cell", sb.NewTableBlock().Rows([]sb.TableCell{(*sb.RawTextBuilder)(nil)}), "TableBlock.rows[0][0]"},
 		{"plan task", sb.NewPlanBlock().Title("Release").Tasks(nil), "PlanBlock.tasks[0]"},
+		{"plan task details", sb.NewPlanBlock().Title("Release").Tasks(sb.NewTaskCardBlock().TaskID("deploy").Title("Deploy").Status(sb.TaskStatusPending).Details(nil)), "TaskCardBlock.details"},
 		{"nested initial value", sb.NewRichTextInput().ActionID("notes").InitialValue(nil), "RichTextInput.initial_value"},
 	}
 	for _, tt := range tests {

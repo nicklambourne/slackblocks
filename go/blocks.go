@@ -57,7 +57,7 @@ func (t planTask) Build() (Object, error) {
 	if t.core.err != nil {
 		return nil, t.core.err
 	}
-	task, err := materialise(t.core.values)
+	task, err := materialiseAt(t.core.values, t.core.name)
 	if err != nil {
 		return nil, err
 	}
