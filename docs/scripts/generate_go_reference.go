@@ -58,7 +58,7 @@ func main() {
 
 	builderTypes := map[string]symbol{}
 	builderMethods := map[string]map[string]symbol{}
-	for _, item := range parseDomain(goRoot, domain{Files: []string{"concrete_builders_gen.go"}}) {
+	for _, item := range parseDomain(goRoot, domain{Files: []string{"concrete_builders_gen.go", "number_values.go"}}) {
 		if item.Receiver == "" {
 			builderTypes[item.Name] = item
 			continue
@@ -261,7 +261,11 @@ func renderConcreteBuilder(output *strings.Builder, constructor string, builderT
 			fmt.Fprintf(output, "%s\n\n", method.Comment)
 		}
 		fmt.Fprintf(output, "```go\n%s\n```\n\n", method.Signature)
-		for _, companion := range []string{methodName + "Object", strings.TrimSuffix(methodName, "s") + "Objects"} {
+		companions := []string{methodName + "Object", strings.TrimSuffix(methodName, "s") + "Objects"}
+		if typeName == "RawNumberBuilder" && methodName == "Value" {
+			companions = append(companions, "ValueNumber")
+		}
+		for _, companion := range companions {
 			if extra, ok := builderMethods[typeName][companion]; ok && companion != methodName {
 				fmt.Fprintf(output, "#### %s.%s\n\n", typeName, companion)
 				if extra.Comment != "" {
