@@ -315,7 +315,6 @@ return slack.PostWebhookContext(ctx, os.Getenv("SLACK_WEBHOOK_URL"), message)
 
 Use `NewMessageResponse()` for the immediate JSON body returned by a slash-command or interaction endpoint. `Build()` returns an [`Object`](/reference/go/core#object), so encode it with `encoding/json` and return it through your web framework.
 
-
 ### Visibility, replacement and deletion via `response_url`
 
 POST one selected JSON payload below to the genuine interaction's `response_url`
