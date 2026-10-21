@@ -1581,6 +1581,8 @@ func (b *DataVisualizationBlockBuilder) BlockID(value string) *DataVisualization
 //
 // A calendar date picker.
 //
+//   - initial_date must have the YYYY-MM-DD shape. Calendar validity is application-owned; some language date parsers additionally reject impossible calendar dates.
+//
 // See https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element for Slack's reference.
 type DatePickerBuilder struct{ *concreteBuilder }
 
@@ -1781,7 +1783,7 @@ func (b *ExternalMultiSelectBuilder) ActionID(value string) *ExternalMultiSelect
 }
 
 // MinQueryLength sets how many characters the user must type before Slack queries your options
-// endpoint.
+// endpoint. Must be at least 0.
 func (b *ExternalMultiSelectBuilder) MinQueryLength(value int) *ExternalMultiSelectBuilder {
 	b.core.MinQueryLength(value)
 	return b
@@ -1852,7 +1854,7 @@ func (b *ExternalSelectBuilder) ActionID(value string) *ExternalSelectBuilder {
 }
 
 // MinQueryLength sets how many characters the user must type before Slack queries your options
-// endpoint.
+// endpoint. Must be at least 0.
 func (b *ExternalSelectBuilder) MinQueryLength(value int) *ExternalSelectBuilder {
 	b.core.MinQueryLength(value)
 	return b
@@ -2454,6 +2456,7 @@ func (b *MarkdownBlockBuilder) BlockID(value string) *MarkdownBlockBuilder {
 //   - Required: Channel.
 //   - Only blocks supported in messages are accepted.
 //   - Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+//   - At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
 //
 // See https://docs.slack.dev/reference/methods/chat.postMessage for Slack's reference.
 type MessageBuilder struct{ *concreteBuilder }
@@ -2528,6 +2531,7 @@ func (b *MessageBuilder) Metadata(value Object) *MessageBuilder {
 //
 //   - Only blocks supported in messages are accepted.
 //   - Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+//   - At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
 //
 // See https://docs.slack.dev/interactivity/handling-user-interaction#message_responses for Slack's reference.
 type MessageResponseBuilder struct{ *concreteBuilder }
@@ -2949,6 +2953,8 @@ func (b *PlainTextBuilder) Emoji(value bool) *PlainTextBuilder {
 // PlainTextInputBuilder is the concrete fluent builder returned by NewPlainTextInput.
 //
 // A single-line or multi-line free-text input.
+//
+//   - When both min_length and max_length are supplied, min_length must not exceed max_length; otherwise the input cannot be satisfied.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element for Slack's reference.
 type PlainTextInputBuilder struct{ *concreteBuilder }
@@ -3681,8 +3687,8 @@ func (b *StaticMultiSelectBuilder) ActionID(value string) *StaticMultiSelectBuil
 	return b
 }
 
-// Options adds selectable options in display order. Slack allows at most 100 items. Each call
-// appends to any values already added.
+// Options adds selectable options in display order. Must contain between 1 and 100 items. Each
+// call appends to any values already added.
 func (b *StaticMultiSelectBuilder) Options(values ...*OptionBuilder) *StaticMultiSelectBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -3693,8 +3699,8 @@ func (b *StaticMultiSelectBuilder) Options(values ...*OptionBuilder) *StaticMult
 }
 
 // OptionGroups adds labelled groups of options in display order. Cannot be combined with
-// ungrouped options. Slack allows at most 100 items. Each call appends to any values already
-// added.
+// ungrouped options. Must contain between 1 and 100 items. Each call appends to any values
+// already added.
 func (b *StaticMultiSelectBuilder) OptionGroups(values ...*OptionGroupBuilder) *StaticMultiSelectBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -3770,8 +3776,8 @@ func (b *StaticSelectBuilder) ActionID(value string) *StaticSelectBuilder {
 	return b
 }
 
-// Options adds selectable options in display order. Slack allows at most 100 items. Each call
-// appends to any values already added.
+// Options adds selectable options in display order. Must contain between 1 and 100 items. Each
+// call appends to any values already added.
 func (b *StaticSelectBuilder) Options(values ...*OptionBuilder) *StaticSelectBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -3782,8 +3788,8 @@ func (b *StaticSelectBuilder) Options(values ...*OptionBuilder) *StaticSelectBui
 }
 
 // OptionGroups adds labelled groups of options in display order. Cannot be combined with
-// ungrouped options. Slack allows at most 100 items. Each call appends to any values already
-// added.
+// ungrouped options. Must contain between 1 and 100 items. Each call appends to any values
+// already added.
 func (b *StaticSelectBuilder) OptionGroups(values ...*OptionGroupBuilder) *StaticSelectBuilder {
 	items := make([]any, len(values))
 	for index, value := range values {
@@ -3940,6 +3946,8 @@ func (b *TaskCardBlockBuilder) BlockID(value string) *TaskCardBlockBuilder {
 // TimePickerBuilder is the concrete fluent builder returned by NewTimePicker.
 //
 // A time-of-day picker.
+//
+//   - initial_time must be HH:mm in 24-hour time, from 00:00 through 23:59.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element for Slack's reference.
 type TimePickerBuilder struct{ *concreteBuilder }
@@ -4319,6 +4327,7 @@ func (b *VideoBlockBuilder) TitleURL(value string) *VideoBlockBuilder {
 //
 //   - Only blocks supported in messages are accepted.
 //   - Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+//   - At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
 //
 // See https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks for Slack's reference.
 type WebhookMessageBuilder struct{ *concreteBuilder }

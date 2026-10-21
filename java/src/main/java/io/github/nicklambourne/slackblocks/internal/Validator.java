@@ -231,6 +231,29 @@ public final class Validator {
           child(path, "focus_on_load"),
           "unsupported for external multi-select menus; omit this field");
     }
+    if (type.equals("external_select") || type.equals("multi_external_select")) {
+      checkRange(
+          value,
+          "min_query_length",
+          path,
+          SlackLimits.SELECT_MIN_QUERY_LENGTH_MIN,
+          Integer.MAX_VALUE);
+    }
+    if (type.equals("datepicker")
+        && value.containsKey("initial_date")
+        && (!(value.get("initial_date") instanceof String text)
+            || !text.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}"))) {
+      fail(ErrorCategory.TYPE_MISMATCH, child(path, "initial_date"), "expected YYYY-MM-DD");
+    }
+    if (type.equals("timepicker")
+        && value.containsKey("initial_time")
+        && (!(value.get("initial_time") instanceof String text)
+            || !text.matches("([01][0-9]|2[0-3]):[0-5][0-9]"))) {
+      fail(
+          ErrorCategory.TYPE_MISMATCH,
+          child(path, "initial_time"),
+          "expected HH:mm in 24-hour time");
+    }
     if (MULTI_SELECT_TYPES.contains(type)) {
       checkRange(
           value,
@@ -283,6 +306,11 @@ public final class Validator {
         }
       }
       case "plain_text_input" -> {
+        Double minimum = number(value.get("min_length"));
+        Double maximum = number(value.get("max_length"));
+        if (minimum != null && maximum != null && minimum > maximum) {
+          fail(ErrorCategory.OUT_OF_RANGE, child(path, "min_length"), "cannot exceed max_length");
+        }
         checkRange(
             value,
             "min_length",
@@ -549,13 +577,20 @@ public final class Validator {
     }
     if (hasOptions) {
       List<?> options = listAt(value.get("options"), child(path, "options"));
-      sliceLength(options, child(path, "options"), 0, SlackLimits.SELECT_OPTIONS_MAX_ITEMS);
+      sliceLength(
+          options,
+          child(path, "options"),
+          SlackLimits.SELECT_OPTIONS_MIN_ITEMS,
+          SlackLimits.SELECT_OPTIONS_MAX_ITEMS);
       validateOptions(options, child(path, "options"));
     }
     if (hasGroups) {
       List<?> groups = listAt(value.get("option_groups"), child(path, "option_groups"));
       sliceLength(
-          groups, child(path, "option_groups"), 0, SlackLimits.SELECT_OPTION_GROUPS_MAX_ITEMS);
+          groups,
+          child(path, "option_groups"),
+          SlackLimits.SELECT_OPTION_GROUPS_MIN_ITEMS,
+          SlackLimits.SELECT_OPTION_GROUPS_MAX_ITEMS);
       for (int index = 0; index < groups.size(); index++) {
         validateOptionGroup(
             objectAt(groups.get(index), child(path, "option_groups") + "[" + index + "]"),
@@ -1080,12 +1115,18 @@ public final class Validator {
       }
     }
     // Slack limits markdown block text and data table cell text across the whole message.
-    int[] totals = new int[2];
+    int[] totals = new int[3];
     addMessageTotals(value.get("blocks"), totals);
     if (value.get("attachments") instanceof List<?> attachments) {
       for (Object attachment : attachments) {
         addMessageTotals(objectAt(attachment, path).get("blocks"), totals);
       }
+    }
+    if (totals[2] > SlackLimits.MESSAGE_DATA_VISUALIZATIONS_MAX_ITEMS) {
+      fail(
+          ErrorCategory.LENGTH_EXCEEDED,
+          path,
+          "a message may contain at most two data visualization blocks");
     }
     if (totals[0] > SlackLimits.MARKDOWN_TOTAL_TEXT_MAX_LENGTH) {
       fail(
@@ -1107,14 +1148,14 @@ public final class Validator {
     }
   }
 
-  /**
-   * Adds markdown block text to {@code totals[0]} and data table cell text to {@code totals[1]}.
-   */
+  /** Adds markdown text, data table text and data visualization counts to the three totals. */
   private static void addMessageTotals(@Nullable Object value, int[] totals) {
     if (value instanceof Map<?, ?> map) {
       Object type = map.get("type");
       if ("markdown".equals(type) && map.get("text") instanceof String text) {
         totals[0] += text.codePointCount(0, text.length());
+      } else if ("data_visualization".equals(type)) {
+        totals[2]++;
       } else if ("data_table".equals(type)) {
         totals[1] += textCharacterCount(map.get("rows"));
       } else if ("container".equals(type)) {

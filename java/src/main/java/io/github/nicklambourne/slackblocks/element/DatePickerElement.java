@@ -21,6 +21,11 @@ import java.util.Optional;
  * <p>Start with {@link #builder()}, set fields with the named fluent methods, and call {@link
  * Builder#build()} to validate and create an immutable value.
  *
+ * <ul>
+ *   <li>initial_date must have the YYYY-MM-DD shape. Calendar validity is application-owned; some
+ *       language date parsers additionally reject impossible calendar dates.
+ * </ul>
+ *
  * @see <a
  *     href="https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element">Slack
  *     reference</a>

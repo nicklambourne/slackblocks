@@ -18,7 +18,7 @@ public sealed partial class ExternalMultiSelectElement : global::Slackblocks.Sla
 {
     /// <summary>Creates and validates a <see cref="ExternalMultiSelectElement"/>.</summary>
     /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
-    /// <param name="minQueryLength">How many characters the user must type before Slack queries your options endpoint.</param>
+    /// <param name="minQueryLength">How many characters the user must type before Slack queries your options endpoint. Must be at least 0.</param>
     /// <param name="initialOptions">Options that are selected when the element loads. Each must match an option in the element.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
     /// <param name="maxSelectedItems">The maximum number of items a user can select. Must be at least 1.</param>

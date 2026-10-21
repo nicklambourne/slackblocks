@@ -118,6 +118,12 @@ defmodule Slackblocks.RulesTest do
            slack_file: sample("SlackFile")
          )
        end, :mutually_exclusive},
+      {"DatePickerElement", 0, fn -> change("DatePickerElement", initial_date: "not a date") end,
+       :type_mismatch},
+      {"TimePickerElement", 0, fn -> change("TimePickerElement", initial_time: "25:99") end,
+       :type_mismatch},
+      {"PlainTextInputElement", 0,
+       fn -> change("PlainTextInputElement", min_length: 20, max_length: 10) end, :out_of_range},
       {"NumberInputElement", 0,
        fn -> change("NumberInputElement", min_value: 2, max_value: 1) end, :out_of_range},
       {"StaticMultiSelectElement", 0,
@@ -161,9 +167,17 @@ defmodule Slackblocks.RulesTest do
        :type_mismatch},
       {"HomeTabView", 0, fn -> change("HomeTabView", blocks: [Alert.new!(text: "x")]) end,
        :type_mismatch},
+      {"MessagePayload", 2,
+       fn ->
+         change("MessagePayload", blocks: List.duplicate(sample("DataVisualizationBlock"), 3))
+       end, :length_exceeded},
       {"MessagePayload", 0, fn -> change("MessagePayload", blocks: [Alert.new!(text: "x")]) end,
        :type_mismatch},
       {"MessagePayload", 1, fn -> too_much_markdown("MessagePayload") end, :length_exceeded},
+      {"MessageResponse", 2,
+       fn ->
+         change("MessageResponse", blocks: List.duplicate(sample("DataVisualizationBlock"), 3))
+       end, :length_exceeded},
       {"MessageResponse", 0, fn -> change("MessageResponse", blocks: [Alert.new!(text: "x")]) end,
        :type_mismatch},
       {"MessageResponse", 1, fn -> too_much_markdown("MessageResponse") end, :length_exceeded},
@@ -171,6 +185,10 @@ defmodule Slackblocks.RulesTest do
        :type_mismatch},
       {"ModalView", 1, fn -> change("ModalView", blocks: [sample("InputBlock")], submit: nil) end,
        :missing_required},
+      {"WebhookMessage", 2,
+       fn ->
+         change("WebhookMessage", blocks: List.duplicate(sample("DataVisualizationBlock"), 3))
+       end, :length_exceeded},
       {"WebhookMessage", 0, fn -> change("WebhookMessage", blocks: [Alert.new!(text: "x")]) end,
        :type_mismatch},
       {"WebhookMessage", 1, fn -> too_much_markdown("WebhookMessage") end, :length_exceeded}

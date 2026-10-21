@@ -357,11 +357,9 @@ describe("empty optional collection parity", () => {
     expect(() => attachment({ blocks: [] })).toThrowError(MissingRequiredError);
   });
 
-  it("omits empty select collections", () => {
-    expect(staticSelect({ actionId: "a", options: [] })).not.toHaveProperty("options");
-    expect(staticSelect({ actionId: "a", optionGroups: [] })).not.toHaveProperty(
-      "option_groups",
-    );
+  it("rejects empty static choices but omits empty initial selections", () => {
+    expect(() => staticSelect({ actionId: "a", options: [] })).toThrowError(LengthError);
+    expect(() => staticSelect({ actionId: "a", optionGroups: [] })).toThrowError(LengthError);
     expect(
       checkboxes({ actionId: "a", options: [choice()], initialOptions: [] }),
     ).not.toHaveProperty("initial_options");

@@ -84,6 +84,11 @@ assert.match(
   /^#### SectionBlockBuilder\.TextObject$/m,
   "Text-object companion methods must be documented",
 );
+assert.match(
+  pages.get("objects"),
+  /^func \(b \*RawNumberBuilder\) ValueNumber\(value json\.Number\) \*RawNumberBuilder$/m,
+  "RawNumber must document the exact-number companion without a float conversion",
+);
 assert.match(pages.get("types"), /^## ContextElement$/m, "Marker interfaces must be documented");
 assert.match(pages.get("types"), /^## ButtonStylePrimary$/m, "Enum constants must be documented");
 assert.match(pages.get("types"), /^## RichTextStyle$/m, "RichTextStyle must be documented");
@@ -163,5 +168,8 @@ assert.doesNotMatch(
   />Go API reference</,
   "Go API breadcrumbs must omit the redundant language level",
 );
+
+const objectsHtml = await readFile(path.join(buildDirectory, "objects.html"), "utf8");
+assert.match(objectsHtml, /id="rawnumberbuildervaluenumber"/, "Exact-number companion must have a rendered anchor");
 
 console.log("Go API rendering checks passed.");
