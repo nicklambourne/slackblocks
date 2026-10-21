@@ -85,7 +85,7 @@ for temperature in ['cold', 'warm']:
         suite = ET.parse(report).getroot()
         assert int(suite.attrib['failures']) == int(suite.attrib['errors']) == int(suite.attrib['skipped']) == 0
         inventory.extend((t.attrib.get('classname', ''), t.attrib['name']) for t in suite.iter('testcase'))
-    assert len(inventory) == 559, len(inventory)
+    assert len(inventory) == 574, len(inventory)
     save(out / 'test-inventory.json', sorted(inventory))
     save(out / 'classes.json', files(target / 'classes', {'.class'}))
     save(out / 'test-classes.json', files(target / 'test-classes', {'.class'}))

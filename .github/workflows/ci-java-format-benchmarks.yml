@@ -21,7 +21,7 @@ jobs:
           path: harness
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: 39a429f464428048f93deac54bdc385208e71d73
+          ref: 9cbf17f63038b269b2e1f0f3c782c47e073346d3
           path: source
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6
         with:
