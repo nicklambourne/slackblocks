@@ -15,7 +15,11 @@ from slackblocks import Message, SectionBlock
 
 
 def message():
-    return Message("C_TEST", text="Release ready", blocks=[SectionBlock("Release ready", block_id="operation-release-42")])
+    return Message(
+        "C_TEST",
+        text="Release ready",
+        blocks=[SectionBlock("Release ready", block_id="operation-release-42")],
+    )
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -33,12 +37,34 @@ class Handler(BaseHTTPRequestHandler):
         if mode == "accepted_disconnect":
             self.close_connection = True
             return
-        codes = {"rate": 429, "long_rate": 429, "invalid_rate": 429, "server": 503, "redirect302": 302, "redirect307": 307}
+        codes = {
+            "rate": 429,
+            "long_rate": 429,
+            "invalid_rate": 429,
+            "server": 503,
+            "redirect302": 302,
+            "redirect307": 307,
+        }
         self.send_response(codes.get(mode, 200))
-        self.send_header("Retry-After", "500" if mode == "long_rate" else "invalid" if mode == "invalid_rate" else "1")
+        self.send_header(
+            "Retry-After",
+            "500" if mode == "long_rate" else "invalid" if mode == "invalid_rate" else "1",
+        )
         self.send_header("Location", f"http://127.0.0.1:{self.server.server_port}/followed")
         self.end_headers()
-        data = b'broken' if mode == "malformed" else json.dumps({"ok": mode != "api_error", "error": "invalid_blocks", "channel": "C_TEST", "ts": "123.456"}).encode()
+        result = {
+            "ok": mode != "api_error",
+            "error": "invalid_blocks",
+            "channel": "C_TEST",
+            "ts": "123.456",
+        }
+        if mode == "wrong_channel":
+            result["channel"] = "C_WRONG"
+        elif mode == "missing_ts":
+            result.pop("ts")
+        elif mode == "invalid_ts":
+            result["ts"] = 123.456
+        data = b"broken" if mode == "malformed" else json.dumps(result).encode()
         try:
             self.wfile.write(data)
         except (BrokenPipeError, ConnectionResetError):
@@ -65,11 +91,28 @@ class DeliveryTests(unittest.TestCase):
         self.directory.cleanup()
 
     def deliver(self, **kwargs):
-        return self.outbox.deliver("release-42", "synthetic-test-token", endpoint=self.endpoint, clock=lambda: 100, **kwargs)
+        return self.outbox.deliver(
+            "release-42",
+            "synthetic-test-token",
+            endpoint=self.endpoint,
+            clock=lambda: 100,
+            **kwargs,
+        )
 
     def counts(self, requests, accepted):
-        self.assertEqual((len(self.server.requests), len(self.server.accepted)), (requests, accepted))
-        print(json.dumps({"test": self._testMethodName, "case": getattr(self, "case", None), "http_attempts": requests, "accepted_writes": accepted}))
+        self.assertEqual(
+            (len(self.server.requests), len(self.server.accepted)), (requests, accepted)
+        )
+        print(
+            json.dumps(
+                {
+                    "test": self._testMethodName,
+                    "case": getattr(self, "case", None),
+                    "http_attempts": requests,
+                    "accepted_writes": accepted,
+                }
+            )
+        )
 
     def test_success_duplicate_event_and_normal_restart(self):
         self.server.modes = ["success"]
@@ -86,29 +129,48 @@ class DeliveryTests(unittest.TestCase):
             self.outbox.enqueue("event-2", "release-42", Message("C_TEST", text="Different"))
 
     def test_each_ambiguous_or_api_failure_has_no_automatic_retry(self):
-        modes = {"api_error": ("failed", 0), "malformed": ("uncertain", 1),
-                 "server": ("uncertain", 0), "redirect302": ("uncertain", 0),
-                 "redirect307": ("uncertain", 0), "accepted_timeout": ("uncertain", 1),
-                 "accepted_disconnect": ("uncertain", 1)}
+        modes = {
+            "api_error": ("failed", 0),
+            "malformed": ("uncertain", 1),
+            "server": ("uncertain", 0),
+            "redirect302": ("uncertain", 0),
+            "wrong_channel": ("uncertain", 0),
+            "missing_ts": ("uncertain", 0),
+            "invalid_ts": ("uncertain", 0),
+            "redirect307": ("uncertain", 0),
+            "accepted_timeout": ("uncertain", 1),
+            "accepted_disconnect": ("uncertain", 1),
+        }
         for i, (mode, (status, accepted)) in enumerate(modes.items()):
             with self.subTest(mode=mode):
                 self.case = mode
                 operation = f"operation-{i}"
-                self.outbox.enqueue(f"event-{i+2}", operation, message())
+                self.outbox.enqueue(f"event-{i + 2}", operation, message())
                 self.server.modes = [mode]
                 previous = (len(self.server.requests), len(self.server.accepted))
                 for _ in range(2):
-                    result = self.outbox.deliver(operation, "synthetic-test-token", endpoint=self.endpoint, timeout=0.02)
+                    result = self.outbox.deliver(
+                        operation, "synthetic-test-token", endpoint=self.endpoint, timeout=0.02
+                    )
                     self.assertEqual(result["status"], status)
                 self.counts(previous[0] + 1, previous[1] + accepted)
                 self.assertEqual(result["attempts"], 1)
+
+    def test_noninteger_attempt_budget_is_rejected_before_sending(self):
+        for attempts in [True, 1.5, 0, 6]:
+            with self.subTest(attempts=attempts), self.assertRaises(ValueError):
+                self.deliver(max_attempts=attempts)
+        self.assertEqual(self.outbox.get("release-42")["attempts"], 0)
+        self.counts(0, 0)
 
     def test_rate_limit_wait_and_exhaustion_counts(self):
         self.server.modes = ["rate", "rate", "rate"]
         self.assertEqual(self.deliver()["not_before"], 101)
         self.assertEqual(self.deliver()["attempts"], 1)  # Too early: no HTTP write.
         self.outbox.deliver("release-42", "test", endpoint=self.endpoint, clock=lambda: 101)
-        result = self.outbox.deliver("release-42", "test", endpoint=self.endpoint, clock=lambda: 102)
+        result = self.outbox.deliver(
+            "release-42", "test", endpoint=self.endpoint, clock=lambda: 102
+        )
         self.assertEqual((result["status"], result["reason"]), ("failed", "retry_exhausted"))
         self.deliver()
         self.counts(3, 0)
@@ -116,7 +178,9 @@ class DeliveryTests(unittest.TestCase):
     def test_rate_limit_then_success(self):
         self.server.modes = ["rate", "success"]
         self.deliver()
-        result = self.outbox.deliver("release-42", "test", endpoint=self.endpoint, clock=lambda: 101)
+        result = self.outbox.deliver(
+            "release-42", "test", endpoint=self.endpoint, clock=lambda: 101
+        )
         self.assertEqual(result["status"], "sent")
         self.counts(2, 1)
 
@@ -147,7 +211,9 @@ class DeliveryTests(unittest.TestCase):
         with socket.socket() as closed:
             closed.bind(("127.0.0.1", 0))
             port = closed.getsockname()[1]
-        result = self.outbox.deliver("release-42", "test", endpoint=f"http://127.0.0.1:{port}/", timeout=0.02)
+        result = self.outbox.deliver(
+            "release-42", "test", endpoint=f"http://127.0.0.1:{port}/", timeout=0.02
+        )
         self.assertEqual(result["status"], "uncertain")
         self.assertEqual(self.deliver()["attempts"], 1)
         self.counts(0, 0)
@@ -156,7 +222,11 @@ class DeliveryTests(unittest.TestCase):
         self.server.modes = ["success"]
         self.outbox.close()
         code = "from outbox import Outbox; import os,sys; o=Outbox(sys.argv[1]); o.deliver('release-42','test',endpoint=sys.argv[2],after_accept=lambda:os._exit(73))"
-        process = subprocess.run([sys.executable, "-c", code, self.path, self.endpoint], cwd=Path(__file__).parent, check=False)
+        process = subprocess.run(
+            [sys.executable, "-c", code, self.path, self.endpoint],
+            cwd=Path(__file__).parent,
+            check=False,
+        )
         self.assertEqual(process.returncode, 73)
         self.outbox = Outbox(self.path)
         self.assertEqual(self.outbox.get("release-42")["status"], "sending")
@@ -166,8 +236,14 @@ class DeliveryTests(unittest.TestCase):
         # Independent mock-server acceptance ledger supplies reconciliation proof.
         self.assertEqual(self.server.accepted[0]["blocks"][0]["block_id"], "operation-release-42")
         with self.assertRaises(ValueError):
-            self.outbox.reconcile_accepted("release-42", "C_WRONG", "123.456", "mock-server receipt")
-        result = self.outbox.reconcile_accepted("release-42", "C_TEST", "123.456", "mock-server acceptance ledger, record 1")
+            self.outbox.reconcile_accepted(
+                "release-42", "C_WRONG", "123.456", "mock-server receipt"
+            )
+        with self.assertRaises(ValueError):
+            self.outbox.reconcile_accepted("release-42", "C_TEST", 123.456, "mock-server receipt")
+        result = self.outbox.reconcile_accepted(
+            "release-42", "C_TEST", "123.456", "mock-server acceptance ledger, record 1"
+        )
         self.assertEqual(result["status"], "sent")
         self.deliver()
         self.counts(1, 1)

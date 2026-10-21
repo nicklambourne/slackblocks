@@ -2,9 +2,15 @@
 
 ## Unreleased
 
+- Reject explicit `focusOnLoad` on external multi-selects, including false (SB-003). Omit the compatibility parameter; other selectors retain focus support.
+
 - Correct number-input bounds to string wire values, retain native numeric convenience arguments, and reject nonfinite/inverted bounds (SB-001, spec 1.3.0). Bound getters now return strings; reflection/signature consumers must migrate. Package version unchanged.
 
 - Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
+
+## [2.8.0] — 2026-10-18
+
+- Coordinate the first Elixir implementation release; existing language support remains unchanged.
 
 ## [2.7.0] — 2026-10-11
 

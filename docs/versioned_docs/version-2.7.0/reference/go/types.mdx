@@ -1,0 +1,447 @@
+---
+sidebar_position: 8
+toc_max_heading_level: 2
+---
+
+# Interfaces And Enums
+
+This page documents the public Go API for interfaces and enums. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.
+
+## AlertLevel
+
+AlertLevel is a named Slack value. Severity levels supported by alert blocks. Untyped string
+constants such as "default" also convert to it.
+
+```go
+type AlertLevel string
+```
+
+## AlertLevelDefault
+
+Neutral styling.
+
+```go
+const AlertLevelDefault AlertLevel = "default"
+```
+
+Related types: [`AlertLevel`](/reference/go/types#alertlevel).
+
+## AlertLevelError
+
+Error styling.
+
+```go
+const AlertLevelError AlertLevel = "error"
+```
+
+Related types: [`AlertLevel`](/reference/go/types#alertlevel).
+
+## AlertLevelInfo
+
+Informational styling.
+
+```go
+const AlertLevelInfo AlertLevel = "info"
+```
+
+Related types: [`AlertLevel`](/reference/go/types#alertlevel).
+
+## AlertLevelSuccess
+
+Success styling.
+
+```go
+const AlertLevelSuccess AlertLevel = "success"
+```
+
+Related types: [`AlertLevel`](/reference/go/types#alertlevel).
+
+## AlertLevelWarning
+
+Warning styling.
+
+```go
+const AlertLevelWarning AlertLevel = "warning"
+```
+
+Related types: [`AlertLevel`](/reference/go/types#alertlevel).
+
+## Block
+
+Block is a layout block, or a component that expands to layout blocks, accepted by message,
+modal, App Home, attachment, and container block collections.
+Implemented by *AccordionBuilder, *AccordionSectionBuilder, *ActionsBlockBuilder,
+*AlertBlockBuilder, *CardBlockBuilder, *CarouselBlockBuilder, *ContainerBlockBuilder,
+*ContextActionsBlockBuilder, *ContextBlockBuilder, *DataTableBlockBuilder,
+*DataVisualizationBlockBuilder, *DividerBlockBuilder, *FileBlockBuilder, *HeaderBlockBuilder,
+*ImageBlockBuilder, *InputBlockBuilder, *MarkdownBlockBuilder, *PaginatorBuilder,
+*PlanBlockBuilder, *RichTextBlockBuilder, *SectionBlockBuilder, *TableBlockBuilder,
+*TaskCardBlockBuilder, and *VideoBlockBuilder.
+
+```go
+type Block interface { /* unexported marker method: only slackblocks builders implement this interface */ }
+```
+
+## ButtonStyle
+
+ButtonStyle is a named Slack value. Visual emphasis for buttons and confirmation dialogs.
+Untyped string constants such as "primary" also convert to it.
+
+```go
+type ButtonStyle string
+```
+
+## ButtonStyleDanger
+
+Red emphasis for destructive actions.
+
+```go
+const ButtonStyleDanger ButtonStyle = "danger"
+```
+
+Related types: [`ButtonStyle`](/reference/go/types#buttonstyle).
+
+## ButtonStylePrimary
+
+Green emphasis for the affirmative action.
+
+```go
+const ButtonStylePrimary ButtonStyle = "primary"
+```
+
+Related types: [`ButtonStyle`](/reference/go/types#buttonstyle).
+
+## Chart
+
+Chart is a pie, bar, area, or line chart that a data visualization block can display.
+Implemented by *AreaChartBuilder, *BarChartBuilder, *LineChartBuilder, and *PieChartBuilder.
+
+```go
+type Chart interface { /* unexported marker method: only slackblocks builders implement this interface */ }
+```
+
+## ColumnAlign
+
+ColumnAlign is a named Slack value. Horizontal alignment for table columns. Untyped string
+constants such as "left" also convert to it.
+
+```go
+type ColumnAlign string
+```
+
+## ColumnAlignCenter
+
+Center cell content.
+
+```go
+const ColumnAlignCenter ColumnAlign = "center"
+```
+
+Related types: [`ColumnAlign`](/reference/go/types#columnalign).
+
+## ColumnAlignLeft
+
+Align cell content to the left.
+
+```go
+const ColumnAlignLeft ColumnAlign = "left"
+```
+
+Related types: [`ColumnAlign`](/reference/go/types#columnalign).
+
+## ColumnAlignRight
+
+Align cell content to the right.
+
+```go
+const ColumnAlignRight ColumnAlign = "right"
+```
+
+Related types: [`ColumnAlign`](/reference/go/types#columnalign).
+
+## ContainerWidth
+
+ContainerWidth is a named Slack value. Widths supported by Slack container blocks. Untyped
+string constants such as "narrow" also convert to it.
+
+```go
+type ContainerWidth string
+```
+
+## ContainerWidthFull
+
+The full available width.
+
+```go
+const ContainerWidthFull ContainerWidth = "full"
+```
+
+Related types: [`ContainerWidth`](/reference/go/types#containerwidth).
+
+## ContainerWidthNarrow
+
+A compact container.
+
+```go
+const ContainerWidthNarrow ContainerWidth = "narrow"
+```
+
+Related types: [`ContainerWidth`](/reference/go/types#containerwidth).
+
+## ContainerWidthStandard
+
+Slack's standard container width.
+
+```go
+const ContainerWidthStandard ContainerWidth = "standard"
+```
+
+Related types: [`ContainerWidth`](/reference/go/types#containerwidth).
+
+## ContainerWidthWide
+
+A wide container.
+
+```go
+const ContainerWidthWide ContainerWidth = "wide"
+```
+
+Related types: [`ContainerWidth`](/reference/go/types#containerwidth).
+
+## ContextActionsElement
+
+ContextActionsElement is feedback buttons or an icon button that can appear in a context
+actions block.
+Implemented by *FeedbackButtonsBuilder and *IconButtonBuilder.
+
+```go
+type ContextActionsElement interface { /* unexported marker method: only slackblocks builders implement this interface */ }
+```
+
+## ContextElement
+
+ContextElement is an image element or text object that can appear in a context block.
+Implemented by *ImageElementBuilder, *MarkdownBuilder, and *PlainTextBuilder.
+
+```go
+type ContextElement interface { /* unexported marker method: only slackblocks builders implement this interface */ }
+```
+
+## DataTableCell
+
+DataTableCell is raw text, a raw number, or a rich text block that can appear as a data table
+cell.
+Implemented by *RawNumberBuilder, *RawTextBuilder, and *RichTextBlockBuilder.
+
+```go
+type DataTableCell interface { /* unexported marker method: only slackblocks builders implement this interface */ }
+```
+
+## Element
+
+Element is an interactive, visual, or input element that can appear in an actions block or as
+a section accessory.
+Implemented by *ButtonBuilder, *ChannelMultiSelectBuilder, *ChannelSelectBuilder,
+*CheckboxesBuilder, *ConversationMultiSelectBuilder, *ConversationSelectBuilder,
+*DatePickerBuilder, *DateTimePickerBuilder, *EmailInputBuilder, *ExternalMultiSelectBuilder,
+*ExternalSelectBuilder, *FeedbackButtonsBuilder, *FileInputBuilder, *IconButtonBuilder,
+*ImageElementBuilder, *NumberInputBuilder, *OverflowBuilder, *PlainTextInputBuilder,
+*RadioButtonsBuilder, *RichTextInputBuilder, *StaticMultiSelectBuilder, *StaticSelectBuilder,
+*TimePickerBuilder, *URLInputBuilder, *UserMultiSelectBuilder, *UserSelectBuilder, and
+*WorkflowButtonBuilder.
+
+```go
+type Element interface { /* unexported marker method: only slackblocks builders implement this interface */ }
+```
+
+## IconButtonIcon
+
+IconButtonIcon is a named Slack value. Icons supported by icon buttons. Untyped string
+constants such as "trash" also convert to it.
+
+```go
+type IconButtonIcon string
+```
+
+## IconButtonIconTrash
+
+A trash can, for delete actions.
+
+```go
+const IconButtonIconTrash IconButtonIcon = "trash"
+```
+
+Related types: [`IconButtonIcon`](/reference/go/types#iconbuttonicon).
+
+## InputElement
+
+InputElement is an element that can be placed in an input block.
+Implemented by *ChannelMultiSelectBuilder, *ChannelSelectBuilder, *CheckboxesBuilder,
+*ConversationMultiSelectBuilder, *ConversationSelectBuilder, *DatePickerBuilder,
+*DateTimePickerBuilder, *EmailInputBuilder, *ExternalMultiSelectBuilder,
+*ExternalSelectBuilder, *FileInputBuilder, *NumberInputBuilder, *PlainTextInputBuilder,
+*RadioButtonsBuilder, *RichTextInputBuilder, *StaticMultiSelectBuilder, *StaticSelectBuilder,
+*TimePickerBuilder, *URLInputBuilder, *UserMultiSelectBuilder, and *UserSelectBuilder.
+
+```go
+type InputElement interface { Element; /* unexported marker method: only slackblocks builders implement this interface */ }
+```
+
+Related types: [`Element`](/reference/go/types#element).
+
+## ResponseType
+
+ResponseType is a named Slack value. Visibility of a slash-command or interaction response.
+Untyped string constants such as "in_channel" also convert to it.
+
+```go
+type ResponseType string
+```
+
+## ResponseTypeEphemeral
+
+Visible only to the user who triggered the response.
+
+```go
+const ResponseTypeEphemeral ResponseType = "ephemeral"
+```
+
+Related types: [`ResponseType`](/reference/go/types#responsetype).
+
+## ResponseTypeInChannel
+
+Visible to everyone in the channel.
+
+```go
+const ResponseTypeInChannel ResponseType = "in_channel"
+```
+
+Related types: [`ResponseType`](/reference/go/types#responsetype).
+
+## RichTextBlockElement
+
+RichTextBlockElement is a section, list, preformatted block, or quote inside a rich text
+block.
+Implemented by *RichTextCodeBlockBuilder, *RichTextListBuilder, *RichTextQuoteBuilder, and
+*RichTextSectionBuilder.
+
+```go
+type RichTextBlockElement interface { /* unexported marker method: only slackblocks builders implement this interface */ }
+```
+
+## RichTextListStyle
+
+RichTextListStyle is a named Slack value. Marker styles for rich text lists. Untyped string
+constants such as "bullet" also convert to it.
+
+```go
+type RichTextListStyle string
+```
+
+## RichTextListStyleBullet
+
+An unordered, bulleted list.
+
+```go
+const RichTextListStyleBullet RichTextListStyle = "bullet"
+```
+
+Related types: [`RichTextListStyle`](/reference/go/types#richtextliststyle).
+
+## RichTextListStyleOrdered
+
+A numbered list.
+
+```go
+const RichTextListStyleOrdered RichTextListStyle = "ordered"
+```
+
+Related types: [`RichTextListStyle`](/reference/go/types#richtextliststyle).
+
+## RichTextSectionElement
+
+RichTextSectionElement is inline rich text: text, a link, an emoji, or a channel, user, or
+user group mention.
+Implemented by *RichTextBuilder, *RichTextChannelBuilder, *RichTextEmojiBuilder,
+*RichTextLinkBuilder, *RichTextUserBuilder, and *RichTextUserGroupBuilder.
+
+```go
+type RichTextSectionElement interface { /* unexported marker method: only slackblocks builders implement this interface */ }
+```
+
+## RichTextStyle
+
+RichTextStyle sets formatting flags on inline rich text, such as
+RichTextStyle\{"bold": true, "italic": false\}. Text and links support bold, italic, strike,
+and code; mentions support bold, italic, strike, highlight, client_highlight, and unlink.
+
+```go
+type RichTextStyle map[string]bool
+```
+
+## TableCell
+
+TableCell is raw text or a rich text block that can appear as a table block cell.
+Implemented by *RawTextBuilder and *RichTextBlockBuilder.
+
+```go
+type TableCell interface { /* unexported marker method: only slackblocks builders implement this interface */ }
+```
+
+## TaskStatus
+
+TaskStatus is a named Slack value. States supported by task card blocks. Untyped string
+constants such as "pending" also convert to it.
+
+```go
+type TaskStatus string
+```
+
+## TaskStatusComplete
+
+The task finished successfully.
+
+```go
+const TaskStatusComplete TaskStatus = "complete"
+```
+
+Related types: [`TaskStatus`](/reference/go/types#taskstatus).
+
+## TaskStatusError
+
+The task failed.
+
+```go
+const TaskStatusError TaskStatus = "error"
+```
+
+Related types: [`TaskStatus`](/reference/go/types#taskstatus).
+
+## TaskStatusInProgress
+
+The task is running.
+
+```go
+const TaskStatusInProgress TaskStatus = "in_progress"
+```
+
+Related types: [`TaskStatus`](/reference/go/types#taskstatus).
+
+## TaskStatusPending
+
+The task has not started.
+
+```go
+const TaskStatusPending TaskStatus = "pending"
+```
+
+Related types: [`TaskStatus`](/reference/go/types#taskstatus).
+
+## TextObject
+
+TextObject is a plain_text or mrkdwn text composition object.
+Implemented by *MarkdownBuilder and *PlainTextBuilder.
+
+```go
+type TextObject interface { /* unexported marker method: only slackblocks builders implement this interface */ }
+```

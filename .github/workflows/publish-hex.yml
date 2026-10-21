@@ -1,0 +1,129 @@
+name: Publish Elixir Package
+
+on:
+  pull_request:
+    paths: ["elixir/**", ".github/scripts/**", ".github/workflows/publish-hex.yml", ".github/workflows/coordinated-release.yml"]
+  push:
+    tags: ["elixir/v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hex-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build and verify Hex release
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - name: Verify nine-language release activation, tags and commit
+        if: github.event_name != 'pull_request'
+        run: python3 .github/scripts/verify-release.py publisher --language elixir
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        with:
+          elixir-version: "1.16.3"
+          otp-version: "26.2"
+          version-type: strict
+      - name: Install pinned Hex and locked dependencies
+        working-directory: elixir
+        run: |
+          mix local.hex 2.5.1 --force
+          mix deps.get --check-locked
+      - name: Test native API, real artifact and credential-free docs dry run
+        working-directory: elixir
+        run: |
+          mix run tools/check.exs --profile native
+          python3 tools/docs_check.py
+      - name: Build and reproduce tested archive
+        run: |
+          python3 elixir/tools/release.py prepare
+          python3 elixir/tools/release.py verify
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: elixir-release
+          path: elixir/dist/*
+          if-no-files-found: error
+
+  publish:
+    name: Publish immutable Hex package and docs
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: hex
+      url: https://hex.pm/packages/slackblocks
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Recheck activation and exact tag before using credentials
+        run: python3 .github/scripts/verify-release.py publisher --language elixir
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        with:
+          elixir-version: "1.16.3"
+          otp-version: "26.2"
+          version-type: strict
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: elixir-release
+          path: elixir/dist
+      - name: Resolve locked release tools and verify package reproduction
+        working-directory: elixir
+        run: |
+          mix local.hex 2.5.1 --force
+          mix deps.get --check-locked
+          python3 tools/release.py verify
+      - name: Publish missing package/docs and verify public identity
+        env:
+          HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
+        run: python3 elixir/tools/release.py publish
+
+  consumers:
+    name: Verify Hex install (Elixir ${{ matrix.elixir }})
+    if: github.event_name != 'pull_request'
+    needs: publish
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {elixir: "1.16.3", otp: "26.2"}
+          - {elixir: "1.20.4", otp: "29.1"}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+          version-type: strict
+      - name: Install from the public Hex registry and exercise the API
+        run: |
+          mix local.hex 2.5.1 --force
+          python3 elixir/tools/release.py consumer
+
+  github-release:
+    name: Create Elixir GitHub Release
+    if: github.event_name != 'pull_request'
+    needs: consumers
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: elixir-release
+          path: elixir/dist
+      - name: Create or verify the tag's release and immutable assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 elixir/tools/github_release.py
