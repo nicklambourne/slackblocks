@@ -50,7 +50,7 @@ for variant in (['candidate','baseline'] if a.pair==2 else ['baseline','candidat
     tests[framework]=sorted(x.get('testName') for x in rows)
    assert len(tests)==2,len(tests)
    result['tests']=tests
-   for i,f in enumerate(sorted((out/'tests').rglob('coverage.cobertura.xml'))):
+   for i,f in enumerate(sorted((out/'tests').glob('*/coverage.cobertura.xml'))):
     tree=ET.parse(f).getroot();coverage[str(i)]=sorted((c.get('name'),c.get('filename').replace(str(work),'/_/src'),line.get('number'),int(line.get('hits'))>0) for c in tree.findall('.//class') for line in c.findall('./lines/line'))
    assert len(coverage)==2;result['coverage']=sorted(coverage.values())
    result['package_graphs']={str(f.relative_to(work/'csharp')):{k:{a:b for a,b in v.items() if a in ['type','sha512']} for k,v in json.loads(f.read_text())['libraries'].items()} for f in (work/'csharp').rglob('project.assets.json')}
