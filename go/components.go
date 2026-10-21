@@ -77,7 +77,7 @@ func (b *AccordionBuilder) BuildMany() ([]Object, error) {
 	}
 	result := make([]Object, 0, len(b.sections))
 	for index, raw := range b.sections {
-		built, err := materialise(raw)
+		built, err := materialiseAt(raw, fmt.Sprintf("Accordion.sections[%d]", index))
 		if err != nil {
 			return nil, err
 		}
@@ -181,7 +181,7 @@ func (b *PaginatorBuilder) BuildMany() ([]Object, error) {
 
 	blocks := make([]Object, 0, len(b.blocks))
 	for index, raw := range b.blocks {
-		built, err := materialise(raw)
+		built, err := materialiseAt(raw, fmt.Sprintf("Paginator.blocks[%d]", index))
 		if err != nil {
 			return nil, err
 		}
