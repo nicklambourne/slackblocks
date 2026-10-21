@@ -3,20 +3,22 @@
 The Python (`slackblocks` on PyPI), TypeScript
 (`@nicklambourne/slackblocks` on npm), Go
 (`github.com/nicklambourne/slackblocks/go/v2`), Java
-(`io.github.nicklambourne:slackblocks` on Maven Central), C# (`Slackblocks` on NuGet), Ruby (`slackblocks` on RubyGems), Rust (`slackblocks` on crates.io), and PHP (`nicklambourne/slackblocks` on Packagist)
+(`io.github.nicklambourne:slackblocks` on Maven Central), C# (`Slackblocks` on NuGet), Ruby (`slackblocks` on RubyGems), Rust (`slackblocks` on crates.io), PHP (`nicklambourne/slackblocks` on Packagist), and Elixir (`slackblocks` on Hex)
 packages are released together and always carry the same version
 number.
 
-**Current release:** 2.7.0 adds PHP to the coordinated release. All eight
-changelogs use the release date 2026-10-11. PHP publication uses the existing
-monorepo, Packagist registration and protected `packagist` environment; the
-coordinator verifies registry/repository readiness before creating release tags.
-The outgoing 2.6.0 documentation snapshot is already frozen.
+**Release 2.8.0** adds Elixir as the ninth language. Publication is enabled in
+`elixir/release.json` with the confirmed Hex owner `nicklambourne`. The coordinator
+checks authenticated Hex readiness before creating any tags. The outgoing
+eight-language 2.7.0 docs are frozen, with source/file hashes in
+`docs/release-snapshots/2.7.0.json`. The missing NuGet 2.7.0 publication was
+recovered on 18 October 2026 using the corrected trusted-publishing policy;
+all eight previous implementations are publicly available at 2.7.0.
 
 The recommended entry point is the **Coordinated Release** workflow in GitHub
 Actions. Run it from `master` with one `X.Y.Z` input; it validates the shared
-version and changelogs, creates all eight annotated tags in one atomic push,
-dispatches each publisher at its tag, and waits for all eight runs.
+version and changelogs, creates all nine annotated tags in one atomic push,
+dispatches each publisher at its tag, and waits for all nine runs.
 
 When adding another language package, complete the
 [new language implementation workflow](docs/docs/contributing/adding-a-language.mdx) before
@@ -37,6 +39,7 @@ Releases are triggered by pushing tags:
 | `ruby/vX.Y.Z` | [`.github/workflows/publish-rubygems.yml`](.github/workflows/publish-rubygems.yml) | `slackblocks` to RubyGems |
 | `rust/vX.Y.Z` | [`.github/workflows/publish-crates.yml`](.github/workflows/publish-crates.yml) | `slackblocks` to crates.io |
 | `php/vX.Y.Z` | [`.github/workflows/publish-packagist.yml`](.github/workflows/publish-packagist.yml) | PHP-only release ZIP and monorepo `vX.Y.Z` tag, indexed by Packagist |
+| `elixir/vX.Y.Z` | [`.github/workflows/publish-hex.yml`](.github/workflows/publish-hex.yml) | `slackblocks` to Hex, HexDocs, verified registry consumers and GitHub assets |
 
 The PHP publisher creates an additional annotated `vX.Y.Z` tag at the same
 monorepo commit, after its downloadable archive is public. Composer recognizes
@@ -44,7 +47,7 @@ this conventional version tag; it ignores `php/vX.Y.Z`. Plain `v*` tags do not
 trigger Actions workflows. Older pre-monorepo tags without a root
 `composer.json` are ignored by Packagist.
 
-The eight publisher workflows also accept a manual dispatch at an existing,
+The nine publisher workflows also accept a manual dispatch at an existing,
 matching language tag. The coordinator uses those entry points so each job
 retains its registry-specific publisher workflow identity.
 
@@ -52,8 +55,8 @@ The coordinator verifies that `python/pyproject.toml`,
 `typescript/package.json`, `java/pom.xml`,
 `csharp/src/Slackblocks/Slackblocks.csproj`,
 `ruby/lib/slackblocks/version.rb`, `rust/Cargo.toml`, and
-`php/src/Version.php` agree. The shared guard
-also verifies the Python, Ruby, Cargo and PHP integration lockfiles, Go major module path, all eight
+`php/src/Version.php`, and `elixir/mix.exs` agree (eight stored versions; Go is tag-derived). The shared guard
+also verifies the Python, Ruby, Cargo and PHP integration lockfiles, Elixir/Erlang consumer requirements, shared spec version and empty skip list, Go major module path, all nine
 changelogs, clean checkout, master ancestry and the complete annotated tag set.
 Every publisher calls `.github/scripts/verify-release.py`; Ruby’s historical
 `ruby/bin/verify-release` command delegates to the same guard. Provider-specific
@@ -63,7 +66,7 @@ installed-package checks remain in their workflows.
 
 These must be in place before the workflows can publish:
 
-1. **GitHub environments** — create `pypi`, `npm`, `maven-central`, `nuget`, `rubygems`, `crates-io`, and `packagist`
+1. **GitHub environments** — create `pypi`, `npm`, `maven-central`, `nuget`, `rubygems`, `crates-io`, `packagist`, and `hex`
    environments in the repository settings (Settings → Environments). The
    publish jobs run inside them; add required reviewers there if you want
    manual approval before publishing.
@@ -136,7 +139,8 @@ These must be in place before the workflows can publish:
       two-factor authentication enabled.
    2. Under **Trusted Publishing**, add a policy for repository owner
       `nicklambourne`, repository `slackblocks`, workflow file
-      `publish-nuget.yml`, and environment `nuget`.
+      `publish-nuget.yml`, and environment `nuget`. Use the exact package glob
+      `Slackblocks` and allow publishing new versions of existing packages.
    3. Set the repository (or `nuget` environment) variable `NUGET_USER` to the
       nuget.org username. `NuGet/login` exchanges the workflow's OIDC token for
       a short-lived API key for that user, so no long-lived key is stored.
@@ -394,6 +398,68 @@ before an indexed stable release; unpublished PHP is not a measured zero.
 The first PHP release is part of the authorized 2.7.0 coordinated release.
 Keep the audit and comprehensive implementation plan in scratch.
 
+## Elixir activation and first publication
+
+The first Elixir release is **2.8.0**. The implementation train kept
+`elixir/release.json` disabled; the maintainer approved merge and publication on
+18 October 2026. The activation change enables the API-key publisher. The
+checklist below records the required setup and gates for the first publication.
+
+1. Finish review of all six PRs and the disabled monitoring companion. Verify
+   the complete native/contract/API, quality, HTTP, artifact, Erlang release and
+   documentation gates, preserving all existing language support floors.
+2. Create a personal Hex account. GitHub signup automatically confirms the
+   imported email; no separate Hex verification email is required. For password
+   signup, follow the verification link Hex emails you. Confirm that the public
+   `slackblocks` name is available, or belongs to that account. Set the confirmed
+   Hex username in `elixir/release.json`'s `owner` field; do not guess it from GitHub.
+3. Create the protected GitHub environment **hex**, permitting the coordinated
+   master readiness job and `elixir/v*` publisher tags. Store **HEX_API_KEY** there.
+   The first release needs `api:write`. Later key-based releases can use package
+   permission for `slackblocks` plus `api:read` for Hex 2.5.1 account discovery.
+   Keep `auth_mode: api-key` explicit; missing credentials do not trigger another
+   authentication mode. No PR job receives this secret.
+4. [Hex now documents workload identities](https://hex.pm/docs/trusted-publishers)
+   for existing packages. They cannot bootstrap a new package. A later reviewed
+   change may implement/test OIDC and revoke the bootstrap key; the present
+   workflow deliberately implements only the tested API-key path.
+5. Keep **Elixir native checks**, **Elixir quality and package**, **Elixir Erlang
+   compatibility**, **Elixir sending** and **Elixir release checks** required in
+   branch protection/rulesets. They were added on 18 October 2026, preserving the
+   existing 51 checks and strictness for a total of 56 required checks. Inspect
+   real relevant/unrelated runs and actual GitHub-provided runner metadata when
+   changing this configuration.
+6. In a separate activation change, resolve any previous registry discrepancy,
+   date all nine changelogs together, align Java's output timestamp, populate the
+   verified Hex owner and set `enabled: true`. Review the complete change before
+   authorizing the release. No release dates or account settings are implied by
+   the implementation PRs.
+7. The coordinator validates the complete train, then checks Hex account/email,
+   API scope and package ownership through read-only `/api/auth` requests. It
+   checks the proposed artifact against any existing version and runs the full
+   authenticated `mix hex.publish --dry-run --yes` **before creating tags**.
+   This cannot reserve the name or prove a future write will succeed; the actual
+   publisher still verifies registry state and the upload result.
+8. The publisher builds and reproduces the real Hex tarball with Elixir 1.16.3,
+   OTP 26.2 and Hex 2.5.1 from the same immutable commit. `mix hex.publish` rebuilds
+   from that source; it does not upload an arbitrary saved archive. Compare the
+   registry's outer SHA-256 with the tested artifact, then verify HexDocs and
+   fresh exact-version Hex consumers on minimum/current compilers.
+9. Activate Hex monitoring only after a real stable version is available and
+   collection succeeds. Until then it is absent from the required download sum,
+   rather than represented as zero. Verify the public badge still exposes only
+   the total and the project website consumes it once.
+
+PR checks build packages and ExDoc, inspect/install the actual archive, and run
+`mix hex.publish docs --dry-run` with no credentials and isolated Hex config.
+They do **not** use a fake key: Hex 2.5.1's complete publisher dry run performs
+account discovery. Protected readiness is the place for that check.
+
+If package upload succeeds but docs fail, rerun the same tag to finish docs.
+Registry/docs visibility waits are bounded. An uncertain upload response causes
+an identity lookup, not another write. GitHub release recovery uses the exact tag,
+compares existing asset checksums, and uploads only missing assets.
+
 ## Coordinated release procedure
 
 The docs site serves the current package version live (`lastVersion:
@@ -404,10 +470,11 @@ from the dropdown. CI enforces this: the `check:release-snapshots` guard fails
 if any released `python/v*` tag other than the current package version is
 missing from `docs/versions.json` (or the legacy manifest).
 
-The outgoing seven-language 2.6.0 snapshot is already frozen for the 2.7.0 PHP
-train, generated from the pre-PHP documentation at source commit
-`2fc422883470b2fc00a9134046672e62b406661d`. Existing older snapshots are unchanged.
-Do not repeat the snapshot step for this train. Future releases follow the procedure below.
+The outgoing eight-language 2.7.0 snapshot is already frozen for the Elixir
+train from source commit `70ffab589935d98d8fe63bb532d65d3e2b5d48a1`.
+Its eight API references were generated before changing versions or adding Elixir
+panels. `docs/release-snapshots/2.7.0.json` records its language set and file hashes;
+`check:release-snapshots` also verifies those hashes. Do not recreate it.
 
 1. On one branch, freeze the **outgoing** docs version — the value currently in
    `python/pyproject.toml`, before you bump it — so it survives as a dropdown
@@ -443,6 +510,9 @@ Do not repeat the snapshot step for this train. Future releases follow the proce
      the exact requirement and path repository version), and its own-package
      entry in `php/integrations/composer.lock`. Composer's library manifest must
      omit `version`; Packagist derives it from the monorepo’s conventional `vX.Y.Z` tags.
+   - `elixir/mix.exs`, the exact path dependency requirement in
+     `elixir/integrations/mix.exs`, and `elixir/erlang/rebar.config`. Mix path
+     dependencies have no own-package lock entry; test the loaded version too.
    - the pinned versions in the installation examples of `README.md`,
      `java/README.md`, `docs/docs/quick-start.mdx`, and
      `docs/docs/usage/installation.mdx`
@@ -454,7 +524,7 @@ Do not repeat the snapshot step for this train. Future releases follow the proce
    existing `/v2` path cannot publish `go/v3.0.0`.
 3. Add a `## [X.Y.Z] — YYYY-MM-DD` section to `python/CHANGELOG.md`,
    `typescript/CHANGELOG.md`, `go/CHANGELOG.md`, `java/CHANGELOG.md`,
-   `csharp/CHANGELOG.md`, `ruby/CHANGELOG.md`, `rust/CHANGELOG.md`, and `php/CHANGELOG.md`. The
+   `csharp/CHANGELOG.md`, `ruby/CHANGELOG.md`, `rust/CHANGELOG.md`, `php/CHANGELOG.md`, and `elixir/CHANGELOG.md`. The
    publish workflows extract the matching section for their GitHub Release
    notes. Pull requests may use `Unreleased` while the release is prepared, but
    replace it with the release date before dispatching: the coordinator rejects
@@ -473,9 +543,9 @@ Do not repeat the snapshot step for this train. Future releases follow the proce
    ```
 
 7. The coordinator first verifies PHP registry/repository readiness inside the
-   protected `packagist` environment, before creating any tags. It then atomically pushes `python/vX.Y.Z`, `ts/vX.Y.Z`,
-   `go/vX.Y.Z`, `java/vX.Y.Z`, `csharp/vX.Y.Z`, `ruby/vX.Y.Z`, `rust/vX.Y.Z`, and `php/vX.Y.Z`,
-   then dispatches and monitors all eight publishers.
+   protected `packagist` environment and authenticated Hex readiness in `hex`, before creating any tags. It then atomically pushes `python/vX.Y.Z`, `ts/vX.Y.Z`,
+   `go/vX.Y.Z`, `java/vX.Y.Z`, `csharp/vX.Y.Z`, `ruby/vX.Y.Z`, `rust/vX.Y.Z`, `php/vX.Y.Z`, and `elixir/vX.Y.Z`,
+   then dispatches and monitors all nine publishers.
    PHP publishes verified GitHub release assets before exposing its Composer
    version tag and checking Packagist. The other publishers create their GitHub
    Releases after their registry steps succeed.
@@ -496,8 +566,9 @@ Do not repeat the snapshot step for this train. Future releases follow the proce
    cannot be deleted or re-uploaded, only unlisted.
 
 If the coordinator is unavailable, complete the same PHP readiness check with
-an authenticated maintainer account and verified Packagist registration first,
-then create all eight signed tags at the same commit and push them atomically.
+an authenticated maintainer account and verified Packagist registration, plus
+the authenticated Hex readiness check below,
+then create all nine signed tags at the same commit and push them atomically.
 Leave `vX.Y.Z` creation to the PHP publisher after it verifies the public assets. GitHub does not generate tag-push workflow
 runs when more than three tags are pushed at once, so dispatch each publisher
 explicitly at its tag after the push:
@@ -507,6 +578,8 @@ GITHUB_EVENT_NAME=workflow_dispatch GITHUB_REF=refs/heads/master REQUESTED_VERSI
   python3 .github/scripts/verify-release.py coordinator
 gh auth setup-git --hostname github.com
 GITHUB_REF=refs/heads/master python3 php/bin/release.py readiness
+# With the approved HEX_API_KEY supplied securely in the environment:
+python3 elixir/tools/release.py readiness
 git tag -s python/vX.Y.Z -m "slackblocks X.Y.Z (Python)"
 git tag -s ts/vX.Y.Z -m "@nicklambourne/slackblocks X.Y.Z (TypeScript)"
 git tag -s go/vX.Y.Z -m "slackblocks X.Y.Z (Go)"
@@ -515,7 +588,8 @@ git tag -s csharp/vX.Y.Z -m "Slackblocks X.Y.Z (C#)"
 git tag -s ruby/vX.Y.Z -m "slackblocks X.Y.Z (Ruby)"
 git tag -s rust/vX.Y.Z -m "slackblocks X.Y.Z (Rust)"
 git tag -s php/vX.Y.Z -m "slackblocks X.Y.Z (PHP)"
-git push --atomic origin python/vX.Y.Z ts/vX.Y.Z go/vX.Y.Z java/vX.Y.Z csharp/vX.Y.Z ruby/vX.Y.Z rust/vX.Y.Z php/vX.Y.Z
+git tag -s elixir/vX.Y.Z -m "slackblocks X.Y.Z (Elixir)"
+git push --atomic origin python/vX.Y.Z ts/vX.Y.Z go/vX.Y.Z java/vX.Y.Z csharp/vX.Y.Z ruby/vX.Y.Z rust/vX.Y.Z php/vX.Y.Z elixir/vX.Y.Z
 gh workflow run publish.yml --ref python/vX.Y.Z
 gh workflow run publish-npm.yml --ref ts/vX.Y.Z
 gh workflow run publish-go.yml --ref go/vX.Y.Z
@@ -524,6 +598,7 @@ gh workflow run publish-nuget.yml --ref csharp/vX.Y.Z
 gh workflow run publish-rubygems.yml --ref ruby/vX.Y.Z
 gh workflow run publish-crates.yml --ref rust/vX.Y.Z
 gh workflow run publish-packagist.yml --ref php/vX.Y.Z
+gh workflow run publish-hex.yml --ref elixir/vX.Y.Z
 ```
 
 Tags created by the coordinator are annotated as `github-actions[bot]` but
@@ -562,7 +637,7 @@ regard a locally built 2.7.0 package as a registry receipt.
 
 ## Partial-failure recovery
 
-The eight tags are created atomically, but eight publishing targets cannot be
+The nine tags are created atomically, but nine publishing targets cannot be
 updated as one transaction. If one publisher fails after another succeeds,
 re-run the failed publisher from its existing workflow run; never move the
 tags or republish an already released version.
@@ -598,6 +673,11 @@ Inspect the registry state before re-running a failed publisher:
   commit. Existing public assets and tags are immutable. If indexing failed,
   repair the Packagist update integration before retrying. Success requires
   both archive and source consumers to match the recorded commit and files.
+- **Hex** — rerun at the same `elixir/vX.Y.Z` tag. The publisher reproduces the
+  source archive with pinned tools and compares the public outer checksum. It
+  skips an identical existing package, publishes missing docs separately, and
+  verifies fresh registry consumers. A checksum mismatch or retired version
+  fails; never use `--replace`, revert a shipped version or move its tag.
 - **GitHub Releases** — other publishers skip their release step if a release
   for the tag already exists. PHP verifies existing assets as described above.
 
@@ -619,8 +699,11 @@ After a failure, check:
   tested archive; `--prefer-source` installs the same monorepo commit. The PHP
   publisher checks both forms, their source/dist references, all packaged file
   hashes and a native consumer before declaring success.
-- GitHub: a Release exists for each of the eight tags with the changelog notes.
+- Hex: the exact version/checksum, runtime and dependencies are visible at
+  `https://hex.pm/packages/slackblocks`; versioned HexDocs and minimum/current
+  production consumers succeed. The Elixir GitHub assets match the tested archive.
+- GitHub: a Release exists for each of the nine tags with the changelog notes.
 
 If a bad artifact was published, do not delete and re-upload: registries
 reject reused file names and versions. Yank, deprecate, or unlist the broken
-version and release a new coordinated patch version of **all eight** packages.
+version and release a new coordinated patch version of **all nine** packages.

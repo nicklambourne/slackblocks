@@ -126,3 +126,13 @@ docs/docs/reference/php/
 # Root Composer package consumers
 /vendor/
 /composer.lock
+
+# Elixir sources are public package code, not Python build output.
+!/elixir/lib/
+!/elixir/lib/**
+
+# Elixir sending examples are source, including their native lib directory.
+!/elixir/integrations/lib/
+!/elixir/integrations/lib/**
+
+/docs/docs/reference/elixir/
