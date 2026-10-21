@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve number-input initial strings while documenting a provisional trailing-zero workaround supported by six paired modal controls; broader receiving-path behavior remains unverified (`evidence/SB-017-decimal-format.json`, SB-017).
+
 - Record the observed Plan/root Task and nested-ID write-path discrepancies in `evidence/SB-016-plan-context.json`. Document a narrow native composition recipe; no new unverified validation rule or conformance exclusion (SB-016).
 
 - Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
