@@ -1,0 +1,3980 @@
+---
+sidebar_position: 3
+toc_max_heading_level: 3
+---
+
+# Composition Objects
+
+Generated from the actual Rust signatures and rustdoc comments. Builders validate on `build()`; `into_builder()` preserves omissions. Error categories and paths are stable; prose may improve.
+
+## AreaChart
+
+An area chart for a data visualization block.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+Every series needs exactly one data point for each axis category.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> AreaChartBuilder
+```
+
+**Related types:** [`AreaChartBuilder`](/reference/rust/objects#areachartbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> AreaChartBuilder
+```
+
+**Related types:** [`AreaChartBuilder`](/reference/rust/objects#areachartbuilder)
+
+### series
+
+Borrows or copies `series`. Adds data series in display order. Series names must be unique.
+
+```rust
+fn series(&self) -> &[DataSeries]
+```
+
+**Related types:** [`DataSeries`](/reference/rust/objects#dataseries)
+
+### axis_config
+
+Borrows or copies `axis_config`. Sets the axis categories and labels. Every series needs exactly one point per category.
+
+```rust
+fn axis_config(&self) -> &AxisConfig
+```
+
+**Related types:** [`AxisConfig`](/reference/rust/objects#axisconfig)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## AreaChartBuilder
+
+Consuming builder for [`AreaChart`](/reference/rust/objects#areachart). Validation runs in `Self::build`.
+
+### series
+
+Adds data series in display order. Series names must be unique.
+Replaces the collection; order is preserved.
+
+```rust
+fn series<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<DataSeries>,
+```
+
+**Related types:** [`DataSeries`](/reference/rust/objects#dataseries)
+
+### series_entry
+
+Appends one item to the collection.
+
+```rust
+fn series_entry(mut self, value: impl Into<DataSeries>) -> Self
+```
+
+**Related types:** [`DataSeries`](/reference/rust/objects#dataseries)
+
+### axis_config
+
+Sets the axis categories and labels. Every series needs exactly one point per category.
+
+```rust
+fn axis_config(mut self, value: impl Into<AxisConfig>) -> Self
+```
+
+**Related types:** [`AxisConfig`](/reference/rust/objects#axisconfig)
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<AreaChart, ValidationError>
+```
+
+**Related types:** [`AreaChart`](/reference/rust/objects#areachart), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## AxisConfig
+
+The categories and labels shared by bar, area, and line chart axes.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> AxisConfigBuilder
+```
+
+**Related types:** [`AxisConfigBuilder`](/reference/rust/objects#axisconfigbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> AxisConfigBuilder
+```
+
+**Related types:** [`AxisConfigBuilder`](/reference/rust/objects#axisconfigbuilder)
+
+### categories
+
+Borrows or copies `categories`. Adds axis categories in display order. Labels must be unique.
+
+```rust
+fn categories(&self) -> &[String]
+```
+
+### x_label
+
+Borrows or copies `x_label`. Sets the horizontal axis label.
+
+```rust
+fn x_label(&self) -> Option<&str>
+```
+
+### y_label
+
+Borrows or copies `y_label`. Sets the vertical axis label.
+
+```rust
+fn y_label(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## AxisConfigBuilder
+
+Consuming builder for [`AxisConfig`](/reference/rust/objects#axisconfig). Validation runs in `Self::build`.
+
+### categories
+
+Adds axis categories in display order. Labels must be unique.
+Replaces the collection; order is preserved.
+
+```rust
+fn categories<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<String>,
+```
+
+### category
+
+Appends one item to the collection.
+
+```rust
+fn category(mut self, value: impl Into<String>) -> Self
+```
+
+### x_label
+
+Sets the horizontal axis label.
+
+```rust
+fn x_label(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_x_label
+
+Omits `x_label`, including any model default.
+
+```rust
+fn clear_x_label(mut self) -> Self
+```
+
+### y_label
+
+Sets the vertical axis label.
+
+```rust
+fn y_label(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_y_label
+
+Omits `y_label`, including any model default.
+
+```rust
+fn clear_y_label(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<AxisConfig, ValidationError>
+```
+
+**Related types:** [`AxisConfig`](/reference/rust/objects#axisconfig), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## BarChart
+
+A bar chart for a data visualization block.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+Every series needs exactly one data point for each axis category.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> BarChartBuilder
+```
+
+**Related types:** [`BarChartBuilder`](/reference/rust/objects#barchartbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> BarChartBuilder
+```
+
+**Related types:** [`BarChartBuilder`](/reference/rust/objects#barchartbuilder)
+
+### series
+
+Borrows or copies `series`. Adds data series in display order. Series names must be unique.
+
+```rust
+fn series(&self) -> &[DataSeries]
+```
+
+**Related types:** [`DataSeries`](/reference/rust/objects#dataseries)
+
+### axis_config
+
+Borrows or copies `axis_config`. Sets the axis categories and labels. Every series needs exactly one point per category.
+
+```rust
+fn axis_config(&self) -> &AxisConfig
+```
+
+**Related types:** [`AxisConfig`](/reference/rust/objects#axisconfig)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## BarChartBuilder
+
+Consuming builder for [`BarChart`](/reference/rust/objects#barchart). Validation runs in `Self::build`.
+
+### series
+
+Adds data series in display order. Series names must be unique.
+Replaces the collection; order is preserved.
+
+```rust
+fn series<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<DataSeries>,
+```
+
+**Related types:** [`DataSeries`](/reference/rust/objects#dataseries)
+
+### series_entry
+
+Appends one item to the collection.
+
+```rust
+fn series_entry(mut self, value: impl Into<DataSeries>) -> Self
+```
+
+**Related types:** [`DataSeries`](/reference/rust/objects#dataseries)
+
+### axis_config
+
+Sets the axis categories and labels. Every series needs exactly one point per category.
+
+```rust
+fn axis_config(mut self, value: impl Into<AxisConfig>) -> Self
+```
+
+**Related types:** [`AxisConfig`](/reference/rust/objects#axisconfig)
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<BarChart, ValidationError>
+```
+
+**Related types:** [`BarChart`](/reference/rust/objects#barchart), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ChartSegment
+
+One labelled segment of a pie chart.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ChartSegmentBuilder
+```
+
+**Related types:** [`ChartSegmentBuilder`](/reference/rust/objects#chartsegmentbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ChartSegmentBuilder
+```
+
+**Related types:** [`ChartSegmentBuilder`](/reference/rust/objects#chartsegmentbuilder)
+
+### label
+
+Borrows or copies `label`. Sets the segment label.
+
+```rust
+fn label(&self) -> &str
+```
+
+### value
+
+Borrows or copies `value`. Sets the segment's size. Must be greater than zero.
+
+```rust
+fn value(&self) -> &JsonNumber
+```
+
+**Related types:** [`JsonNumber`](/reference/rust/core#jsonnumber)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ChartSegmentBuilder
+
+Consuming builder for [`ChartSegment`](/reference/rust/objects#chartsegment). Validation runs in `Self::build`.
+
+### label
+
+Sets the segment label.
+
+```rust
+fn label(mut self, value: impl Into<String>) -> Self
+```
+
+### value
+
+Sets the segment's size. Must be greater than zero.
+
+```rust
+fn value(mut self, value: impl Into<JsonNumber>) -> Self
+```
+
+**Related types:** [`JsonNumber`](/reference/rust/core#jsonnumber)
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ChartSegment, ValidationError>
+```
+
+**Related types:** [`ChartSegment`](/reference/rust/objects#chartsegment), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ColumnSettings
+
+Alignment and wrapping settings for one table column.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ColumnSettingsBuilder
+```
+
+**Related types:** [`ColumnSettingsBuilder`](/reference/rust/objects#columnsettingsbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ColumnSettingsBuilder
+```
+
+**Related types:** [`ColumnSettingsBuilder`](/reference/rust/objects#columnsettingsbuilder)
+
+### align
+
+Borrows or copies `align`. Sets how cell content in the column is aligned.
+
+```rust
+fn align(&self) -> Option<ColumnAlign>
+```
+
+**Related types:** [`ColumnAlign`](/reference/rust/core#columnalign)
+
+### is_wrapped
+
+Borrows or copies `is_wrapped`. Sets whether long cell content wraps instead of being truncated.
+
+```rust
+fn is_wrapped(&self) -> Option<bool>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ColumnSettingsBuilder
+
+Consuming builder for [`ColumnSettings`](/reference/rust/objects#columnsettings). Validation runs in `Self::build`.
+
+### align
+
+Sets how cell content in the column is aligned.
+
+```rust
+fn align(mut self, value: ColumnAlign) -> Self
+```
+
+**Related types:** [`ColumnAlign`](/reference/rust/core#columnalign)
+
+### clear_align
+
+Omits `align`, including any model default.
+
+```rust
+fn clear_align(mut self) -> Self
+```
+
+### is_wrapped
+
+Sets whether long cell content wraps instead of being truncated.
+
+```rust
+fn is_wrapped(mut self, value: bool) -> Self
+```
+
+### clear_is_wrapped
+
+Omits `is_wrapped`, including any model default.
+
+```rust
+fn clear_is_wrapped(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ColumnSettings, ValidationError>
+```
+
+**Related types:** [`ColumnSettings`](/reference/rust/objects#columnsettings), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ConfirmationDialogue
+
+A dialog that asks users to confirm an action before it is sent.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/confirmation-dialog-object).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ConfirmationDialogueBuilder
+```
+
+**Related types:** [`ConfirmationDialogueBuilder`](/reference/rust/objects#confirmationdialoguebuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ConfirmationDialogueBuilder
+```
+
+**Related types:** [`ConfirmationDialogueBuilder`](/reference/rust/objects#confirmationdialoguebuilder)
+
+### title
+
+Borrows or copies `title`. Sets the dialog title.
+
+```rust
+fn title(&self) -> &PlainText
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### text
+
+Borrows or copies `text`. Sets the explanatory text in the dialog body.
+
+```rust
+fn text(&self) -> &Text
+```
+
+**Related types:** [`Text`](/reference/rust/core#text)
+
+### confirm
+
+Borrows or copies `confirm`. Sets the label of the button that confirms the action.
+
+```rust
+fn confirm(&self) -> &PlainText
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### deny
+
+Borrows or copies `deny`. Sets the label of the button that cancels the action.
+
+```rust
+fn deny(&self) -> &PlainText
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### style
+
+Borrows or copies `style`. Sets the emphasis of the confirm button.
+
+```rust
+fn style(&self) -> Option<ButtonStyle>
+```
+
+**Related types:** [`ButtonStyle`](/reference/rust/core#buttonstyle)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ConfirmationDialogueBuilder
+
+Consuming builder for [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue). Validation runs in `Self::build`.
+
+### title
+
+Sets the dialog title.
+
+```rust
+fn title(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### text
+
+Sets the explanatory text in the dialog body.
+
+```rust
+fn text(mut self, value: impl Into<TextInput>) -> Self
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### confirm
+
+Sets the label of the button that confirms the action.
+
+```rust
+fn confirm(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### deny
+
+Sets the label of the button that cancels the action.
+
+```rust
+fn deny(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### style
+
+Sets the emphasis of the confirm button.
+
+```rust
+fn style(mut self, value: ButtonStyle) -> Self
+```
+
+**Related types:** [`ButtonStyle`](/reference/rust/core#buttonstyle)
+
+### clear_style
+
+Omits `style`, including any model default.
+
+```rust
+fn clear_style(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ConfirmationDialogue, ValidationError>
+```
+
+**Related types:** [`ConfirmationDialogue`](/reference/rust/objects#confirmationdialogue), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## ConversationFilter
+
+Limits which conversations a conversation menu offers.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/conversation-filter-object).
+Set at least one filter. Include only im, mpim, private, and public.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> ConversationFilterBuilder
+```
+
+**Related types:** [`ConversationFilterBuilder`](/reference/rust/objects#conversationfilterbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> ConversationFilterBuilder
+```
+
+**Related types:** [`ConversationFilterBuilder`](/reference/rust/objects#conversationfilterbuilder)
+
+### include
+
+Borrows or copies `include`. Adds conversation types to offer: im, mpim, private, or public.
+
+```rust
+fn include(&self) -> Option<&[String]>
+```
+
+### exclude_external_shared_channels
+
+Borrows or copies `exclude_external_shared_channels`. Sets whether externally shared channels are excluded.
+
+```rust
+fn exclude_external_shared_channels(&self) -> Option<bool>
+```
+
+### exclude_bot_users
+
+Borrows or copies `exclude_bot_users`. Sets whether bot users are excluded.
+
+```rust
+fn exclude_bot_users(&self) -> Option<bool>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## ConversationFilterBuilder
+
+Consuming builder for [`ConversationFilter`](/reference/rust/objects#conversationfilter). Validation runs in `Self::build`.
+
+### include
+
+Adds conversation types to offer: im, mpim, private, or public.
+Replaces the collection; order is preserved.
+
+```rust
+fn include<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<String>,
+```
+
+### add_include
+
+Appends one item to the collection.
+
+```rust
+fn add_include(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_include
+
+Omits `include`, including any model default.
+
+```rust
+fn clear_include(mut self) -> Self
+```
+
+### exclude_external_shared_channels
+
+Sets whether externally shared channels are excluded.
+
+```rust
+fn exclude_external_shared_channels(mut self, value: bool) -> Self
+```
+
+### clear_exclude_external_shared_channels
+
+Omits `exclude_external_shared_channels`, including any model default.
+
+```rust
+fn clear_exclude_external_shared_channels(mut self) -> Self
+```
+
+### exclude_bot_users
+
+Sets whether bot users are excluded.
+
+```rust
+fn exclude_bot_users(mut self, value: bool) -> Self
+```
+
+### clear_exclude_bot_users
+
+Omits `exclude_bot_users`, including any model default.
+
+```rust
+fn clear_exclude_bot_users(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<ConversationFilter, ValidationError>
+```
+
+**Related types:** [`ConversationFilter`](/reference/rust/objects#conversationfilter), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## DataPoint
+
+One value of a chart series, keyed by axis category.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> DataPointBuilder
+```
+
+**Related types:** [`DataPointBuilder`](/reference/rust/objects#datapointbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> DataPointBuilder
+```
+
+**Related types:** [`DataPointBuilder`](/reference/rust/objects#datapointbuilder)
+
+### label
+
+Borrows or copies `label`. Sets the axis category this point belongs to.
+
+```rust
+fn label(&self) -> &str
+```
+
+### value
+
+Borrows or copies `value`. Sets the point's value.
+
+```rust
+fn value(&self) -> &JsonNumber
+```
+
+**Related types:** [`JsonNumber`](/reference/rust/core#jsonnumber)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## DataPointBuilder
+
+Consuming builder for [`DataPoint`](/reference/rust/objects#datapoint). Validation runs in `Self::build`.
+
+### label
+
+Sets the axis category this point belongs to.
+
+```rust
+fn label(mut self, value: impl Into<String>) -> Self
+```
+
+### value
+
+Sets the point's value.
+
+```rust
+fn value(mut self, value: impl Into<JsonNumber>) -> Self
+```
+
+**Related types:** [`JsonNumber`](/reference/rust/core#jsonnumber)
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<DataPoint, ValidationError>
+```
+
+**Related types:** [`DataPoint`](/reference/rust/objects#datapoint), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## DataSeries
+
+A named series of chart data points.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> DataSeriesBuilder
+```
+
+**Related types:** [`DataSeriesBuilder`](/reference/rust/objects#dataseriesbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> DataSeriesBuilder
+```
+
+**Related types:** [`DataSeriesBuilder`](/reference/rust/objects#dataseriesbuilder)
+
+### name
+
+Borrows or copies `name`. Sets the series name shown in the legend.
+
+```rust
+fn name(&self) -> &str
+```
+
+### data
+
+Borrows or copies `data`. Adds data points in axis-category order.
+
+```rust
+fn data(&self) -> &[DataPoint]
+```
+
+**Related types:** [`DataPoint`](/reference/rust/objects#datapoint)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## DataSeriesBuilder
+
+Consuming builder for [`DataSeries`](/reference/rust/objects#dataseries). Validation runs in `Self::build`.
+
+### name
+
+Sets the series name shown in the legend.
+
+```rust
+fn name(mut self, value: impl Into<String>) -> Self
+```
+
+### data
+
+Adds data points in axis-category order.
+Replaces the collection; order is preserved.
+
+```rust
+fn data<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<DataPoint>,
+```
+
+**Related types:** [`DataPoint`](/reference/rust/objects#datapoint)
+
+### point
+
+Appends one item to the collection.
+
+```rust
+fn point(mut self, value: impl Into<DataPoint>) -> Self
+```
+
+**Related types:** [`DataPoint`](/reference/rust/objects#datapoint)
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<DataSeries, ValidationError>
+```
+
+**Related types:** [`DataSeries`](/reference/rust/objects#dataseries), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## DispatchActionConfiguration
+
+Chooses which interactions with an input send a block_actions payload.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/dispatch-action-configuration-object).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> DispatchActionConfigurationBuilder
+```
+
+**Related types:** [`DispatchActionConfigurationBuilder`](/reference/rust/objects#dispatchactionconfigurationbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> DispatchActionConfigurationBuilder
+```
+
+**Related types:** [`DispatchActionConfigurationBuilder`](/reference/rust/objects#dispatchactionconfigurationbuilder)
+
+### trigger_actions_on
+
+Borrows or copies `trigger_actions_on`. Adds the interactions that send a payload: on_enter_pressed or on_character_entered.
+
+```rust
+fn trigger_actions_on(&self) -> Option<&[String]>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## DispatchActionConfigurationBuilder
+
+Consuming builder for [`DispatchActionConfiguration`](/reference/rust/objects#dispatchactionconfiguration). Validation runs in `Self::build`.
+
+### trigger_actions_on
+
+Adds the interactions that send a payload: on_enter_pressed or on_character_entered.
+Replaces the collection; order is preserved.
+
+```rust
+fn trigger_actions_on<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<String>,
+```
+
+### trigger_action
+
+Appends one item to the collection.
+
+```rust
+fn trigger_action(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_trigger_actions_on
+
+Omits `trigger_actions_on`, including any model default.
+
+```rust
+fn clear_trigger_actions_on(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<DispatchActionConfiguration, ValidationError>
+```
+
+**Related types:** [`DispatchActionConfiguration`](/reference/rust/objects#dispatchactionconfiguration), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## FeedbackButton
+
+One button of a feedback buttons element.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> FeedbackButtonBuilder
+```
+
+**Related types:** [`FeedbackButtonBuilder`](/reference/rust/objects#feedbackbuttonbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> FeedbackButtonBuilder
+```
+
+**Related types:** [`FeedbackButtonBuilder`](/reference/rust/objects#feedbackbuttonbuilder)
+
+### text
+
+Borrows or copies `text`. Sets the button label.
+
+```rust
+fn text(&self) -> &PlainText
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### value
+
+Borrows or copies `value`. Sets the application-defined value sent in interaction payloads.
+
+```rust
+fn value(&self) -> &str
+```
+
+### accessibility_label
+
+Borrows or copies `accessibility_label`. Sets the label read by screen readers in place of the visible text.
+
+```rust
+fn accessibility_label(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## FeedbackButtonBuilder
+
+Consuming builder for [`FeedbackButton`](/reference/rust/objects#feedbackbutton). Validation runs in `Self::build`.
+
+### text
+
+Sets the button label.
+
+```rust
+fn text(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### value
+
+Sets the application-defined value sent in interaction payloads.
+
+```rust
+fn value(mut self, value: impl Into<String>) -> Self
+```
+
+### accessibility_label
+
+Sets the label read by screen readers in place of the visible text.
+
+```rust
+fn accessibility_label(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_accessibility_label
+
+Omits `accessibility_label`, including any model default.
+
+```rust
+fn clear_accessibility_label(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<FeedbackButton, ValidationError>
+```
+
+**Related types:** [`FeedbackButton`](/reference/rust/objects#feedbackbutton), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## InputParameter
+
+A named value passed to a workflow trigger.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> InputParameterBuilder
+```
+
+**Related types:** [`InputParameterBuilder`](/reference/rust/objects#inputparameterbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> InputParameterBuilder
+```
+
+**Related types:** [`InputParameterBuilder`](/reference/rust/objects#inputparameterbuilder)
+
+### name
+
+Borrows or copies `name`. Sets the workflow input parameter name.
+
+```rust
+fn name(&self) -> &str
+```
+
+### value
+
+Borrows or copies `value`. Sets the value passed to the workflow input.
+
+```rust
+fn value(&self) -> &str
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## InputParameterBuilder
+
+Consuming builder for [`InputParameter`](/reference/rust/objects#inputparameter). Validation runs in `Self::build`.
+
+### name
+
+Sets the workflow input parameter name.
+
+```rust
+fn name(mut self, value: impl Into<String>) -> Self
+```
+
+### value
+
+Sets the value passed to the workflow input.
+
+```rust
+fn value(mut self, value: impl Into<String>) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<InputParameter, ValidationError>
+```
+
+**Related types:** [`InputParameter`](/reference/rust/objects#inputparameter), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## LineChart
+
+A line chart for a data visualization block.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+Every series needs exactly one data point for each axis category.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> LineChartBuilder
+```
+
+**Related types:** [`LineChartBuilder`](/reference/rust/objects#linechartbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> LineChartBuilder
+```
+
+**Related types:** [`LineChartBuilder`](/reference/rust/objects#linechartbuilder)
+
+### series
+
+Borrows or copies `series`. Adds data series in display order. Series names must be unique.
+
+```rust
+fn series(&self) -> &[DataSeries]
+```
+
+**Related types:** [`DataSeries`](/reference/rust/objects#dataseries)
+
+### axis_config
+
+Borrows or copies `axis_config`. Sets the axis categories and labels. Every series needs exactly one point per category.
+
+```rust
+fn axis_config(&self) -> &AxisConfig
+```
+
+**Related types:** [`AxisConfig`](/reference/rust/objects#axisconfig)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## LineChartBuilder
+
+Consuming builder for [`LineChart`](/reference/rust/objects#linechart). Validation runs in `Self::build`.
+
+### series
+
+Adds data series in display order. Series names must be unique.
+Replaces the collection; order is preserved.
+
+```rust
+fn series<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<DataSeries>,
+```
+
+**Related types:** [`DataSeries`](/reference/rust/objects#dataseries)
+
+### series_entry
+
+Appends one item to the collection.
+
+```rust
+fn series_entry(mut self, value: impl Into<DataSeries>) -> Self
+```
+
+**Related types:** [`DataSeries`](/reference/rust/objects#dataseries)
+
+### axis_config
+
+Sets the axis categories and labels. Every series needs exactly one point per category.
+
+```rust
+fn axis_config(mut self, value: impl Into<AxisConfig>) -> Self
+```
+
+**Related types:** [`AxisConfig`](/reference/rust/objects#axisconfig)
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<LineChart, ValidationError>
+```
+
+**Related types:** [`LineChart`](/reference/rust/objects#linechart), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## MarkdownText
+
+A mrkdwn text composition object.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/text-object).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> MarkdownTextBuilder
+```
+
+**Related types:** [`MarkdownTextBuilder`](/reference/rust/objects#markdowntextbuilder)
+
+### new
+
+Constructs validated text.
+
+**Errors**
+Returns a validation error when text violates its field limits.
+
+```rust
+fn new(text: impl Into<String>) -> Result<Self, ValidationError>
+```
+
+**Related types:** [`ValidationError`](/reference/rust/errors#validationerror)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> MarkdownTextBuilder
+```
+
+**Related types:** [`MarkdownTextBuilder`](/reference/rust/objects#markdowntextbuilder)
+
+### text
+
+Borrows or copies `text`. Sets the mrkdwn-formatted text content.
+
+```rust
+fn text(&self) -> &str
+```
+
+### verbatim
+
+Borrows or copies `verbatim`. Sets whether Slack leaves URLs, mentions, and channel names unlinked.
+
+```rust
+fn verbatim(&self) -> Option<bool>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## MarkdownTextBuilder
+
+Consuming builder for [`MarkdownText`](/reference/rust/objects#markdowntext). Validation runs in `Self::build`.
+
+### text
+
+Sets the mrkdwn-formatted text content.
+
+```rust
+fn text(mut self, value: impl Into<String>) -> Self
+```
+
+### verbatim
+
+Sets whether Slack leaves URLs, mentions, and channel names unlinked.
+
+```rust
+fn verbatim(mut self, value: bool) -> Self
+```
+
+### clear_verbatim
+
+Omits `verbatim`, including any model default.
+
+```rust
+fn clear_verbatim(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<MarkdownText, ValidationError>
+```
+
+**Related types:** [`MarkdownText`](/reference/rust/objects#markdowntext), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## PieChart
+
+A pie chart for a data visualization block.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> PieChartBuilder
+```
+
+**Related types:** [`PieChartBuilder`](/reference/rust/objects#piechartbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> PieChartBuilder
+```
+
+**Related types:** [`PieChartBuilder`](/reference/rust/objects#piechartbuilder)
+
+### segments
+
+Borrows or copies `segments`. Adds pie segments in display order.
+
+```rust
+fn segments(&self) -> &[ChartSegment]
+```
+
+**Related types:** [`ChartSegment`](/reference/rust/objects#chartsegment)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## PieChartBuilder
+
+Consuming builder for [`PieChart`](/reference/rust/objects#piechart). Validation runs in `Self::build`.
+
+### segments
+
+Adds pie segments in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn segments<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<ChartSegment>,
+```
+
+**Related types:** [`ChartSegment`](/reference/rust/objects#chartsegment)
+
+### segment
+
+Appends one item to the collection.
+
+```rust
+fn segment(mut self, value: impl Into<ChartSegment>) -> Self
+```
+
+**Related types:** [`ChartSegment`](/reference/rust/objects#chartsegment)
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<PieChart, ValidationError>
+```
+
+**Related types:** [`PieChart`](/reference/rust/objects#piechart), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## PlainText
+
+A plain-text composition object.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/text-object).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> PlainTextBuilder
+```
+
+**Related types:** [`PlainTextBuilder`](/reference/rust/objects#plaintextbuilder)
+
+### new
+
+Constructs validated text.
+
+**Errors**
+Returns a validation error when text violates its field limits.
+
+```rust
+fn new(text: impl Into<String>) -> Result<Self, ValidationError>
+```
+
+**Related types:** [`ValidationError`](/reference/rust/errors#validationerror)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> PlainTextBuilder
+```
+
+**Related types:** [`PlainTextBuilder`](/reference/rust/objects#plaintextbuilder)
+
+### text
+
+Borrows or copies `text`. Sets the text content.
+
+```rust
+fn text(&self) -> &str
+```
+
+### emoji
+
+Borrows or copies `emoji`. Sets whether emoji shortcodes such as :tada: are rendered as emoji.
+
+```rust
+fn emoji(&self) -> Option<bool>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## PlainTextBuilder
+
+Consuming builder for [`PlainText`](/reference/rust/objects#plaintext). Validation runs in `Self::build`.
+
+### text
+
+Sets the text content.
+
+```rust
+fn text(mut self, value: impl Into<String>) -> Self
+```
+
+### emoji
+
+Sets whether emoji shortcodes such as :tada: are rendered as emoji.
+
+```rust
+fn emoji(mut self, value: bool) -> Self
+```
+
+### clear_emoji
+
+Omits `emoji`, including any model default.
+
+```rust
+fn clear_emoji(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<PlainText, ValidationError>
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RawNumber
+
+A numeric data table cell with display text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RawNumberBuilder
+```
+
+**Related types:** [`RawNumberBuilder`](/reference/rust/objects#rawnumberbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RawNumberBuilder
+```
+
+**Related types:** [`RawNumberBuilder`](/reference/rust/objects#rawnumberbuilder)
+
+### value
+
+Borrows or copies `value`. Sets the numeric value used for sorting.
+
+```rust
+fn value(&self) -> &JsonNumber
+```
+
+**Related types:** [`JsonNumber`](/reference/rust/core#jsonnumber)
+
+### text
+
+Borrows or copies `text`. Sets the formatted text displayed for the number, such as 1,234.5.
+
+```rust
+fn text(&self) -> &str
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RawNumberBuilder
+
+Consuming builder for [`RawNumber`](/reference/rust/objects#rawnumber). Validation runs in `Self::build`.
+
+### value
+
+Sets the numeric value used for sorting.
+
+```rust
+fn value(mut self, value: impl Into<JsonNumber>) -> Self
+```
+
+**Related types:** [`JsonNumber`](/reference/rust/core#jsonnumber)
+
+### text
+
+Sets the formatted text displayed for the number, such as 1,234.5.
+
+```rust
+fn text(mut self, value: impl Into<String>) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RawNumber, ValidationError>
+```
+
+**Related types:** [`RawNumber`](/reference/rust/objects#rawnumber), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RawText
+
+An unformatted table cell.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RawTextBuilder
+```
+
+**Related types:** [`RawTextBuilder`](/reference/rust/objects#rawtextbuilder)
+
+### new
+
+Constructs validated text.
+
+**Errors**
+Returns a validation error when text violates its field limits.
+
+```rust
+fn new(text: impl Into<String>) -> Result<Self, ValidationError>
+```
+
+**Related types:** [`ValidationError`](/reference/rust/errors#validationerror)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RawTextBuilder
+```
+
+**Related types:** [`RawTextBuilder`](/reference/rust/objects#rawtextbuilder)
+
+### text
+
+Borrows or copies `text`. Sets the cell text.
+
+```rust
+fn text(&self) -> &str
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RawTextBuilder
+
+Consuming builder for [`RawText`](/reference/rust/objects#rawtext). Validation runs in `Self::build`.
+
+### text
+
+Sets the cell text.
+
+```rust
+fn text(mut self, value: impl Into<String>) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RawText, ValidationError>
+```
+
+**Related types:** [`RawText`](/reference/rust/objects#rawtext), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RichTextChannel
+
+A channel mention inside rich text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RichTextChannelBuilder
+```
+
+**Related types:** [`RichTextChannelBuilder`](/reference/rust/objects#richtextchannelbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RichTextChannelBuilder
+```
+
+**Related types:** [`RichTextChannelBuilder`](/reference/rust/objects#richtextchannelbuilder)
+
+### channel_id
+
+Borrows or copies `channel_id`. Sets the ID of the mentioned channel.
+
+```rust
+fn channel_id(&self) -> &str
+```
+
+### style
+
+Borrows or copies `style`. Sets the mention style.
+
+```rust
+fn style(&self) -> Option<&RichTextStyle>
+```
+
+**Related types:** [`RichTextStyle`](/reference/rust/core#richtextstyle)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RichTextChannelBuilder
+
+Consuming builder for [`RichTextChannel`](/reference/rust/objects#richtextchannel). Validation runs in `Self::build`.
+
+### channel_id
+
+Sets the ID of the mentioned channel.
+
+```rust
+fn channel_id(mut self, value: impl Into<String>) -> Self
+```
+
+### style
+
+Sets the mention style.
+
+```rust
+fn style(mut self, value: RichTextStyle) -> Self
+```
+
+**Related types:** [`RichTextStyle`](/reference/rust/core#richtextstyle)
+
+### clear_style
+
+Omits `style`, including any model default.
+
+```rust
+fn clear_style(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RichTextChannel, ValidationError>
+```
+
+**Related types:** [`RichTextChannel`](/reference/rust/objects#richtextchannel), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RichTextCodeBlock
+
+A preformatted code block inside rich text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RichTextCodeBlockBuilder
+```
+
+**Related types:** [`RichTextCodeBlockBuilder`](/reference/rust/objects#richtextcodeblockbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RichTextCodeBlockBuilder
+```
+
+**Related types:** [`RichTextCodeBlockBuilder`](/reference/rust/objects#richtextcodeblockbuilder)
+
+### elements
+
+Borrows or copies `elements`. Adds inline rich text elements in display order.
+
+```rust
+fn elements(&self) -> &[RichTextSectionElement]
+```
+
+**Related types:** [`RichTextSectionElement`](/reference/rust/core#richtextsectionelement)
+
+### border
+
+Borrows or copies `border`. Sets the width of the left border, in pixels.
+
+```rust
+fn border(&self) -> Option<i64>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RichTextCodeBlockBuilder
+
+Consuming builder for [`RichTextCodeBlock`](/reference/rust/objects#richtextcodeblock). Validation runs in `Self::build`.
+
+### elements
+
+Adds inline rich text elements in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn elements<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<RichTextSectionElement>,
+```
+
+**Related types:** [`RichTextSectionElement`](/reference/rust/core#richtextsectionelement)
+
+### element
+
+Appends one item to the collection.
+
+```rust
+fn element(mut self, value: impl Into<RichTextSectionElement>) -> Self
+```
+
+**Related types:** [`RichTextSectionElement`](/reference/rust/core#richtextsectionelement)
+
+### border
+
+Sets the width of the left border, in pixels.
+
+```rust
+fn border(mut self, value: i64) -> Self
+```
+
+### clear_border
+
+Omits `border`, including any model default.
+
+```rust
+fn clear_border(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RichTextCodeBlock, ValidationError>
+```
+
+**Related types:** [`RichTextCodeBlock`](/reference/rust/objects#richtextcodeblock), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RichTextEmoji
+
+An emoji inside rich text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RichTextEmojiBuilder
+```
+
+**Related types:** [`RichTextEmojiBuilder`](/reference/rust/objects#richtextemojibuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RichTextEmojiBuilder
+```
+
+**Related types:** [`RichTextEmojiBuilder`](/reference/rust/objects#richtextemojibuilder)
+
+### name
+
+Borrows or copies `name`. Sets the emoji shortcode name, without colons.
+
+```rust
+fn name(&self) -> &str
+```
+
+### skin_tone
+
+Borrows or copies `skin_tone`. Sets the emoji skin tone, from 1 to 6.
+
+```rust
+fn skin_tone(&self) -> Option<i64>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RichTextEmojiBuilder
+
+Consuming builder for [`RichTextEmoji`](/reference/rust/objects#richtextemoji). Validation runs in `Self::build`.
+
+### name
+
+Sets the emoji shortcode name, without colons.
+
+```rust
+fn name(mut self, value: impl Into<String>) -> Self
+```
+
+### skin_tone
+
+Sets the emoji skin tone, from 1 to 6.
+
+```rust
+fn skin_tone(mut self, value: i64) -> Self
+```
+
+### clear_skin_tone
+
+Omits `skin_tone`, including any model default.
+
+```rust
+fn clear_skin_tone(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RichTextEmoji, ValidationError>
+```
+
+**Related types:** [`RichTextEmoji`](/reference/rust/objects#richtextemoji), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RichTextLink
+
+A hyperlink inside rich text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RichTextLinkBuilder
+```
+
+**Related types:** [`RichTextLinkBuilder`](/reference/rust/objects#richtextlinkbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RichTextLinkBuilder
+```
+
+**Related types:** [`RichTextLinkBuilder`](/reference/rust/objects#richtextlinkbuilder)
+
+### url
+
+Borrows or copies `url`. Sets the link target.
+
+```rust
+fn url(&self) -> &str
+```
+
+### text
+
+Borrows or copies `text`. Sets the visible link text. Slack shows the URL when omitted.
+
+```rust
+fn text(&self) -> Option<&str>
+```
+
+### style
+
+Borrows or copies `style`. Sets the visual style.
+
+```rust
+fn style(&self) -> Option<&RichTextStyle>
+```
+
+**Related types:** [`RichTextStyle`](/reference/rust/core#richtextstyle)
+
+### r#unsafe
+
+Borrows or copies `unsafe`. Sets whether Slack treats the link as unsafe.
+
+```rust
+fn r#unsafe(&self) -> Option<bool>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RichTextLinkBuilder
+
+Consuming builder for [`RichTextLink`](/reference/rust/objects#richtextlink). Validation runs in `Self::build`.
+
+### url
+
+Sets the link target.
+
+```rust
+fn url(mut self, value: impl Into<String>) -> Self
+```
+
+### text
+
+Sets the visible link text. Slack shows the URL when omitted.
+
+```rust
+fn text(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_text
+
+Omits `text`, including any model default.
+
+```rust
+fn clear_text(mut self) -> Self
+```
+
+### style
+
+Sets the visual style.
+
+```rust
+fn style(mut self, value: RichTextStyle) -> Self
+```
+
+**Related types:** [`RichTextStyle`](/reference/rust/core#richtextstyle)
+
+### clear_style
+
+Omits `style`, including any model default.
+
+```rust
+fn clear_style(mut self) -> Self
+```
+
+### r#unsafe
+
+Sets whether Slack treats the link as unsafe.
+
+```rust
+fn r#unsafe(mut self, value: bool) -> Self
+```
+
+### clear_unsafe
+
+Omits `unsafe`, including any model default.
+
+```rust
+fn clear_unsafe(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RichTextLink, ValidationError>
+```
+
+**Related types:** [`RichTextLink`](/reference/rust/objects#richtextlink), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RichTextList
+
+A bulleted or numbered list inside rich text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RichTextListBuilder
+```
+
+**Related types:** [`RichTextListBuilder`](/reference/rust/objects#richtextlistbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RichTextListBuilder
+```
+
+**Related types:** [`RichTextListBuilder`](/reference/rust/objects#richtextlistbuilder)
+
+### style
+
+Borrows or copies `style`. Sets whether the list is bulleted or numbered.
+
+```rust
+fn style(&self) -> RichTextListStyle
+```
+
+**Related types:** [`RichTextListStyle`](/reference/rust/core#richtextliststyle)
+
+### elements
+
+Borrows or copies `elements`. Adds list items, one rich text section per item.
+
+```rust
+fn elements(&self) -> &[RichTextSection]
+```
+
+**Related types:** [`RichTextSection`](/reference/rust/objects#richtextsection)
+
+### indent
+
+Borrows or copies `indent`. Sets the list's indentation level.
+
+```rust
+fn indent(&self) -> Option<i64>
+```
+
+### offset
+
+Borrows or copies `offset`. Sets the number of items to skip when numbering an ordered list.
+
+```rust
+fn offset(&self) -> Option<i64>
+```
+
+### border
+
+Borrows or copies `border`. Sets the width of the left border, in pixels.
+
+```rust
+fn border(&self) -> Option<i64>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RichTextListBuilder
+
+Consuming builder for [`RichTextList`](/reference/rust/objects#richtextlist). Validation runs in `Self::build`.
+
+### style
+
+Sets whether the list is bulleted or numbered.
+
+```rust
+fn style(mut self, value: RichTextListStyle) -> Self
+```
+
+**Related types:** [`RichTextListStyle`](/reference/rust/core#richtextliststyle)
+
+### elements
+
+Adds list items, one rich text section per item.
+Replaces the collection; order is preserved.
+
+```rust
+fn elements<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<RichTextSection>,
+```
+
+**Related types:** [`RichTextSection`](/reference/rust/objects#richtextsection)
+
+### element
+
+Appends one item to the collection.
+
+```rust
+fn element(mut self, value: impl Into<RichTextSection>) -> Self
+```
+
+**Related types:** [`RichTextSection`](/reference/rust/objects#richtextsection)
+
+### indent
+
+Sets the list's indentation level.
+
+```rust
+fn indent(mut self, value: i64) -> Self
+```
+
+### clear_indent
+
+Omits `indent`, including any model default.
+
+```rust
+fn clear_indent(mut self) -> Self
+```
+
+### offset
+
+Sets the number of items to skip when numbering an ordered list.
+
+```rust
+fn offset(mut self, value: i64) -> Self
+```
+
+### clear_offset
+
+Omits `offset`, including any model default.
+
+```rust
+fn clear_offset(mut self) -> Self
+```
+
+### border
+
+Sets the width of the left border, in pixels.
+
+```rust
+fn border(mut self, value: i64) -> Self
+```
+
+### clear_border
+
+Omits `border`, including any model default.
+
+```rust
+fn clear_border(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RichTextList, ValidationError>
+```
+
+**Related types:** [`RichTextList`](/reference/rust/objects#richtextlist), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RichTextQuote
+
+A quotation inside rich text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RichTextQuoteBuilder
+```
+
+**Related types:** [`RichTextQuoteBuilder`](/reference/rust/objects#richtextquotebuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RichTextQuoteBuilder
+```
+
+**Related types:** [`RichTextQuoteBuilder`](/reference/rust/objects#richtextquotebuilder)
+
+### elements
+
+Borrows or copies `elements`. Adds inline rich text elements in display order.
+
+```rust
+fn elements(&self) -> &[RichTextSectionElement]
+```
+
+**Related types:** [`RichTextSectionElement`](/reference/rust/core#richtextsectionelement)
+
+### border
+
+Borrows or copies `border`. Sets the width of the left border, in pixels.
+
+```rust
+fn border(&self) -> Option<i64>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RichTextQuoteBuilder
+
+Consuming builder for [`RichTextQuote`](/reference/rust/objects#richtextquote). Validation runs in `Self::build`.
+
+### elements
+
+Adds inline rich text elements in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn elements<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<RichTextSectionElement>,
+```
+
+**Related types:** [`RichTextSectionElement`](/reference/rust/core#richtextsectionelement)
+
+### element
+
+Appends one item to the collection.
+
+```rust
+fn element(mut self, value: impl Into<RichTextSectionElement>) -> Self
+```
+
+**Related types:** [`RichTextSectionElement`](/reference/rust/core#richtextsectionelement)
+
+### border
+
+Sets the width of the left border, in pixels.
+
+```rust
+fn border(mut self, value: i64) -> Self
+```
+
+### clear_border
+
+Omits `border`, including any model default.
+
+```rust
+fn clear_border(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RichTextQuote, ValidationError>
+```
+
+**Related types:** [`RichTextQuote`](/reference/rust/objects#richtextquote), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RichTextSection
+
+A paragraph of inline rich text elements.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RichTextSectionBuilder
+```
+
+**Related types:** [`RichTextSectionBuilder`](/reference/rust/objects#richtextsectionbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RichTextSectionBuilder
+```
+
+**Related types:** [`RichTextSectionBuilder`](/reference/rust/objects#richtextsectionbuilder)
+
+### elements
+
+Borrows or copies `elements`. Adds inline rich text elements in display order.
+
+```rust
+fn elements(&self) -> &[RichTextSectionElement]
+```
+
+**Related types:** [`RichTextSectionElement`](/reference/rust/core#richtextsectionelement)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RichTextSectionBuilder
+
+Consuming builder for [`RichTextSection`](/reference/rust/objects#richtextsection). Validation runs in `Self::build`.
+
+### elements
+
+Adds inline rich text elements in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn elements<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<RichTextSectionElement>,
+```
+
+**Related types:** [`RichTextSectionElement`](/reference/rust/core#richtextsectionelement)
+
+### element
+
+Appends one item to the collection.
+
+```rust
+fn element(mut self, value: impl Into<RichTextSectionElement>) -> Self
+```
+
+**Related types:** [`RichTextSectionElement`](/reference/rust/core#richtextsectionelement)
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RichTextSection, ValidationError>
+```
+
+**Related types:** [`RichTextSection`](/reference/rust/objects#richtextsection), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RichTextText
+
+A run of optionally styled text inside rich text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RichTextTextBuilder
+```
+
+**Related types:** [`RichTextTextBuilder`](/reference/rust/objects#richtexttextbuilder)
+
+### new
+
+Constructs validated text.
+
+**Errors**
+Returns a validation error when text violates its field limits.
+
+```rust
+fn new(text: impl Into<String>) -> Result<Self, ValidationError>
+```
+
+**Related types:** [`ValidationError`](/reference/rust/errors#validationerror)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RichTextTextBuilder
+```
+
+**Related types:** [`RichTextTextBuilder`](/reference/rust/objects#richtexttextbuilder)
+
+### text
+
+Borrows or copies `text`. Sets the text content.
+
+```rust
+fn text(&self) -> &str
+```
+
+### style
+
+Borrows or copies `style`. Sets the visual style.
+
+```rust
+fn style(&self) -> Option<&RichTextStyle>
+```
+
+**Related types:** [`RichTextStyle`](/reference/rust/core#richtextstyle)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RichTextTextBuilder
+
+Consuming builder for [`RichTextText`](/reference/rust/objects#richtexttext). Validation runs in `Self::build`.
+
+### text
+
+Sets the text content.
+
+```rust
+fn text(mut self, value: impl Into<String>) -> Self
+```
+
+### style
+
+Sets the visual style.
+
+```rust
+fn style(mut self, value: RichTextStyle) -> Self
+```
+
+**Related types:** [`RichTextStyle`](/reference/rust/core#richtextstyle)
+
+### clear_style
+
+Omits `style`, including any model default.
+
+```rust
+fn clear_style(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RichTextText, ValidationError>
+```
+
+**Related types:** [`RichTextText`](/reference/rust/objects#richtexttext), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RichTextUser
+
+A user mention inside rich text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RichTextUserBuilder
+```
+
+**Related types:** [`RichTextUserBuilder`](/reference/rust/objects#richtextuserbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RichTextUserBuilder
+```
+
+**Related types:** [`RichTextUserBuilder`](/reference/rust/objects#richtextuserbuilder)
+
+### user_id
+
+Borrows or copies `user_id`. Sets the ID of the mentioned user.
+
+```rust
+fn user_id(&self) -> &str
+```
+
+### style
+
+Borrows or copies `style`. Sets the visual style.
+
+```rust
+fn style(&self) -> Option<&RichTextStyle>
+```
+
+**Related types:** [`RichTextStyle`](/reference/rust/core#richtextstyle)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RichTextUserBuilder
+
+Consuming builder for [`RichTextUser`](/reference/rust/objects#richtextuser). Validation runs in `Self::build`.
+
+### user_id
+
+Sets the ID of the mentioned user.
+
+```rust
+fn user_id(mut self, value: impl Into<String>) -> Self
+```
+
+### style
+
+Sets the visual style.
+
+```rust
+fn style(mut self, value: RichTextStyle) -> Self
+```
+
+**Related types:** [`RichTextStyle`](/reference/rust/core#richtextstyle)
+
+### clear_style
+
+Omits `style`, including any model default.
+
+```rust
+fn clear_style(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RichTextUser, ValidationError>
+```
+
+**Related types:** [`RichTextUser`](/reference/rust/objects#richtextuser), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## RichTextUserGroup
+
+A user group mention inside rich text.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> RichTextUserGroupBuilder
+```
+
+**Related types:** [`RichTextUserGroupBuilder`](/reference/rust/objects#richtextusergroupbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> RichTextUserGroupBuilder
+```
+
+**Related types:** [`RichTextUserGroupBuilder`](/reference/rust/objects#richtextusergroupbuilder)
+
+### usergroup_id
+
+Borrows or copies `usergroup_id`. Sets the ID of the mentioned user group.
+
+```rust
+fn usergroup_id(&self) -> &str
+```
+
+### style
+
+Borrows or copies `style`. Sets the visual style.
+
+```rust
+fn style(&self) -> Option<&RichTextStyle>
+```
+
+**Related types:** [`RichTextStyle`](/reference/rust/core#richtextstyle)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## RichTextUserGroupBuilder
+
+Consuming builder for [`RichTextUserGroup`](/reference/rust/objects#richtextusergroup). Validation runs in `Self::build`.
+
+### usergroup_id
+
+Sets the ID of the mentioned user group.
+
+```rust
+fn usergroup_id(mut self, value: impl Into<String>) -> Self
+```
+
+### style
+
+Sets the visual style.
+
+```rust
+fn style(mut self, value: RichTextStyle) -> Self
+```
+
+**Related types:** [`RichTextStyle`](/reference/rust/core#richtextstyle)
+
+### clear_style
+
+Omits `style`, including any model default.
+
+```rust
+fn clear_style(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<RichTextUserGroup, ValidationError>
+```
+
+**Related types:** [`RichTextUserGroup`](/reference/rust/objects#richtextusergroup), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## SelectOption
+
+A selectable option for menus, checkboxes, radio buttons, and overflow menus.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/option-object).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> SelectOptionBuilder
+```
+
+**Related types:** [`SelectOptionBuilder`](/reference/rust/objects#selectoptionbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> SelectOptionBuilder
+```
+
+**Related types:** [`SelectOptionBuilder`](/reference/rust/objects#selectoptionbuilder)
+
+### text
+
+Borrows or copies `text`. Sets the option label shown to users.
+
+```rust
+fn text(&self) -> &Text
+```
+
+**Related types:** [`Text`](/reference/rust/core#text)
+
+### value
+
+Borrows or copies `value`. Sets the value sent in interaction payloads when this option is chosen.
+
+```rust
+fn value(&self) -> &str
+```
+
+### description
+
+Borrows or copies `description`. Sets supporting text shown below the label. Only rendered by checkboxes and radio buttons.
+
+```rust
+fn description(&self) -> Option<&Text>
+```
+
+**Related types:** [`Text`](/reference/rust/core#text)
+
+### url
+
+Borrows or copies `url`. Sets a URL loaded in the user's browser when an overflow menu option is chosen.
+
+```rust
+fn url(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## SelectOptionBuilder
+
+Consuming builder for [`SelectOption`](/reference/rust/objects#selectoption). Validation runs in `Self::build`.
+
+### text
+
+Sets the option label shown to users.
+
+```rust
+fn text(mut self, value: impl Into<TextInput>) -> Self
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### value
+
+Sets the value sent in interaction payloads when this option is chosen.
+
+```rust
+fn value(mut self, value: impl Into<String>) -> Self
+```
+
+### description
+
+Sets supporting text shown below the label. Only rendered by checkboxes and radio buttons.
+
+```rust
+fn description(mut self, value: impl Into<TextInput>) -> Self
+```
+
+**Related types:** [`TextInput`](/reference/rust/core#textinput)
+
+### clear_description
+
+Omits `description`, including any model default.
+
+```rust
+fn clear_description(mut self) -> Self
+```
+
+### url
+
+Sets a URL loaded in the user's browser when an overflow menu option is chosen.
+
+```rust
+fn url(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_url
+
+Omits `url`, including any model default.
+
+```rust
+fn clear_url(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<SelectOption, ValidationError>
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## SelectOptionGroup
+
+A labelled group of options in a static select menu.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/option-group-object).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> SelectOptionGroupBuilder
+```
+
+**Related types:** [`SelectOptionGroupBuilder`](/reference/rust/objects#selectoptiongroupbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> SelectOptionGroupBuilder
+```
+
+**Related types:** [`SelectOptionGroupBuilder`](/reference/rust/objects#selectoptiongroupbuilder)
+
+### label
+
+Borrows or copies `label`. Sets the group heading.
+
+```rust
+fn label(&self) -> &PlainText
+```
+
+**Related types:** [`PlainText`](/reference/rust/objects#plaintext)
+
+### options
+
+Borrows or copies `options`. Adds selectable options in display order.
+
+```rust
+fn options(&self) -> &[SelectOption]
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## SelectOptionGroupBuilder
+
+Consuming builder for [`SelectOptionGroup`](/reference/rust/objects#selectoptiongroup). Validation runs in `Self::build`.
+
+### label
+
+Sets the group heading.
+
+```rust
+fn label(mut self, value: impl Into<PlainTextInput>) -> Self
+```
+
+**Related types:** [`PlainTextInput`](/reference/rust/core#plaintextinput)
+
+### options
+
+Adds selectable options in display order.
+Replaces the collection; order is preserved.
+
+```rust
+fn options<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<SelectOption>,
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### option
+
+Appends one item to the collection.
+
+```rust
+fn option(mut self, value: impl Into<SelectOption>) -> Self
+```
+
+**Related types:** [`SelectOption`](/reference/rust/objects#selectoption)
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<SelectOptionGroup, ValidationError>
+```
+
+**Related types:** [`SelectOptionGroup`](/reference/rust/objects#selectoptiongroup), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## SlackFile
+
+A reference to an image file hosted in Slack.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/slack-file-object).
+Provide exactly one of an ID or a URL. An ID must match ^F[A-Z0-9]&#123;8,&#125;$.
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> SlackFileBuilder
+```
+
+**Related types:** [`SlackFileBuilder`](/reference/rust/objects#slackfilebuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> SlackFileBuilder
+```
+
+**Related types:** [`SlackFileBuilder`](/reference/rust/objects#slackfilebuilder)
+
+### id
+
+Borrows or copies `id`. Sets the ID of a file previously uploaded to Slack. Cannot be combined with a URL.
+
+```rust
+fn id(&self) -> Option<&str>
+```
+
+### url
+
+Borrows or copies `url`. Sets the URL of a file hosted in Slack. Cannot be combined with an ID.
+
+```rust
+fn url(&self) -> Option<&str>
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## SlackFileBuilder
+
+Consuming builder for [`SlackFile`](/reference/rust/objects#slackfile). Validation runs in `Self::build`.
+
+### id
+
+Sets the ID of a file previously uploaded to Slack. Cannot be combined with a URL.
+
+```rust
+fn id(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_id
+
+Omits `id`, including any model default.
+
+```rust
+fn clear_id(mut self) -> Self
+```
+
+### url
+
+Sets the URL of a file hosted in Slack. Cannot be combined with an ID.
+
+```rust
+fn url(mut self, value: impl Into<String>) -> Self
+```
+
+### clear_url
+
+Omits `url`, including any model default.
+
+```rust
+fn clear_url(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<SlackFile, ValidationError>
+```
+
+**Related types:** [`SlackFile`](/reference/rust/objects#slackfile), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## SlackIcon
+
+A Slack-provided icon, referenced by name.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> SlackIconBuilder
+```
+
+**Related types:** [`SlackIconBuilder`](/reference/rust/objects#slackiconbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> SlackIconBuilder
+```
+
+**Related types:** [`SlackIconBuilder`](/reference/rust/objects#slackiconbuilder)
+
+### name
+
+Borrows or copies `name`. Sets the name of the Slack-provided icon, such as rocket.
+
+```rust
+fn name(&self) -> &str
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## SlackIconBuilder
+
+Consuming builder for [`SlackIcon`](/reference/rust/objects#slackicon). Validation runs in `Self::build`.
+
+### name
+
+Sets the name of the Slack-provided icon, such as rocket.
+
+```rust
+fn name(mut self, value: impl Into<String>) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<SlackIcon, ValidationError>
+```
+
+**Related types:** [`SlackIcon`](/reference/rust/objects#slackicon), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## Trigger
+
+A link trigger that starts a workflow.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/trigger-object).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> TriggerBuilder
+```
+
+**Related types:** [`TriggerBuilder`](/reference/rust/objects#triggerbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> TriggerBuilder
+```
+
+**Related types:** [`TriggerBuilder`](/reference/rust/objects#triggerbuilder)
+
+### url
+
+Borrows or copies `url`. Sets the link trigger URL.
+
+```rust
+fn url(&self) -> &str
+```
+
+### customizable_input_parameters
+
+Borrows or copies `customizable_input_parameters`. Adds the input values passed to the workflow's trigger.
+
+```rust
+fn customizable_input_parameters(&self) -> Option<&[InputParameter]>
+```
+
+**Related types:** [`InputParameter`](/reference/rust/objects#inputparameter)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## TriggerBuilder
+
+Consuming builder for [`Trigger`](/reference/rust/objects#trigger). Validation runs in `Self::build`.
+
+### url
+
+Sets the link trigger URL.
+
+```rust
+fn url(mut self, value: impl Into<String>) -> Self
+```
+
+### customizable_input_parameters
+
+Adds the input values passed to the workflow's trigger.
+Replaces the collection; order is preserved.
+
+```rust
+fn customizable_input_parameters<I, T>(mut self, values: I) -> Self
+where
+    I: IntoIterator<Item = T>,
+    T: Into<InputParameter>,
+```
+
+**Related types:** [`InputParameter`](/reference/rust/objects#inputparameter)
+
+### customizable_input_parameter
+
+Appends one item to the collection.
+
+```rust
+fn customizable_input_parameter(mut self, value: impl Into<InputParameter>) -> Self
+```
+
+**Related types:** [`InputParameter`](/reference/rust/objects#inputparameter)
+
+### clear_customizable_input_parameters
+
+Omits `customizable_input_parameters`, including any model default.
+
+```rust
+fn clear_customizable_input_parameters(mut self) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<Trigger, ValidationError>
+```
+
+**Related types:** [`Trigger`](/reference/rust/objects#trigger), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## UrlSource
+
+A linked source cited by a task card.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> UrlSourceBuilder
+```
+
+**Related types:** [`UrlSourceBuilder`](/reference/rust/objects#urlsourcebuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> UrlSourceBuilder
+```
+
+**Related types:** [`UrlSourceBuilder`](/reference/rust/objects#urlsourcebuilder)
+
+### url
+
+Borrows or copies `url`. Sets the source URL.
+
+```rust
+fn url(&self) -> &str
+```
+
+### text
+
+Borrows or copies `text`. Sets the source link text.
+
+```rust
+fn text(&self) -> &str
+```
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+## UrlSourceBuilder
+
+Consuming builder for [`UrlSource`](/reference/rust/objects#urlsource). Validation runs in `Self::build`.
+
+### url
+
+Sets the source URL.
+
+```rust
+fn url(mut self, value: impl Into<String>) -> Self
+```
+
+### text
+
+Sets the source link text.
+
+```rust
+fn text(mut self, value: impl Into<String>) -> Self
+```
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<UrlSource, ValidationError>
+```
+
+**Related types:** [`UrlSource`](/reference/rust/objects#urlsource), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## Workflow
+
+The workflow started by a workflow button.
+
+[Slack reference](https://docs.slack.dev/reference/block-kit/composition-objects/workflow-object).
+
+### builder
+
+Starts a builder with the documented model defaults.
+
+```rust
+fn builder() -> WorkflowBuilder
+```
+
+**Related types:** [`WorkflowBuilder`](/reference/rust/objects#workflowbuilder)
+
+### into_builder
+
+Moves every field into an editable builder, preserving explicit omissions.
+
+```rust
+fn into_builder(self) -> WorkflowBuilder
+```
+
+**Related types:** [`WorkflowBuilder`](/reference/rust/objects#workflowbuilder)
+
+### trigger
+
+Borrows or copies `trigger`. Sets the link trigger that starts the workflow.
+
+```rust
+fn trigger(&self) -> &Trigger
+```
+
+**Related types:** [`Trigger`](/reference/rust/objects#trigger)
+
+### extensions
+
+Borrows checked, unmodeled JSON extension fields.
+
+```rust
+fn extensions(&self) -> &Map<String, Value>
+```
+
+### from_url
+
+Builds a workflow from a trigger URL and ordered, validated input parameters.
+An empty iterator omits `customizable_input_parameters`.
+
+**Errors**
+Returns the same validation errors as [`Trigger::builder`](/reference/rust/objects#trigger) and [`Workflow::builder`](/reference/rust/objects#workflow).
+
+```rust
+fn from_url(
+    url: impl Into<String>,
+    parameters: impl IntoIterator<Item = InputParameter>,
+) -> Result<Self, ValidationError>
+```
+
+**Related types:** [`InputParameter`](/reference/rust/objects#inputparameter), [`ValidationError`](/reference/rust/errors#validationerror)
+
+## WorkflowBuilder
+
+Consuming builder for [`Workflow`](/reference/rust/objects#workflow). Validation runs in `Self::build`.
+
+### trigger
+
+Sets the link trigger that starts the workflow.
+
+```rust
+fn trigger(mut self, value: impl Into<Trigger>) -> Self
+```
+
+**Related types:** [`Trigger`](/reference/rust/objects#trigger)
+
+### extension
+
+Adds or replaces an unmodeled extension; reserved names fail at build time.
+
+```rust
+fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self
+```
+
+### build
+
+Validates all fields and their receiving context.
+
+**Errors**
+Returns a [`ValidationError`](/reference/rust/errors#validationerror) for missing fields, invalid values, reserved
+extension names, or unsupported field combinations and child contexts.
+
+```rust
+fn build(self) -> Result<Workflow, ValidationError>
+```
+
+**Related types:** [`ValidationError`](/reference/rust/errors#validationerror), [`Workflow`](/reference/rust/objects#workflow)

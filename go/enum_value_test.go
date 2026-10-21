@@ -1,8 +1,9 @@
 package slackblocks_test
 
 import (
-	sb "github.com/nicklambourne/slackblocks/go/v2"
 	"testing"
+
+	sb "github.com/nicklambourne/slackblocks/go/v2"
 )
 
 func TestSuppliedEnumsRejectEmptyAndUnknownValues(t *testing.T) {
@@ -83,4 +84,16 @@ func TestNestedRawEnumValuesAreValidatedInTheirContext(t *testing.T) {
 	table := sb.NewTableBlock().Rows([]sb.TableCell{sb.NewRawText().Text("A")}).MustBuild()
 	table["column_settings"] = []any{sb.Object{"align": ""}}
 	assertValidationError(t, sb.Validate(table), sb.TypeMismatch, "column_settings[0].align")
+}
+
+func TestRawTableColumnSkipsPreserveAlignmentContext(t *testing.T) {
+	table := sb.NewTableBlock().Rows([]sb.TableCell{sb.NewRawText().Text("A"), sb.NewRawText().Text("B")}).MustBuild()
+	table["column_settings"] = []any{nil, sb.Object{"align": "right"}}
+	if err := sb.Validate(table); err != nil {
+		t.Fatalf("documented null column skip rejected: %v", err)
+	}
+	table["column_settings"] = []any{nil, sb.Object{"align": ""}}
+	assertValidationError(t, sb.Validate(table), sb.TypeMismatch, "column_settings[1].align")
+	table["column_settings"] = []any{17}
+	assertValidationError(t, sb.Validate(table), sb.TypeMismatch, "column_settings[0]")
 }

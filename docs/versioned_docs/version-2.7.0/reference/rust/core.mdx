@@ -1,0 +1,480 @@
+---
+sidebar_position: 6
+toc_max_heading_level: 3
+---
+
+# Core Types
+
+Generated from the actual Rust signatures and rustdoc comments. Builders validate on `build()`; `into_builder()` preserves omissions. Error categories and paths are stable; prose may improve.
+
+## AlertLevel
+
+Severity levels supported by alert blocks.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Default` | `default` | Neutral styling. |
+| `Info` | `info` | Informational styling. |
+| `Warning` | `warning` | Warning styling. |
+| `Error` | `error` | Error styling. |
+| `Success` | `success` | Success styling. |
+
+### as_str
+
+Returns the Slack wire spelling.
+
+```rust
+const fn as_str(self) -> &'static str
+```
+
+## Block
+
+A validated Slack layout block accepted directly by a JSON transport.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Actions` | `(Box < ActionsBlock >)` | A block that holds interactive elements such as buttons and menus. |
+| `Alert` | `(Box < AlertBlock >)` | A severity-labelled alert, available in modals. |
+| `Card` | `(Box < CardBlock >)` | A compact card with an image, text, and up to three buttons. |
+| `Carousel` | `(Box < CarouselBlock >)` | A horizontally scrolling set of cards, available in messages and App Home. |
+| `Container` | `(Box < ContainerBlock >)` | A titled group of blocks that can optionally collapse. |
+| `ContextActions` | `(Box < ContextActionsBlock >)` | A row of feedback or icon buttons, usually shown below AI-generated content. |
+| `Context` | `(Box < ContextBlock >)` | A block of small, secondary images and text. |
+| `DataTable` | `(Box < DataTableBlock >)` | A sortable, paginated table of raw text, numbers, and rich text. |
+| `DataVisualization` | `(Box < DataVisualizationBlock >)` | A titled pie, bar, area, or line chart. |
+| `Divider` | `(Box < DividerBlock >)` | A horizontal rule that separates blocks. |
+| `File` | `(Box < FileBlock >)` | A remote file previously added with the files.remote API. |
+| `Header` | `(Box < HeaderBlock >)` | Large, bold plain text that introduces a group of blocks. |
+| `Image` | `(Box < ImageBlock >)` | A standalone image with alternative text and an optional title. |
+| `Input` | `(Box < InputBlock >)` | A labelled input that collects a value in a modal, App Home, or message. |
+| `Markdown` | `(Box < MarkdownBlock >)` | Standard markdown rendered by Slack, intended for AI-generated content. |
+| `Plan` | `(Box < PlanBlock >)` | A titled sequence of task cards. |
+| `RichText` | `(Box < RichTextBlock >)` | Formatted text built from sections, lists, preformatted blocks, and quotes. |
+| `Section` | `(Box < SectionBlock >)` | Text, a grid of fields, or both, with an optional accessory element. |
+| `Table` | `(Box < TableBlock >)` | A simple table of raw text and rich text cells. |
+| `TaskCard` | `(Box < TaskCardBlock >)` | One task with its status, details, output, and sources. |
+| `Video` | `(Box < VideoBlock >)` | An embedded video player. |
+
+## ButtonStyle
+
+Visual emphasis for buttons and confirmation dialogs.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Primary` | `primary` | Green emphasis for the affirmative action. |
+| `Danger` | `danger` | Red emphasis for destructive actions. |
+
+### as_str
+
+Returns the Slack wire spelling.
+
+```rust
+const fn as_str(self) -> &'static str
+```
+
+## Chart
+
+A chart that can be displayed by a data visualization block.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Area` | `(AreaChart)` | An area chart for a data visualization block. |
+| `Bar` | `(BarChart)` | A bar chart for a data visualization block. |
+| `Line` | `(LineChart)` | A line chart for a data visualization block. |
+| `Pie` | `(PieChart)` | A pie chart for a data visualization block. |
+
+## ColumnAlign
+
+Horizontal alignment for table columns.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Left` | `left` | Align cell content to the left. |
+| `Center` | `center` | Center cell content. |
+| `Right` | `right` | Align cell content to the right. |
+
+### as_str
+
+Returns the Slack wire spelling.
+
+```rust
+const fn as_str(self) -> &'static str
+```
+
+## ContainerWidth
+
+Widths supported by Slack container blocks.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Narrow` | `narrow` | A compact container. |
+| `Standard` | `standard` | Slack's standard container width. |
+| `Wide` | `wide` | A wide container. |
+| `Full` | `full` | The full available width. |
+
+### as_str
+
+Returns the Slack wire spelling.
+
+```rust
+const fn as_str(self) -> &'static str
+```
+
+## ContextActionsElement
+
+A value that can appear in a context actions block: feedback buttons or an icon button.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `FeedbackButtons` | `(Box < FeedbackButtonsElement >)` | A pair of thumbs-up and thumbs-down feedback buttons. |
+| `IconButton` | `(Box < IconButtonElement >)` | A button that shows an icon instead of text. |
+
+## ContextElement
+
+A value that can appear in a context block: an image element or a text object.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `ImageElement` | `(ImageElement)` | An image displayed inside a section, context, or card. |
+| `MarkdownText` | `(MarkdownText)` | A mrkdwn text composition object. |
+| `PlainText` | `(PlainText)` | A plain-text composition object. |
+
+## DataTableCell
+
+A value that can appear as a data table cell: raw text, a raw number, or a rich text block.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `RichText` | `(RichTextBlock)` | Formatted text built from sections, lists, preformatted blocks, and quotes. |
+| `RawNumber` | `(RawNumber)` | A numeric data table cell with display text. |
+| `RawText` | `(RawText)` | An unformatted table cell. |
+
+## Element
+
+A validated interactive, visual, or input element nested inside a Slack block.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Button` | `(Box < ButtonElement >)` | An interactive button that sends a payload or opens a URL. |
+| `ChannelMultiSelect` | `(Box < ChannelMultiSelectElement >)` | A menu for selecting multiple public channels. |
+| `ChannelSelect` | `(Box < ChannelSelectElement >)` | A menu for selecting one public channel. |
+| `Checkboxes` | `(Box < CheckboxesElement >)` | A group of checkboxes. |
+| `ConversationMultiSelect` | `(Box < ConversationMultiSelectElement >)` | A menu for selecting multiple conversations. |
+| `ConversationSelect` | `(Box < ConversationSelectElement >)` | A menu for selecting one conversation. |
+| `DatePicker` | `(Box < DatePickerElement >)` | A calendar date picker. |
+| `DateTimePicker` | `(Box < DateTimePickerElement >)` | A combined date and time picker. |
+| `EmailInput` | `(Box < EmailInputElement >)` | A single-line input that accepts an email address. |
+| `ExternalMultiSelect` | `(Box < ExternalMultiSelectElement >)` | A menu for selecting multiple options loaded from your app. |
+| `ExternalSelect` | `(Box < ExternalSelectElement >)` | A menu for selecting one option loaded from your app. |
+| `FeedbackButtons` | `(Box < FeedbackButtonsElement >)` | A pair of thumbs-up and thumbs-down feedback buttons. |
+| `FileInput` | `(Box < FileInputElement >)` | An input that lets users upload files. |
+| `IconButton` | `(Box < IconButtonElement >)` | A button that shows an icon instead of text. |
+| `Image` | `(Box < ImageElement >)` | An image displayed inside a section, context, or card. |
+| `NumberInput` | `(Box < NumberInputElement >)` | An input that accepts whole or decimal numbers. |
+| `Overflow` | `(Box < OverflowElement >)` | A compact menu of up to five options. |
+| `PlainTextInput` | `(Box < PlainTextInputElement >)` | A single-line or multi-line free-text input. |
+| `RadioButtons` | `(Box < RadioButtonsElement >)` | A group of radio buttons. |
+| `RichTextInput` | `(Box < RichTextInputElement >)` | An input that accepts formatted rich text. |
+| `StaticMultiSelect` | `(Box < StaticMultiSelectElement >)` | A menu for selecting multiple options defined in the payload. |
+| `StaticSelect` | `(Box < StaticSelectElement >)` | A menu for selecting one option defined in the payload. |
+| `TimePicker` | `(Box < TimePickerElement >)` | A time-of-day picker. |
+| `UrlInput` | `(Box < UrlInputElement >)` | A single-line input that accepts a URL. |
+| `UserMultiSelect` | `(Box < UserMultiSelectElement >)` | A menu for selecting multiple workspace users. |
+| `UserSelect` | `(Box < UserSelectElement >)` | A menu for selecting one workspace user. |
+| `WorkflowButton` | `(Box < WorkflowButtonElement >)` | A button that starts a workflow through a link trigger. |
+
+## IconButtonIcon
+
+Icons supported by icon buttons.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Trash` | `trash` | A trash can, for delete actions. |
+
+### as_str
+
+Returns the Slack wire spelling.
+
+```rust
+const fn as_str(self) -> &'static str
+```
+
+## InputElement
+
+An element that can be placed in an input block.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `ChannelMultiSelect` | `(Box < ChannelMultiSelectElement >)` | A menu for selecting multiple public channels. |
+| `ChannelSelect` | `(Box < ChannelSelectElement >)` | A menu for selecting one public channel. |
+| `Checkboxes` | `(Box < CheckboxesElement >)` | A group of checkboxes. |
+| `ConversationMultiSelect` | `(Box < ConversationMultiSelectElement >)` | A menu for selecting multiple conversations. |
+| `ConversationSelect` | `(Box < ConversationSelectElement >)` | A menu for selecting one conversation. |
+| `DatePicker` | `(Box < DatePickerElement >)` | A calendar date picker. |
+| `DateTimePicker` | `(Box < DateTimePickerElement >)` | A combined date and time picker. |
+| `EmailInput` | `(Box < EmailInputElement >)` | A single-line input that accepts an email address. |
+| `ExternalMultiSelect` | `(Box < ExternalMultiSelectElement >)` | A menu for selecting multiple options loaded from your app. |
+| `ExternalSelect` | `(Box < ExternalSelectElement >)` | A menu for selecting one option loaded from your app. |
+| `FileInput` | `(Box < FileInputElement >)` | An input that lets users upload files. |
+| `NumberInput` | `(Box < NumberInputElement >)` | An input that accepts whole or decimal numbers. |
+| `PlainTextInput` | `(Box < PlainTextInputElement >)` | A single-line or multi-line free-text input. |
+| `RadioButtons` | `(Box < RadioButtonsElement >)` | A group of radio buttons. |
+| `RichTextInput` | `(Box < RichTextInputElement >)` | An input that accepts formatted rich text. |
+| `StaticMultiSelect` | `(Box < StaticMultiSelectElement >)` | A menu for selecting multiple options defined in the payload. |
+| `StaticSelect` | `(Box < StaticSelectElement >)` | A menu for selecting one option defined in the payload. |
+| `TimePicker` | `(Box < TimePickerElement >)` | A time-of-day picker. |
+| `UrlInput` | `(Box < UrlInputElement >)` | A single-line input that accepts a URL. |
+| `UserMultiSelect` | `(Box < UserMultiSelectElement >)` | A menu for selecting multiple workspace users. |
+| `UserSelect` | `(Box < UserSelectElement >)` | A menu for selecting one workspace user. |
+
+## JsonNumber
+
+A JSON integer, unsigned integer, or finite floating-point number.
+
+Integers retain their precision through `i64::MIN..=u64::MAX`. Arbitrary
+precision values that cannot round-trip through the supported representation
+are rejected, including when a consumer enables serde_json's optional features.
+
+### as_number
+
+Borrows the validated Serde JSON number.
+
+```rust
+fn as_number(&self) -> &Number
+```
+
+## PlainTextInput
+
+A plain-text builder argument: either an owned string or validated plain text.
+
+## ResponseType
+
+Visibility of a slash-command or interaction response.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `InChannel` | `in_channel` | Visible to everyone in the channel. |
+| `Ephemeral` | `ephemeral` | Visible only to the user who triggered the response. |
+
+### as_str
+
+Returns the Slack wire spelling.
+
+```rust
+const fn as_str(self) -> &'static str
+```
+
+## RichTextBlockElement
+
+A top-level element of a rich text block: a section, list, preformatted block, or quote.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `CodeBlock` | `(RichTextCodeBlock)` | A preformatted code block inside rich text. |
+| `List` | `(RichTextList)` | A bulleted or numbered list inside rich text. |
+| `Quote` | `(RichTextQuote)` | A quotation inside rich text. |
+| `Section` | `(RichTextSection)` | A paragraph of inline rich text elements. |
+
+## RichTextListStyle
+
+Marker styles for rich text lists.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Bullet` | `bullet` | An unordered, bulleted list. |
+| `Ordered` | `ordered` | A numbered list. |
+
+### as_str
+
+Returns the Slack wire spelling.
+
+```rust
+const fn as_str(self) -> &'static str
+```
+
+## RichTextSectionElement
+
+An inline rich text element: text, a link, an emoji, or a channel, user, or user group mention.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Channel` | `(RichTextChannel)` | A channel mention inside rich text. |
+| `Emoji` | `(RichTextEmoji)` | An emoji inside rich text. |
+| `Link` | `(RichTextLink)` | A hyperlink inside rich text. |
+| `Text` | `(RichTextText)` | A run of optionally styled text inside rich text. |
+| `User` | `(RichTextUser)` | A user mention inside rich text. |
+| `UserGroup` | `(RichTextUserGroup)` | A user group mention inside rich text. |
+
+## RichTextStyle
+
+Optional rich-text style flags. Each receiving element validates its allowed subset.
+
+### new
+
+Starts an empty style, with every flag omitted.
+
+```rust
+fn new() -> Self
+```
+
+### bold
+
+Sets the `bold` flag, retaining explicit false.
+
+```rust
+fn bold(mut self, value: bool) -> Self
+```
+
+### is_bold
+
+Returns the supplied `bold` flag.
+
+```rust
+fn is_bold(&self) -> Option<bool>
+```
+
+### client_highlight
+
+Sets the `client_highlight` flag, retaining explicit false.
+
+```rust
+fn client_highlight(mut self, value: bool) -> Self
+```
+
+### is_client_highlight
+
+Returns the supplied `client_highlight` flag.
+
+```rust
+fn is_client_highlight(&self) -> Option<bool>
+```
+
+### code
+
+Sets the `code` flag, retaining explicit false.
+
+```rust
+fn code(mut self, value: bool) -> Self
+```
+
+### is_code
+
+Returns the supplied `code` flag.
+
+```rust
+fn is_code(&self) -> Option<bool>
+```
+
+### highlight
+
+Sets the `highlight` flag, retaining explicit false.
+
+```rust
+fn highlight(mut self, value: bool) -> Self
+```
+
+### is_highlight
+
+Returns the supplied `highlight` flag.
+
+```rust
+fn is_highlight(&self) -> Option<bool>
+```
+
+### italic
+
+Sets the `italic` flag, retaining explicit false.
+
+```rust
+fn italic(mut self, value: bool) -> Self
+```
+
+### is_italic
+
+Returns the supplied `italic` flag.
+
+```rust
+fn is_italic(&self) -> Option<bool>
+```
+
+### strike
+
+Sets the `strike` flag, retaining explicit false.
+
+```rust
+fn strike(mut self, value: bool) -> Self
+```
+
+### is_strike
+
+Returns the supplied `strike` flag.
+
+```rust
+fn is_strike(&self) -> Option<bool>
+```
+
+### unlink
+
+Sets the `unlink` flag, retaining explicit false.
+
+```rust
+fn unlink(mut self, value: bool) -> Self
+```
+
+### is_unlink
+
+Returns the supplied `unlink` flag.
+
+```rust
+fn is_unlink(&self) -> Option<bool>
+```
+
+## SPEC_VERSION
+
+Version of the shared Slack Block Kit contract.
+
+## TableCell
+
+A value that can appear as a table block cell: raw text or a rich text block.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `RichText` | `(RichTextBlock)` | Formatted text built from sections, lists, preformatted blocks, and quotes. |
+| `RawText` | `(RawText)` | An unformatted table cell. |
+
+## TaskStatus
+
+States supported by task card blocks.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Pending` | `pending` | The task has not started. |
+| `InProgress` | `in_progress` | The task is running. |
+| `Complete` | `complete` | The task finished successfully. |
+| `Error` | `error` | The task failed. |
+
+### as_str
+
+Returns the Slack wire spelling.
+
+```rust
+const fn as_str(self) -> &'static str
+```
+
+## Text
+
+A Slack text composition object: plain text or mrkdwn.
+
+| Constant | Wire value or payload type | Meaning |
+| --- | --- | --- |
+| `Markdown` | `(MarkdownText)` | A mrkdwn text composition object. |
+| `Plain` | `(PlainText)` | A plain-text composition object. |
+
+## TextInput
+
+A text builder argument. Strings use the receiving field's documented text kind.
+There is deliberately no global string-to-`Text` conversion.
+
+## VERSION
+
+The Cargo package version; independent of the shared specification version.

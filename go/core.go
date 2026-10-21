@@ -243,10 +243,6 @@ func (b *builder) MarshalJSON() ([]byte, error) {
 	return json.Marshal(object)
 }
 
-func materialise(value any) (any, error) {
-	return materialiseAt(value, "")
-}
-
 func isNilPointer(value any) bool {
 	reflected := reflect.ValueOf(value)
 	return reflected.Kind() == reflect.Pointer && reflected.IsNil()
