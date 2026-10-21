@@ -14,13 +14,7 @@ jobs:
       max-parallel: 3
       matrix:
         java: ['25.0.4+1', '27.0.0+35']
-        sample:
-          - {variant: baseline, pair: 1}
-          - {variant: candidate, pair: 1}
-          - {variant: candidate, pair: 2}
-          - {variant: baseline, pair: 2}
-          - {variant: baseline, pair: 3}
-          - {variant: candidate, pair: 3}
+        pair: [1, 2, 3]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -36,15 +30,24 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: '3.13.16'
-      - name: Cold then warm full verifier
-        run: >-
-          python harness/.github/benchmarks/java-format.py --source source
-          --output evidence --cache "$RUNNER_TEMP/java-format-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.java }}-${{ matrix.sample.variant }}-${{ matrix.sample.pair }}"
-          --variant ${{ matrix.sample.variant }} --pair ${{ matrix.sample.pair }} --jdk '${{ matrix.java }}'
+      - name: Paired policies on one host, cold then warm per policy
+        env:
+          SAMPLE_JDK: ${{ matrix.java }}
+          SAMPLE_PAIR: ${{ matrix.pair }}
+        run: |
+          set -euo pipefail
+          policies="baseline candidate"
+          if [ "$SAMPLE_PAIR" = "2" ]; then policies="candidate baseline"; fi
+          for policy in $policies; do
+            python harness/.github/benchmarks/java-format.py --source source \
+              --output "evidence/$policy" \
+              --cache "$RUNNER_TEMP/java-format-${{ github.run_id }}-${{ github.run_attempt }}-$SAMPLE_JDK-$policy-$SAMPLE_PAIR" \
+              --variant "$policy" --pair "$SAMPLE_PAIR" --jdk "$SAMPLE_JDK"
+          done
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
-          name: format-${{ matrix.java }}-${{ matrix.sample.variant }}-${{ matrix.sample.pair }}
+          name: format-${{ matrix.java }}-pair-${{ matrix.pair }}
           path: evidence
           if-no-files-found: warn
           retention-days: 14
