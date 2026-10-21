@@ -1,0 +1,1381 @@
+---
+sidebar_position: 1
+toc_max_heading_level: 3
+---
+
+# Blocks
+
+Generated from actual PHP reflection and PHPDoc. Names live in the `Slackblocks` namespace. Use named arguments and `declare(strict_types=1)`; values validate before construction returns.
+
+## ActionsBlock
+
+A block that holds interactive elements such as buttons and menus. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/actions-block).
+
+### $elements
+
+Adds interactive elements in display order.
+
+```php
+/** @var list<Element> */
+public readonly array $elements;
+```
+
+**Related types:** [`Element`](/reference/php/core#element)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $elements, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | list&lt;Element&gt; — Adds interactive elements in display order. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## AlertBlock
+
+A severity-labelled alert, available in modals. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/alert-block).
+
+### $text
+
+Sets the alert message.
+
+```php
+public readonly Text $text;
+```
+
+**Related types:** [`Text`](/reference/php/core#text)
+
+### $level
+
+Sets the alert severity, which controls its color and icon.
+
+```php
+public readonly ?AlertLevel $level;
+```
+
+**Related types:** [`AlertLevel`](/reference/php/core#alertlevel)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(Text|string $text, ?AlertLevel $level = NULL, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Text\|string — Sets the alert message. |
+| `level` | AlertLevel\|null — Sets the alert severity, which controls its color and icon. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`AlertLevel`](/reference/php/core#alertlevel), [`JsonObject`](/reference/php/core#jsonobject), [`Text`](/reference/php/core#text)
+
+## CardBlock
+
+A compact card with an image, text, and up to three buttons. Provide at least one of a hero image, title, actions, or body. An image icon and a Slack icon cannot be combined. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+
+### $heroImage
+
+Sets the image displayed prominently at the top of the card.
+
+```php
+public readonly ?ImageElement $heroImage;
+```
+
+**Related types:** [`ImageElement`](/reference/php/elements#imageelement)
+
+### $icon
+
+Sets the image displayed beside the title.
+
+```php
+public readonly ?ImageElement $icon;
+```
+
+**Related types:** [`ImageElement`](/reference/php/elements#imageelement)
+
+### $title
+
+Sets the card title.
+
+```php
+public readonly ?Text $title;
+```
+
+**Related types:** [`Text`](/reference/php/core#text)
+
+### $subtitle
+
+Sets the supporting text shown below the title.
+
+```php
+public readonly ?Text $subtitle;
+```
+
+**Related types:** [`Text`](/reference/php/core#text)
+
+### $body
+
+Sets the main body text of the card.
+
+```php
+public readonly ?Text $body;
+```
+
+**Related types:** [`Text`](/reference/php/core#text)
+
+### $actions
+
+Adds buttons displayed at the bottom of the card, in display order.
+
+```php
+/** @var list<ButtonElement>|null */
+public readonly ?array $actions;
+```
+
+**Related types:** [`ButtonElement`](/reference/php/elements#buttonelement)
+
+### $slackIcon
+
+Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon.
+
+```php
+public readonly ?SlackIcon $slackIcon;
+```
+
+**Related types:** [`SlackIcon`](/reference/php/objects#slackicon)
+
+### $subtext
+
+Sets the small print shown at the bottom of the card.
+
+```php
+public readonly ?Text $subtext;
+```
+
+**Related types:** [`Text`](/reference/php/core#text)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?ImageElement $heroImage = NULL, ?ImageElement $icon = NULL, Text|string|null $title = NULL, Text|string|null $subtitle = NULL, Text|string|null $body = NULL, ?array $actions = NULL, ?SlackIcon $slackIcon = NULL, Text|string|null $subtext = NULL, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `heroImage` | ImageElement\|null — Sets the image displayed prominently at the top of the card. |
+| `icon` | ImageElement\|null — Sets the image displayed beside the title. |
+| `title` | Text\|string\|null — Sets the card title. |
+| `subtitle` | Text\|string\|null — Sets the supporting text shown below the title. |
+| `body` | Text\|string\|null — Sets the main body text of the card. |
+| `actions` | list&lt;ButtonElement&gt;\|null — Adds buttons displayed at the bottom of the card, in display order. |
+| `slackIcon` | SlackIcon\|null — Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon. |
+| `subtext` | Text\|string\|null — Sets the small print shown at the bottom of the card. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`ImageElement`](/reference/php/elements#imageelement), [`JsonObject`](/reference/php/core#jsonobject), [`SlackIcon`](/reference/php/objects#slackicon), [`Text`](/reference/php/core#text)
+
+## CarouselBlock
+
+A horizontally scrolling set of cards, available in messages and App Home. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/carousel-block).
+
+### $elements
+
+Adds the cards in display order.
+
+```php
+/** @var list<CardBlock> */
+public readonly array $elements;
+```
+
+**Related types:** [`CardBlock`](/reference/php/blocks#cardblock)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $elements, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | list&lt;CardBlock&gt; — Adds the cards in display order. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## ContainerBlock
+
+A titled group of blocks that can optionally collapse. Provide a title or a rich text title. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/container-block).
+
+### $childBlocks
+
+Adds the blocks grouped inside the container, in display order.
+
+```php
+/** @var list<Block> */
+public readonly array $childBlocks;
+```
+
+**Related types:** [`Block`](/reference/php/core#block)
+
+### $title
+
+Sets the container title. Provide either a title or a rich text title.
+
+```php
+public readonly ?PlainText $title;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $richTextTitle
+
+Sets a rich text block used as the title in place of a plain-text title.
+
+```php
+public readonly ?RichTextBlock $richTextTitle;
+```
+
+**Related types:** [`RichTextBlock`](/reference/php/blocks#richtextblock)
+
+### $subtitle
+
+Sets the supporting text shown below the title.
+
+```php
+public readonly ?Text $subtitle;
+```
+
+**Related types:** [`Text`](/reference/php/core#text)
+
+### $width
+
+Sets the horizontal width of the container.
+
+```php
+public readonly ?ContainerWidth $width;
+```
+
+**Related types:** [`ContainerWidth`](/reference/php/core#containerwidth)
+
+### $icon
+
+Sets the image displayed beside the title.
+
+```php
+public readonly ?ImageElement $icon;
+```
+
+**Related types:** [`ImageElement`](/reference/php/elements#imageelement)
+
+### $isCollapsible
+
+Sets whether users can collapse and expand the container.
+
+```php
+public readonly ?bool $isCollapsible;
+```
+
+### $defaultCollapsed
+
+Sets whether a collapsible container starts collapsed. Requires the container to be collapsible.
+
+```php
+public readonly ?bool $defaultCollapsed;
+```
+
+### $hasHeaderDivider
+
+Sets whether Slack draws a divider below the container header. Only valid for non-collapsible containers.
+
+```php
+public readonly ?bool $hasHeaderDivider;
+```
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $childBlocks, PlainText|string|null $title = NULL, ?RichTextBlock $richTextTitle = NULL, Text|string|null $subtitle = NULL, ?ContainerWidth $width = NULL, ?ImageElement $icon = NULL, ?bool $isCollapsible = NULL, ?bool $defaultCollapsed = NULL, ?bool $hasHeaderDivider = NULL, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `childBlocks` | list&lt;Block&gt; — Adds the blocks grouped inside the container, in display order. |
+| `title` | PlainText\|string\|null — Sets the container title. Provide either a title or a rich text title. |
+| `richTextTitle` | RichTextBlock\|null — Sets a rich text block used as the title in place of a plain-text title. |
+| `subtitle` | Text\|string\|null — Sets the supporting text shown below the title. |
+| `width` | ContainerWidth\|null — Sets the horizontal width of the container. |
+| `icon` | ImageElement\|null — Sets the image displayed beside the title. |
+| `isCollapsible` | bool\|null — Sets whether users can collapse and expand the container. |
+| `defaultCollapsed` | bool\|null — Sets whether a collapsible container starts collapsed. Requires the container to be collapsible. |
+| `hasHeaderDivider` | bool\|null — Sets whether Slack draws a divider below the container header. Only valid for non-collapsible containers. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`ContainerWidth`](/reference/php/core#containerwidth), [`ImageElement`](/reference/php/elements#imageelement), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext), [`RichTextBlock`](/reference/php/blocks#richtextblock), [`Text`](/reference/php/core#text)
+
+## ContextActionsBlock
+
+A row of feedback or icon buttons, usually shown below AI-generated content. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/context-actions-block).
+
+### $elements
+
+Adds feedback buttons or icon buttons in display order.
+
+```php
+/** @var list<ContextActionsElement> */
+public readonly array $elements;
+```
+
+**Related types:** [`ContextActionsElement`](/reference/php/core#contextactionselement)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $elements, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | list&lt;ContextActionsElement&gt; — Adds feedback buttons or icon buttons in display order. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## ContextBlock
+
+A block of small, secondary images and text. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/context-block).
+
+### $elements
+
+Adds images and text in display order.
+
+```php
+/** @var list<ContextElement> */
+public readonly array $elements;
+```
+
+**Related types:** [`ContextElement`](/reference/php/core#contextelement)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $elements, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | list&lt;ContextElement&gt; — Adds images and text in display order. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## DataTableBlock
+
+A sortable, paginated table of raw text, numbers, and rich text. The first row is the header row and cannot contain rich text. Every row must have the same number of cells, and all cell text together is limited to 20,000 characters. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+
+### $rows
+
+Adds complete table rows in display order. Every row must have the same number of cells.
+
+```php
+/** @var list<list<DataTableCell>> */
+public readonly array $rows;
+```
+
+**Related types:** [`DataTableCell`](/reference/php/core#datatablecell)
+
+### $caption
+
+Sets the caption that describes the table's contents.
+
+```php
+public readonly string $caption;
+```
+
+### $pageSize
+
+Sets how many rows Slack shows per page.
+
+```php
+public readonly ?int $pageSize;
+```
+
+### $rowHeaderColumnIndex
+
+Sets the zero-based index of the column whose cells act as row headers.
+
+```php
+public readonly ?int $rowHeaderColumnIndex;
+```
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $rows, string $caption, ?int $pageSize = 5, ?int $rowHeaderColumnIndex = 0, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `rows` | list&lt;list&lt;DataTableCell&gt;&gt; — Adds complete table rows in display order. Every row must have the same number of cells. |
+| `caption` | string — Sets the caption that describes the table's contents. |
+| `pageSize` | int\|null — Sets how many rows Slack shows per page. |
+| `rowHeaderColumnIndex` | int\|null — Sets the zero-based index of the column whose cells act as row headers. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## DataVisualizationBlock
+
+A titled pie, bar, area, or line chart. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### $title
+
+Sets the chart title.
+
+```php
+public readonly string $title;
+```
+
+### $chart
+
+Sets the chart to display.
+
+```php
+public readonly Chart $chart;
+```
+
+**Related types:** [`Chart`](/reference/php/core#chart)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $title, Chart $chart, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | string — Sets the chart title. |
+| `chart` | Chart — Sets the chart to display. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Chart`](/reference/php/core#chart), [`JsonObject`](/reference/php/core#jsonobject)
+
+## DividerBlock
+
+A horizontal rule that separates blocks. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/divider-block).
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## FileBlock
+
+A remote file previously added with the files.remote API. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/file-block).
+
+### $externalId
+
+Sets the external identifier of a remote file previously added with the files.remote API.
+
+```php
+public readonly string $externalId;
+```
+
+### $source
+
+Sets the file source. Slack currently supports only remote files.
+
+```php
+public readonly string $source;
+```
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $externalId, string $source = 'remote', ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `externalId` | string — Sets the external identifier of a remote file previously added with the files.remote API. |
+| `source` | string — Sets the file source. Slack currently supports only remote files. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## HeaderBlock
+
+Large, bold plain text that introduces a group of blocks. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/header-block).
+
+### $text
+
+Sets the header text, shown in a larger bold font.
+
+```php
+public readonly PlainText $text;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(PlainText|string $text, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | PlainText\|string — Sets the header text, shown in a larger bold font. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## ImageBlock
+
+A standalone image with alternative text and an optional title. Provide exactly one of an image URL or a Slack file. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/image-block).
+
+### $imageUrl
+
+Sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
+
+```php
+public readonly ?string $imageUrl;
+```
+
+### $slackFile
+
+Sets a file hosted in Slack as the image source. Cannot be combined with an image URL.
+
+```php
+public readonly ?SlackFile $slackFile;
+```
+
+**Related types:** [`SlackFile`](/reference/php/objects#slackfile)
+
+### $altText
+
+Sets a plain-text summary of the image or video for assistive technology.
+
+```php
+public readonly string $altText;
+```
+
+### $title
+
+Sets the title shown above the image.
+
+```php
+public readonly ?PlainText $title;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $altText, ?string $imageUrl = NULL, ?SlackFile $slackFile = NULL, PlainText|string|null $title = NULL, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `altText` | string — Sets a plain-text summary of the image or video for assistive technology. |
+| `imageUrl` | string\|null — Sets the publicly accessible URL of the image. Cannot be combined with a Slack file. |
+| `slackFile` | SlackFile\|null — Sets a file hosted in Slack as the image source. Cannot be combined with an image URL. |
+| `title` | PlainText\|string\|null — Sets the title shown above the image. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext), [`SlackFile`](/reference/php/objects#slackfile)
+
+## InputBlock
+
+A labelled input that collects a value in a modal, App Home, or message. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/input-block).
+
+### $label
+
+Sets the label shown above the input.
+
+```php
+public readonly PlainText $label;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $element
+
+Sets the input element that collects the user's value.
+
+```php
+public readonly InputElement $element;
+```
+
+**Related types:** [`InputElement`](/reference/php/core#inputelement)
+
+### $dispatchAction
+
+Sets whether changing the element sends a block_actions payload immediately.
+
+```php
+public readonly ?bool $dispatchAction;
+```
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### $hint
+
+Sets helper text shown below the input.
+
+```php
+public readonly ?PlainText $hint;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $optional
+
+Sets whether the modal can be submitted when this input is empty.
+
+```php
+public readonly ?bool $optional;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(PlainText|string $label, InputElement $element, ?bool $dispatchAction = NULL, ?string $blockId = NULL, PlainText|string|null $hint = NULL, ?bool $optional = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `label` | PlainText\|string — Sets the label shown above the input. |
+| `element` | InputElement — Sets the input element that collects the user's value. |
+| `dispatchAction` | bool\|null — Sets whether changing the element sends a block_actions payload immediately. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `hint` | PlainText\|string\|null — Sets helper text shown below the input. |
+| `optional` | bool\|null — Sets whether the modal can be submitted when this input is empty. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`InputElement`](/reference/php/core#inputelement), [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
+
+## MarkdownBlock
+
+Standard markdown rendered by Slack, intended for AI-generated content. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/markdown-block).
+
+### $text
+
+Sets standard markdown content, which Slack renders directly.
+
+```php
+public readonly string $text;
+```
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $text, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | string — Sets standard markdown content, which Slack renders directly. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## PlanBlock
+
+A titled sequence of task cards. Task IDs must be unique within a plan. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/plan-block).
+
+### $title
+
+Sets the plan title.
+
+```php
+public readonly string $title;
+```
+
+### $tasks
+
+Adds task cards in display order.
+
+```php
+/** @var list<TaskCardBlock> */
+public readonly array $tasks;
+```
+
+**Related types:** [`TaskCardBlock`](/reference/php/blocks#taskcardblock)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $title, array $tasks, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | string — Sets the plan title. |
+| `tasks` | list&lt;TaskCardBlock&gt; — Adds task cards in display order. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## RichTextBlock
+
+Formatted text built from sections, lists, preformatted blocks, and quotes. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### $elements
+
+Adds sections, lists, preformatted blocks, and quotes in display order.
+
+```php
+/** @var list<RichTextBlockElement> */
+public readonly array $elements;
+```
+
+**Related types:** [`RichTextBlockElement`](/reference/php/core#richtextblockelement)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $elements, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | list&lt;RichTextBlockElement&gt; — Adds sections, lists, preformatted blocks, and quotes in display order. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## SectionBlock
+
+Text, a grid of fields, or both, with an optional accessory element. Provide text, fields, or both. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/section-block).
+
+### $text
+
+Sets the main text of the section.
+
+```php
+public readonly ?Text $text;
+```
+
+**Related types:** [`Text`](/reference/php/core#text)
+
+### $fields
+
+Adds section fields, shown in a two-column grid, in display order.
+
+```php
+/** @var list<Text>|null */
+public readonly ?array $fields;
+```
+
+**Related types:** [`Text`](/reference/php/core#text)
+
+### $accessory
+
+Sets the element displayed beside the section text.
+
+```php
+public readonly ?Element $accessory;
+```
+
+**Related types:** [`Element`](/reference/php/core#element)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(Text|string|null $text = NULL, ?array $fields = NULL, ?Element $accessory = NULL, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Text\|string\|null — Sets the main text of the section. |
+| `fields` | list&lt;Text\|string&gt;\|null — Adds section fields, shown in a two-column grid, in display order. |
+| `accessory` | Element\|null — Sets the element displayed beside the section text. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`Element`](/reference/php/core#element), [`JsonObject`](/reference/php/core#jsonobject), [`Text`](/reference/php/core#text)
+
+## TableBlock
+
+A simple table of raw text and rich text cells. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+### $rows
+
+Adds complete table rows in display order.
+
+```php
+/** @var list<list<TableCell>> */
+public readonly array $rows;
+```
+
+**Related types:** [`TableCell`](/reference/php/core#tablecell)
+
+### $columnSettings
+
+Adds per-column settings in column order. Provide one entry for every column.
+
+```php
+/** @var list<ColumnSettings>|null */
+public readonly ?array $columnSettings;
+```
+
+**Related types:** [`ColumnSettings`](/reference/php/objects#columnsettings)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(array $rows, ?array $columnSettings = NULL, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `rows` | list&lt;list&lt;TableCell&gt;&gt; — Adds complete table rows in display order. |
+| `columnSettings` | list&lt;ColumnSettings&gt;\|null — Adds per-column settings in column order. Provide one entry for every column. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject)
+
+## TaskCardBlock
+
+One task with its status, details, output, and sources. A standalone task card's status cannot be pending; pending is only valid for plan tasks. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+
+### $taskId
+
+Sets the identifier of the task.
+
+```php
+public readonly string $taskId;
+```
+
+### $title
+
+Sets the task title.
+
+```php
+public readonly string $title;
+```
+
+### $details
+
+Sets a rich text description of the task.
+
+```php
+public readonly ?RichTextBlock $details;
+```
+
+**Related types:** [`RichTextBlock`](/reference/php/blocks#richtextblock)
+
+### $output
+
+Sets rich text describing the task's output.
+
+```php
+public readonly ?RichTextBlock $output;
+```
+
+**Related types:** [`RichTextBlock`](/reference/php/blocks#richtextblock)
+
+### $sources
+
+Adds links to the sources the task used, in display order.
+
+```php
+/** @var list<UrlSource>|null */
+public readonly ?array $sources;
+```
+
+**Related types:** [`UrlSource`](/reference/php/objects#urlsource)
+
+### $status
+
+Sets the task's current state.
+
+```php
+public readonly TaskStatus $status;
+```
+
+**Related types:** [`TaskStatus`](/reference/php/core#taskstatus)
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $taskId, string $title, TaskStatus $status, ?RichTextBlock $details = NULL, ?RichTextBlock $output = NULL, ?array $sources = NULL, ?string $blockId = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `taskId` | string — Sets the identifier of the task. |
+| `title` | string — Sets the task title. |
+| `status` | TaskStatus — Sets the task's current state. |
+| `details` | RichTextBlock\|null — Sets a rich text description of the task. |
+| `output` | RichTextBlock\|null — Sets rich text describing the task's output. |
+| `sources` | list&lt;UrlSource&gt;\|null — Adds links to the sources the task used, in display order. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`RichTextBlock`](/reference/php/blocks#richtextblock), [`TaskStatus`](/reference/php/core#taskstatus)
+
+## VideoBlock
+
+An embedded video player. Readonly properties contain normalized values. See [`Value`](/reference/php/core#value) for inherited `with()`, `fromArray()`, `fromJson()`, `toArray()`, `toJson()` and `jsonSerialize()`.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/video-block).
+
+### $altText
+
+Sets a plain-text summary of the image or video for assistive technology.
+
+```php
+public readonly string $altText;
+```
+
+### $thumbnailUrl
+
+Sets the URL of the image shown before the video plays.
+
+```php
+public readonly string $thumbnailUrl;
+```
+
+### $title
+
+Sets the video title.
+
+```php
+public readonly PlainText $title;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $videoUrl
+
+Sets the embeddable URL of the video. The domain must be listed in the app's unfurl domains.
+
+```php
+public readonly string $videoUrl;
+```
+
+### $blockId
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+
+```php
+public readonly ?string $blockId;
+```
+
+### $authorName
+
+Sets the name of the video's author.
+
+```php
+public readonly ?string $authorName;
+```
+
+### $description
+
+Sets the video description.
+
+```php
+public readonly ?PlainText $description;
+```
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)
+
+### $providerIconUrl
+
+Sets the URL of the video provider's icon.
+
+```php
+public readonly ?string $providerIconUrl;
+```
+
+### $providerName
+
+Sets the name of the video provider, such as YouTube.
+
+```php
+public readonly ?string $providerName;
+```
+
+### $titleUrl
+
+Sets the HTTPS URL opened when the title is clicked.
+
+```php
+public readonly ?string $titleUrl;
+```
+
+### __construct
+
+Construct a validated immutable value. 
+
+```php
+public function __construct(string $altText, string $thumbnailUrl, PlainText|string $title, string $videoUrl, ?string $blockId = NULL, ?string $authorName = NULL, PlainText|string|null $description = NULL, ?string $providerIconUrl = NULL, ?string $providerName = NULL, ?string $titleUrl = NULL, ?JsonObject $extensions = NULL)
+```
+
+| Parameter | Description |
+| --- | --- |
+| `altText` | string — Sets a plain-text summary of the image or video for assistive technology. |
+| `thumbnailUrl` | string — Sets the URL of the image shown before the video plays. |
+| `title` | PlainText\|string — Sets the video title. |
+| `videoUrl` | string — Sets the embeddable URL of the video. The domain must be listed in the app's unfurl domains. |
+| `blockId` | string\|null — Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `authorName` | string\|null — Sets the name of the video's author. |
+| `description` | PlainText\|string\|null — Sets the video description. |
+| `providerIconUrl` | string\|null — Sets the URL of the video provider's icon. |
+| `providerName` | string\|null — Sets the name of the video provider, such as YouTube. |
+| `titleUrl` | string\|null — Sets the HTTPS URL opened when the title is clicked. |
+| `extensions` | JsonObject\|null — Additional JSON fields; modeled names and type are reserved. |
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A content or contextual rule fails. PHP rejects incompatible call signatures with native errors. |
+
+**Related types:** [`JsonObject`](/reference/php/core#jsonobject), [`PlainText`](/reference/php/objects#plaintext)
