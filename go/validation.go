@@ -130,6 +130,8 @@ func validateBuilder(name string, object Object) error {
 	switch name {
 	case "Confirmation":
 		return validateConfirmation(object, name)
+	case "ColumnSettings":
+		return validateEnumField(object, "align", name, "left", "center", "right")
 	case "Option":
 		return validateOption(object, name)
 	case "OptionGroup":
@@ -292,6 +294,9 @@ func validateBuilder(name string, object Object) error {
 		}
 		return validateMessageCollections(object, name)
 	case "MessageResponse", "WebhookMessage":
+		if err := validateEnumField(object, "response_type", name, "in_channel", "ephemeral"); err != nil {
+			return err
+		}
 		return validateMessageCollections(object, name)
 	}
 	return nil
@@ -302,6 +307,16 @@ func validateObject(object Object, path string) error {
 	for _, field := range requiredFields[typeName] {
 		if _, ok := object[field]; !ok {
 			return validationError(MissingRequired, path, "expected %s", field)
+		}
+	}
+	switch typeName {
+	case "button", "workflow_button":
+		if err := validateEnumField(object, "style", path, "primary", "danger"); err != nil {
+			return err
+		}
+	case "rich_text_list":
+		if err := validateEnumField(object, "style", path, "bullet", "ordered"); err != nil {
+			return err
 		}
 	}
 	if blockID, ok := object["block_id"].(string); ok {
@@ -884,6 +899,9 @@ func validateNested(value any, path string) error {
 }
 
 func validateConfirmation(object Object, path string) error {
+	if err := validateEnumField(object, "style", path, "primary", "danger"); err != nil {
+		return err
+	}
 	for field, maximum := range map[string]int{"title": limitConfirmationTitleMaxLength, "text": limitConfirmationTextMaxLength, "confirm": limitConfirmationConfirmMaxLength, "deny": limitConfirmationDenyMaxLength} {
 		value, ok := object[field]
 		if !ok {
@@ -1002,6 +1020,20 @@ func validateTable(object Object, path string, dataTable bool) error {
 		}
 		if err := sliceLength(values, child(path, "column_settings"), 0, limitTableColumnSettingsMaxItems); err != nil {
 			return err
+		}
+		for index, raw := range values {
+			// Slack permits null entries to retain a column's default settings.
+			if raw == nil {
+				continue
+			}
+			settingPath := fmt.Sprintf("%s[%d]", child(path, "column_settings"), index)
+			setting, err := objectAt(raw, settingPath)
+			if err != nil {
+				return err
+			}
+			if err := validateEnumField(setting, "align", settingPath, "left", "center", "right"); err != nil {
+				return err
+			}
 		}
 	}
 	if dataTable {
