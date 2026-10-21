@@ -91,7 +91,8 @@ jobs:
 
       - name: Check installed package with the official SDK
         if: needs.changes.outputs.relevant == 'true'
-        run: pnpm --filter @nicklambourne/slackblocks check:sdk-consumer
+        # Validate package above already built these exact sources.
+        run: node typescript/scripts/check-sdk-consumer.mjs
 
       - name: Pack package
         if: needs.changes.outputs.relevant == 'true'
