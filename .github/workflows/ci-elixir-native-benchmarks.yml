@@ -1,0 +1,169 @@
+name: Elixir native cache controlled benchmark (never merge)
+on:
+  push:
+    branches: [codex/ci-elixir-native-benchmarks]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cold:
+    name: Native cache ${{ matrix.os }} ${{ matrix.pair }} ${{ matrix.variant }} cold
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        os: [ubuntu-24.04, macos-latest, windows-2025]
+        pair: [1, 2, 3]
+        variant: [baseline, candidate]
+    env:
+      SOURCE: ${{ github.workspace }}/source
+      EVIDENCE: ${{ github.workspace }}/evidence
+      VARIANT: ${{ matrix.variant }}
+      PAIR: ${{ matrix.pair }}
+      PYTHONPATH: ${{ github.workspace }}/harness/.github/benchmarks
+      SLACKBLOCKS_DECIMAL: "== 3.2.0"
+      SOURCE_SHA: 3cab57873677ec4a8d2aec5a4d35e53f060be08c
+      BASE_SHA: b66466e243bc6bbef5821bee70a016618af2f4cb
+      CONDITION: cold
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: harness
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 3cab57873677ec4a8d2aec5a4d35e53f060be08c
+          path: source
+          fetch-depth: 0
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124
+        with:
+          elixir-version: "1.16.3"
+          otp-version: "26.2"
+          version-type: strict
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13.16"
+      - name: Private Hex directories and exact runtime evidence
+        run: |
+          test ! -e "$RUNNER_TEMP/slackblocks-native-hex"
+          mkdir -p evidence
+          echo "HEX_HOME=$RUNNER_TEMP/slackblocks-native-hex" >> "$GITHUB_ENV"
+          git -C harness rev-parse HEAD > evidence/harness-commit.txt
+          { elixir --version; python --version; } > evidence/runtime.txt
+          test ! -d source/elixir/_build
+      - name: Restore isolated candidate dependency cache
+        if: matrix.variant == 'candidate'
+        id: cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: |
+            source/elixir/deps
+            source/elixir/_build
+            ${{ runner.temp }}/slackblocks-native-hex/packages
+          key: elixir-native-benchmark-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.os }}-${{ matrix.pair }}-candidate-v1
+      - name: Run unchanged native and independent archive consumers
+        env:
+          CACHE_HIT: ${{ steps.cache.outputs.cache-hit }}
+        run: python harness/.github/benchmarks/elixir-native-cache.py
+      - name: Save isolated candidate dependency cache
+        if: matrix.variant == 'candidate' && steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: |
+            source/elixir/deps
+            source/elixir/_build
+            ${{ runner.temp }}/slackblocks-native-hex/packages
+          key: ${{ steps.cache.outputs.cache-primary-key }}
+      - name: Preserve all results and failures
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: elixir-native-${{ matrix.os }}-${{ matrix.pair }}-${{ matrix.variant }}-cold
+          path: evidence
+          if-no-files-found: error
+          retention-days: 30
+  warm:
+    name: Native cache ${{ matrix.os }} ${{ matrix.pair }} ${{ matrix.variant }} warm
+    needs: cold
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        os: [ubuntu-24.04, macos-latest, windows-2025]
+        pair: [1, 2, 3]
+        variant: [baseline, candidate]
+    env:
+      SOURCE: ${{ github.workspace }}/source
+      EVIDENCE: ${{ github.workspace }}/evidence
+      VARIANT: ${{ matrix.variant }}
+      PAIR: ${{ matrix.pair }}
+      PYTHONPATH: ${{ github.workspace }}/harness/.github/benchmarks
+      SLACKBLOCKS_DECIMAL: "== 3.2.0"
+      SOURCE_SHA: 3cab57873677ec4a8d2aec5a4d35e53f060be08c
+      BASE_SHA: b66466e243bc6bbef5821bee70a016618af2f4cb
+      CONDITION: warm
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: harness
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 3cab57873677ec4a8d2aec5a4d35e53f060be08c
+          path: source
+          fetch-depth: 0
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124
+        with:
+          elixir-version: "1.16.3"
+          otp-version: "26.2"
+          version-type: strict
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13.16"
+      - name: Private Hex directories and exact runtime evidence
+        run: |
+          test ! -e "$RUNNER_TEMP/slackblocks-native-hex"
+          mkdir -p evidence
+          echo "HEX_HOME=$RUNNER_TEMP/slackblocks-native-hex" >> "$GITHUB_ENV"
+          git -C harness rev-parse HEAD > evidence/harness-commit.txt
+          { elixir --version; python --version; } > evidence/runtime.txt
+          test ! -d source/elixir/_build
+      - name: Restore isolated candidate dependency cache
+        if: matrix.variant == 'candidate'
+        id: cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: |
+            source/elixir/deps
+            source/elixir/_build
+            ${{ runner.temp }}/slackblocks-native-hex/packages
+          key: elixir-native-benchmark-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.os }}-${{ matrix.pair }}-candidate-v1
+      - name: Run unchanged native and independent archive consumers
+        env:
+          CACHE_HIT: ${{ steps.cache.outputs.cache-hit }}
+        run: python harness/.github/benchmarks/elixir-native-cache.py
+      - name: Save isolated candidate dependency cache
+        if: matrix.variant == 'candidate' && steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: |
+            source/elixir/deps
+            source/elixir/_build
+            ${{ runner.temp }}/slackblocks-native-hex/packages
+          key: ${{ steps.cache.outputs.cache-primary-key }}
+      - name: Preserve all results and failures
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: elixir-native-${{ matrix.os }}-${{ matrix.pair }}-${{ matrix.variant }}-warm
+          path: evidence
+          if-no-files-found: error
+          retention-days: 30
