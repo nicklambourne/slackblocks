@@ -9,6 +9,157 @@ pub struct InvalidCase {
 }
 pub const INVALID: &[InvalidCase] = &[
     InvalidCase {
+        id: "external-query-negative",
+        build: || {
+            ExternalSelectElement::builder()
+                .min_query_length(-1)
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            ExternalSelectElement::try_from(
+                serde_json::json!({"type": "external_select", "min_query_length": -1}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "external-multi-query-negative",
+        build: || {
+            ExternalMultiSelectElement::builder()
+                .min_query_length(-1)
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            ExternalMultiSelectElement::try_from(
+                serde_json::json!({"type": "multi_external_select", "min_query_length": -1}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "date-picker-invalid-format",
+        build: || {
+            DatePickerElement::builder()
+                .initial_date("February 29, 2028")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            DatePickerElement::try_from(
+                serde_json::json!({"type": "datepicker", "initial_date": "February 29, 2028"}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "time-picker-invalid-format",
+        build: || {
+            TimePickerElement::builder()
+                .initial_time("9:00")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            TimePickerElement::try_from(
+                serde_json::json!({"type": "timepicker", "initial_time": "9:00"}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "time-picker-invalid-range",
+        build: || {
+            TimePickerElement::builder()
+                .initial_time("25:99")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            TimePickerElement::try_from(
+                serde_json::json!({"type": "timepicker", "initial_time": "25:99"}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "static-select-empty-options",
+        build: || {
+            StaticSelectElement::builder()
+                .options(Vec::<SelectOption>::new())
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            StaticSelectElement::try_from(
+                serde_json::json!({"type": "static_select", "options": []}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "static-multi-select-empty-options",
+        build: || {
+            StaticMultiSelectElement::builder()
+                .options(Vec::<SelectOption>::new())
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            StaticMultiSelectElement::try_from(
+                serde_json::json!({"type": "multi_static_select", "options": []}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "static-select-empty-groups",
+        build: || {
+            StaticSelectElement::builder()
+                .option_groups(Vec::<SelectOptionGroup>::new())
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            StaticSelectElement::try_from(
+                serde_json::json!({"type": "static_select", "option_groups": []}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "static-multi-select-empty-groups",
+        build: || {
+            StaticMultiSelectElement::builder()
+                .option_groups(Vec::<SelectOptionGroup>::new())
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            StaticMultiSelectElement::try_from(
+                serde_json::json!({"type": "multi_static_select", "option_groups": []}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "plain-text-input-inverted-range",
+        build: || {
+            PlainTextInputElement::builder()
+                .min_length(20)
+                .max_length(10)
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            PlainTextInputElement::try_from(
+                serde_json::json!({"type":"plain_text_input","min_length":20,"max_length":10}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
         id: "text-empty",
         build: || {
             let _ = PlainText::builder().text("").build()?;
@@ -2859,6 +3010,112 @@ pub const INVALID: &[InvalidCase] = &[
         },
     },
     InvalidCase {
+        id: "number-bound-inverted-large-integer",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("9007199254740993")
+                .max_value("9007199254740992")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "9007199254740993", "max_value": "9007199254740992"})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-inverted-long-fraction",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("0.10000000000000001")
+                .max_value("0.1")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "0.10000000000000001", "max_value": "0.1"})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-hex",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("0x10")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "0x10"})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-underscore",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("1_000")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "1_000"})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-leading-space",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value(" 1")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": " 1"})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-trailing-space",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("1 ")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "1 "})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-nan",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("NaN")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "NaN"})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "number-bound-infinity",
+        build: || {
+            NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .min_value("Infinity")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            NumberInputElement::try_from(serde_json::json!({"type": "number_input", "is_decimal_allowed": true, "min_value": "Infinity"})).map(|_| ())
+        },
+    },
+    InvalidCase {
         id: "number-input-inverted-range",
         build: || {
             let _ = NumberInputElement::builder()
@@ -2875,8 +3132,8 @@ pub const INVALID: &[InvalidCase] = &[
                     ("type".into(), Value::from("number_input")),
                     ("action_id".into(), Value::from("a")),
                     ("is_decimal_allowed".into(), Value::from(true)),
-                    ("min_value".into(), serde_json::json!(2)),
-                    ("max_value".into(), serde_json::json!(1)),
+                    ("min_value".into(), serde_json::json!("2")),
+                    ("max_value".into(), serde_json::json!("1")),
                 ]
                 .into_iter()
                 .collect(),
@@ -4320,6 +4577,26 @@ pub const INVALID: &[InvalidCase] = &[
                 .collect(),
             ))
             .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "message-too-many-charts",
+        build: || {
+            let chart = DataVisualizationBlock::builder()
+                .title("Chart")
+                .chart(
+                    PieChart::builder()
+                        .segment(ChartSegment::builder().label("A").value(1).build()?)
+                        .build()?,
+                )
+                .build()?;
+            MessagePayload::builder("C123")
+                .blocks(vec![chart; 3])
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            MessagePayload::try_from(serde_json::json!({"channel":"C123","blocks":vec![serde_json::json!({"type":"data_visualization","title":"Chart","chart":{"type":"pie","segments":[{"label":"A","value":1}]}});3]})).map(|_| ())
         },
     },
     InvalidCase {
@@ -7465,6 +7742,36 @@ pub const INVALID: &[InvalidCase] = &[
                     .into_iter()
                     .collect(),
             ))
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "external-multi-focus-false",
+        build: || {
+            ExternalMultiSelectElement::builder()
+                .focus_on_load(false)
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            ExternalMultiSelectElement::try_from(
+                serde_json::json!({"type":"multi_external_select","focus_on_load":false}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "external-multi-focus-true",
+        build: || {
+            ExternalMultiSelectElement::builder()
+                .focus_on_load(true)
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            ExternalMultiSelectElement::try_from(
+                serde_json::json!({"type":"multi_external_select","focus_on_load":true}),
+            )
             .map(|_| ())
         },
     },

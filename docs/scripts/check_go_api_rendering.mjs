@@ -84,13 +84,21 @@ assert.match(
   /^#### SectionBlockBuilder\.TextObject$/m,
   "Text-object companion methods must be documented",
 );
+assert.match(
+  pages.get("objects"),
+  /^func \(b \*RawNumberBuilder\) ValueNumber\(value json\.Number\) \*RawNumberBuilder$/m,
+  "RawNumber must document the exact-number companion without a float conversion",
+);
 assert.match(pages.get("types"), /^## ContextElement$/m, "Marker interfaces must be documented");
 assert.match(pages.get("types"), /^## ButtonStylePrimary$/m, "Enum constants must be documented");
 assert.match(pages.get("types"), /^## RichTextStyle$/m, "RichTextStyle must be documented");
+// Number bounds retain the numeric convenience API while accepting exact decimal strings.
+const numberBoundSignatures = /^func \(b \*NumberInputBuilder\) (?:MinValue|MaxValue)\(value any\) \*NumberInputBuilder$/gm;
+assert.equal([...rendered.matchAll(numberBoundSignatures)].length, 2);
 assert.doesNotMatch(
-  rendered,
+  rendered.replace(numberBoundSignatures, ""),
   /^func \(b \*\w+Builder\) \w+\((?:value any|values \.\.\.any)\)/m,
-  "Generated builder methods must not take any",
+  "Generated builder methods other than the two compatible number bounds must not take any",
 );
 assert.match(
   pages.get("blocks"),
@@ -160,5 +168,8 @@ assert.doesNotMatch(
   />Go API reference</,
   "Go API breadcrumbs must omit the redundant language level",
 );
+
+const objectsHtml = await readFile(path.join(buildDirectory, "objects.html"), "utf8");
+assert.match(objectsHtml, /id="rawnumberbuildervaluenumber"/, "Exact-number companion must have a rendered anchor");
 
 console.log("Go API rendering checks passed.");

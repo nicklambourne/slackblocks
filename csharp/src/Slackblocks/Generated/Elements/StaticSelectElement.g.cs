@@ -18,8 +18,8 @@ public sealed partial class StaticSelectElement : global::Slackblocks.SlackObjec
 {
     /// <summary>Creates and validates a <see cref="StaticSelectElement"/>.</summary>
     /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
-    /// <param name="options">Selectable options in display order. Slack allows at most 100 items.</param>
-    /// <param name="optionGroups">Labelled groups of options in display order. Cannot be combined with ungrouped options. Slack allows at most 100 items.</param>
+    /// <param name="options">Selectable options in display order. Must contain between 1 and 100 items.</param>
+    /// <param name="optionGroups">Labelled groups of options in display order. Cannot be combined with ungrouped options. Must contain between 1 and 100 items.</param>
     /// <param name="initialOption">The option selected when the element loads. It must match an option in the element.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
     /// <param name="focusOnLoad">Whether the element receives focus when the view opens. Only one element per view may do so.</param>

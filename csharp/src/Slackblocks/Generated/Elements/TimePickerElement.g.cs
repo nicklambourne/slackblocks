@@ -8,6 +8,9 @@ namespace Slackblocks.Elements;
 
 /// <summary>A time-of-day picker.</summary>
 /// <remarks>
+/// <list type="bullet">
+/// <item><description>initial_time must be HH:mm in 24-hour time, from 00:00 through 23:59.</description></item>
+/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]

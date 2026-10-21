@@ -1,0 +1,834 @@
+{
+  "finding": "SB-001",
+  "checked": "2026-10-13",
+  "description": "Native minimal number modals from all eight implementations, plus transport-level lexical controls.",
+  "limitations": "Single workspace; structural and actual write-path results are recorded separately. Native constructor behavior is covered by local tests. Lexical controls are transport probes, not claims of native acceptance.",
+  "payloads": {
+    "82c399948522ca9cfbc96da599ae291baa89e74ca6dfc30845b1201ae6375f26": {
+      "view": {
+        "type": "modal",
+        "blocks": [
+          {
+            "type": "input",
+            "block_id": "amount",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "element": {
+              "type": "number_input",
+              "is_decimal_allowed": true,
+              "action_id": "amount",
+              "initial_value": "12.5",
+              "min_value": "0",
+              "max_value": "100"
+            }
+          }
+        ],
+        "callback_id": "remediation|python|number",
+        "title": {
+          "type": "plain_text",
+          "text": "Number bounds"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        }
+      }
+    },
+    "a999cbb31c3bd77993eeff7b4e71c8cb40bd67c8848b9596246487dbb12370da": {
+      "view": {
+        "title": {
+          "text": "Number bounds",
+          "type": "plain_text"
+        },
+        "submit": {
+          "text": "Submit",
+          "type": "plain_text"
+        },
+        "callback_id": "remediation|typescript|number",
+        "blocks": [
+          {
+            "label": {
+              "text": "Amount",
+              "type": "plain_text"
+            },
+            "block_id": "amount",
+            "element": {
+              "is_decimal_allowed": true,
+              "action_id": "amount",
+              "initial_value": "12.5",
+              "min_value": "0",
+              "max_value": "100",
+              "type": "number_input"
+            },
+            "type": "input"
+          }
+        ],
+        "type": "modal"
+      }
+    },
+    "5f618c251598ef46c016c7f6506833c7121f07ccddf3dea6d0adeaac03eb02bf": {
+      "view": {
+        "blocks": [
+          {
+            "block_id": "amount",
+            "element": {
+              "action_id": "amount",
+              "initial_value": "12.5",
+              "is_decimal_allowed": true,
+              "max_value": "100",
+              "min_value": "0",
+              "type": "number_input"
+            },
+            "label": {
+              "text": "Amount",
+              "type": "plain_text"
+            },
+            "type": "input"
+          }
+        ],
+        "callback_id": "remediation|go|number",
+        "submit": {
+          "text": "Submit",
+          "type": "plain_text"
+        },
+        "title": {
+          "text": "Number bounds",
+          "type": "plain_text"
+        },
+        "type": "modal"
+      }
+    },
+    "17fde2451a3bbd5845cefbb491e2c23bc103cf72a66be0078dde10ffa15fab29": {
+      "view": {
+        "type": "modal",
+        "title": {
+          "type": "plain_text",
+          "text": "Number bounds"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        },
+        "callback_id": "remediation|java|number",
+        "blocks": [
+          {
+            "type": "input",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "block_id": "amount",
+            "element": {
+              "type": "number_input",
+              "is_decimal_allowed": true,
+              "action_id": "amount",
+              "initial_value": "12.5",
+              "min_value": "0",
+              "max_value": "100"
+            }
+          }
+        ]
+      }
+    },
+    "b2a022434e5aee677343a341243dad3d15337eb241fd400021ba7d459cb0c93c": {
+      "view": {
+        "type": "modal",
+        "title": {
+          "type": "plain_text",
+          "text": "Number bounds"
+        },
+        "blocks": [
+          {
+            "type": "input",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "element": {
+              "type": "number_input",
+              "action_id": "amount",
+              "is_decimal_allowed": true,
+              "initial_value": "12.5",
+              "min_value": "0",
+              "max_value": "100"
+            },
+            "block_id": "amount"
+          }
+        ],
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        },
+        "callback_id": "remediation|csharp|number"
+      }
+    },
+    "7f5966a4f7c2675158f7f2625a841e1b617ace6c0be1a354a6e165ff9023645a": {
+      "view": {
+        "type": "modal",
+        "title": {
+          "type": "plain_text",
+          "text": "Number bounds"
+        },
+        "blocks": [
+          {
+            "type": "input",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "element": {
+              "type": "number_input",
+              "action_id": "amount",
+              "is_decimal_allowed": true,
+              "initial_value": "12.5",
+              "min_value": "0",
+              "max_value": "100"
+            },
+            "block_id": "amount"
+          }
+        ],
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        },
+        "callback_id": "remediation|ruby|number"
+      }
+    },
+    "ce257c7431b8d6fd3dd0f18f51c4b4a155244f611a985b83bdc7dfce712980a1": {
+      "view": {
+        "blocks": [
+          {
+            "block_id": "amount",
+            "element": {
+              "action_id": "amount",
+              "initial_value": "12.5",
+              "is_decimal_allowed": true,
+              "max_value": "100",
+              "min_value": "0",
+              "type": "number_input"
+            },
+            "label": {
+              "text": "Amount",
+              "type": "plain_text"
+            },
+            "type": "input"
+          }
+        ],
+        "callback_id": "remediation|rust|number",
+        "submit": {
+          "text": "Submit",
+          "type": "plain_text"
+        },
+        "title": {
+          "text": "Number bounds",
+          "type": "plain_text"
+        },
+        "type": "modal"
+      }
+    },
+    "27b9cf7626bb083a96b03a605eda7c5f24eb47d06ec6a180b74bc30876335c19": {
+      "view": {
+        "type": "modal",
+        "title": {
+          "type": "plain_text",
+          "text": "Number bounds"
+        },
+        "blocks": [
+          {
+            "type": "input",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "element": {
+              "type": "number_input",
+              "action_id": "amount",
+              "is_decimal_allowed": true,
+              "initial_value": "12.5",
+              "min_value": "0",
+              "max_value": "100"
+            },
+            "block_id": "amount"
+          }
+        ],
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        },
+        "callback_id": "remediation|php|number"
+      }
+    },
+    "000670f4d17165e4bed9ee4d93bf2532ba8e0c11fe68c003886aa59b2f057a3e": {
+      "view": {
+        "type": "modal",
+        "blocks": [
+          {
+            "type": "input",
+            "block_id": "amount",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "element": {
+              "type": "number_input",
+              "is_decimal_allowed": true,
+              "action_id": "amount",
+              "min_value": "1e309"
+            }
+          }
+        ],
+        "title": {
+          "type": "plain_text",
+          "text": "Bound lexical control"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        }
+      }
+    },
+    "12db31b0ef92f0b3f78cce4328006af7edafb5860f00d96707e261e97d03ff3f": {
+      "view": {
+        "type": "modal",
+        "blocks": [
+          {
+            "type": "input",
+            "block_id": "amount",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "element": {
+              "type": "number_input",
+              "is_decimal_allowed": true,
+              "action_id": "amount",
+              "min_value": "0x10"
+            }
+          }
+        ],
+        "title": {
+          "type": "plain_text",
+          "text": "Bound lexical control"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        }
+      }
+    },
+    "d93bd7d82d1c3eaa5189517bff7cc5f78bc36bfddecaef507cb49664fbeef07e": {
+      "view": {
+        "type": "modal",
+        "blocks": [
+          {
+            "type": "input",
+            "block_id": "amount",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "element": {
+              "type": "number_input",
+              "is_decimal_allowed": true,
+              "action_id": "amount",
+              "min_value": "1_0"
+            }
+          }
+        ],
+        "title": {
+          "type": "plain_text",
+          "text": "Bound lexical control"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        }
+      }
+    },
+    "0226846ab99e65d4ef92833d6d8b06f710cb37ec9f221fe7678d32ff296451ca": {
+      "view": {
+        "type": "modal",
+        "blocks": [
+          {
+            "type": "input",
+            "block_id": "amount",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "element": {
+              "type": "number_input",
+              "is_decimal_allowed": true,
+              "action_id": "amount",
+              "min_value": " 10 "
+            }
+          }
+        ],
+        "title": {
+          "type": "plain_text",
+          "text": "Bound lexical control"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        }
+      }
+    },
+    "fd8d0a57169bd239605b4c74e3b01977a30c0b13043f901600573cfbd32faa00": {
+      "view": {
+        "type": "modal",
+        "blocks": [
+          {
+            "type": "input",
+            "block_id": "amount",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "element": {
+              "type": "number_input",
+              "is_decimal_allowed": true,
+              "action_id": "amount",
+              "min_value": "+10"
+            }
+          }
+        ],
+        "title": {
+          "type": "plain_text",
+          "text": "Bound lexical control"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        }
+      }
+    },
+    "8d461efbb0e79f29b3428ed72b167889f29f81e782c149dd7e7fde9658b8df51": {
+      "view": {
+        "type": "modal",
+        "blocks": [
+          {
+            "type": "input",
+            "block_id": "amount",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "element": {
+              "type": "number_input",
+              "is_decimal_allowed": true,
+              "action_id": "amount",
+              "min_value": "1e2"
+            }
+          }
+        ],
+        "title": {
+          "type": "plain_text",
+          "text": "Bound lexical control"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        }
+      }
+    },
+    "3a98ecc842b03d88e8b01b4b2f4b494a971f84d61795dfc056655a3a42302fbf": {
+      "view": {
+        "type": "modal",
+        "blocks": [
+          {
+            "type": "input",
+            "block_id": "amount",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "element": {
+              "type": "number_input",
+              "is_decimal_allowed": true,
+              "action_id": "amount",
+              "min_value": ".5"
+            }
+          }
+        ],
+        "title": {
+          "type": "plain_text",
+          "text": "Bound lexical control"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        }
+      }
+    },
+    "ccd5de5ca206fa5e144a5221f85edf5ede2093dfa26dfc9b1d923b19102a5143": {
+      "view": {
+        "type": "modal",
+        "blocks": [
+          {
+            "type": "input",
+            "block_id": "amount",
+            "label": {
+              "type": "plain_text",
+              "text": "Amount"
+            },
+            "element": {
+              "type": "number_input",
+              "is_decimal_allowed": true,
+              "action_id": "amount",
+              "min_value": "1."
+            }
+          }
+        ],
+        "title": {
+          "type": "plain_text",
+          "text": "Bound lexical control"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit"
+        }
+      }
+    }
+  },
+  "observations": [
+    {
+      "case": "sb001-python",
+      "method": "blocks.validate",
+      "payload_sha256": "82c399948522ca9cfbc96da599ae291baa89e74ca6dfc30845b1201ae6375f26",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-typescript",
+      "method": "blocks.validate",
+      "payload_sha256": "a999cbb31c3bd77993eeff7b4e71c8cb40bd67c8848b9596246487dbb12370da",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-go",
+      "method": "blocks.validate",
+      "payload_sha256": "5f618c251598ef46c016c7f6506833c7121f07ccddf3dea6d0adeaac03eb02bf",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-java",
+      "method": "blocks.validate",
+      "payload_sha256": "17fde2451a3bbd5845cefbb491e2c23bc103cf72a66be0078dde10ffa15fab29",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-csharp",
+      "method": "blocks.validate",
+      "payload_sha256": "b2a022434e5aee677343a341243dad3d15337eb241fd400021ba7d459cb0c93c",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-python",
+      "method": "views.open",
+      "payload_sha256": "82c399948522ca9cfbc96da599ae291baa89e74ca6dfc30845b1201ae6375f26",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-ruby",
+      "method": "blocks.validate",
+      "payload_sha256": "7f5966a4f7c2675158f7f2625a841e1b617ace6c0be1a354a6e165ff9023645a",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-rust",
+      "method": "blocks.validate",
+      "payload_sha256": "ce257c7431b8d6fd3dd0f18f51c4b4a155244f611a985b83bdc7dfce712980a1",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-php",
+      "method": "blocks.validate",
+      "payload_sha256": "27b9cf7626bb083a96b03a605eda7c5f24eb47d06ec6a180b74bc30876335c19",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-typescript",
+      "method": "views.open",
+      "payload_sha256": "a999cbb31c3bd77993eeff7b4e71c8cb40bd67c8848b9596246487dbb12370da",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-go",
+      "method": "views.open",
+      "payload_sha256": "5f618c251598ef46c016c7f6506833c7121f07ccddf3dea6d0adeaac03eb02bf",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-java",
+      "method": "views.open",
+      "payload_sha256": "17fde2451a3bbd5845cefbb491e2c23bc103cf72a66be0078dde10ffa15fab29",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-csharp",
+      "method": "views.open",
+      "payload_sha256": "b2a022434e5aee677343a341243dad3d15337eb241fd400021ba7d459cb0c93c",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-ruby",
+      "method": "views.open",
+      "payload_sha256": "7f5966a4f7c2675158f7f2625a841e1b617ace6c0be1a354a6e165ff9023645a",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-rust",
+      "method": "views.open",
+      "payload_sha256": "ce257c7431b8d6fd3dd0f18f51c4b4a155244f611a985b83bdc7dfce712980a1",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-php",
+      "method": "views.open",
+      "payload_sha256": "27b9cf7626bb083a96b03a605eda7c5f24eb47d06ec6a180b74bc30876335c19",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-lexical-overflow",
+      "method": "blocks.validate",
+      "payload_sha256": "000670f4d17165e4bed9ee4d93bf2532ba8e0c11fe68c003886aa59b2f057a3e",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-lexical-hex",
+      "method": "blocks.validate",
+      "payload_sha256": "12db31b0ef92f0b3f78cce4328006af7edafb5860f00d96707e261e97d03ff3f",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-lexical-underscore",
+      "method": "blocks.validate",
+      "payload_sha256": "d93bd7d82d1c3eaa5189517bff7cc5f78bc36bfddecaef507cb49664fbeef07e",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-lexical-whitespace",
+      "method": "blocks.validate",
+      "payload_sha256": "0226846ab99e65d4ef92833d6d8b06f710cb37ec9f221fe7678d32ff296451ca",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-lexical-plus",
+      "method": "blocks.validate",
+      "payload_sha256": "fd8d0a57169bd239605b4c74e3b01977a30c0b13043f901600573cfbd32faa00",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-lexical-scientific",
+      "method": "blocks.validate",
+      "payload_sha256": "8d461efbb0e79f29b3428ed72b167889f29f81e782c149dd7e7fde9658b8df51",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-lexical-leading-dot",
+      "method": "blocks.validate",
+      "payload_sha256": "3a98ecc842b03d88e8b01b4b2f4b494a971f84d61795dfc056655a3a42302fbf",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-lexical-trailing-dot",
+      "method": "blocks.validate",
+      "payload_sha256": "ccd5de5ca206fa5e144a5221f85edf5ede2093dfa26dfc9b1d923b19102a5143",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb001-lexical-scientific",
+      "method": "views.open",
+      "payload_sha256": "8d461efbb0e79f29b3428ed72b167889f29f81e782c149dd7e7fde9658b8df51",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_arguments",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] min_value is not a valid number [json-pointer:view/blocks/0/element/min_value]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb001-lexical-overflow",
+      "method": "views.open",
+      "payload_sha256": "000670f4d17165e4bed9ee4d93bf2532ba8e0c11fe68c003886aa59b2f057a3e",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_arguments",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] min_value is not a valid number [json-pointer:view/blocks/0/element/min_value]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb001-lexical-plus",
+      "method": "views.open",
+      "payload_sha256": "fd8d0a57169bd239605b4c74e3b01977a30c0b13043f901600573cfbd32faa00",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_arguments",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] min_value is not a valid number [json-pointer:view/blocks/0/element/min_value]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb001-lexical-leading-dot",
+      "method": "views.open",
+      "payload_sha256": "3a98ecc842b03d88e8b01b4b2f4b494a971f84d61795dfc056655a3a42302fbf",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_arguments",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] min_value is not a valid number [json-pointer:view/blocks/0/element/min_value]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb001-lexical-hex",
+      "method": "views.open",
+      "payload_sha256": "12db31b0ef92f0b3f78cce4328006af7edafb5860f00d96707e261e97d03ff3f",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_arguments",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] min_value is not a valid number [json-pointer:view/blocks/0/element/min_value]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb001-lexical-underscore",
+      "method": "views.open",
+      "payload_sha256": "d93bd7d82d1c3eaa5189517bff7cc5f78bc36bfddecaef507cb49664fbeef07e",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_arguments",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] min_value is not a valid number [json-pointer:view/blocks/0/element/min_value]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb001-lexical-whitespace",
+      "method": "views.open",
+      "payload_sha256": "0226846ab99e65d4ef92833d6d8b06f710cb37ec9f221fe7678d32ff296451ca",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_arguments",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] min_value is not a valid number [json-pointer:view/blocks/0/element/min_value]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb001-lexical-trailing-dot",
+      "method": "views.open",
+      "payload_sha256": "ccd5de5ca206fa5e144a5221f85edf5ede2093dfa26dfc9b1d923b19102a5143",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_arguments",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] min_value is not a valid number [json-pointer:view/blocks/0/element/min_value]"
+          ]
+        }
+      }
+    }
+  ]
+}

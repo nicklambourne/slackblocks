@@ -1,0 +1,35 @@
+{
+  "channel": "C123",
+  "text": "",
+  "mrkdwn": true,
+  "blocks": [
+    {
+      "type": "data_visualization",
+      "block_id": "chart_0",
+      "title": "Chart",
+      "chart": {
+        "type": "pie",
+        "segments": [
+          {
+            "label": "A",
+            "value": 1
+          }
+        ]
+      }
+    },
+    {
+      "type": "data_visualization",
+      "block_id": "chart_1",
+      "title": "Chart",
+      "chart": {
+        "type": "pie",
+        "segments": [
+          {
+            "label": "A",
+            "value": 1
+          }
+        ]
+      }
+    }
+  ]
+}

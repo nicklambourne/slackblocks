@@ -154,6 +154,12 @@ final class FluentDriver {
     if (value.isJsonArray() && value.getAsJsonArray().isEmpty()) {
       return false;
     }
+    if (field.has("coerce")
+        && field.get("coerce").getAsString().equals("decimal_string")
+        && value.isJsonPrimitive()
+        && value.getAsJsonPrimitive().isNumber()) {
+      return call(builder, builderClass, method, double.class, value.getAsDouble());
+    }
     switch (kind) {
       case "string" -> {
         return isString(value)

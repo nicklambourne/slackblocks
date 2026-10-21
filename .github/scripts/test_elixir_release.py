@@ -66,18 +66,20 @@ class ElixirReleaseTests(unittest.TestCase):
         )
 
     def test_native_versions_spec_skiplist_and_auth_policy_are_guarded(self):
+        spec_version = json.loads((self.root / "spec/manifest.json").read_text())["spec_version"]
         for name, old, new in [
             ("elixir/mix.exs", fixtures.VERSION, "9.9.9"),
             ("elixir/integrations/mix.exs", fixtures.VERSION, "9.9.9"),
             ("elixir/erlang/rebar.config", fixtures.VERSION, "9.9.9"),
             (
                 "elixir/lib/slackblocks.ex",
-                'def spec_version, do: "1.2.0"',
+                f'def spec_version, do: "{spec_version}"',
                 'def spec_version, do: "0.0.0"',
             ),
         ]:
             path = self.root / name
             original = path.read_text()
+            self.assertIn(old, original, f"mutation must change {name}")
             path.write_text(original.replace(old, new))
             with (
                 self.subTest(name=name),

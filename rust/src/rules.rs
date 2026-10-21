@@ -113,6 +113,13 @@ impl Serialize for PlanTasks<'_> {
 pub(crate) fn validate(kind: &str, v: &Value, path: &str) -> Result<(), ValidationError> {
     let has = |key| v.get(key).is_some();
     let at = |key| format!("{path}.{key}");
+    if kind == "ExternalMultiSelectElement" && has("focus_on_load") {
+        return Err(fail(
+            C::InvalidUsage,
+            &at("focus_on_load"),
+            "unsupported for external multi-select menus; omit this field",
+        ));
+    }
     match kind {
         "SlackIcon" => {
             if !ICONS.contains(&v["name"].as_str().unwrap_or("")) {
@@ -236,9 +243,78 @@ pub(crate) fn validate(kind: &str, v: &Value, path: &str) -> Result<(), Validati
                 ));
             }
         }
-        "NumberInputElement" => {
-            if let (Some(min), Some(max)) = (v["min_value"].as_f64(), v["max_value"].as_f64()) {
+        "DatePickerElement" => {
+            if let Some(value) = v.get("initial_date").and_then(Value::as_str) {
+                let bytes = value.as_bytes();
+                if bytes.len() != 10
+                    || bytes[4] != b'-'
+                    || bytes[7] != b'-'
+                    || !bytes
+                        .iter()
+                        .enumerate()
+                        .all(|(i, b)| i == 4 || i == 7 || b.is_ascii_digit())
+                {
+                    return Err(fail(
+                        C::TypeMismatch,
+                        &at("initial_date"),
+                        "expected YYYY-MM-DD",
+                    ));
+                }
+            }
+        }
+        "TimePickerElement" => {
+            if let Some(value) = v.get("initial_time").and_then(Value::as_str) {
+                let b = value.as_bytes();
+                if b.len() != 5
+                    || b[2] != b':'
+                    || ![b[0], b[1], b[3], b[4]].iter().all(u8::is_ascii_digit)
+                    || b[0] > b'2'
+                    || (b[0] == b'2' && b[1] > b'3')
+                    || b[3] > b'5'
+                {
+                    return Err(fail(
+                        C::TypeMismatch,
+                        &at("initial_time"),
+                        "expected HH:mm in 24-hour time",
+                    ));
+                }
+            }
+        }
+        "PlainTextInputElement" => {
+            if let (Some(min), Some(max)) = (v["min_length"].as_i64(), v["max_length"].as_i64()) {
                 if min > max {
+                    return Err(fail(
+                        C::OutOfRange,
+                        &at("min_length"),
+                        "cannot exceed max_length",
+                    ));
+                }
+            }
+        }
+        "NumberInputElement" => {
+            let bound = |field: &'static str| -> Result<Option<&str>, ValidationError> {
+                if v[field].is_null() {
+                    return Ok(None);
+                }
+                let text = v[field].as_str().ok_or_else(|| {
+                    fail(C::TypeMismatch, &at(field), "expected a numeric string")
+                })?;
+                if !crate::decimal_bound::valid(text) {
+                    return Err(fail(
+                        C::TypeMismatch,
+                        &at(field),
+                        "expected a decimal string",
+                    ));
+                }
+                Ok(Some(text))
+            };
+            if let (Some(_), Some(_)) = (bound("min_value")?, bound("max_value")?) {
+                if crate::decimal_bound::compare(
+                    v["min_value"].as_str().unwrap(),
+                    v["max_value"].as_str().unwrap(),
+                )
+                .is_gt()
+                {
                     return Err(fail(C::OutOfRange, path, "minimum exceeds maximum"));
                 }
             }
@@ -307,6 +383,26 @@ pub(crate) fn message(
     path: &str,
 ) -> Result<(), ValidationError> {
     surface(blocks, "message", &format!("{path}.blocks"))?;
+    fn charts(block: &Block) -> usize {
+        match block {
+            Block::DataVisualization(_) => 1,
+            Block::Container(container) => container.child_blocks().iter().map(charts).sum(),
+            _ => 0,
+        }
+    }
+    if blocks
+        .iter()
+        .chain(attachments.iter().flat_map(Attachment::blocks))
+        .map(charts)
+        .sum::<usize>()
+        > limit("message.data_visualizations.max_items") as usize
+    {
+        return Err(fail(
+            C::LengthExceeded,
+            path,
+            "a message may contain at most two data visualization blocks",
+        ));
+    }
     let (markdown, data_table) = blocks
         .iter()
         .chain(attachments.iter().flat_map(Attachment::blocks))

@@ -731,6 +731,31 @@ defmodule Slackblocks.Test.ValidConstructions do
            is_decimal_allowed: false
          )
        end},
+      {"elements/number_input_bounds",
+       fn ->
+         Elements.NumberInput.new!(
+           is_decimal_allowed: true,
+           action_id: "bounds",
+           min_value: -1.5,
+           max_value: 10.25
+         )
+       end},
+      {"elements/number_input_scientific_bounds",
+       fn ->
+         Elements.NumberInput.new!(
+           is_decimal_allowed: true,
+           min_value: "0.1000",
+           max_value: "1e-1"
+         )
+       end},
+      {"elements/number_input_large_exponent",
+       fn ->
+         Elements.NumberInput.new!(
+           is_decimal_allowed: true,
+           min_value: "1e309",
+           max_value: "2e309"
+         )
+       end},
       {"elements/overflow_menu_basic",
        fn ->
          Elements.Overflow.new!(
@@ -881,6 +906,23 @@ defmodule Slackblocks.Test.ValidConstructions do
                  )
              ),
            action_id: "run_workflow"
+         )
+       end},
+      {"messages/message_two_charts",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks:
+             for index <- 0..1 do
+               Blocks.DataVisualization.new!(
+                 block_id: "chart_#{index}",
+                 title: "Chart",
+                 chart:
+                   Objects.PieChart.new!(
+                     segments: [Objects.ChartSegment.new!(label: "A", value: 1)]
+                   )
+               )
+             end
          )
        end},
       {"messages/message_basic",

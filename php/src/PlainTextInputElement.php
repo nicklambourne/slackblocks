@@ -9,6 +9,7 @@ namespace Slackblocks;
 /**
  * A single-line or multi-line free-text input.
  * @see https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element
+ * When both min_length and max_length are supplied, min_length must not exceed max_length; otherwise the input cannot be satisfied.
  */
 final readonly class PlainTextInputElement extends Value implements Element, InputElement
 {

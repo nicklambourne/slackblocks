@@ -90,6 +90,10 @@ func TestConcreteBuildersExposeOnlyRegisteredFluentMethods(t *testing.T) {
 		}
 		sort.Strings(actual)
 		want := append([]string(nil), expected...)
+		// RawNumber has an exact-number companion to its shared float64 setter.
+		if constructor == "NewRawNumber" {
+			want = append(want, "ValueNumber")
+		}
 		// Text fields also expose a companion that takes a text object: TitleObject for Title,
 		// and FieldObjects for the Fields list.
 		registered := map[string]bool{}

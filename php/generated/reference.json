@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.2.0",
+  "spec_version": "1.3.0",
   "types": [
     {
       "name": "ActionsBlock",
@@ -1504,7 +1504,9 @@
           "limits": "date_picker.placeholder"
         }
       ],
-      "rules": []
+      "rules": [
+        "initial_date must have the YYYY-MM-DD shape. Calendar validity is application-owned; some language date parsers additionally reject impossible calendar dates."
+      ]
     },
     {
       "name": "DateTimePickerElement",
@@ -1631,7 +1633,8 @@
           "goMethod": "MinQueryLength",
           "wire": "min_query_length",
           "kind": "int",
-          "description": "Sets how many characters the user must type before Slack queries your options endpoint."
+          "description": "Sets how many characters the user must type before Slack queries your options endpoint.",
+          "limits": "select.min_query_length"
         },
         {
           "method": "initialOptions",
@@ -1662,7 +1665,7 @@
           "goMethod": "FocusOnLoad",
           "wire": "focus_on_load",
           "kind": "boolean",
-          "description": "Sets whether the element receives focus when the view opens. Only one element per view may do so."
+          "description": "Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected."
         },
         {
           "method": "placeholder",
@@ -1675,7 +1678,9 @@
           "limits": "select.placeholder"
         }
       ],
-      "rules": []
+      "rules": [
+        "focus_on_load is unsupported and must be omitted, including explicit false."
+      ]
     },
     {
       "name": "ExternalSelectElement",
@@ -1702,7 +1707,8 @@
           "goMethod": "MinQueryLength",
           "wire": "min_query_length",
           "kind": "int",
-          "description": "Sets how many characters the user must type before Slack queries your options endpoint."
+          "description": "Sets how many characters the user must type before Slack queries your options endpoint.",
+          "limits": "select.min_query_length"
         },
         {
           "method": "initialOption",
@@ -1976,15 +1982,17 @@
           "method": "minValue",
           "goMethod": "MinValue",
           "wire": "min_value",
-          "kind": "double",
-          "description": "Sets the smallest accepted number."
+          "kind": "string",
+          "description": "Sets the smallest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.",
+          "coerce": "decimal_string"
         },
         {
           "method": "maxValue",
           "goMethod": "MaxValue",
           "wire": "max_value",
-          "kind": "double",
-          "description": "Sets the largest accepted number."
+          "kind": "string",
+          "description": "Sets the largest accepted number. Sent as a finite numeric string; native numeric convenience arguments are converted to strings.",
+          "coerce": "decimal_string"
         },
         {
           "method": "dispatchActionConfig",
@@ -2131,7 +2139,9 @@
           "limits": "plain_text_input.placeholder"
         }
       ],
-      "rules": []
+      "rules": [
+        "When both min_length and max_length are supplied, min_length must not exceed max_length; otherwise the input cannot be satisfied."
+      ]
     },
     {
       "name": "RadioButtonsElement",
@@ -2482,7 +2492,9 @@
           "limits": "time_picker.placeholder"
         }
       ],
-      "rules": []
+      "rules": [
+        "initial_time must be HH:mm in 24-hour time, from 00:00 through 23:59."
+      ]
     },
     {
       "name": "UrlInputElement",
@@ -4081,7 +4093,8 @@
       ],
       "rules": [
         "Only blocks supported in messages are accepted.",
-        "Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message."
+        "Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.",
+        "At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items)."
       ]
     },
     {
@@ -4149,7 +4162,8 @@
       ],
       "rules": [
         "Only blocks supported in messages are accepted.",
-        "Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message."
+        "Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.",
+        "At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items)."
       ]
     },
     {
@@ -4335,7 +4349,8 @@
       ],
       "rules": [
         "Only blocks supported in messages are accepted.",
-        "Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message."
+        "Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.",
+        "At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items)."
       ]
     }
   ],

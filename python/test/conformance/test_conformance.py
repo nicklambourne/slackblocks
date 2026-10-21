@@ -31,6 +31,7 @@ from slackblocks import (
     DispatchActionConfiguration,
     DividerBlock,
     EmailInput,
+    ExternalMultiSelectMenu,
     FeedbackButton,
     FeedbackButtons,
     FileInput,
@@ -462,6 +463,36 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
     "image-url-and-slack-file": lambda: Image(
         image_url="https://example.com/image.png", slack_file=SlackFile(url=None, id="F0123ABC456")
     ),
+    "number-bound-inverted-large-integer": lambda: NumberInput(
+        True, min_value="9007199254740993", max_value="9007199254740992"
+    ),
+    "number-bound-inverted-long-fraction": lambda: NumberInput(
+        True, min_value="0.10000000000000001", max_value="0.1"
+    ),
+    "number-bound-hex": lambda: NumberInput(True, min_value="0x10"),
+    "number-bound-underscore": lambda: NumberInput(True, min_value="1_000"),
+    "number-bound-leading-space": lambda: NumberInput(True, min_value=" 1"),
+    "number-bound-trailing-space": lambda: NumberInput(True, min_value="1 "),
+    "number-bound-nan": lambda: NumberInput(True, min_value="NaN"),
+    "number-bound-infinity": lambda: NumberInput(True, min_value="Infinity"),
+    "external-multi-focus-false": lambda: ExternalMultiSelectMenu(focus_on_load=False),
+    "external-multi-focus-true": lambda: ExternalMultiSelectMenu(focus_on_load=True),
+    "external-query-negative": lambda: slackblocks.ExternalSelectMenu(min_query_length=-1),
+    "external-multi-query-negative": lambda: slackblocks.ExternalMultiSelectMenu(
+        min_query_length=-1
+    ),
+    "date-picker-invalid-format": lambda: slackblocks.DatePicker(initial_date="February 29, 2028"),
+    "time-picker-invalid-format": lambda: slackblocks.TimePicker(initial_time="9:00"),
+    "time-picker-invalid-range": lambda: slackblocks.TimePicker(initial_time="25:99"),
+    "static-select-empty-options": lambda: slackblocks.StaticSelectMenu(options=[]),
+    "static-multi-select-empty-options": lambda: slackblocks.StaticMultiSelectMenu(
+        action_id="a", options=[]
+    ),
+    "static-select-empty-groups": lambda: slackblocks.StaticSelectMenu(option_groups=[]),
+    "static-multi-select-empty-groups": lambda: slackblocks.StaticMultiSelectMenu(
+        action_id="a", options=None, option_groups=[]
+    ),  # type: ignore[arg-type]
+    "plain-text-input-inverted-range": lambda: PlainTextInput(min_length=20, max_length=10),
     "number-input-inverted-range": lambda: NumberInput(
         is_decimal_allowed=True, min_value=2, max_value=1
     ),
@@ -593,6 +624,12 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
             [RawText("x" * LIMITS["data_table"]["content"]["max_length"])],
         ],
         caption="Names",
+    ),
+    "message-too-many-charts": lambda: Message(
+        channel="C123",
+        blocks=[
+            DataVisualizationBlock("Chart", PieChart([ChartSegment("A", 1)])) for _ in range(3)
+        ],
     ),
     "data-visualization-title-too-long": lambda: DataVisualizationBlock(
         "x" * (LIMITS["data_visualization"]["title"]["max_length"] + 1),

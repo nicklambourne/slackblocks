@@ -1,0 +1,612 @@
+{
+  "finding": "SB-006",
+  "checked": "2026-10-13",
+  "description": "Eight native two-chart messages and deliberately invalid three-chart message wrappers around native Home block lists.",
+  "limitations": "Single workspace; structural and actual write-path results are recorded separately. Native constructor behavior is covered by local tests. Lexical controls are transport probes, not claims of native acceptance.",
+  "payloads": {
+    "ae5973d8147b487f01db4fdf9790642bc14c3f46cbee9083313b7a15273f30d6": {
+      "blocks": [
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          },
+          "block_id": "chart_0"
+        },
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          },
+          "block_id": "chart_1"
+        }
+      ],
+      "text": "Two charts",
+      "mrkdwn": true
+    },
+    "da83c82d76c38d7044311e2d9b96fd22869e305ca76e701c9331a8d66d4b79c5": {
+      "text": "SB-006 deliberate three-chart native-block control python",
+      "blocks": [
+        {
+          "type": "data_visualization",
+          "block_id": "chart_0",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          }
+        },
+        {
+          "type": "data_visualization",
+          "block_id": "chart_1",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          }
+        },
+        {
+          "type": "data_visualization",
+          "block_id": "chart_2",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "3c94f8cc7e7d812857984a63d7a3b96fbad9854ffdc67ec21a4a0c26df7b2a8f": {
+      "text": "SB-006 deliberate three-chart native-block control typescript",
+      "blocks": [
+        {
+          "title": "Chart",
+          "block_id": "chart_0",
+          "chart": {
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ],
+            "type": "pie"
+          },
+          "type": "data_visualization"
+        },
+        {
+          "title": "Chart",
+          "block_id": "chart_1",
+          "chart": {
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ],
+            "type": "pie"
+          },
+          "type": "data_visualization"
+        },
+        {
+          "title": "Chart",
+          "block_id": "chart_2",
+          "chart": {
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ],
+            "type": "pie"
+          },
+          "type": "data_visualization"
+        }
+      ]
+    },
+    "ed2ad5d4ac923eb4d2361b11afa12bf75aa3aba56963d47b9a769d2915183d68": {
+      "text": "SB-006 deliberate three-chart native-block control go",
+      "blocks": [
+        {
+          "block_id": "chart_0",
+          "chart": {
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ],
+            "type": "pie"
+          },
+          "title": "Chart",
+          "type": "data_visualization"
+        },
+        {
+          "block_id": "chart_1",
+          "chart": {
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ],
+            "type": "pie"
+          },
+          "title": "Chart",
+          "type": "data_visualization"
+        },
+        {
+          "block_id": "chart_2",
+          "chart": {
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ],
+            "type": "pie"
+          },
+          "title": "Chart",
+          "type": "data_visualization"
+        }
+      ]
+    },
+    "2ddb58d5d24053d79a1c0bd8f6c332a0b3db500873388259651d745175aca90a": {
+      "text": "SB-006 deliberate three-chart native-block control java",
+      "blocks": [
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "block_id": "chart_0",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          }
+        },
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "block_id": "chart_1",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          }
+        },
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "block_id": "chart_2",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "08996bfd15c8232aadbef1383715e55c4f1d5d1a4648ef65fba402ecbf8af643": {
+      "text": "SB-006 deliberate three-chart native-block control csharp",
+      "blocks": [
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          },
+          "block_id": "chart_0"
+        },
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          },
+          "block_id": "chart_1"
+        },
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          },
+          "block_id": "chart_2"
+        }
+      ]
+    },
+    "2338de0452df15d7ad5cdb7ab2200e5e1d3a548dc1c7db18f2023cd536b0076c": {
+      "text": "SB-006 deliberate three-chart native-block control ruby",
+      "blocks": [
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          },
+          "block_id": "chart_0"
+        },
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          },
+          "block_id": "chart_1"
+        },
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          },
+          "block_id": "chart_2"
+        }
+      ]
+    },
+    "f72eb3ff53edc59b6f7336b6109d927464061b189e097053ae0032eeb9069a1b": {
+      "text": "SB-006 deliberate three-chart native-block control rust",
+      "blocks": [
+        {
+          "block_id": "chart_0",
+          "chart": {
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ],
+            "type": "pie"
+          },
+          "title": "Chart",
+          "type": "data_visualization"
+        },
+        {
+          "block_id": "chart_1",
+          "chart": {
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ],
+            "type": "pie"
+          },
+          "title": "Chart",
+          "type": "data_visualization"
+        },
+        {
+          "block_id": "chart_2",
+          "chart": {
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ],
+            "type": "pie"
+          },
+          "title": "Chart",
+          "type": "data_visualization"
+        }
+      ]
+    },
+    "6aca80711273a441f4042deaa532edd25d8cf93f0c27ed5c77abbdc2aad1cb02": {
+      "text": "SB-006 deliberate three-chart native-block control php",
+      "blocks": [
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          },
+          "block_id": "chart_0"
+        },
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          },
+          "block_id": "chart_1"
+        },
+        {
+          "type": "data_visualization",
+          "title": "Chart",
+          "chart": {
+            "type": "pie",
+            "segments": [
+              {
+                "label": "A",
+                "value": 1
+              }
+            ]
+          },
+          "block_id": "chart_2"
+        }
+      ]
+    }
+  },
+  "observations": [
+    {
+      "case": "sb006-two-python",
+      "method": "chat.postMessage",
+      "payload_sha256": "ae5973d8147b487f01db4fdf9790642bc14c3f46cbee9083313b7a15273f30d6",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb006-three-python",
+      "method": "chat.postMessage",
+      "payload_sha256": "da83c82d76c38d7044311e2d9b96fd22869e305ca76e701c9331a8d66d4b79c5",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] A message can contain a maximum of 2 data_visualization blocks [json-pointer:/blocks/2]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb006-two-typescript",
+      "method": "chat.postMessage",
+      "payload_sha256": "ae5973d8147b487f01db4fdf9790642bc14c3f46cbee9083313b7a15273f30d6",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb006-three-typescript",
+      "method": "chat.postMessage",
+      "payload_sha256": "3c94f8cc7e7d812857984a63d7a3b96fbad9854ffdc67ec21a4a0c26df7b2a8f",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] A message can contain a maximum of 2 data_visualization blocks [json-pointer:/blocks/2]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb006-two-go",
+      "method": "chat.postMessage",
+      "payload_sha256": "ae5973d8147b487f01db4fdf9790642bc14c3f46cbee9083313b7a15273f30d6",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb006-three-go",
+      "method": "chat.postMessage",
+      "payload_sha256": "ed2ad5d4ac923eb4d2361b11afa12bf75aa3aba56963d47b9a769d2915183d68",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] A message can contain a maximum of 2 data_visualization blocks [json-pointer:/blocks/2]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb006-two-java",
+      "method": "chat.postMessage",
+      "payload_sha256": "ae5973d8147b487f01db4fdf9790642bc14c3f46cbee9083313b7a15273f30d6",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb006-three-java",
+      "method": "chat.postMessage",
+      "payload_sha256": "2ddb58d5d24053d79a1c0bd8f6c332a0b3db500873388259651d745175aca90a",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] A message can contain a maximum of 2 data_visualization blocks [json-pointer:/blocks/2]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb006-two-csharp",
+      "method": "chat.postMessage",
+      "payload_sha256": "ae5973d8147b487f01db4fdf9790642bc14c3f46cbee9083313b7a15273f30d6",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb006-three-csharp",
+      "method": "chat.postMessage",
+      "payload_sha256": "08996bfd15c8232aadbef1383715e55c4f1d5d1a4648ef65fba402ecbf8af643",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] A message can contain a maximum of 2 data_visualization blocks [json-pointer:/blocks/2]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb006-two-ruby",
+      "method": "chat.postMessage",
+      "payload_sha256": "ae5973d8147b487f01db4fdf9790642bc14c3f46cbee9083313b7a15273f30d6",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb006-three-ruby",
+      "method": "chat.postMessage",
+      "payload_sha256": "2338de0452df15d7ad5cdb7ab2200e5e1d3a548dc1c7db18f2023cd536b0076c",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] A message can contain a maximum of 2 data_visualization blocks [json-pointer:/blocks/2]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb006-two-rust",
+      "method": "chat.postMessage",
+      "payload_sha256": "ae5973d8147b487f01db4fdf9790642bc14c3f46cbee9083313b7a15273f30d6",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb006-three-rust",
+      "method": "chat.postMessage",
+      "payload_sha256": "f72eb3ff53edc59b6f7336b6109d927464061b189e097053ae0032eeb9069a1b",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] A message can contain a maximum of 2 data_visualization blocks [json-pointer:/blocks/2]"
+          ]
+        }
+      }
+    },
+    {
+      "case": "sb006-two-php",
+      "method": "chat.postMessage",
+      "payload_sha256": "ae5973d8147b487f01db4fdf9790642bc14c3f46cbee9083313b7a15273f30d6",
+      "http": 200,
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "case": "sb006-three-php",
+      "method": "chat.postMessage",
+      "payload_sha256": "6aca80711273a441f4042deaa532edd25d8cf93f0c27ed5c77abbdc2aad1cb02",
+      "http": 200,
+      "result": {
+        "ok": false,
+        "error": "invalid_blocks",
+        "response_metadata": {
+          "messages": [
+            "[ERROR] A message can contain a maximum of 2 data_visualization blocks [json-pointer:/blocks/2]"
+          ]
+        }
+      }
+    }
+  ]
+}

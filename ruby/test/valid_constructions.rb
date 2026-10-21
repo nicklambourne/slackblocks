@@ -902,6 +902,9 @@ module ValidConstructions
         )
       )
     },
+    "elements/number_input_scientific_bounds" => -> { Slackblocks::NumberInputElement.new(is_decimal_allowed: true, min_value: "0.1000", max_value: "1e-1") },
+    "elements/number_input_large_exponent" => -> { Slackblocks::NumberInputElement.new(is_decimal_allowed: true, min_value: "1e309", max_value: "2e309") },
+    "elements/number_input_bounds" => -> { Slackblocks::NumberInputElement.new(action_id: "bounds", is_decimal_allowed: true, min_value: "-1.5", max_value: "10.25") },
     "elements/number_input_basic" => -> {
       Slackblocks::NumberInputElement.new(
         action_id: "number_input",
@@ -1097,6 +1100,7 @@ module ValidConstructions
         action_id: "run_workflow"
       )
     },
+    "messages/message_two_charts" => -> { Slackblocks::MessagePayload.new(channel: "C123", text: "", mrkdwn: true, blocks: 2.times.map { |i| Slackblocks::DataVisualizationBlock.new(title: "Chart", chart: Slackblocks::PieChart.new(segments: [Slackblocks::ChartSegment.new(label: "A", value: 1)]), block_id: "chart_#{i}") }) },
     "messages/message_basic" => -> {
       Slackblocks::MessagePayload.new(
         channel: "#slackblocks",

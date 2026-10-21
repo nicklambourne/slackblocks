@@ -374,7 +374,9 @@ def emit_setters(fs):
         typ = rust_type(f)
         inp = input_type(f)
         s += [docs(f["description"])]
-        if k in {"list", "textList", "stringList"}:
+        if f.get("coerce") == "decimal_string":
+            s += [f"pub fn {id}(mut self, value: impl std::fmt::Display) -> Self {{ self.{id}=Some(value.to_string()); self }}"]
+        elif k in {"list", "textList", "stringList"}:
             inner = inp[4:-1]
             s += [
                 "/// Replaces the collection; order is preserved.",
@@ -573,6 +575,7 @@ def emit_model(t, registry):
         s.append(typed_rules[n])
     elif n in {
         "SlackIcon",
+        "ExternalMultiSelectElement",
         "SectionBlock",
         "StaticSelectElement",
         "StaticMultiSelectElement",
@@ -583,6 +586,9 @@ def emit_model(t, registry):
         "SlackFile",
         "ConversationFilter",
         "DispatchActionConfiguration",
+        "PlainTextInputElement",
+        "DatePickerElement",
+        "TimePickerElement",
         "NumberInputElement",
         "TableBlock",
         "AxisConfig",
