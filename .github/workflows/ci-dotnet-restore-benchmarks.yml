@@ -1,0 +1,77 @@
+# Measurement-only; never merge or dispatch a package publisher.
+name: .NET restore reuse controlled comparison
+on:
+  push:
+    branches: [codex/ci-dotnet-restore-benchmarks]
+    paths: [.github/workflows/ci-dotnet-restore-benchmarks.yml, .github/benchmarks/dotnet-restore.py]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  locks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fc44939dffecb7437e41f670e2f9a726de0ed0ac
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          dotnet-version: '10.0.402'
+      - name: Freeze current dependency inputs
+        run: |
+          dotnet restore csharp/Slackblocks.sln --use-lock-file --force-evaluate
+          mkdir -p locks/src/Slackblocks locks/tests/Slackblocks.Tests
+          cp csharp/src/Slackblocks/packages.lock.json locks/src/Slackblocks/
+          cp csharp/tests/Slackblocks.Tests/packages.lock.json locks/tests/Slackblocks.Tests/
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: fixed-nuget-locks
+          path: locks
+          if-no-files-found: error
+          retention-days: 14
+  compare:
+    needs: locks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        pair: [1, 2, 3]
+    env:
+      DOTNET_MULTILEVEL_LOOKUP: '0'
+    steps:
+      - name: Select private SDK installation
+        run: echo "DOTNET_INSTALL_DIR=$RUNNER_TEMP/fixed-dotnet" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: harness
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: source
+          ref: fc44939dffecb7437e41f670e2f9a726de0ed0ac
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13.16'
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          dotnet-version: |
+            8.0.426
+            10.0.402
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53
+        with:
+          name: fixed-nuget-locks
+          path: locks
+      - name: Compare full canonical generator format and tests
+        env:
+          SAMPLE_PAIR: ${{ matrix.pair }}
+        run: |
+          python harness/.github/benchmarks/dotnet-restore.py --source source --locks locks \
+            --output evidence --pair "$SAMPLE_PAIR" --root "$RUNNER_TEMP/restore-${{ github.run_id }}-${{ github.run_attempt }}-$SAMPLE_PAIR"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: restore-pair-${{ matrix.pair }}
+          path: evidence
+          if-no-files-found: warn
+          retention-days: 14
