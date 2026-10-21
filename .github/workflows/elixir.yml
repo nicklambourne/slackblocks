@@ -1,0 +1,293 @@
+name: Elixir
+
+on:
+  push:
+    branches: [master]
+    paths: ["elixir/**", "spec/**", "docs/**", "README.md", "AGENTS.md", ".github/workflows/elixir.yml", ".github/workflows/publish-hex.yml", ".github/workflows/coordinated-release.yml", ".github/scripts/**", "RELEASING.md"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: elixir-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect relevant Elixir changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Determine relevance (run on lookup failure)
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if [ "$EVENT" != pull_request ]; then
+            echo 'relevant=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/$PR/files" --paginate -q '.[] | .filename, (.previous_filename // empty)') || files=""
+          # Native guide checks read documentation text, not site styles or images.
+          # Keep old paths from renames so moving a native input cannot hide it.
+          native_files=$(grep -vE '^docs/(src/.*\.css|static/img/.*\.(png|jpg|jpeg|gif|webp|svg|ico))$' <<<"$files" || true)
+          if [ -z "$files" ] || grep -qE '^(elixir/|spec/|docs/|README\.md$|AGENTS\.md$|\.github/(workflows/|scripts/))' <<<"$native_files"; then
+            echo 'relevant=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'relevant=false' >> "$GITHUB_OUTPUT"
+          fi
+
+  native:
+    needs: changes
+    name: Elixir native (${{ matrix.os }}, ${{ matrix.elixir }}, OTP ${{ matrix.otp }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: elixir
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-24.04, elixir: "1.16.3", otp: "26.2"}
+          - {os: macos-latest, elixir: "1.16.3", otp: "26.2"}
+          - {os: windows-2025, elixir: "1.16.3", otp: "26.2"}
+          - {os: ubuntu-24.04, elixir: "1.17.3", otp: "26.2"}
+          - {os: ubuntu-24.04, elixir: "1.17.3", otp: "27.0"}
+          - {os: ubuntu-24.04, elixir: "1.18.5", otp: "26.2"}
+          - {os: ubuntu-24.04, elixir: "1.18.5", otp: "27.0"}
+          - {os: ubuntu-24.04, elixir: "1.19.6", otp: "26.2"}
+          - {os: ubuntu-24.04, elixir: "1.19.6", otp: "27.0"}
+          - {os: ubuntu-24.04, elixir: "1.19.6", otp: "28.0"}
+          - {os: ubuntu-24.04, elixir: "1.20.4", otp: "27.0"}
+          - {os: ubuntu-24.04, elixir: "1.20.4", otp: "28.0"}
+          - {os: ubuntu-24.04, elixir: "1.20.4", otp: "29.1"}
+          - {os: macos-latest, elixir: "1.20.4", otp: "29.1"}
+          - {os: windows-2025, elixir: "1.20.4", otp: "29.1"}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+          version-type: strict
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Isolate native Hex downloads
+        if: needs.changes.outputs.relevant == 'true'
+        run: echo "HEX_HOME=$RUNNER_TEMP/slackblocks-native-hex" >> "$GITHUB_ENV"
+      - name: Identify exact Elixir and OTP runtime
+        if: needs.changes.outputs.relevant == 'true'
+        id: native-runtime
+        run: |
+          identity=$(elixir -e '
+            release = to_string(:erlang.system_info(:otp_release))
+            otp = File.read!(Path.join([to_string(:code.root_dir()), "releases", release, "OTP_VERSION"]))
+            IO.inspect({System.build_info(), :erlang.system_info(:version), :erlang.system_info(:system_architecture), otp})
+          ' | python -c 'import hashlib,sys; print(hashlib.sha256(sys.stdin.buffer.read()).hexdigest())')
+          echo "identity=$identity" >> "$GITHUB_OUTPUT"
+      - name: Cache native dependencies and Hex downloads
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            elixir/deps
+            elixir/_build
+            ${{ runner.temp }}/slackblocks-native-hex/packages
+          key: elixir-native-${{ runner.os }}-${{ runner.arch }}-${{ matrix.os }}-${{ steps.native-runtime.outputs.identity }}-dev-test-hex251-${{ hashFiles('elixir/mix.lock', 'elixir/mix.exs', '.github/workflows/elixir.yml') }}-v1
+      - name: Resolve dependencies
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          mix local.hex 2.5.1 --force
+          mix deps.get
+      - name: Recompile the project and rerun tests after cache restore
+        if: needs.changes.outputs.relevant == 'true'
+        # Clean every project environment; retain only dependency builds for reuse.
+        # Actual archive consumers create independent directories outside this cache.
+        run: mix clean
+      - name: Test native API and actual package consumer
+        if: needs.changes.outputs.relevant == 'true'
+        run: mix run tools/check.exs --profile native
+
+  quality:
+    needs: changes
+    name: Elixir quality and package
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: elixir
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          elixir-version: "1.16.3"
+          otp-version: "26.2"
+          rebar3-version: "3.27.1"
+          version-type: strict
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Resolve dependencies
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          mix local.hex 2.5.1 --force
+          mix deps.get
+      - name: Install pinned Python quality tooling
+        if: needs.changes.outputs.relevant == 'true'
+        run: python -m pip install ruff==0.15.12
+      - name: Native and contract quality gates
+        if: needs.changes.outputs.relevant == 'true'
+        # Dedicated required sending/Erlang jobs execute the same commit independently.
+        run: mix run tools/check.exs --profile ci-quality
+      - name: Decimal 2 lower-bound artifact consumer
+        if: needs.changes.outputs.relevant == 'true'
+        env:
+          SLACKBLOCKS_DECIMAL: "== 2.4.0"
+        run: python tools/package_check.py
+      - name: Decimal 3 lower-bound artifact consumer
+        if: needs.changes.outputs.relevant == 'true'
+        env:
+          SLACKBLOCKS_DECIMAL: "== 3.0.0"
+        run: python tools/package_check.py
+
+  erlang:
+    needs: changes
+    name: Erlang consumer (${{ matrix.elixir }}, Decimal ${{ matrix.decimal }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {elixir: "1.16.3", otp: "26.2", decimal: "2.4.0"}
+          - {elixir: "1.16.3", otp: "26.2", decimal: "3.2.0"}
+          - {elixir: "1.20.4", otp: "29.1", decimal: "3.2.0"}
+    defaults:
+      run:
+        working-directory: elixir
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+          rebar3-version: "3.27.1"
+          version-type: strict
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Resolve dependencies
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          mix local.hex 2.5.1 --force
+          mix deps.get
+      - name: EUnit and standalone OTP release from the Hex artifact
+        if: needs.changes.outputs.relevant == 'true'
+        env:
+          SLACKBLOCKS_ERLANG_DECIMAL: ${{ matrix.decimal }}
+        run: python tools/erlang_check.py
+
+  sending:
+    needs: changes
+    name: Elixir HTTP (${{ matrix.runtime.elixir }}, ${{ matrix.profile }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [locked, lower, latest]
+        runtime:
+          - {elixir: "1.16.3", otp: "26.2"}
+          - {elixir: "1.20.4", otp: "29.1"}
+    defaults:
+      run:
+        working-directory: elixir
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          elixir-version: ${{ matrix.runtime.elixir }}
+          otp-version: ${{ matrix.runtime.otp }}
+          rebar3-version: "3.27.1"
+          version-type: strict
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Resolve package tooling
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          mix local.hex 2.5.1 --force
+          mix deps.get
+      - name: Send from the actual archive with independent dependencies
+        if: needs.changes.outputs.relevant == 'true'
+        run: python tools/integration_check.py --profile "${{ matrix.profile }}"
+
+  sending-result:
+    name: Elixir sending
+    needs: [changes, sending]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every sending profile
+        env:
+          CHANGE_RESULT: ${{ needs.changes.result }}
+          SENDING_RESULT: ${{ needs.sending.result }}
+        run: test "$CHANGE_RESULT" = success && test "$SENDING_RESULT" = success
+
+  erlang-result:
+    name: Elixir Erlang compatibility
+    needs: [changes, erlang]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every Erlang consumer lane
+        env:
+          CHANGE_RESULT: ${{ needs.changes.result }}
+          ERLANG_RESULT: ${{ needs.erlang.result }}
+        run: test "$CHANGE_RESULT" = success && test "$ERLANG_RESULT" = success
+
+  native-result:
+    name: Elixir native checks
+    needs: [changes, native]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every native lane
+        env:
+          CHANGE_RESULT: ${{ needs.changes.result }}
+          NATIVE_RESULT: ${{ needs.native.result }}
+        run: test "$CHANGE_RESULT" = success && test "$NATIVE_RESULT" = success
+
+  release-checks:
+    name: Elixir release checks
+    needs: changes
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Exercise disabled release gates and immutable recovery without credentials
+        if: needs.changes.outputs.relevant == 'true'
+        run: python -m unittest discover -s .github/scripts -p 'test_*.py'
+      - name: Validate coordinated package metadata
+        if: needs.changes.outputs.relevant == 'true'
+        run: python .github/scripts/verify-release.py validate

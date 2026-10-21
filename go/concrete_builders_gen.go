@@ -1765,6 +1765,8 @@ func (b *EmailInputBuilder) PlaceholderObject(value *PlainTextBuilder) *EmailInp
 //
 // A menu for selecting multiple options loaded from your app.
 //
+//   - focus_on_load is unsupported and must be omitted, including explicit false.
+//
 // See https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element for Slack's reference.
 type ExternalMultiSelectBuilder struct{ *concreteBuilder }
 

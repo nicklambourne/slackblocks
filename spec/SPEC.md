@@ -37,11 +37,11 @@ Each implementation keeps a `conformance/skiplist.txt`. In any released state ev
 
 ## Model
 
-`model.json` describes every value type the generated implementations expose: its Slack wire type, fields and their kinds, required fields, validation rules, descriptions, and Slack documentation links, with limits referenced by their dotted path in `limits.json`. Java, C#, Ruby, and Rust generate their value types from it, and Go generates the documentation on its builder methods; `java/generator/generate_models.py --check-go` fails if the Go builder registry and the model disagree. Each generator's output is checked in and regenerated in CI, so a model change lands in every generated implementation in the same pull request.
+`model.json` describes every value type the generated implementations expose: its Slack wire type, fields and their kinds, required fields, validation rules, descriptions, and Slack documentation links, with limits referenced by their dotted path in `limits.json`. Java, C#, Ruby, Rust, PHP, and Elixir generate their value types from it, and Go generates the documentation on its builder methods; `java/generator/generate_models.py --check-go` fails if the Go builder registry and the model disagree. Each generator's output is checked in and regenerated in CI, so a model change lands in every generated implementation in the same pull request.
 
 ## Limits
 
-`vocabulary.json` is the normative registry for Slack vocabularies that validation checks by name: the Slack-provided icon names accepted by icon objects, and the block types each surface (`message`, `modal`, `home`) accepts. Java, C#, Ruby, and Rust generate their tables from this file. Python, TypeScript, and Go keep native tables and each has a test that fails when its tables differ from this file, so a vocabulary change lands in every implementation at once.
+`vocabulary.json` is the normative registry for Slack vocabularies that validation checks by name: the Slack-provided icon names accepted by icon objects, and the block types each surface (`message`, `modal`, `home`) accepts. Java, C#, Ruby, Rust, PHP, and Elixir generate their tables from this file. Python, TypeScript, and Go keep native tables and each has a test that fails when its tables differ from this file, so a vocabulary change lands in every implementation at once.
 
 `limits.json` is the normative registry for stable scalar constraints. Changes to limits and fixtures must land atomically with implementation updates (or a temporary skip-list entry during a multi-PR transition).
 
@@ -72,4 +72,4 @@ A fresh `views.open` control on 2026-10-13 rejected min-value strings `1e2`, `1e
 
 ### Message chart count (SB-006)
 
-The [official data visualization reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block/) states a maximum of two data visualization blocks per message (checked 2026-10-13). Enforce `message.data_visualizations.max_items` across the message and attachment blocks after helper expansion, while leaving application metadata opaque. This is a message context rule, not a standalone chart or view rule. Prior live `chat.postMessage` rejected three charts even though `blocks.validate` accepted them; the stricter confirmed delivery rule governs this contract.
+The [official data visualization reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block/) states a maximum of two data visualization blocks per message (checked 2026-10-13, reconfirmed 2026-10-21). Enforce `message.data_visualizations.max_items` across the message and attachment blocks after helper expansion, while leaving application metadata opaque. This is a message context rule, not a standalone chart or view rule. Prior live `chat.postMessage` rejected three charts even though `blocks.validate` accepted them; the stricter confirmed delivery rule governs this contract.

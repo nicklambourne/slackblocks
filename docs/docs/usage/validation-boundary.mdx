@@ -23,7 +23,7 @@ posting results.
 
 Invalid ordered bounds and negative query thresholds use `out-of-range`;
 malformed dates/times use `type-mismatch`; empty static lists use
-`length-exceeded`. Go, TypeScript, Java, C#, Ruby, Rust and PHP expose a field
+`length-exceeded`. Go, TypeScript, Java, C#, Ruby, Rust, PHP and Elixir expose a field
 path with these categories. Python exposes the corresponding `RangeError`,
 `TypeMismatchError` or `LengthError` class and a diagnostic message; its existing
 calendar parser may raise `ValueError` for an impossible date.
@@ -36,3 +36,8 @@ builder and is rejected; on a populated builder it appends nothing. Java varargs
 setters treat zero arguments as no additions and leave an unset field omitted.
 The shared contract does not infer new calendar-validity or positive
 image-alt-text minimum rules from an application failure.
+
+Elixir constructors and immutable changes preserve omitted (`nil`) fields and
+explicit zero thresholds, reject supplied empty static lists, and validate the
+same rules on checked JSON decoding and serialization. Its date picker checks
+the documented shape; application code owns calendar and business constraints.

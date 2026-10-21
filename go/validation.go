@@ -1065,6 +1065,10 @@ func validateTable(object Object, path string, dataTable bool) error {
 			return err
 		}
 		for index, raw := range values {
+			// Slack permits null entries to retain a column's default settings.
+			if raw == nil {
+				continue
+			}
 			settingPath := fmt.Sprintf("%s[%d]", child(path, "column_settings"), index)
 			setting, err := objectAt(raw, settingPath)
 			if err != nil {

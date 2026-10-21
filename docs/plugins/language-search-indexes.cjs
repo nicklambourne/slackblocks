@@ -1,9 +1,7 @@
 const {
   processPluginOptions,
 } = require("@easyops-cn/docusaurus-search-local/dist/server/server/utils/processPluginOptions");
-const {
-  postBuildFactory,
-} = require("@easyops-cn/docusaurus-search-local/dist/server/server/utils/postBuildFactory");
+const reuseLanguageSearchIndexes = require("./reuse-language-search-indexes.cjs");
 
 const DEFAULT_SEARCH_OPTIONS = {
   indexDocs: true,
@@ -21,14 +19,16 @@ const DEFAULT_SEARCH_OPTIONS = {
   forceIgnoreNoIndex: false,
 };
 
-const LANGUAGES = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php"];
+const LANGUAGES = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir"];
 const LANGUAGE_INDEXES = Object.fromEntries(LANGUAGES.map((language) => {
   const others = LANGUAGES.filter((candidate) => candidate !== language);
   return [language, {
+    ignoredLanguages: others,
     ignoredContent: others.map((other) => `[data-language-content="${other}"]`).join(", "),
     ignoredRoutes: [
+      ...(language === "elixir" ? [] : [/^usage\/erlang$/]),
       new RegExp(`^reference/(?:${others.join("|")})(?:/|$)`),
-      ...(["python", "rust", "php"].includes(language) ? [] : [/^usage\/(?:compatibility|migration)$/]),
+      ...(["python", "rust", "php", "elixir"].includes(language) ? [] : [/^usage\/(?:compatibility|migration)$/]),
     ],
   }];
 }));
@@ -45,10 +45,10 @@ module.exports = function languageSearchIndexes(context, options) {
   return {
     name: "slackblocks-language-search-indexes",
     async postBuild(buildData) {
-      for (const [
+      const variants = Object.entries(LANGUAGE_INDEXES).map(([
         language,
-        { ignoredContent, ignoredRoutes },
-      ] of Object.entries(LANGUAGE_INDEXES)) {
+        { ignoredContent, ignoredRoutes, ignoredLanguages },
+      ]) => {
         const config = {
           ...baseConfig,
           ignoreCssSelectors: [
@@ -58,11 +58,9 @@ module.exports = function languageSearchIndexes(context, options) {
           ignoreFiles: [...baseConfig.ignoreFiles, ...ignoredRoutes],
         };
 
-        await postBuildFactory(
-          config,
-          `search-index-${language}.json`,
-        )(buildData);
-      }
+        return { config, ignoredLanguages, filename: `search-index-${language}.json` };
+      });
+      await reuseLanguageSearchIndexes(buildData, variants);
     },
   };
 };

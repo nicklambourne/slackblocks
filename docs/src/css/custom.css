@@ -202,3 +202,8 @@
 .language-content > :last-child {
   margin-bottom: 0;
 }
+
+/* Official Elixir variants retain their native wordmark proportions. */
+.language-selector__logo--elixir-dark { display: none; }
+[data-theme="dark"] .language-selector__logo--elixir-light { display: none; }
+[data-theme="dark"] .language-selector__logo--elixir-dark { display: block; }

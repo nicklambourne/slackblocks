@@ -18,6 +18,7 @@ the same thing to the implementation or to Slack.
 | Ruby | Native values freeze their copied nested content. `with` creates a changed value; `as_json` exports a fresh representation. | Use `with` for edits and retain the original value for comparisons. Component helpers return values/arrays rather than mutable fluent builders. |
 | Rust | Models own their data. Getters borrow values; `clone().into_builder()` starts an independent editable builder. | Clone before rebuilding when the old value is still needed. Use checked construction/parsing for the new value. |
 | PHP | Readonly native values and immutable nested values retain constructor state. `with` creates a replacement; exports are independent representations. | Use `with` or construct a new value, rather than mutating properties. |
+| Elixir | Structs, lists and maps are immutable. Model `change/2` validates a replacement and returns a tagged result; `change!/2` raises on failure. | Keep the original value for reuse. Validate the complete receiving payload with `Slackblocks.to_map/1`; direct struct updates are rechecked at wire boundaries. |
 
 These guarantees concern modeled fields. They are not a universal deep-copy
 promise for arbitrary foreign objects or unchecked extension values. Application
@@ -45,6 +46,10 @@ remove a field. Required fields, defaults and normalization are field-specific.
 - Java varargs collection methods append their arguments. Zero arguments leave
   an unset field omitted and do not clear an existing collection. An explicit
   empty array supplied through `wireField` is validated as a supplied list.
+- Elixir optional `nil` fields are omitted; explicit `false` and zero are retained
+  when valid for that field. Model `change/2` replaces supplied fields atomically
+  while leaving other fields unchanged. Use `Slackblocks.from_map/2` for checked
+  wire input and `Slackblocks.to_map/1` for complete output validation.
 - Java optional getters commonly return `Optional`, C# uses nullable properties,
   Rust uses `Option`, and Ruby/PHP use `nil`/`null` for optional native fields.
   An omitted wire field is not an explicit JSON null. Read the field signature
@@ -72,12 +77,17 @@ does not change valid URL-only buttons or Slack-file images into invalid models.
 ## Helpers
 
 Python currently has no native `Paginator` or `Accordion` helper; use its native
-blocks and application paging state. TypeScript, Go, Java, C#, Ruby, Rust and PHP
-provide these helpers, but their signatures and returned shapes differ. For
+blocks and application paging state. TypeScript, Go, Java, C#, Ruby, Rust, PHP
+and Elixir provide these helpers, but their signatures and returned shapes differ. For
 example, Go's `NewPaginator()` is a fluent group builder expanded by its parent;
 Ruby's `Paginator.create(...)` returns an array of native blocks. Ruby's
 `AccordionSection.create` returns a collapsible `ContainerBlock`, while Go's
-`NewAccordionSection()` is a builder.
+`NewAccordionSection()` is a builder. Elixir
+`Slackblocks.Components.Paginator.to_blocks/2` returns `{:ok, blocks}` or an
+error; `AccordionSection.new/1` returns a collapsible container in the same tagged
+form, and `Accordion.to_blocks/1` validates the list of sections. Their bang
+variants return the value or raise. Receiving surface limits still apply to the
+expanded blocks.
 
 Use the chosen language's helper reference rather than translating a method name
 literally. Helpers compose blocks and controls. They do not store pagination
