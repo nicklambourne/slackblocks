@@ -596,15 +596,15 @@ module Slackblocks
     attr_reader action_id: (String)?
     attr_reader is_decimal_allowed: bool
     attr_reader initial_value: (String)?
-    attr_reader min_value: (Integer | Float)?
-    attr_reader max_value: (Integer | Float)?
+    attr_reader min_value: (String)?
+    attr_reader max_value: (String)?
     attr_reader dispatch_action_config: (DispatchActionConfiguration)?
     attr_reader focus_on_load: (bool)?
     attr_reader placeholder: (PlainText)?
     attr_reader additional_fields: Hash[String, untyped]
-    def initialize: (is_decimal_allowed: bool, ?action_id: (String)?, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
-    def self.new: (is_decimal_allowed: bool, ?action_id: (String)?, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
-    def self.[]: (is_decimal_allowed: bool, ?action_id: (String)?, ?initial_value: (String)?, ?min_value: (Integer | Float)?, ?max_value: (Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
+    def initialize: (is_decimal_allowed: bool, ?action_id: (String)?, ?initial_value: (String)?, ?min_value: (String | Integer | Float)?, ?max_value: (String | Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (is_decimal_allowed: bool, ?action_id: (String)?, ?initial_value: (String)?, ?min_value: (String | Integer | Float)?, ?max_value: (String | Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
+    def self.[]: (is_decimal_allowed: bool, ?action_id: (String)?, ?initial_value: (String)?, ?min_value: (String | Integer | Float)?, ?max_value: (String | Integer | Float)?, ?dispatch_action_config: (DispatchActionConfiguration)?, ?focus_on_load: (bool)?, ?placeholder: (String | PlainText)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> NumberInputElement
   end
 
   class OverflowElement

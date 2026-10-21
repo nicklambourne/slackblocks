@@ -51,8 +51,15 @@ Builder methods are typed, so a value of the wrong kind fails to compile:
   companion method, such as `TextObject(NewPlainText().Text("Hi").Emoji(true))`, to pass a
   text object.
 - Closed value sets are named string types with constants, such as `ButtonStylePrimary`.
-  Untyped string constants still work: `Style("primary")`.
+  Untyped string constants still work: `Style("primary")`. Supplied empty or
+  unknown enum strings return `TypeMismatch` at build time. Leave an optional
+  setter uncalled to preserve its omission or documented constructor default.
 - Rich text styles take `RichTextStyle{"bold": true}`.
+
+Passing a typed nil nested builder (for example, `Confirm(nil)`) returns a
+`ValidationError` with category `TypeMismatch` and the field path when the parent
+is built or marshalled. Omit an optional setter to omit that field; nil does not
+mean omission. `MustBuild` still panics on validation errors by design.
 
 `Set(field, value)` remains the raw wire-format escape hatch for fields slackblocks does not
 model yet.
@@ -66,3 +73,17 @@ go get github.com/nicklambourne/slackblocks/go/v2
 This directory is part of the coordinated slackblocks monorepo. The Go module
 implements the same shared JSON fixtures and validation categories as the
 other language packages.
+
+For explicit response visibility, replacement and delete-only payloads, see the
+[response URL recipes](https://nicklambourne.github.io/slackblocks/usage/sending_messages?language=go).
+`WebhookMessage` supports native `delete_original`; `MessageResponse` does not expose that field.
+
+For exact numeric data-table cells, use `NewRawNumber().ValueNumber(json.Number("9007199254740993")).Text("9,007,199,254,740,993")`
+with `encoding/json`. It preserves the JSON number without converting through
+`float64`; malformed number syntax fails at `Build`. The existing `Value(float64)`
+setter keeps its floating-point behavior. The separate `Text` field controls the
+displayed label, not the numeric value used for sorting.
+
+Builders retain nested builder references until `Build`, which produces an
+independent wire snapshot. See [language semantics](https://nicklambourne.github.io/slackblocks/usage/language-semantics)
+for ownership, omission, getters and helper differences across implementations.

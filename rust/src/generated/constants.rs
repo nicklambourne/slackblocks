@@ -1,6 +1,6 @@
 // Generated from the shared limits, vocabulary and manifest.
 /// Shared specification implemented by this crate.
-pub(crate) const SPEC_VERSION: &str = "1.2.0";
+pub(crate) const SPEC_VERSION: &str = "1.3.0";
 pub(crate) const LIMITS: &[(&str, i64)] = &[
     ("action_id.max_length", 255),
     ("actions.elements.max_items", 25),
@@ -86,6 +86,7 @@ pub(crate) const LIMITS: &[(&str, i64)] = &[
     ("message.attachments.max_items", 100),
     ("message.blocks.max_items", 50),
     ("message.channel.min_length", 1),
+    ("message.data_visualizations.max_items", 2),
     ("multi_select.max_selected_items.min", 1),
     ("number_input.placeholder.max_length", 150),
     ("option.description.max_length", 75),
@@ -122,8 +123,11 @@ pub(crate) const LIMITS: &[(&str, i64)] = &[
     ("section.fields.item_max_length", 2000),
     ("section.fields.max_items", 10),
     ("section.text.max_length", 3000),
+    ("select.min_query_length.min", 0),
     ("select.option_groups.max_items", 100),
+    ("select.option_groups.min_items", 1),
     ("select.options.max_items", 100),
+    ("select.options.min_items", 1),
     ("select.placeholder.max_length", 150),
     ("table.column_settings.max_items", 20),
     ("table.columns.max_items", 20),

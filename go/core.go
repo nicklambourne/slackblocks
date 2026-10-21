@@ -5,6 +5,7 @@ package slackblocks
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 
 	slackapi "github.com/slack-go/slack"
 )
@@ -200,7 +201,7 @@ func (b *builder) Build() (Object, error) {
 	if b.err != nil {
 		return nil, b.err
 	}
-	materialised, err := materialise(b.values)
+	materialised, err := materialiseAt(b.values, b.name)
 	if err != nil {
 		return nil, err
 	}
@@ -242,14 +243,22 @@ func (b *builder) MarshalJSON() ([]byte, error) {
 	return json.Marshal(object)
 }
 
-func materialise(value any) (any, error) {
+func isNilPointer(value any) bool {
+	reflected := reflect.ValueOf(value)
+	return reflected.Kind() == reflect.Pointer && reflected.IsNil()
+}
+
+func materialiseAt(value any, path string) (any, error) {
 	switch typed := value.(type) {
 	case Buildable:
+		if isNilPointer(typed) {
+			return nil, validationError(TypeMismatch, path, "expected a non-nil builder")
+		}
 		return typed.Build()
 	case Object:
 		result := Object{}
 		for key, nested := range typed {
-			built, err := materialise(nested)
+			built, err := materialiseAt(nested, child(path, key))
 			if err != nil {
 				return nil, err
 			}
@@ -257,11 +266,11 @@ func materialise(value any) (any, error) {
 		}
 		return result, nil
 	case map[string]any:
-		return materialise(Object(typed))
+		return materialiseAt(Object(typed), path)
 	case []Object:
 		result := make([]any, 0, len(typed))
-		for _, nested := range typed {
-			built, err := materialise(nested)
+		for index, nested := range typed {
+			built, err := materialiseAt(nested, fmt.Sprintf("%s[%d]", path, index))
 			if err != nil {
 				return nil, err
 			}
@@ -270,8 +279,8 @@ func materialise(value any) (any, error) {
 		return result, nil
 	case []Buildable:
 		result := make([]any, 0, len(typed))
-		for _, nested := range typed {
-			built, err := materialise(nested)
+		for index, nested := range typed {
+			built, err := materialiseAt(nested, fmt.Sprintf("%s[%d]", path, index))
 			if err != nil {
 				return nil, err
 			}
@@ -280,8 +289,11 @@ func materialise(value any) (any, error) {
 		return result, nil
 	case []any:
 		result := make([]any, 0, len(typed))
-		for _, nested := range typed {
+		for index, nested := range typed {
 			if group, ok := nested.(GroupBuildable); ok {
+				if isNilPointer(group) {
+					return nil, validationError(TypeMismatch, fmt.Sprintf("%s[%d]", path, index), "expected a non-nil group builder")
+				}
 				built, err := group.BuildMany()
 				if err != nil {
 					return nil, err
@@ -291,7 +303,7 @@ func materialise(value any) (any, error) {
 				}
 				continue
 			}
-			built, err := materialise(nested)
+			built, err := materialiseAt(nested, fmt.Sprintf("%s[%d]", path, index))
 			if err != nil {
 				return nil, err
 			}

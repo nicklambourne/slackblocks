@@ -10,11 +10,50 @@ use Slackblocks\ErrorCategory as C;
 /** @internal Cross-field rules; contextual traversal follows modeled children only. */
 final class Rules
 {
+    public static function numberBound(string|int|float|null $value, string $path): ?string
+    {
+        if (!is_float($value)) {
+            return $value === null ? null : (string) $value;
+        }
+        if (!is_finite($value)) {
+            Validator::fail(C::TypeMismatch, $path, 'expected a finite numeric bound');
+        }
+        // H uses a locale-independent decimal point. Find the fewest significant
+        // digits that retain the native double, without reading or changing INI precision.
+        for ($digits = 1; $digits <= 17; ++$digits) {
+            $text = sprintf('%.*H', $digits, $value);
+            if ((float) $text === $value) {
+                break;
+            }
+        }
+        if (!str_contains($text, 'E')) {
+            return $text;
+        }
+        // Keep numeric convenience inputs in plain decimal form. Expansion is
+        // bounded by the native double's exponent; caller-supplied strings never enter here.
+        [$mantissa, $exponent] = explode('E', $text);
+        $sign = str_starts_with($mantissa, '-') ? '-' : '';
+        [$whole, $fraction] = array_pad(explode('.', ltrim($mantissa, '-')), 2, '');
+        $coefficient = $whole . $fraction;
+        $point = strlen($whole) + (int) $exponent;
+        if ($point <= 0) {
+            $text = '0.' . str_repeat('0', -$point) . $coefficient;
+        } elseif ($point >= strlen($coefficient)) {
+            $text = $coefficient . str_repeat('0', $point - strlen($coefficient));
+        } else {
+            $text = substr($coefficient, 0, $point) . '.' . substr($coefficient, $point);
+        }
+        return $sign . (str_contains($text, '.') ? rtrim(rtrim($text, '0'), '.') : $text);
+    }
+
     public static function validate(S\Value $value, \stdClass $wire): void
     {
         $path = Codec::name($value);
         if ($value instanceof S\SlackIcon && !in_array($value->name, Schema::VOCABULARY['slack_icon_names'], true)) {
             Validator::fail(C::TypeMismatch, $path . '.name', 'unknown Slack icon');
+        }
+        if ($value instanceof S\ExternalMultiSelectElement && $value->focusOnLoad !== null) {
+            Validator::fail(C::InvalidUsage, $path . '.focus_on_load', 'unsupported for external multi-select menus; omit this field');
         }
         if ($value instanceof S\SectionBlock) {
             if ($value->text === null && ($value->fields === null || $value->fields === [])) {
@@ -82,8 +121,28 @@ final class Rules
         if ($value instanceof S\DispatchActionConfiguration && $value->triggerActionsOn === null) {
             Validator::fail(C::MissingRequired, $path . '.trigger_actions_on', 'required field is missing');
         }
-        if ($value instanceof S\NumberInputElement && $value->minValue !== null && $value->maxValue !== null && $value->minValue > $value->maxValue) {
-            Validator::fail(C::OutOfRange, $path, 'minimum exceeds maximum');
+        if ($value instanceof S\DatePickerElement && $value->initialDate !== null && preg_match('/\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/', $value->initialDate) !== 1) {
+            Validator::fail(C::TypeMismatch, $path . '.initial_date', 'expected YYYY-MM-DD');
+        }
+        if ($value instanceof S\TimePickerElement && $value->initialTime !== null && preg_match('/\A([01][0-9]|2[0-3]):[0-5][0-9]\z/', $value->initialTime) !== 1) {
+            Validator::fail(C::TypeMismatch, $path . '.initial_time', 'expected HH:mm in 24-hour time');
+        }
+        if ($value instanceof S\PlainTextInputElement && $value->minLength !== null && $value->maxLength !== null && $value->minLength > $value->maxLength) {
+            Validator::fail(C::OutOfRange, $path . '.min_length', 'cannot exceed max_length');
+        }
+        if ($value instanceof S\NumberInputElement) {
+            foreach (['minValue' => 'min_value', 'maxValue' => 'max_value'] as $property => $field) {
+                $text = $value->$property;
+                if ($text === null) {
+                    continue;
+                }
+                if (preg_match('/\A[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?\z/', $text) !== 1) {
+                    Validator::fail(C::TypeMismatch, $path . '.' . $field, 'expected a numeric string');
+                }
+            }
+            if ($value->minValue !== null && $value->maxValue !== null && self::compareDecimals($value->minValue, $value->maxValue) > 0) {
+                Validator::fail(C::OutOfRange, $path, 'minimum exceeds maximum');
+            }
         }
         if ($value instanceof S\TableBlock || $value instanceof S\DataTableBlock) {
             self::table($value, $path);
@@ -120,6 +179,9 @@ final class Rules
             foreach ($value->attachments ?? [] as $attachment) {
                 array_push($blocks, ...$attachment->blocks);
             }
+            if (self::chartCount($blocks) > Schema::LIMITS['message.data_visualizations.max_items']) {
+                Validator::fail(C::LengthExceeded, $path, 'a message may contain at most two data visualization blocks');
+            }
             [$markdown, $table] = self::totals($blocks);
             if ($markdown > Schema::LIMITS['markdown.total_text.max_length']) {
                 Validator::fail(C::LengthExceeded, $path, 'message markdown total exceeded');
@@ -140,6 +202,79 @@ final class Rules
         }
     }
 
+    /** Compare finite decimal strings without float rounding or exponent expansion. */
+    private static function compareDecimals(string $left, string $right): int
+    {
+        [$leftSign, $leftRank, $leftDigits] = self::decimalParts($left);
+        [$rightSign, $rightRank, $rightDigits] = self::decimalParts($right);
+        if ($leftSign !== $rightSign) {
+            return $leftSign <=> $rightSign;
+        }
+        if ($leftSign === 0) {
+            return 0;
+        }
+        $rank = self::compareIntegers($leftRank, $rightRank);
+        $width = max(strlen($leftDigits), strlen($rightDigits));
+        return $leftSign * ($rank !== 0 ? $rank : strcmp(str_pad($leftDigits, $width, '0'), str_pad($rightDigits, $width, '0')));
+    }
+
+    /** @return array{int, string, string} */
+    private static function decimalParts(string $text): array
+    {
+        $parts = preg_split('/[eE]/', ltrim($text, '+-'));
+        // The caller has already checked the complete decimal grammar.
+        assert($parts !== false);
+        [$integer, $fraction] = array_pad(explode('.', $parts[0]), 2, '');
+        $digits = ltrim($integer . $fraction, '0');
+        if ($digits === '') {
+            return [0, '0', ''];
+        }
+        $rank = self::addIntegers($parts[1] ?? '0', (string) (strlen($digits) - strlen($fraction)));
+        return [str_starts_with($text, '-') ? -1 : 1, $rank, rtrim($digits, '0')];
+    }
+
+    /** Signed decimal integer comparison; arguments are normalized. */
+    private static function compareIntegers(string $left, string $right): int
+    {
+        $leftNegative = str_starts_with($left, '-');
+        $rightNegative = str_starts_with($right, '-');
+        if ($leftNegative !== $rightNegative) {
+            return $leftNegative ? -1 : 1;
+        }
+        $left = ltrim($left, '-');
+        $right = ltrim($right, '-');
+        $order = (strlen($left) <=> strlen($right)) ?: strcmp($left, $right);
+        return $leftNegative ? -$order : $order;
+    }
+
+    /** Add a decimal exponent and a character count without native integer overflow. */
+    private static function addIntegers(string $left, string $right): string
+    {
+        $leftNegative = str_starts_with($left, '-');
+        $rightNegative = str_starts_with($right, '-');
+        $left = ltrim(ltrim($left, '+-'), '0');
+        $right = ltrim(ltrim($right, '+-'), '0');
+        if ($leftNegative !== $rightNegative && ((strlen($left) <=> strlen($right)) ?: strcmp($left, $right)) < 0) {
+            [$left, $right] = [$right, $left];
+            [$leftNegative, $rightNegative] = [$rightNegative, $leftNegative];
+        }
+        $add = $leftNegative === $rightNegative;
+        $result = '';
+        $carry = 0;
+        for ($i = strlen($left) - 1, $j = strlen($right) - 1; $i >= 0 || $j >= 0; $i--, $j--) {
+            $a = $i >= 0 ? (int) $left[$i] : 0;
+            $b = $j >= 0 ? (int) $right[$j] : 0;
+            $digit = $a + ($add ? $b : -$b) + $carry;
+            $carry = $add ? intdiv($digit, 10) : ($digit < 0 ? -1 : 0);
+            $result = (string) (($digit + 10) % 10) . $result;
+        }
+        if ($carry > 0) {
+            $result = (string) $carry . $result;
+        }
+        $result = ltrim($result, '0');
+        return $result === '' ? '0' : ($leftNegative ? '-' : '') . $result;
+    }
+
     /** @param list<S\Block> $blocks */
     private static function surface(array $blocks, string $surface, string $path): void
     {
@@ -152,6 +287,24 @@ final class Rules
     }
 
     /** @param list<S\Block> $blocks
+     * @return int
+     */
+    private static function chartCount(array $blocks): int
+    {
+        $count = 0;
+        foreach ($blocks as $block) {
+            if ($block instanceof S\DataVisualizationBlock) {
+                $count++;
+            }
+            if ($block instanceof S\ContainerBlock) {
+                $count += self::chartCount($block->childBlocks);
+            }
+        }
+        return $count;
+    }
+
+    /**
+     * @param list<S\Block> $blocks
      * @return array{int, int}
      */
     private static function totals(array $blocks): array

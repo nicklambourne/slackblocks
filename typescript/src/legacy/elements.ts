@@ -136,7 +136,7 @@ export interface ExternalMultiSelectInput {
   confirm?: JsonObject;
   /** Maximum number of options that may be selected; the minimum is one. */
   maxSelectedItems?: number;
-  /** Whether this element receives focus when its containing view opens. */
+  /** @deprecated Unsupported by Slack for external multi-selects; omit this field. */
   focusOnLoad?: boolean;
   /** Plain-text prompt shown before a selection, up to 150 characters. */
   placeholder?: TextLike;
@@ -196,9 +196,9 @@ export interface NumberElementInput {
   /** Numeric text present when the input first loads. */
   initialValue?: string;
   /** Minimum accepted value; it cannot exceed `maxValue`. */
-  minValue?: number;
+  minValue?: string | number;
   /** Maximum accepted value; it cannot be less than `minValue`. */
-  maxValue?: number;
+  maxValue?: string | number;
   /** Configuration controlling when typing dispatches a `block_actions` payload. */
   dispatchActionConfig?: JsonObject;
   /** Whether this element receives focus when its containing view opens. */
@@ -825,8 +825,8 @@ export function staticMultiSelect(
     "multi_static_select",
     {
       ...input,
-      options: dropEmpty(input.options),
-      optionGroups: dropEmpty(input.optionGroups),
+      options: input.options,
+      optionGroups: input.optionGroups,
       initialOptions: dropEmpty(input.initialOptions),
     },
     settings,
@@ -861,7 +861,16 @@ export function userMultiSelect(
  * @throws InvalidUsageError when an identifier, placeholder, or numeric range is invalid.
  */
 export function numberInput(input: NumberElementInput, settings: FactorySettings = {}) {
-  return element("number_input", { ...input }, settings);
+  for (const field of ["minValue", "maxValue"] as const) {
+    const value = input[field];
+    if (value !== undefined && typeof value !== "string" && typeof value !== "number") {
+      throw new TypeMismatchError(`numberInput.${field}`, "expected a numeric string or number");
+    }
+  }
+  return element("number_input", { ...input,
+    minValue: input.minValue === undefined ? undefined : String(input.minValue),
+    maxValue: input.maxValue === undefined ? undefined : String(input.maxValue),
+  }, settings);
 }
 
 /**
@@ -961,8 +970,8 @@ export function staticSelect(input: StaticSelectInput, settings: FactorySettings
     "static_select",
     {
       ...input,
-      options: dropEmpty(input.options),
-      optionGroups: dropEmpty(input.optionGroups),
+      options: input.options,
+      optionGroups: input.optionGroups,
     },
     settings,
   );

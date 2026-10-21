@@ -6,6 +6,7 @@ See: <https://api.slack.com/reference/block-kit/block-elements>
 
 from __future__ import annotations
 
+import re
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
@@ -48,8 +49,11 @@ from ._limits import (
     RICH_TEXT_INPUT_MIN_LINES_MAX,
     RICH_TEXT_INPUT_MIN_LINES_MIN,
     RICH_TEXT_INPUT_PLACEHOLDER_MAX_LENGTH,
+    SELECT_MIN_QUERY_LENGTH_MIN,
     SELECT_OPTION_GROUPS_MAX_ITEMS,
+    SELECT_OPTION_GROUPS_MIN_ITEMS,
     SELECT_OPTIONS_MAX_ITEMS,
+    SELECT_OPTIONS_MIN_ITEMS,
     SELECT_PLACEHOLDER_MAX_LENGTH,
     TIME_PICKER_PLACEHOLDER_MAX_LENGTH,
     URL_INPUT_PLACEHOLDER_MAX_LENGTH,
@@ -57,6 +61,7 @@ from ._limits import (
     WORKFLOW_BUTTON_TEXT_MAX_LENGTH,
 )
 from .errors import (
+    InvalidUsageError,
     LengthError,
     MissingRequiredError,
     MutualExclusivityError,
@@ -497,6 +502,11 @@ class DatePicker(Element):
         super().__init__(type_=ElementType.DATE_PICKER)
         self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_date: str | None = None
+        if initial_date is not None and (
+            not isinstance(initial_date, str)
+            or not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", initial_date)
+        ):
+            raise TypeMismatchError("DatePicker.initial_date must have YYYY-MM-DD format")
         if initial_date:
             self.initial_date = datetime.strptime(initial_date, "%Y-%m-%d").strftime("%Y-%m-%d")
         self.confirm = confirm
@@ -771,12 +781,17 @@ class StaticMultiSelectMenu(Element):
                 "Cannot set both `options` and `option_groups` parameters."
             )
         self.options = coerce_to_list(
-            options, class_=Option, allow_none=True, max_size=SELECT_OPTIONS_MAX_ITEMS
+            options,
+            class_=Option,
+            allow_none=True,
+            min_size=SELECT_OPTIONS_MIN_ITEMS,
+            max_size=SELECT_OPTIONS_MAX_ITEMS,
         )
         self.option_groups = coerce_to_list(
             option_groups,
             class_=OptionGroup,
             allow_none=True,
+            min_size=SELECT_OPTION_GROUPS_MIN_ITEMS,
             max_size=SELECT_OPTION_GROUPS_MAX_ITEMS,
         )
         self.initial_options = coerce_to_list(
@@ -862,8 +877,7 @@ class ExternalMultiSelectMenu(Element):
             the menu is used.
         max_selected_items: the highest number of items from the list that
             can be selected at one time.
-        focus_on_load: whether or not the menu will be set to autofocus
-            within the view object.
+        focus_on_load: deprecated; omit this unsupported external multi-select field.
         placeholder: a plain-text `Text` object (max 150 chars) that shows
             in the menu when it's initially rendered.
 
@@ -878,12 +892,14 @@ class ExternalMultiSelectMenu(Element):
         initial_options: Option | list[Option] | OptionGroup | list[OptionGroup] | None = None,
         confirm: ConfirmationDialogue | None = None,
         max_selected_items: int | None = None,
-        focus_on_load: bool = False,
+        focus_on_load: bool | None = None,
         placeholder: TextLike | None = None,
     ) -> None:
         super().__init__(type_=ElementType.MULTI_SELECT_EXTERNAL)
         self.action_id = validate_action_id(action_id, allow_none=True)
-        self.min_query_length = min_query_length
+        self.min_query_length = validate_int(
+            min_query_length, min_value=SELECT_MIN_QUERY_LENGTH_MIN, allow_none=True
+        )
         self.initial_options = coerce_to_list(
             initial_options,  # type: ignore
             class_=(Option, OptionGroup),
@@ -893,6 +909,10 @@ class ExternalMultiSelectMenu(Element):
         self.max_selected_items = validate_int(
             max_selected_items, min_value=MULTI_SELECT_MAX_SELECTED_ITEMS_MIN, allow_none=True
         )
+        if focus_on_load is not None:
+            raise InvalidUsageError(
+                "`focus_on_load` is unsupported for external multi-select menus"
+            )
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
             placeholder,
@@ -1133,8 +1153,8 @@ class NumberInput(Element):
         is_decimal_allowed: whether to accept decimal values as input.
         action_id: an identifier so the source of the action can be known.
         initial_value: the initial value in the number input when it is loaded.
-        min_value: minimum accepted value for the input field.
-        max_value: maximum accepted value for the input field.
+        min_value: finite numeric string or number; sent as a string.
+        max_value: finite numeric string or number; sent as a string.
         dispatch_action_config: a `DispatchActionConfiguration` object that
             determines when during text input the element returns a
             `block_actions` payload.
@@ -1152,8 +1172,8 @@ class NumberInput(Element):
         is_decimal_allowed: bool,
         action_id: str | None = None,
         initial_value: str | None = None,
-        min_value: float | int | None = None,
-        max_value: float | int | None = None,
+        min_value: str | float | int | None = None,
+        max_value: str | float | int | None = None,
         dispatch_action_config: DispatchActionConfiguration | None = None,
         focus_on_load: bool = False,
         placeholder: TextLike | None = None,
@@ -1164,17 +1184,13 @@ class NumberInput(Element):
         self.is_decimal_allowed = is_decimal_allowed
         self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_value = initial_value
-        self.min_value = min_value
-        self.max_value = max_value
-        if min_value and not is_decimal_allowed and isinstance(min_value, float):
-            raise TypeMismatchError(
-                f"`min_value` ({min_value}) cannot be a float when `is_decimal_allowed` is `False`"
-            )
-        if max_value and not is_decimal_allowed and isinstance(max_value, float):
-            raise TypeMismatchError(
-                f"`max_value` ({max_value}) cannot be a float when `is_decimal_allowed` is `False`"
-            )
-        if min_value is not None and max_value is not None and min_value > max_value:
+        self.min_value = self._bound(min_value, "min_value")
+        self.max_value = self._bound(max_value, "max_value")
+        if (
+            self.min_value is not None
+            and self.max_value is not None
+            and self._compare_bounds(self.min_value, self.max_value) > 0
+        ):
             raise RangeError(
                 f"`min_value` ({min_value}) cannot be greater than `max_value` ({max_value})"
             )
@@ -1186,6 +1202,49 @@ class NumberInput(Element):
             force_plaintext=True,
             allow_none=True,
         )
+
+    @staticmethod
+    def _bound(value: str | int | float | None, field: str) -> str | None:
+        if value is None:
+            return None
+        if isinstance(value, bool) or not isinstance(value, (str, int, float)):
+            raise TypeMismatchError(f"`{field}` must be a numeric string or number")
+        text = str(value)
+        if re.fullmatch(r"[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?", text) is None:
+            raise TypeMismatchError(f"`{field}` must be a decimal string")
+        return text
+
+    @staticmethod
+    def _compare_bounds(left: str, right: str) -> int:
+        def parts(value: str) -> tuple[int, str, int]:
+            mantissa, *exponent_parts = re.split("[eE]", value)
+            exponent_text = exponent_parts[0] if exponent_parts else "0"
+            exponent_digits = exponent_text.lstrip("+-")
+            exponent = 0
+            # Parse in bounded chunks; Python's decimal-int conversion cap must not
+            # turn a long but valid exponent into an unrelated ValueError.
+            for i in range(0, len(exponent_digits), 1000):
+                chunk = exponent_digits[i : i + 1000]
+                exponent = exponent * 10 ** len(chunk) + int(chunk)
+            if exponent_text.startswith("-"):
+                exponent = -exponent
+            unsigned = mantissa.lstrip("+-")
+            fraction = len(unsigned.split(".")[1]) if "." in unsigned else 0
+            digits = unsigned.replace(".", "").lstrip("0")
+            sign = 0 if not digits else -1 if mantissa.startswith("-") else 1
+            return sign, digits, exponent + len(digits) - fraction
+
+        a, x, rank_x = parts(left)
+        b, y, rank_y = parts(right)
+        if a != b:
+            return (a > b) - (a < b)
+        if not a:
+            return 0
+        if rank_x != rank_y:
+            return ((rank_x > rank_y) - (rank_x < rank_y)) * a
+        width = max(len(x), len(y))
+        x, y = x.ljust(width, "0"), y.ljust(width, "0")
+        return ((x > y) - (x < y)) * a
 
     def _resolve(self) -> dict[str, Any]:
         return resolve(
@@ -1303,6 +1362,12 @@ class PlainTextInput(Element):
             max_value=PLAIN_TEXT_INPUT_MAX_LENGTH_MAX,
             allow_none=True,
         )
+        if (
+            self.min_length is not None
+            and self.max_length is not None
+            and self.min_length > self.max_length
+        ):
+            raise RangeError("PlainTextInput.min_length cannot exceed max_length")
         self.dispatch_action_config = dispatch_action_config
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
@@ -1435,12 +1500,17 @@ class StaticSelectMenu(Element):
                 "Cannot set both `options` and `option_groups` parameters."
             )
         self.options: list[Option] | None = coerce_to_list(
-            options, class_=Option, allow_none=True, max_size=SELECT_OPTIONS_MAX_ITEMS
+            options,
+            class_=Option,
+            allow_none=True,
+            min_size=SELECT_OPTIONS_MIN_ITEMS,
+            max_size=SELECT_OPTIONS_MAX_ITEMS,
         )
         self.option_groups: list[OptionGroup] | None = coerce_to_list(
             option_groups,
             class_=OptionGroup,
             allow_none=True,
+            min_size=SELECT_OPTION_GROUPS_MIN_ITEMS,
             max_size=SELECT_OPTION_GROUPS_MAX_ITEMS,
         )
         if options and initial_option and not isinstance(initial_option, Option):
@@ -1530,7 +1600,9 @@ class ExternalSelectMenu(Element):
         super().__init__(type_=ElementType.EXTERNAL_SELECT_MENU)
         self.action_id = validate_action_id(action_id, allow_none=True)
         self.initial_option = initial_option
-        self.min_query_length = min_query_length
+        self.min_query_length = validate_int(
+            min_query_length, min_value=SELECT_MIN_QUERY_LENGTH_MIN, allow_none=True
+        )
         self.confirm = confirm
         self.focus_on_load = focus_on_load
         self.placeholder = Text.to_text(
@@ -1783,6 +1855,11 @@ class TimePicker(Element):
     ) -> None:
         super().__init__(type_=ElementType.TIME_PICKER)
         self.action_id = validate_action_id(action_id, allow_none=True)
+        if initial_time is not None and (
+            not isinstance(initial_time, str)
+            or not re.fullmatch(r"([01][0-9]|2[0-3]):[0-5][0-9]", initial_time)
+        ):
+            raise TypeMismatchError("TimePicker.initial_time must have HH:mm 24-hour format")
         self.initial_time = initial_time
         self.confirm = confirm
         self.focus_on_load = focus_on_load

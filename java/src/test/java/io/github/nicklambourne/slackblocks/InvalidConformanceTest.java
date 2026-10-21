@@ -376,6 +376,82 @@ final class InvalidConformanceTest {
               "https://example.com/image.png",
               "slack_file",
               map("id", "F0123ABC456"));
+      case "number-bound-inverted-large-integer" ->
+          invalid(
+              "NumberInputElement",
+              map(
+                  "type",
+                  "number_input",
+                  "is_decimal_allowed",
+                  true,
+                  "min_value",
+                  "9007199254740993",
+                  "max_value",
+                  "9007199254740992"));
+      case "number-bound-inverted-long-fraction" ->
+          invalid(
+              "NumberInputElement",
+              map(
+                  "type",
+                  "number_input",
+                  "is_decimal_allowed",
+                  true,
+                  "min_value",
+                  "0.10000000000000001",
+                  "max_value",
+                  "0.1"));
+      case "number-bound-hex" ->
+          invalid(
+              "NumberInputElement",
+              map("type", "number_input", "is_decimal_allowed", true, "min_value", "0x10"));
+      case "number-bound-underscore" ->
+          invalid(
+              "NumberInputElement",
+              map("type", "number_input", "is_decimal_allowed", true, "min_value", "1_000"));
+      case "number-bound-leading-space" ->
+          invalid(
+              "NumberInputElement",
+              map("type", "number_input", "is_decimal_allowed", true, "min_value", " 1"));
+      case "number-bound-trailing-space" ->
+          invalid(
+              "NumberInputElement",
+              map("type", "number_input", "is_decimal_allowed", true, "min_value", "1 "));
+      case "number-bound-nan" ->
+          invalid(
+              "NumberInputElement",
+              map("type", "number_input", "is_decimal_allowed", true, "min_value", "NaN"));
+      case "number-bound-infinity" ->
+          invalid(
+              "NumberInputElement",
+              map("type", "number_input", "is_decimal_allowed", true, "min_value", "Infinity"));
+      case "external-multi-focus-false" ->
+          invalid(
+              "ExternalMultiSelectElement",
+              map("type", "multi_external_select", "focus_on_load", false));
+      case "external-multi-focus-true" ->
+          invalid(
+              "ExternalMultiSelectElement",
+              map("type", "multi_external_select", "focus_on_load", true));
+      case "external-query-negative" ->
+          typed("ExternalSelectElement", "external_select", "min_query_length", -1);
+      case "external-multi-query-negative" ->
+          typed("ExternalMultiSelectElement", "multi_external_select", "min_query_length", -1);
+      case "date-picker-invalid-format" ->
+          typed("DatePickerElement", "datepicker", "initial_date", "February 29, 2028");
+      case "time-picker-invalid-format" ->
+          typed("TimePickerElement", "timepicker", "initial_time", "9:00");
+      case "time-picker-invalid-range" ->
+          typed("TimePickerElement", "timepicker", "initial_time", "25:99");
+      case "static-select-empty-options" ->
+          typed("StaticSelectElement", "static_select", "options", List.of());
+      case "static-multi-select-empty-options" ->
+          typed("StaticMultiSelectElement", "multi_static_select", "options", List.of());
+      case "static-select-empty-groups" ->
+          typed("StaticSelectElement", "static_select", "option_groups", List.of());
+      case "static-multi-select-empty-groups" ->
+          typed("StaticMultiSelectElement", "multi_static_select", "option_groups", List.of());
+      case "plain-text-input-inverted-range" ->
+          typed("PlainTextInput", "plain_text_input", "min_length", 20, "max_length", 10);
       case "number-input-inverted-range" ->
           typed(
               "NumberInput",
@@ -537,6 +613,26 @@ final class InvalidConformanceTest {
       case "data-table-content-too-long" ->
           dataTable(
               List.of(List.of(rawText("Name")), List.of(rawText(repeated("x", 20000)))), "Names");
+      case "message-too-many-charts" ->
+          invalid(
+              "Message",
+              map(
+                  "channel",
+                  "C123",
+                  "blocks",
+                  java.util.Collections.nCopies(
+                      3,
+                      map(
+                          "type",
+                          "data_visualization",
+                          "title",
+                          "Chart",
+                          "chart",
+                          map(
+                              "type",
+                              "pie",
+                              "segments",
+                              List.of(map("label", "A", "value", 1)))))));
       case "data-visualization-title-too-long" ->
           typed(
               "DataVisualizationBlock",

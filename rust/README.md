@@ -140,3 +140,7 @@ python3 rust/bin/check-coverage.py
 Only external code, test/example harnesses, and files containing no executable
 regions are excluded. Coverage is measured on stable Rust; it is not a branch
 coverage claim. The report also exercises consumer-enabled serde_json features.
+
+For explicit response visibility, replacement and delete-only payloads, see the
+[response URL recipes](https://nicklambourne.github.io/slackblocks/usage/sending_messages?language=rust).
+`WebhookMessage` supports native `delete_original`; `MessageResponse` does not expose that field.
