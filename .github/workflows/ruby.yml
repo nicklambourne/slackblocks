@@ -1,15 +1,12 @@
-# Measurement-only branch: never merge, publish or deploy.
-name: Ruby controlled dependency benchmark
+# Measurement-only same-host confirmation; never merge or publish.
+name: Ruby paired dependency benchmark
 on:
   workflow_dispatch:
 permissions:
   contents: read
-concurrency:
-  group: ruby-controlled-benchmark-${{ github.ref }}
-  cancel-in-progress: false
 jobs:
-  cold:
-    name: Ruby ${{ matrix.mode }} cold pair ${{ matrix.pair }}
+  compare:
+    name: Ruby dependency pair ${{ matrix.pair }}
     runs-on: windows-2025
     timeout-minutes: 30
     strategy:
@@ -17,93 +14,31 @@ jobs:
       max-parallel: 3
       matrix:
         pair: [1, 2, 3]
-        mode: [baseline, candidate]
-    env:
-      BENCH_PAIR: ${{ matrix.pair }}
-      BENCH_MODE: ${{ matrix.mode }}
-      BENCH_TEMP: cold
-      BUNDLE_WITHOUT: ${{ matrix.mode == 'candidate' && 'quality' || '' }}
     steps:
-      - name: Check out measurement harness
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           path: harness
-      - name: Check out fixed source
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: 3f224a6e89751d00c0391dc52d6578f0e943d0f5
           path: source
-          fetch-depth: 0
-      - name: Install Python for the retained generator test
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
-          python-version: "3.13.16"
-      - name: Verify fixed inputs and select bundle
-        run: python harness/.github/benchmarks/ruby-native.py prepare
-      - name: Install Ruby and restore or populate bounded bundle cache
+          python-version: '3.13.16'
+      - name: Install common fixed Ruby and Bundler
         uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a
         with:
-          ruby-version: "3.4.11"
-          bundler-cache: true
-          working-directory: source/ruby
-          cache-version: ruby-groups-${{ github.run_id }}-pair-${{ matrix.pair }}-${{ matrix.mode }}
-      - name: Measure complete native tests and isolated package consumer
-        run: python harness/.github/benchmarks/ruby-native.py measure
-      - name: Preserve successful and failed evidence
+          ruby-version: '3.4.11'
+          bundler: '4.0.21'
+          bundler-cache: false
+      - name: Compare private cold and warm bundles on the same host
+        env:
+          BENCH_PAIR: ${{ matrix.pair }}
+        run: python harness/.github/benchmarks/ruby-paired.py
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: ruby-groups-${{ matrix.mode }}-cold-pair-${{ matrix.pair }}
-          path: benchmark-results
-          if-no-files-found: error
-          retention-days: 7
-  warm:
-    needs: cold
-    name: Ruby ${{ matrix.mode }} warm pair ${{ matrix.pair }}
-    runs-on: windows-2025
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      max-parallel: 3
-      matrix:
-        pair: [1, 2, 3]
-        mode: [baseline, candidate]
-    env:
-      BENCH_PAIR: ${{ matrix.pair }}
-      BENCH_MODE: ${{ matrix.mode }}
-      BENCH_TEMP: warm
-      BUNDLE_WITHOUT: ${{ matrix.mode == 'candidate' && 'quality' || '' }}
-    steps:
-      - name: Check out measurement harness
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          path: harness
-      - name: Check out fixed source
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          ref: 3f224a6e89751d00c0391dc52d6578f0e943d0f5
-          path: source
-          fetch-depth: 0
-      - name: Install Python for the retained generator test
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
-        with:
-          python-version: "3.13.16"
-      - name: Verify fixed inputs and select bundle
-        run: python harness/.github/benchmarks/ruby-native.py prepare
-      - name: Install Ruby and restore or populate bounded bundle cache
-        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a
-        with:
-          ruby-version: "3.4.11"
-          bundler-cache: true
-          working-directory: source/ruby
-          cache-version: ruby-groups-${{ github.run_id }}-pair-${{ matrix.pair }}-${{ matrix.mode }}
-      - name: Measure complete native tests and isolated package consumer
-        run: python harness/.github/benchmarks/ruby-native.py measure
-      - name: Preserve successful and failed evidence
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: ruby-groups-${{ matrix.mode }}-warm-pair-${{ matrix.pair }}
-          path: benchmark-results
-          if-no-files-found: error
-          retention-days: 7
+          name: ruby-paired-${{ matrix.pair }}
+          path: evidence
+          if-no-files-found: warn
+          retention-days: 14

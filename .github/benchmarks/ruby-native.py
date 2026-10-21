@@ -11,8 +11,8 @@ import time
 
 BASE = "fc44939dffecb7437e41f670e2f9a726de0ed0ac"
 SOURCE = "3f224a6e89751d00c0391dc52d6578f0e943d0f5"
-ROOT = Path.cwd() / "source"
-RESULT = Path.cwd() / "benchmark-results"
+ROOT = Path(os.environ.get("BENCH_SOURCE", str(Path.cwd() / "source")))
+RESULT = Path(os.environ.get("BENCH_EVIDENCE", str(Path.cwd() / "benchmark-results")))
 RESULT.mkdir(exist_ok=True)
 META = RESULT / "metadata.json"
 
@@ -78,7 +78,7 @@ else:
     metadata["archive_files"] = json.loads(capture(["ruby", "-rrubygems/package", "-rjson", "-e",
         'puts JSON.generate(Gem::Package.new(ARGV.fetch(0)).contents.sort)', str(package)]))
     metadata["archive_sha256"] = hashlib.sha256(package.read_bytes()).hexdigest()
-    install = Path(os.environ["RUNNER_TEMP"]) / "ruby-benchmark-consumer"
+    install = Path(os.environ["RUNNER_TEMP"]) / ("ruby-benchmark-consumer-" + os.environ["BENCH_MODE"] + "-" + os.environ["BENCH_TEMP"])
     assert not install.exists()
     clean = {k: v for k, v in os.environ.items() if not k.startswith("BUNDLE_") and k not in ("GEM_HOME", "GEM_PATH", "RUBYOPT", "RUBYLIB")}
     clean.update(GEM_HOME=str(install), GEM_PATH=str(install))
