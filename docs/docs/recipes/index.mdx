@@ -1,0 +1,32 @@
+---
+title: Find a recipe
+slug: /recipes
+sidebar_position: 1
+---
+
+# Find a recipe
+
+Start with your installed package's version and [native API reference](/reference).
+The language selector changes the shared guides below; select Python, TypeScript,
+Go, Java, C#, Ruby, Rust, PHP or Elixir before copying a snippet.
+
+| Goal | Starting point | Executable coverage |
+| --- | --- | --- |
+| Install and construct a message | [Quick start](/quick-start) | Native examples for all nine languages |
+| Build a form, response or notification | [Recipe book](/usage/cookbook) | Coverage varies by recipe and language; a rendering example does not implement callbacks |
+| Send through SDK, webhook or response URL | [Sending messages](/usage/sending_messages) | Language-specific SDK/HTTP handoff, separate from payload construction |
+| Find helper names and signatures | [Current references](/reference) | Native components, pagination and composition APIs |
+| Compare multi-select parent compatibility | [Multi-select probes](/recipes/multiselect-compatibility) | Nine executable consumers; 15 native cases per language |
+| Implement actual task changes and guard callbacks | [Workflow state and effects](/recipes/workflow-state) | One tested Python reference application; portable acceptance criteria |
+| Avoid blindly resending an uncertain write | [Bounded delivery](/recipes/reliable-delivery) | One tested Python SQLite/HTTP example; no exactly-once claim |
+
+The [checked-in executable examples](https://github.com/nicklambourne/slackblocks/tree/master/docs/examples)
+include commands and assertions. They never substitute raw payload rewrites for
+native construction. Live tests additionally need an authorized app, genuine
+resources and interaction receipts; local success does not prove live acceptance.
+
+If documentation does not answer a lookup, record the language, package/docs
+version, page or search tried, and the missing name or recipe. Keep actual source
+fallbacks separate from guesses about time saved. A generated reference that is
+absent from Git but present on the current published site is a discovery issue,
+not missing public API support.
