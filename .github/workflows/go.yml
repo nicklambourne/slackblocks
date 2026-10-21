@@ -1,133 +1,153 @@
-name: Go
-
+# Measurement only: never merge or publish.
+name: Go Staticcheck controlled benchmark
 on:
-  push:
-    branches: [master]
-    paths:
-      - "go/**"
-      - "spec/**"
-      - "docs/examples/go/**"
-      - "docs/examples/section_hello.json"
-      - "docs/examples/response_url_payloads.json"
-      - "docs/docs/usage/sending_messages.mdx"
-      - "docs/docs/usage/using_blocks.mdx"
-      - ".github/scripts/extract-go-release-notes.awk"
-      - ".github/workflows/go.yml"
-  pull_request:
-
+  workflow_dispatch:
 permissions:
   contents: read
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  changes:
-    name: Detect relevant changes
+  compare:
     runs-on: ubuntu-latest
-    outputs:
-      relevant: ${{ steps.filter.outputs.relevant }}
-    steps:
-      - name: Compare changed files against this workflow's scope
-        id: filter
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[] | .filename, (.previous_filename // empty)') || files=""
-          if [ -z "$files" ]; then
-            # Fail open: if the file list cannot be read, run the real checks.
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          if grep -qE '^(go/|spec/|docs/examples/go/|docs/examples/(section_hello|response_url_payloads)\.json$|docs/docs/usage/(using_blocks|sending_messages)\.mdx$|\.github/scripts/extract-go-release-notes\.awk$|\.github/workflows/go\.yml$)' <<<"$files"; then
-            echo "relevant=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "relevant=false" >> "$GITHUB_OUTPUT"
-          fi
-
-  test:
-    needs: changes
-    name: Go ${{ matrix.go-version }}
-    runs-on: ubuntu-latest
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
-        go-version: ["1.22.x", "stable"]
-    defaults:
-      run:
-        working-directory: go
+        pair: [1, 2, 3]
     steps:
-      - name: Check out repository
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/checkout@v7
-
-      - name: Install Go ${{ matrix.go-version }}
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/setup-go@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          go-version: ${{ matrix.go-version }}
+          path: harness
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fc44939dffecb7437e41f670e2f9a726de0ed0ac
+          path: source
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: 3.13.16
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+        with:
+          go-version: 1.27.3
           cache: false
-
-      - name: Identify exact Go cache inputs
-        if: needs.changes.outputs.relevant == 'true'
-        id: go-cache
-        run: |
-          identity=$(go env -json GOVERSION GOOS GOARCH GOAMD64 GOARM GOEXPERIMENT CGO_ENABLED | sha256sum | cut -d ' ' -f 1)
-          {
-            echo "identity=$identity"
-            echo "modules=$(go env GOMODCACHE)"
-            echo "build=$(go env GOCACHE)"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Restore exact Go dependency and build cache
-        if: needs.changes.outputs.relevant == 'true'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - name: Restore first-cold dependency cache
+        id: first-cold-deps
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: |
-            ${{ steps.go-cache.outputs.modules }}
-            ${{ steps.go-cache.outputs.build }}
-          # The workflow hash includes analyzer compiler/tool pins and this cache recipe.
-          key: go-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.go-cache.outputs.identity }}-${{ hashFiles('go/go.mod', 'go/go.sum', '.github/workflows/go.yml') }}
-
-      - name: Check formatting
-        if: needs.changes.outputs.relevant == 'true'
-        run: test -z "$(gofmt -l .)"
-
-      - name: Check module tidiness
-        if: needs.changes.outputs.relevant == 'true'
-        run: |
-          go mod tidy
-          git diff --exit-code -- go.mod go.sum
-
-      - name: Verify generated builders
-        if: needs.changes.outputs.relevant == 'true'
-        run: |
-          go generate ./...
-          git diff --exit-code -- concrete_builders_gen.go limits_gen.go
-
-      - name: Verify release-note extraction
-        if: needs.changes.outputs.relevant == 'true'
-        run: |
-          notes=$(printf '## [9.9.9] — 2099-01-01\n\nExpected notes.\n\n## [9.9.8] — 2098-01-01\n\nOlder notes.\n' | awk -v version="9.9.9" -f ../.github/scripts/extract-go-release-notes.awk)
-          test "$notes" = "Expected notes."
-
-      - name: Run vet
-        if: needs.changes.outputs.relevant == 'true'
-        run: go vet ./...
-
-      - name: Run staticcheck
-        if: needs.changes.outputs.relevant == 'true' && matrix.go-version == 'stable'
+            ${{ runner.temp }}/staticcheck-first/cache/modules
+            ${{ runner.temp }}/staticcheck-first/cache/build
+          key: staticcheck-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-first-deps-v1
+      - name: Restore first-cold candidate tool
+        if: matrix.pair == 2
+        id: first-cold-tool
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ runner.temp }}/staticcheck-first/cache/bin
+          key: staticcheck-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-first-binary-v1
+      - name: Measure first-cold full native checks
         env:
-          # v0.8.1 cannot decode Go 1.27.2 export data. Keep runtime tests on stable;
-          # remove this analyzer-only pin when a compatible Staticcheck is available.
-          GOTOOLCHAIN: go1.26.9
-        run: go run honnef.co/go/tools/cmd/staticcheck@v0.8.1 ./...
-
-      - name: Run tests
-        if: needs.changes.outputs.relevant == 'true'
-        run: go test -count=1 -race -cover ./...
+          DEPENDENCY_HIT: ${{ steps.first-cold-deps.outputs.cache-hit }}
+          TOOL_HIT: ${{ steps.first-cold-tool.outputs.cache-hit }}
+        run: python harness/.github/benchmarks/go-staticcheck.py --source source --root "$RUNNER_TEMP/staticcheck-first" --output evidence/first-cold --pair "${{ matrix.pair }}" --variant "${{ matrix.pair == 2 && 'candidate' || 'baseline' }}" --condition cold
+      - name: Save first dependency cache
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: |
+            ${{ runner.temp }}/staticcheck-first/cache/modules
+            ${{ runner.temp }}/staticcheck-first/cache/build
+          key: staticcheck-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-first-deps-v1
+      - name: Save first candidate tool
+        if: matrix.pair == 2
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ runner.temp }}/staticcheck-first/cache/bin
+          key: staticcheck-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-first-binary-v1
+      - name: Discard only this sample's private cache before remote restore
+        run: chmod -R u+w "$RUNNER_TEMP/staticcheck-first/cache" && rm -rf "$RUNNER_TEMP/staticcheck-first/cache"
+      - name: Restore first-warm dependency cache
+        id: first-warm-deps
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: |
+            ${{ runner.temp }}/staticcheck-first/cache/modules
+            ${{ runner.temp }}/staticcheck-first/cache/build
+          key: staticcheck-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-first-deps-v1
+      - name: Restore first-warm candidate tool
+        if: matrix.pair == 2
+        id: first-warm-tool
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ runner.temp }}/staticcheck-first/cache/bin
+          key: staticcheck-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-first-binary-v1
+      - name: Measure first-warm full native checks
+        env:
+          DEPENDENCY_HIT: ${{ steps.first-warm-deps.outputs.cache-hit }}
+          TOOL_HIT: ${{ steps.first-warm-tool.outputs.cache-hit }}
+        run: python harness/.github/benchmarks/go-staticcheck.py --source source --root "$RUNNER_TEMP/staticcheck-first" --output evidence/first-warm --pair "${{ matrix.pair }}" --variant "${{ matrix.pair == 2 && 'candidate' || 'baseline' }}" --condition warm
+      - name: Preserve first evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: staticcheck-${{ matrix.pair }}-first
+          path: evidence/first-*
+          if-no-files-found: warn
+      - name: Restore second-cold dependency cache
+        id: second-cold-deps
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: |
+            ${{ runner.temp }}/staticcheck-second/cache/modules
+            ${{ runner.temp }}/staticcheck-second/cache/build
+          key: staticcheck-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-second-deps-v1
+      - name: Restore second-cold candidate tool
+        if: matrix.pair != 2
+        id: second-cold-tool
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ runner.temp }}/staticcheck-second/cache/bin
+          key: staticcheck-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-second-binary-v1
+      - name: Measure second-cold full native checks
+        env:
+          DEPENDENCY_HIT: ${{ steps.second-cold-deps.outputs.cache-hit }}
+          TOOL_HIT: ${{ steps.second-cold-tool.outputs.cache-hit }}
+        run: python harness/.github/benchmarks/go-staticcheck.py --source source --root "$RUNNER_TEMP/staticcheck-second" --output evidence/second-cold --pair "${{ matrix.pair }}" --variant "${{ matrix.pair == 2 && 'baseline' || 'candidate' }}" --condition cold
+      - name: Save second dependency cache
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: |
+            ${{ runner.temp }}/staticcheck-second/cache/modules
+            ${{ runner.temp }}/staticcheck-second/cache/build
+          key: staticcheck-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-second-deps-v1
+      - name: Save second candidate tool
+        if: matrix.pair != 2
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ runner.temp }}/staticcheck-second/cache/bin
+          key: staticcheck-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-second-binary-v1
+      - name: Discard only this sample's private cache before remote restore
+        run: chmod -R u+w "$RUNNER_TEMP/staticcheck-second/cache" && rm -rf "$RUNNER_TEMP/staticcheck-second/cache"
+      - name: Restore second-warm dependency cache
+        id: second-warm-deps
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: |
+            ${{ runner.temp }}/staticcheck-second/cache/modules
+            ${{ runner.temp }}/staticcheck-second/cache/build
+          key: staticcheck-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-second-deps-v1
+      - name: Restore second-warm candidate tool
+        if: matrix.pair != 2
+        id: second-warm-tool
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ runner.temp }}/staticcheck-second/cache/bin
+          key: staticcheck-eval-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.pair }}-second-binary-v1
+      - name: Measure second-warm full native checks
+        env:
+          DEPENDENCY_HIT: ${{ steps.second-warm-deps.outputs.cache-hit }}
+          TOOL_HIT: ${{ steps.second-warm-tool.outputs.cache-hit }}
+        run: python harness/.github/benchmarks/go-staticcheck.py --source source --root "$RUNNER_TEMP/staticcheck-second" --output evidence/second-warm --pair "${{ matrix.pair }}" --variant "${{ matrix.pair == 2 && 'baseline' || 'candidate' }}" --condition warm
+      - name: Preserve second evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: staticcheck-${{ matrix.pair }}-second
+          path: evidence/second-*
+          if-no-files-found: warn
