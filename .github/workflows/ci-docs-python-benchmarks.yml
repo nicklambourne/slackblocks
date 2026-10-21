@@ -1,0 +1,94 @@
+# Measurement-only branch. Never deploys or publishes; not intended for merging.
+name: Documentation reference concurrency comparison
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: docs-reference-concurrency-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  paired:
+    name: Docs baseline/candidate pair ${{ matrix.pair }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        pair: [1, 2, 3]
+    env:
+      BENCH_PAIR: ${{ matrix.pair }}
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      UV_PYTHON: "3.14.8"
+      DOTNET_MULTILEVEL_LOOKUP: "0"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11.16.0
+          run_install: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22.23.3"
+      - uses: astral-sh/setup-uv@v10.3.0
+        with:
+          version: "0.13.4"
+          enable-cache: false
+          python-version: "3.14.8"
+      - uses: actions/setup-go@v7
+        with:
+          go-version: "1.27.3"
+          cache: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21.0.12+1"
+      - name: Select isolated fixed .NET installation
+        run: echo "DOTNET_INSTALL_DIR=$RUNNER_TEMP/fixed-docs-dotnet" >> "$GITHUB_ENV"
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        with:
+          dotnet-version: |
+            8.0.426
+            10.0.402
+      - uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a
+        with:
+          ruby-version: "3.4.11"
+      - name: Install and verify fixed Rust toolchains
+        run: |
+          rustup toolchain install stable 1.85.0 --profile minimal --component rustfmt
+          rustup default stable
+          test "$(rustc +stable --version | cut -d ' ' -f 2)" = "1.99.1"
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962
+        with:
+          php-version: "8.2.34"
+          tools: composer:2.10.3
+          coverage: none
+      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124
+        with:
+          elixir-version: "1.16.3"
+          otp-version: "26.2"
+          version-type: strict
+      - name: Record exact toolchain versions
+        run: |
+          mkdir -p runtime-evidence
+          { node --version; pnpm --version; uv --version; python3 --version; go version; java -version; dotnet --info; ruby --version; rustc --version; php --version; composer --version; elixir --version; } > runtime-evidence/versions.txt 2>&1
+          git rev-parse HEAD > runtime-evidence/harness-commit.txt
+          df -h > runtime-evidence/disk-before.txt
+          python3 .github/benchmarks/dotnet-receipts.py
+      - name: Validate scheduler failure and concurrency controls
+        run: node .github/benchmarks/check_reference_generation.mjs .github/benchmarks/generate_references.mjs
+      - name: Four complete builds with isolated then warm dependency caches
+        run: python3 .github/benchmarks/docs-reference-paired.py
+      - name: Retain successful and failed measurements
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: docs-reference-pair-${{ matrix.pair }}
+          path: |
+            benchmark-results
+            runtime-evidence
+          if-no-files-found: error
+          retention-days: 7

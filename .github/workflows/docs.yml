@@ -1,88 +1,192 @@
-# Measurement-only branch. Never deploys or publishes; not intended for merging.
-name: Documentation reference concurrency comparison
+name: Documentation
+
 on:
+  push:
+    branches: [master]
+    paths:
+      - "docs/**"
+      - "python/**"
+      - "typescript/src/**"
+      - "typescript/package.json"
+      - "typescript/tsconfig.json"
+      - "typescript/tsconfig.typedoc.json"
+      - "go/**"
+      - "java/**"
+      - "csharp/**"
+      - "ruby/**"
+      - "rust/**"
+      - "php/**"
+      - "elixir/**"
+      - "README.md"
+      - "spec/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/docs.yml"
+  pull_request:
   workflow_dispatch:
+
 permissions:
   contents: read
+
 concurrency:
-  group: docs-reference-concurrency-${{ github.ref }}
-  cancel-in-progress: false
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  paired:
-    name: Docs baseline/candidate pair ${{ matrix.pair }}
+  changes:
+    name: Detect relevant changes
     runs-on: ubuntu-latest
-    timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      max-parallel: 3
-      matrix:
-        pair: [1, 2, 3]
-    env:
-      BENCH_PAIR: ${{ matrix.pair }}
-      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
-      UV_PYTHON: "3.14.8"
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Compare changed files against this workflow's scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[].filename') || files=""
+          if [ -z "$files" ]; then
+            # Fail open: if the file list cannot be read, run the real checks.
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if grep -qE '^(docs/|python/|typescript/src/|typescript/package\.json$|typescript/tsconfig\.json$|typescript/tsconfig\.typedoc\.json$|go/|java/|csharp/|ruby/|rust/|php/|elixir/|README\.md$|spec/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|\.github/workflows/docs\.yml$)' <<<"$files"; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "relevant=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    needs: changes
+    if: needs.changes.outputs.relevant == 'true'
+    name: Build Docusaurus site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: pnpm/action-setup@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
         with:
           version: 11.16.0
           run_install: false
-      - uses: actions/setup-node@v7
+
+      - name: Install Node.js
+        uses: actions/setup-node@v7
         with:
-          node-version: "22.23.3"
-      - uses: astral-sh/setup-uv@v10.3.0
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@v10.3.0
         with:
-          version: "0.13.4"
           enable-cache: false
-          python-version: "3.14.8"
-      - uses: actions/setup-go@v7
+          cache-dependency-glob: python/uv.lock
+          python-version: "3.14"
+
+      - name: Install Go
+        uses: actions/setup-go@v7
         with:
-          go-version: "1.27.3"
+          go-version: "stable"
           cache: false
-      - uses: actions/setup-java@v6
+
+      - name: Install Java for the javadoc-generated API reference
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: "21.0.12+1"
-      - uses: actions/setup-dotnet@v6
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: java/pom.xml
+
+      - name: Install .NET for the C# API reference
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: "10.0.402"
-      - uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a
+          dotnet-version: "10.0.x"
+
+      - name: Install Ruby for executable guide examples
+        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a # v1
         with:
-          ruby-version: "3.4.11"
-      - name: Install and verify fixed Rust toolchains
+          ruby-version: "3.4"
+
+      - name: Install Rust for native reference and executable guide examples
         run: |
           rustup toolchain install stable 1.85.0 --profile minimal --component rustfmt
           rustup default stable
-          test "$(rustc +stable --version | cut -d ' ' -f 2)" = "1.99.1"
-      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962
+
+      - name: Install PHP for native reference and executable guide examples
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
-          php-version: "8.2.34"
-          tools: composer:2.10.3
+          php-version: "8.2"
+          tools: composer:v2
           coverage: none
-      - uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124
+
+      - name: Install PHP dependencies
+        run: composer install --working-dir=php --no-interaction --prefer-dist
+
+      - name: Install Elixir for native docs and executable examples
+        uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1.24.1
         with:
           elixir-version: "1.16.3"
           otp-version: "26.2"
           version-type: strict
-      - name: Record exact toolchain versions
+
+      - name: Install Elixir documentation dependencies
+        working-directory: elixir
         run: |
-          mkdir -p runtime-evidence
-          { node --version; pnpm --version; uv --version; python3 --version; go version; java -version; dotnet --info; ruby --version; rustc --version; php --version; composer --version; elixir --version; } > runtime-evidence/versions.txt 2>&1
-          git rev-parse HEAD > runtime-evidence/harness-commit.txt
-          df -h > runtime-evidence/disk-before.txt
-      - name: Validate scheduler failure and concurrency controls
-        run: node .github/benchmarks/check_reference_generation.mjs .github/benchmarks/generate_references.mjs
-      - name: Four complete builds with isolated then warm dependency caches
-        run: python3 .github/benchmarks/docs-reference-paired.py
-      - name: Retain successful and failed measurements
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+          mix local.hex 2.5.1 --force
+          mix deps.get --check-locked
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build documentation
+        run: pnpm --filter @slackblocks/docs build
+
+      - name: Verify immutable historical snapshots
+        run: pnpm --filter @slackblocks/docs check:legacy-snapshots
+
+      - name: Verify every released version has a docs snapshot
+        run: pnpm --filter @slackblocks/docs check:release-snapshots
+
+      - name: Verify documentation generation is clean
+        run: >-
+          git diff --exit-code --
+          docs/legacy/manifest.json
+          docs/versioned_docs
+          docs/versioned_sidebars
+          docs/static/img/legacy
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v5
         with:
-          name: docs-reference-pair-${{ matrix.pair }}
-          path: |
-            benchmark-results
-            runtime-evidence
-          if-no-files-found: error
-          retention-days: 7
+          path: docs/build
+
+  deploy:
+    name: Deploy GitHub Pages
+    if: >-
+      github.ref == 'refs/heads/master' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: [changes, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
