@@ -1,0 +1,44 @@
+# Measurement-only branch. Never merge or publish.
+name: Python documentation dependency comparison
+on:
+  push:
+    branches: [codex/ci-docs-python-benchmarks]
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        pair: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: harness
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: f4f0dc7da0170efc06cd16fd08b71325e862d26b
+          path: source
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.14.8'
+      - uses: astral-sh/setup-uv@v10.3.0
+        with:
+          version: '0.13.4'
+          enable-cache: false
+          python-version: '3.14.8'
+      - name: Compare complete Python docs commands with fixed dependencies
+        env:
+          BENCH_PAIR: ${{ matrix.pair }}
+        run: python harness/.github/benchmarks/docs-python.py
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: docs-python-pair-${{ matrix.pair }}
+          path: evidence
+          if-no-files-found: warn
+          retention-days: 14
