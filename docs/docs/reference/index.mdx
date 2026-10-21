@@ -2,6 +2,42 @@ import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, Typ
 
 # API reference
 
+## Choose the current native reference
+
+These links open the current implementation reference directly, regardless of the
+language currently selected in the navigation. For an older installed release,
+choose its matching documentation version first. Avoid copying constructor names
+from another language or from a frozen versioned page.
+
+| Language | Current native API |
+| --- | --- |
+| Python | [Python classes and functions](/reference/python) |
+| TypeScript | [TypeScript builders and types](/reference/typescript) |
+| Go | [Go builders and SDK interfaces](/reference/go) |
+| Java | [Java values and builders](/reference/java) |
+| C# | [C# constructors and properties](/reference/csharp) |
+| Ruby | [Ruby keyword constructors and readers](/reference/ruby) |
+| Rust | [Rust consuming builders and role enums](/reference/rust) |
+| PHP | [PHP named constructors and readonly properties](/reference/php) |
+| Elixir | [Elixir structs, functions and typespecs](/reference/elixir) |
+
+Use the [recipe index](/recipes) to find forms, response URLs, helpers and SDK
+handoff before reading implementation source. For example, PHP
+[`RichTextUserGroup`](/reference/php/objects#richtextusergroup) names its constructor
+argument `userGroupId`; the Slack wire key is `usergroup_id`. The generated native
+reference gives the callable spelling and parameter types.
+
+## References in a source checkout
+
+Most current reference pages are generated during the documentation build and
+intentionally ignored by Git. Their absence from a fresh checkout does not mean
+the public type is undocumented. Install the documented development toolchains,
+then run `pnpm --filter @slackblocks/docs generate` to create the references or
+`pnpm --filter @slackblocks/docs build` to generate and verify the complete site.
+The build reads the native public APIs; do not copy an older versioned reference
+into the current tree or hand-edit generated signatures. See the
+[maintenance guide](/contributing/block-kit-updates) for generation and release checks.
+
 <LanguageContent>
 <Python>
 

@@ -750,6 +750,18 @@ const invalidCases: Record<string, () => unknown> = {
   "number-bound-trailing-space": () => numberInput({isDecimalAllowed:true,minValue:"1 "}),
   "number-bound-nan": () => numberInput({isDecimalAllowed:true,minValue:"NaN"}),
   "number-bound-infinity": () => numberInput({isDecimalAllowed:true,minValue:"Infinity"}),
+  "external-multi-focus-false": () => externalMultiSelect({ focusOnLoad: false }),
+  "external-multi-focus-true": () => externalMultiSelect({ focusOnLoad: true }),
+  "external-query-negative": () => api.ExternalSelect().minQueryLength(-1).build(),
+  "external-multi-query-negative": () => api.ExternalMultiSelect().minQueryLength(-1).build(),
+  "date-picker-invalid-format": () => api.DatePicker().initialDate("February 29, 2028").build(),
+  "time-picker-invalid-format": () => api.TimePicker().initialTime("9:00").build(),
+  "time-picker-invalid-range": () => api.TimePicker().initialTime("25:99").build(),
+  "static-select-empty-options": () => api.staticSelect({ options: [] }),
+  "static-multi-select-empty-options": () => api.staticMultiSelect({ options: [] }),
+  "static-select-empty-groups": () => api.staticSelect({ optionGroups: [] }),
+  "static-multi-select-empty-groups": () => api.staticMultiSelect({ optionGroups: [] }),
+  "plain-text-input-inverted-range": () => api.PlainTextInput().minLength(20).maxLength(10).build(),
   "number-input-inverted-range": () =>
     numberInput({ actionId: "a", isDecimalAllowed: true, minValue: 2, maxValue: 1 }),
   "context-invalid-element": () => contextBlock({ elements: [dividerBlock()] }),
@@ -903,6 +915,7 @@ const invalidCases: Record<string, () => unknown> = {
       rows: [[rawText("Name")], [rawText("x".repeat(limits.data_table.content.max_length))]],
       caption: "Names",
     }),
+  "message-too-many-charts": () => message({channel:"C123", blocks:Array.from({length:3}, () => dataVisualizationBlock({title:"Chart",chart:pieChart([chartSegment({label:"A",value:1})])}))}),
   "data-visualization-title-too-long": () =>
     dataVisualizationBlock({
       title: "x".repeat(limits.data_visualization.title.max_length + 1),

@@ -198,7 +198,7 @@ public final class StaticMultiSelectElement extends BlockElement implements Inpu
     /**
      * Adds selectable options in display order.
      *
-     * <p>Slack allows at most 100 items. Each call appends to any values already added.
+     * <p>Must contain between 1 and 100 items. Each call appends to any values already added.
      *
      * @param values {@link Option} values appended in order
      * @return this builder
@@ -211,7 +211,7 @@ public final class StaticMultiSelectElement extends BlockElement implements Inpu
     /**
      * Adds labelled groups of options in display order. Cannot be combined with ungrouped options.
      *
-     * <p>Slack allows at most 100 items. Each call appends to any values already added.
+     * <p>Must contain between 1 and 100 items. Each call appends to any values already added.
      *
      * @param values {@link OptionGroup} values appended in order
      * @return this builder

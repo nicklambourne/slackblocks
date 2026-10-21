@@ -22,6 +22,11 @@ import java.util.OptionalInt;
  * <p>Start with {@link #builder()}, set fields with the named fluent methods, and call {@link
  * Builder#build()} to validate and create an immutable value.
  *
+ * <ul>
+ *   <li>When both min_length and max_length are supplied, min_length must not exceed max_length;
+ *       otherwise the input cannot be satisfied.
+ * </ul>
+ *
  * @see <a
  *     href="https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element">Slack
  *     reference</a>

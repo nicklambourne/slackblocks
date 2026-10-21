@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Validate ordered plain-text bounds, nonnegative external-query thresholds, nonempty supplied static lists, ASCII date shape and 24-hour times through native constructors, changes and JSON ingress/egress (SB-013). Preserve omitted fields, zero thresholds, empty image alt text and application-owned calendar rules.
+
+- Enforce the aggregate two-chart message limit across native message blocks, attachments and container children; leave views and opaque metadata unaffected (SB-006).
+
+- Reject explicit `focus_on_load` on external multi-selects, including false (SB-003). The compatibility option remains available; omit it or use nil. Other selectors retain focus support.
+
 - Correct number-input bounds to preserved decimal strings, retaining numeric constructor/change conveniences and exact ordering (SB-001, spec 1.3.0). Stored fields now contain strings; package version unchanged.
 
 - Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).

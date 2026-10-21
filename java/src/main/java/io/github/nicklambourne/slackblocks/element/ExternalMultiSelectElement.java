@@ -24,6 +24,10 @@ import java.util.OptionalInt;
  * <p>Start with {@link #builder()}, set fields with the named fluent methods, and call {@link
  * Builder#build()} to validate and create an immutable value.
  *
+ * <ul>
+ *   <li>focus_on_load is unsupported and must be omitted, including explicit false.
+ * </ul>
+ *
  * @see <a
  *     href="https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element">Slack
  *     reference</a>
@@ -108,8 +112,7 @@ public final class ExternalMultiSelectElement extends BlockElement implements In
   }
 
   /**
-   * Returns whether the element receives focus when the view opens. Only one element per view may
-   * do so.
+   * Returns the {@code focus_on_load} field.
    *
    * @return the value, or an empty optional when it was not set
    * @throws IllegalStateException if the field was set through a raw wire field to a value this
@@ -185,6 +188,8 @@ public final class ExternalMultiSelectElement extends BlockElement implements In
     /**
      * Sets how many characters the user must type before Slack queries your options endpoint.
      *
+     * <p>Must be at least 0.
+     *
      * @param value value for Slack's {@code min_query_length} field
      * @return this builder
      */
@@ -232,8 +237,8 @@ public final class ExternalMultiSelectElement extends BlockElement implements In
     }
 
     /**
-     * Sets whether the element receives focus when the view opens. Only one element per view may do
-     * so.
+     * Deprecated compatibility parameter. Slack external multi-select menus do not support
+     * focus_on_load; omit it. Explicit true or false is rejected.
      *
      * @param value value for Slack's {@code focus_on_load} field
      * @return this builder

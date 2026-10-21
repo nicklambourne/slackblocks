@@ -8,6 +8,9 @@ namespace Slackblocks.Elements;
 
 /// <summary>A menu for selecting multiple options loaded from your app.</summary>
 /// <remarks>
+/// <list type="bullet">
+/// <item><description>focus_on_load is unsupported and must be omitted, including explicit false.</description></item>
+/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
@@ -15,11 +18,11 @@ public sealed partial class ExternalMultiSelectElement : global::Slackblocks.Sla
 {
     /// <summary>Creates and validates a <see cref="ExternalMultiSelectElement"/>.</summary>
     /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
-    /// <param name="minQueryLength">How many characters the user must type before Slack queries your options endpoint.</param>
+    /// <param name="minQueryLength">How many characters the user must type before Slack queries your options endpoint. Must be at least 0.</param>
     /// <param name="initialOptions">Options that are selected when the element loads. Each must match an option in the element.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
     /// <param name="maxSelectedItems">The maximum number of items a user can select. Must be at least 1.</param>
-    /// <param name="focusOnLoad">Whether the element receives focus when the view opens. Only one element per view may do so.</param>
+    /// <param name="focusOnLoad">Deprecated compatibility parameter. Slack external multi-select menus do not support focus_on_load; omit it. Explicit true or false is rejected.</param>
     /// <param name="placeholder">The placeholder text shown before a value is chosen. Slack allows at most 150 characters. A string is sent as a <c>plain_text</c> text object.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
@@ -65,7 +68,7 @@ public sealed partial class ExternalMultiSelectElement : global::Slackblocks.Sla
     /// <value>The value, or <see langword="null"/> when it was not set.</value>
     public int? MaxSelectedItems { get; }
 
-    /// <summary>Gets whether the element receives focus when the view opens. Only one element per view may do so.</summary>
+    /// <summary>Gets the <c>focus_on_load</c> field.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>
     public bool? FocusOnLoad { get; }
 

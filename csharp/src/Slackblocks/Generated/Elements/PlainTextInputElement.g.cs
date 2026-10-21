@@ -8,6 +8,9 @@ namespace Slackblocks.Elements;
 
 /// <summary>A single-line or multi-line free-text input.</summary>
 /// <remarks>
+/// <list type="bullet">
+/// <item><description>When both min_length and max_length are supplied, min_length must not exceed max_length; otherwise the input cannot be satisfied.</description></item>
+/// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]

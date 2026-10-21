@@ -1,6 +1,7 @@
 package slackblocks
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
 	"regexp"
@@ -75,6 +76,15 @@ var confirmTypes = stringSet(
 )
 
 var inputPlaceholderMaxLengths = map[string]int{
+	"external_select":            limitSelectPlaceholderMaxLength,
+	"multi_external_select":      limitSelectPlaceholderMaxLength,
+	"users_select":               limitSelectPlaceholderMaxLength,
+	"multi_users_select":         limitSelectPlaceholderMaxLength,
+	"channels_select":            limitSelectPlaceholderMaxLength,
+	"multi_channels_select":      limitSelectPlaceholderMaxLength,
+	"conversations_select":       limitSelectPlaceholderMaxLength,
+	"multi_conversations_select": limitSelectPlaceholderMaxLength,
+
 	"plain_text_input": limitPlainTextInputPlaceholderMaxLength,
 	"email_text_input": limitEmailInputPlaceholderMaxLength,
 	"url_text_input":   limitURLInputPlaceholderMaxLength,
@@ -83,6 +93,9 @@ var inputPlaceholderMaxLengths = map[string]int{
 	"timepicker":       limitTimePickerPlaceholderMaxLength,
 	"rich_text_input":  limitRichTextInputPlaceholderMaxLength,
 }
+
+var dateShapePattern = regexp.MustCompile(`^[0-9]{4}-[0-9]{2}-[0-9]{2}$`)
+var timeShapePattern = regexp.MustCompile(`^([01][0-9]|2[0-3]):[0-5][0-9]$`)
 
 var attachmentColorPattern = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
 
@@ -347,6 +360,27 @@ func validateObject(object Object, path string) error {
 			}
 		}
 	}
+	if typeName == "multi_external_select" {
+		if _, present := object["focus_on_load"]; present {
+			return validationError(InvalidUsage, child(path, "focus_on_load"), "unsupported for external multi-select menus; omit this field")
+		}
+	}
+	if typeName == "external_select" || typeName == "multi_external_select" {
+		if err := numberBetween(object, "min_query_length", path, limitSelectMinQueryLengthMin, math.MaxInt); err != nil {
+			return err
+		}
+	}
+	if typeName == "datepicker" || typeName == "timepicker" {
+		field, pattern := "initial_date", dateShapePattern
+		if typeName == "timepicker" {
+			field, pattern = "initial_time", timeShapePattern
+		}
+		if value, present := object[field]; present {
+			if text, ok := value.(string); !ok || !pattern.MatchString(text) {
+				return validationError(TypeMismatch, child(path, field), "invalid date/time format")
+			}
+		}
+	}
 	if multiSelectTypes[typeName] {
 		if err := numberBetween(object, "max_selected_items", path, limitMultiSelectMaxSelectedItemsMin, math.MaxInt); err != nil {
 			return err
@@ -374,6 +408,10 @@ func validateObject(object Object, path string) error {
 	}
 
 	switch typeName {
+	case "raw_number":
+		if value, ok := object["value"].(json.Number); ok && !jsonNumberPattern.MatchString(string(value)) {
+			return validationError(TypeMismatch, child(path, "value"), "expected valid JSON number syntax")
+		}
 	case "plain_text", "mrkdwn":
 		return textLength(object, child(path, "text"), limitTextMinLength, limitTextMaxLength)
 	case "icon":
@@ -461,6 +499,11 @@ func validateObject(object Object, path string) error {
 			return validationError(OutOfRange, child(path, "max_files"), "expected a value between %d and %d", limitFileInputMaxFilesMin, limitFileInputMaxFilesMax)
 		}
 	case "plain_text_input":
+		minimum, hasMin := number(object["min_length"])
+		maximum, hasMax := number(object["max_length"])
+		if hasMin && hasMax && minimum > maximum {
+			return validationError(OutOfRange, child(path, "min_length"), "cannot exceed max_length")
+		}
 		if value, ok := number(object["max_length"]); ok && value > limitPlainTextInputMaxLengthMax {
 			return validationError(OutOfRange, child(path, "max_length"), "exceeds maximum %d", limitPlainTextInputMaxLengthMax)
 		}
@@ -524,7 +567,7 @@ func validateObject(object Object, path string) error {
 			if err != nil {
 				return err
 			}
-			if err := sliceLength(options, child(path, "options"), 0, limitSelectOptionsMaxItems); err != nil {
+			if err := sliceLength(options, child(path, "options"), limitSelectOptionsMinItems, limitSelectOptionsMaxItems); err != nil {
 				return err
 			}
 			if err := validateOptions(options, child(path, "options")); err != nil {
@@ -536,7 +579,7 @@ func validateObject(object Object, path string) error {
 			if err != nil {
 				return err
 			}
-			if err := sliceLength(groups, child(path, "option_groups"), 0, limitSelectOptionGroupsMaxItems); err != nil {
+			if err := sliceLength(groups, child(path, "option_groups"), limitSelectOptionGroupsMinItems, limitSelectOptionGroupsMaxItems); err != nil {
 				return err
 			}
 			for index, raw := range groups {
@@ -1159,6 +1202,17 @@ func validateMessageCollections(object Object, path string) error {
 			return err
 		}
 	}
+	charts := chartCount(object["blocks"])
+	if attachments, ok := object["attachments"].([]any); ok {
+		for _, raw := range attachments {
+			if attachment, ok := raw.(Object); ok {
+				charts += chartCount(attachment["blocks"])
+			}
+		}
+	}
+	if charts > limitMessageDataVisualizationsMaxItems {
+		return validationError(LengthExceeded, path, "a message may contain at most two data visualization blocks")
+	}
 	markdown, tableContent := messageTotals(object["blocks"])
 	if attachments, ok := object["attachments"].([]any); ok {
 		for _, raw := range attachments {
@@ -1176,6 +1230,25 @@ func validateMessageCollections(object Object, path string) error {
 		return validationError(LengthExceeded, path, "data table cell text totals %d characters, exceeding maximum %d", tableContent, limitDataTableTotalContentMaxLength)
 	}
 	return nil
+}
+
+func chartCount(value any) int {
+	switch v := value.(type) {
+	case Object:
+		if objectType(v) == "data_visualization" {
+			return 1
+		}
+		if objectType(v) == "container" {
+			return chartCount(v["child_blocks"])
+		}
+	case []any:
+		total := 0
+		for _, child := range v {
+			total += chartCount(child)
+		}
+		return total
+	}
+	return 0
 }
 
 // messageTotals visits modeled blocks and container children, keeping application JSON opaque.

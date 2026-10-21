@@ -242,6 +242,9 @@ internal static class SlackLimits
     /// <summary><c>message.channel.min_length</c></summary>
     public const int MessageChannelMinLength = 1;
 
+    /// <summary><c>message.data_visualizations.max_items</c></summary>
+    public const int MessageDataVisualizationsMaxItems = 2;
+
     /// <summary><c>multi_select.max_selected_items.min</c></summary>
     public const int MultiSelectMaxSelectedItemsMin = 1;
 
@@ -350,11 +353,20 @@ internal static class SlackLimits
     /// <summary><c>section.text.max_length</c></summary>
     public const int SectionTextMaxLength = 3000;
 
+    /// <summary><c>select.min_query_length.min</c></summary>
+    public const int SelectMinQueryLengthMin = 0;
+
     /// <summary><c>select.option_groups.max_items</c></summary>
     public const int SelectOptionGroupsMaxItems = 100;
 
+    /// <summary><c>select.option_groups.min_items</c></summary>
+    public const int SelectOptionGroupsMinItems = 1;
+
     /// <summary><c>select.options.max_items</c></summary>
     public const int SelectOptionsMaxItems = 100;
+
+    /// <summary><c>select.options.min_items</c></summary>
+    public const int SelectOptionsMinItems = 1;
 
     /// <summary><c>select.placeholder.max_length</c></summary>
     public const int SelectPlaceholderMaxLength = 150;

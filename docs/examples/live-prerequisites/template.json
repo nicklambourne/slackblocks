@@ -1,0 +1,14 @@
+{
+  "scope_evidence": null,
+  "effective_scopes": [],
+  "fixtures": {
+    "interactivity": {"genuine": false, "evidence": null},
+    "slack_file": {"genuine": false, "evidence": null, "file_id": null, "accessible_to_app": false},
+    "remote_file": {"genuine": false, "evidence": null, "external_id": null, "share_evidence": null},
+    "video": {"genuine": false, "evidence": null, "url": null, "configured_unfurl_domains": [], "embeddable": false},
+    "workflow": {"genuine": false, "evidence": null, "available_in_workspace": false, "trigger_reference": null},
+    "usergroup": {"genuine": false, "evidence": null, "id": null}
+  },
+  "actors": [],
+  "mobile": "deferred"
+}

@@ -40,6 +40,8 @@ module Slackblocks
 
     def self.special(klass, wire, path)
       case klass.name.split("::").last
+      when "ExternalMultiSelectElement"
+        fail!("invalid-usage", "#{path}.focus_on_load", "unsupported for external multi-select menus; omit this field") if wire.key?("focus_on_load")
       when "SlackIcon"
         unless Vocabulary::ICON_NAMES.include?(wire["name"])
           fail!("type-mismatch", "#{path}.name", "unknown Slack icon")
@@ -99,6 +101,18 @@ module Slackblocks
         end
       when "DispatchActionConfiguration"
         fail!("missing-required", "#{path}.trigger_actions_on", "required") unless wire.key?("trigger_actions_on")
+      when "DatePickerElement"
+        if wire.key?("initial_date") && !wire["initial_date"].match?(/\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/)
+          fail!("type-mismatch", "#{path}.initial_date", "expected YYYY-MM-DD")
+        end
+      when "TimePickerElement"
+        if wire.key?("initial_time") && !wire["initial_time"].match?(/\A([01][0-9]|2[0-3]):[0-5][0-9]\z/)
+          fail!("type-mismatch", "#{path}.initial_time", "expected HH:mm in 24-hour time")
+        end
+      when "PlainTextInputElement"
+        if wire["min_length"] && wire["max_length"] && wire["min_length"] > wire["max_length"]
+          fail!("out-of-range", "#{path}.min_length", "cannot exceed max_length")
+        end
       when "NumberInputElement"
         minimum, maximum = %w[min_value max_value].map do |field|
           text = wire[field]
@@ -188,9 +202,10 @@ module Slackblocks
 
     def self.message(wire, path)
       surface(wire["blocks"] || [], "message", "#{path}.blocks")
-      totals = {"markdown" => 0, "data_table" => 0}
+      totals = {"markdown" => 0, "data_table" => 0, "data_visualization" => 0}
       tally(wire["blocks"], totals)
       (wire["attachments"] || []).each { |attachment| tally(attachment["blocks"], totals) }
+      fail!("length-exceeded", path, "a message may contain at most two data visualization blocks") if totals["data_visualization"] > limit("message.data_visualizations.max_items")
       if totals["markdown"] > limit("markdown.total_text.max_length")
         fail!("length-exceeded", path, "message markdown total exceeded")
       end
@@ -204,6 +219,8 @@ module Slackblocks
       when Hash
         if node["type"] == "markdown"
           totals["markdown"] += node.fetch("text").length
+        elsif node["type"] == "data_visualization"
+          totals["data_visualization"] += 1
         elsif node["type"] == "data_table"
           totals["data_table"] += characters(node.fetch("rows"))
         elsif node["type"] == "container"

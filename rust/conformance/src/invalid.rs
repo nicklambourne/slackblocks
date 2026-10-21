@@ -9,6 +9,157 @@ pub struct InvalidCase {
 }
 pub const INVALID: &[InvalidCase] = &[
     InvalidCase {
+        id: "external-query-negative",
+        build: || {
+            ExternalSelectElement::builder()
+                .min_query_length(-1)
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            ExternalSelectElement::try_from(
+                serde_json::json!({"type": "external_select", "min_query_length": -1}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "external-multi-query-negative",
+        build: || {
+            ExternalMultiSelectElement::builder()
+                .min_query_length(-1)
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            ExternalMultiSelectElement::try_from(
+                serde_json::json!({"type": "multi_external_select", "min_query_length": -1}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "date-picker-invalid-format",
+        build: || {
+            DatePickerElement::builder()
+                .initial_date("February 29, 2028")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            DatePickerElement::try_from(
+                serde_json::json!({"type": "datepicker", "initial_date": "February 29, 2028"}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "time-picker-invalid-format",
+        build: || {
+            TimePickerElement::builder()
+                .initial_time("9:00")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            TimePickerElement::try_from(
+                serde_json::json!({"type": "timepicker", "initial_time": "9:00"}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "time-picker-invalid-range",
+        build: || {
+            TimePickerElement::builder()
+                .initial_time("25:99")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            TimePickerElement::try_from(
+                serde_json::json!({"type": "timepicker", "initial_time": "25:99"}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "static-select-empty-options",
+        build: || {
+            StaticSelectElement::builder()
+                .options(Vec::<SelectOption>::new())
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            StaticSelectElement::try_from(
+                serde_json::json!({"type": "static_select", "options": []}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "static-multi-select-empty-options",
+        build: || {
+            StaticMultiSelectElement::builder()
+                .options(Vec::<SelectOption>::new())
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            StaticMultiSelectElement::try_from(
+                serde_json::json!({"type": "multi_static_select", "options": []}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "static-select-empty-groups",
+        build: || {
+            StaticSelectElement::builder()
+                .option_groups(Vec::<SelectOptionGroup>::new())
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            StaticSelectElement::try_from(
+                serde_json::json!({"type": "static_select", "option_groups": []}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "static-multi-select-empty-groups",
+        build: || {
+            StaticMultiSelectElement::builder()
+                .option_groups(Vec::<SelectOptionGroup>::new())
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            StaticMultiSelectElement::try_from(
+                serde_json::json!({"type": "multi_static_select", "option_groups": []}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "plain-text-input-inverted-range",
+        build: || {
+            PlainTextInputElement::builder()
+                .min_length(20)
+                .max_length(10)
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            PlainTextInputElement::try_from(
+                serde_json::json!({"type":"plain_text_input","min_length":20,"max_length":10}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
         id: "text-empty",
         build: || {
             let _ = PlainText::builder().text("").build()?;
@@ -4429,6 +4580,26 @@ pub const INVALID: &[InvalidCase] = &[
         },
     },
     InvalidCase {
+        id: "message-too-many-charts",
+        build: || {
+            let chart = DataVisualizationBlock::builder()
+                .title("Chart")
+                .chart(
+                    PieChart::builder()
+                        .segment(ChartSegment::builder().label("A").value(1).build()?)
+                        .build()?,
+                )
+                .build()?;
+            MessagePayload::builder("C123")
+                .blocks(vec![chart; 3])
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            MessagePayload::try_from(serde_json::json!({"channel":"C123","blocks":vec![serde_json::json!({"type":"data_visualization","title":"Chart","chart":{"type":"pie","segments":[{"label":"A","value":1}]}});3]})).map(|_| ())
+        },
+    },
+    InvalidCase {
         id: "data-visualization-title-too-long",
         build: || {
             let _ = DataVisualizationBlock::builder()
@@ -7571,6 +7742,36 @@ pub const INVALID: &[InvalidCase] = &[
                     .into_iter()
                     .collect(),
             ))
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "external-multi-focus-false",
+        build: || {
+            ExternalMultiSelectElement::builder()
+                .focus_on_load(false)
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            ExternalMultiSelectElement::try_from(
+                serde_json::json!({"type":"multi_external_select","focus_on_load":false}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "external-multi-focus-true",
+        build: || {
+            ExternalMultiSelectElement::builder()
+                .focus_on_load(true)
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            ExternalMultiSelectElement::try_from(
+                serde_json::json!({"type":"multi_external_select","focus_on_load":true}),
+            )
             .map(|_| ())
         },
     },

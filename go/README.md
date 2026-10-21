@@ -73,3 +73,17 @@ go get github.com/nicklambourne/slackblocks/go/v2
 This directory is part of the coordinated slackblocks monorepo. The Go module
 implements the same shared JSON fixtures and validation categories as the
 other language packages.
+
+For explicit response visibility, replacement and delete-only payloads, see the
+[response URL recipes](https://nicklambourne.github.io/slackblocks/usage/sending_messages?language=go).
+`WebhookMessage` supports native `delete_original`; `MessageResponse` does not expose that field.
+
+For exact numeric data-table cells, use `NewRawNumber().ValueNumber(json.Number("9007199254740993")).Text("9,007,199,254,740,993")`
+with `encoding/json`. It preserves the JSON number without converting through
+`float64`; malformed number syntax fails at `Build`. The existing `Value(float64)`
+setter keeps its floating-point behavior. The separate `Text` field controls the
+displayed label, not the numeric value used for sorting.
+
+Builders retain nested builder references until `Build`, which produces an
+independent wire snapshot. See [language semantics](https://nicklambourne.github.io/slackblocks/usage/language-semantics)
+for ownership, omission, getters and helper differences across implementations.

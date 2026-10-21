@@ -237,6 +237,9 @@ public final class SlackLimits {
   /** {@code message.channel.min_length} */
   public static final int MESSAGE_CHANNEL_MIN_LENGTH = 1;
 
+  /** {@code message.data_visualizations.max_items} */
+  public static final int MESSAGE_DATA_VISUALIZATIONS_MAX_ITEMS = 2;
+
   /** {@code multi_select.max_selected_items.min} */
   public static final int MULTI_SELECT_MAX_SELECTED_ITEMS_MIN = 1;
 
@@ -345,11 +348,20 @@ public final class SlackLimits {
   /** {@code section.text.max_length} */
   public static final int SECTION_TEXT_MAX_LENGTH = 3000;
 
+  /** {@code select.min_query_length.min} */
+  public static final int SELECT_MIN_QUERY_LENGTH_MIN = 0;
+
   /** {@code select.option_groups.max_items} */
   public static final int SELECT_OPTION_GROUPS_MAX_ITEMS = 100;
 
+  /** {@code select.option_groups.min_items} */
+  public static final int SELECT_OPTION_GROUPS_MIN_ITEMS = 1;
+
   /** {@code select.options.max_items} */
   public static final int SELECT_OPTIONS_MAX_ITEMS = 100;
+
+  /** {@code select.options.min_items} */
+  public static final int SELECT_OPTIONS_MIN_ITEMS = 1;
 
   /** {@code select.placeholder.max_length} */
   public static final int SELECT_PLACEHOLDER_MAX_LENGTH = 150;

@@ -1050,6 +1050,84 @@
       "category": "type-mismatch",
       "constraint": "number_input.bounds.infinity",
       "description": "Number bound decimal contract rejects infinity"
+    },
+    {
+      "id": "external-multi-focus-false",
+      "category": "invalid-usage",
+      "constraint": "external_multi_select.focus_on_load.unsupported.false",
+      "description": "External multi-select must omit focus_on_load, including explicit false"
+    },
+    {
+      "id": "external-multi-focus-true",
+      "category": "invalid-usage",
+      "constraint": "external_multi_select.focus_on_load.unsupported.true",
+      "description": "External multi-select must omit focus_on_load, including explicit true"
+    },
+    {
+      "id": "message-too-many-charts",
+      "category": "length-exceeded",
+      "constraint": "message.data_visualizations.max_items",
+      "description": "A message with three data visualization blocks must be rejected after native composition"
+    },
+    {
+      "id": "plain-text-input-inverted-range",
+      "category": "out-of-range",
+      "constraint": "plain_text_input.ordered_bounds",
+      "description": "Supplied minimum input length cannot exceed the supplied maximum"
+    },
+    {
+      "id": "external-query-negative",
+      "category": "out-of-range",
+      "constraint": "select.min_query_length.min",
+      "description": "External query negative"
+    },
+    {
+      "id": "external-multi-query-negative",
+      "category": "out-of-range",
+      "constraint": "multi_external_select.nonnegative_query",
+      "description": "External multi query negative"
+    },
+    {
+      "id": "date-picker-invalid-format",
+      "category": "type-mismatch",
+      "constraint": "date_picker.initial_date.format",
+      "description": "Date picker invalid format"
+    },
+    {
+      "id": "time-picker-invalid-format",
+      "category": "type-mismatch",
+      "constraint": "time_picker.initial_time.format",
+      "description": "Time picker invalid format"
+    },
+    {
+      "id": "time-picker-invalid-range",
+      "category": "type-mismatch",
+      "constraint": "time_picker.initial_time.range",
+      "description": "Time picker invalid range"
+    },
+    {
+      "id": "static-select-empty-options",
+      "category": "length-exceeded",
+      "constraint": "select.options.min_items",
+      "description": "Static select empty options"
+    },
+    {
+      "id": "static-multi-select-empty-options",
+      "category": "length-exceeded",
+      "constraint": "multi_static_select.options.nonempty",
+      "description": "Static multi select empty options"
+    },
+    {
+      "id": "static-select-empty-groups",
+      "category": "length-exceeded",
+      "constraint": "select.option_groups.min_items",
+      "description": "Static select empty groups"
+    },
+    {
+      "id": "static-multi-select-empty-groups",
+      "category": "length-exceeded",
+      "constraint": "multi_static_select.option_groups.nonempty",
+      "description": "Static multi select empty groups"
     }
   ]
 }

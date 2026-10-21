@@ -11,6 +11,7 @@ namespace Slackblocks;
  * @see https://docs.slack.dev/interactivity/handling-user-interaction#message_responses
  * Only blocks supported in messages are accepted.
  * Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+ * At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
  */
 final readonly class MessageResponse extends Value
 {

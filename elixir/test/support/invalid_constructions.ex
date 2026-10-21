@@ -4,6 +4,21 @@ defmodule Slackblocks.Test.InvalidConstructions do
   # Explicit native attempts, maintained independently of the fixture JSON and API generator.
   def all do
     [
+      {"plain-text-input-inverted-range",
+       fn -> Elements.PlainTextInput.new!(min_length: 20, max_length: 10) end},
+      {"external-query-negative", fn -> Elements.ExternalSelect.new!(min_query_length: -1) end},
+      {"external-multi-query-negative",
+       fn -> Elements.ExternalMultiSelect.new!(min_query_length: -1) end},
+      {"date-picker-invalid-format",
+       fn -> Elements.DatePicker.new!(initial_date: "not a date") end},
+      {"time-picker-invalid-format", fn -> Elements.TimePicker.new!(initial_time: "9:00") end},
+      {"time-picker-invalid-range", fn -> Elements.TimePicker.new!(initial_time: "25:99") end},
+      {"static-select-empty-options", fn -> Elements.StaticSelect.new!(options: []) end},
+      {"static-multi-select-empty-options",
+       fn -> Elements.StaticMultiSelect.new!(options: []) end},
+      {"static-select-empty-groups", fn -> Elements.StaticSelect.new!(option_groups: []) end},
+      {"static-multi-select-empty-groups",
+       fn -> Elements.StaticMultiSelect.new!(option_groups: []) end},
       {"text-empty", fn -> Objects.PlainText.new!(text: "") end},
       {"text-too-long", fn -> Objects.PlainText.new!(text: String.duplicate("x", 3_001)) end},
       {"button-action-id-too-long",
@@ -411,6 +426,23 @@ defmodule Slackblocks.Test.InvalidConstructions do
          )
        end},
       {"message-channel-empty", fn -> Slackblocks.Message.new!(channel: "") end},
+      {"message-too-many-charts",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks:
+             for index <- 0..2 do
+               Blocks.DataVisualization.new!(
+                 block_id: "chart_#{index}",
+                 title: "Chart",
+                 chart:
+                   Objects.PieChart.new!(
+                     segments: [Objects.ChartSegment.new!(label: "A", value: 1)]
+                   )
+               )
+             end
+         )
+       end},
       {"message-too-many-blocks",
        fn ->
          Slackblocks.Message.new!(
@@ -1591,6 +1623,10 @@ defmodule Slackblocks.Test.InvalidConstructions do
        fn -> Elements.NumberInput.new!(is_decimal_allowed: true, min_value: "NaN") end},
       {"number-bound-infinity",
        fn -> Elements.NumberInput.new!(is_decimal_allowed: true, min_value: "Infinity") end},
+      {"external-multi-focus-false",
+       fn -> Elements.ExternalMultiSelect.new!(focus_on_load: false) end},
+      {"external-multi-focus-true",
+       fn -> Elements.ExternalMultiSelect.new!(focus_on_load: true) end},
       {"attachment-missing-blocks",
        fn -> Slackblocks.from_map!(Slackblocks.Attachment, %{"fallback" => "Summary"}) end}
     ]

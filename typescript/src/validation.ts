@@ -320,6 +320,15 @@ const CONFIRM_SUPPORTING_TYPES = new Set([
 const OPTION_URL_MAX_LENGTH = 3000;
 
 const INPUT_PLACEHOLDER_MAX_LENGTHS: Record<string, number> = {
+  external_select: limits.select.placeholder.max_length,
+  multi_external_select: limits.select.placeholder.max_length,
+  users_select: limits.select.placeholder.max_length,
+  multi_users_select: limits.select.placeholder.max_length,
+  channels_select: limits.select.placeholder.max_length,
+  multi_channels_select: limits.select.placeholder.max_length,
+  conversations_select: limits.select.placeholder.max_length,
+  multi_conversations_select: limits.select.placeholder.max_length,
+
   plain_text_input: limits.plain_text_input.placeholder.max_length,
   email_text_input: limits.email_input.placeholder.max_length,
   url_text_input: limits.url_input.placeholder.max_length,
@@ -458,6 +467,9 @@ function validateKnownObject(
   key: string | undefined,
 ): void {
   const type = object.type;
+  if (type === "multi_external_select" && object.focus_on_load !== undefined) {
+    throw new InvalidUsageError(child(path, "focus_on_load"), "unsupported for external multi-select menus; omit this field");
+  }
   const blockId = object.block_id;
   if (typeof blockId === "string") {
     length(blockId, child(path, "block_id"), undefined, limits.block_id.max_length);
@@ -483,6 +495,15 @@ function validateKnownObject(
         undefined,
         placeholderMaximum,
       );
+    }
+    if (type === "external_select" || type === "multi_external_select") {
+      range(numberField(object.min_query_length), child(path, "min_query_length"), limits.select.min_query_length.min);
+    }
+    if (type === "datepicker" && object.initial_date !== undefined && (typeof object.initial_date !== "string" || object.initial_date.length !== 10 || !/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(object.initial_date))) {
+      throw new TypeMismatchError(child(path, "initial_date"), "expected YYYY-MM-DD");
+    }
+    if (type === "timepicker" && object.initial_time !== undefined && (typeof object.initial_time !== "string" || object.initial_time.length !== 5 || !/^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(object.initial_time))) {
+      throw new TypeMismatchError(child(path, "initial_time"), "expected HH:mm in 24-hour time");
     }
     if (MULTI_SELECT_TYPES.has(type)) {
       range(
@@ -622,6 +643,9 @@ function validateKnownObject(
       );
       break;
     case "plain_text_input":
+      if (typeof object.min_length === "number" && typeof object.max_length === "number" && object.min_length > object.max_length) {
+        throw new OutOfRangeError(child(path, "min_length"), "cannot exceed max_length");
+      }
       range(
         numberField(object.min_length),
         child(path, "min_length"),
@@ -709,7 +733,7 @@ function validateKnownObject(
         length(
           object.options,
           child(path, "options"),
-          undefined,
+          limits.select.options.min_items,
           limits.select.options.max_items,
         );
       }
@@ -717,7 +741,7 @@ function validateKnownObject(
         length(
           object.option_groups,
           child(path, "option_groups"),
-          undefined,
+          limits.select.option_groups.min_items,
           limits.select.option_groups.max_items,
         );
       }
@@ -1288,6 +1312,12 @@ function validateMessagePayload(payload: JsonObject): void {
         throw new MissingRequiredError(attachmentPath, "expected blocks");
       }
     });
+  }
+  const chartCount = typedTotal(payload.blocks ?? [], "data_visualization", () => 1) +
+    (Array.isArray(payload.attachments) ? payload.attachments.reduce<number>((total, attachment) =>
+      total + typedTotal(objectAt(attachment, "attachments").blocks ?? [], "data_visualization", () => 1), 0) : 0);
+  if (chartCount > limits.message.data_visualizations.max_items) {
+    throw new LengthError("blocks", "a message may contain at most two data visualization blocks");
   }
   const markdown = typedTotal(payload, "markdown", (block) =>
     typeof block.text === "string" ? codePointLength(block.text) : 0,

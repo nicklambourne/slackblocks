@@ -575,6 +575,7 @@ def emit_model(t, registry):
         s.append(typed_rules[n])
     elif n in {
         "SlackIcon",
+        "ExternalMultiSelectElement",
         "SectionBlock",
         "StaticSelectElement",
         "StaticMultiSelectElement",
@@ -585,6 +586,9 @@ def emit_model(t, registry):
         "SlackFile",
         "ConversationFilter",
         "DispatchActionConfiguration",
+        "PlainTextInputElement",
+        "DatePickerElement",
+        "TimePickerElement",
         "NumberInputElement",
         "TableBlock",
         "AxisConfig",

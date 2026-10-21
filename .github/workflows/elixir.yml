@@ -32,8 +32,11 @@ jobs:
             echo 'relevant=true' >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          files=$(gh api "repos/${{ github.repository }}/pulls/$PR/files" --paginate -q '.[].filename') || files=""
-          if [ -z "$files" ] || grep -qE '^(elixir/|spec/|docs/|README\.md$|AGENTS\.md$|\.github/(workflows/|scripts/))' <<<"$files"; then
+          files=$(gh api "repos/${{ github.repository }}/pulls/$PR/files" --paginate -q '.[] | .filename, (.previous_filename // empty)') || files=""
+          # Native guide checks read documentation text, not site styles or images.
+          # Keep old paths from renames so moving a native input cannot hide it.
+          native_files=$(grep -vE '^docs/(src/.*\.css|static/img/.*\.(png|jpg|jpeg|gif|webp|svg|ico))$' <<<"$files" || true)
+          if [ -z "$files" ] || grep -qE '^(elixir/|spec/|docs/|README\.md$|AGENTS\.md$|\.github/(workflows/|scripts/))' <<<"$native_files"; then
             echo 'relevant=true' >> "$GITHUB_OUTPUT"
           else
             echo 'relevant=false' >> "$GITHUB_OUTPUT"
@@ -79,11 +82,38 @@ jobs:
         if: needs.changes.outputs.relevant == 'true'
         with:
           python-version: "3.13"
+      - name: Isolate native Hex downloads
+        if: needs.changes.outputs.relevant == 'true'
+        run: echo "HEX_HOME=$RUNNER_TEMP/slackblocks-native-hex" >> "$GITHUB_ENV"
+      - name: Identify exact Elixir and OTP runtime
+        if: needs.changes.outputs.relevant == 'true'
+        id: native-runtime
+        run: |
+          identity=$(elixir -e '
+            release = to_string(:erlang.system_info(:otp_release))
+            otp = File.read!(Path.join([to_string(:code.root_dir()), "releases", release, "OTP_VERSION"]))
+            IO.inspect({System.build_info(), :erlang.system_info(:version), :erlang.system_info(:system_architecture), otp})
+          ' | python -c 'import hashlib,sys; print(hashlib.sha256(sys.stdin.buffer.read()).hexdigest())')
+          echo "identity=$identity" >> "$GITHUB_OUTPUT"
+      - name: Cache native dependencies and Hex downloads
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            elixir/deps
+            elixir/_build
+            ${{ runner.temp }}/slackblocks-native-hex/packages
+          key: elixir-native-${{ runner.os }}-${{ runner.arch }}-${{ matrix.os }}-${{ steps.native-runtime.outputs.identity }}-dev-test-hex251-${{ hashFiles('elixir/mix.lock', 'elixir/mix.exs', '.github/workflows/elixir.yml') }}-v1
       - name: Resolve dependencies
         if: needs.changes.outputs.relevant == 'true'
         run: |
           mix local.hex 2.5.1 --force
           mix deps.get
+      - name: Recompile the project and rerun tests after cache restore
+        if: needs.changes.outputs.relevant == 'true'
+        # Clean every project environment; retain only dependency builds for reuse.
+        # Actual archive consumers create independent directories outside this cache.
+        run: mix clean
       - name: Test native API and actual package consumer
         if: needs.changes.outputs.relevant == 'true'
         run: mix run tools/check.exs --profile native

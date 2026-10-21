@@ -23,7 +23,7 @@
     "test:legacy-fixture": "UV_CACHE_DIR=${UV_CACHE_DIR:-../.uv-cache} uv run --project ../python --group docs python scripts/port_legacy_docs.py fixture",
     "generate": "pnpm generate:python && pnpm generate:go && pnpm generate:java && pnpm generate:csharp && pnpm generate:ruby && pnpm check:typescript-api && pnpm generate:rust && pnpm generate:php && pnpm generate:elixir",
     "start": "pnpm generate && docusaurus start",
-    "build": "pnpm generate && pnpm check:guide-previews && pnpm check:language-content && pnpm check:ruby-guide-snippets && pnpm check:rust-guide-snippets && pnpm check:php-guide-snippets && pnpm check:elixir-guide-snippets && pnpm check:workflow-state && pnpm check:reliable-delivery && pnpm check:multiselect-compat && pnpm check:search-reuse && docusaurus build && pnpm check:search-language && pnpm check:version-selector && pnpm check:python-api-rendering && pnpm check:typescript-api-rendering && pnpm check:go-api-rendering && pnpm check:java-api-rendering && pnpm check:csharp-api-rendering && pnpm check:ruby-api-rendering && pnpm check:rust-api-rendering && pnpm check:php-api-rendering && pnpm check:elixir-api-rendering && pnpm test:legacy-fixture && node scripts/check_legacy_docs.mjs --build-dir build",
+    "build": "pnpm generate && pnpm check:guide-previews && pnpm check:language-content && pnpm check:ruby-guide-snippets && pnpm check:rust-guide-snippets && pnpm check:php-guide-snippets && pnpm check:elixir-guide-snippets && pnpm check:workflow-state && pnpm check:reliable-delivery && pnpm check:live-prerequisites && pnpm check:multiselect-compat && pnpm check:search-reuse && docusaurus build && pnpm check:reference-discovery && pnpm check:search-language && pnpm check:version-selector && pnpm check:python-api-rendering && pnpm check:typescript-api-rendering && pnpm check:go-api-rendering && pnpm check:java-api-rendering && pnpm check:csharp-api-rendering && pnpm check:ruby-api-rendering && pnpm check:rust-api-rendering && pnpm check:php-api-rendering && pnpm check:elixir-api-rendering && pnpm test:legacy-fixture && node scripts/check_legacy_docs.mjs --build-dir build",
     "typecheck": "tsc --noEmit",
     "test": "pnpm typecheck && pnpm check:legacy-contract",
     "generate:java": "node scripts/generate_java_reference.mjs",
@@ -42,7 +42,9 @@
     "check:search-reuse": "node scripts/check_search_reuse.cjs",
     "check:multiselect-compat": "python3 scripts/check_multiselect_compat.py",
     "check:workflow-state": "PYTHONPATH=../python python3 -m unittest discover -s examples/workflow-state -p 'test_*.py' -v",
-    "check:reliable-delivery": "PYTHONPATH=../python python3 -m unittest discover -s examples/reliable-delivery -p 'test_*.py' -v"
+    "check:reliable-delivery": "PYTHONPATH=../python python3 -m unittest discover -s examples/reliable-delivery -p 'test_*.py' -v",
+    "check:reference-discovery": "node scripts/check_reference_discovery.mjs",
+    "check:live-prerequisites": "python3 -m unittest discover -s examples/live-prerequisites -p 'test_*.py' -v"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.2",
