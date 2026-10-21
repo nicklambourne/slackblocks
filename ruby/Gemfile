@@ -3,6 +3,9 @@ source "https://rubygems.org"
 gemspec
 
 gem "minitest", "~> 5.25"
-gem "rbs", "~> 3.8"
-gem "standard", "~> 1.48"
-gem "steep", "~> 1.10"
+# Native matrix jobs need only Minitest; local and quality checks keep all groups.
+group :quality do
+  gem "rbs", "~> 3.8"
+  gem "standard", "~> 1.48"
+  gem "steep", "~> 1.10"
+end
