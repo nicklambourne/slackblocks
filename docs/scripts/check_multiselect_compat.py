@@ -19,9 +19,7 @@ def probe(language, args, directory, cwd=ROOT, env=None):
     output = directory / f"{language}.jsonl"
     try:
         with output.open("w") as stream:
-            subprocess.run(
-                [str(arg) for arg in args], cwd=cwd, env=env, stdout=stream, check=True
-            )
+            subprocess.run([str(arg) for arg in args], cwd=cwd, env=env, stdout=stream, check=True)
         run([sys.executable, EXAMPLES / "check.py", output])
     except subprocess.CalledProcessError:
         print(output.read_text(), file=sys.stderr)
@@ -30,11 +28,7 @@ def probe(language, args, directory, cwd=ROOT, env=None):
 
 
 def java_tool(name):
-    return (
-        Path(os.environ["JAVA_HOME"]) / "bin" / name
-        if "JAVA_HOME" in os.environ
-        else name
-    )
+    return Path(os.environ["JAVA_HOME"]) / "bin" / name if "JAVA_HOME" in os.environ else name
 
 
 scratch = None
@@ -43,9 +37,7 @@ if Path("/Volumes/Repos").exists():
         assert os.path.ismount("/Volumes/" + mount), f"Missing /Volumes/{mount}"
     scratch = "/Volumes/Scratch"
 
-with tempfile.TemporaryDirectory(
-    prefix="slackblocks-multiselect-", dir=scratch
-) as temporary:
+with tempfile.TemporaryDirectory(prefix="slackblocks-multiselect-", dir=scratch) as temporary:
     directory = Path(temporary)
     probe(
         "Python",
@@ -115,11 +107,7 @@ with tempfile.TemporaryDirectory(
         ],
         cwd=ROOT / "java",
     )
-    classpath = (
-        str(ROOT / "java/target/classes")
-        + os.pathsep
-        + classpath_file.read_text().strip()
-    )
+    classpath = str(ROOT / "java/target/classes") + os.pathsep + classpath_file.read_text().strip()
     classes = directory / "classes"
     classes.mkdir()
     run(
@@ -153,6 +141,4 @@ with tempfile.TemporaryDirectory(
         cwd=ROOT / "elixir",
     )
 
-print(
-    "Executed all nine multi-select consumers: 135 payloads; no Slack acceptance inferred."
-)
+print("Executed all nine multi-select consumers: 135 payloads; no Slack acceptance inferred.")
