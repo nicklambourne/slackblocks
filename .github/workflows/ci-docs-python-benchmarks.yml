@@ -21,6 +21,7 @@ jobs:
       BENCH_PAIR: ${{ matrix.pair }}
       DOTNET_CLI_TELEMETRY_OPTOUT: "1"
       UV_PYTHON: "3.14.8"
+      DOTNET_MULTILEVEL_LOOKUP: "0"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -45,9 +46,13 @@ jobs:
         with:
           distribution: temurin
           java-version: "21.0.12+1"
-      - uses: actions/setup-dotnet@v6
+      - name: Select isolated fixed .NET installation
+        run: echo "DOTNET_INSTALL_DIR=$RUNNER_TEMP/fixed-docs-dotnet" >> "$GITHUB_ENV"
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
         with:
-          dotnet-version: "10.0.402"
+          dotnet-version: |
+            8.0.426
+            10.0.402
       - uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a
         with:
           ruby-version: "3.4.11"
@@ -72,6 +77,7 @@ jobs:
           { node --version; pnpm --version; uv --version; python3 --version; go version; java -version; dotnet --info; ruby --version; rustc --version; php --version; composer --version; elixir --version; } > runtime-evidence/versions.txt 2>&1
           git rev-parse HEAD > runtime-evidence/harness-commit.txt
           df -h > runtime-evidence/disk-before.txt
+          python3 .github/benchmarks/dotnet-receipts.py
       - name: Prepare first-cold fresh full-site checkout
         env:
           POLICY: ${{ matrix.pair == 2 && 'candidate' || 'baseline' }}

@@ -41,7 +41,7 @@ if a.stage!='audit':
    dependencies(work,cache,dest);assert (dest/'rust-guides-temporary-dependencies.json').exists()
    refs=[json.loads(f.read_text()) for f in dest.glob('reference-*.json')];expected=['generate:python','generate:go','generate:java','generate:csharp','generate:ruby','check:typescript-api','generate:rust','generate:php','generate:elixir']
    assert sorted(x['script'] for x in refs)==sorted(expected) and all(x['code']==0 for x in refs)
-   profiles=[json.loads(f.read_text()) for f in dest.glob('webpack-*.json')];assert len(profiles)==1
+   profiles=[json.loads(f.read_text()) for f in dest.glob('webpack-[0-9]*.json')];assert len(profiles)==1
    assert {x['name'] for x in profiles[0]['records']}=={'client','server'}
    assert all(x['cache']['type']=='filesystem' and x['cache']['cacheDirectory']==str(webpack) for x in profiles[0]['records'])
    after=tree(webpack);assert after;save(dest/'webpack-after.json',after);record['webpack_bytes_after']=size(webpack)
