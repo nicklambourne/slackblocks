@@ -70,6 +70,27 @@ jobs:
           go-version: ${{ matrix.go-version }}
           cache: false
 
+      - name: Identify exact Go cache inputs
+        if: needs.changes.outputs.relevant == 'true'
+        id: go-cache
+        run: |
+          identity=$(go env -json GOVERSION GOOS GOARCH GOAMD64 GOARM GOEXPERIMENT CGO_ENABLED | sha256sum | cut -d ' ' -f 1)
+          {
+            echo "identity=$identity"
+            echo "modules=$(go env GOMODCACHE)"
+            echo "build=$(go env GOCACHE)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Restore exact Go dependency and build cache
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ${{ steps.go-cache.outputs.modules }}
+            ${{ steps.go-cache.outputs.build }}
+          # The workflow hash includes analyzer compiler/tool pins and this cache recipe.
+          key: go-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.go-cache.outputs.identity }}-${{ hashFiles('go/go.mod', 'go/go.sum', '.github/workflows/go.yml') }}
+
       - name: Check formatting
         if: needs.changes.outputs.relevant == 'true'
         run: test -z "$(gofmt -l .)"
@@ -106,4 +127,4 @@ jobs:
 
       - name: Run tests
         if: needs.changes.outputs.relevant == 'true'
-        run: go test -race -cover ./...
+        run: go test -count=1 -race -cover ./...
