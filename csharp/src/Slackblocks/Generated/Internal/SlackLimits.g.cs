@@ -242,6 +242,9 @@ internal static class SlackLimits
     /// <summary><c>message.channel.min_length</c></summary>
     public const int MessageChannelMinLength = 1;
 
+    /// <summary><c>message.data_visualizations.max_items</c></summary>
+    public const int MessageDataVisualizationsMaxItems = 2;
+
     /// <summary><c>multi_select.max_selected_items.min</c></summary>
     public const int MultiSelectMaxSelectedItemsMin = 1;
 

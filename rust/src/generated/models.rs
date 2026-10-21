@@ -19554,7 +19554,7 @@ impl<'de> Deserialize<'de> for HomeTabView {
 /// A complete payload for chat.postMessage and related Web API methods.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/methods/chat.postMessage).
-/// Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+/// Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message. At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
 #[derive(Clone, Debug, PartialEq)]
 pub struct MessagePayload {
     channel: String,
@@ -19886,7 +19886,7 @@ impl<'de> Deserialize<'de> for MessagePayload {
 /// A response body for slash commands and interaction response URLs.
 ///
 /// [Slack reference](https://docs.slack.dev/interactivity/handling-user-interaction#message_responses).
-/// Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+/// Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message. At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
 #[derive(Clone, Debug, PartialEq)]
 pub struct MessageResponse {
     blocks: Option<Vec<Block>>,
@@ -20568,7 +20568,7 @@ impl<'de> Deserialize<'de> for ModalView {
 /// A payload for incoming webhooks.
 ///
 /// [Slack reference](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks).
-/// Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.
+/// Only blocks supported in messages are accepted. Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message. At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).
 #[derive(Clone, Debug, PartialEq)]
 pub struct WebhookMessage {
     blocks: Option<Vec<Block>>,

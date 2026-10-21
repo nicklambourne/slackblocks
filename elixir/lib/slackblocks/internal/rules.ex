@@ -42,6 +42,7 @@ defmodule Slackblocks.Internal.Rules do
     blocks = Map.get(w, "blocks", [])
     surface(blocks, "message", p ++ ["blocks"])
     combined = blocks ++ Enum.flat_map(Map.get(w, "attachments", []), &Map.get(&1, "blocks", []))
+    max_size(chart_count(combined), "message.data_visualizations.max_items", p)
     {markdown, cells} = totals(combined)
     max_size(markdown, "markdown.total_text.max_length", p)
     max_size(cells, "data_table.total_content.max_length", p)
@@ -269,6 +270,16 @@ defmodule Slackblocks.Internal.Rules do
     do: Enum.sum(Enum.map(children, &cell_characters/1))
 
   defp cell_characters(_), do: 0
+
+  defp chart_count(blocks) do
+    Enum.reduce(blocks, 0, fn block, count ->
+      case block["type"] do
+        "data_visualization" -> count + 1
+        "container" -> count + chart_count(block["child_blocks"])
+        _ -> count
+      end
+    end)
+  end
 
   defp totals(blocks) do
     Enum.reduce(blocks, {0, 0}, fn block, {markdown, table} ->

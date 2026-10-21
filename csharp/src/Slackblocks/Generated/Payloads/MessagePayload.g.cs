@@ -12,6 +12,7 @@ namespace Slackblocks.Payloads;
 /// <item><description>Required: <c>channel</c>.</description></item>
 /// <item><description>Only blocks supported in messages are accepted.</description></item>
 /// <item><description>Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.</description></item>
+/// <item><description>At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items).</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/methods/chat.postMessage">Slack reference</see>.</para>
 /// </remarks>

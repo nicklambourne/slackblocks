@@ -14,6 +14,8 @@ same version number as the Python, TypeScript, and Java packages.
 ## [Unreleased]
 
 - Expose the existing rich-text link unsafe field on its concrete native builder.
+- SB-006: reject messages with more than two data visualization blocks after composition, including attachment charts. The rule does not impose a two-chart limit on views.
+
 - SB-003: reject explicitly supplied `focus_on_load` on external multi-selects, including false. Omit this deprecated parameter; other selectors retain focus support.
 
 - Correct number-input bounds to string wire values, retain native numeric convenience arguments, and reject nonfinite/inverted bounds (SB-001, spec 1.3.0). Bound getters now return strings; reflection/signature consumers must migrate. Package version unchanged.

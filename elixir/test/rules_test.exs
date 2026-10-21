@@ -161,9 +161,17 @@ defmodule Slackblocks.RulesTest do
        :type_mismatch},
       {"HomeTabView", 0, fn -> change("HomeTabView", blocks: [Alert.new!(text: "x")]) end,
        :type_mismatch},
+      {"MessagePayload", 2,
+       fn ->
+         change("MessagePayload", blocks: List.duplicate(sample("DataVisualizationBlock"), 3))
+       end, :length_exceeded},
       {"MessagePayload", 0, fn -> change("MessagePayload", blocks: [Alert.new!(text: "x")]) end,
        :type_mismatch},
       {"MessagePayload", 1, fn -> too_much_markdown("MessagePayload") end, :length_exceeded},
+      {"MessageResponse", 2,
+       fn ->
+         change("MessageResponse", blocks: List.duplicate(sample("DataVisualizationBlock"), 3))
+       end, :length_exceeded},
       {"MessageResponse", 0, fn -> change("MessageResponse", blocks: [Alert.new!(text: "x")]) end,
        :type_mismatch},
       {"MessageResponse", 1, fn -> too_much_markdown("MessageResponse") end, :length_exceeded},
@@ -171,6 +179,10 @@ defmodule Slackblocks.RulesTest do
        :type_mismatch},
       {"ModalView", 1, fn -> change("ModalView", blocks: [sample("InputBlock")], submit: nil) end,
        :missing_required},
+      {"WebhookMessage", 2,
+       fn ->
+         change("WebhookMessage", blocks: List.duplicate(sample("DataVisualizationBlock"), 3))
+       end, :length_exceeded},
       {"WebhookMessage", 0, fn -> change("WebhookMessage", blocks: [Alert.new!(text: "x")]) end,
        :type_mismatch},
       {"WebhookMessage", 1, fn -> too_much_markdown("WebhookMessage") end, :length_exceeded}

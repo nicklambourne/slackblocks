@@ -5218,6 +5218,7 @@ defmodule Slackblocks.Internal.Schema do
     "video.video_url.max_length" => 3_000,
     "video.title_url.max_length" => 2_000,
     "video.provider_icon_url.max_length" => 2_000,
+    "message.data_visualizations.max_items" => 2,
     "message.channel.min_length" => 1,
     "message.blocks.max_items" => 50,
     "message.attachments.max_items" => 100,

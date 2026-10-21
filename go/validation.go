@@ -1173,6 +1173,17 @@ func validateMessageCollections(object Object, path string) error {
 			return err
 		}
 	}
+	charts := chartCount(object["blocks"])
+	if attachments, ok := object["attachments"].([]any); ok {
+		for _, raw := range attachments {
+			if attachment, ok := raw.(Object); ok {
+				charts += chartCount(attachment["blocks"])
+			}
+		}
+	}
+	if charts > limitMessageDataVisualizationsMaxItems {
+		return validationError(LengthExceeded, path, "a message may contain at most two data visualization blocks")
+	}
 	markdown, tableContent := messageTotals(object["blocks"])
 	if attachments, ok := object["attachments"].([]any); ok {
 		for _, raw := range attachments {
@@ -1190,6 +1201,25 @@ func validateMessageCollections(object Object, path string) error {
 		return validationError(LengthExceeded, path, "data table cell text totals %d characters, exceeding maximum %d", tableContent, limitDataTableTotalContentMaxLength)
 	}
 	return nil
+}
+
+func chartCount(value any) int {
+	switch v := value.(type) {
+	case Object:
+		if objectType(v) == "data_visualization" {
+			return 1
+		}
+		if objectType(v) == "container" {
+			return chartCount(v["child_blocks"])
+		}
+	case []any:
+		total := 0
+		for _, child := range v {
+			total += chartCount(child)
+		}
+		return total
+	}
+	return 0
 }
 
 // messageTotals visits modeled blocks and container children, keeping application JSON opaque.

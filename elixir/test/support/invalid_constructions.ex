@@ -411,6 +411,23 @@ defmodule Slackblocks.Test.InvalidConstructions do
          )
        end},
       {"message-channel-empty", fn -> Slackblocks.Message.new!(channel: "") end},
+      {"message-too-many-charts",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks:
+             for index <- 0..2 do
+               Blocks.DataVisualization.new!(
+                 block_id: "chart_#{index}",
+                 title: "Chart",
+                 chart:
+                   Objects.PieChart.new!(
+                     segments: [Objects.ChartSegment.new!(label: "A", value: 1)]
+                   )
+               )
+             end
+         )
+       end},
       {"message-too-many-blocks",
        fn ->
          Slackblocks.Message.new!(

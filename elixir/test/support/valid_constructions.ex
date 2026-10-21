@@ -908,6 +908,23 @@ defmodule Slackblocks.Test.ValidConstructions do
            action_id: "run_workflow"
          )
        end},
+      {"messages/message_two_charts",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks:
+             for index <- 0..1 do
+               Blocks.DataVisualization.new!(
+                 block_id: "chart_#{index}",
+                 title: "Chart",
+                 chart:
+                   Objects.PieChart.new!(
+                     segments: [Objects.ChartSegment.new!(label: "A", value: 1)]
+                   )
+               )
+             end
+         )
+       end},
       {"messages/message_basic",
        fn ->
          Slackblocks.Message.new!(

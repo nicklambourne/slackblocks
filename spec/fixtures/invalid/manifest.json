@@ -1062,6 +1062,12 @@
       "category": "invalid-usage",
       "constraint": "external_multi_select.focus_on_load.unsupported.true",
       "description": "External multi-select must omit focus_on_load, including explicit true"
+    },
+    {
+      "id": "message-too-many-charts",
+      "category": "length-exceeded",
+      "constraint": "message.data_visualizations.max_items",
+      "description": "A message with three data visualization blocks must be rejected after native composition"
     }
   ]
 }

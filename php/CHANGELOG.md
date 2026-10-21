@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Enforce the aggregate two-chart message limit across blocks, attachments and container children; views and opaque metadata remain unaffected (SB-006).
+
 - Reject explicit `focusOnLoad` on external multi-selects, including false (SB-003). Omit the compatibility parameter; other selectors retain focus support.
 
 - Correct number-input bounds to string wire values, retain native numeric convenience arguments, and reject nonfinite/inverted bounds (SB-001, spec 1.3.0). Bound getters now return strings; reflection/signature consumers must migrate. Package version unchanged.

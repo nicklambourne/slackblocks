@@ -67,7 +67,7 @@
     "elements.url_source": ["elements/url_source_basic"],
     "elements.workflow_button": ["elements/workflow_button_basic"],
     "messages.attachment": ["attachments/attachment_simple"],
-    "messages.message": ["messages/message_basic"],
+    "messages.message": ["messages/message_basic", "messages/message_two_charts"],
     "messages.message_response": ["messages/message_response"],
     "messages.webhook_message": ["messages/webhook_message_basic"],
     "objects.column_settings": ["blocks/table_block"],

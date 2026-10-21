@@ -335,6 +335,26 @@ pub(crate) fn message(
     path: &str,
 ) -> Result<(), ValidationError> {
     surface(blocks, "message", &format!("{path}.blocks"))?;
+    fn charts(block: &Block) -> usize {
+        match block {
+            Block::DataVisualization(_) => 1,
+            Block::Container(container) => container.child_blocks().iter().map(charts).sum(),
+            _ => 0,
+        }
+    }
+    if blocks
+        .iter()
+        .chain(attachments.iter().flat_map(Attachment::blocks))
+        .map(charts)
+        .sum::<usize>()
+        > limit("message.data_visualizations.max_items") as usize
+    {
+        return Err(fail(
+            C::LengthExceeded,
+            path,
+            "a message may contain at most two data visualization blocks",
+        ));
+    }
     let (markdown, data_table) = blocks
         .iter()
         .chain(attachments.iter().flat_map(Attachment::blocks))

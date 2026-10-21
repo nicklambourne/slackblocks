@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Enforce the aggregate two-chart message limit across native message blocks, attachments and container children; leave views and opaque metadata unaffected (SB-006).
+
 - Reject explicit `focus_on_load` on external multi-selects, including false (SB-003). The compatibility option remains available; omit it or use nil. Other selectors retain focus support.
 
 - Correct number-input bounds to preserved decimal strings, retaining numeric constructor/change conveniences and exact ordering (SB-001, spec 1.3.0). Stored fields now contain strings; package version unchanged.

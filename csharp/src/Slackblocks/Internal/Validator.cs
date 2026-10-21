@@ -1096,6 +1096,13 @@ internal static partial class Validator
         }
 
         // Slack limits markdown block text and data table cell text across the whole message.
+        var charts = ChartCount(value["blocks"]);
+        if (value["attachments"] is JsonArray chartAttachments)
+        {
+            foreach (var attachment in chartAttachments) charts += ChartCount(ObjectAt(attachment, path)["blocks"]);
+        }
+        if (charts > SlackLimits.MessageDataVisualizationsMaxItems)
+            Fail(ErrorCategory.LengthExceeded, path, "a message may contain at most two data visualization blocks");
         var markdownTotal = 0;
         var dataTableTotal = 0;
         AddMessageTotals(value["blocks"], ref markdownTotal, ref dataTableTotal);
@@ -1115,6 +1122,22 @@ internal static partial class Validator
         {
             Fail(ErrorCategory.LengthExceeded, path, $"data table content totals {dataTableTotal}, exceeding maximum {SlackLimits.DataTableTotalContentMaxLength}");
         }
+    }
+
+    private static int ChartCount(JsonNode? value)
+    {
+        if (value is JsonObject obj)
+        {
+            if (ObjectType(obj) == "data_visualization") return 1;
+            if (ObjectType(obj) == "container") return ChartCount(obj["child_blocks"]);
+        }
+        if (value is JsonArray array)
+        {
+            var total = 0;
+            foreach (var child in array) total += ChartCount(child);
+            return total;
+        }
+        return 0;
     }
 
     private static void AddMessageTotals(JsonNode? value, ref int markdownTotal, ref int dataTableTotal)
