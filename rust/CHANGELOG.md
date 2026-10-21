@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.8.0] — 2026-10-18
+
+- Coordinate the first Elixir implementation release; existing language support remains unchanged.
+
 ## [2.7.0] — 2026-10-11
 
 - Add the PHP implementation to the coordinated release and documentation.
