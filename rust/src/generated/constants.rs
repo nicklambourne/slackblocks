@@ -1,6 +1,6 @@
 // Generated from the shared limits, vocabulary and manifest.
 /// Shared specification implemented by this crate.
-pub(crate) const SPEC_VERSION: &str = "1.2.0";
+pub(crate) const SPEC_VERSION: &str = "1.3.0";
 pub(crate) const LIMITS: &[(&str, i64)] = &[
     ("action_id.max_length", 255),
     ("actions.elements.max_items", 25),

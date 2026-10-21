@@ -23,7 +23,7 @@ const domains = [
   { slug: "objects", title: "Composition Objects", position: 3, namespace: "Slackblocks.Objects" },
   { slug: "payloads", title: "Payloads And Views", position: 4, namespace: "Slackblocks.Payloads" },
   { slug: "components", title: "Components", position: 5, namespace: "Slackblocks.Components" },
-  { slug: "core", title: "Core Types", position: 6, namespace: "Slackblocks", names: ["ISlackObject", "SlackObject", "SlackblocksInfo"] },
+  { slug: "core", title: "Core Types", position: 6, namespace: "Slackblocks", names: ["ISlackObject", "SlackObject", "SlackblocksInfo", "NumberInputBound"] },
   { slug: "errors", title: "Validation And Errors", position: 7, namespace: "Slackblocks", names: ["ErrorCategory", "ValidationException"] },
 ];
 

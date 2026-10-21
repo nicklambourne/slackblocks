@@ -2325,24 +2325,24 @@ defmodule Slackblocks.Internal.Schema do
         %{
           :key => :min_value,
           :wire => "min_value",
-          :kind => :double,
+          :kind => :string,
           :type => nil,
           :required => false,
           :default => nil,
           :has_default => false,
-          :coerce => nil,
+          :coerce => "decimal_string",
           :limits => nil,
           :flags => []
         },
         %{
           :key => :max_value,
           :wire => "max_value",
-          :kind => :double,
+          :kind => :string,
           :type => nil,
           :required => false,
           :default => nil,
           :has_default => false,
-          :coerce => nil,
+          :coerce => "decimal_string",
           :limits => nil,
           :flags => []
         },

@@ -237,8 +237,29 @@ pub(crate) fn validate(kind: &str, v: &Value, path: &str) -> Result<(), Validati
             }
         }
         "NumberInputElement" => {
-            if let (Some(min), Some(max)) = (v["min_value"].as_f64(), v["max_value"].as_f64()) {
-                if min > max {
+            let bound = |field: &'static str| -> Result<Option<&str>, ValidationError> {
+                if v[field].is_null() {
+                    return Ok(None);
+                }
+                let text = v[field].as_str().ok_or_else(|| {
+                    fail(C::TypeMismatch, &at(field), "expected a numeric string")
+                })?;
+                if !crate::decimal_bound::valid(text) {
+                    return Err(fail(
+                        C::TypeMismatch,
+                        &at(field),
+                        "expected a decimal string",
+                    ));
+                }
+                Ok(Some(text))
+            };
+            if let (Some(_), Some(_)) = (bound("min_value")?, bound("max_value")?) {
+                if crate::decimal_bound::compare(
+                    v["min_value"].as_str().unwrap(),
+                    v["max_value"].as_str().unwrap(),
+                )
+                .is_gt()
+                {
                     return Err(fail(C::OutOfRange, path, "minimum exceeds maximum"));
                 }
             }

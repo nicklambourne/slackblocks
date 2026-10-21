@@ -142,6 +142,10 @@ def field_methods(model: Model, owner: dict, field: dict, imports: Imports) -> l
         imports.add(model.qualified(target))
     code = f"{{@code {wire}}}"
     scalar = {"string": "String", "boolean": "boolean", "int": "int", "long": "long", "double": "double"}
+    if field.get("coerce") == "decimal_string":
+        return [method(field_doc(model, field, [], [("value", "numeric string or numeric convenience value")]),
+                       f"Builder {name}({typ} value)", [f'state.set("{wire}", String.valueOf(value));'])
+                for typ in ("String", "double", "long")]
     if kind in scalar:
         return [method(
             field_doc(model, field, [], [("value", f"value for Slack's {code} field")]),

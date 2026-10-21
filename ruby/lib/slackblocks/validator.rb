@@ -100,7 +100,11 @@ module Slackblocks
       when "DispatchActionConfiguration"
         fail!("missing-required", "#{path}.trigger_actions_on", "required") unless wire.key?("trigger_actions_on")
       when "NumberInputElement"
-        if wire["min_value"] && wire["max_value"] && wire["min_value"] > wire["max_value"]
+        minimum, maximum = %w[min_value max_value].map do |field|
+          text = wire[field]
+          decimal_bound(text, "#{path}.#{field}") unless text.nil?
+        end
+        if minimum && maximum && compare_decimal_bounds(minimum, maximum).positive?
           fail!("out-of-range", path, "min_value exceeds max_value")
         end
       when "DataTableBlock", "TableBlock"
@@ -129,6 +133,32 @@ module Slackblocks
           fail!("missing-required", "#{path}.submit", "required when modal contains an input")
         end
       end
+    end
+
+    # Compare the significand and decimal rank, without rounding or expanding an exponent.
+    def self.decimal_bound(text, path)
+      unless text.match?(/\A[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?\z/)
+        fail!("type-mismatch", path, "expected a numeric string")
+      end
+
+      parts = text.sub(/\A[+-]/, "").split(/[eE]/)
+      mantissa = parts.fetch(0).split(".", -1)
+      fraction = mantissa.fetch(1, "")
+      digits = (mantissa.fetch(0) + fraction).sub(/\A0+/, "")
+      return [0, 0, ""] if digits.empty?
+
+      rank = Integer(parts.fetch(1, "0"), 10) + digits.length - fraction.length
+      [text.start_with?("-") ? -1 : 1, rank, digits.sub(/0+\z/, "")]
+    end
+
+    def self.compare_decimal_bounds(left, right)
+      sign = left[0] <=> right[0]
+      return sign unless sign.zero?
+      return 0 if left[0].zero?
+
+      rank = left[1] <=> right[1]
+      width = [left[2].length, right[2].length].max
+      left[0] * (rank.zero? ? left[2].ljust(width, "0") <=> right[2].ljust(width, "0") : rank)
     end
 
     def self.surface(blocks, name, path)

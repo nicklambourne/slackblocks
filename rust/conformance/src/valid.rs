@@ -1101,6 +1101,47 @@ pub const VALID: &[ValidCase] = &[
         parse: |v| UserMultiSelectElement::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
     },
     ValidCase {
+        id: "elements/number_input_scientific_bounds",
+        build: || {
+            Ok(serde_json::to_value(
+                NumberInputElement::builder()
+                    .is_decimal_allowed(true)
+                    .min_value("0.1000")
+                    .max_value("1e-1")
+                    .build()?,
+            )
+            .unwrap())
+        },
+        parse: |v| NumberInputElement::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "elements/number_input_large_exponent",
+        build: || {
+            Ok(serde_json::to_value(
+                NumberInputElement::builder()
+                    .is_decimal_allowed(true)
+                    .min_value("1e309")
+                    .max_value("2e309")
+                    .build()?,
+            )
+            .unwrap())
+        },
+        parse: |v| NumberInputElement::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "elements/number_input_bounds",
+        build: || {
+            let value = NumberInputElement::builder()
+                .is_decimal_allowed(true)
+                .action_id("bounds")
+                .min_value("-1.5")
+                .max_value("10.25")
+                .build()?;
+            Ok(serde_json::to_value(value).unwrap())
+        },
+        parse: |v| NumberInputElement::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
         id: "elements/number_input_basic",
         build: || {
             let value = NumberInputElement::builder()

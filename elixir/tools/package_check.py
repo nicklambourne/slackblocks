@@ -78,6 +78,9 @@ end
         (consumer / "test/foundation_test.exs").write_text(
             (PACKAGE / "test/foundation_test.exs").read_text()
         )
+        (consumer / "test/number_bounds_test.exs").write_text(
+            (PACKAGE / "test/number_bounds_test.exs").read_text()
+        )
         (consumer / "test/helpers_test.exs").write_text(
             (PACKAGE / "test/helpers_test.exs").read_text()
         )

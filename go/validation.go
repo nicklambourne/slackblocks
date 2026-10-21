@@ -540,9 +540,19 @@ func validateObject(object Object, path string) error {
 			}
 		}
 	case "number_input":
-		minimum, hasMin := number(object["min_value"])
-		maximum, hasMax := number(object["max_value"])
-		if hasMin && hasMax && minimum > maximum {
+		bounds := map[string]string{}
+		for _, field := range []string{"min_value", "max_value"} {
+			if raw, exists := object[field]; exists {
+				text, ok := raw.(string)
+				if !ok || !decimalBoundPattern.MatchString(text) {
+					return validationError(TypeMismatch, child(path, field), "expected a numeric string")
+				}
+				bounds[field] = text
+			}
+		}
+		minimum, hasMin := bounds["min_value"]
+		maximum, hasMax := bounds["max_value"]
+		if hasMin && hasMax && compareDecimal(minimum, maximum) > 0 {
 			return validationError(OutOfRange, path, "min_value cannot exceed max_value")
 		}
 	case "image":
