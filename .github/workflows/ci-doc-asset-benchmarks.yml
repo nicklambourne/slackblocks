@@ -1,5 +1,8 @@
 name: CI doc asset scoped benchmarks (never merge)
-on: workflow_dispatch
+on:
+  push:
+    branches: [codex/ci-doc-asset-benchmarks]
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
