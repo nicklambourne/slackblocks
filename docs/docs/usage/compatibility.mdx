@@ -86,7 +86,67 @@ See [Installation](installation) and the [TypeScript API reference](../reference
 </TypeScript>
 <Go>
 
-See [Installation](installation) and the [Go API reference](../reference/go) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+## Go support matrix
+
+The current `github.com/nicklambourne/slackblocks/go/v2` module supports Go 1.22
+and newer. Its minimum dependency remains `github.com/slack-go/slack` v0.17.3.
+Applications can select a newer SDK without changing the slackblocks module line,
+provided their Go toolchain meets that SDK's own requirements.
+
+| slackblocks module line | Tested `slack-go/slack` version | Minimum Go | Selection |
+| --- | --- | --- | --- |
+| Current `go/v2` | v0.17.3 | 1.22 | Default minimum dependency; keeps Go 1.22, 1.23 and 1.24 compatible. |
+| Current `go/v2` | v0.23.1 | 1.25 | Explicit application upgrade; tested separately from the minimum dependency. |
+
+These are tested combinations, not a guarantee for every intervening or future
+SDK release. Both profiles use the same slackblocks API. No separate maintenance
+release line is needed for these combinations.
+
+### Choosing an SDK version
+
+For the Go 1.22-compatible combination, select both modules in your application:
+
+```bash
+go get github.com/nicklambourne/slackblocks/go/v2 github.com/slack-go/slack@v0.17.3
+```
+
+With Go 1.25 or newer, opt into the newer tested SDK:
+
+```bash
+go get github.com/nicklambourne/slackblocks/go/v2 github.com/slack-go/slack@v0.23.1
+```
+
+Go's [minimal version selection](https://go.dev/ref/mod#minimal-version-selection)
+selects one SDK version for the application, using the highest version required
+by its module graph. The core's v0.17.3 requirement is a minimum, not an upper
+bound or a conditional version selector. Inspect `go list -m all` after updating;
+another dependency may require a newer SDK or toolchain.
+
+The upstream manifests declare [Go 1.22 for v0.17.3](https://github.com/slack-go/slack/blob/v0.17.3/go.mod)
+and [Go 1.25 for v0.23.1](https://github.com/slack-go/slack/blob/v0.23.1/go.mod).
+The latter's `toolchain go1.25.9` is a suggestion for work in that SDK module,
+not an additional minimum for applications importing it. Go may automatically
+select a newer toolchain; use `GOTOOLCHAIN=local` when verifying a fixed compiler
+([Go toolchain rules](https://go.dev/doc/toolchain)).
+
+### Compatibility checks and updates
+
+CI retains Go 1.22 and stable native checks, adds a Go 1.25 lane, and disables
+automatic toolchain upgrades in those lanes. The core and the default multi-select
+example keep the minimum SDK. The separate `go/integrations` module selects
+v0.23.1 and runs the full native suite, a mixed native-SDK/slackblocks consumer,
+and the same multi-select source on Go 1.25 and stable. Both profiles must emit
+the same 15 validated payloads. Mock HTTP tests make no live Slack requests.
+
+Dependabot tracks the newer SDK in the integration module. Updates must preserve
+the minimum core manifest and pass both profiles; they must not silently raise
+the supported Go floor. Keeping v0.17.3 does not backport fixes from newer SDKs.
+For example, v0.23.1 changes empty signing-secret validation in
+[`NewSecretsVerifier`](https://github.com/slack-go/slack/releases/tag/v0.23.1);
+applications using that SDK feature should review its upstream release notes.
+
+See [Installation](installation) and the [Go API reference](../reference/go)
+for the native API and installation instructions.
 
 </Go>
 <Java>

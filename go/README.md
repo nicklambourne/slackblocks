@@ -70,6 +70,12 @@ The module path is `github.com/nicklambourne/slackblocks/go/v2`:
 go get github.com/nicklambourne/slackblocks/go/v2
 ```
 
+Go 1.22+ is supported with the default slack-go v0.17.3 dependency. Applications
+on Go 1.25+ can select the separately tested v0.23.1 SDK. See the
+[Go support matrix](https://nicklambourne.github.io/slackblocks/usage/compatibility?language=go)
+for selection commands, upstream requirements and update policy. The separate
+`integrations` module tests the newer SDK without raising the core module's floor.
+
 This directory is part of the coordinated slackblocks monorepo. The Go module
 implements the same shared JSON fixtures and validation categories as the
 other language packages.

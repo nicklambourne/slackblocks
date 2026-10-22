@@ -22,6 +22,12 @@ updates:
       - dependency-name: typescript
         update-types: ["version-update:semver-major"]
 
+  # Track newer SDK support separately from the Go 1.22-compatible core minimum.
+  - package-ecosystem: gomod
+    directory: /go/integrations
+    schedule:
+      interval: weekly
+
   - package-ecosystem: maven
     directory: /java
     schedule:
