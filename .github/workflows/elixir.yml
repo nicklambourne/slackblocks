@@ -139,6 +139,22 @@ jobs:
         if: needs.changes.outputs.relevant == 'true'
         with:
           python-version: "3.13"
+      - name: Identify exact Elixir and OTP runtime for PLTs
+        if: needs.changes.outputs.relevant == 'true'
+        id: plt-runtime
+        run: |
+          identity=$(elixir -e '
+            release = to_string(:erlang.system_info(:otp_release))
+            otp = File.read!(Path.join([to_string(:code.root_dir()), "releases", release, "OTP_VERSION"]))
+            IO.inspect({System.build_info(), :erlang.system_info(:version), :erlang.system_info(:system_architecture), otp})
+          ' | sha256sum | cut -d " " -f 1)
+          echo "identity=$identity" >> "$GITHUB_OUTPUT"
+      - name: Cache dependency and runtime PLTs
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: elixir/_build/dev/plts
+          key: elixir-plt-${{ runner.os }}-${{ runner.arch }}-ubuntu2404-${{ steps.plt-runtime.outputs.identity }}-dev-${{ hashFiles('elixir/mix.lock', 'elixir/mix.exs', '.github/workflows/elixir.yml') }}-v1
       - name: Resolve dependencies
         if: needs.changes.outputs.relevant == 'true'
         run: |
