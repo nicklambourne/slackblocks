@@ -110,10 +110,8 @@ From the repository root, with Rust 1.85.0 and stable, rustfmt, Clippy and Pytho
 export RUSTFMT="$(rustup which --toolchain 1.85.0 rustfmt)"
 python3 rust/generator/generate.py --check
 rust/bin/check
-python3 rust/bin/check-package.py --toolchain 1.85.0
+python3 rust/bin/check-package.py --toolchain 1.85.0 --all-consumers
 python3 rust/bin/check-package.py --toolchain stable
-python3 rust/bin/check-package.py --toolchain 1.85.0 --lower-bounds
-python3 rust/bin/check-package.py --toolchain 1.85.0 --json-features
 rustup component add llvm-tools-preview --toolchain stable
 cargo +stable install cargo-llvm-cov --version 0.9.1 --locked
 python3 rust/bin/check-coverage.py

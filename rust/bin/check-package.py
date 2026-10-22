@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import tarfile
 import tempfile
+import time
 
 ROOT=Path(__file__).resolve().parents[2]
 RUST=ROOT/'rust'
@@ -14,7 +15,11 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--toolchain',default='stable')
 parser.add_argument('--lower-bounds',action='store_true')
 parser.add_argument('--json-features',action='store_true')
+parser.add_argument('--all-consumers',action='store_true',
+                    help='Validate one archive, then resolve default, lower-bound and JSON-feature consumers independently')
 args=parser.parse_args()
+if args.all_consumers and (args.lower_bounds or args.json_features):
+    parser.error('--all-consumers cannot be combined with individual consumer flags')
 # Host-local policy is discovered explicitly; CI and other hosts use their normal temp location.
 scratch=None
 if Path('/Volumes/Repos').exists():
@@ -22,7 +27,12 @@ if Path('/Volumes/Repos').exists():
         if not os.path.ismount('/Volumes/'+mount):raise SystemExit(f'Required /Volumes/{mount} is not mounted')
     scratch='/Volumes/Scratch'
 cargo=['cargo','+'+args.toolchain]
-def run(arguments,cwd=RUST):subprocess.run(cargo+arguments,cwd=cwd,check=True)
+def run(arguments,cwd=RUST):
+    started=time.perf_counter()
+    result=subprocess.run(cargo+arguments,cwd=cwd)
+    print('RUST_PACKAGE_PHASE '+json.dumps({'toolchain':args.toolchain,'directory':cwd.name,
+          'command':arguments,'seconds':time.perf_counter()-started,'returncode':result.returncode}),flush=True)
+    result.check_returncode()
 metadata=json.loads(subprocess.check_output(cargo+['metadata','--format-version','1','--no-deps'],cwd=RUST))
 package=next(p for p in metadata['packages'] if p['name']=='slackblocks')
 version=package['version']
@@ -42,12 +52,15 @@ with tempfile.TemporaryDirectory(prefix='slackblocks-rust-package-',dir=scratch)
     run(['test','--locked','--all-targets'],source)
     run(['test','--locked','--doc'],source)
     run(['run','--locked','--example','api_checkpoint'],source)
-    consumer=tmp/'consumer';(consumer/'src').mkdir(parents=True)
-    serde_version='=1.0.228' if args.lower_bounds else '1.0.228'
-    json_version='=1.0.145' if args.lower_bounds else '1.0.145'
-    features=', features = ["arbitrary_precision", "preserve_order"]' if args.json_features else ''
-    # The only path dependency is the extracted distributable, never the checkout.
-    (consumer/'Cargo.toml').write_text(f'''[package]
+    profiles=([('default',False,False),('lower-bounds',True,False),('json-features',False,True)]
+              if args.all_consumers else [('selected',args.lower_bounds,args.json_features)])
+    for profile,lower_bounds,json_features in profiles:
+        consumer=tmp/f'consumer-{profile}';(consumer/'src').mkdir(parents=True)
+        serde_version='=1.0.228' if lower_bounds else '1.0.228'
+        json_version='=1.0.145' if lower_bounds else '1.0.145'
+        features=', features = ["arbitrary_precision", "preserve_order"]' if json_features else ''
+        # The only path dependency is the extracted distributable, never the checkout.
+        (consumer/'Cargo.toml').write_text(f'''[package]
 name = "slackblocks-artifact-consumer"
 version = "0.0.0"
 edition = "2024"
@@ -59,17 +72,17 @@ slackblocks = {{ path = {json.dumps(str(source))} }}
 serde = "{serde_version}"
 serde_json = {{ version = "{json_version}"{features} }}
 ''')
-    main=(source/'examples/api_checkpoint.rs').read_text()
-    main=main.replace('    let option =', '''    for literal in ["1.2345678901234567890123456789", "18446744073709551617", "1e-400", "1e400"] {
+        main=(source/'examples/api_checkpoint.rs').read_text()
+        main=main.replace('    let option =', '''    for literal in ["1.2345678901234567890123456789", "18446744073709551617", "1e-400", "1e400"] {
         assert!(serde_json::from_str::<JsonNumber>(literal).is_err(), "{literal}");
         assert!(serde_json::from_slice::<JsonNumber>(literal.as_bytes()).is_err(), "{literal}");
     }
     let exact: JsonNumber = serde_json::from_str("1e3")?;
     assert_eq!(exact.as_number().as_f64(), Some(1000.0));
     let option =''')
-    (consumer/'src/main.rs').write_text(main)
-    run(['run'],consumer)  # Deliberately fresh resolution: no lockfile or workspace override.
+        (consumer/'src/main.rs').write_text(main)
+        run(['run'],consumer)  # Deliberately fresh resolution: no lockfile or workspace override.
     info=json.loads(subprocess.check_output(cargo+['metadata','--format-version','1','--no-deps'],cwd=source))
     manifest=next(p['manifest_path'] for p in info['packages'] if p['name']=='slackblocks')
     assert str(source) in manifest and str(ROOT) not in manifest
-print(f'Archive and fresh consumer passed on {args.toolchain}; lower_bounds={args.lower_bounds}; json_features={args.json_features}')
+print(f'Archive and fresh consumer passed on {args.toolchain}; consumers={[(name,lower,json) for name,lower,json in profiles]}')
