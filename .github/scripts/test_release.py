@@ -76,6 +76,13 @@ class ReleaseTests(unittest.TestCase):
             target.write_text(
                 (ROOT / name).read_text().replace(SOURCE_VERSION, VERSION)
             )
+        go_module = self.root / "go/go.mod"
+        go_module.write_text(
+            go_module.read_text().replace(
+                f"/go/v{SOURCE_VERSION.split('.')[0]}",
+                f"/go/v{VERSION.split('.')[0]}",
+            )
+        )
         import re
 
         policy = self.root / "php/release.json"
@@ -257,6 +264,13 @@ class ReleaseTests(unittest.TestCase):
             ):
                 release.validate(self.root)
             path.write_text(original)
+
+    def test_matching_go_major_three(self):
+        for name in FILES + [language + "/CHANGELOG.md" for language in release.LANGUAGES]:
+            path = self.root / name
+            path.write_text(path.read_text().replace(VERSION, "3.0.0"))
+        self.edit("go/go.mod", "/go/v2", "/go/v3")
+        self.assertEqual(release.validate(self.root), "3.0.0")
 
     def test_wrong_go_major(self):
         self.edit("go/go.mod", "/go/v2", "/go/v3")

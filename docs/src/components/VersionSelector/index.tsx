@@ -186,17 +186,19 @@ export default function VersionSelector({ mobile = false }: Props) {
   };
 
   return (
-    <select
-      aria-label="Documentation version"
-      className={`docs-version-select${mobile ? " docs-version-select--mobile" : ""}`}
-      onChange={selectVersion}
-      value={displayedVersion.name}
-    >
-      {availableVersions.map((version) => (
-        <option key={version.name} value={version.name}>
-          {version.label}
-        </option>
-      ))}
-    </select>
+    <span className="docs-version-selector">
+      <select
+        aria-label="Documentation version"
+        className={`docs-version-select${mobile ? " docs-version-select--mobile" : ""}`}
+        onChange={selectVersion}
+        value={displayedVersion.name}
+      >
+        {availableVersions.map((version) => (
+          <option key={version.name} value={version.name}>
+            {version.label}
+          </option>
+        ))}
+      </select>
+    </span>
   );
 }

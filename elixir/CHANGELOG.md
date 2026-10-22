@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## [3.0.0] — 2026-10-22
+
+- Release the coordinated 3.0.0 API across all nine implementations; supported language/runtime minimums remain unchanged.
+- Breaking: number-input bounds are strings in stored values and getters; numeric construction conveniences remain. See the migration guide before upgrading.
+- Freeze the 2.8.0 documentation and fix shared language/version selector artwork and arrows across documentation versions.
 
 - Validate ordered plain-text bounds, nonnegative external-query thresholds, nonempty supplied static lists, ASCII date shape and 24-hour times through native constructors, changes and JSON ingress/egress (SB-013). Preserve omitted fields, zero thresholds, empty image alt text and application-owned calendar rules.
 
@@ -8,7 +12,7 @@
 
 - Reject explicit `focus_on_load` on external multi-selects, including false (SB-003). The compatibility option remains available; omit it or use nil. Other selectors retain focus support.
 
-- Correct number-input bounds to preserved decimal strings, retaining numeric constructor/change conveniences and exact ordering (SB-001, spec 1.3.0). Stored fields now contain strings; package version unchanged.
+- Correct number-input bounds to preserved decimal strings, retaining numeric constructor/change conveniences and exact ordering (SB-001, spec 1.3.0). Stored fields now contain strings.
 
 - Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
 

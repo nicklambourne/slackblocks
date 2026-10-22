@@ -5,15 +5,11 @@ All notable changes to the TypeScript package are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.8.0] — 2026-10-18
+## [3.0.0] — 2026-10-22
 
-- Coordinate the first Elixir implementation release; existing language support remains unchanged.
-
-## [2.7.0] — 2026-10-11
-
-- Add the PHP implementation to the coordinated release and documentation.
-
-## [Unreleased]
+- Release the coordinated 3.0.0 API across all nine implementations; supported language/runtime minimums remain unchanged.
+- Breaking: number-input bounds are strings in stored values and getters; numeric construction conveniences remain. See the migration guide before upgrading.
+- Freeze the 2.8.0 documentation and fix shared language/version selector artwork and arrows across documentation versions.
 
 - Validate feedback-choice limits when standalone choices are built, using the same checks as the parent element.
 
@@ -31,10 +27,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Reject a plain-text input whose supplied `min_length` exceeds `max_length` (`out-of-range`); equal, zero-minimum and omitted bounds remain supported (SB-013).
 
-- Correct number-input bounds to string wire values, retain native numeric convenience arguments, and reject nonfinite/inverted bounds (SB-001, spec 1.3.0). Bound getters now return strings; reflection/signature consumers must migrate. Package version unchanged.
+- Correct number-input bounds to string wire values, retain native numeric convenience arguments, and reject nonfinite/inverted bounds (SB-001, spec 1.3.0). Bound getters now return strings; reflection/signature consumers must migrate.
 
 - Clarify that `submit_disabled`, including explicit false, is configuration-modal-only; ordinary modal examples omit it (SB-015).
 - Enforce the existing 150-character placeholder limit for external, user, channel and conversation selectors, including multi-select variants; Unicode code points are counted.
+
+## [2.8.0] — 2026-10-18
+
+- Coordinate the first Elixir implementation release; existing language support remains unchanged.
+
+## [2.7.0] — 2026-10-11
+
+- Add the PHP implementation to the coordinated release and documentation.
 
 ## [2.6.0] — 2026-10-09
 

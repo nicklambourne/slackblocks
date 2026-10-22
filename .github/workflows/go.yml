@@ -153,7 +153,7 @@ jobs:
         run: |
           go mod tidy
           git diff --exit-code -- go.mod go.sum
-          go test -mod=readonly -count=1 -race -cover ./... github.com/nicklambourne/slackblocks/go/v2/...
+          go test -mod=readonly -count=1 -race -cover ./... github.com/nicklambourne/slackblocks/go/v3/...
           go run -mod=readonly ../../docs/examples/multiselect-compat/go/main.go > "$RUNNER_TEMP/go-newer-sdk.jsonl"
           python3 ../../docs/examples/multiselect-compat/check.py "$RUNNER_TEMP/go-newer-sdk.jsonl"
           cmp "$RUNNER_TEMP/go-minimum-sdk.jsonl" "$RUNNER_TEMP/go-newer-sdk.jsonl"

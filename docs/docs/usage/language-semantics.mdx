@@ -108,7 +108,7 @@ cell := slackblocks.NewRawNumber().
     Text("9,007,199,254,740,993")
 ```
 
-Import `encoding/json` and `github.com/nicklambourne/slackblocks/go/v2` in the
+Import `encoding/json` and `github.com/nicklambourne/slackblocks/go/v3` in the
 calling program. `Build` validates JSON number syntax, including rejecting an
 empty number, leading zeros, NaN and infinity. Integer, decimal and exponent
 lexemes remain numeric JSON values, not quoted strings. `Text` is the separate

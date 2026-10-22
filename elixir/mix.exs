@@ -4,7 +4,7 @@ defmodule Slackblocks.MixProject do
   def project do
     [
       app: :slackblocks,
-      version: "2.8.0",
+      version: "3.0.0",
       elixir: ">= 1.16.3 and < 2.0.0",
       start_permanent: Mix.env() == :prod,
       deps: deps(),

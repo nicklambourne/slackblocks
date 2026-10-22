@@ -1,0 +1,31 @@
+---
+sidebar_position: 7
+---
+
+# Validation Errors
+
+Generated from compiled Elixir documentation and native typespecs. Values are immutable; constructors and changes use keyword options.
+
+## Slackblocks.ValidationError {#slackblocks-validationerror}
+
+A categorized validation failure with wire keys and zero-based indexes in `path`.
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.ValidationError{
+  __exception__: true,
+  category: category(),
+  message: binary(),
+  path: [binary() | non_neg_integer()]
+}
+
+@type category() ::
+  :length_exceeded
+  | :out_of_range
+  | :mutually_exclusive
+  | :type_mismatch
+  | :missing_required
+  | :invalid_usage
+```
+

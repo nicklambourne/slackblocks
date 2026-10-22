@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	slackblocks "github.com/nicklambourne/slackblocks/go/v2"
+	slackblocks "github.com/nicklambourne/slackblocks/go/v3"
 )
 
 func TestSectionWithEmptyFieldsIsMissingContent(t *testing.T) {

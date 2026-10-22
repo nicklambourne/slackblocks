@@ -1,6 +1,6 @@
 # slackblocks for Go
 
-[![Go](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv2%2F%40latest&query=%24.Version&label=Go&color=00ADD8&logo=go&logoColor=white)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2)
+[![Go](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv3%2F%40latest&query=%24.Version&label=Go&color=00ADD8&logo=go&logoColor=white)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v3)
 [![Go CI](https://github.com/nicklambourne/slackblocks/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/nicklambourne/slackblocks/actions/workflows/go.yml)
 
 Build validated Slack Block Kit payloads with a fluent Go API that integrates
@@ -64,10 +64,10 @@ mean omission. `MustBuild` still panics on validation errors by design.
 `Set(field, value)` remains the raw wire-format escape hatch for fields slackblocks does not
 model yet.
 
-The module path is `github.com/nicklambourne/slackblocks/go/v2`:
+The module path is `github.com/nicklambourne/slackblocks/go/v3`:
 
 ```bash
-go get github.com/nicklambourne/slackblocks/go/v2
+go get github.com/nicklambourne/slackblocks/go/v3
 ```
 
 Go 1.22+ is supported with the default slack-go v0.17.3 dependency. Applications

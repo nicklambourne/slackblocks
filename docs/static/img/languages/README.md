@@ -28,4 +28,4 @@ inclusion does not imply endorsement by either language project.
 
 - Source: official [dark artwork for light backgrounds](https://elixir-lang.org/downloads/logos/elixir-dark.svg) and [light artwork for dark backgrounds](https://elixir-lang.org/downloads/logos/elixir-light.svg).
 - Elixir and its logo are registered trademarks of the Elixir Team; used to identify the supported language under its [trademark policy](https://elixir-lang.org/trademarks/).
-- Changes: none; renamed locally and displayed proportionally in the shared selector slot. The theme selects the appropriate supplied variant.
+- Changes: retain the official symbol paths and colors, omit the separately grouped wordmark, and fit the viewBox to the 160×245 symbol. The shared selector uses these assets in both themes across current and historical documentation.
