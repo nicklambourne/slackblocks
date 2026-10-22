@@ -187,8 +187,7 @@ def account(root):
     )
     permissions = info.get("permissions", [])
     write = any(
-        p.get("domain") == "api" and p.get("resource") in (None, "write")
-        for p in permissions
+        p.get("domain") == "api" and p.get("resource") in (None, "write") for p in permissions
     )
     package = any(
         p.get("domain") == "package" and p.get("resource") == "hexpm/slackblocks"
@@ -199,9 +198,12 @@ def account(root):
     if write:
         api("/auth?domain=api&resource=write", key)
     if existing is not None:
-        owner = api("/packages/slackblocks/owners/" + urllib.parse.quote(policy["owner"], safe=""), key)
+        owner = api(
+            "/packages/slackblocks/owners/" + urllib.parse.quote(policy["owner"], safe=""), key
+        )
         require(
-            owner.get("username") == policy["owner"] and owner.get("level") in ("full", "maintainer"),
+            owner.get("username") == policy["owner"]
+            and owner.get("level") in ("full", "maintainer"),
             "Hex package owner differs from the reviewed personal publisher",
         )
 
