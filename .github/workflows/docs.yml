@@ -98,6 +98,25 @@ jobs:
           go-version: "stable"
           cache: false
 
+      - name: Identify exact Go documentation cache inputs
+        id: go-cache
+        run: |
+          identity=$(go env -json GOVERSION GOOS GOARCH GOAMD64 GOARM GOEXPERIMENT CGO_ENABLED | sha256sum | cut -d ' ' -f 1)
+          {
+            echo "identity=$identity"
+            echo "modules=$(go env GOMODCACHE)"
+            echo "build=$(go env GOCACHE)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Restore exact Go documentation dependency and build cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ${{ steps.go-cache.outputs.modules }}
+            ${{ steps.go-cache.outputs.build }}
+          # Go validates source inputs; the key bounds toolchain, module and recipe changes.
+          key: docs-go-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.go-cache.outputs.identity }}-${{ hashFiles('go/go.mod', 'go/go.sum', 'docs/examples/multiselect-compat/go/go.mod', 'docs/examples/multiselect-compat/go/go.sum', '.github/workflows/docs.yml') }}
+
       - name: Install Java for the javadoc-generated API reference
         uses: actions/setup-java@v6
         with:
