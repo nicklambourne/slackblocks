@@ -128,10 +128,8 @@ jobs:
       - name: Verify archive and fresh consumers on minimum and stable Rust
         if: needs.changes.outputs.relevant == 'true'
         run: |
-          python3 rust/bin/check-package.py --toolchain 1.85.0
+          python3 rust/bin/check-package.py --toolchain 1.85.0 --all-consumers
           python3 rust/bin/check-package.py --toolchain stable
-          python3 rust/bin/check-package.py --toolchain 1.85.0 --lower-bounds
-          python3 rust/bin/check-package.py --toolchain 1.85.0 --json-features
       - name: Identify the pinned coverage tool cache
         if: needs.changes.outputs.relevant == 'true'
         id: coverage-tool
