@@ -147,6 +147,18 @@ jobs:
       - name: Install JavaScript dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Identify documentation compiler runtime
+        id: docs-compiler
+        run: echo "node=$(node --version)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache documentation compiler data
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          # Compiler packs only: references, examples, pages and search still run.
+          # One exact recipe key; webpack validates source and CSS dependencies.
+          path: docs/node_modules/.cache/webpack
+          key: docs-webpack-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.docs-compiler.outputs.node }}-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json', 'docs/package.json', 'docs/docusaurus.config.ts', 'docs/plugins/**', 'docs/scripts/**', '.github/workflows/docs.yml') }}
+
       - name: Build documentation
         run: pnpm --filter @slackblocks/docs build
 

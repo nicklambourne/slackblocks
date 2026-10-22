@@ -84,10 +84,8 @@ jobs:
       - name: Verify standalone archives and fresh consumers
         if: github.event_name != 'pull_request'
         run: |
-          python rust/bin/check-package.py --toolchain 1.85.0
+          python rust/bin/check-package.py --toolchain 1.85.0 --all-consumers
           python rust/bin/check-package.py --toolchain stable
-          python rust/bin/check-package.py --toolchain 1.85.0 --lower-bounds
-          python rust/bin/check-package.py --toolchain 1.85.0 --json-features
       - name: Exercise native Cargo publish without uploading
         run: python rust/bin/check-publish-dry-run.py
       - name: Prepare reproducible release artifact
