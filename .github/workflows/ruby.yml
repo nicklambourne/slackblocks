@@ -51,6 +51,8 @@ jobs:
     needs: changes
     name: Ruby tests (${{ matrix.os }}, ${{ matrix.ruby }})
     runs-on: ${{ matrix.os }}
+    env:
+      BUNDLE_WITHOUT: quality
     defaults:
       run:
         shell: bash
@@ -81,7 +83,7 @@ jobs:
 
       - name: Run Ruby unit and conformance tests
         if: needs.changes.outputs.relevant == 'true'
-        run: ruby -I test -e 'Dir[File.expand_path("test/*_test.rb")].sort.each { |path| require path }'
+        run: bundle exec ruby -I test -e 'Dir[File.expand_path("test/*_test.rb")].sort.each { |path| require path }'
 
   quality:
     needs: changes
@@ -165,6 +167,8 @@ jobs:
     name: Ruby head (informational)
     runs-on: ubuntu-latest
     continue-on-error: true
+    env:
+      BUNDLE_WITHOUT: quality
     defaults:
       run:
         shell: bash
@@ -190,4 +194,4 @@ jobs:
 
       - name: Run Ruby tests
         if: needs.changes.outputs.relevant == 'true'
-        run: ruby -I test -e 'Dir[File.expand_path("test/*_test.rb")].sort.each { |path| require path }'
+        run: bundle exec ruby -I test -e 'Dir[File.expand_path("test/*_test.rb")].sort.each { |path| require path }'
