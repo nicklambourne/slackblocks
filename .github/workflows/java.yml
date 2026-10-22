@@ -86,12 +86,19 @@ jobs:
         run: |
           python java/generator/generate_models.py --check-go
           (cd java && ./mvnw -B -ntp spotless:apply)
-          git diff --exit-code -- java/src/main/java
+          git diff --exit-code -- java/src/main/java java/src/test/java
 
       - name: Build and test
         if: needs.changes.outputs.relevant == 'true'
         working-directory: java
-        run: ./mvnw -B -ntp clean verify
+        run: |
+          # Required Java 21 owns the pinned formatter; every JDK still compiles,
+          # runs all tests, static analysis and Javadoc checks on this commit.
+          if [ "${{ matrix.java-version }}" = "21" ]; then
+            ./mvnw -B -ntp clean verify
+          else
+            ./mvnw -B -ntp clean verify -Dspotless.skip=true
+          fi
 
       - name: Upload Maven artifacts
         if: needs.changes.outputs.relevant == 'true' && matrix.java-version == '21'
