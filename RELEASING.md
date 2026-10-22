@@ -421,7 +421,7 @@ checklist below records the required setup and gates for the first publication.
 3. Create the protected GitHub environment **hex**, permitting the coordinated
    master readiness job and `elixir/v*` publisher tags. Store **HEX_API_KEY** there.
    The first release needs `api:write`. Later key-based releases can use package
-   permission for `slackblocks` plus `api:read` for Hex 2.5.1 account discovery.
+   permission for `hexpm/slackblocks` plus `api:read` for Hex 2.5.1 account discovery.
    Keep `auth_mode: api-key` explicit; missing credentials do not trigger another
    authentication mode. No PR job receives this secret.
 4. [Hex now documents workload identities](https://hex.pm/docs/trusted-publishers)
@@ -440,7 +440,10 @@ checklist below records the required setup and gates for the first publication.
    authorizing the release. No release dates or account settings are implied by
    the implementation PRs.
 7. The coordinator validates the complete train, then checks Hex account/email,
-   API scope and package ownership through read-only `/api/auth` requests. It
+   the authenticated key’s exact publish permission and existing package ownership
+   through read-only `/api/auth`, `/api/keys/{name}` and package-owner requests.
+   API write keys remain valid after the first publication; package keys must name
+   `hexpm/slackblocks`. No credentials or granted scopes are changed. It
    checks the proposed artifact against any existing version and runs the full
    authenticated `mix hex.publish --dry-run --yes` **before creating tags**.
    This cannot reserve the name or prove a future write will succeed; the actual
