@@ -33,4 +33,15 @@ After **each** language run:
 python docs/examples/multiselect-compat/check.py probe.jsonl
 ```
 
+The default Go consumer retains Go 1.22 and slack-go v0.17.3. To run the same
+source with the newer tested SDK on Go 1.25+, use the separate integration module:
+
+```sh
+(cd go/integrations && go run -mod=readonly ../../docs/examples/multiselect-compat/go/main.go) > probe.jsonl
+python docs/examples/multiselect-compat/check.py probe.jsonl
+```
+
+Go CI compares both outputs and runs the full native suite with each selected SDK.
+See the [Go support matrix](../../docs/usage/compatibility.mdx) for the version policy.
+
 The check asserts family/type, parent/surface, native static option content, IDs, message destination/fallback text, modal title/submit, parent child count/text, and omission of unrelated modal/external-menu flags. A passing local check is not Slack API or client-rendering acceptance. See the [compatibility recipe](../../docs/recipes/multiselect-compatibility.mdx) for live comparison and reporting.

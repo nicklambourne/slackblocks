@@ -7,6 +7,8 @@ on:
       - "go/**"
       - "spec/**"
       - "docs/examples/go/**"
+      - "docs/examples/multiselect-compat/go/**"
+      - "docs/examples/multiselect-compat/check.py"
       - "docs/examples/section_hello.json"
       - "docs/examples/response_url_payloads.json"
       - "docs/docs/usage/sending_messages.mdx"
@@ -44,7 +46,7 @@ jobs:
             echo "relevant=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if grep -qE '^(go/|spec/|docs/examples/go/|docs/examples/(section_hello|response_url_payloads)\.json$|docs/docs/usage/(using_blocks|sending_messages)\.mdx$|\.github/scripts/extract-go-release-notes\.awk$|\.github/workflows/go\.yml$)' <<<"$files"; then
+          if grep -qE '^(go/|spec/|docs/examples/go/|docs/examples/multiselect-compat/(go/|check\.py$)|docs/examples/(section_hello|response_url_payloads)\.json$|docs/docs/usage/(using_blocks|sending_messages)\.mdx$|\.github/scripts/extract-go-release-notes\.awk$|\.github/workflows/go\.yml$)' <<<"$files"; then
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           else
             echo "relevant=false" >> "$GITHUB_OUTPUT"
@@ -57,7 +59,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-version: ["1.22.x", "stable"]
+        go-version: ["1.22.x", "1.25.x", "stable"]
+    env:
+      # Prove each matrix version; never silently upgrade a compatibility lane.
+      GOTOOLCHAIN: local
+      GOWORK: "off"
     defaults:
       run:
         working-directory: go
@@ -92,7 +98,7 @@ jobs:
             ${{ steps.go-cache.outputs.modules }}
             ${{ steps.go-cache.outputs.build }}
           # The workflow hash includes analyzer compiler/tool pins and this cache recipe.
-          key: go-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.go-cache.outputs.identity }}-${{ hashFiles('go/go.mod', 'go/go.sum', '.github/workflows/go.yml') }}
+          key: go-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.go-cache.outputs.identity }}-${{ hashFiles('go/go.mod', 'go/go.sum', 'go/integrations/go.mod', 'go/integrations/go.sum', 'docs/examples/multiselect-compat/go/go.mod', 'docs/examples/multiselect-compat/go/go.sum', '.github/workflows/go.yml') }}
 
       - name: Check formatting
         if: needs.changes.outputs.relevant == 'true'
@@ -131,3 +137,23 @@ jobs:
       - name: Run tests
         if: needs.changes.outputs.relevant == 'true'
         run: go test -count=1 -race -cover ./...
+
+      - name: Verify minimum SDK documentation consumer
+        if: needs.changes.outputs.relevant == 'true'
+        working-directory: docs/examples/multiselect-compat/go
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+          go run -mod=readonly . > "$RUNNER_TEMP/go-minimum-sdk.jsonl"
+          python3 ../check.py "$RUNNER_TEMP/go-minimum-sdk.jsonl"
+
+      - name: Verify newer SDK consumer and full native suite
+        if: needs.changes.outputs.relevant == 'true' && matrix.go-version != '1.22.x'
+        working-directory: go/integrations
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+          go test -mod=readonly -count=1 -race -cover ./... github.com/nicklambourne/slackblocks/go/v2/...
+          go run -mod=readonly ../../docs/examples/multiselect-compat/go/main.go > "$RUNNER_TEMP/go-newer-sdk.jsonl"
+          python3 ../../docs/examples/multiselect-compat/check.py "$RUNNER_TEMP/go-newer-sdk.jsonl"
+          cmp "$RUNNER_TEMP/go-minimum-sdk.jsonl" "$RUNNER_TEMP/go-newer-sdk.jsonl"
