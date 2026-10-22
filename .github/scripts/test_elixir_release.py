@@ -159,36 +159,89 @@ class ElixirReleaseTests(unittest.TestCase):
         ):
             hex_release.account(self.root)
 
-    def test_readiness_checks_first_publish_write_and_later_package_permission(self):
-        owner = {"key": {"owner": {"type": "user", "name": "maintainer"}}}
-        for existing, permission in [
-            (None, "domain=api&resource=write"),
-            ({"name": "slackblocks"}, "domain=package&resource=slackblocks"),
-        ]:
+    def account_api(self, existing=True, permissions=None, owner="maintainer", active=True,
+                    package_owner="maintainer", level="full"):
+        if permissions is None:
+            permissions = [{"domain": "api", "resource": "write"}]
+
+        def response(path, key=None, absent=False):
+            self.assertNotIn("domain=package", path)
+            if path in ("/auth?domain=api&resource=read", "/auth?domain=api&resource=write"):
+                self.assertEqual(key, "test-only")
+                return {"key": {"name": "release key", "owner": {"type": "user", "name": owner}}}
+            if path == "/keys/release%20key":
+                self.assertEqual(key, "test-only")
+                return {"name": "release key", "authing_key": active, "permissions": permissions}
+            if path == "/packages/slackblocks":
+                self.assertTrue(absent)
+                return {"name": "slackblocks"} if existing else None
+            if path == "/packages/slackblocks/owners/maintainer":
+                self.assertEqual(key, "test-only")
+                return {"username": package_owner, "level": level}
+            self.fail(f"Unexpected authenticated endpoint: {path}")
+
+        return response
+
+    def test_readiness_accepts_write_key_for_first_and_existing_package(self):
+        for existing in [False, True]:
             with (
+                self.subTest(existing=existing),
                 patch.dict(os.environ, {"HEX_API_KEY": "test-only"}),
-                patch.object(
-                    hex_release, "api", side_effect=[existing, owner, {}]
-                ) as api,
+                patch.object(hex_release, "api", side_effect=self.account_api(existing=existing)),
             ):
                 hex_release.account(self.root)
-                self.assertIn(permission, api.call_args_list[1].args[0])
-                self.assertEqual(
-                    api.call_args_list[2].args[0], "/auth?domain=api&resource=read"
-                )
+
+    def test_readiness_accepts_exact_package_key_for_existing_package(self):
+        permissions = [{"domain": "api", "resource": "read"},
+                       {"domain": "package", "resource": "hexpm/slackblocks"}]
         with (
             patch.dict(os.environ, {"HEX_API_KEY": "test-only"}),
-            patch.object(
-                hex_release,
-                "api",
-                side_effect=[
-                    None,
-                    {"key": {"owner": {"type": "user", "name": "someone-else"}}},
-                ],
-            ),
-            self.assertRaisesRegex(hex_release.preflight.ReleaseError, "owner"),
+            patch.object(hex_release, "api", side_effect=self.account_api(
+                permissions=permissions, level="maintainer")),
         ):
             hex_release.account(self.root)
+
+    def test_readiness_rejects_read_only_wrong_package_and_first_publish_package_keys(self):
+        for existing, permissions in [
+            (True, [{"domain": "api", "resource": "read"}]),
+            (True, [{"domain": "package", "resource": "hexpm/other"}]),
+            (True, [{"domain": "package", "resource": "private/slackblocks"}]),
+            (True, [{"domain": "package", "resource": "slackblocks"}]),
+            (False, [{"domain": "package", "resource": "hexpm/slackblocks"}]),
+        ]:
+            with (
+                self.subTest(existing=existing, permissions=permissions),
+                patch.dict(os.environ, {"HEX_API_KEY": "test-only"}),
+                patch.object(hex_release, "api", side_effect=self.account_api(
+                    existing=existing, permissions=permissions)),
+                self.assertRaisesRegex(hex_release.preflight.ReleaseError, "publish permission"),
+            ):
+                hex_release.account(self.root)
+
+    def test_readiness_rejects_wrong_identity_inactive_key_and_missing_ownership(self):
+        for options, message in [
+            ({"owner": "someone-else"}, "owner"),
+            ({"active": False}, "active key"),
+            ({"package_owner": "someone-else"}, "package owner"),
+            ({"level": "read"}, "package owner"),
+        ]:
+            with (
+                self.subTest(options=options),
+                patch.dict(os.environ, {"HEX_API_KEY": "test-only"}),
+                patch.object(hex_release, "api", side_effect=self.account_api(**options)),
+                self.assertRaisesRegex(hex_release.preflight.ReleaseError, message),
+            ):
+                hex_release.account(self.root)
+
+    def test_readiness_authentication_failure_stops_without_fallback(self):
+        with (
+            patch.dict(os.environ, {"HEX_API_KEY": "test-only"}),
+            patch.object(hex_release, "api", side_effect=hex_release.preflight.ReleaseError(
+                "Hex request failed with HTTP 401")) as api,
+            self.assertRaisesRegex(hex_release.preflight.ReleaseError, "401"),
+        ):
+            hex_release.account(self.root)
+        api.assert_called_once_with("/auth?domain=api&resource=read", "test-only")
 
     def test_hex_absence_is_only_404_and_errors_fail_closed(self):
         for code in [401, 403, 429, 500]:

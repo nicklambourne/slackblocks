@@ -169,19 +169,43 @@ def account(root):
     policy = json.loads((root / "elixir/release.json").read_text())
     key = os.environ.get("HEX_API_KEY")
     require(bool(key), "Protected hex environment requires HEX_API_KEY")
-    existing = api("/packages/slackblocks", absent=True)
-    # /auth checks key permissions, confirmed account and ownership without mutation.
-    # A first publication needs api:write; an existing package may use its package scope.
-    permission = (
-        "domain=api&resource=write" if existing is None else "domain=package&resource=slackblocks"
-    )
-    auth = api("/auth?" + permission, key)
-    owner = auth.get("key", {}).get("owner", {})
+    # /auth's package probe receives a string, while Hex's publisher checks a
+    # resolved package and accepts either api:write or its exact package scope.
+    # Inspect only the authenticated key; never print its metadata or responses.
+    auth = api("/auth?domain=api&resource=read", key)
+    auth_key = auth.get("key", {})
     require(
-        owner == {"type": "user", "name": policy["owner"]},
+        auth_key.get("owner") == {"type": "user", "name": policy["owner"]},
         "Hex key owner differs from the reviewed personal publisher",
     )
-    api("/auth?domain=api&resource=read", key)  # Hex 2.5.1's account discovery.
+    name = auth_key.get("name")
+    require(isinstance(name, str) and bool(name), "Hex active key name is missing")
+    info = api("/keys/" + urllib.parse.quote(name, safe=""), key)
+    require(
+        info.get("authing_key") is True and info.get("name") == name,
+        "Hex active key identity differs",
+    )
+    permissions = info.get("permissions", [])
+    write = any(
+        p.get("domain") == "api" and p.get("resource") in (None, "write") for p in permissions
+    )
+    package = any(
+        p.get("domain") == "package" and p.get("resource") == "hexpm/slackblocks"
+        for p in permissions
+    )
+    existing = api("/packages/slackblocks", absent=True)
+    require(write or (existing is not None and package), "Hex key lacks publish permission")
+    if write:
+        api("/auth?domain=api&resource=write", key)
+    if existing is not None:
+        owner = api(
+            "/packages/slackblocks/owners/" + urllib.parse.quote(policy["owner"], safe=""), key
+        )
+        require(
+            owner.get("username") == policy["owner"]
+            and owner.get("level") in ("full", "maintainer"),
+            "Hex package owner differs from the reviewed personal publisher",
+        )
 
 
 def readiness(root):
