@@ -124,15 +124,20 @@ jobs:
           python3 csharp/generator/generate_models.py
           git diff --exit-code -- csharp/src/Slackblocks/Generated
 
+      - name: Restore once for formatting and tests
+        if: needs.changes.outputs.relevant == 'true' && matrix.checks
+        working-directory: csharp
+        run: dotnet restore Slackblocks.sln
+
       - name: Check formatting
         if: needs.changes.outputs.relevant == 'true' && matrix.checks
         working-directory: csharp
-        run: dotnet format Slackblocks.sln --verify-no-changes
+        run: dotnet format Slackblocks.sln --verify-no-changes --no-restore
 
       - name: Build and test
         if: needs.changes.outputs.relevant == 'true'
         working-directory: csharp
-        run: dotnet test Slackblocks.sln --configuration Release --collect "XPlat Code Coverage" --results-directory artifacts/coverage
+        run: dotnet test Slackblocks.sln --configuration Release --collect "XPlat Code Coverage" --results-directory artifacts/coverage ${{ matrix.checks && '--no-restore' || '' }}
 
   package:
     needs: changes
