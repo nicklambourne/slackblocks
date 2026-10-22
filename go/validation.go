@@ -1,6 +1,7 @@
 package slackblocks
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
 	"regexp"
@@ -407,6 +408,10 @@ func validateObject(object Object, path string) error {
 	}
 
 	switch typeName {
+	case "raw_number":
+		if value, ok := object["value"].(json.Number); ok && !jsonNumberPattern.MatchString(string(value)) {
+			return validationError(TypeMismatch, child(path, "value"), "expected valid JSON number syntax")
+		}
 	case "plain_text", "mrkdwn":
 		return textLength(object, child(path, "text"), limitTextMinLength, limitTextMaxLength)
 	case "icon":
