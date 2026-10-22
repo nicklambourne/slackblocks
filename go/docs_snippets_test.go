@@ -44,7 +44,7 @@ func TestUsingBlocksSnippetsMatchDocumentedJSON(t *testing.T) {
 	}
 
 	var program bytes.Buffer
-	program.WriteString("package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n\n\tslackblocks \"github.com/nicklambourne/slackblocks/go/v2\"\n)\n\n")
+	program.WriteString("package main\n\nimport (\n\t\"encoding/json\"\n\t\"os\"\n\n\tslackblocks \"github.com/nicklambourne/slackblocks/go/v3\"\n)\n\n")
 	for index, snippet := range snippets {
 		fmt.Fprintf(&program, "func snippet%d() (any, error) {\n%s\n\treturn block, err\n}\n\n", index, snippet.code)
 	}

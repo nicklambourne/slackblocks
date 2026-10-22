@@ -6,7 +6,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/slackblocks?style=flat&labelColor=555&label=PyPI&color=3776AB&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/)
 [![npm version](https://img.shields.io/npm/v/%40nicklambourne%2Fslackblocks?style=flat&labelColor=555&label=npm&color=3178C6&logo=npm&logoColor=white)](https://www.npmjs.com/package/@nicklambourne/slackblocks)
-[![Go module version](https://img.shields.io/badge/dynamic/json?style=flat&labelColor=555&label=Go+module&color=00ACD7&logo=go&logoColor=white&url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv2%2F%40latest&query=%24.Version)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2)
+[![Go module version](https://img.shields.io/badge/dynamic/json?style=flat&labelColor=555&label=Go+module&color=00ACD7&logo=go&logoColor=white&url=https%3A%2F%2Fproxy.golang.org%2Fgithub.com%2Fnicklambourne%2Fslackblocks%2Fgo%2Fv3%2F%40latest&query=%24.Version)](https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v3)
 [![Maven Central version](https://img.shields.io/maven-central/v/io.github.nicklambourne/slackblocks?style=flat&labelColor=555&label=Maven+Central&color=E76F00&logo=apachemaven&logoColor=white)](https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks)
 [![NuGet version](https://img.shields.io/nuget/v/Slackblocks?style=flat&labelColor=555&label=NuGet&color=512BD4&logo=nuget&logoColor=white)](https://www.nuget.org/packages/Slackblocks)
 [![RubyGems version](https://img.shields.io/gem/v/slackblocks?style=flat&labelColor=555&label=RubyGems&color=CC342D&logo=rubygems&logoColor=white)](https://rubygems.org/gems/slackblocks)
@@ -84,7 +84,7 @@ npm install @nicklambourne/slackblocks
 <summary>Go (1.22+)</summary>
 
 ```bash
-go get github.com/nicklambourne/slackblocks/go/v2
+go get github.com/nicklambourne/slackblocks/go/v3
 ```
 
 </details>
@@ -96,7 +96,7 @@ go get github.com/nicklambourne/slackblocks/go/v2
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>2.7.0</version>
+  <version>3.0.0</version>
 </dependency>
 ```
 
@@ -124,7 +124,7 @@ gem install slackblocks
 <summary>Rust (1.85+, edition 2024)</summary>
 
 ```bash
-cargo add slackblocks@2.7.0
+cargo add slackblocks@3.0.0
 cargo add serde_json
 ```
 
@@ -134,7 +134,7 @@ cargo add serde_json
 <summary>PHP (8.2+, 64-bit)</summary>
 
 ```bash
-composer require nicklambourne/slackblocks:^2.7
+composer require nicklambourne/slackblocks:^3.0
 ```
 
 PHP support begins with coordinated version 2.7.0. See the
@@ -148,7 +148,7 @@ PHP support begins with coordinated version 2.7.0. See the
 Add the [Hex package](https://hex.pm/packages/slackblocks) to your dependencies in `mix.exs`:
 
 ```elixir
-{:slackblocks, "~> 2.8"}
+{:slackblocks, "~> 3.0"}
 ```
 
 Run `mix deps.get`. If Jason was compiled before Decimal was installed,
@@ -471,7 +471,7 @@ and [Erlang example](elixir/erlang/src/slackblocks_erlang.erl).
 
 - [`python/`](python/) — the established Python package (`slackblocks` on PyPI).
 - [`typescript/`](typescript/) — the TypeScript package (`@nicklambourne/slackblocks` on npm).
-- [`go/`](go/) — the Go v2 module (`github.com/nicklambourne/slackblocks/go/v2`).
+- [`go/`](go/) — the Go v3 module (`github.com/nicklambourne/slackblocks/go/v3`).
 - [`java/`](java/) — the Java artifact (`io.github.nicklambourne:slackblocks` on Maven Central).
 - [`csharp/`](csharp/) — the .NET package (`Slackblocks` on NuGet).
 - [`ruby/`](ruby/) — the Ruby gem (`slackblocks` on RubyGems from 2.5.0).

@@ -1,0 +1,56 @@
+---
+sidebar_position: 5
+toc_max_heading_level: 3
+---
+
+# Components
+
+This page documents the Ruby API for components. Values use keyword-only construction, validate before freezing, and serialize to Slack JSON.
+
+## Accordion
+
+Combine collapsible sections in display order.
+
+### .create
+
+Return an immutable block collection. Every section must be a collapsible container.
+
+```ruby
+def self.create: (sections: Array[ContainerBlock]) -> Array[Block]
+```
+
+**Returns:** Array[Block]
+
+**Related types:** [`Block`](/reference/ruby/blocks#block), [`ContainerBlock`](/reference/ruby/blocks#containerblock)
+
+## AccordionSection
+
+Create one Slack-native collapsible container.
+
+### .create
+
+Return a validated collapsible container. The title remains visible when collapsed.
+
+```ruby
+def self.create: (title: String | PlainText, blocks: Array[Block], ?subtitle: String | Text?, ?icon: ImageElement?, ?expanded: bool, ?width: :narrow | :standard | :wide | :full, ?has_header_divider: bool, ?block_id: String?) -> ContainerBlock
+```
+
+**Returns:** ContainerBlock
+
+**Related types:** [`Block`](/reference/ruby/blocks#block), [`ContainerBlock`](/reference/ruby/blocks#containerblock), [`ImageElement`](/reference/ruby/elements#imageelement), [`PlainText`](/reference/ruby/objects#plaintext), [`Text`](/reference/ruby/objects#text)
+
+## Paginator
+
+Select one page of blocks and append navigation controls when multiple pages exist.
+
+### .create
+
+Pages are one-based. Previous and next button action IDs append .previous and .next to the prefix.
+
+```ruby
+def self.create: (action_id_prefix: String, blocks: Array[Block], ?page: Integer, ?page_size: Integer, ?previous_text: String, ?next_text: String, ?show_page_indicator: bool, ?block_id: String?) -> Array[Block]
+```
+
+**Returns:** Array[Block]
+
+**Related types:** [`Block`](/reference/ruby/blocks#block)

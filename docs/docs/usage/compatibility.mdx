@@ -12,14 +12,15 @@ This page documents which Python versions are supported by each `slackblocks` re
 
 Each row in the table maps a major `slackblocks` release line to the oldest Python interpreter that can run it. **Minimum Python** means that version or any newer supported Python version—not that the release only works on that one version. The status in parentheses tells you whether the line receives current feature development or maintenance fixes only.
 
-Start with the Python version used by your application or deployment environment, then choose the newest `slackblocks` line whose minimum requirement it meets. For example, Python 3.9 requires `slackblocks` 1.x, while Python 3.10 and newer can use 2.x.
+Start with the Python version used by your application or deployment environment, then choose the newest `slackblocks` line whose minimum requirement it meets. For example, Python 3.9 requires `slackblocks` 1.x, while Python 3.10 and newer can use 3.x.
 
 ## Support matrix
 
 | `slackblocks` version | Minimum Python | Notes |
 | --- | --- | --- |
 | `1.x` (maintenance) | 3.8.1 | The last release line to support Python 3.8 and 3.9. |
-| `2.x` (current) | 3.10 | Modern typing (`X \| Y`, `list[X]`), dataclasses with `slots`, `match` statements, and other Python 3.10+ features used internally. |
+| `2.x` | 3.10 | Modern typing (`X \| Y`, `list[X]`), dataclasses with `slots`, `match` statements, and other Python 3.10+ features used internally. |
+| `3.x` (current) | 3.10 | Corrected number-input bound APIs; the interpreter minimum is unchanged from 2.x. |
 
 If you cannot upgrade Python, pin to the appropriate major version:
 
@@ -28,7 +29,7 @@ If you cannot upgrade Python, pin to the appropriate major version:
 
 ```text
 slackblocks>=1,<2     # Python 3.8/3.9 friendly
-slackblocks>=2,<3     # Python 3.10+ only
+slackblocks>=3,<4     # Python 3.10+; current API
 ```
 
 
@@ -37,7 +38,7 @@ slackblocks>=2,<3     # Python 3.10+ only
 
 ```toml
 slackblocks = "^1"    # Python 3.8/3.9 friendly
-slackblocks = "^2"    # Python 3.10+ only
+slackblocks = "^3"    # Python 3.10+; current API
 ```
 
 
@@ -46,7 +47,7 @@ slackblocks = "^2"    # Python 3.10+ only
 
 ```toml
 "slackblocks>=1,<2"   # Python 3.8/3.9 friendly
-"slackblocks>=2,<3"   # Python 3.10+ only
+"slackblocks>=3,<4"   # Python 3.10+; current API
 ```
 
 
@@ -72,8 +73,8 @@ Bugfix releases on existing lines may continue past these dates on a best-effort
 ## Choosing a version
 
 - **You're on Python 3.8 or 3.9**: install the latest `1.x`.
-- **You're on Python 3.10 or newer**: install the current `2.x` release line.
-- **You're starting a new project on a modern Python**: prefer `2.x` to take advantage of the improved typing surface.
+- **You're on Python 3.10 or newer**: install the current `3.x` release line.
+- **You're starting a new project on a modern Python**: prefer `3.x` to take advantage of the improved typing surface.
 
 For an upgrade walkthrough from `1.x` to `2.x`, see the
 [Migration Guide](migration).
@@ -88,15 +89,15 @@ See [Installation](installation) and the [TypeScript API reference](../reference
 
 ## Go support matrix
 
-The current `github.com/nicklambourne/slackblocks/go/v2` module supports Go 1.22
+The current `github.com/nicklambourne/slackblocks/go/v3` module supports Go 1.22
 and newer. Its minimum dependency remains `github.com/slack-go/slack` v0.17.3.
 Applications can select a newer SDK without changing the slackblocks module line,
 provided their Go toolchain meets that SDK's own requirements.
 
 | slackblocks module line | Tested `slack-go/slack` version | Minimum Go | Selection |
 | --- | --- | --- | --- |
-| Current `go/v2` | v0.17.3 | 1.22 | Default minimum dependency; keeps Go 1.22, 1.23 and 1.24 compatible. |
-| Current `go/v2` | v0.23.1 | 1.25 | Explicit application upgrade; tested separately from the minimum dependency. |
+| Current `go/v3` | v0.17.3 | 1.22 | Default minimum dependency; keeps Go 1.22, 1.23 and 1.24 compatible. |
+| Current `go/v3` | v0.23.1 | 1.25 | Explicit application upgrade; tested separately from the minimum dependency. |
 
 These are tested combinations, not a guarantee for every intervening or future
 SDK release. Both profiles use the same slackblocks API. No separate maintenance
@@ -107,13 +108,13 @@ release line is needed for these combinations.
 For the Go 1.22-compatible combination, select both modules in your application:
 
 ```bash
-go get github.com/nicklambourne/slackblocks/go/v2 github.com/slack-go/slack@v0.17.3
+go get github.com/nicklambourne/slackblocks/go/v3 github.com/slack-go/slack@v0.17.3
 ```
 
 With Go 1.25 or newer, opt into the newer tested SDK:
 
 ```bash
-go get github.com/nicklambourne/slackblocks/go/v2 github.com/slack-go/slack@v0.23.1
+go get github.com/nicklambourne/slackblocks/go/v3 github.com/slack-go/slack@v0.23.1
 ```
 
 Go's [minimal version selection](https://go.dev/ref/mod#minimal-version-selection)
@@ -207,7 +208,7 @@ The core needs only JSON and PCRE. cURL, JoliCode and Laravel are optional
 application dependencies tested separately. The minimum integration lock uses
 Laravel 12; newest compatible versions are also resolved on current PHP.
 
-2.7.0 is the first planned PHP release. Named arguments, enum cases, readonly
+PHP support began in 2.7.0. Named arguments, enum cases, readonly
 properties, JSON field names and validation categories are compatibility surfaces.
 Human-readable error prose may improve. Existing Python, TypeScript, Go, Java,
 C#, Ruby and Rust minimum versions are unchanged.

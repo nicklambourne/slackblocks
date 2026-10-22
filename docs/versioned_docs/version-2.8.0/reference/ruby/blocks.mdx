@@ -1,0 +1,2806 @@
+---
+sidebar_position: 1
+toc_max_heading_level: 3
+---
+
+# Blocks
+
+This page documents the Ruby API for blocks. Values use keyword-only construction, validate before freezing, and serialize to Slack JSON.
+
+## ActionsBlock
+
+A block that holds interactive elements such as buttons and menus.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/actions-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: elements.
+
+```ruby
+def self.new: (elements: Array[Element], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ActionsBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Adds interactive elements in display order. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ActionsBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ActionsBlock`](/reference/ruby/blocks#actionsblock), [`Element`](/reference/ruby/elements#element)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[Element], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ActionsBlock
+```
+
+**Returns:** ActionsBlock
+
+**Related types:** [`ActionsBlock`](/reference/ruby/blocks#actionsblock), [`Element`](/reference/ruby/elements#element)
+
+### elements
+
+Adds interactive elements in display order. Wire key: elements.
+
+```ruby
+def elements: () -> Array[Element]
+```
+
+**Returns:** Array[Element]
+
+**Related types:** [`Element`](/reference/ruby/elements#element)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ActionsBlock
+```
+
+**Returns:** ActionsBlock
+
+**Related types:** [`ActionsBlock`](/reference/ruby/blocks#actionsblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## AlertBlock
+
+A severity-labelled alert, available in modals.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/alert-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: text.
+
+```ruby
+def self.new: (text: String | Text, ?level: (:default | :info | :warning | :error | :success)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> AlertBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets the alert message. |
+| `level` | Sets the alert severity, which controls its color and icon. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** AlertBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`AlertBlock`](/reference/ruby/blocks#alertblock), [`Text`](/reference/ruby/objects#text)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String | Text, ?level: (:default | :info | :warning | :error | :success)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> AlertBlock
+```
+
+**Returns:** AlertBlock
+
+**Related types:** [`AlertBlock`](/reference/ruby/blocks#alertblock), [`Text`](/reference/ruby/objects#text)
+
+### text
+
+Sets the alert message. Wire key: text.
+
+```ruby
+def text: () -> Text
+```
+
+**Returns:** Text
+
+**Related types:** [`Text`](/reference/ruby/objects#text)
+
+### level
+
+Sets the alert severity, which controls its color and icon. Wire key: level.
+
+```ruby
+def level: () -> (:default | :info | :warning | :error | :success)?
+```
+
+**Returns:** (:default \| :info \| :warning \| :error \| :success)?
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> AlertBlock
+```
+
+**Returns:** AlertBlock
+
+**Related types:** [`AlertBlock`](/reference/ruby/blocks#alertblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## AlertLevel
+
+Severity levels supported by alert blocks. Pass the wire symbol to constructor keywords.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `DEFAULT` | `:default` | Neutral styling. |
+| `INFO` | `:info` | Informational styling. |
+| `WARNING` | `:warning` | Warning styling. |
+| `ERROR` | `:error` | Error styling. |
+| `SUCCESS` | `:success` | Success styling. |
+
+## Block
+
+A validated Slack layout block accepted by payload block arrays.
+
+## CardBlock
+
+A compact card with an image, text, and up to three buttons.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/card-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?hero_image: (ImageElement)?, ?icon: (ImageElement)?, ?title: (String | Text)?, ?subtitle: (String | Text)?, ?body: (String | Text)?, ?actions: (Array[ButtonElement])?, ?slack_icon: (SlackIcon)?, ?subtext: (String | Text)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CardBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `hero_image` | Sets the image displayed prominently at the top of the card. |
+| `icon` | Sets the image displayed beside the title. |
+| `title` | Sets the card title. |
+| `subtitle` | Sets the supporting text shown below the title. |
+| `body` | Sets the main body text of the card. |
+| `actions` | Adds buttons displayed at the bottom of the card, in display order. |
+| `slack_icon` | Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon. |
+| `subtext` | Sets the small print shown at the bottom of the card. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** CardBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ButtonElement`](/reference/ruby/elements#buttonelement), [`CardBlock`](/reference/ruby/blocks#cardblock), [`ImageElement`](/reference/ruby/elements#imageelement), [`SlackIcon`](/reference/ruby/objects#slackicon), [`Text`](/reference/ruby/objects#text)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?hero_image: (ImageElement)?, ?icon: (ImageElement)?, ?title: (String | Text)?, ?subtitle: (String | Text)?, ?body: (String | Text)?, ?actions: (Array[ButtonElement])?, ?slack_icon: (SlackIcon)?, ?subtext: (String | Text)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CardBlock
+```
+
+**Returns:** CardBlock
+
+**Related types:** [`ButtonElement`](/reference/ruby/elements#buttonelement), [`CardBlock`](/reference/ruby/blocks#cardblock), [`ImageElement`](/reference/ruby/elements#imageelement), [`SlackIcon`](/reference/ruby/objects#slackicon), [`Text`](/reference/ruby/objects#text)
+
+### hero_image
+
+Sets the image displayed prominently at the top of the card. Wire key: hero_image.
+
+```ruby
+def hero_image: () -> (ImageElement)?
+```
+
+**Returns:** (ImageElement)?
+
+**Related types:** [`ImageElement`](/reference/ruby/elements#imageelement)
+
+### icon
+
+Sets the image displayed beside the title. Wire key: icon.
+
+```ruby
+def icon: () -> (ImageElement)?
+```
+
+**Returns:** (ImageElement)?
+
+**Related types:** [`ImageElement`](/reference/ruby/elements#imageelement)
+
+### title
+
+Sets the card title. Wire key: title.
+
+```ruby
+def title: () -> (Text)?
+```
+
+**Returns:** (Text)?
+
+**Related types:** [`Text`](/reference/ruby/objects#text)
+
+### subtitle
+
+Sets the supporting text shown below the title. Wire key: subtitle.
+
+```ruby
+def subtitle: () -> (Text)?
+```
+
+**Returns:** (Text)?
+
+**Related types:** [`Text`](/reference/ruby/objects#text)
+
+### body
+
+Sets the main body text of the card. Wire key: body.
+
+```ruby
+def body: () -> (Text)?
+```
+
+**Returns:** (Text)?
+
+**Related types:** [`Text`](/reference/ruby/objects#text)
+
+### actions
+
+Adds buttons displayed at the bottom of the card, in display order. Wire key: actions.
+
+```ruby
+def actions: () -> (Array[ButtonElement])?
+```
+
+**Returns:** (Array[ButtonElement])?
+
+**Related types:** [`ButtonElement`](/reference/ruby/elements#buttonelement)
+
+### slack_icon
+
+Sets a Slack-provided icon displayed beside the title. Cannot be combined with an image icon. Wire key: slack_icon.
+
+```ruby
+def slack_icon: () -> (SlackIcon)?
+```
+
+**Returns:** (SlackIcon)?
+
+**Related types:** [`SlackIcon`](/reference/ruby/objects#slackicon)
+
+### subtext
+
+Sets the small print shown at the bottom of the card. Wire key: subtext.
+
+```ruby
+def subtext: () -> (Text)?
+```
+
+**Returns:** (Text)?
+
+**Related types:** [`Text`](/reference/ruby/objects#text)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> CardBlock
+```
+
+**Returns:** CardBlock
+
+**Related types:** [`CardBlock`](/reference/ruby/blocks#cardblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## CarouselBlock
+
+A horizontally scrolling set of cards, available in messages and App Home.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/carousel-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: elements.
+
+```ruby
+def self.new: (elements: Array[CardBlock], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CarouselBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Adds the cards in display order. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** CarouselBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`CardBlock`](/reference/ruby/blocks#cardblock), [`CarouselBlock`](/reference/ruby/blocks#carouselblock)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[CardBlock], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> CarouselBlock
+```
+
+**Returns:** CarouselBlock
+
+**Related types:** [`CardBlock`](/reference/ruby/blocks#cardblock), [`CarouselBlock`](/reference/ruby/blocks#carouselblock)
+
+### elements
+
+Adds the cards in display order. Wire key: elements.
+
+```ruby
+def elements: () -> Array[CardBlock]
+```
+
+**Returns:** Array[CardBlock]
+
+**Related types:** [`CardBlock`](/reference/ruby/blocks#cardblock)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> CarouselBlock
+```
+
+**Returns:** CarouselBlock
+
+**Related types:** [`CarouselBlock`](/reference/ruby/blocks#carouselblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ContainerBlock
+
+A titled group of blocks that can optionally collapse.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/container-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: child_blocks.
+
+```ruby
+def self.new: (child_blocks: Array[Block], ?title: (String | PlainText)?, ?rich_text_title: (RichTextBlock)?, ?subtitle: (String | Text)?, ?width: (:narrow | :standard | :wide | :full)?, ?icon: (ImageElement)?, ?is_collapsible: (bool)?, ?default_collapsed: (bool)?, ?has_header_divider: (bool)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContainerBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `child_blocks` | Adds the blocks grouped inside the container, in display order. |
+| `title` | Sets the container title. Provide either a title or a rich text title. |
+| `rich_text_title` | Sets a rich text block used as the title in place of a plain-text title. |
+| `subtitle` | Sets the supporting text shown below the title. |
+| `width` | Sets the horizontal width of the container. |
+| `icon` | Sets the image displayed beside the title. |
+| `is_collapsible` | Sets whether users can collapse and expand the container. |
+| `default_collapsed` | Sets whether a collapsible container starts collapsed. Requires the container to be collapsible. |
+| `has_header_divider` | Sets whether Slack draws a divider below the container header. Only valid for non-collapsible containers. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ContainerBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Block`](/reference/ruby/blocks#block), [`ContainerBlock`](/reference/ruby/blocks#containerblock), [`ImageElement`](/reference/ruby/elements#imageelement), [`PlainText`](/reference/ruby/objects#plaintext), [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`Text`](/reference/ruby/objects#text)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (child_blocks: Array[Block], ?title: (String | PlainText)?, ?rich_text_title: (RichTextBlock)?, ?subtitle: (String | Text)?, ?width: (:narrow | :standard | :wide | :full)?, ?icon: (ImageElement)?, ?is_collapsible: (bool)?, ?default_collapsed: (bool)?, ?has_header_divider: (bool)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContainerBlock
+```
+
+**Returns:** ContainerBlock
+
+**Related types:** [`Block`](/reference/ruby/blocks#block), [`ContainerBlock`](/reference/ruby/blocks#containerblock), [`ImageElement`](/reference/ruby/elements#imageelement), [`PlainText`](/reference/ruby/objects#plaintext), [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`Text`](/reference/ruby/objects#text)
+
+### child_blocks
+
+Adds the blocks grouped inside the container, in display order. Wire key: child_blocks.
+
+```ruby
+def child_blocks: () -> Array[Block]
+```
+
+**Returns:** Array[Block]
+
+**Related types:** [`Block`](/reference/ruby/blocks#block)
+
+### title
+
+Sets the container title. Provide either a title or a rich text title. Wire key: title.
+
+```ruby
+def title: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### rich_text_title
+
+Sets a rich text block used as the title in place of a plain-text title. Wire key: rich_text_title.
+
+```ruby
+def rich_text_title: () -> (RichTextBlock)?
+```
+
+**Returns:** (RichTextBlock)?
+
+**Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock)
+
+### subtitle
+
+Sets the supporting text shown below the title. Wire key: subtitle.
+
+```ruby
+def subtitle: () -> (Text)?
+```
+
+**Returns:** (Text)?
+
+**Related types:** [`Text`](/reference/ruby/objects#text)
+
+### width
+
+Sets the horizontal width of the container. Wire key: width.
+
+```ruby
+def width: () -> (:narrow | :standard | :wide | :full)?
+```
+
+**Returns:** (:narrow \| :standard \| :wide \| :full)?
+
+### icon
+
+Sets the image displayed beside the title. Wire key: icon.
+
+```ruby
+def icon: () -> (ImageElement)?
+```
+
+**Returns:** (ImageElement)?
+
+**Related types:** [`ImageElement`](/reference/ruby/elements#imageelement)
+
+### is_collapsible
+
+Sets whether users can collapse and expand the container. Wire key: is_collapsible.
+
+```ruby
+def is_collapsible: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### default_collapsed
+
+Sets whether a collapsible container starts collapsed. Requires the container to be collapsible. Wire key: default_collapsed.
+
+```ruby
+def default_collapsed: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### has_header_divider
+
+Sets whether Slack draws a divider below the container header. Only valid for non-collapsible containers. Wire key: has_header_divider.
+
+```ruby
+def has_header_divider: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ContainerBlock
+```
+
+**Returns:** ContainerBlock
+
+**Related types:** [`ContainerBlock`](/reference/ruby/blocks#containerblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ContainerWidth
+
+Widths supported by Slack container blocks. Pass the wire symbol to constructor keywords.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `NARROW` | `:narrow` | A compact container. |
+| `STANDARD` | `:standard` | Slack's standard container width. |
+| `WIDE` | `:wide` | A wide container. |
+| `FULL` | `:full` | The full available width. |
+
+## ContextActionsBlock
+
+A row of feedback or icon buttons, usually shown below AI-generated content.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/context-actions-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: elements.
+
+```ruby
+def self.new: (elements: Array[ContextActionsElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContextActionsBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Adds feedback buttons or icon buttons in display order. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ContextActionsBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ContextActionsBlock`](/reference/ruby/blocks#contextactionsblock), [`ContextActionsElement`](/reference/ruby/blocks#contextactionselement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[ContextActionsElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContextActionsBlock
+```
+
+**Returns:** ContextActionsBlock
+
+**Related types:** [`ContextActionsBlock`](/reference/ruby/blocks#contextactionsblock), [`ContextActionsElement`](/reference/ruby/blocks#contextactionselement)
+
+### elements
+
+Adds feedback buttons or icon buttons in display order. Wire key: elements.
+
+```ruby
+def elements: () -> Array[ContextActionsElement]
+```
+
+**Returns:** Array[ContextActionsElement]
+
+**Related types:** [`ContextActionsElement`](/reference/ruby/blocks#contextactionselement)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ContextActionsBlock
+```
+
+**Returns:** ContextActionsBlock
+
+**Related types:** [`ContextActionsBlock`](/reference/ruby/blocks#contextactionsblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ContextActionsElement
+
+A value that can appear in a context actions block: feedback buttons or an icon button.
+
+## ContextBlock
+
+A block of small, secondary images and text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/context-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: elements.
+
+```ruby
+def self.new: (elements: Array[ContextElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContextBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Adds images and text in display order. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ContextBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ContextBlock`](/reference/ruby/blocks#contextblock), [`ContextElement`](/reference/ruby/blocks#contextelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[ContextElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ContextBlock
+```
+
+**Returns:** ContextBlock
+
+**Related types:** [`ContextBlock`](/reference/ruby/blocks#contextblock), [`ContextElement`](/reference/ruby/blocks#contextelement)
+
+### elements
+
+Adds images and text in display order. Wire key: elements.
+
+```ruby
+def elements: () -> Array[ContextElement]
+```
+
+**Returns:** Array[ContextElement]
+
+**Related types:** [`ContextElement`](/reference/ruby/blocks#contextelement)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ContextBlock
+```
+
+**Returns:** ContextBlock
+
+**Related types:** [`ContextBlock`](/reference/ruby/blocks#contextblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ContextElement
+
+A value that can appear in a context block: an image element or a text object.
+
+## DataTableBlock
+
+A sortable, paginated table of raw text, numbers, and rich text.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-table-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: rows, caption.
+
+```ruby
+def self.new: (rows: Array[Array[DataTableCell]], caption: String, ?page_size: (Integer)?, ?row_header_column_index: (Integer)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataTableBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `rows` | Adds complete table rows in display order. Every row must have the same number of cells. |
+| `caption` | Sets the caption that describes the table's contents. |
+| `page_size` | Sets how many rows Slack shows per page. |
+| `row_header_column_index` | Sets the zero-based index of the column whose cells act as row headers. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** DataTableBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DataTableBlock`](/reference/ruby/blocks#datatableblock), [`DataTableCell`](/reference/ruby/blocks#datatablecell)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (rows: Array[Array[DataTableCell]], caption: String, ?page_size: (Integer)?, ?row_header_column_index: (Integer)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataTableBlock
+```
+
+**Returns:** DataTableBlock
+
+**Related types:** [`DataTableBlock`](/reference/ruby/blocks#datatableblock), [`DataTableCell`](/reference/ruby/blocks#datatablecell)
+
+### rows
+
+Adds complete table rows in display order. Every row must have the same number of cells. Wire key: rows.
+
+```ruby
+def rows: () -> Array[Array[DataTableCell]]
+```
+
+**Returns:** Array[Array[DataTableCell]]
+
+**Related types:** [`DataTableCell`](/reference/ruby/blocks#datatablecell)
+
+### caption
+
+Sets the caption that describes the table's contents. Wire key: caption.
+
+```ruby
+def caption: () -> String
+```
+
+**Returns:** String
+
+### page_size
+
+Sets how many rows Slack shows per page. Wire key: page_size.
+
+```ruby
+def page_size: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### row_header_column_index
+
+Sets the zero-based index of the column whose cells act as row headers. Wire key: row_header_column_index.
+
+```ruby
+def row_header_column_index: () -> (Integer)?
+```
+
+**Returns:** (Integer)?
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> DataTableBlock
+```
+
+**Returns:** DataTableBlock
+
+**Related types:** [`DataTableBlock`](/reference/ruby/blocks#datatableblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## DataTableCell
+
+A value that can appear as a data table cell: raw text, a raw number, or a rich text block.
+
+## DataVisualizationBlock
+
+A titled pie, bar, area, or line chart.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: title, chart.
+
+```ruby
+def self.new: (title: String, chart: Chart, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataVisualizationBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | Sets the chart title. |
+| `chart` | Sets the chart to display. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** DataVisualizationBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Chart`](/reference/ruby/objects#chart), [`DataVisualizationBlock`](/reference/ruby/blocks#datavisualizationblock)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (title: String, chart: Chart, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DataVisualizationBlock
+```
+
+**Returns:** DataVisualizationBlock
+
+**Related types:** [`Chart`](/reference/ruby/objects#chart), [`DataVisualizationBlock`](/reference/ruby/blocks#datavisualizationblock)
+
+### title
+
+Sets the chart title. Wire key: title.
+
+```ruby
+def title: () -> String
+```
+
+**Returns:** String
+
+### chart
+
+Sets the chart to display. Wire key: chart.
+
+```ruby
+def chart: () -> Chart
+```
+
+**Returns:** Chart
+
+**Related types:** [`Chart`](/reference/ruby/objects#chart)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> DataVisualizationBlock
+```
+
+**Returns:** DataVisualizationBlock
+
+**Related types:** [`DataVisualizationBlock`](/reference/ruby/blocks#datavisualizationblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## DividerBlock
+
+A horizontal rule that separates blocks.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/divider-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DividerBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** DividerBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`DividerBlock`](/reference/ruby/blocks#dividerblock)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> DividerBlock
+```
+
+**Returns:** DividerBlock
+
+**Related types:** [`DividerBlock`](/reference/ruby/blocks#dividerblock)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> DividerBlock
+```
+
+**Returns:** DividerBlock
+
+**Related types:** [`DividerBlock`](/reference/ruby/blocks#dividerblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## FileBlock
+
+A remote file previously added with the files.remote API.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/file-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: external_id.
+
+```ruby
+def self.new: (external_id: String, ?source: (String)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FileBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `external_id` | Sets the external identifier of a remote file previously added with the files.remote API. |
+| `source` | Sets the file source. Slack currently supports only remote files. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** FileBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`FileBlock`](/reference/ruby/blocks#fileblock)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (external_id: String, ?source: (String)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> FileBlock
+```
+
+**Returns:** FileBlock
+
+**Related types:** [`FileBlock`](/reference/ruby/blocks#fileblock)
+
+### external_id
+
+Sets the external identifier of a remote file previously added with the files.remote API. Wire key: external_id.
+
+```ruby
+def external_id: () -> String
+```
+
+**Returns:** String
+
+### source
+
+Sets the file source. Slack currently supports only remote files. Wire key: source.
+
+```ruby
+def source: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> FileBlock
+```
+
+**Returns:** FileBlock
+
+**Related types:** [`FileBlock`](/reference/ruby/blocks#fileblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## HeaderBlock
+
+Large, bold plain text that introduces a group of blocks.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/header-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: text.
+
+```ruby
+def self.new: (text: String | PlainText, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> HeaderBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets the header text, shown in a larger bold font. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** HeaderBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`HeaderBlock`](/reference/ruby/blocks#headerblock), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String | PlainText, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> HeaderBlock
+```
+
+**Returns:** HeaderBlock
+
+**Related types:** [`HeaderBlock`](/reference/ruby/blocks#headerblock), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### text
+
+Sets the header text, shown in a larger bold font. Wire key: text.
+
+```ruby
+def text: () -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> HeaderBlock
+```
+
+**Returns:** HeaderBlock
+
+**Related types:** [`HeaderBlock`](/reference/ruby/blocks#headerblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## ImageBlock
+
+A standalone image with alternative text and an optional title.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/image-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: alt_text.
+
+```ruby
+def self.new: (?image_url: (String)?, ?slack_file: (SlackFile)?, alt_text: String, ?title: (String | PlainText)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ImageBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `image_url` | Sets the publicly accessible URL of the image. Cannot be combined with a Slack file. |
+| `slack_file` | Sets a file hosted in Slack as the image source. Cannot be combined with an image URL. |
+| `alt_text` | Sets a plain-text summary of the image or video for assistive technology. |
+| `title` | Sets the title shown above the image. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** ImageBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ImageBlock`](/reference/ruby/blocks#imageblock), [`PlainText`](/reference/ruby/objects#plaintext), [`SlackFile`](/reference/ruby/objects#slackfile)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?image_url: (String)?, ?slack_file: (SlackFile)?, alt_text: String, ?title: (String | PlainText)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ImageBlock
+```
+
+**Returns:** ImageBlock
+
+**Related types:** [`ImageBlock`](/reference/ruby/blocks#imageblock), [`PlainText`](/reference/ruby/objects#plaintext), [`SlackFile`](/reference/ruby/objects#slackfile)
+
+### image_url
+
+Sets the publicly accessible URL of the image. Cannot be combined with a Slack file. Wire key: image_url.
+
+```ruby
+def image_url: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### slack_file
+
+Sets a file hosted in Slack as the image source. Cannot be combined with an image URL. Wire key: slack_file.
+
+```ruby
+def slack_file: () -> (SlackFile)?
+```
+
+**Returns:** (SlackFile)?
+
+**Related types:** [`SlackFile`](/reference/ruby/objects#slackfile)
+
+### alt_text
+
+Sets a plain-text summary of the image or video for assistive technology. Wire key: alt_text.
+
+```ruby
+def alt_text: () -> String
+```
+
+**Returns:** String
+
+### title
+
+Sets the title shown above the image. Wire key: title.
+
+```ruby
+def title: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> ImageBlock
+```
+
+**Returns:** ImageBlock
+
+**Related types:** [`ImageBlock`](/reference/ruby/blocks#imageblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## InputBlock
+
+A labelled input that collects a value in a modal, App Home, or message.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/input-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: label, element.
+
+```ruby
+def self.new: (label: String | PlainText, element: InputElement, ?dispatch_action: (bool)?, ?block_id: (String)?, ?hint: (String | PlainText)?, ?optional: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> InputBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `label` | Sets the label shown above the input. |
+| `element` | Sets the input element that collects the user's value. |
+| `dispatch_action` | Sets whether changing the element sends a block_actions payload immediately. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `hint` | Sets helper text shown below the input. |
+| `optional` | Sets whether the modal can be submitted when this input is empty. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** InputBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`InputBlock`](/reference/ruby/blocks#inputblock), [`InputElement`](/reference/ruby/elements#inputelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (label: String | PlainText, element: InputElement, ?dispatch_action: (bool)?, ?block_id: (String)?, ?hint: (String | PlainText)?, ?optional: (bool)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> InputBlock
+```
+
+**Returns:** InputBlock
+
+**Related types:** [`InputBlock`](/reference/ruby/blocks#inputblock), [`InputElement`](/reference/ruby/elements#inputelement), [`PlainText`](/reference/ruby/objects#plaintext)
+
+### label
+
+Sets the label shown above the input. Wire key: label.
+
+```ruby
+def label: () -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### element
+
+Sets the input element that collects the user's value. Wire key: element.
+
+```ruby
+def element: () -> InputElement
+```
+
+**Returns:** InputElement
+
+**Related types:** [`InputElement`](/reference/ruby/elements#inputelement)
+
+### dispatch_action
+
+Sets whether changing the element sends a block_actions payload immediately. Wire key: dispatch_action.
+
+```ruby
+def dispatch_action: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### hint
+
+Sets helper text shown below the input. Wire key: hint.
+
+```ruby
+def hint: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### optional
+
+Sets whether the modal can be submitted when this input is empty. Wire key: optional.
+
+```ruby
+def optional: () -> (bool)?
+```
+
+**Returns:** (bool)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> InputBlock
+```
+
+**Returns:** InputBlock
+
+**Related types:** [`InputBlock`](/reference/ruby/blocks#inputblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## MarkdownBlock
+
+Standard markdown rendered by Slack, intended for AI-generated content.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/markdown-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: text.
+
+```ruby
+def self.new: (text: String, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MarkdownBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets standard markdown content, which Slack renders directly. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** MarkdownBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`MarkdownBlock`](/reference/ruby/blocks#markdownblock)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (text: String, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> MarkdownBlock
+```
+
+**Returns:** MarkdownBlock
+
+**Related types:** [`MarkdownBlock`](/reference/ruby/blocks#markdownblock)
+
+### text
+
+Sets standard markdown content, which Slack renders directly. Wire key: text.
+
+```ruby
+def text: () -> String
+```
+
+**Returns:** String
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> MarkdownBlock
+```
+
+**Returns:** MarkdownBlock
+
+**Related types:** [`MarkdownBlock`](/reference/ruby/blocks#markdownblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## PlanBlock
+
+A titled sequence of task cards.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/plan-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: title, tasks.
+
+```ruby
+def self.new: (title: String, tasks: Array[TaskCardBlock], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlanBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | Sets the plan title. |
+| `tasks` | Adds task cards in display order. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** PlanBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`PlanBlock`](/reference/ruby/blocks#planblock), [`TaskCardBlock`](/reference/ruby/blocks#taskcardblock)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (title: String, tasks: Array[TaskCardBlock], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> PlanBlock
+```
+
+**Returns:** PlanBlock
+
+**Related types:** [`PlanBlock`](/reference/ruby/blocks#planblock), [`TaskCardBlock`](/reference/ruby/blocks#taskcardblock)
+
+### title
+
+Sets the plan title. Wire key: title.
+
+```ruby
+def title: () -> String
+```
+
+**Returns:** String
+
+### tasks
+
+Adds task cards in display order. Wire key: tasks.
+
+```ruby
+def tasks: () -> Array[TaskCardBlock]
+```
+
+**Returns:** Array[TaskCardBlock]
+
+**Related types:** [`TaskCardBlock`](/reference/ruby/blocks#taskcardblock)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> PlanBlock
+```
+
+**Returns:** PlanBlock
+
+**Related types:** [`PlanBlock`](/reference/ruby/blocks#planblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## RichTextBlock
+
+Formatted text built from sections, lists, preformatted blocks, and quotes.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/rich-text-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: elements.
+
+```ruby
+def self.new: (elements: Array[RichTextBlockElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `elements` | Adds sections, lists, preformatted blocks, and quotes in display order. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** RichTextBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`RichTextBlockElement`](/reference/ruby/objects#richtextblockelement)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (elements: Array[RichTextBlockElement], ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> RichTextBlock
+```
+
+**Returns:** RichTextBlock
+
+**Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`RichTextBlockElement`](/reference/ruby/objects#richtextblockelement)
+
+### elements
+
+Adds sections, lists, preformatted blocks, and quotes in display order. Wire key: elements.
+
+```ruby
+def elements: () -> Array[RichTextBlockElement]
+```
+
+**Returns:** Array[RichTextBlockElement]
+
+**Related types:** [`RichTextBlockElement`](/reference/ruby/objects#richtextblockelement)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> RichTextBlock
+```
+
+**Returns:** RichTextBlock
+
+**Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## SectionBlock
+
+Text, a grid of fields, or both, with an optional accessory element.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/section-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments.
+
+```ruby
+def self.new: (?text: (String | Text)?, ?fields: (Array[String | Text])?, ?accessory: (Element)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> SectionBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `text` | Sets the main text of the section. |
+| `fields` | Adds section fields, shown in a two-column grid, in display order. |
+| `accessory` | Sets the element displayed beside the section text. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** SectionBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`Element`](/reference/ruby/elements#element), [`SectionBlock`](/reference/ruby/blocks#sectionblock), [`Text`](/reference/ruby/objects#text)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (?text: (String | Text)?, ?fields: (Array[String | Text])?, ?accessory: (Element)?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> SectionBlock
+```
+
+**Returns:** SectionBlock
+
+**Related types:** [`Element`](/reference/ruby/elements#element), [`SectionBlock`](/reference/ruby/blocks#sectionblock), [`Text`](/reference/ruby/objects#text)
+
+### text
+
+Sets the main text of the section. Wire key: text.
+
+```ruby
+def text: () -> (Text)?
+```
+
+**Returns:** (Text)?
+
+**Related types:** [`Text`](/reference/ruby/objects#text)
+
+### fields
+
+Adds section fields, shown in a two-column grid, in display order. Wire key: fields.
+
+```ruby
+def fields: () -> (Array[Text])?
+```
+
+**Returns:** (Array[Text])?
+
+**Related types:** [`Text`](/reference/ruby/objects#text)
+
+### accessory
+
+Sets the element displayed beside the section text. Wire key: accessory.
+
+```ruby
+def accessory: () -> (Element)?
+```
+
+**Returns:** (Element)?
+
+**Related types:** [`Element`](/reference/ruby/elements#element)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> SectionBlock
+```
+
+**Returns:** SectionBlock
+
+**Related types:** [`SectionBlock`](/reference/ruby/blocks#sectionblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## TableBlock
+
+A simple table of raw text and rich text cells.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/table-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: rows.
+
+```ruby
+def self.new: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `rows` | Adds complete table rows in display order. |
+| `column_settings` | Adds per-column settings in column order. Provide one entry for every column. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** TableBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`ColumnSettings`](/reference/ruby/objects#columnsettings), [`TableBlock`](/reference/ruby/blocks#tableblock), [`TableCell`](/reference/ruby/blocks#tablecell)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (rows: Array[Array[TableCell]], ?column_settings: (Array[ColumnSettings])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TableBlock
+```
+
+**Returns:** TableBlock
+
+**Related types:** [`ColumnSettings`](/reference/ruby/objects#columnsettings), [`TableBlock`](/reference/ruby/blocks#tableblock), [`TableCell`](/reference/ruby/blocks#tablecell)
+
+### rows
+
+Adds complete table rows in display order. Wire key: rows.
+
+```ruby
+def rows: () -> Array[Array[TableCell]]
+```
+
+**Returns:** Array[Array[TableCell]]
+
+**Related types:** [`TableCell`](/reference/ruby/blocks#tablecell)
+
+### column_settings
+
+Adds per-column settings in column order. Provide one entry for every column. Wire key: column_settings.
+
+```ruby
+def column_settings: () -> (Array[ColumnSettings])?
+```
+
+**Returns:** (Array[ColumnSettings])?
+
+**Related types:** [`ColumnSettings`](/reference/ruby/objects#columnsettings)
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> TableBlock
+```
+
+**Returns:** TableBlock
+
+**Related types:** [`TableBlock`](/reference/ruby/blocks#tableblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## TableCell
+
+A value that can appear as a table block cell: raw text or a rich text block.
+
+## TaskCardBlock
+
+One task with its status, details, output, and sources.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/task-card-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: task_id, title, status.
+
+```ruby
+def self.new: (task_id: String, title: String, ?details: (RichTextBlock)?, ?output: (RichTextBlock)?, ?sources: (Array[UrlSource])?, status: :pending | :in_progress | :complete | :error, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TaskCardBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `task_id` | Sets the identifier of the task. |
+| `title` | Sets the task title. |
+| `details` | Sets a rich text description of the task. |
+| `output` | Sets rich text describing the task's output. |
+| `sources` | Adds links to the sources the task used, in display order. |
+| `status` | Sets the task's current state. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** TaskCardBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`TaskCardBlock`](/reference/ruby/blocks#taskcardblock), [`UrlSource`](/reference/ruby/objects#urlsource)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (task_id: String, title: String, ?details: (RichTextBlock)?, ?output: (RichTextBlock)?, ?sources: (Array[UrlSource])?, status: :pending | :in_progress | :complete | :error, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> TaskCardBlock
+```
+
+**Returns:** TaskCardBlock
+
+**Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock), [`TaskCardBlock`](/reference/ruby/blocks#taskcardblock), [`UrlSource`](/reference/ruby/objects#urlsource)
+
+### task_id
+
+Sets the identifier of the task. Wire key: task_id.
+
+```ruby
+def task_id: () -> String
+```
+
+**Returns:** String
+
+### title
+
+Sets the task title. Wire key: title.
+
+```ruby
+def title: () -> String
+```
+
+**Returns:** String
+
+### details
+
+Sets a rich text description of the task. Wire key: details.
+
+```ruby
+def details: () -> (RichTextBlock)?
+```
+
+**Returns:** (RichTextBlock)?
+
+**Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock)
+
+### output
+
+Sets rich text describing the task's output. Wire key: output.
+
+```ruby
+def output: () -> (RichTextBlock)?
+```
+
+**Returns:** (RichTextBlock)?
+
+**Related types:** [`RichTextBlock`](/reference/ruby/blocks#richtextblock)
+
+### sources
+
+Adds links to the sources the task used, in display order. Wire key: sources.
+
+```ruby
+def sources: () -> (Array[UrlSource])?
+```
+
+**Returns:** (Array[UrlSource])?
+
+**Related types:** [`UrlSource`](/reference/ruby/objects#urlsource)
+
+### status
+
+Sets the task's current state. Wire key: status.
+
+```ruby
+def status: () -> :pending | :in_progress | :complete | :error
+```
+
+**Returns:** :pending \| :in_progress \| :complete \| :error
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> TaskCardBlock
+```
+
+**Returns:** TaskCardBlock
+
+**Related types:** [`TaskCardBlock`](/reference/ruby/blocks#taskcardblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```
+
+## TaskStatus
+
+States supported by task card blocks. Pass the wire symbol to constructor keywords.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `PENDING` | `:pending` | The task has not started. |
+| `IN_PROGRESS` | `:in_progress` | The task is running. |
+| `COMPLETE` | `:complete` | The task finished successfully. |
+| `ERROR` | `:error` | The task failed. |
+
+## VideoBlock
+
+An embedded video player.
+
+See the [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/video-block).
+
+### .new
+
+Construct an immutable, validated value with keyword arguments. Required keywords: alt_text, thumbnail_url, title, video_url.
+
+```ruby
+def self.new: (alt_text: String, thumbnail_url: String, title: String | PlainText, video_url: String, ?block_id: (String)?, ?author_name: (String)?, ?description: (String | PlainText)?, ?provider_icon_url: (String)?, ?provider_name: (String)?, ?title_url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> VideoBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `alt_text` | Sets a plain-text summary of the image or video for assistive technology. |
+| `thumbnail_url` | Sets the URL of the image shown before the video plays. |
+| `title` | Sets the video title. |
+| `video_url` | Sets the embeddable URL of the video. The domain must be listed in the app's unfurl domains. |
+| `block_id` | Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. |
+| `author_name` | Sets the name of the video's author. |
+| `description` | Sets the video description. |
+| `provider_icon_url` | Sets the URL of the video provider's icon. |
+| `provider_name` | Sets the name of the video provider, such as YouTube. |
+| `title_url` | Sets the HTTPS URL opened when the title is clicked. |
+| `additional_fields` | JSON-compatible extension fields that do not replace modeled wire keys. |
+
+**Returns:** VideoBlock
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/ruby/errors#validationerror) | A field or cross-field Slack rule fails. |
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext), [`VideoBlock`](/reference/ruby/blocks#videoblock)
+
+### .[]
+
+Keyword-only alias for .new.
+
+```ruby
+def self.[]: (alt_text: String, thumbnail_url: String, title: String | PlainText, video_url: String, ?block_id: (String)?, ?author_name: (String)?, ?description: (String | PlainText)?, ?provider_icon_url: (String)?, ?provider_name: (String)?, ?title_url: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> VideoBlock
+```
+
+**Returns:** VideoBlock
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext), [`VideoBlock`](/reference/ruby/blocks#videoblock)
+
+### alt_text
+
+Sets a plain-text summary of the image or video for assistive technology. Wire key: alt_text.
+
+```ruby
+def alt_text: () -> String
+```
+
+**Returns:** String
+
+### thumbnail_url
+
+Sets the URL of the image shown before the video plays. Wire key: thumbnail_url.
+
+```ruby
+def thumbnail_url: () -> String
+```
+
+**Returns:** String
+
+### title
+
+Sets the video title. Wire key: title.
+
+```ruby
+def title: () -> PlainText
+```
+
+**Returns:** PlainText
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### video_url
+
+Sets the embeddable URL of the video. The domain must be listed in the app's unfurl domains. Wire key: video_url.
+
+```ruby
+def video_url: () -> String
+```
+
+**Returns:** String
+
+### block_id
+
+Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Wire key: block_id.
+
+```ruby
+def block_id: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### author_name
+
+Sets the name of the video's author. Wire key: author_name.
+
+```ruby
+def author_name: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### description
+
+Sets the video description. Wire key: description.
+
+```ruby
+def description: () -> (PlainText)?
+```
+
+**Returns:** (PlainText)?
+
+**Related types:** [`PlainText`](/reference/ruby/objects#plaintext)
+
+### provider_icon_url
+
+Sets the URL of the video provider's icon. Wire key: provider_icon_url.
+
+```ruby
+def provider_icon_url: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### provider_name
+
+Sets the name of the video provider, such as YouTube. Wire key: provider_name.
+
+```ruby
+def provider_name: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### title_url
+
+Sets the HTTPS URL opened when the title is clicked. Wire key: title_url.
+
+```ruby
+def title_url: () -> (String)?
+```
+
+**Returns:** (String)?
+
+### additional_fields
+
+Return frozen extension fields with normalized string keys.
+
+```ruby
+def additional_fields: () -> Hash[String, untyped]
+```
+
+### with
+
+Return a newly validated value with changed keywords.
+
+```ruby
+def with: (**untyped changes) -> VideoBlock
+```
+
+**Returns:** VideoBlock
+
+**Related types:** [`VideoBlock`](/reference/ruby/blocks#videoblock)
+
+### to_h
+
+Return structural Ruby members, including additional_fields. Nested members remain frozen.
+
+```ruby
+def to_h: () -> Hash[Symbol, untyped]
+```
+
+### as_json
+
+Return a fresh, detached Slack wire Hash.
+
+```ruby
+def as_json: (?untyped options) -> Hash[String, untyped]
+```
+
+### to_json
+
+Encode the Slack wire payload as JSON.
+
+```ruby
+def to_json: (?untyped options) -> String
+```

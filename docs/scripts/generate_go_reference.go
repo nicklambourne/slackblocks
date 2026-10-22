@@ -196,7 +196,7 @@ func parseDomain(root string, group domain) []symbol {
 func renderDomain(group domain, symbols []symbol, links map[string]string, builderTypes map[string]symbol, builderMethods map[string]map[string]symbol) string {
 	var output strings.Builder
 	fmt.Fprintf(&output, "---\nsidebar_position: %d\ntoc_max_heading_level: 2\n---\n\n# %s\n\n", group.Position, group.Title)
-	fmt.Fprintf(&output, "This page documents the public Go API for %s. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v2` package.\n\n", strings.ToLower(group.Title))
+	fmt.Fprintf(&output, "This page documents the public Go API for %s. Every constructor and method shown here is part of the fluent `github.com/nicklambourne/slackblocks/go/v3` package.\n\n", strings.ToLower(group.Title))
 	if group.Slug == "blocks" {
 		output.WriteString("Every block builder implements `slack.Block`: pass it directly to `slack.MsgOptionBlocks` while keeping the channel and other message options in slack-go. Validation runs when slack-go marshals the block, before it sends the request.\n\n")
 	}

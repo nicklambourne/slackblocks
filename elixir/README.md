@@ -17,7 +17,7 @@ Runtime dependencies are Jason and Decimal; HTTP clients and frameworks are opti
 Add the package to the dependencies in your application's `mix.exs`, then run `mix deps.get`:
 
 ```elixir
-{:slackblocks, "~> 2.8"}
+{:slackblocks, "~> 3.0"}
 ```
 
 If this application already compiled Jason before adding slackblocks/Decimal,

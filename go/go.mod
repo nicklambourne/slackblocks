@@ -1,4 +1,4 @@
-module github.com/nicklambourne/slackblocks/go/v2
+module github.com/nicklambourne/slackblocks/go/v3
 
 go 1.22
 

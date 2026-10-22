@@ -84,11 +84,32 @@
   outline-offset: 2px;
 }
 
-.language-selector__caret {
+.language-selector__caret,
+.docs-version-selector::after {
   border-color: currentColor transparent;
   border-style: solid;
   border-width: 0.35em 0.35em 0;
+  width: 0;
+  height: 0;
+}
+
+.language-selector__caret {
   margin-left: 0.15rem;
+}
+
+.docs-version-selector {
+  display: inline-flex;
+  position: relative;
+}
+
+.docs-version-selector::after {
+  color: var(--ifm-navbar-link-color);
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  right: 0.55rem;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .language-selector__menu {
@@ -165,12 +186,13 @@
 }
 
 .docs-version-select {
+  appearance: none;
   background: var(--ifm-navbar-background-color);
   border: 1px solid var(--ifm-color-emphasis-400);
   border-radius: var(--ifm-global-radius);
   color: var(--ifm-navbar-link-color);
   font: inherit;
-  padding: 0 0.55rem;
+  padding: 0 1.85rem 0 0.55rem;
 }
 
 .language-selector__trigger,
@@ -203,7 +225,7 @@
   margin-bottom: 0;
 }
 
-/* Official Elixir variants retain their native wordmark proportions. */
+/* Official Elixir symbol artwork is shared across every documentation version. */
 .language-selector__logo--elixir-dark { display: none; }
 [data-theme="dark"] .language-selector__logo--elixir-light { display: none; }
 [data-theme="dark"] .language-selector__logo--elixir-dark { display: block; }

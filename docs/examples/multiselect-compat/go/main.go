@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	s "github.com/nicklambourne/slackblocks/go/v2"
+	s "github.com/nicklambourne/slackblocks/go/v3"
 	"os"
 )
 

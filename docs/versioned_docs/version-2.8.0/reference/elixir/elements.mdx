@@ -1,0 +1,2239 @@
+---
+sidebar_position: 2
+---
+
+# Elements
+
+Generated from compiled Elixir documentation and native typespecs. Values are immutable; constructors and changes use keyword options.
+
+## Slackblocks.Elements.Button {#slackblocks-elements-button}
+
+An interactive button that sends a payload or opens a URL.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/button-element
+
+### Fields
+
+* `text` — Sets the button label. Required.
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `url` — Sets a URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload. Optional; `nil` omits the field.
+* `value` — Sets the application-defined value sent in interaction payloads. Optional; `nil` omits the field.
+* `style` — Sets the button's emphasis. Omit it for the default neutral style. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `accessibility_label` — Sets the label read by screen readers in place of the visible text. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.Button{
+  accessibility_label: binary() | nil,
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  style: Slackblocks.Types.button_style() | nil,
+  text: Slackblocks.Objects.PlainText.t(),
+  url: binary() | nil,
+  value: binary() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-button-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-button-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-button-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-button-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.ChannelMultiSelect {#slackblocks-elements-channelmultiselect}
+
+A menu for selecting multiple public channels.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `initial_channels` — Adds channel IDs that are selected when the menu loads. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `max_selected_items` — Sets the maximum number of items a user can select. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.ChannelMultiSelect{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_channels: [binary()] | nil,
+  max_selected_items: integer() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-channelmultiselect-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-channelmultiselect-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-channelmultiselect-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-channelmultiselect-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.ChannelSelect {#slackblocks-elements-channelselect}
+
+A menu for selecting one public channel.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `initial_channel` — Sets the channel ID selected when the menu loads. Optional; `nil` omits the field.
+* `response_url_enabled` — Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.ChannelSelect{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_channel: binary() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil,
+  response_url_enabled: boolean() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-channelselect-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-channelselect-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-channelselect-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-channelselect-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.Checkboxes {#slackblocks-elements-checkboxes}
+
+A group of checkboxes.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/checkboxes-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `options` — Adds selectable options in display order. Required.
+* `initial_options` — Adds options that are selected when the element loads. Each must match an option in the element. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.Checkboxes{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_options: [Slackblocks.Objects.Option.t()] | nil,
+  options: [Slackblocks.Objects.Option.t()]
+}
+```
+
+### change/2 {#slackblocks-elements-checkboxes-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-checkboxes-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-checkboxes-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-checkboxes-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.ConversationMultiSelect {#slackblocks-elements-conversationmultiselect}
+
+A menu for selecting multiple conversations.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `initial_conversations` — Adds conversation IDs that are selected when the menu loads. Optional; `nil` omits the field.
+* `default_to_current_conversation` — Sets whether the menu pre-selects the conversation the user is viewing. Optional; `nil` omits the field.
+* `filter` — Sets which conversation types the menu offers. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `max_selected_items` — Sets the maximum number of items a user can select. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.ConversationMultiSelect{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  default_to_current_conversation: boolean() | nil,
+  filter: Slackblocks.Objects.ConversationFilter.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_conversations: [binary()] | nil,
+  max_selected_items: integer() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-conversationmultiselect-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-conversationmultiselect-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-conversationmultiselect-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-conversationmultiselect-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.ConversationSelect {#slackblocks-elements-conversationselect}
+
+A menu for selecting one conversation.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `initial_conversation` — Sets the conversation ID selected when the menu loads. Optional; `nil` omits the field.
+* `default_to_current_conversation` — Sets whether the menu pre-selects the conversation the user is viewing. Optional; `nil` omits the field.
+* `filter` — Sets which conversation types the menu offers. Optional; `nil` omits the field.
+* `response_url_enabled` — Sets whether the selected conversation receives a response URL in the view submission payload. Only valid in modals. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.ConversationSelect{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  default_to_current_conversation: boolean() | nil,
+  filter: Slackblocks.Objects.ConversationFilter.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_conversation: binary() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil,
+  response_url_enabled: boolean() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-conversationselect-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-conversationselect-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-conversationselect-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-conversationselect-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.DatePicker {#slackblocks-elements-datepicker}
+
+A calendar date picker.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/date-picker-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `initial_date` — Sets the initially selected date, formatted as YYYY-MM-DD. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.DatePicker{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_date: binary() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-datepicker-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-datepicker-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-datepicker-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-datepicker-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.DateTimePicker {#slackblocks-elements-datetimepicker}
+
+A combined date and time picker.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/datetime-picker-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `initial_date_time` — Sets the initially selected moment as a UNIX timestamp in seconds. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.DateTimePicker{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_date_time: integer() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-datetimepicker-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-datetimepicker-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-datetimepicker-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-datetimepicker-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.EmailInput {#slackblocks-elements-emailinput}
+
+A single-line input that accepts an email address.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/email-input-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `initial_value` — Sets the value present when the input loads. Optional; `nil` omits the field.
+* `dispatch_action_config` — Sets which user interactions send a block_actions payload. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.EmailInput{
+  action_id: binary() | nil,
+  dispatch_action_config: Slackblocks.Objects.DispatchActionConfiguration.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_value: binary() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-emailinput-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-emailinput-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-emailinput-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-emailinput-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.ExternalMultiSelect {#slackblocks-elements-externalmultiselect}
+
+A menu for selecting multiple options loaded from your app.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `min_query_length` — Sets how many characters the user must type before Slack queries your options endpoint. Optional; `nil` omits the field.
+* `initial_options` — Adds options that are selected when the element loads. Each must match an option in the element. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `max_selected_items` — Sets the maximum number of items a user can select. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.ExternalMultiSelect{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_options: [Slackblocks.Objects.Option.t()] | nil,
+  max_selected_items: integer() | nil,
+  min_query_length: integer() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-externalmultiselect-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-externalmultiselect-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-externalmultiselect-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-externalmultiselect-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.ExternalSelect {#slackblocks-elements-externalselect}
+
+A menu for selecting one option loaded from your app.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `min_query_length` — Sets how many characters the user must type before Slack queries your options endpoint. Optional; `nil` omits the field.
+* `initial_option` — Sets the option selected when the element loads. It must match an option in the element. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.ExternalSelect{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_option: Slackblocks.Objects.Option.t() | nil,
+  min_query_length: integer() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-externalselect-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-externalselect-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-externalselect-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-externalselect-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.FeedbackButtons {#slackblocks-elements-feedbackbuttons}
+
+A pair of thumbs-up and thumbs-down feedback buttons.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/feedback-buttons-element
+
+### Fields
+
+* `positive_button` — Sets the button for positive feedback. Required.
+* `negative_button` — Sets the button for negative feedback. Required.
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.FeedbackButtons{
+  action_id: binary() | nil,
+  negative_button: Slackblocks.Objects.FeedbackButton.t(),
+  positive_button: Slackblocks.Objects.FeedbackButton.t()
+}
+```
+
+### change/2 {#slackblocks-elements-feedbackbuttons-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-feedbackbuttons-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-feedbackbuttons-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-feedbackbuttons-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.FileInput {#slackblocks-elements-fileinput}
+
+An input that lets users upload files.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/file-input-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `filetypes` — Adds accepted file extensions, such as pdf or png. Optional; `nil` omits the field.
+* `max_files` — Sets the maximum number of files a user can upload. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.FileInput{
+  action_id: binary() | nil,
+  filetypes: [binary()] | nil,
+  max_files: integer() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-fileinput-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-fileinput-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-fileinput-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-fileinput-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.IconButton {#slackblocks-elements-iconbutton}
+
+A button that shows an icon instead of text.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/icon-button-element
+
+### Fields
+
+* `text` — Sets the text used as the button's accessible name. Required.
+* `icon` — Sets the icon shown on the button. Default: `:trash`. Required.
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `value` — Sets the application-defined value sent in interaction payloads. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `accessibility_label` — Sets the label read by screen readers in place of the visible text. Optional; `nil` omits the field.
+* `visible_to_user_ids` — Adds the IDs of users who can see this button. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.IconButton{
+  accessibility_label: binary() | nil,
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  icon: Slackblocks.Types.icon_button_icon(),
+  text: Slackblocks.Objects.PlainText.t(),
+  value: binary() | nil,
+  visible_to_user_ids: [binary()] | nil
+}
+```
+
+### change/2 {#slackblocks-elements-iconbutton-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-iconbutton-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-iconbutton-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-iconbutton-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.Image {#slackblocks-elements-image}
+
+An image displayed inside a section, context, or card.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/image-element
+
+### Fields
+
+* `alt_text` — Sets a plain-text summary of the image or video for assistive technology. Required.
+* `image_url` — Sets the publicly accessible URL of the image. Cannot be combined with a Slack file. Optional; `nil` omits the field.
+* `slack_file` — Sets a file hosted in Slack as the image source. Cannot be combined with an image URL. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.Image{
+  alt_text: binary(),
+  image_url: binary() | nil,
+  slack_file: Slackblocks.Objects.SlackFile.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-image-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-image-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-image-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-image-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.NumberInput {#slackblocks-elements-numberinput}
+
+An input that accepts whole or decimal numbers.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/number-input-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `is_decimal_allowed` — Sets whether the input accepts decimal numbers. Required.
+* `initial_value` — Sets the number present when the input loads, as a string such as 42 or 3.5. Optional; `nil` omits the field.
+* `min_value` — Sets the smallest accepted number. Optional; `nil` omits the field.
+* `max_value` — Sets the largest accepted number. Optional; `nil` omits the field.
+* `dispatch_action_config` — Sets which user interactions send a block_actions payload. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.NumberInput{
+  action_id: binary() | nil,
+  dispatch_action_config: Slackblocks.Objects.DispatchActionConfiguration.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_value: binary() | nil,
+  is_decimal_allowed: boolean(),
+  max_value: number() | nil,
+  min_value: number() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-numberinput-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-numberinput-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-numberinput-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-numberinput-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.Overflow {#slackblocks-elements-overflow}
+
+A compact menu of up to five options.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/overflow-menu-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `options` — Adds selectable options in display order. Required.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.Overflow{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  options: [Slackblocks.Objects.Option.t()]
+}
+```
+
+### change/2 {#slackblocks-elements-overflow-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-overflow-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-overflow-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-overflow-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.PlainTextInput {#slackblocks-elements-plaintextinput}
+
+A single-line or multi-line free-text input.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/plain-text-input-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `initial_value` — Sets the value present when the input loads. Optional; `nil` omits the field.
+* `multiline` — Sets whether the input is a multi-line text area. Optional; `nil` omits the field.
+* `min_length` — Sets the minimum number of characters the user must enter. Optional; `nil` omits the field.
+* `max_length` — Sets the maximum number of characters the user can enter. Optional; `nil` omits the field.
+* `dispatch_action_config` — Sets which user interactions send a block_actions payload. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.PlainTextInput{
+  action_id: binary() | nil,
+  dispatch_action_config: Slackblocks.Objects.DispatchActionConfiguration.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_value: binary() | nil,
+  max_length: integer() | nil,
+  min_length: integer() | nil,
+  multiline: boolean() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-plaintextinput-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-plaintextinput-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-plaintextinput-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-plaintextinput-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.RadioButtons {#slackblocks-elements-radiobuttons}
+
+A group of radio buttons.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/radio-button-group-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `options` — Adds selectable options in display order. Required.
+* `initial_option` — Sets the option selected when the element loads. It must match an option in the element. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.RadioButtons{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_option: Slackblocks.Objects.Option.t() | nil,
+  options: [Slackblocks.Objects.Option.t()]
+}
+```
+
+### change/2 {#slackblocks-elements-radiobuttons-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-radiobuttons-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-radiobuttons-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-radiobuttons-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.RichTextInput {#slackblocks-elements-richtextinput}
+
+An input that accepts formatted rich text.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/rich-text-input-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required.
+* `initial_value` — Sets the rich text present when the input loads. Optional; `nil` omits the field.
+* `dispatch_action_config` — Sets which user interactions send a block_actions payload. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+* `min_lines` — Sets the minimum visible height of the input, in lines. Optional; `nil` omits the field.
+* `max_lines` — Sets the maximum visible height of the input, in lines. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.RichTextInput{
+  action_id: binary(),
+  dispatch_action_config: Slackblocks.Objects.DispatchActionConfiguration.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_value: Slackblocks.Blocks.RichText.t() | nil,
+  max_lines: integer() | nil,
+  min_lines: integer() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-richtextinput-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-richtextinput-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-richtextinput-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-richtextinput-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.StaticMultiSelect {#slackblocks-elements-staticmultiselect}
+
+A menu for selecting multiple options defined in the payload.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `options` — Adds selectable options in display order. Optional; `nil` omits the field.
+* `option_groups` — Adds labelled groups of options in display order. Cannot be combined with ungrouped options. Optional; `nil` omits the field.
+* `initial_options` — Adds options that are selected when the element loads. Each must match an option in the element. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `max_selected_items` — Sets the maximum number of items a user can select. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.StaticMultiSelect{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_options: [Slackblocks.Objects.Option.t()] | nil,
+  max_selected_items: integer() | nil,
+  option_groups: [Slackblocks.Objects.OptionGroup.t()] | nil,
+  options: [Slackblocks.Objects.Option.t()] | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-staticmultiselect-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-staticmultiselect-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-staticmultiselect-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-staticmultiselect-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.StaticSelect {#slackblocks-elements-staticselect}
+
+A menu for selecting one option defined in the payload.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `options` — Adds selectable options in display order. Optional; `nil` omits the field.
+* `option_groups` — Adds labelled groups of options in display order. Cannot be combined with ungrouped options. Optional; `nil` omits the field.
+* `initial_option` — Sets the option selected when the element loads. It must match an option in the element. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.StaticSelect{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_option: Slackblocks.Objects.Option.t() | nil,
+  option_groups: [Slackblocks.Objects.OptionGroup.t()] | nil,
+  options: [Slackblocks.Objects.Option.t()] | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-staticselect-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-staticselect-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-staticselect-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-staticselect-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.TimePicker {#slackblocks-elements-timepicker}
+
+A time-of-day picker.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/time-picker-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `initial_time` — Sets the initially selected time, formatted as HH:mm in 24-hour time. Optional; `nil` omits the field.
+* `timezone` — Sets the IANA time zone used to display the time, such as Australia/Brisbane. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.TimePicker{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_time: binary() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil,
+  timezone: binary() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-timepicker-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-timepicker-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-timepicker-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-timepicker-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.UrlInput {#slackblocks-elements-urlinput}
+
+A single-line input that accepts a URL.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/url-input-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `initial_value` — Sets the value present when the input loads. Optional; `nil` omits the field.
+* `dispatch_action_config` — Sets which user interactions send a block_actions payload. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.UrlInput{
+  action_id: binary() | nil,
+  dispatch_action_config: Slackblocks.Objects.DispatchActionConfiguration.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_value: binary() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-urlinput-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-urlinput-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-urlinput-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-urlinput-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.UserMultiSelect {#slackblocks-elements-usermultiselect}
+
+A menu for selecting multiple workspace users.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `initial_users` — Adds user IDs that are selected when the menu loads. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `max_selected_items` — Sets the maximum number of items a user can select. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.UserMultiSelect{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_users: [binary()] | nil,
+  max_selected_items: integer() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-usermultiselect-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-usermultiselect-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-usermultiselect-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-usermultiselect-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.UserSelect {#slackblocks-elements-userselect}
+
+A menu for selecting one workspace user.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/select-menu-element
+
+### Fields
+
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Optional; `nil` omits the field.
+* `initial_user` — Sets the user ID selected when the menu loads. Optional; `nil` omits the field.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `focus_on_load` — Sets whether the element receives focus when the view opens. Only one element per view may do so. Optional; `nil` omits the field.
+* `placeholder` — Sets the placeholder text shown before a value is chosen. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.UserSelect{
+  action_id: binary() | nil,
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  focus_on_load: boolean() | nil,
+  initial_user: binary() | nil,
+  placeholder: Slackblocks.Objects.PlainText.t() | nil
+}
+```
+
+### change/2 {#slackblocks-elements-userselect-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-userselect-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-userselect-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options \\ [])
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-userselect-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options \\ [])
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+
+## Slackblocks.Elements.WorkflowButton {#slackblocks-elements-workflowbutton}
+
+A button that starts a workflow through a link trigger.
+
+Slack reference: https://docs.slack.dev/reference/block-kit/block-elements/workflow-button-element
+
+### Fields
+
+* `text` — Sets the button label. Required.
+* `workflow` — Sets the workflow started when the button is clicked. Required.
+* `action_id` — Sets the identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Required.
+* `confirm` — Sets a confirmation dialog shown before the action is sent. Optional; `nil` omits the field.
+* `style` — Sets the button's emphasis. Omit it for the default neutral style. Optional; `nil` omits the field.
+* `accessibility_label` — Sets the label read by screen readers in place of the visible text. Optional; `nil` omits the field.
+
+
+### Types
+
+```elixir
+@type t() :: %Slackblocks.Elements.WorkflowButton{
+  accessibility_label: binary() | nil,
+  action_id: binary(),
+  confirm: Slackblocks.Objects.Confirmation.t() | nil,
+  style: Slackblocks.Types.button_style() | nil,
+  text: Slackblocks.Objects.PlainText.t(),
+  workflow: Slackblocks.Objects.Workflow.t()
+}
+```
+
+### change/2 {#slackblocks-elements-workflowbutton-change-2}
+
+Atomically replaces supplied fields; omitted fields retain their values.
+
+```elixir
+change(value, options)
+```
+
+```elixir
+@spec change(
+  t(),
+  keyword()
+) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### change!/2 {#slackblocks-elements-workflowbutton-change-bang-2}
+
+Replaces fields or raises `Slackblocks.ValidationError`.
+
+```elixir
+change!(value, options)
+```
+
+```elixir
+@spec change!(
+  t(),
+  keyword()
+) :: t()
+```
+
+### new/1 {#slackblocks-elements-workflowbutton-new-1}
+
+Constructs and validates a value. Text conveniences apply to keyword input.
+
+```elixir
+new(options)
+```
+
+```elixir
+@spec new(keyword()) :: {:ok, t()} | {:error, Slackblocks.ValidationError.t()}
+```
+
+### new!/1 {#slackblocks-elements-workflowbutton-new-bang-1}
+
+Constructs a value or raises `Slackblocks.ValidationError`.
+
+```elixir
+new!(options)
+```
+
+```elixir
+@spec new!(keyword()) :: t()
+```
+

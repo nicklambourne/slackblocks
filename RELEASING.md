@@ -2,10 +2,15 @@
 
 The Python (`slackblocks` on PyPI), TypeScript
 (`@nicklambourne/slackblocks` on npm), Go
-(`github.com/nicklambourne/slackblocks/go/v2`), Java
+(`github.com/nicklambourne/slackblocks/go/v3`), Java
 (`io.github.nicklambourne:slackblocks` on Maven Central), C# (`Slackblocks` on NuGet), Ruby (`slackblocks` on RubyGems), Rust (`slackblocks` on crates.io), PHP (`nicklambourne/slackblocks` on Packagist), and Elixir (`slackblocks` on Hex)
 packages are released together and always carry the same version
 number.
+
+**Release 3.0.0** ships the corrected number-input bound API and Go `/v3`
+module while preserving supported runtime minimums. The outgoing nine-language
+2.8.0 docs are frozen from its release tag, with file hashes recorded in
+`docs/release-snapshots/2.8.0.json`.
 
 **Release 2.8.0** adds Elixir as the ninth language. Publication is enabled in
 `elixir/release.json` with the confirmed Hex owner `nicklambourne`. The coordinator
@@ -33,7 +38,7 @@ Releases are triggered by pushing tags:
 |---|---|---|
 | `python/vX.Y.Z` | [`.github/workflows/publish.yml`](.github/workflows/publish.yml) | `slackblocks` to PyPI |
 | `ts/vX.Y.Z` | [`.github/workflows/publish-npm.yml`](.github/workflows/publish-npm.yml) | `@nicklambourne/slackblocks` to npm |
-| `go/vX.Y.Z` | [`.github/workflows/publish-go.yml`](.github/workflows/publish-go.yml) | `github.com/nicklambourne/slackblocks/go/v2` to the Go module ecosystem |
+| `go/vX.Y.Z` | [`.github/workflows/publish-go.yml`](.github/workflows/publish-go.yml) | `github.com/nicklambourne/slackblocks/go/v3` to the Go module ecosystem |
 | `java/vX.Y.Z` | [`.github/workflows/publish-java.yml`](.github/workflows/publish-java.yml) | `io.github.nicklambourne:slackblocks` to Maven Central |
 | `csharp/vX.Y.Z` | [`.github/workflows/publish-nuget.yml`](.github/workflows/publish-nuget.yml) | `Slackblocks` to NuGet |
 | `ruby/vX.Y.Z` | [`.github/workflows/publish-rubygems.yml`](.github/workflows/publish-rubygems.yml) | `slackblocks` to RubyGems |
@@ -89,7 +94,7 @@ These must be in place before the workflows can publish:
       token path only runs while the secret is present.
 4. **Go requires no registry credentials** — Go modules are published by
    pushing the correctly prefixed repository tag. Because the module lives in
-   the `go/` subdirectory and declares the `/v2` module path, its tags must use
+   the `go/` subdirectory and declares the `/v3` module path, its tags must use
    the exact form `go/vX.Y.Z`. The workflow verifies the module and creates the
    corresponding GitHub Release; consumers and the public Go proxy resolve it
    directly from the repository.
@@ -688,7 +693,7 @@ After a failure, check:
   the sdist and the wheel.
 - npm: https://www.npmjs.com/package/@nicklambourne/slackblocks shows the new
   version (with provenance).
-- Go: https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v2 lists the
+- Go: https://pkg.go.dev/github.com/nicklambourne/slackblocks/go/v3 lists the
   new module version.
 - Maven Central: https://central.sonatype.com/artifact/io.github.nicklambourne/slackblocks
   lists the new artifact version with binary, source, and Javadoc JARs.

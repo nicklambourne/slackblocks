@@ -5,6 +5,17 @@ import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, Typ
 
 # Migration
 
+## Upgrading to 3.0.0
+
+All nine implementations move to 3.0.0 together. Minimum supported language and runtime versions are unchanged; see [Compatibility](compatibility).
+
+- Number-input bounds now serialize and read back as strings. Numeric constructor and builder conveniences remain, but callers using numeric getters, C# constructor reflection, Elixir direct struct edits or numeric JSON bounds must migrate. See [number-input bounds](#number-input-bounds-in-spec-130) below.
+- Go imports move from `github.com/nicklambourne/slackblocks/go/v2` to `github.com/nicklambourne/slackblocks/go/v3`. Run `go get github.com/nicklambourne/slackblocks/go/v3@v3.0.0`, update imports, then run `go mod tidy` and your tests. Go 1.22 and the default slack-go v0.17.3 dependency remain supported; choosing the separately tested v0.23.1 SDK still requires Go 1.25.
+- Validation now rejects previously accepted invalid inputs, including explicit external-multiselect focus, inverted input bounds, malformed date/time shapes and more than two message charts (including attachments). Review the language changelog and test your final payloads.
+- Python callers passing `ephemeral=False` now explicitly request `in_channel`; omit the option to retain the wire default.
+
+The frozen 2.8.0 docs remain available in the version selector. The older migration notes below describe their named releases.
+
 <LanguageContent>
 <Python>
 
@@ -412,8 +423,7 @@ a deliberate source/wire contract correction: callers that inspect numeric
 getters or JSON numbers must migrate. Pass strings when decimal spelling or
 integer precision matters. This does not normalize `initial_value` or establish
 a trailing-zero prohibition; that separate Slack runtime discrepancy remains
-documented in [troubleshooting](./troubleshooting.mdx). Package versions remain
-2.8.0 during unreleased remediation; no release is implied by the spec bump.
+documented in [troubleshooting](./troubleshooting.mdx). These API changes ship in coordinated release 3.0.0.
 
 Bounds use signed ASCII decimal/scientific strings (for example `-1.25`, `.5`, `2.` or `1e-3`). Whitespace, underscores, hex and nonfinite spellings are rejected. Comparisons preserve precision beyond floating point, including long fractions and integers above 2^53. Equivalent strings such as `0.1000` and `1e-1` remain unchanged on the wire. The library accepts mathematically finite strings such as `1e309`; this does not establish Slack delivery support for every magnitude.
 
