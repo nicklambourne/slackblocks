@@ -122,9 +122,9 @@ jobs:
             rust/integrations/target
           key: rust-${{ runner.os }}-quality-${{ hashFiles('rust/Cargo.lock', 'rust/integrations/Cargo.lock') }}
           restore-keys: rust-${{ runner.os }}-quality-
-      - name: Verify generated sources, lints, tests, and rustdoc
+      - name: Verify generated sources, lints, contracts, guides, and rustdoc
         if: needs.changes.outputs.relevant == 'true'
-        run: rust/bin/check
+        run: rust/bin/check --ci-quality
       - name: Verify archive and fresh consumers on minimum and stable Rust
         if: needs.changes.outputs.relevant == 'true'
         run: |
