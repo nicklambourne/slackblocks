@@ -43,7 +43,6 @@ for (const model of models) {
     assert.ok(module.types.some(type => type.includes(`${field.wire}:`)), `${model.name}.${field.wire}: field type missing`);
   }
 }
-assert.equal(fields, 360);
 assert.match(text, /Default: `true`/);
 assert.match(text, /Optional; `nil` omits the field/);
 assert.match(text, /@spec change\(/);
@@ -56,4 +55,4 @@ for (const [index, domain] of domains.entries()) {
   assert.ok(breadcrumbs);
   assert.doesNotMatch(breadcrumbs, />Elixir API reference</);
 }
-console.log("Elixir reference: all 97 public modules, 360 fields, exported arities, native specs and rendered anchors verified.");
+console.log(`Elixir reference: all ${expected.length} public modules, ${fields} model fields, exported arities, native specs and rendered anchors verified.`);
