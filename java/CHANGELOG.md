@@ -3,6 +3,10 @@
 All notable changes to the Java package are documented here. Java versions move
 in lockstep with the Python, TypeScript, and Go packages.
 
+## [Unreleased]
+
+- Add native button `agent_prompt` and `agent_prompt_display` fields, Unicode prompt-length validation and the display/prompt dependency (spec 1.4.0). Document interaction acknowledgement regardless of Slackbot AI availability. Existing button calls remain compatible.
+
 ## [3.0.0] — 2026-10-22
 
 - Release the coordinated 3.0.0 API across all nine implementations; supported language/runtime minimums remain unchanged.

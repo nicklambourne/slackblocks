@@ -10,5 +10,5 @@ final class Version
     /** Coordinated Composer package version, pending first publication. */
     public const PACKAGE = '3.0.0';
     /** Shared Block Kit contract version implemented by this package. */
-    public const SPEC = '1.3.0';
+    public const SPEC = '1.4.0';
 }

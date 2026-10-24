@@ -1,12 +1,13 @@
 // Generated from the shared limits, vocabulary and manifest.
 /// Shared specification implemented by this crate.
-pub(crate) const SPEC_VERSION: &str = "1.3.0";
+pub(crate) const SPEC_VERSION: &str = "1.4.0";
 pub(crate) const LIMITS: &[(&str, i64)] = &[
     ("action_id.max_length", 255),
     ("actions.elements.max_items", 25),
     ("alert.text.max_length", 200),
     ("block_id.max_length", 255),
     ("button.accessibility_label.max_length", 75),
+    ("button.agent_prompt.max_length", 4000),
     ("button.text.max_length", 75),
     ("button.url.max_length", 3000),
     ("button.value.max_length", 2000),

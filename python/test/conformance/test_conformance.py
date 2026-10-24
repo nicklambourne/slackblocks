@@ -203,6 +203,8 @@ def data_table_with_content(length: int) -> DataTableBlock:
 INVALID_CASES: dict[str, Callable[[], object]] = {
     "text-empty": lambda: Text(""),
     "text-too-long": lambda: Text("x" * 3001),
+    "button-agent-prompt-too-long": lambda: Button(text="A", agent_prompt="😀" * 4001),
+    "button-agent-prompt-display-without-prompt": lambda: Button(text="A", agent_prompt_display=""),
     "button-action-id-too-long": lambda: Button(
         text="A", action_id="x" * (LIMITS["action_id"]["max_length"] + 1)
     ),

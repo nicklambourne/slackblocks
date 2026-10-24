@@ -22,6 +22,16 @@ defmodule Slackblocks.Internal.Rules do
         )
   end
 
+  defp local("ButtonElement", w, p) do
+    if Map.has_key?(w, "agent_prompt_display") and not Map.has_key?(w, "agent_prompt"),
+      do:
+        fail(
+          :missing_required,
+          p ++ ["agent_prompt"],
+          "required when agent_prompt_display is supplied"
+        )
+  end
+
   defp local("SectionBlock", w, p) do
     if not Map.has_key?(w, "text") and Map.get(w, "fields", []) == [],
       do: fail(:missing_required, p, "expected text or fields")

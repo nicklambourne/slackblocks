@@ -40,6 +40,10 @@ module Slackblocks
 
     def self.special(klass, wire, path)
       case klass.name.split("::").last
+      when "ButtonElement"
+        if wire.key?("agent_prompt_display") && !wire.key?("agent_prompt")
+          fail!("missing-required", "#{path}.agent_prompt", "required when agent_prompt_display is supplied")
+        end
       when "ExternalMultiSelectElement"
         fail!("invalid-usage", "#{path}.focus_on_load", "unsupported for external multi-select menus; omit this field") if wire.key?("focus_on_load")
       when "SlackIcon"

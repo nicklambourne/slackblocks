@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.3.0",
+  "spec_version": "1.4.0",
   "fixtures": [
     {
       "id": "attachments/attachment_multi_block",
@@ -222,6 +222,30 @@
       "description": "Video Block Full",
       "slack_docs": "https://docs.slack.dev/reference/block-kit/blocks/",
       "since": "1.0.0"
+    },
+    {
+      "id": "elements/button_agent_prompt",
+      "description": "Button with a prompt and no action ID",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/button-element/",
+      "since": "1.4.0"
+    },
+    {
+      "id": "elements/button_agent_prompt_at_limit",
+      "description": "Button prompt at the Unicode code point limit",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/button-element/",
+      "since": "1.4.0"
+    },
+    {
+      "id": "elements/button_agent_prompt_display",
+      "description": "Button with a custom prompt display longer than its label limit",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/button-element/",
+      "since": "1.4.0"
+    },
+    {
+      "id": "elements/button_agent_prompt_empty",
+      "description": "Button preserves empty supplied prompt strings",
+      "slack_docs": "https://docs.slack.dev/reference/block-kit/block-elements/button-element/",
+      "since": "1.4.0"
     },
     {
       "id": "elements/button_basic",

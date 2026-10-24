@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Any, Literal, TypeAlias
 from ._core import RenderableMixin, resolve
 from ._limits import (
     BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH,
+    BUTTON_AGENT_PROMPT_MAX_LENGTH,
     BUTTON_TEXT_MAX_LENGTH,
     BUTTON_URL_MAX_LENGTH,
     BUTTON_VALUE_MAX_LENGTH,
@@ -173,6 +174,11 @@ class Button(Element):
             the button is clicked.
         accessibility_label: a string label for longer descriptive text about
             a button element. Used by screen readers (max 75 chars).
+        agent_prompt: prompt sent to Slackbot when AI is available (max 4000
+            characters). The app receives an interaction in either case and
+            must acknowledge it within three seconds.
+        agent_prompt_display: collapsed Slackbot message text; requires
+            agent_prompt. Slack uses the button text when this is omitted.
     Throws:
         InvalidUsageError: if any of the provided arguments fail validation.
     """
@@ -186,6 +192,8 @@ class Button(Element):
         style: ButtonStyle | ButtonStyleName | None = None,
         confirm: ConfirmationDialogue | None = None,
         accessibility_label: str | None = None,
+        agent_prompt: str | None = None,
+        agent_prompt_display: str | None = None,
     ) -> None:
         super().__init__(type_=ElementType.BUTTON)
         self.text = Text.to_text(text, max_length=BUTTON_TEXT_MAX_LENGTH, force_plaintext=True)
@@ -214,6 +222,21 @@ class Button(Element):
             allow_none=True,
         )
 
+        for name, value in (
+            ("agent_prompt", agent_prompt),
+            ("agent_prompt_display", agent_prompt_display),
+        ):
+            if value is not None and not isinstance(value, str):
+                raise TypeMismatchError(f"{name} must be a string")
+        self.agent_prompt = validate_string(
+            agent_prompt, "agent_prompt", max_length=BUTTON_AGENT_PROMPT_MAX_LENGTH, allow_none=True
+        )
+        self.agent_prompt_display = agent_prompt_display
+        if agent_prompt_display is not None and agent_prompt is None:
+            raise MissingRequiredError(
+                "agent_prompt is required when agent_prompt_display is supplied"
+            )
+
     def _resolve(self) -> dict[str, Any]:
         return resolve(
             {
@@ -225,6 +248,8 @@ class Button(Element):
                 "value": self.value,
                 "confirm": self.confirm,
                 "accessibility_label": self.accessibility_label,
+                "agent_prompt": self.agent_prompt,
+                "agent_prompt_display": self.agent_prompt_display,
             }
         )
 

@@ -574,6 +574,7 @@ def emit_model(t, registry):
     elif n in typed_rules:
         s.append(typed_rules[n])
     elif n in {
+        "ButtonElement",
         "SlackIcon",
         "ExternalMultiSelectElement",
         "SectionBlock",

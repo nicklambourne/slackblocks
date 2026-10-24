@@ -1,0 +1,9 @@
+{
+  "type": "button",
+  "text": {
+    "type": "plain_text",
+    "text": "Summarize"
+  },
+  "agent_prompt": "",
+  "agent_prompt_display": ""
+}

@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.3.0",
+  "spec_version": "1.4.0",
   "capabilities": {
     "blocks.actions": ["blocks/actions_block_checkboxes"],
     "blocks.alert": ["blocks/alert_block"],
@@ -34,7 +34,7 @@
     "blocks.table": ["blocks/table_block", "blocks/table_ragged_rows"],
     "blocks.task_card": ["blocks/task_card_block"],
     "blocks.video": ["blocks/video_block_basic"],
-    "elements.button": ["elements/button_basic", "elements/button_text_at_limit", "elements/button_without_action_id"],
+    "elements.button": ["elements/button_basic", "elements/button_text_at_limit", "elements/button_without_action_id", "elements/button_agent_prompt", "elements/button_agent_prompt_display", "elements/button_agent_prompt_at_limit", "elements/button_agent_prompt_empty"],
     "elements.checkboxes": ["elements/checkbox_basic"],
     "elements.date_picker": ["elements/date_picker_basic"],
     "elements.datetime_picker": ["elements/datetime_picker_basic"],

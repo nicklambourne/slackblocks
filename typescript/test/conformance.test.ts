@@ -343,6 +343,10 @@ function constructRichText(input: FixtureInput): unknown {
 }
 
 function constructFixture(id: string, expected: FixtureInput): unknown {
+  if (id === "elements/button_agent_prompt") return api.Button().text("Summarize").agentPrompt("Summarize this incident.").build();
+  if (id === "elements/button_agent_prompt_display") return api.Button().text("Summarize").actionId("summarize").agentPrompt("Summarize this incident.").agentPromptDisplay("x".repeat(80)).build();
+  if (id === "elements/button_agent_prompt_at_limit") return api.Button().text("Summarize").agentPrompt("😀".repeat(4000)).build();
+  if (id === "elements/button_agent_prompt_empty") return api.Button().text("Summarize").agentPrompt("").agentPromptDisplay("").build();
   const [category, name] = id.split("/") as [string, string];
   const input = toCamel(expected) as FixtureInput;
   switch (category) {
@@ -453,6 +457,8 @@ const validImageUrl = "https://example.com/image.png";
 const invalidCases: Record<string, () => unknown> = {
   "text-empty": () => plainText(""),
   "text-too-long": () => plainText("x".repeat(3001)),
+  "button-agent-prompt-too-long": () => api.Button().text("A").agentPrompt("😀".repeat(4001)).build(),
+  "button-agent-prompt-display-without-prompt": () => api.Button().text("A").agentPromptDisplay("").build(),
   "button-action-id-too-long": () =>
     button({ text: "A", actionId: "x".repeat(limits.action_id.max_length + 1) }),
   "button-text-too-long": () =>

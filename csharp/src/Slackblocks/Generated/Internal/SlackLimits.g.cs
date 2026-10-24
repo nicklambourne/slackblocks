@@ -23,6 +23,9 @@ internal static class SlackLimits
     /// <summary><c>button.accessibility_label.max_length</c></summary>
     public const int ButtonAccessibilityLabelMaxLength = 75;
 
+    /// <summary><c>button.agent_prompt.max_length</c></summary>
+    public const int ButtonAgentPromptMaxLength = 4000;
+
     /// <summary><c>button.text.max_length</c></summary>
     public const int ButtonTextMaxLength = 75;
 

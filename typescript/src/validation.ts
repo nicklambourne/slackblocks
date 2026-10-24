@@ -580,6 +580,19 @@ function validateKnownObject(
       break;
     case "button":
     case "workflow_button": {
+      if (type === "button") {
+        for (const field of ["agent_prompt", "agent_prompt_display"] as const) {
+          if (object[field] !== undefined && typeof object[field] !== "string") {
+            throw new TypeMismatchError(child(path, field), "expected a string");
+          }
+        }
+        if (typeof object.agent_prompt === "string") {
+          length(object.agent_prompt, child(path, "agent_prompt"), undefined, limits.button.agent_prompt.max_length);
+        }
+        if (object.agent_prompt_display !== undefined && object.agent_prompt === undefined) {
+          throw new MissingRequiredError(child(path, "agent_prompt"), "required when agent_prompt_display is supplied");
+        }
+      }
       const labelLimits = type === "workflow_button" ? limits.workflow_button : limits.button;
       length(
         textValue(object.text),

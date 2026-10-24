@@ -5,6 +5,10 @@ All notable changes to `slackblocks` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+- Add native button `agent_prompt` and `agent_prompt_display` fields, Unicode prompt-length validation and the display/prompt dependency (spec 1.4.0). Document interaction acknowledgement regardless of Slackbot AI availability. Existing button calls remain compatible.
+
 ## [3.0.0] — 2026-10-22
 
 - Release the coordinated 3.0.0 API across all nine implementations; supported language/runtime minimums remain unchanged.

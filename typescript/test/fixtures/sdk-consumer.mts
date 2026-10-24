@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { WebClient } from '@slack/web-api';
-import { Message, SectionBlock, message, Confirmation, RichTextEmoji } from '@nicklambourne/slackblocks';
+import { Message, SectionBlock, message, Confirmation, RichTextEmoji, Button } from '@nicklambourne/slackblocks';
 
-const payload = Message().channel('C_TEST').text('SDK fallback').blocks(SectionBlock().text('SDK body')).build();
+const payload = Message().channel('C_TEST').text('SDK fallback').blocks(SectionBlock().text('SDK body').accessory(Button().text('Ask').agentPrompt('Ask Slackbot').agentPromptDisplay('Summary'))).build();
 assert.equal(Confirmation().title('Confirm').text('Proceed?').confirm('Yes').deny('No').style('danger').build().style, 'danger');
 assert.equal(RichTextEmoji().name('wave').skinTone(6).build().skin_tone, 6);
 if (false) {
@@ -33,6 +33,9 @@ try {
   await client.chat.postMessage(payload);
   await client.chat.postMessage(message({ channel: 'C_TEST', text: 'Legacy factory' }));
   assert.equal(received.length, 2);
+  const blocks = JSON.parse(received[0]?.get('blocks') ?? 'null');
+  assert.equal(blocks[0].accessory.agent_prompt, 'Ask Slackbot');
+  assert.equal(blocks[0].accessory.agent_prompt_display, 'Summary');
   assert.equal(received[0]?.get('channel'), 'C_TEST');
   assert.equal(received[0]?.get('text'), 'SDK fallback');
   assert.deepEqual(JSON.parse(received[0]?.get('blocks') ?? 'null'), payload.blocks);

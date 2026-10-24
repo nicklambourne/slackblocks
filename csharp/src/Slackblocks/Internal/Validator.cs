@@ -541,6 +541,18 @@ internal static partial class Validator
 
     private static void ValidateButton(JsonObject value, string path)
     {
+        foreach (var field in new[] { "agent_prompt", "agent_prompt_display" })
+        {
+            if (value.ContainsKey(field) && !JsonValues.IsString(value[field], out _))
+            {
+                Fail(ErrorCategory.TypeMismatch, Child(path, field), "expected a string");
+            }
+        }
+        CheckOptionalString(value, "agent_prompt", path, SlackLimits.ButtonAgentPromptMaxLength);
+        if (value.ContainsKey("agent_prompt_display") && !value.ContainsKey("agent_prompt"))
+        {
+            Fail(ErrorCategory.MissingRequired, Child(path, "agent_prompt"), "required when agent_prompt_display is supplied");
+        }
         TextLength(value["text"], Child(path, "text.text"), 0, SlackLimits.ButtonTextMaxLength);
         CheckOptionalString(value, "url", path, SlackLimits.ButtonUrlMaxLength);
         CheckOptionalString(value, "value", path, SlackLimits.ButtonValueMaxLength);

@@ -1,0 +1,30 @@
+{
+  "checked_on": "2026-10-24",
+  "event_id": "slack-button-agent-prompt-always-block-actions-doc-revision",
+  "sources": [
+    "https://docs.slack.dev/reference/block-kit/block-elements/button-element/",
+    "https://docs.slack.dev/reference/interaction-payloads/block_actions-payload/",
+    "https://docs.slack.dev/interactivity/handling-user-interaction/#acknowledgment_response"
+  ],
+  "observed_revision": {
+    "after": "2026-10-22T22:15:00Z",
+    "before": "2026-10-23T22:16:00Z",
+    "announcement_date": null,
+    "effective_date": null
+  },
+  "contract": {
+    "agent_prompt": "Optional string, maximum 4000 characters. Any app may set it; Slackbot receives the prompt when AI is available to the clicking user.",
+    "agent_prompt_display": "Optional string requiring agent_prompt. Custom collapsed Slackbot text replaces the full prompt; expansion retains the full prompt. Omission uses the button label.",
+    "interaction": "The app receives block_actions whether or not the click triggers Slackbot, and must acknowledge within three seconds.",
+    "unchanged": "Optional action_id, button parents and surfaces, URL composition and existing button fields."
+  },
+  "library_policy": {
+    "length_units": "Unicode code points, following existing shared text limits.",
+    "empty_values": "No documented minimum: accept empty prompt/display strings. Supplied display requires a supplied prompt even when empty.",
+    "display_limit": "No separate numeric length limit is documented; do not reuse the 75-character button-label limit."
+  },
+  "verification": {
+    "deterministic": "Native constructors/builders, supported parsing/editing/serialization paths, shared valid and invalid fixtures across all nine implementations.",
+    "live_slack": "Not run. AI entitlement, rollout, rendering and live boundary acceptance are external limitations; payload support does not prove them."
+  }
+}

@@ -555,6 +555,25 @@ defmodule Slackblocks.Test.ValidConstructions do
            title_url: "https://example.com"
          )
        end},
+      {"elements/button_agent_prompt",
+       fn -> Elements.Button.new!(text: "Summarize", agent_prompt: "Summarize this incident.") end},
+      {"elements/button_agent_prompt_display",
+       fn ->
+         Elements.Button.new!(
+           text: "Summarize",
+           action_id: "summarize",
+           agent_prompt: "Summarize this incident.",
+           agent_prompt_display: String.duplicate("x", 80)
+         )
+       end},
+      {"elements/button_agent_prompt_at_limit",
+       fn ->
+         Elements.Button.new!(text: "Summarize", agent_prompt: String.duplicate("😀", 4000))
+       end},
+      {"elements/button_agent_prompt_empty",
+       fn ->
+         Elements.Button.new!(text: "Summarize", agent_prompt: "", agent_prompt_display: "")
+       end},
       {"elements/button_basic",
        fn ->
          Elements.Button.new!(

@@ -196,6 +196,32 @@ pub const INVALID: &[InvalidCase] = &[
         },
     },
     InvalidCase {
+        id: "button-agent-prompt-too-long",
+        build: || {
+            ButtonElement::builder()
+                .text("A")
+                .agent_prompt("😀".repeat(4001))
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            ButtonElement::try_from(serde_json::json!({"type": "button", "text": {"type": "plain_text", "text": "A"}, "agent_prompt": "😀".repeat(4001)})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "button-agent-prompt-display-without-prompt",
+        build: || {
+            ButtonElement::builder()
+                .text("A")
+                .agent_prompt_display("")
+                .build()
+                .map(|_| ())
+        },
+        parse: || {
+            ButtonElement::try_from(serde_json::json!({"type": "button", "text": {"type": "plain_text", "text": "A"}, "agent_prompt_display": ""})).map(|_| ())
+        },
+    },
+    InvalidCase {
         id: "button-action-id-too-long",
         build: || {
             let _ = ButtonElement::builder()

@@ -15,6 +15,8 @@ final class InvalidConstructions
         return [
             'text-empty' => static fn(): S\Value => new S\PlainText(text: ''),
             'text-too-long' => static fn(): S\Value => new S\PlainText(text: str_repeat('x', 3001)),
+            'button-agent-prompt-too-long' => static fn(): S\Value => new S\ButtonElement(text: 'A', agentPrompt: str_repeat('😀', 4001)),
+            'button-agent-prompt-display-without-prompt' => static fn(): S\Value => new S\ButtonElement(text: 'A', agentPromptDisplay: ''),
             'button-action-id-too-long' => static fn(): S\Value => new S\ButtonElement(text: new S\PlainText(text: 'A'), actionId: str_repeat('x', 256)),
             'button-text-too-long' => static fn(): S\Value => new S\ButtonElement(text: new S\PlainText(text: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'), actionId: 'a'),
             'button-url-too-long' => static fn(): S\Value => new S\ButtonElement(text: new S\PlainText(text: 'A'), actionId: 'a', url: str_repeat('x', 3001)),

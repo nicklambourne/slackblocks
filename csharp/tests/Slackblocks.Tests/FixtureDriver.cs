@@ -72,7 +72,10 @@ internal sealed class FixtureDriver
         var spec = types[typeName];
         var type = Type(typeName);
         var wireType = spec["wireType"]!.GetValue<string>();
-        var constructor = type.GetConstructors().Single();
+        // Button keeps its old CLR overload; exercise the complete native field API.
+        var constructor = type == typeof(Slackblocks.Elements.ButtonElement)
+            ? type.GetConstructors().Single(item => item.GetParameters().Length == 10)
+            : type.GetConstructors().Single();
         var fieldsByParameter = spec["fields"]!.AsArray()
             .Select(field => field!.AsObject())
             .ToDictionary(field => field["method"]!.GetValue<string>(), StringComparer.Ordinal);

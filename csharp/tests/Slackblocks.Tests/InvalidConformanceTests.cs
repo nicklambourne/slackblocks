@@ -68,6 +68,8 @@ public sealed class InvalidConformanceTests
         {
             "text-empty" => Case("PlainText", TextObject("plain_text", "")),
             "text-too-long" => Case("PlainText", TextObject("plain_text", Repeated("x", 3001))),
+            "button-agent-prompt-too-long" => Typed("Button", "button", "text", Plain("A"), "agent_prompt", Repeated("😀", 4001)),
+            "button-agent-prompt-display-without-prompt" => Typed("Button", "button", "text", Plain("A"), "agent_prompt_display", ""),
             "button-action-id-too-long" => Typed("Button", "button", "text", Plain("A"), "action_id", Repeated("x", 256)),
             "button-text-too-long" => Typed("Button", "button", "text", Plain(Repeated("x", 76)), "action_id", "a"),
             "button-url-too-long" => Typed("Button", "button", "text", Plain("A"), "action_id", "a", "url", Repeated("x", 3001)),

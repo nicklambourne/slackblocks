@@ -3,6 +3,10 @@
 All notable changes to the Go module are documented here. Go releases use the
 same version number as the Python, TypeScript, and Java packages.
 
+## [Unreleased]
+
+- Add native button `agent_prompt` and `agent_prompt_display` fields, Unicode prompt-length validation and the display/prompt dependency (spec 1.4.0). Document interaction acknowledgement regardless of Slackbot AI availability. Existing button calls remain compatible.
+
 ## [3.0.0] — 2026-10-22
 
 - Release the coordinated 3.0.0 API across all nine implementations; supported language/runtime minimums remain unchanged.

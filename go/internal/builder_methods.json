@@ -40,7 +40,9 @@
 		"Value",
 		"Style",
 		"Confirm",
-		"AccessibilityLabel"
+		"AccessibilityLabel",
+		"AgentPrompt",
+		"AgentPromptDisplay"
 	],
 	"NewCardBlock": [
 		"HeroImage",
