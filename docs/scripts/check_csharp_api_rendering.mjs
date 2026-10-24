@@ -22,11 +22,18 @@ for (const [domain, type, member] of [
   const page = pages.get(domain);
   assert.ok(page, `${domain}.mdx is missing`);
   assert.match(page, new RegExp(`^## ${type}$`, "m"));
-  assert.match(page, new RegExp(`^### ${type}$`, "m"), `${type} must document its constructor`);
+  assert.match(page, new RegExp(`^### ${type}(?: — \`[^\`]+\`)?$`, "m"), `${type} must document its constructor`);
   assert.match(page, new RegExp(`^### ${member}$`, "m"));
   assert.match(page, /```csharp\npublic /, `${domain} must render signatures as C# code`);
   assert.match(page, /\| Parameter \| Description \|/, `${domain} must document constructor arguments`);
 }
+
+const button = pages.get("elements").split(/^## ButtonElement$/m)[1].split(/^## /m)[0];
+assert.equal([...button.matchAll(/^### ButtonElement — `[^`]+`$/gm)].length, 2, "both button constructor overloads must be documented");
+assert.match(button, /public ButtonElement\([^\n]+additionalFields\)\n```/, "the original button constructor must remain documented");
+assert.match(button, /public ButtonElement\([^\n]+additionalFields = null, string\? agentPrompt = null, string\? agentPromptDisplay = null\)\n```/, "the extended button constructor must document prompt parameters after additionalFields");
+assert.match(button, /^### AgentPrompt$/m);
+assert.match(button, /^### AgentPromptDisplay$/m);
 
 assert.match(pages.get("blocks"), /Slack allows at most 3000 characters\./, "limits must be documented");
 assert.match(pages.get("blocks"), /\| Throws \| When \|/, "constructor exceptions must be documented");
