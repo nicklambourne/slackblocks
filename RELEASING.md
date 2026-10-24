@@ -7,8 +7,9 @@ The Python (`slackblocks` on PyPI), TypeScript
 packages are released together and always carry the same version
 number.
 
-**Release 3.0.0** ships the corrected number-input bound API and Go `/v3`
-module while preserving supported runtime minimums. The outgoing nine-language
+**Release 3.0.0** ships the corrected number-input bound API, Go `/v3`
+module and native Slackbot button prompt fields in all nine languages while
+preserving supported runtime minimums. The outgoing nine-language
 2.8.0 docs are frozen from its release tag, with file hashes recorded in
 `docs/release-snapshots/2.8.0.json`.
 

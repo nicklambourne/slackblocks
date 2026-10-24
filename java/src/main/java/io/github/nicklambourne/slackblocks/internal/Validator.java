@@ -530,6 +530,18 @@ public final class Validator {
   }
 
   private static void validateButton(Map<String, Object> value, String path) {
+    for (String field : List.of("agent_prompt", "agent_prompt_display")) {
+      if (value.containsKey(field) && !(value.get(field) instanceof String)) {
+        fail(ErrorCategory.TYPE_MISMATCH, child(path, field), "expected a string");
+      }
+    }
+    checkOptionalString(value, "agent_prompt", path, SlackLimits.BUTTON_AGENT_PROMPT_MAX_LENGTH);
+    if (value.containsKey("agent_prompt_display") && !value.containsKey("agent_prompt")) {
+      fail(
+          ErrorCategory.MISSING_REQUIRED,
+          child(path, "agent_prompt"),
+          "required when agent_prompt_display is supplied");
+    }
     textLength(value.get("text"), child(path, "text.text"), 0, SlackLimits.BUTTON_TEXT_MAX_LENGTH);
     checkOptionalString(value, "url", path, SlackLimits.BUTTON_URL_MAX_LENGTH);
     checkOptionalString(value, "value", path, SlackLimits.BUTTON_VALUE_MAX_LENGTH);

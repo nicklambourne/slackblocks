@@ -18,6 +18,9 @@ public final class SlackLimits {
   /** {@code button.accessibility_label.max_length} */
   public static final int BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH = 75;
 
+  /** {@code button.agent_prompt.max_length} */
+  public static final int BUTTON_AGENT_PROMPT_MAX_LENGTH = 4000;
+
   /** {@code button.text.max_length} */
   public static final int BUTTON_TEXT_MAX_LENGTH = 75;
 

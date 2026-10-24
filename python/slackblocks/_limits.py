@@ -17,6 +17,8 @@ BUTTON_URL_MAX_LENGTH = 3000
 BUTTON_VALUE_MAX_LENGTH = 2000
 # button.accessibility_label.max_length
 BUTTON_ACCESSIBILITY_LABEL_MAX_LENGTH = 75
+# button.agent_prompt.max_length
+BUTTON_AGENT_PROMPT_MAX_LENGTH = 4000
 # confirmation.title.max_length
 CONFIRMATION_TITLE_MAX_LENGTH = 100
 # confirmation.text.max_length

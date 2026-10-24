@@ -6,7 +6,8 @@
     "text": { "max_length": 75 },
     "url": { "max_length": 3000 },
     "value": { "max_length": 2000 },
-    "accessibility_label": { "max_length": 75 }
+    "accessibility_label": { "max_length": 75 },
+    "agent_prompt": { "max_length": 4000 }
   },
   "confirmation": {
     "title": { "max_length": 100 },

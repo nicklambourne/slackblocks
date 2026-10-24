@@ -583,6 +583,14 @@
             "accessibilityLabel": {
                 "type": "?string",
                 "readonly": true
+            },
+            "agentPrompt": {
+                "type": "?string",
+                "readonly": true
+            },
+            "agentPromptDisplay": {
+                "type": "?string",
+                "readonly": true
             }
         },
         "methods": {
@@ -648,6 +656,22 @@
                     },
                     "extensions": {
                         "type": "?Slackblocks\\JsonObject",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    },
+                    "agentPrompt": {
+                        "type": "?string",
+                        "optional": true,
+                        "variadic": false,
+                        "byReference": false,
+                        "hasDefault": true,
+                        "default": null
+                    },
+                    "agentPromptDisplay": {
+                        "type": "?string",
                         "optional": true,
                         "variadic": false,
                         "byReference": false,
@@ -7648,7 +7672,7 @@
         "methods": [],
         "constants": {
             "PACKAGE": "3.0.0",
-            "SPEC": "1.3.0"
+            "SPEC": "1.4.0"
         }
     },
     "VideoBlock": {

@@ -121,6 +121,15 @@ pub(crate) fn validate(kind: &str, v: &Value, path: &str) -> Result<(), Validati
         ));
     }
     match kind {
+        "ButtonElement" => {
+            if has("agent_prompt_display") && !has("agent_prompt") {
+                return Err(fail(
+                    C::MissingRequired,
+                    &at("agent_prompt"),
+                    "required when agent_prompt_display is supplied",
+                ));
+            }
+        }
         "SlackIcon" => {
             if !ICONS.contains(&v["name"].as_str().unwrap_or("")) {
                 return Err(fail(C::TypeMismatch, &at("name"), "unknown Slack icon"));

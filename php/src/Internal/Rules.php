@@ -49,6 +49,9 @@ final class Rules
     public static function validate(S\Value $value, \stdClass $wire): void
     {
         $path = Codec::name($value);
+        if ($value instanceof S\ButtonElement && $value->agentPromptDisplay !== null && $value->agentPrompt === null) {
+            Validator::fail(C::MissingRequired, $path . '.agent_prompt', 'required when agent_prompt_display is supplied');
+        }
         if ($value instanceof S\SlackIcon && !in_array($value->name, Schema::VOCABULARY['slack_icon_names'], true)) {
             Validator::fail(C::TypeMismatch, $path . '.name', 'unknown Slack icon');
         }

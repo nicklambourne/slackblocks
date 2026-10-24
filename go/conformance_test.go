@@ -82,7 +82,11 @@ func TestSharedValidFixtures(t *testing.T) {
 // relaxed, built with the named fluent methods rather than the generic Set path.
 func TestRelaxedFixturesThroughFluentBuilders(t *testing.T) {
 	cases := map[string]slackblocks.Buildable{
-		"elements/button_without_action_id": slackblocks.NewButton().Text("Click Me").Value("click_me"),
+		"elements/button_agent_prompt":          slackblocks.NewButton().Text("Summarize").AgentPrompt("Summarize this incident."),
+		"elements/button_agent_prompt_display":  slackblocks.NewButton().Text("Summarize").ActionID("summarize").AgentPrompt("Summarize this incident.").AgentPromptDisplay(strings.Repeat("x", 80)),
+		"elements/button_agent_prompt_at_limit": slackblocks.NewButton().Text("Summarize").AgentPrompt(strings.Repeat("😀", 4000)),
+		"elements/button_agent_prompt_empty":    slackblocks.NewButton().Text("Summarize").AgentPrompt("").AgentPromptDisplay(""),
+		"elements/button_without_action_id":     slackblocks.NewButton().Text("Click Me").Value("click_me"),
 		"blocks/table_ragged_rows": slackblocks.NewTableBlock().BlockID("fake_block_id").Rows(
 			[]slackblocks.TableCell{rawText("Header A"), rawText("Header B")},
 			[]slackblocks.TableCell{rawText("Only one cell")},

@@ -1,6 +1,6 @@
 # slackblocks conformance specification
 
-Version 1.3.0 defines the language-neutral contract for slackblocks implementations.
+Version 1.4.0 defines the language-neutral contract for slackblocks implementations.
 
 For the end-to-end maintenance workflow, follow
 [Adding New Block Kit Features](../docs/docs/contributing/maintaining-block-kit.mdx),
@@ -73,3 +73,23 @@ A fresh `views.open` control on 2026-10-13 rejected min-value strings `1e2`, `1e
 ### Message chart count (SB-006)
 
 The [official data visualization reference](https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block/) states a maximum of two data visualization blocks per message (checked 2026-10-13, reconfirmed 2026-10-21). Enforce `message.data_visualizations.max_items` across the message and attachment blocks after helper expansion, while leaving application metadata opaque. This is a message context rule, not a standalone chart or view rule. Prior live `chat.postMessage` rejected three charts even though `blocks.validate` accepted them; the stricter confirmed delivery rule governs this contract.
+
+### Button prompts (1.4.0)
+
+`ButtonElement.agent_prompt` is an optional string of at most 4000 Unicode code
+points. `agent_prompt_display` is an optional string that requires a supplied
+prompt. The dependency uses presence, so an empty display still requires a
+prompt. The documented field table sets no nonempty requirement or separate
+display length limit; empty strings remain structurally accepted. Native null
+optionals omit fields under each implementation's existing convention.
+
+Omitting the display leaves Slack to use the button text; serializers must not
+synthesize a display value. Existing button action-ID optionality, URL support,
+parents and surfaces remain unchanged. These are payload construction rules,
+not a claim about Slackbot availability or live acceptance of boundary values.
+
+The official button reference states that any app may set a prompt, Slackbot
+handles it when AI is available to the clicking user, and the app receives
+`block_actions` in either case. Applications must acknowledge that interaction
+within three seconds. A custom display replaces the collapsed prompt text;
+the complete prompt remains expandable. See [official-source evidence](evidence/button-agent-prompt.json).

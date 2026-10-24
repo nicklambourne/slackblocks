@@ -15,6 +15,7 @@ const guides = [
   "usage/using_blocks.mdx",
   "usage/sending_messages.mdx",
   "usage/cookbook.mdx",
+  "usage/agent-prompts.mdx",
   "usage/troubleshooting.mdx",
 ];
 const prelude = [
@@ -67,5 +68,5 @@ for (const guide of guides) {
     checked += runOtherSnippets(source);
   }
 }
-assert.equal(checked, 28, `only ${checked} Ruby guide snippets were exercised`);
+assert.equal(checked, 29, `only ${checked} Ruby guide snippets were exercised`);
 console.log(`Executed ${checked} Ruby guide snippets; block payloads match the documented JSON.`);

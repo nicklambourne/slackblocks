@@ -246,6 +246,8 @@
   "ButtonElement": [
     "fn accessibility_label (& self) -> Option < & str >",
     "fn action_id (& self) -> Option < & str >",
+    "fn agent_prompt (& self) -> Option < & str >",
+    "fn agent_prompt_display (& self) -> Option < & str >",
     "fn builder () -> ButtonElementBuilder",
     "fn confirm (& self) -> Option < & ConfirmationDialogue >",
     "fn extensions (& self) -> & Map < String , Value >",
@@ -262,9 +264,13 @@
   "ButtonElementBuilder": [
     "fn accessibility_label (mut self , value : impl Into < String >) -> Self",
     "fn action_id (mut self , value : impl Into < String >) -> Self",
+    "fn agent_prompt (mut self , value : impl Into < String >) -> Self",
+    "fn agent_prompt_display (mut self , value : impl Into < String >) -> Self",
     "fn build (self) -> Result < ButtonElement , ValidationError >",
     "fn clear_accessibility_label (mut self) -> Self",
     "fn clear_action_id (mut self) -> Self",
+    "fn clear_agent_prompt (mut self) -> Self",
+    "fn clear_agent_prompt_display (mut self) -> Self",
     "fn clear_confirm (mut self) -> Self",
     "fn clear_style (mut self) -> Self",
     "fn clear_url (mut self) -> Self",

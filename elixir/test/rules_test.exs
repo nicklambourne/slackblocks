@@ -75,6 +75,8 @@ defmodule Slackblocks.RulesTest do
 
   defp cases do
     [
+      {"ButtonElement", 0, fn -> change("ButtonElement", agent_prompt_display: "") end,
+       :missing_required},
       {"ExternalMultiSelectElement", 0,
        fn -> change("ExternalMultiSelectElement", focus_on_load: false) end, :invalid_usage},
       {"CardBlock", 0,

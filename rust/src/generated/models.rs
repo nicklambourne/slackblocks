@@ -6322,7 +6322,7 @@ impl<'de> Deserialize<'de> for VideoBlock {
 /// An interactive button that sends a payload or opens a URL.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/block-elements/button-element).
-
+/// A prompt display requires an agent prompt.
 #[derive(Clone, Debug, PartialEq)]
 pub struct ButtonElement {
     text: PlainText,
@@ -6332,6 +6332,8 @@ pub struct ButtonElement {
     style: Option<ButtonStyle>,
     confirm: Option<ConfirmationDialogue>,
     accessibility_label: Option<String>,
+    agent_prompt: Option<String>,
+    agent_prompt_display: Option<String>,
     extensions: Map<String, Value>,
 }
 /// Consuming builder for [`ButtonElement`]. Validation runs in [`Self::build`].
@@ -6344,6 +6346,8 @@ pub struct ButtonElementBuilder {
     style: Option<ButtonStyle>,
     confirm: Option<ConfirmationDialogue>,
     accessibility_label: Option<String>,
+    agent_prompt: Option<String>,
+    agent_prompt_display: Option<String>,
     extensions: Map<String, Value>,
 }
 impl Default for ButtonElementBuilder {
@@ -6356,6 +6360,8 @@ impl Default for ButtonElementBuilder {
             style: None,
             confirm: None,
             accessibility_label: None,
+            agent_prompt: None,
+            agent_prompt_display: None,
             extensions: Map::new(),
         }
     }
@@ -6375,6 +6381,8 @@ impl ButtonElement {
             style: self.style,
             confirm: self.confirm,
             accessibility_label: self.accessibility_label,
+            agent_prompt: self.agent_prompt,
+            agent_prompt_display: self.agent_prompt_display,
             extensions: self.extensions,
         }
     }
@@ -6406,6 +6414,14 @@ impl ButtonElement {
     pub fn accessibility_label(&self) -> Option<&str> {
         self.accessibility_label.as_deref()
     }
+    /// Borrows or copies `agent_prompt`. Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds.
+    pub fn agent_prompt(&self) -> Option<&str> {
+        self.agent_prompt.as_deref()
+    }
+    /// Borrows or copies `agent_prompt_display`. Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable.
+    pub fn agent_prompt_display(&self) -> Option<&str> {
+        self.agent_prompt_display.as_deref()
+    }
     /// Borrows checked, unmodeled JSON extension fields.
     pub fn extensions(&self) -> &Map<String, Value> {
         &self.extensions
@@ -6431,6 +6447,12 @@ impl ButtonElement {
         }
         if let Some(value) = &self.accessibility_label {
             map.serialize_entry("accessibility_label", value)?;
+        }
+        if let Some(value) = &self.agent_prompt {
+            map.serialize_entry("agent_prompt", value)?;
+        }
+        if let Some(value) = &self.agent_prompt_display {
+            map.serialize_entry("agent_prompt_display", value)?;
         }
         for (key, value) in &self.extensions {
             map.serialize_entry(key, value)?;
@@ -6504,6 +6526,26 @@ impl ButtonElementBuilder {
         self.accessibility_label = None;
         self
     }
+    /// Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds.
+    pub fn agent_prompt(mut self, value: impl Into<String>) -> Self {
+        self.agent_prompt = Some(value.into());
+        self
+    }
+    /// Omits `agent_prompt`, including any model default.
+    pub fn clear_agent_prompt(mut self) -> Self {
+        self.agent_prompt = None;
+        self
+    }
+    /// Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable.
+    pub fn agent_prompt_display(mut self, value: impl Into<String>) -> Self {
+        self.agent_prompt_display = Some(value.into());
+        self
+    }
+    /// Omits `agent_prompt_display`, including any model default.
+    pub fn clear_agent_prompt_display(mut self) -> Self {
+        self.agent_prompt_display = None;
+        self
+    }
     /// Adds or replaces an unmodeled extension; reserved names fail at build time.
     pub fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self {
         self.extensions.insert(key.into(), value.into());
@@ -6527,6 +6569,8 @@ impl ButtonElementBuilder {
         let style = self.style;
         let confirm = self.confirm;
         let accessibility_label = self.accessibility_label;
+        let agent_prompt = self.agent_prompt;
+        let agent_prompt_display = self.agent_prompt_display;
         wire::extensions(
             &self.extensions,
             &[
@@ -6537,6 +6581,8 @@ impl ButtonElementBuilder {
                 "style",
                 "confirm",
                 "accessibility_label",
+                "agent_prompt",
+                "agent_prompt_display",
             ],
             "ButtonElement",
         )?;
@@ -6548,6 +6594,8 @@ impl ButtonElementBuilder {
             style,
             confirm,
             accessibility_label,
+            agent_prompt,
+            agent_prompt_display,
             extensions: self.extensions,
         };
         {
@@ -6581,6 +6629,18 @@ impl ButtonElementBuilder {
                 "ButtonElement.accessibility_label",
             )?;
         }
+        if let Some(v) = &value.agent_prompt {
+            crate::rules::length(
+                v.chars().count(),
+                None,
+                Some(4000),
+                "ButtonElement.agent_prompt",
+            )?;
+        }
+        let wire = serde_json::to_value(&value).map_err(|e| {
+            ValidationError::new(ErrorCategory::TypeMismatch, "ButtonElement", e.to_string())
+        })?;
+        crate::rules::validate("ButtonElement", &wire, "ButtonElement")?;
         Ok(value)
     }
 }
@@ -6600,6 +6660,8 @@ impl FromWire for ButtonElement {
         let style = wire::field::<ButtonStyle>(&mut map, "style", path)?;
         let confirm = wire::field::<ConfirmationDialogue>(&mut map, "confirm", path)?;
         let accessibility_label = wire::field::<String>(&mut map, "accessibility_label", path)?;
+        let agent_prompt = wire::field::<String>(&mut map, "agent_prompt", path)?;
+        let agent_prompt_display = wire::field::<String>(&mut map, "agent_prompt_display", path)?;
         ButtonElementBuilder {
             text: text.map(Into::into),
             action_id,
@@ -6608,6 +6670,8 @@ impl FromWire for ButtonElement {
             style,
             confirm,
             accessibility_label,
+            agent_prompt,
+            agent_prompt_display,
             extensions: map,
         }
         .build()

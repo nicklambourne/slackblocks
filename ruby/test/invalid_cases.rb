@@ -14,6 +14,8 @@ module InvalidCases
 
     text-empty
     text-too-long
+    button-agent-prompt-too-long
+    button-agent-prompt-display-without-prompt
     button-action-id-too-long
     button-text-too-long
     button-url-too-long
@@ -199,6 +201,8 @@ module InvalidCases
     case id
     when "text-empty" then invalid_case("PlainText", text_object("plain_text", ""))
     when "text-too-long" then invalid_case("PlainText", text_object("plain_text", repeated("x", 3001)))
+    when "button-agent-prompt-too-long" then typed("Button", "button", "text", plain("A"), "agent_prompt", repeated("😀", 4001))
+    when "button-agent-prompt-display-without-prompt" then typed("Button", "button", "text", plain("A"), "agent_prompt_display", "")
     when "button-action-id-too-long" then typed("Button", "button", "text", plain("A"), "action_id", repeated("x", 256))
     when "button-text-too-long" then typed("Button", "button", "text", plain(repeated("x", 76)), "action_id", "a")
     when "button-url-too-long" then typed("Button", "button", "text", plain("A"), "action_id", "a", "url", repeated("x", 3001))

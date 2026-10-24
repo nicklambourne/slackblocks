@@ -23,6 +23,7 @@ import java.util.Optional;
  *
  * <ul>
  *   <li>Required: {@code text}.
+ *   <li>A prompt display requires an agent prompt.
  * </ul>
  *
  * @see <a href="https://docs.slack.dev/reference/block-kit/block-elements/button-element">Slack
@@ -137,6 +138,30 @@ public final class ButtonElement extends BlockElement implements Element {
    */
   public Optional<String> getAccessibilityLabel() {
     return TypedFields.optional(fields, "ButtonElement", "accessibility_label", String.class);
+  }
+
+  /**
+   * Returns a prompt sent to Slackbot when AI is available to the clicking user. The app receives a
+   * block_actions payload in either case and must acknowledge it within three seconds.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getAgentPrompt() {
+    return TypedFields.optional(fields, "ButtonElement", "agent_prompt", String.class);
+  }
+
+  /**
+   * Returns the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt.
+   * Omit this field to let Slack use the button text; the full prompt remains expandable.
+   *
+   * @return the value, or an empty optional when it was not set
+   * @throws IllegalStateException if the field was set through a raw wire field to a value this
+   *     type cannot represent
+   */
+  public Optional<String> getAgentPromptDisplay() {
+    return TypedFields.optional(fields, "ButtonElement", "agent_prompt_display", String.class);
   }
 
   @Override
@@ -283,6 +308,32 @@ public final class ButtonElement extends BlockElement implements Element {
      */
     public Builder accessibilityLabel(String value) {
       state.set("accessibility_label", value);
+      return this;
+    }
+
+    /**
+     * Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a
+     * block_actions payload in either case and must acknowledge it within three seconds.
+     *
+     * <p>Slack allows at most 4000 characters.
+     *
+     * @param value value for Slack's {@code agent_prompt} field
+     * @return this builder
+     */
+    public Builder agentPrompt(String value) {
+      state.set("agent_prompt", value);
+      return this;
+    }
+
+    /**
+     * Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt.
+     * Omit this field to let Slack use the button text; the full prompt remains expandable.
+     *
+     * @param value value for Slack's {@code agent_prompt_display} field
+     * @return this builder
+     */
+    public Builder agentPromptDisplay(String value) {
+      state.set("agent_prompt_display", value);
       return this;
     }
 

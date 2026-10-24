@@ -10,12 +10,35 @@ namespace Slackblocks.Elements;
 /// <remarks>
 /// <list type="bullet">
 /// <item><description>Required: <c>text</c>.</description></item>
+/// <item><description>A prompt display requires an agent prompt.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/block-elements/button-element">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
 public sealed partial class ButtonElement : global::Slackblocks.SlackObject, global::Slackblocks.Elements.IElement
 {
+    /// <summary>Preserves the original button constructor for compiled consumers.</summary>
+    /// <param name="text">The button label. Required. Slack allows at most 75 characters. A string is sent as a <c>plain_text</c> text object.</param>
+    /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
+    /// <param name="url">A URL opened in the user's browser when the button is clicked. Slack still sends an interaction payload. Slack allows at most 3000 characters.</param>
+    /// <param name="value">The application-defined value sent in interaction payloads. Slack allows at most 2000 characters.</param>
+    /// <param name="style">The button's emphasis. Omit it for the default neutral style.</param>
+    /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
+    /// <param name="accessibilityLabel">The label read by screen readers in place of the visible text. Slack allows at most 75 characters.</param>
+    /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
+    public ButtonElement(
+        global::Slackblocks.Objects.PlainText text,
+        string? actionId,
+        string? url,
+        string? value,
+        global::Slackblocks.Elements.ButtonStyle? style,
+        global::Slackblocks.Objects.Confirmation? confirm,
+        string? accessibilityLabel,
+        global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields)
+        : this(text, actionId, url, value, style, confirm, accessibilityLabel, additionalFields, null, null)
+    {
+    }
+
     /// <summary>Creates and validates a <see cref="ButtonElement"/>.</summary>
     /// <param name="text">The button label. Required. Slack allows at most 75 characters. A string is sent as a <c>plain_text</c> text object.</param>
     /// <param name="actionId">The identifier Slack returns in interaction payloads when a user acts on this element. It must be unique among the elements of its block. Slack allows at most 255 characters.</param>
@@ -24,6 +47,8 @@ public sealed partial class ButtonElement : global::Slackblocks.SlackObject, glo
     /// <param name="style">The button's emphasis. Omit it for the default neutral style.</param>
     /// <param name="confirm">A confirmation dialog shown before the action is sent.</param>
     /// <param name="accessibilityLabel">The label read by screen readers in place of the visible text. Slack allows at most 75 characters.</param>
+    /// <param name="agentPrompt">A prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds. Slack allows at most 4000 characters.</param>
+    /// <param name="agentPromptDisplay">The collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable.</param>
     /// <param name="additionalFields">Slack fields that have no named parameter yet, such as a field Slack introduced after this release. Values must be strings, numbers, booleans, lists, dictionaries, JSON nodes, or slackblocks values, and are validated with the rest of the object. Typed properties do not reflect them, and a field cannot be set both here and through its named parameter.</param>
     /// <exception cref="global::Slackblocks.ValidationException">The value breaks a Block Kit rule, such as a missing required field or an exceeded length limit.</exception>
     /// <exception cref="global::System.ArgumentException">A collection contains <see langword="null"/>, or an additional field cannot be written as JSON or repeats a named parameter.</exception>
@@ -35,7 +60,9 @@ public sealed partial class ButtonElement : global::Slackblocks.SlackObject, glo
         global::Slackblocks.Elements.ButtonStyle? style = null,
         global::Slackblocks.Objects.Confirmation? confirm = null,
         string? accessibilityLabel = null,
-        global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null)
+        global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null,
+        string? agentPrompt = null,
+        string? agentPromptDisplay = null)
     {
         var wire = new global::Slackblocks.Internal.WireBuilder("ButtonElement", "button");
         Text = wire.Text("text", text, "plain_text")!;
@@ -45,6 +72,8 @@ public sealed partial class ButtonElement : global::Slackblocks.SlackObject, glo
         Style = wire.Enum("style", style, global::Slackblocks.Elements.ButtonStyleExtensions.ToWireValue);
         Confirm = wire.Object("confirm", confirm);
         AccessibilityLabel = wire.String("accessibility_label", accessibilityLabel);
+        AgentPrompt = wire.String("agent_prompt", agentPrompt);
+        AgentPromptDisplay = wire.String("agent_prompt_display", agentPromptDisplay);
         Initialize(wire.Build(additionalFields));
     }
 
@@ -74,4 +103,12 @@ public sealed partial class ButtonElement : global::Slackblocks.SlackObject, glo
     /// <summary>Gets the label read by screen readers in place of the visible text.</summary>
     /// <value>The value, or <see langword="null"/> when it was not set.</value>
     public string? AccessibilityLabel { get; }
+
+    /// <summary>Gets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds.</summary>
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? AgentPrompt { get; }
+
+    /// <summary>Gets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable.</summary>
+    /// <value>The value, or <see langword="null"/> when it was not set.</value>
+    public string? AgentPromptDisplay { get; }
 }

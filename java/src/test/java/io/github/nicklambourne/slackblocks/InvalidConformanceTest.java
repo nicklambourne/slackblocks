@@ -75,6 +75,10 @@ final class InvalidConformanceTest {
     return switch (id) {
       case "text-empty" -> invalid("PlainText", text("plain_text", ""));
       case "text-too-long" -> invalid("PlainText", text("plain_text", repeated("x", 3001)));
+      case "button-agent-prompt-too-long" ->
+          typed("Button", "button", "text", plain("A"), "agent_prompt", repeated("😀", 4001));
+      case "button-agent-prompt-display-without-prompt" ->
+          typed("Button", "button", "text", plain("A"), "agent_prompt_display", "");
       case "button-action-id-too-long" ->
           typed("Button", "button", "text", plain("A"), "action_id", repeated("x", 256));
       case "button-text-too-long" ->

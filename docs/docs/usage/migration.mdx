@@ -9,6 +9,13 @@ import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, Typ
 
 All nine implementations move to 3.0.0 together. Minimum supported language and runtime versions are unchanged; see [Compatibility](compatibility).
 
+For applications that construct ordinary messages and buttons with valid inputs,
+the main upgrade is the dependency version, plus the import-path change for Go.
+Review the specific cases below if you use number-input bounds, explicit response
+visibility or inputs that the earlier validation accepted. The new
+[Slackbot button prompt fields](agent-prompts) are optional and require no changes
+to existing buttons.
+
 - Number-input bounds now serialize and read back as strings. Numeric constructor and builder conveniences remain, but callers using numeric getters, C# constructor reflection, Elixir direct struct edits or numeric JSON bounds must migrate. See [number-input bounds](#number-input-bounds-in-spec-130) below.
 - Go imports move from `github.com/nicklambourne/slackblocks/go/v2` to `github.com/nicklambourne/slackblocks/go/v3`. Run `go get github.com/nicklambourne/slackblocks/go/v3@v3.0.0`, update imports, then run `go mod tidy` and your tests. Go 1.22 and the default slack-go v0.17.3 dependency remain supported; choosing the separately tested v0.23.1 SDK still requires Go 1.25.
 - Validation now rejects previously accepted invalid inputs, including explicit external-multiselect focus, inverted input bounds, malformed date/time shapes and more than two message charts (including attachments). Review the language changelog and test your final payloads.

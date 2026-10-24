@@ -69,3 +69,14 @@ def test_every_block_section_is_covered() -> None:
 def test_block_section_matches_the_documented_json(code: str, expected: Any) -> None:
     block = evaluate_snippet(code)
     assert json.loads(repr(block)) == expected
+
+
+def test_button_prompt_example(capsys) -> None:
+    source = (REPO_ROOT / "docs/docs/usage/agent-prompts.mdx").read_text(encoding="utf-8")
+    code = PYTHON_FENCE.search(source)
+    assert code is not None
+    exec(compile(code.group(1), "<button-prompt-docs>", "exec"), {})
+    wire = json.loads(capsys.readouterr().out)
+    assert wire["agent_prompt"] == "Summarize this incident."
+    assert wire["agent_prompt_display"] == "Incident summary"
+    assert wire["action_id"] == "summarize_incident"

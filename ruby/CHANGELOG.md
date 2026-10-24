@@ -1,6 +1,8 @@
 # Changelog
 
-## [3.0.0] — 2026-10-22
+## [3.0.0] — 2026-10-24
+
+- Add native button `agent_prompt` and `agent_prompt_display` fields, Unicode prompt-length validation and the display/prompt dependency (spec 1.4.0). Document interaction acknowledgement regardless of Slackbot AI availability. Existing button calls remain compatible.
 
 - Release the coordinated 3.0.0 API across all nine implementations; supported language/runtime minimums remain unchanged.
 - Breaking: number-input bounds are strings in stored values and getters; numeric construction conveniences remain. See the migration guide before upgrading.

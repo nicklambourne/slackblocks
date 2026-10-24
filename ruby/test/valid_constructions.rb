@@ -709,6 +709,10 @@ module ValidConstructions
         title_url: "https://example.com"
       )
     },
+    "elements/button_agent_prompt" => -> { Slackblocks::ButtonElement.new(text: "Summarize", agent_prompt: "Summarize this incident.") },
+    "elements/button_agent_prompt_display" => -> { Slackblocks::ButtonElement.new(text: "Summarize", action_id: "summarize", agent_prompt: "Summarize this incident.", agent_prompt_display: "x" * 80) },
+    "elements/button_agent_prompt_at_limit" => -> { Slackblocks::ButtonElement.new(text: "Summarize", agent_prompt: "😀" * 4000) },
+    "elements/button_agent_prompt_empty" => -> { Slackblocks::ButtonElement.new(text: "Summarize", agent_prompt: "", agent_prompt_display: "") },
     "elements/button_basic" => -> {
       Slackblocks::ButtonElement.new(
         text: Slackblocks::PlainText.new(

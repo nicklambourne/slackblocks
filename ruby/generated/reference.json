@@ -939,6 +939,22 @@
           "readerType": "String",
           "required": false,
           "description": "Sets the label read by screen readers in place of the visible text."
+        },
+        {
+          "name": "agent_prompt",
+          "wire": "agent_prompt",
+          "type": "String",
+          "readerType": "String",
+          "required": false,
+          "description": "Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds."
+        },
+        {
+          "name": "agent_prompt_display",
+          "wire": "agent_prompt_display",
+          "type": "String",
+          "readerType": "String",
+          "required": false,
+          "description": "Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable."
         }
       ]
     },

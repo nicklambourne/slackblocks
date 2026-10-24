@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.3.0",
+  "spec_version": "1.4.0",
   "types": [
     {
       "name": "ActionsBlock",
@@ -1111,9 +1111,26 @@
           "kind": "string",
           "description": "Sets the label read by screen readers in place of the visible text.",
           "limits": "button.accessibility_label"
+        },
+        {
+          "method": "agentPrompt",
+          "goMethod": "AgentPrompt",
+          "wire": "agent_prompt",
+          "kind": "string",
+          "description": "Sets a prompt sent to Slackbot when AI is available to the clicking user. The app receives a block_actions payload in either case and must acknowledge it within three seconds.",
+          "limits": "button.agent_prompt"
+        },
+        {
+          "method": "agentPromptDisplay",
+          "goMethod": "AgentPromptDisplay",
+          "wire": "agent_prompt_display",
+          "kind": "string",
+          "description": "Sets the collapsed Slackbot message text in place of the full prompt. Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt remains expandable."
         }
       ],
-      "rules": []
+      "rules": [
+        "A prompt display requires an agent prompt."
+      ]
     },
     {
       "name": "ChannelMultiSelectElement",

@@ -843,6 +843,53 @@ pub const VALID: &[ValidCase] = &[
         parse: |v| VideoBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
     },
     ValidCase {
+        id: "elements/button_agent_prompt",
+        build: || {
+            let value = ButtonElement::builder()
+                .text("Summarize")
+                .agent_prompt("Summarize this incident.")
+                .build()?;
+            Ok(serde_json::to_value(value).unwrap())
+        },
+        parse: |v| ButtonElement::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "elements/button_agent_prompt_display",
+        build: || {
+            let value = ButtonElement::builder()
+                .text("Summarize")
+                .action_id("summarize")
+                .agent_prompt("Summarize this incident.")
+                .agent_prompt_display("x".repeat(80))
+                .build()?;
+            Ok(serde_json::to_value(value).unwrap())
+        },
+        parse: |v| ButtonElement::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "elements/button_agent_prompt_at_limit",
+        build: || {
+            let value = ButtonElement::builder()
+                .text("Summarize")
+                .agent_prompt("😀".repeat(4000))
+                .build()?;
+            Ok(serde_json::to_value(value).unwrap())
+        },
+        parse: |v| ButtonElement::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "elements/button_agent_prompt_empty",
+        build: || {
+            let value = ButtonElement::builder()
+                .text("Summarize")
+                .agent_prompt("")
+                .agent_prompt_display("")
+                .build()?;
+            Ok(serde_json::to_value(value).unwrap())
+        },
+        parse: |v| ButtonElement::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
         id: "elements/button_basic",
         build: || {
             let value = ButtonElement::builder()

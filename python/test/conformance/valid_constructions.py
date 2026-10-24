@@ -490,6 +490,21 @@ CONSTRUCTIONS: dict[str, Callable[[], object]] = {
         title_url="https://example.com",
         block_id="video_1",
     ),
+    "elements/button_agent_prompt": lambda: Button(
+        text="Summarize", agent_prompt="Summarize this incident."
+    ),
+    "elements/button_agent_prompt_display": lambda: Button(
+        text="Summarize",
+        action_id="summarize",
+        agent_prompt="Summarize this incident.",
+        agent_prompt_display="x" * 80,
+    ),
+    "elements/button_agent_prompt_at_limit": lambda: Button(
+        text="Summarize", agent_prompt="😀" * 4000
+    ),
+    "elements/button_agent_prompt_empty": lambda: Button(
+        text="Summarize", agent_prompt="", agent_prompt_display=""
+    ),
     "elements/button_basic": lambda: Button(text="Click Me", value="click_me", action_id="button"),
     "elements/button_link": lambda: Button(text="Link!", url="https://ndl.im/", action_id="button"),
     "elements/button_style": lambda: Button(

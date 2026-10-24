@@ -377,7 +377,20 @@ def class_source(model, names: Names, spec: dict) -> str:
         "    /// <exception cref=\"global::System.ArgumentException\">A collection contains <see langword=\"null\"/>, or "
         "an additional field cannot be written as JSON or repeats a named parameter.</exception>",
     ]
-    signature.append("global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null")
+    # Keep ButtonElement's existing positional additionalFields argument before new prompt fields.
+    signature.insert(7 if name == "ButtonElement" else len(signature),
+                     "global::System.Collections.Generic.IReadOnlyDictionary<string, object?>? additionalFields = null")
+    if name == "ButtonElement":
+        # Keep the original CLR signature for already-compiled consumers. Defaults
+        # live on the extended constructor to avoid ambiguous source overloads.
+        lines.append('    /// <summary>Preserves the original button constructor for compiled consumers.</summary>')
+        lines += [line for line in constructor_doc if '<param ' in line and 'name="agentPrompt' not in line]
+        lines.append(f"    public {simple}(")
+        legacy = [item.removesuffix(" = null") for item in signature[:8]]
+        lines += [f"        {item}," for item in legacy[:-1]]
+        lines.append(f"        {legacy[-1]})")
+        lines.append("        : this(text, actionId, url, value, style, confirm, accessibilityLabel, additionalFields, null, null)")
+        lines += ["    {", "    }", ""]
     lines += constructor_doc
     lines.append(f"    public {simple}(")
     lines += [f"        {item}," for item in signature[:-1]]

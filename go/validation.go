@@ -451,6 +451,25 @@ func validateObject(object Object, path string) error {
 	case "header":
 		return textLength(object["text"], child(path, "text.text"), 0, limitHeaderTextMaxLength)
 	case "button", "workflow_button":
+		if typeName == "button" {
+			for _, field := range []string{"agent_prompt", "agent_prompt_display"} {
+				if value, present := object[field]; present {
+					if _, ok := value.(string); !ok {
+						return validationError(TypeMismatch, child(path, field), "expected a string")
+					}
+				}
+			}
+			if prompt, ok := object["agent_prompt"].(string); ok {
+				if err := stringLength(prompt, child(path, "agent_prompt"), 0, limitButtonAgentPromptMaxLength); err != nil {
+					return err
+				}
+			}
+			if _, display := object["agent_prompt_display"]; display {
+				if _, prompt := object["agent_prompt"]; !prompt {
+					return validationError(MissingRequired, child(path, "agent_prompt"), "required when agent_prompt_display is supplied")
+				}
+			}
+		}
 		textMaximum, labelMaximum := limitButtonTextMaxLength, limitButtonAccessibilityLabelMaxLength
 		if typeName == "workflow_button" {
 			textMaximum, labelMaximum = limitWorkflowButtonTextMaxLength, limitWorkflowButtonAccessibilityLabelMaxLength

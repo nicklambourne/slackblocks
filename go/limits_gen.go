@@ -9,6 +9,7 @@ const (
 	limitAlertTextMaxLength                                  = 200   // alert.text.max_length
 	limitBlockIDMaxLength                                    = 255   // block_id.max_length
 	limitButtonAccessibilityLabelMaxLength                   = 75    // button.accessibility_label.max_length
+	limitButtonAgentPromptMaxLength                          = 4000  // button.agent_prompt.max_length
 	limitButtonTextMaxLength                                 = 75    // button.text.max_length
 	limitButtonURLMaxLength                                  = 3000  // button.url.max_length
 	limitButtonValueMaxLength                                = 2000  // button.value.max_length

@@ -165,6 +165,16 @@ func (b *builder) UserGroupID(value string) *builder { return b.set("usergroup_i
 // ActionID sets an interaction identifier.
 func (b *builder) ActionID(value string) *builder { return b.set("action_id", value) }
 
+// AgentPrompt sets the prompt sent to Slackbot when AI is available.
+func (b *builder) AgentPrompt(value string) *builder {
+	return b.set("agent_prompt", value)
+}
+
+// AgentPromptDisplay sets the collapsed Slackbot message text.
+func (b *builder) AgentPromptDisplay(value string) *builder {
+	return b.set("agent_prompt_display", value)
+}
+
 // AccessibilityLabel sets assistive text for an interactive control.
 func (b *builder) AccessibilityLabel(value string) *builder {
 	return b.set("accessibility_label", value)

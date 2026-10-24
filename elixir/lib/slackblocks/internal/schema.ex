@@ -1268,6 +1268,30 @@ defmodule Slackblocks.Internal.Schema do
           :coerce => nil,
           :limits => "button.accessibility_label",
           :flags => []
+        },
+        %{
+          :key => :agent_prompt,
+          :wire => "agent_prompt",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => "button.agent_prompt",
+          :flags => []
+        },
+        %{
+          :key => :agent_prompt_display,
+          :wire => "agent_prompt_display",
+          :kind => :string,
+          :type => nil,
+          :required => false,
+          :default => nil,
+          :has_default => false,
+          :coerce => nil,
+          :limits => nil,
+          :flags => []
         }
       ],
       :roles => ["Element"]
@@ -5094,6 +5118,7 @@ defmodule Slackblocks.Internal.Schema do
     "button.url.max_length" => 3_000,
     "button.value.max_length" => 2_000,
     "button.accessibility_label.max_length" => 75,
+    "button.agent_prompt.max_length" => 4_000,
     "confirmation.title.max_length" => 100,
     "confirmation.text.max_length" => 300,
     "confirmation.confirm.max_length" => 30,

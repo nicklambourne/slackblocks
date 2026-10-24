@@ -21,6 +21,10 @@ defmodule Slackblocks.Test.InvalidConstructions do
        fn -> Elements.StaticMultiSelect.new!(option_groups: []) end},
       {"text-empty", fn -> Objects.PlainText.new!(text: "") end},
       {"text-too-long", fn -> Objects.PlainText.new!(text: String.duplicate("x", 3_001)) end},
+      {"button-agent-prompt-too-long",
+       fn -> Elements.Button.new!(text: "A", agent_prompt: String.duplicate("😀", 4001)) end},
+      {"button-agent-prompt-display-without-prompt",
+       fn -> Elements.Button.new!(text: "A", agent_prompt_display: "") end},
       {"button-action-id-too-long",
        fn ->
          Elements.Button.new!(

@@ -1,0 +1,94 @@
+{
+  "checked_on": "2026-10-24",
+  "event_id": "slack-button-agent-prompt-always-block-actions-doc-revision",
+  "sources": [
+    "https://docs.slack.dev/reference/block-kit/block-elements/button-element/",
+    "https://docs.slack.dev/reference/interaction-payloads/block_actions-payload/",
+    "https://docs.slack.dev/interactivity/handling-user-interaction/#acknowledgment_response",
+    "https://docs.slack.dev/reference/methods/blocks.validate/"
+  ],
+  "observed_revision": {
+    "after": "2026-10-22T22:15:00Z",
+    "before": "2026-10-23T22:16:00Z",
+    "announcement_date": null,
+    "effective_date": null
+  },
+  "contract": {
+    "agent_prompt": "Optional string, maximum 4000 characters. Any app may set it; Slackbot receives the prompt when AI is available to the clicking user.",
+    "agent_prompt_display": "Optional string requiring agent_prompt. Custom collapsed Slackbot text replaces the full prompt; expansion retains the full prompt. Omission uses the button label.",
+    "interaction": "The app receives block_actions whether or not the click triggers Slackbot, and must acknowledge within three seconds.",
+    "unchanged": "Optional action_id, button parents and surfaces, URL composition and existing button fields."
+  },
+  "library_policy": {
+    "length_units": "Unicode code points, following existing shared text limits.",
+    "empty_values": "No documented minimum: accept empty prompt/display strings. Supplied display requires a supplied prompt even when empty.",
+    "display_limit": "No separate numeric length limit is documented; do not reuse the 75-character button-label limit."
+  },
+  "verification": {
+    "deterministic": "Native constructors/builders, supported parsing/editing/serialization paths, shared valid and invalid fixtures across all nine implementations.",
+    "live_slack": {
+      "checked_on": "2026-10-24",
+      "implementation_commit": "146bd05824e7083178caa5d1c0673f277f171129",
+      "environment": "Original stress-test workspace and test channel; one user without Slackbot AI entitlement.",
+      "native_languages": [
+        "python",
+        "typescript",
+        "go",
+        "java",
+        "csharp",
+        "ruby",
+        "rust",
+        "php",
+        "elixir"
+      ],
+      "native_payloads": "Compiled/executed current guide examples in all nine languages. Their exact native JSON passed standalone and block-only message validation, chat.postMessage, visible rendering and a real browser click.",
+      "transport": "One shared HTTP transport and one authenticated Socket Mode receiver; not nine SDK transport integrations.",
+      "writes": {
+        "accepted_messages": 2,
+        "rejected_4001_code_point_messages": 1
+      },
+      "callbacks": {
+        "type": "block_actions",
+        "native_buttons": 9,
+        "native_python_controls": 5,
+        "unique_actions_and_envelopes": 14,
+        "expected_workspace_app_channel_actor_and_messages": true,
+        "all_nine_nonempty_prompt_fields_preserved": true,
+        "complete_message_blocks_preserved": true,
+        "ack_local_receipt_to_send_ms": {
+          "minimum": 0.438,
+          "maximum": 10.279
+        },
+        "ack_caveat": "Local receipt-to-send timing, not Slack server receipt or round-trip latency. No duplicate delivery or visible Slack error observed.",
+        "receiver_stopped": true
+      },
+      "accepted_and_clicked_controls": [
+        "ordinary button",
+        "prompt without display",
+        "empty prompt and display",
+        "4000 Unicode code points",
+        "80-character display"
+      ],
+      "rejected_control": {
+        "prompt_code_points": 4001,
+        "validation_error": "invalid_message",
+        "write_error": "invalid_blocks",
+        "pointer": "/blocks/0/elements/0/agent_prompt",
+        "maximum": 4000
+      },
+      "normalization": [
+        "Slack adds text.emoji=true; all submitted message values are preserved.",
+        "For the empty-value control only, Slack omits both empty prompt fields from the action callback while retaining them in the message. All other action fields match."
+      ],
+      "validator_discrepancies": [
+        "blocks.validate rejects top-level message text even for an ordinary-button control. Removing only that envelope field passes; chat.postMessage accepts the full message with text.",
+        "blocks.validate accepts agent_prompt_display without agent_prompt. The library retains the stricter dependency in the official button reference."
+      ],
+      "limitations": [
+        "Slackbot AI entry offers an upgrade on this workspace. AI routing/execution, custom collapsed display, default-label rendering and prompt expansion remain unverified.",
+        "Modal and Home results are structural validation only; no live views were published.",
+        "Single workspace/user and current Slack rollout; these observations do not establish behavior for every entitlement or client."
+      ]
+    }
+  }
+}

@@ -591,6 +591,7 @@ func (b *BarChartBuilder) AxisConfig(value *AxisConfigBuilder) *BarChartBuilder 
 // An interactive button that sends a payload or opens a URL.
 //
 //   - Required: Text.
+//   - A prompt display requires an agent prompt.
 //
 // See https://docs.slack.dev/reference/block-kit/block-elements/button-element for Slack's reference.
 type ButtonBuilder struct{ *concreteBuilder }
@@ -651,6 +652,22 @@ func (b *ButtonBuilder) Confirm(value *ConfirmationBuilder) *ButtonBuilder {
 // allows at most 75 characters.
 func (b *ButtonBuilder) AccessibilityLabel(value string) *ButtonBuilder {
 	b.core.AccessibilityLabel(value)
+	return b
+}
+
+// AgentPrompt sets a prompt sent to Slackbot when AI is available to the clicking user. The app
+// receives a block_actions payload in either case and must acknowledge it within three seconds.
+// Slack allows at most 4000 characters.
+func (b *ButtonBuilder) AgentPrompt(value string) *ButtonBuilder {
+	b.core.AgentPrompt(value)
+	return b
+}
+
+// AgentPromptDisplay sets the collapsed Slackbot message text in place of the full prompt.
+// Requires agent_prompt. Omit this field to let Slack use the button text; the full prompt
+// remains expandable.
+func (b *ButtonBuilder) AgentPromptDisplay(value string) *ButtonBuilder {
+	b.core.AgentPromptDisplay(value)
 	return b
 }
 

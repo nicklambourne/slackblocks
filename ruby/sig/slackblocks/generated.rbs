@@ -367,10 +367,12 @@ module Slackblocks
     attr_reader style: (:primary | :danger)?
     attr_reader confirm: (Confirmation)?
     attr_reader accessibility_label: (String)?
+    attr_reader agent_prompt: (String)?
+    attr_reader agent_prompt_display: (String)?
     attr_reader additional_fields: Hash[String, untyped]
-    def initialize: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
-    def self.new: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
-    def self.[]: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
+    def initialize: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?agent_prompt: (String)?, ?agent_prompt_display: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?agent_prompt: (String)?, ?agent_prompt_display: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
+    def self.[]: (text: String | PlainText, ?action_id: (String)?, ?url: (String)?, ?value: (String)?, ?style: (:primary | :danger)?, ?confirm: (Confirmation)?, ?accessibility_label: (String)?, ?agent_prompt: (String)?, ?agent_prompt_display: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> ButtonElement
   end
 
   class ChannelMultiSelectElement

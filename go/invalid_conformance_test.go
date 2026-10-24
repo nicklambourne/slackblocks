@@ -102,6 +102,10 @@ func invalidConstruction(id string) error {
 		return buildError(slackblocks.NewPlainText().Text(""))
 	case "text-too-long":
 		return buildError(slackblocks.NewPlainText().Text(repeated("x", 3001)))
+	case "button-agent-prompt-too-long":
+		return buildError(slackblocks.NewButton().Text("A").AgentPrompt(strings.Repeat("😀", 4001)))
+	case "button-agent-prompt-display-without-prompt":
+		return buildError(slackblocks.NewButton().Text("A").AgentPromptDisplay(""))
 	case "button-action-id-too-long":
 		return buildError(slackblocks.NewButton().Text("A").ActionID(repeated("x", 256)))
 	case "button-text-too-long":
