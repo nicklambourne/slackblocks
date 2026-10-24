@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { expect, it } from "vitest";
 import { Button, MissingRequiredError, TypeMismatchError } from "../src/index.js";
@@ -26,8 +27,13 @@ it("validates untyped consumers without coercing prompt fields", () => {
 
 it("executes the documented prompt recipe", () => {
   const source = readFileSync(new URL("../../docs/docs/usage/agent-prompts.mdx", import.meta.url), "utf8");
-  const code = source.match(/```typescript\n([\s\S]*?)```/)![1].replace(/^import .*;$/m, "");
+  const snippet = source.match(/```typescript\n([\s\S]*?)```/)?.[1];
+  assert.ok(snippet, "missing TypeScript prompt recipe");
+  const code = snippet.replace(/^import .*;$/m, "");
   const output: string[] = [];
   new Function("Button", "console", code)(Button, { log: (value: string) => output.push(value) });
-  expect(JSON.parse(output[0])).toMatchObject({ agent_prompt: "Summarize this incident.", agent_prompt_display: "Incident summary", action_id: "summarize_incident" });
+  expect(output).toHaveLength(1);
+  const rendered = output[0];
+  assert.ok(rendered, "prompt recipe produced no JSON");
+  expect(JSON.parse(rendered)).toMatchObject({ agent_prompt: "Summarize this incident.", agent_prompt_display: "Incident summary", action_id: "summarize_incident" });
 });
