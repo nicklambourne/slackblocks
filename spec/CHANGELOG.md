@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Add native button prompt fields in all nine implementations (spec 1.4.0): optional `agent_prompt` up to 4000 Unicode code points and optional `agent_prompt_display` requiring a supplied prompt. No undocumented display limit or nonempty requirement is imposed. Official Slack documentation now explicitly requires `block_actions` acknowledgement regardless of AI availability; see `evidence/button-agent-prompt.json`. No new live acceptance was tested.
+- Add native button prompt fields in all nine implementations (spec 1.4.0): optional `agent_prompt` up to 4000 Unicode code points and optional `agent_prompt_display` requiring a supplied prompt. No undocumented display limit or nonempty requirement is imposed. Official Slack documentation now explicitly requires `block_actions` acknowledgement regardless of AI availability; see `evidence/button-agent-prompt.json`. Live validation, message writes, rendering and 14 acknowledged browser clicks passed on 2026-10-24 in the stress workspace, including all nine native outputs. AI-entitled Slackbot behavior remains unverified. The live validator accepts display without prompt, but the library retains the stricter documented dependency; empty prompt fields survive in messages but are omitted from action callbacks.
 
 - Add the probe-confirmed nonnegative external-query threshold, nonempty supplied static options/groups, date-shape and 24-hour-time rules in all nine implementations. Retain `2028-02-30` and empty image alt text as structurally accepted controls; Python retains its existing stricter calendar parser. See `evidence/SB-013-validation-boundary.json` and the validation-boundary guide (SB-013).
 
