@@ -92,6 +92,18 @@ def main():
     inventory = json.loads((PACKAGE / "conformance/public-api.json").read_text())
     commands = (
         ":module Prelude\n"
+        # Let GHC resolve dependency types through public imports, rather than
+        # exposing package unit IDs and hidden implementation modules in docs.
+        + "".join(
+            f"import qualified {module}\n"
+            for module in (
+                "Data.Aeson",
+                "Data.ByteString.Lazy",
+                "Data.Map.Strict",
+                "Data.Scientific",
+                "Data.Text",
+            )
+        )
         + "".join(
             f'putStrLn "REFERENCE_MODULE:{module}"\n:browse! {module}\n'
             for module in inventory["exports"]

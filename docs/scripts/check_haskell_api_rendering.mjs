@@ -32,7 +32,10 @@ for (const domain of ["blocks", "elements", "objects", "payloads", "components",
     assert.ok(entry.doc.trim() && entry.signatures.length, entry.name);
     assert.ok(mdx.includes(`{#${entry.anchor}}`), entry.name);
     assert.ok(html.includes(`id="${entry.anchor}"`), `${entry.name}: rendered anchor absent`);
-    for (const signature of entry.signatures) assert.ok(mdx.includes(signature), `${entry.name}: native signature absent`);
+    for (const signature of entry.signatures) {
+      assert.ok(mdx.includes(signature), `${entry.name}: native signature absent`);
+      assert.doesNotMatch(signature, /\.Internal\.|[a-z][a-z0-9-]*-\d[^\s:]*:/, `${entry.name}: private dependency name leaked`);
+    }
   }
   assert.doesNotMatch(mdx, /\]\((?:javadoc|ref):/);
   const breadcrumbs = html.match(/<nav[^>]+aria-label="Breadcrumbs">[\s\S]*?<\/nav>/)?.[0];
