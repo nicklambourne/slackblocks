@@ -65,6 +65,9 @@ def prose(doc, links):
 def main():
     build = os.environ.get("SLACKBLOCKS_HASKELL_BUILD", "dist-docs")
     cabal = ["cabal", f"--builddir={build}"]
+    # Haddock alone does not register the local library for GHCi. Build it first
+    # so reference discovery uses this checkout even on a clean package store.
+    subprocess.run([*cabal, "build", "lib:slackblocks"], cwd=PACKAGE, check=True)
     subprocess.run(
         [*cabal, "haddock", "lib:slackblocks", "--haddock-html"],
         cwd=PACKAGE,
@@ -125,10 +128,9 @@ def main():
         input=commands,
         text=True,
         capture_output=True,
-        check=True,
     )
-    if "error:" in result.stderr.lower():
-        raise ValueError(result.stderr)
+    if result.returncode or "error:" in result.stderr.lower():
+        raise ValueError("GHC reference discovery failed:\n" + result.stdout + result.stderr)
     chunks = re.split(r"^REFERENCE_MODULE:(\S+)\s*$", result.stdout, flags=re.M)
     signatures = {}
     for index in range(1, len(chunks), 2):
