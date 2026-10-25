@@ -190,6 +190,10 @@ jobs:
           key: docs-webpack-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.docs-compiler.outputs.node }}-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'package.json', 'docs/package.json', 'docs/docusaurus.config.ts', 'docs/plugins/**', 'docs/scripts/**', '.github/workflows/docs.yml') }}
 
       - name: Build documentation
+        env:
+          # Current ten-language references plus frozen releases exceed Node's
+          # default 4 GiB heap. The standard public Linux runner has 16 GiB RAM.
+          NODE_OPTIONS: --max-old-space-size=8192
         run: pnpm --filter @slackblocks/docs build
 
       - name: Verify immutable historical snapshots
