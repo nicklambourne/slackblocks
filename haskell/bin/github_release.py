@@ -9,7 +9,7 @@ import tempfile
 import time
 from pathlib import Path
 
-from release import ROOT, digest, preflight, require, scratch, verify
+from release import ROOT, digest, names, preflight, require, scratch, verify
 
 
 def gh(*args):
@@ -75,9 +75,9 @@ def release_assets(root, directory, ref):
     require(
         release["tagName"] == tag, "Existing GitHub Release must name the exact tag"
     )
-    names = {asset["name"] for asset in release["assets"]}
+    existing = {asset["name"] for asset in release["assets"]}
     for name in [*names(version), "release.json"]:
-        if name in names:
+        if name in existing:
             with tempfile.TemporaryDirectory(
                 prefix="slackblocks-hackage-asset-", dir=scratch()
             ) as tmp:

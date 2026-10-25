@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tarfile
 import tempfile
 import unittest
@@ -318,6 +319,117 @@ class HackageTests(unittest.TestCase):
             "needs: [validate, php-readiness, hex-readiness, hackage-readiness]",
             coordinator,
         )
+
+
+class HaskellGitHubRecoveryTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(dir=hackage.scratch())
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.directory = self.root / "assets"
+        self.directory.mkdir()
+        self.version = "3.1.0"
+        self.tag = "haskell/v" + self.version
+        self.names = [*hackage.names(self.version), "release.json"]
+        for name in self.names:
+            (self.directory / name).write_bytes(name.encode())
+        (self.root / "haskell").mkdir()
+        (self.root / "haskell/CHANGELOG.md").write_text(
+            "## [3.1.0] - 2026-10-25\n\nFirst Haskell release.\n"
+        )
+        with patch.dict(sys.modules, {"release": hackage}):
+            self.module = common.load(
+                "haskell_github", ROOT / "haskell/bin/github_release.py"
+            )
+
+    def test_draft_visibility_wait_and_timeout_are_bounded(self):
+        release = {"tagName": self.tag, "isDraft": True, "assets": []}
+        with patch.object(self.module, "lookup", side_effect=[None, release]):
+            self.assertEqual(
+                self.module.wait_release(self.tag, sleep=lambda _: None), release
+            )
+        with (
+            patch.object(self.module, "lookup", return_value=None),
+            self.assertRaisesRegex(ValueError, "bounded wait"),
+        ):
+            self.module.wait_release(self.tag, attempts=2, sleep=lambda _: None)
+
+    def test_create_resume_and_public_rerun_never_overwrite(self):
+        for draft, initial, missing in [
+            (True, set(), True),
+            (True, {self.names[0]}, False),
+            (False, set(self.names), False),
+        ]:
+            release = {
+                "tagName": self.tag,
+                "isDraft": draft,
+                "assets": [{"name": name} for name in initial],
+            }
+            events = []
+
+            def gh(*args):
+                events.append(args[1])
+                self.assertNotIn("--clobber", args)
+                self.assertEqual(args[2], self.tag)
+                if args[1] == "download":
+                    name = args[args.index("--pattern") + 1]
+                    (Path(args[args.index("--dir") + 1]) / name).write_bytes(
+                        (self.directory / name).read_bytes()
+                    )
+                if args[1] == "create":
+                    self.assertIn("--verify-tag", args)
+                    self.assertIn("First Haskell release.", Path(args[-1]).read_text())
+                return ""
+
+            with (
+                self.subTest(draft=draft, initial=initial),
+                patch.object(
+                    self.module.preflight, "publisher", return_value=self.version
+                ),
+                patch.object(self.module, "verify"),
+                patch.object(
+                    self.module, "lookup", return_value=None if missing else release
+                ),
+                patch.object(self.module, "wait_release", return_value=release),
+                patch.object(self.module, "gh", side_effect=gh),
+            ):
+                self.module.release_assets(
+                    self.root, self.directory, "refs/tags/" + self.tag
+                )
+            expected = ["create"] if missing else []
+            expected += ["download" if n in initial else "upload" for n in self.names]
+            expected += ["edit"] if draft else []
+            self.assertEqual(events, expected)
+
+    def test_foreign_tag_or_existing_asset_mismatch_stops_before_publish(self):
+        for foreign in [True, False]:
+            release = {
+                "tagName": "haskell/v9.9.9" if foreign else self.tag,
+                "isDraft": True,
+                "assets": [{"name": self.names[0]}],
+            }
+            events = []
+
+            def gh(*args):
+                events.append(args[1])
+                name = args[args.index("--pattern") + 1]
+                (Path(args[args.index("--dir") + 1]) / name).write_bytes(b"wrong")
+
+            with (
+                patch.object(
+                    self.module.preflight, "publisher", return_value=self.version
+                ),
+                patch.object(self.module, "verify"),
+                patch.object(self.module, "lookup", return_value=release),
+                patch.object(self.module, "gh", side_effect=gh),
+                self.assertRaisesRegex(
+                    ValueError, "exact tag" if foreign else "checksum"
+                ),
+            ):
+                self.module.release_assets(
+                    self.root, self.directory, "refs/tags/" + self.tag
+                )
+            self.assertEqual(events, [] if foreign else ["download"])
 
 
 if __name__ == "__main__":
