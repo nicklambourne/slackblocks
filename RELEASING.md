@@ -443,7 +443,7 @@ checklist below records the required setup and gates for the first publication.
    real relevant/unrelated runs and actual GitHub-provided runner metadata when
    changing this configuration.
 6. In a separate activation change, resolve any previous registry discrepancy,
-   date all nine changelogs together, align Java's output timestamp, populate the
+   date all ten changelogs together, align Java's output timestamp, populate the
    verified Hex owner and set `enabled: true`. Review the complete change before
    authorizing the release. No release dates or account settings are implied by
    the implementation PRs.

@@ -181,6 +181,13 @@ consumers. CI covers GHC 9.6–9.14; endpoint matrices run Linux/macOS/Windows.
 executes literal README and MDX examples. The site builds native GHC signatures
 and compiled Haddock comments and verifies every public reference anchor.
 
+Cabal is not in [Dependabot's supported ecosystems](https://docs.github.com/en/code-security/reference/supply-chain-security/supported-ecosystems-and-repositories).
+Review Hackage release notes when updating Haskell dependencies, retain the
+minimum compiler and declared lower bounds, and run both core and HTTP
+lower/locked/latest profiles. Refresh the corresponding committed resolution
+receipts in `haskell/dependencies/` only after those checks pass. The existing
+GitHub Actions updater still covers Haskell workflow actions.
+
 All ten conformance suites exercise every ID in `spec/manifest.json`. Released
 `conformance/skiplist.txt` files must be empty, and the harnesses assert this. A
 temporary transition gap remains incomplete work; it is not an exception to

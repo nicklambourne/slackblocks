@@ -51,8 +51,8 @@ your tests, rather than in production.
   pass Go block builders directly to [`slack-go/slack`](https://github.com/slack-go/slack),
   pass Java blocks directly to the [official Slack Java SDK](https://slack.dev/java-slack-sdk/),
   serialize C# values with `System.Text.Json`, call `to_json` on Ruby values, use Serde with Rust values, pass PHP JSON to JoliCode, cURL or Laravel, or send Elixir maps with Req or the community Slack client.
-- **One contract across nine implementations** — the same blocks, validation rules, and version
-  numbers in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, and Elixir. A shared conformance corpus keeps the implementations emitting the same Slack JSON.
+- **One contract across ten implementations** — the same blocks, validation rules, and version
+  numbers in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, Elixir, and Haskell. A shared conformance corpus keeps the implementations emitting the same Slack JSON. Haskell joins the prepared 3.1.0 release.
 - **Everything Block Kit ships today** — all current blocks and elements, rich text,
   modals and Home tabs, and the 2025 block families (tables, cards, carousels, charts).
 - **Light** — zero runtime dependencies in Python, a self-contained ESM module on npm,
@@ -540,7 +540,7 @@ See the [native API](https://nicklambourne.github.io/slackblocks/reference/haske
 - [`elixir/`](elixir/) — native Elixir values and Erlang integration (`slackblocks` on Hex from 2.8.0).
 - [`haskell/`](haskell/) — checked immutable Haskell values, native JSON and separate HTTP integration (3.1.0 preparation).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
-  and capability coverage that all nine implementations are tested against.
+  and capability coverage that all ten implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.
 
 ## Download statistics
