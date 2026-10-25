@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+"""Run the package checks, including public compilation boundaries."""
+import os
+from pathlib import Path
+import subprocess
+import tempfile
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def run(*args, **kwargs):
+    return subprocess.run(args, cwd=ROOT, check=True, **kwargs)
+
+
+def main():
+    scratch = os.environ.get("RUNNER_TEMP")
+    if Path("/Volumes/Repos").is_dir():
+        for volume in ("Repos", "Cache", "Scratch"):
+            if not Path("/Volumes", volume).is_mount():
+                raise SystemExit(f"Required external volume is unavailable: {volume}")
+        scratch = "/Volumes/Scratch"
+        os.environ.setdefault("CABAL_DIR", "/Volumes/Cache/slackblocks-haskell/cabal")
+    build = os.environ.get("SLACKBLOCKS_HASKELL_BUILD", "dist-newstyle")
+    cabal = ["cabal", f"--builddir={build}"]
+    run(*cabal, "test", "all", "--test-show-details=direct")
+    run("cabal", "check")
+    with tempfile.TemporaryDirectory(prefix="slackblocks-haskell-", dir=scratch) as tmp:
+        for name, source, expected in [
+            ("pass", "import Slackblocks\nmain = print (buildPlainText (plainText mempty))\n", None),
+            ("unchecked", "import Slackblocks\nimport Data.Aeson\nmain = print (encode (plainText mempty))\n", "ToJSON PlainTextFields"),
+            ("private", "import Slackblocks\nmain = print (CheckedPlainText (plainText mempty))\n", "CheckedPlainText"),
+            ("wrong-role", "import Slackblocks\nf = buttonElement (markdownText mempty)\nmain = pure ()\n", "PlainText"),
+        ]:
+            path = Path(tmp, name + ".hs")
+            path.write_text(source)
+            result = subprocess.run([*cabal, "exec", "--", "ghc", "-fno-code", "-package", "slackblocks", str(path)], cwd=ROOT, text=True, capture_output=True)
+            if expected is None:
+                if result.returncode:
+                    raise SystemExit(result.stdout + result.stderr)
+            elif not result.returncode or expected not in result.stderr:
+                raise SystemExit(f"Unexpected compiler result for {name}:\n{result.stdout}{result.stderr}")
+        run(*cabal, "sdist", f"--output-directory={tmp}")
+        consumer = Path(tmp, "consumer")
+        consumer.mkdir()
+        (consumer / "consumer.cabal").write_text("cabal-version: 3.0\nname: consumer\nversion: 0.0.0\nbuild-type: Simple\nexecutable consumer\n  main-is: Main.hs\n  default-language: GHC2021\n  build-depends: base, slackblocks ==3.1.0, aeson\n")
+        (consumer / "Main.hs").write_text('{\u002d# LANGUAGE OverloadedStrings #\u002d}\nimport Slackblocks\nimport Data.Aeson\nmain = either (fail . show) (print . encode) (buildPlainText (plainText "archive consumer"))\n')
+        (consumer / "cabal.project").write_text("packages: . ../slackblocks-3.1.0.tar.gz\n")
+        subprocess.run(["cabal", "run", "consumer"], cwd=consumer, check=True)
+    print("Package and public compilation boundaries passed.")
+
+
+if __name__ == "__main__":
+    main()
