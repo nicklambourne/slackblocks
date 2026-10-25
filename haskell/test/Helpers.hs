@@ -3,10 +3,11 @@
 module Main (main) where
 
 import Control.Exception (evaluate)
-import Control.Monad (unless)
+import Control.Monad (forM_, unless)
 import Data.Aeson (ToJSON (..), Value (..), encode, object, (.=))
 import Data.Aeson.KeyMap qualified as KM
 import Data.ByteString.Lazy qualified as L
+import Data.ByteString.Lazy.Char8 qualified as C
 import Data.Map.Strict qualified as Map
 import Data.Maybe (isNothing)
 import Data.Text qualified as T
@@ -26,6 +27,13 @@ reject label = either report (const (fail (label <> " accepted")))
     report errors = do
       diagnosticLength <- evaluate (length (show errors))
       assert (label <> ": empty diagnostics") (diagnosticLength > 0)
+
+rejectExponent :: String -> Result a -> IO ()
+rejectExponent label = either report (const (fail (label <> " accepted")))
+  where
+    report errors =
+      assert (label <> ": wrong diagnostic") $
+        all (\e -> errorCategory e == TypeMismatch && errorConstraint e == "json.number.exponent") errors
 
 textValue :: Gen T.Text
 textValue = T.pack <$> listOf1 (elements ['a', 'Z', '0', 'é', '中', '😀', '\x301', '\n', '"', '\\'])
@@ -109,6 +117,30 @@ main = do
   reject "wrong text" (fromValue (Bool False) :: Result T.Text)
   reject "wrong integer" (fromValue (String "1") :: Result Integer)
   reject "fractional integer" (decode "1.5" :: Result Integer)
+  -- Aeson's token lexer narrows JSON exponents to Int. Check the original
+  -- bytes before that conversion can wrap, including opaque application data.
+  let tooHigh = show (toInteger (maxBound :: Int) + 1)
+      tooLow = show (toInteger (minBound :: Int) - 1)
+      overflow = "1e18446744073709551616"
+  forM_ ["1e" <> tooHigh, "1E+" <> tooHigh, "-1e" <> tooLow, "1.1e" <> show (minBound :: Int), overflow] $ \literal -> do
+    let raw = C.pack literal
+    rejectExponent "overflowing metadata exponent" (decode ("{\"metadata\":{\"nested\":[" <> raw <> "]}}") :: Result WebhookMessage)
+    rejectExponent "overflowing extension exponent" (decode ("{\"type\":\"divider\",\"extra\":" <> raw <> "}") :: Result DividerBlock)
+    rejectExponent "overflowing coerced bound" (decode ("{\"type\":\"number_input\",\"is_decimal_allowed\":true,\"min_value\":" <> raw <> "}") :: Result NumberInputElement)
+    rejectExponent "overflow split across lazy chunks" (decode (L.fromChunks (map (L.toStrict . L.singleton) (L.unpack raw))) :: Result Integer)
+  forM_ [show (maxBound :: Int), show (toInteger (minBound :: Int) + 1), "+00001000", "-1000"] $ \power -> do
+    let raw = "{\"n\":1e" <> C.pack power <> "}"
+    parsed <- accept (decode raw :: Result (Map.Map T.Text Value))
+    assert "representable exponent preserved" (decode (encode parsed) == Right parsed)
+  let quoted = "escaped \\\" quote and \\ backslash; " <> T.pack overflow <> " \\\n"
+  assert "number-looking string remains text" ((decode (encode quoted) :: Result T.Text) == Right quoted)
+  forM_ ["1e+", "1e-", "1e1.5", "\"unterminated", "\"trailing\\"] $ \raw ->
+    reject "malformed JSON still rejected" (decode raw :: Result T.Text)
+  assert "huge decimal-string bound remains supported" $
+    either
+      (const False)
+      (const True)
+      (decode "{\"type\":\"number_input\",\"is_decimal_allowed\":true,\"min_value\":\"1e18446744073709551616\"}" :: Result NumberInputElement)
   reject "wrong list" (fromValue (Bool True) :: Result [Integer])
   reject "wrong map" (fromValue (Bool False) :: Result (Map.Map T.Text Value))
   reject "wrong model shape" (fromValue (Bool False) :: Result PlainText)
