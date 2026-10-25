@@ -137,12 +137,14 @@ def prepare(root, directory):
     members = archive_members(archive.read_bytes(), f"slackblocks-{version}/")
     with tempfile.TemporaryDirectory(prefix="haskell-release-", dir=scratch()) as temp:
         project = Path(temp)
+        for name, content in members.items():
+            file = project / name
+            file.parent.mkdir(parents=True, exist_ok=True)
+            file.write_bytes(content)
         policy = json.loads(
             (root / "haskell/dependencies/locked-9.6.7.json").read_text()
         )
-        config = (
-            f"packages: {archive}\ntests: True\nindex-state: {policy['index_state']}\n"
-        )
+        config = f"packages: ./slackblocks-{version}\ntests: True\nindex-state: {policy['index_state']}\n"
         config += (
             "constraints: "
             + ", ".join(f"any.{k} =={v}" for k, v in policy["constraints"].items())
