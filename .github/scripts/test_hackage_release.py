@@ -4,6 +4,7 @@ import importlib.util
 import io
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -319,6 +320,60 @@ class HackageTests(unittest.TestCase):
             "needs: [validate, php-readiness, hex-readiness, hackage-readiness]",
             coordinator,
         )
+
+    def test_required_release_check_is_present_on_unrelated_prs(self):
+        source = (ROOT / ".github/workflows/publish-hackage.yml").read_text()
+        self.assertIn("  pull_request:\n  push:", source)
+        build = source.split("  build:\n", 1)[1].split("  publish:\n", 1)[0]
+        self.assertNotIn("    if:", build.split("    steps:", 1)[0])
+        steps = re.split(r"^      - ", build, flags=re.M)[1:]
+        self.assertIn("id: scope", steps[0])
+        for step in steps[1:]:
+            self.assertTrue(
+                "if: steps.scope.outputs.relevant == 'true'" in step
+                or "if: github.event_name != 'pull_request'" in step,
+                step,
+            )
+
+    def test_release_scope_runs_on_shared_inputs_renames_and_lookup_failure(self):
+        source = (ROOT / ".github/workflows/publish-hackage.yml").read_text()
+        script = source.split("        run: |\n", 1)[1].split("      - uses:", 1)[0]
+        script = "\n".join(line[10:] for line in script.splitlines())
+        gh = self.root / "gh"
+        gh.write_text('#!/bin/sh\nprintf "%s" "$CHANGED_FILES"\nexit "$GH_EXIT"\n')
+        gh.chmod(0o755)
+        for event, files, code, expected in [
+            ("pull_request", "docs/docs/index.mdx", 0, "false"),
+            ("pull_request", "haskell/slackblocks.cabal", 0, "true"),
+            ("pull_request", "spec/model.json", 0, "true"),
+            ("pull_request", ".github/scripts/verify-release.py", 0, "true"),
+            ("pull_request", ".github/workflows/publish-hackage.yml", 0, "true"),
+            ("pull_request", ".github/workflows/coordinated-release.yml", 0, "true"),
+            ("pull_request", "retired/Model.hs\nhaskell/src/Model.hs", 0, "true"),
+            ("pull_request", "", 0, "true"),
+            ("pull_request", "docs/docs/index.mdx", 1, "true"),
+            ("push", "", 1, "true"),
+            ("workflow_dispatch", "", 1, "true"),
+        ]:
+            with self.subTest(event=event, files=files, code=code):
+                output = self.root / "output"
+                output.write_text("")
+                env = dict(
+                    os.environ,
+                    PATH=str(self.root) + os.pathsep + os.environ["PATH"],
+                    EVENT=event,
+                    REPOSITORY="owner/repo",
+                    PR="1",
+                    GITHUB_OUTPUT=str(output),
+                    CHANGED_FILES=files,
+                    GH_EXIT=str(code),
+                )
+                subprocess.run(
+                    ["bash", "-e", "-o", "pipefail", "-c", script],
+                    env=env,
+                    check=True,
+                )
+                self.assertEqual(output.read_text(), f"relevant={expected}\n")
 
 
 class HaskellGitHubRecoveryTests(unittest.TestCase):

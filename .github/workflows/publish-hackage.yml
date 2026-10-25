@@ -2,7 +2,6 @@ name: Publish Haskell Package
 
 on:
   pull_request:
-    paths: ["haskell/**", ".github/scripts/**", ".github/workflows/publish-hackage.yml", ".github/workflows/coordinated-release.yml"]
   push:
     tags: ["haskell/v*"]
   workflow_dispatch:
@@ -20,25 +19,51 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
+      # Keep the required check present on every PR. A failed/empty lookup runs
+      # the full build, and old rename paths retain ownership of moved inputs.
+      - name: Detect relevant Hackage release changes
+        id: scope
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          REPOSITORY: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if [ "$EVENT" != pull_request ]; then
+            echo 'relevant=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/$REPOSITORY/pulls/$PR/files" --paginate -q '.[] | .filename, (.previous_filename // empty)') || files=""
+          if [ -z "$files" ] || grep -qE '^(haskell/|spec/|\.github/scripts/|\.github/workflows/(publish-hackage|coordinated-release)\.yml$)' <<<"$files"; then
+            echo 'relevant=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'relevant=false' >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: steps.scope.outputs.relevant == 'true'
         with:
           fetch-depth: 0
       - name: Verify ten-language activation, tags and commit
         if: github.event_name != 'pull_request'
         run: python3 .github/scripts/verify-release.py publisher --language haskell
       - uses: haskell-actions/setup@7fd2bb5ca789761088fbc831406b2910e47e56f1 # v2
+        if: steps.scope.outputs.relevant == 'true'
         with:
           ghc-version: "9.6.7"
           cabal-version: "3.16.1.0"
       - name: Resolve package index
+        if: steps.scope.outputs.relevant == 'true'
         run: cabal update
       - name: Test release guards without credentials
+        if: steps.scope.outputs.relevant == 'true'
         run: python3 -m unittest discover -s .github/scripts -p 'test_*.py' -v
       - name: Build tested source and native Haddock artifacts, then verify reproduction
+        if: steps.scope.outputs.relevant == 'true'
         run: |
           python3 haskell/bin/release.py prepare
           python3 haskell/bin/release.py verify
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: steps.scope.outputs.relevant == 'true'
         with:
           name: haskell-release
           path: haskell/dist-release/*
