@@ -53,6 +53,16 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         if: needs.changes.outputs.relevant == 'true'
+      - name: Align macOS SDK and linker
+        if: needs.changes.outputs.relevant == 'true' && runner.os == 'macOS'
+        run: |
+          # GHC's system libraries use the Command Line Tools SDK. Select its
+          # matching linker (runner-images#14940), keeping both compiler lanes.
+          sudo xcode-select --switch /Library/Developer/CommandLineTools
+          echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "$GITHUB_ENV"
+          xcode-select --print-path
+          xcrun clang --version
+          xcrun --find ld
       - name: Install Haskell
         if: needs.changes.outputs.relevant == 'true'
         uses: haskell-actions/setup@7fd2bb5ca789761088fbc831406b2910e47e56f1 # v2
