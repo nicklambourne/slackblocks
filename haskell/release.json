@@ -1,0 +1,8 @@
+{
+  "enabled": false,
+  "auth_mode": "api-token",
+  "environment": "hackage",
+  "package": "slackblocks",
+  "owner": null,
+  "first_publication": true
+}
