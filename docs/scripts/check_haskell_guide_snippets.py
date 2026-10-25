@@ -4,10 +4,10 @@
 import decimal
 import json
 import os
-from pathlib import Path
 import re
 import subprocess
 import tempfile
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 FENCE = re.compile(r'^```haskell(?: title="([^"]+)")?\n(.*?)\n```', re.M | re.S)
@@ -30,10 +30,7 @@ def main():
             title, code = match.groups()
             label = f"{path.relative_to(ROOT)}:{index + 1}"
             if title:
-                if (
-                    title != "Send.hs (integration-tested)"
-                    or path.name != "sending_messages.mdx"
-                ):
+                if title != "Send.hs (integration-tested)" or path.name != "sending_messages.mdx":
                     raise ValueError(f"Unrecognized externally tested snippet: {label}")
                 assert (
                     code
@@ -55,9 +52,7 @@ def main():
                     expected = json.loads(wire[1], parse_float=decimal.Decimal)
             cases.append((label, code, expected))
     inventory = json.loads((ROOT / "docs/examples/haskell/coverage.json").read_text())
-    assert counts == inventory, (
-        f"Review the literal Haskell snippet inventory: {counts}"
-    )
+    assert counts == inventory, f"Review the literal Haskell snippet inventory: {counts}"
     assert sum(expected is not None for _, _, expected in cases) == 21, (
         "Every documented block requires a native example"
     )
@@ -70,9 +65,9 @@ def main():
     )
     scratch = os.environ.get("RUNNER_TEMP")
     if Path("/Volumes/Repos").is_dir():
-        assert all(
-            Path("/Volumes", name).is_mount() for name in ("Repos", "Cache", "Scratch")
-        ), "External volumes required"
+        assert all(Path("/Volumes", name).is_mount() for name in ("Repos", "Cache", "Scratch")), (
+            "External volumes required"
+        )
         scratch = "/Volumes/Scratch"
     build = os.environ.get("SLACKBLOCKS_HASKELL_BUILD", "dist-docs")
     cabal = ["cabal", f"--builddir={build}"]
@@ -130,14 +125,10 @@ def main():
             check=True,
         )
         for index, (label, _, expected) in enumerate(cases):
-            output = subprocess.check_output(
-                [str(executable), str(index)], text=True, timeout=30
-            )
+            output = subprocess.check_output([str(executable), str(index)], text=True, timeout=30)
             actual = json.loads(output, parse_float=decimal.Decimal)
             if expected is not None:
-                assert actual == expected, (
-                    f"{label} differs from its documented JSON: {actual!r}"
-                )
+                assert actual == expected, f"{label} differs from its documented JSON: {actual!r}"
     print(
         f"{len(cases)} literal Haskell programs executed; 21 block examples and section_hello match independent JSON."
     )

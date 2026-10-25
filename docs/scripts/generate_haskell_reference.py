@@ -4,10 +4,10 @@
 import html
 import json
 import os
-from pathlib import Path
 import re
 import shutil
 import subprocess
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = ROOT / "haskell"
@@ -20,9 +20,7 @@ DOMAINS = {
     "core": "JSON and public types",
     "errors": "Validation errors",
 }
-SYMBOL = re.compile(
-    r"^(?:type )?(Slackblocks(?:\.[A-Za-z][A-Za-z0-9_\']*)+)\s*::", re.M
-)
+SYMBOL = re.compile(r"^(?:type )?(Slackblocks(?:\.[A-Za-z][A-Za-z0-9_\']*)+)\s*::", re.M)
 
 
 def anchor(name):
@@ -53,16 +51,12 @@ def prose(doc, links):
     if tag == "DocIdentifier":
         name = qualified(doc["name"])
         return (
-            f"[`{name.rsplit('.', 1)[-1]}`]({links[name]})"
-            if name in links
-            else "`" + name + "`"
+            f"[`{name.rsplit('.', 1)[-1]}`]({links[name]})" if name in links else "`" + name + "`"
         )
     if tag == "DocHyperlink":
         link = doc["hyperlink"]
         label = (
-            prose(link["hyperlinkLabel"], links)
-            if link["hyperlinkLabel"]
-            else link["hyperlinkUrl"]
+            prose(link["hyperlinkLabel"], links) if link["hyperlinkLabel"] else link["hyperlinkUrl"]
         )
         return f"[{label}]({link['hyperlinkUrl']})"
     raise ValueError(f"Unhandled native Haddock document: {doc!r}")
@@ -78,9 +72,7 @@ def main():
     )
     # Cabal list-bin does not name a library's Haddock interface. Restrict discovery
     # to this build tree, package version and actual compiler's output.
-    version = re.search(
-        r"^version:\s*(\S+)", (PACKAGE / "slackblocks.cabal").read_text(), re.M
-    )[1]
+    version = re.search(r"^version:\s*(\S+)", (PACKAGE / "slackblocks.cabal").read_text(), re.M)[1]
     compiler = subprocess.check_output(["ghc", "--numeric-version"], text=True).strip()
     tree = Path(build) if Path(build).is_absolute() else PACKAGE / build
     interfaces = list(
@@ -186,9 +178,7 @@ def main():
                 return model_domains[model]
         return "core"
 
-    links = {
-        name: f"/reference/haskell/{domain(name)}#{anchor(name)}" for name in signatures
-    }
+    links = {name: f"/reference/haskell/{domain(name)}#{anchor(name)}" for name in signatures}
     entries = [
         {
             "name": name,
@@ -216,9 +206,7 @@ def main():
         (directory / f"{slug}.mdx").write_text(text, encoding="utf-8")
     (directory / "index.mdx").write_text(
         "---\nsidebar_position: 0\n---\n\n# Haskell API reference\n\nIntroduced in the upcoming coordinated 3.1.0 release; Hackage publication is not active yet. See [installation](/usage/installation) and the [compiler support table](/usage/compatibility). These pages cover every compiled public type, constructor, field, role conversion and helper.\n\n"
-        + "\n".join(
-            f"- [{title}](/reference/haskell/{slug})" for slug, title in DOMAINS.items()
-        )
+        + "\n".join(f"- [{title}](/reference/haskell/{slug})" for slug, title in DOMAINS.items())
         + "\n",
         encoding="utf-8",
     )
