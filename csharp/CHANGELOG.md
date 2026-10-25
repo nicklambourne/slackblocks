@@ -3,6 +3,10 @@
 All notable changes to the C# package are documented here. C# versions move in
 lockstep with the Python, TypeScript, Go, and Java packages.
 
+## [3.1.0] — Unreleased
+
+- Coordinate the upcoming release with the new Haskell implementation and ten-language documentation. Existing runtime support remains unchanged.
+
 ## [3.0.0] — 2026-10-24
 
 - Add native button `agent_prompt` and `agent_prompt_display` fields, Unicode prompt-length validation and the display/prompt dependency (spec 1.4.0). Document interaction acknowledgement regardless of Slackbot AI availability. Existing button calls remain compatible.

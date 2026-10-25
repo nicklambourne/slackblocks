@@ -136,3 +136,5 @@ docs/docs/reference/php/
 !/elixir/integrations/lib/**
 
 /docs/docs/reference/elixir/
+
+/docs/docs/reference/haskell/

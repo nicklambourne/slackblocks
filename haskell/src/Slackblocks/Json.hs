@@ -17,9 +17,12 @@ import Data.Vector qualified as V
 import Slackblocks.Internal.JsonSyntax (parseJSONBytes)
 import Slackblocks.Validation
 
+-- | Validate an Aeson value as a supported modeled type. It is not an arbitrary Slack event parser.
 class FromSlackJSON a where
+  -- | Check nested fields and receiving context; return structured validation errors.
   fromSlackJSON :: Value -> Result a
 
+-- | Validate an already parsed value. Use decode to retain duplicate-key and UTF-8 checks on raw bytes.
 fromValue :: (FromSlackJSON a) => Value -> Result a
 fromValue = fromSlackJSON
 
@@ -28,6 +31,7 @@ fromValue = fromSlackJSON
 decimalText :: Scientific -> Text
 decimalText = T.pack . formatScientific Generic Nothing
 
+-- | Decode UTF-8 JSON bytes, rejecting duplicate keys, trailing input and invalid modeled values.
 decode :: (FromSlackJSON a) => B.ByteString -> Result a
 decode input = parseJSONBytes input >>= fromSlackJSON
 

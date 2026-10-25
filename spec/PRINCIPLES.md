@@ -4,7 +4,7 @@
 2. Serialized output must be semantically identical for every shared valid fixture.
 3. Validation outcomes must agree on rejection and error category; concrete error types and messages are language-specific.
 4. Feature gaps must be explicit in a checked-in conformance skip list.
-5. Every implementation must declare the spec version it conforms to: Python exports `slackblocks.SPEC_VERSION`, TypeScript `specVersion`, Go `slackblocks.SpecVersion`, Java `Slackblocks.SPEC_VERSION`, C# `SlackblocksInfo.SpecVersion`, Ruby `Slackblocks::SPEC_VERSION`, Rust `slackblocks::SPEC_VERSION`, PHP `Slackblocks\Version::SPEC`, and Elixir `Slackblocks.spec_version/0`. Every conformance harness asserts the declared version matches `manifest.json`.
+5. Every implementation must declare the spec version it conforms to: Python exports `slackblocks.SPEC_VERSION`, TypeScript `specVersion`, Go `slackblocks.SpecVersion`, Java `Slackblocks.SPEC_VERSION`, C# `SlackblocksInfo.SpecVersion`, Ruby `Slackblocks::SPEC_VERSION`, Rust `slackblocks::SPEC_VERSION`, PHP `Slackblocks\Version::SPEC`, Elixir `Slackblocks.spec_version/0`, and Haskell `Slackblocks.specVersion`. Every conformance harness asserts the declared version matches `manifest.json`.
 
 ## Documented policies and intentional divergences
 
@@ -18,3 +18,17 @@
   and `TryFrom<Value>` validate runtime inputs. `clone().into_builder()` supports
   editing, and `clear_*()` omits defaults explicitly. Role/vocabulary enums are
   non-exhaustive. The first Rust version is the coordinated, unreleased 2.6.0.
+
+- **Haskell uses checked immutable values.** Factories return editable field
+  records; `build…` returns `Either (NonEmpty ValidationError)` and checked values
+  have hidden constructors. Field records cannot encode. Explicit conversions and
+  matchers preserve closed parent roles. A pending `PlanTask` cannot be a `Block`.
+  `inspect…` followed by rebuilding validates edits without mutating the original.
+  Factories use shared defaults; parsing does not invent missing defaults. Block
+  IDs remain absent unless supplied. Optional null decodes as absence; explicit
+  false, zero and permitted empty values remain. `Integer` and `Scientific`
+  preserve exact numbers; textual number-input bounds use `decimalText` without
+  binary rounding. `decode` rejects duplicate keys and invalid UTF-8 before model
+  validation. Metadata remains opaque. Haskell omits the legacy attachment
+  `Field` alias and uses typed section fields. Helpers are pure; HTTP is separate.
+  The first package version is coordinated 3.1.0, currently unreleased.

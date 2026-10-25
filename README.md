@@ -13,6 +13,7 @@
 [![crates.io version](https://img.shields.io/crates/v/slackblocks?style=flat&labelColor=555&label=crates.io&color=CE422B&logo=rust&logoColor=white)](https://crates.io/crates/slackblocks)
 [![Packagist version](https://img.shields.io/packagist/v/nicklambourne/slackblocks?style=flat&labelColor=555&label=Packagist&color=777BB4&logo=php&logoColor=white)](https://packagist.org/packages/nicklambourne/slackblocks)
 [![Hex version](https://img.shields.io/hexpm/v/slackblocks?style=flat&labelColor=555&label=Hex&color=8847B9&logo=elixir&logoColor=white)](https://hex.pm/packages/slackblocks)
+[![Haskell package preparation](https://img.shields.io/badge/Hackage-pending-5E5086?style=flat&labelColor=555&logo=haskell&logoColor=white)](haskell/README.md)
 
 [![Python CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/unit-tests.yml?style=flat&labelColor=555&branch=master&event=push&label=Python+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml?query=branch%3Amaster)
 [![TypeScript CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/typescript.yml?style=flat&labelColor=555&branch=master&event=push&label=TypeScript+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml?query=branch%3Amaster)
@@ -23,8 +24,9 @@
 [![Rust CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/rust.yml?style=flat&labelColor=555&branch=master&event=push&label=Rust+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/rust.yml?query=branch%3Amaster)
 [![PHP CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/php.yml?style=flat&labelColor=555&branch=master&event=push&label=PHP+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/php.yml?query=branch%3Amaster)
 [![Elixir CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/elixir.yml?style=flat&labelColor=555&branch=master&event=push&label=Elixir+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/elixir.yml?query=branch%3Amaster)
+[![Haskell CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/haskell.yml?style=flat&labelColor=555&branch=master&event=push&label=Haskell+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/haskell.yml?query=branch%3Amaster)
 
-> **Build Slack messages in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, or Elixir — without writing JSON by hand.**
+> **Build Slack messages in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, Elixir, or Haskell — without writing JSON by hand.**
 
 Anyone who has built a non-trivial Slack message knows the drill: a wall of nested
 [Block Kit](https://docs.slack.dev/block-kit/) JSON, five levels deep, where a typo'd
@@ -154,6 +156,26 @@ Add the [Hex package](https://hex.pm/packages/slackblocks) to your dependencies 
 Run `mix deps.get`. If Jason was compiled before Decimal was installed,
 run `mix deps.compile jason --force` in each build environment and rebuild the application/release.
 See the [Elixir package guide](elixir/README.md).
+
+</details>
+
+<details>
+<summary>Haskell (GHC 9.6.7+, tested through 9.14)</summary>
+
+Haskell is prepared for coordinated 3.1.0; Hackage publication is not active.
+Use a reviewed checkout to build a source archive:
+
+```sh
+cd haskell
+cabal build lib:slackblocks
+cabal sdist --output-directory=dist
+```
+
+List that tarball in your application's `cabal.project` and add
+`slackblocks >= 3.1 && < 3.2` to `build-depends`. See the
+[package guide](haskell/README.md) and [installation and compiler policy](https://nicklambourne.github.io/slackblocks/usage/installation).
+The pending badge is intentional; the shared download total excludes Hackage
+until publication and the dashboard collector are verified.
 
 </details>
 
@@ -439,6 +461,43 @@ and [Erlang example](elixir/erlang/src/slackblocks_erlang.erl).
 
 </details>
 
+<details>
+<summary>Haskell</summary>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import Slackblocks
+
+example = do
+  label <- buildPlainText (plainText "Open")
+  action <-
+    buildButtonElement
+      ((buttonElement label) {buttonElementActionId = Just "open"})
+  body <- buildMarkdownText (markdownText "*Hello*")
+  section <-
+    buildSectionBlock
+      ( sectionBlock
+          { sectionBlockText = Just (markdownTextAsText body),
+            sectionBlockAccessory = Just (buttonElementAsElement action)
+          }
+      )
+  buildMessagePayload
+    ( (messagePayload "C123")
+        { messagePayloadBlocks = Just [sectionBlockAsBlock section]
+        }
+    )
+
+-- Handle Left errors or send encode payload on Right payload.
+```
+
+Handle the structured `Left` errors, or encode the checked payload on `Right`.
+See the [native API](https://nicklambourne.github.io/slackblocks/reference/haskell),
+[HTTP integration](haskell/integrations/README.md) and [compiler table](haskell/README.md).
+
+</details>
+
 <p align="center">
   <img src="https://github.com/nicklambourne/slackblocks/raw/master/docs/static/img/usage/build_notification.png" alt="The build notification rendered in Slack" width="600px" />
 </p>
@@ -448,7 +507,7 @@ and [Erlang example](elixir/erlang/src/slackblocks_erlang.erl).
 - **Full docs:** <https://nicklambourne.github.io/slackblocks/>
 - [Installation](https://nicklambourne.github.io/slackblocks/usage/installation)
 - [Using Blocks](https://nicklambourne.github.io/slackblocks/usage/using_blocks) — every
-  block type with code in all nine languages, the JSON it produces, and screenshots.
+  block type with code in all ten languages, the JSON it produces, and screenshots.
 - [Sending Messages](https://nicklambourne.github.io/slackblocks/usage/sending_messages)
 - [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end
   recipes for build notifications, approval requests, modals, and more.
@@ -461,10 +520,11 @@ and [Erlang example](elixir/erlang/src/slackblocks_erlang.erl).
   [Ruby](https://nicklambourne.github.io/slackblocks/reference/ruby), and
   [Rust](https://nicklambourne.github.io/slackblocks/reference/rust),
   [PHP](https://nicklambourne.github.io/slackblocks/reference/php), and
-  [Elixir](https://nicklambourne.github.io/slackblocks/reference/elixir).
+  [Elixir](https://nicklambourne.github.io/slackblocks/reference/elixir), and
+  [Haskell](https://nicklambourne.github.io/slackblocks/reference/haskell).
 - [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/usage/migration) ·
   [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/usage/troubleshooting)
-- Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md) · [Go](go/CHANGELOG.md) · [Java](java/CHANGELOG.md) · [C#](csharp/CHANGELOG.md) · [Ruby](ruby/CHANGELOG.md) · [Rust](rust/CHANGELOG.md) · [PHP](php/CHANGELOG.md) · [Elixir](elixir/CHANGELOG.md)
+- Changelogs: [Python](python/CHANGELOG.md) · [TypeScript](typescript/CHANGELOG.md) · [Go](go/CHANGELOG.md) · [Java](java/CHANGELOG.md) · [C#](csharp/CHANGELOG.md) · [Ruby](ruby/CHANGELOG.md) · [Rust](rust/CHANGELOG.md) · [PHP](php/CHANGELOG.md) · [Elixir](elixir/CHANGELOG.md) · [Haskell](haskell/CHANGELOG.md)
 - [Roadmap](ROADMAP.md) — including the TypeScript legacy API removal planned for v3.0.
 
 ## Repository layout
@@ -478,6 +538,7 @@ and [Erlang example](elixir/erlang/src/slackblocks_erlang.erl).
 - [`rust/`](rust/) — the Rust crate (`slackblocks` on crates.io from 2.6.0).
 - [`php/`](php/) — native PHP values and Composer package (`nicklambourne/slackblocks` on Packagist from 2.7.0).
 - [`elixir/`](elixir/) — native Elixir values and Erlang integration (`slackblocks` on Hex from 2.8.0).
+- [`haskell/`](haskell/) — checked immutable Haskell values, native JSON and separate HTTP integration (3.1.0 preparation).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
   and capability coverage that all nine implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.
@@ -544,3 +605,5 @@ Adding a new language? Follow the in-repo
 design, parity, testing, documentation, packaging and release integration.
 
 Bug reports and feature requests: <https://github.com/nicklambourne/slackblocks/issues>.
+
+Haskell contributors run `python bin/check` from `haskell/` with the pinned GHC, Cabal, Ormolu and HLint tools described in its README. This includes native suites, compiled API coverage, source archives and fresh consumers.

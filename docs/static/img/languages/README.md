@@ -3,6 +3,12 @@
 These official assets are used to identify the documentation language. Their
 inclusion does not imply endorsement by either language project.
 
+## Haskell — `haskell.svg`
+
+- Source: [Haskell's official website artwork](https://www.haskell.org/img/haskell-logo.svg).
+- The Thompson–Wheeler Haskell logo identifies the language; see the [Haskell logo history](https://wiki.haskell.org/ThompsonWheelerLogo).
+- Changes: omit the separately grouped wordmark and fit the viewBox to the official symbol paths. The README badge uses the Haskell purple `5E5086`.
+
 ## Ruby — `ruby.svg`
 
 - Source: [Ruby's official website](https://www.ruby-lang.org/images/header-ruby-logo.svg).

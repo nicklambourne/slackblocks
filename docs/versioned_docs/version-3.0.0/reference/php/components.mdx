@@ -1,0 +1,151 @@
+---
+sidebar_position: 5
+toc_max_heading_level: 3
+---
+
+# Components and Utilities
+
+Generated from actual PHP reflection and PHPDoc. Names live in the `Slackblocks` namespace. Use named arguments and `declare(strict_types=1)`; values validate before construction returns.
+
+## Accordion
+
+Expands validated collapsible containers into ordinary Slack blocks.
+
+### create
+
+Expands a nonempty sequence of collapsible sections in display order.
+
+```php
+public static function create(array $sections): array
+```
+
+| Parameter | Description |
+| --- | --- |
+| `sections` | list&lt;ContainerBlock&gt; — Ordered, nonempty collapsible sections. |
+
+**Returns:** list&lt;ContainerBlock&gt; Blocks to spread into a modal or Home tab.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A section is missing, wrongly typed or not collapsible. |
+
+## AccordionSection
+
+Creates one validated collapsible container for an accordion.
+
+### create
+
+Creates a collapsible container with the requested initial expansion state.
+
+```php
+public static function create(PlainText|string $title, array $blocks, PlainText|string|null $subtitle = NULL, ?ImageElement $icon = NULL, bool $expanded = false, ContainerWidth $width = ContainerWidth::Standard, ?string $blockId = NULL): ContainerBlock
+```
+
+| Parameter | Description |
+| --- | --- |
+| `title` | PlainText\|string — Section heading. |
+| `blocks` | list&lt;Block&gt; — Ordered child blocks. |
+| `subtitle` | PlainText\|string\|null — Secondary heading. |
+| `icon` | ImageElement\|null — Optional image beside the heading. |
+| `expanded` | bool — Whether the section initially displays its child blocks. |
+| `width` | ContainerWidth — Layout width, standard by default. |
+| `blockId` | string\|null — Stable identifier returned in interaction payloads. |
+
+**Returns:** ContainerBlock Validated section for a modal or Home tab.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | A heading, child block or container option is invalid. |
+
+**Related types:** [`ContainerBlock`](/reference/php/blocks#containerblock), [`ContainerWidth`](/reference/php/core#containerwidth), [`ImageElement`](/reference/php/elements#imageelement), [`PlainText`](/reference/php/objects#plaintext)
+
+## Builder
+
+Slack Block Kit Builder previews, without making network requests.
+
+### url
+
+Blocks are wrapped in a blocks object; payloads and explicit JsonObject input are used as-is.
+
+```php
+public static function url(Block|MessagePayload|MessageResponse|WebhookMessage|ModalView|HomeTabView|JsonObject|array $payload, ?string $teamId = NULL): string
+```
+
+| Parameter | Description |
+| --- | --- |
+| `payload` | Block\|MessagePayload\|MessageResponse\|WebhookMessage\|ModalView\|HomeTabView\|JsonObject\|list&lt;Block&gt; — Preview content. |
+| `teamId` | string\|null — Optional workspace ID, encoded as one URL path segment. |
+
+**Returns:** string URL with the Slack JSON encoded in its fragment.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | Blocks, serialization context or the workspace ID are invalid. |
+
+**Related types:** [`Block`](/reference/php/core#block), [`HomeTabView`](/reference/php/payloads#hometabview), [`JsonObject`](/reference/php/core#jsonobject), [`MessagePayload`](/reference/php/payloads#messagepayload), [`MessageResponse`](/reference/php/payloads#messageresponse), [`ModalView`](/reference/php/payloads#modalview), [`WebhookMessage`](/reference/php/payloads#webhookmessage)
+
+## Color
+
+Attachment color conveniences. Pass these strings to Attachment's color argument.
+
+| Constant | Slack value | Meaning |
+| --- | --- | --- |
+| `GOOD` | `'good'` | Slack's positive semantic color. |
+| `WARNING` | `'warning'` | Slack's warning semantic color. |
+| `DANGER` | `'danger'` | Slack's negative semantic color. |
+| `RED` | `'#ff0000'` | Red (#ff0000). |
+| `BLUE` | `'#0000ff'` | Blue (#0000ff). |
+| `YELLOW` | `'#ffff00'` | Yellow (#ffff00). |
+| `GREEN` | `'#00ff00'` | Green (#00ff00). |
+| `ORANGE` | `'#ff8800'` | Orange (#ff8800). |
+| `PURPLE` | `'#8800ff'` | Purple (#8800ff). |
+| `BLACK` | `'#000000'` | Black (#000000). |
+
+### hex
+
+Validates six hexadecimal digits and adds one leading # if absent.
+
+```php
+public static function hex(string $value): string
+```
+
+| Parameter | Description |
+| --- | --- |
+| `value` | string — Six hexadecimal digits with an optional leading #. |
+
+**Returns:** string Color with one leading #, preserving letter case.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | The value is not a six-digit hexadecimal color. |
+
+## Paginator
+
+Expands one page into blocks, optional page text and navigation buttons.
+
+### create
+
+Selects one page and adds navigation only when multiple pages exist.
+
+```php
+public static function create(string $actionIdPrefix, array $blocks, int $page = 1, int $pageSize = 5, PlainText|string $previousText = 'Previous', PlainText|string $nextText = 'Next', bool $showPageIndicator = true, ?string $blockId = NULL): array
+```
+
+| Parameter | Description |
+| --- | --- |
+| `actionIdPrefix` | string — Nonempty prefix for .previous and .next action IDs. |
+| `blocks` | list&lt;Block&gt; — Full nonempty sequence of content blocks. |
+| `page` | int — One-based page number. |
+| `pageSize` | int — Positive number of content blocks per page; controls are additional. |
+| `previousText` | PlainText\|string — Previous-button label. |
+| `nextText` | PlainText\|string — Next-button label. |
+| `showPageIndicator` | bool — Whether to add a context block showing the current page. |
+| `blockId` | string\|null — Identifier for the navigation actions block. |
+
+**Returns:** list&lt;Block&gt; Spread into a payload to enforce that surface's total block limit.
+
+| Throws | When |
+| --- | --- |
+| [`ValidationError`](/reference/php/errors#validationerror) | Content, page bounds or generated navigation controls are invalid. |
+
+**Related types:** [`PlainText`](/reference/php/objects#plaintext)

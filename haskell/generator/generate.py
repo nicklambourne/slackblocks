@@ -94,7 +94,7 @@ def generate(model):
         n = name(e['name'])
         exports.append(n + '(..)')
         cs = [(n + camel(c['wire']), c['wire']) for c in e['constants']]
-        lines += ['-- | ' + e['description'], 'data ' + n + ' = ' + ' | '.join(c for c, _ in cs) + ' deriving (Eq, Ord, Show, Enum, Bounded)', f'instance ToJSON {n} where']
+        lines += ['-- | ' + e['description'], 'data ' + n + '\n  = ' + '\n  | '.join(c + ' -- ^ Slack wire value: @' + w + '@.' for c, w in cs) + '\n  deriving (Eq, Ord, Show, Enum, Bounded)', f'instance ToJSON {n} where']
         lines += [f'  toJSON {c} = String {string(w)}' for c, w in cs]
         lines += [f'instance FromSlackJSON {n} where', '  fromSlackJSON value = case value of']
         lines += [f'    String {string(w)} -> Right {c}' for c, w in cs]
@@ -105,19 +105,19 @@ def generate(model):
         lines += ['-- | ' + t['description'], '--', '-- <' + t['docUrl'] + '>']
         lines += ['-- ' + r for r in t['rules']]
         lines += [f'newtype {n} = Checked{n} {n}Fields deriving (Eq, Show)', f'-- | Editable construction input. Call \'build{n}\' before encoding.', f'data {n}Fields = {n}Fields']
-        fielddecls = [(fieldname(t,f), native(f) if f.get('required') else 'Maybe ('+native(f)+')',f['description']) for f in fs]
+        fielddecls = [(fieldname(t,f), native(f) if f.get('required') else 'Maybe ('+native(f)+')',f['description'] + (' Required.' if f.get('required') else ' Optional; Nothing omits the field. Factory default: @' + default(t, f, enums) + '@.') + (' Shared limit: @' + f['limits'] + '@.' if f.get('limits') else '')) for f in fs]
         fielddecls.append((factory+'Extensions', 'Map Text Value', 'Unmodeled extension fields. Reserved and modeled keys are rejected.'))
         for i,(fn,typ,desc) in enumerate(fielddecls):
             lines += [('  { ' if i==0 else '  , ') + fn + ' :: ' + typ + ' -- ^ ' + desc]
-        lines += ['  } deriving (Eq, Show)', f'{factory} :: ' + ' -> '.join([native(f) for f in required]+[n+'Fields'])]
+        lines += ['  } deriving (Eq, Show)', f'-- | Start editable fields for {n}; required arguments follow the signature.', '-- Optional fields start absent except the explicit shared defaults; no block ID is invented.', f'-- Finish with \'build{n}\' to validate before JSON encoding.', f'{factory} :: ' + ' -> '.join([native(f) for f in required]+[n+'Fields'])]
         args = ['arg'+str(i) for i in range(len(required))]
         values = []
         for f in fs:
             values.append(args[required.index(f)] if f.get('required') else default(t,f,enums))
         values.append('Map.empty')
         lines += [factory+' '+ ' '.join(args) + ' = '+n+'Fields '+' '.join('('+v+')' for v in values),
-                  f'inspect{n} :: {n} -> {n}Fields',f'inspect{n} (Checked{n} fields) = fields',
-                  f'build{n} :: {n}Fields -> Result {n}',f'build{n} fields = do',
+                  f'-- | Inspect immutable construction fields. Rebuild edits with \'build{n}\' to revalidate.', f'inspect{n} :: {n} -> {n}Fields',f'inspect{n} (Checked{n} fields) = fields',
+                  f'-- | Validate fields, extensions and receiving context. Return structured errors or a checked {n}.', f'build{n} :: {n}Fields -> Result {n}',f'build{n} fields = do',
                   f'  checkExtensions {hslist(string(f["wire"]) for f in fs)} ({factory}Extensions fields)',
                   f'  validateFields {string(t["name"])} (wire{n} fields)',f'  pure (Checked{n} fields)',
                   f'wire{n} :: {n}Fields -> Value',f'wire{n} fields = object $']
@@ -155,12 +155,12 @@ def generate(model):
     task_fields = next(t['fields'] for t in model['types'] if t['name'] == 'TaskCardBlock')
     lines += ['-- | A task in a plan. Unlike a standalone task card, it may be pending.',
               'newtype PlanTask = CheckedPlanTask TaskCardBlock deriving (Eq, Show)',
-              'buildPlanTask :: TaskCardBlockFields -> Result PlanTask',
+              '-- | Check a task for a plan, where pending is allowed. This value cannot enter the Block role.', 'buildPlanTask :: TaskCardBlockFields -> Result PlanTask',
               'buildPlanTask fields = do',
               '  checkExtensions '+hslist(string(f['wire']) for f in task_fields)+' (taskCardBlockExtensions fields)',
               '  validateFields "TaskCardBlock" (wireTaskCardBlock fields)',
               '  pure (CheckedPlanTask (CheckedTaskCardBlock fields))',
-              'inspectPlanTask :: PlanTask -> TaskCardBlockFields',
+              '-- | Inspect a plan task; call buildPlanTask after editing its fields.', 'inspectPlanTask :: PlanTask -> TaskCardBlockFields',
               'inspectPlanTask (CheckedPlanTask task) = inspectTaskCardBlock task',
               'instance ToJSON PlanTask where toJSON (CheckedPlanTask task) = stripTag (toJSON task)',
               'instance FromSlackJSON PlanTask where fromSlackJSON = decodeTaskCard buildPlanTask . restoreTask',
@@ -178,17 +178,18 @@ def generate(model):
         for t in members:
             tn=name(t['name']); fn=lower(tn)+'As'+role; match='match'+n+tn
             exports += [fn,match]
+            lines += [f'-- | Place a checked {tn} in the {n} role. The receiving parent retains its contextual validation.']
             if role=='Block' and t['name']=='TaskCardBlock':
                 lines += [fn+' :: '+tn+' -> Result '+n,fn+' value = do','  standaloneTask (toJSON value)','  pure ('+n+tn+' value)']
             else: lines += [fn+' :: '+tn+' -> '+n,fn+' = '+n+tn]
-            lines += [match+' :: '+n+' -> Maybe '+tn,match+' ('+n+tn+' value) = Just value']
+            lines += [f'-- | Return the {tn} member when present, otherwise Nothing; no unchecked cast.', match+' :: '+n+' -> Maybe '+tn,match+' ('+n+tn+' value) = Just value']
             if len(members)>1: lines.append(match+' _ = Nothing')
         lines.append('')
-    header = ['-- Generated by haskell/generator/generate.py. Edit the shared contract instead.', 'module Slackblocks.Models', '  ( '+ '\n  , '.join(exports)+'\n  ) where',
+    header = ['-- Generated by haskell/generator/generate.py. Edit the shared contract instead.', '-- | Native checked models, construction fields and closed role conversions.', 'module Slackblocks.Models', '  ( '+ '\n  , '.join(exports)+'\n  ) where',
               'import Data.Aeson (FromJSON(..), ToJSON(..), Value(..), object, (.=))','import Data.Map.Strict (Map)','import qualified Data.Map.Strict as Map',
               'import Data.Scientific (Scientific)','import Data.Text (Text)','import Slackblocks.Validation','import Slackblocks.Json (FromSlackJSON(..))','import Slackblocks.Internal.Wire',
               'import Slackblocks.Internal.Rules (validateFields, standaloneTask)','import Slackblocks.Style',
-              'packageVersion, specVersion :: Text','packageVersion = "3.1.0"', 'specVersion = '+string(json.loads((ROOT/'spec/manifest.json').read_text(encoding="utf-8"))['spec_version']),'']
+              '-- | Coordinated package version, distinct from the shared contract.', 'packageVersion :: Text', '-- | Shared Block Kit contract version implemented by this package.', 'specVersion :: Text','packageVersion = "3.1.0"', 'specVersion = '+string(json.loads((ROOT/'spec/manifest.json').read_text(encoding="utf-8"))['spec_version']),'']
     return '\n'.join(header+lines)+'\n'
 
 

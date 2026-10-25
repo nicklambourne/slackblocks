@@ -1,3 +1,4 @@
+-- | Optional rich-text flags checked by their receiving modeled element.
 module Slackblocks.Style (RichTextStyle (..), richTextStyle) where
 
 import Data.Aeson (FromJSON (..), ToJSON (..), object)
@@ -9,16 +10,24 @@ import Slackblocks.Validation
 -- | Style flags are optional: explicit false is preserved. Each receiving
 -- element checks its own allowed flags, including flags supplied as false.
 data RichTextStyle = RichTextStyle
-  { styleBold :: Maybe Bool,
+  { -- | Bold text. Nothing omits the flag.
+    styleBold :: Maybe Bool,
+    -- | Italic text. Nothing omits the flag.
     styleItalic :: Maybe Bool,
+    -- | Strikethrough text. Nothing omits the flag.
     styleStrike :: Maybe Bool,
+    -- | Inline code, where accepted by the receiving element. Nothing omits the flag.
     styleCode :: Maybe Bool,
+    -- | Highlight a supported mention. Nothing omits the flag.
     styleHighlight :: Maybe Bool,
+    -- | Client-specific highlighting on supported mentions. Nothing omits the flag.
     styleClientHighlight :: Maybe Bool,
+    -- | Disable linking on a supported mention. Nothing omits the flag.
     styleUnlink :: Maybe Bool
   }
   deriving (Eq, Show)
 
+-- | Empty style with every flag absent. Explicit Just False remains present; the receiving element validates allowed flags.
 richTextStyle :: RichTextStyle
 richTextStyle = RichTextStyle Nothing Nothing Nothing Nothing Nothing Nothing Nothing
 

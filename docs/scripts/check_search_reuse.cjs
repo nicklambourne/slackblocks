@@ -71,7 +71,7 @@ async function verifyIndexes(expectedDir, actualDir) {
     const expected = JSON.parse(await fs.readFile(path.join(expectedDir, file), "utf8"));
     const actual = JSON.parse(await fs.readFile(path.join(actualDir, file), "utf8"));
     assert.deepEqual(canonicalIndex(actual), canonicalIndex(expected), `Document/index parity: ${file}`);
-    for (const query of ["shared", "decimal", "Python", "Elixir", "shared decimal", "message*", "+shared -hidden"]) {
+    for (const query of ["shared", "decimal", "Python", "Elixir", "Haskell", "shared decimal", "message*", "+shared -hidden"]) {
       assert.deepEqual(searchResults(actual, query), searchResults(expected, query), `Ranking/results: ${file}: ${query}`);
     }
   }
@@ -92,14 +92,14 @@ async function main() {
       }));
       const routesPaths = [];
       for (const version of versions) {
-        for (const route of ["intro", "usage/erlang", "reference/python/elements", "reference/elixir/elements"]) {
+        for (const route of ["intro", "usage/erlang", "reference/python/elements", "reference/elixir/elements", "reference/haskell/elements"]) {
           const versionPart = version.path.slice(baseUrl.length);
           const relative = [versionPart, route].filter(Boolean).join("/");
           const url = `${baseUrl}${relative}${trailingSlash ? "/" : ""}`;
           routesPaths.push(url);
           version.docs.push({ permalink: url });
           const legacy = versionPart.startsWith("v1");
-          const html = `<html><head><meta name="robots" content="noindex"><meta name="description" content="shared decimal"><meta name="keywords" content="message,decimal"></head><body><article><header><h1>Shared decimal</h1></header><p>Shared messages</p><div class="skip">hidden</div>${legacy ? "<p>Legacy message</p>" : '<div data-language-content="python"><p>Python decimal</p></div><div data-language-content="elixir"><p>Elixir decimal</p></div>'}<h2>Messages<a class="hash-link" href="#messages">#</a></h2><p>shared decimal content</p><span class="badge">Version: old</span></article></body></html>`;
+          const html = `<html><head><meta name="robots" content="noindex"><meta name="description" content="shared decimal"><meta name="keywords" content="message,decimal"></head><body><article><header><h1>Shared decimal</h1></header><p>Shared messages</p><div class="skip">hidden</div>${legacy ? "<p>Legacy message</p>" : '<div data-language-content="python"><p>Python decimal</p></div><div data-language-content="elixir"><p>Elixir decimal</p></div><div data-language-content="haskell"><p>Haskell decimal</p></div>'}<h2>Messages<a class="hash-link" href="#messages">#</a></h2><p>shared decimal content</p><span class="badge">Version: old</span></article></body></html>`;
           for (const outDir of [expectedDir, actualDir]) {
             const file = path.join(outDir, trailingSlash ? `${relative}/index.html` : `${relative}.html`);
             await fs.mkdir(path.dirname(file), { recursive: true });
