@@ -1,16 +1,28 @@
 -- | Stable validation categories and paths shared with the other implementations.
 module Slackblocks.Validation
-  ( ErrorCategory (..), PathPiece (..), ValidationError (..), Result,
-    categoryName, renderPath, failure, atField, atIndex
-  ) where
+  ( ErrorCategory (..),
+    PathPiece (..),
+    ValidationError (..),
+    Result,
+    categoryName,
+    renderPath,
+    failure,
+    atField,
+    atIndex,
+  )
+where
 
 import Data.List.NonEmpty (NonEmpty (..))
 import Data.Text (Text)
-import qualified Data.Text as T
+import Data.Text qualified as T
 
 data ErrorCategory
-  = LengthExceeded | OutOfRange | MutuallyExclusive | TypeMismatch
-  | MissingRequired | InvalidUsage
+  = LengthExceeded
+  | OutOfRange
+  | MutuallyExclusive
+  | TypeMismatch
+  | MissingRequired
+  | InvalidUsage
   deriving (Eq, Ord, Show, Enum, Bounded)
 
 data PathPiece = Field Text | Index Int deriving (Eq, Ord, Show)
@@ -20,7 +32,8 @@ data ValidationError = ValidationError
     errorPath :: [PathPiece],
     errorConstraint :: Text,
     errorMessage :: Text
-  } deriving (Eq, Show)
+  }
+  deriving (Eq, Show)
 
 type Result a = Either (NonEmpty ValidationError) a
 
@@ -44,8 +57,10 @@ failure category path constraint message =
 
 atField :: Text -> Result a -> Result a
 atField name = either (Left . fmap prepend) Right
-  where prepend err = err {errorPath = Field name : errorPath err}
+  where
+    prepend err = err {errorPath = Field name : errorPath err}
 
 atIndex :: Int -> Result a -> Result a
 atIndex index = either (Left . fmap prepend) Right
-  where prepend err = err {errorPath = Index index : errorPath err}
+  where
+    prepend err = err {errorPath = Index index : errorPath err}

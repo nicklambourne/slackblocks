@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+"""Audit the compiled public API against a separately reviewed inventory."""
+import argparse
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import tempfile
+
+ROOT = Path(__file__).resolve().parents[1]
+SYMBOL = re.compile(r"^(?:type )?(Slackblocks(?:\.[A-Za-z][A-Za-z0-9_']*)+)\s*::", re.M)
+
+
+def exposed_modules():
+    cabal = (ROOT / 'slackblocks.cabal').read_text(encoding='utf-8')
+    section = re.search(r'^  exposed-modules:(.*?)(?=^  [a-z][a-z-]*:)', cabal, re.M | re.S)
+    if not section:
+        raise ValueError('Cannot find exposed modules')
+    return section[1].split()
+
+
+def browse(modules, extra_file=None):
+    commands = ':module Prelude\n' + ''.join(f'putStrLn "AUDIT_MODULE:{module}"\n:browse! {module}\n' for module in modules) + ':quit\n'
+    build = os.environ.get('SLACKBLOCKS_HASKELL_BUILD', 'dist-newstyle')
+    command = ['cabal', f'--builddir={build}', 'exec', '--', 'ghci', '-ignore-dot-ghci', '-v0', '-package', 'slackblocks']
+    if extra_file:
+        command.append(str(extra_file))
+    result = subprocess.run(command, input=commands, cwd=ROOT, text=True, capture_output=True, check=True)
+    if 'error:' in result.stderr.lower():
+        raise ValueError(result.stderr)
+    pieces = re.split(r'^AUDIT_MODULE:(\S+)\s*$', result.stdout, flags=re.M)
+    actual = {}
+    for index in range(1, len(pieces), 2):
+        actual[pieces[index]] = sorted(set(SYMBOL.findall(pieces[index+1])))
+    if set(actual) != set(modules) or any(not values for values in actual.values()):
+        raise ValueError('GHC export discovery was incomplete')
+    return actual
+
+
+def verify_exports(actual, expected):
+    if set(actual) != set(expected):
+        raise ValueError(f'Unclassified or removed public modules: {set(actual) ^ set(expected)}')
+    for module in actual:
+        if actual[module] != sorted(expected[module]):
+            difference = set(actual[module]) ^ set(expected[module])
+            raise ValueError(f'Unclassified or removed public exports in {module}: {sorted(difference)}')
+
+
+def audit():
+    inventory = json.loads((ROOT / 'conformance/public-api.json').read_text(encoding='utf-8'))
+    actual = browse(exposed_modules())
+    verify_exports(actual, inventory['exports'])
+    public = set().union(*(set(values) for values in actual.values()))
+    model = json.loads((ROOT / 'test/spec/model.json').read_text(encoding='utf-8'))
+    coverage = json.loads((ROOT / 'test/spec/coverage.json').read_text(encoding='utf-8'))['capabilities']
+    manifest = json.loads((ROOT / 'test/spec/manifest.json').read_text(encoding='utf-8'))
+    fixtures = {entry['id'] for entry in manifest['fixtures']}
+    if set(inventory['models']) != {entry['name'] for entry in model['types']}:
+        raise ValueError('Independent native model map differs from shared contract')
+    covered = set()
+    for entry in inventory['models'].values():
+        qualified = entry['type']
+        module, name = qualified.rsplit('.',1)
+        required = [qualified, qualified+'Fields', module+'.build'+name, module+'.inspect'+name, module+'.'+name[0].lower()+name[1:]]
+        if not set(required) <= public or entry['capability'] not in coverage:
+            raise ValueError(f'Missing checked public model or capability: {entry}')
+        covered.add(entry['capability'])
+    if covered != set(coverage) or any(not ids or not set(ids) <= fixtures for ids in coverage.values()):
+        raise ValueError('Shared capabilities are not fully backed by native fixtures')
+    if not inventory['supporting_api'] or any(not entry['reason'] or not entry['tests'] for entry in inventory['supporting_api']):
+        raise ValueError('Supporting API requires explicit reasons and tests')
+    scratch = '/Volumes/Scratch' if Path('/Volumes/Repos').is_mount() else os.environ.get('RUNNER_TEMP')
+    with tempfile.TemporaryDirectory(prefix='haskell-api-probe-', dir=scratch) as directory:
+        probe = Path(directory) / 'Probe.hs'
+        probe.write_text('module Slackblocks.AuditProbe (unmappedPublicProducer) where\nimport Slackblocks\nimport qualified Data.Text as T\nunmappedPublicProducer :: Result PlainText\nunmappedPublicProducer = buildPlainText (plainText (T.pack "probe"))\n', encoding='utf-8')
+        discovered = browse(['Slackblocks.AuditProbe'], probe)
+        if discovered != {'Slackblocks.AuditProbe':['Slackblocks.AuditProbe.unmappedPublicProducer']}:
+            raise ValueError('Compiled negative-control producer was not discovered')
+        try:
+            verify_exports(actual | discovered, inventory['exports'])
+        except ValueError:
+            pass
+        else:
+            raise ValueError('API guard accepted an unclassified handwritten producer')
+    print(f'Compiled API: {len(public)} symbols, {len(inventory["models"])} models, {len(covered)} capabilities; unmapped-producer control rejected.')
+
+
+if __name__ == '__main__':
+    argparse.ArgumentParser(description=__doc__).parse_args()
+    audit()
