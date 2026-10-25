@@ -1,0 +1,32 @@
+{
+  "type": "plan",
+  "block_id": "fake_block_id",
+  "title": "Thinking completed",
+  "tasks": [
+    {
+      "task_id": "call_001",
+      "title": "Fetched user profile information",
+      "status": "complete",
+      "output": {
+        "type": "rich_text",
+        "block_id": "plan_output",
+        "elements": [
+          {
+            "type": "rich_text_section",
+            "elements": [
+              {
+                "type": "text",
+                "text": "Profile data loaded"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "task_id": "call_002",
+      "title": "Checked user permissions",
+      "status": "pending"
+    }
+  ]
+}

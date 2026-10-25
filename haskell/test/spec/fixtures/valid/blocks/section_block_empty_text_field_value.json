@@ -1,0 +1,15 @@
+{
+    "type": "section",
+    "block_id": "fake_block_id",
+    "fields": [
+        {
+            "type": "mrkdwn",
+            "text": "Highly"
+        },
+        {
+            "type": "plain_text",
+            "text": "Strung",
+            "emoji": true
+        }
+    ]
+}

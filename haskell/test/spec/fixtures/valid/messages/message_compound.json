@@ -1,0 +1,63 @@
+{
+    "channel": "#slackblocks",
+    "mrkdwn": true,
+    "blocks": [
+        {
+            "type": "section",
+            "block_id": "fake_block1",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Block, One"
+            }
+        },
+        {
+            "type": "image",
+            "block_id": "fake_block3",
+            "image_url": "http://bit.ly/slack-block-test-image",
+            "alt_text": "crash",
+            "title": {
+                "type": "plain_text",
+                "text": " "
+            }
+        }
+    ],
+    "attachments": [
+        {
+            "blocks": [
+                {
+                    "type": "section",
+                    "block_id": "fake_block1",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Block, One"
+                    }
+                }
+            ],
+            "color": "#8800ff"
+        },
+        {
+            "blocks": [
+                {
+                    "type": "section",
+                    "block_id": "fake_block2",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Block, Two"
+                    }
+                },
+                {
+                    "type": "image",
+                    "block_id": "fake_block3",
+                    "image_url": "http://bit.ly/slack-block-test-image",
+                    "alt_text": "crash",
+                    "title": {
+                        "type": "plain_text",
+                        "text": " "
+                    }
+                }
+            ],
+            "color": "#ffff00"
+        }
+    ],
+    "text": ""
+}

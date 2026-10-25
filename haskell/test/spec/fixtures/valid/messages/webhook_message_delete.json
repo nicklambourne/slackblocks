@@ -1,0 +1,41 @@
+{
+    "attachments": [
+        {
+            "blocks": [
+                {
+                    "type": "section",
+                    "block_id": "fake_block_id",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "I'M A CODFISH!"
+                    }
+                }
+            ]
+        }
+    ],
+    "blocks": [
+        {
+            "type": "section",
+            "block_id": "fake_block_id",
+            "text": {
+                "type": "mrkdwn",
+                "text": "I'm a codfish."
+            }
+        },
+        {
+            "type": "section",
+            "block_id": "fake_block_id",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Louder!"
+            }
+        }
+    ],
+    "response_type": "in_channel",
+    "delete_original": true,
+    "unfurl_links": true,
+    "unfurl_media": true,
+    "metadata": {
+        "sender": "Walt"
+    }
+}

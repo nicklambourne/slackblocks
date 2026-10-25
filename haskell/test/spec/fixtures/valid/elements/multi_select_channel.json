@@ -1,0 +1,8 @@
+{
+    "type": "multi_channels_select",
+    "action_id": "multi_channels_select",
+    "placeholder": {
+        "type": "plain_text",
+        "text": "Select channels"
+    }
+}

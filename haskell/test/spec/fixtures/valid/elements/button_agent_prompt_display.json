@@ -1,0 +1,10 @@
+{
+  "type": "button",
+  "text": {
+    "type": "plain_text",
+    "text": "Summarize"
+  },
+  "action_id": "summarize",
+  "agent_prompt": "Summarize this incident.",
+  "agent_prompt_display": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}

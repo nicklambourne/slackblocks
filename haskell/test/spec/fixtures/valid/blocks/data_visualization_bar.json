@@ -1,0 +1,22 @@
+{
+  "type": "data_visualization",
+  "block_id": "fake_block_id",
+  "title": "Pies by Tastiness",
+  "chart": {
+    "type": "bar",
+    "series": [
+      {
+        "name": "Pies",
+        "data": [
+          { "label": "Pumpkin", "value": 70 },
+          { "label": "Blueberry", "value": 90 }
+        ]
+      }
+    ],
+    "axis_config": {
+      "categories": ["Pumpkin", "Blueberry"],
+      "x_label": "Pies",
+      "y_label": "Tastiness"
+    }
+  }
+}

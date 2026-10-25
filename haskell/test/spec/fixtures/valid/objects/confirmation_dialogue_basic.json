@@ -1,0 +1,18 @@
+{
+    "title": {
+        "type": "plain_text",
+        "text": "Maybe?"
+    },
+    "text": {
+        "type": "plain_text",
+        "text": "Would you like to play checkers?"
+    },
+    "confirm": {
+        "type": "plain_text",
+        "text": "Yes"
+    },
+    "deny": {
+        "type": "plain_text",
+        "text": "Nope!"
+    }
+}

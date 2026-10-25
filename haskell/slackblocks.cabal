@@ -13,6 +13,8 @@ category: Web
 build-type: Simple
 tested-with: GHC ==9.6.7
 extra-doc-files: README.md CHANGELOG.md
+data-files: test/spec/**/*.json
+extra-source-files: generator/*.py bin/check bin/sync-spec conformance/skiplist.txt
 
 source-repository head
   type: git
@@ -27,12 +29,18 @@ common language
 library
   import: language
   hs-source-dirs: src
-  exposed-modules: Slackblocks Slackblocks.Validation
+  exposed-modules: Slackblocks Slackblocks.Validation Slackblocks.Models
+                   Slackblocks.Json Slackblocks.Style
+  other-modules: Slackblocks.Internal.Wire Slackblocks.Internal.Rules
+                 Slackblocks.Internal.Schema Slackblocks.Internal.Decimal
   build-depends:
     base >=4.18 && <4.23,
     aeson >=2.2 && <2.4,
     bytestring >=0.11 && <0.13,
-    text >=2.0 && <2.2
+    text >=2.0 && <2.2,
+    containers >=0.6 && <0.9,
+    scientific >=0.3.7 && <0.4,
+    vector >=0.13 && <0.14
 
 test-suite foundation
   import: language
@@ -43,4 +51,30 @@ test-suite foundation
     base >=4.18 && <4.23,
     slackblocks,
     aeson >=2.2 && <2.4,
+    text >=2.0 && <2.2
+
+test-suite conformance
+  import: language
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: Conformance.hs
+  other-modules: Constructions Paths_slackblocks
+  autogen-modules: Paths_slackblocks
+  build-depends:
+    base >=4.18 && <4.23,
+    slackblocks,
+    aeson >=2.2 && <2.4,
+    containers >=0.6 && <0.9,
+    text >=2.0 && <2.2
+
+test-suite boundaries
+  import: language
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: Boundaries.hs
+  build-depends:
+    base >=4.18 && <4.23,
+    slackblocks,
+    aeson >=2.2 && <2.4,
+    containers >=0.6 && <0.9,
     text >=2.0 && <2.2

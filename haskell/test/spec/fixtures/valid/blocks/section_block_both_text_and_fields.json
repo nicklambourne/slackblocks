@@ -1,0 +1,19 @@
+{
+    "type": "section",
+    "block_id": "fake_block_id",
+    "text": {
+        "type": "mrkdwn",
+        "text": "Hello"
+    },
+    "fields": [
+        {
+            "type": "mrkdwn",
+            "text": "Are you"
+        },
+        {
+            "type": "plain_text",
+            "text": "There?",
+            "emoji": true
+        }
+    ]
+}

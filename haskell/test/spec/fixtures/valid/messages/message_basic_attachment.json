@@ -1,0 +1,20 @@
+{
+    "channel": "#slackblocks",
+    "mrkdwn": true,
+    "attachments": [
+        {
+            "blocks": [
+                {
+                    "type": "section",
+                    "block_id": "block1",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Hello, world!"
+                    }
+                }
+            ],
+            "color": "#000000"
+        }
+    ],
+    "text": ""
+}

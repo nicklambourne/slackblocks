@@ -1,0 +1,13 @@
+{
+    "type": "home",
+    "blocks": [
+        {
+            "type": "section",
+            "block_id": "fake_id",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Example Block"
+            }
+        }
+    ]
+}
