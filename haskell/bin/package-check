@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+"""Check the real source archive, standalone tests, Haddock and fresh consumers."""
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import sys
+import tarfile
+import tempfile
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def main():
+    scratch = os.environ.get('RUNNER_TEMP')
+    if Path('/Volumes/Repos').is_dir():
+        for volume in ('Repos', 'Cache', 'Scratch'):
+            if not Path('/Volumes', volume).is_mount():
+                raise SystemExit(f'Required external volume unavailable: {volume}')
+        scratch = '/Volumes/Scratch'
+    version = re.search(r'^version: (\S+)$', (ROOT / 'slackblocks.cabal').read_text(), re.M)[1]
+    subprocess.run(['cabal', 'check'], cwd=ROOT, check=True)
+    with tempfile.TemporaryDirectory(prefix='haskell-archive-', dir=scratch) as directory:
+        temp = Path(directory)
+        subprocess.run(['cabal', 'sdist', f'--output-directory={temp}'], cwd=ROOT, check=True)
+        archive = temp / f'slackblocks-{version}.tar.gz'
+        with tarfile.open(archive) as bundle:
+            members = bundle.getmembers()
+            prefix = f'slackblocks-{version}/'
+            if any((not m.name.startswith(prefix) and not (m.isdir() and m.name == prefix.rstrip('/'))) or '..' in Path(m.name).parts or m.issym() or m.islnk() for m in members):
+                raise SystemExit('Unsafe source archive member')
+            files = {m.name[len(prefix):] for m in members if m.isfile()}
+            required = {'slackblocks.cabal', 'LICENSE', 'README.md', 'CHANGELOG.md', 'consumer/Main.hs'}
+            for folder in ('src', 'test', 'integrations/src'):
+                required.update(p.relative_to(ROOT).as_posix() for p in (ROOT / folder).rglob('*') if p.is_file())
+            if not required <= files:
+                raise SystemExit(f'Archive missing owned inputs: {required - files}')
+            if any(set(Path(name).parts) & {'.git', '.env', 'dist-newstyle', 'dist-coverage', '__pycache__'} for name in files):
+                raise SystemExit('Build cache or private state leaked into archive')
+            bundle.extractall(temp, filter='data')
+        extracted = temp / f'slackblocks-{version}'
+        if (temp / 'spec').exists() or (extracted / '.git').exists():
+            raise SystemExit('Consumer unexpectedly has a monorepo')
+        (extracted / 'cabal.project').write_text('packages: .\ntests: True\n', encoding='utf-8')
+        # These tests use only the data installed by this actual sdist.
+        subprocess.run(['cabal', 'test', 'all', '--jobs=2', '--test-show-details=direct'], cwd=extracted, check=True)
+        subprocess.run(['cabal', 'haddock', 'lib:slackblocks', '--haddock-html'], cwd=extracted, check=True)
+        docs = list(extracted.glob('dist-newstyle/build/*/*/slackblocks-*/doc/html/slackblocks/Slackblocks-Models.html'))
+        if len(docs) != 1 or 'buildPlainText' not in docs[0].read_text(encoding='utf-8'):
+            raise SystemExit('Haddock did not document the actual compiled API')
+        consumer = temp / 'consumer'
+        consumer.mkdir()
+        shutil.copy2(extracted / 'consumer/Main.hs', consumer / 'Main.hs')
+        (consumer / 'consumer.cabal').write_text(f'''cabal-version: 3.0
+name: archive-consumer
+version: 0.0.0
+build-type: Simple
+executable archive-consumer
+  main-is: Main.hs
+  default-language: GHC2021
+  build-depends: base, slackblocks =={version}, aeson, containers
+''', encoding='utf-8')
+        (consumer / 'cabal.project').write_text(f'packages: . ../{archive.name}\n', encoding='utf-8')
+        subprocess.run(['cabal', 'run', 'archive-consumer', '--jobs=2'], cwd=consumer, check=True)
+        integration = temp / 'transport'
+        shutil.copytree(extracted / 'integrations', integration)
+        (integration / 'cabal.project').write_text(f'packages: . ../{archive.name}\n', encoding='utf-8')
+        environment = dict(os.environ, SLACKBLOCKS_HASKELL_HTTP_BUILD=str(temp / 'transport-build'))
+        subprocess.run([sys.executable, str(extracted / 'bin/http-check'), '--project', str(integration)], env=environment, check=True)
+        print(f'Archive {archive.name}: {len(files)} files; standalone suites, Haddock and two independently resolved artifact consumers passed.')
+
+
+if __name__ == '__main__':
+    main()

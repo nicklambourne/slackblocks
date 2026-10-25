@@ -1,0 +1,129 @@
+#!/usr/bin/env python3
+"""Exercise the actual Haskell HTTP client against a loopback server only."""
+import argparse
+import json
+import os
+from pathlib import Path
+import subprocess
+import tempfile
+import threading
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def check(args, project, build):
+    cabal = ['cabal', f'--project-dir={project}', f'--builddir={build}']
+    subprocess.run([*cabal, 'build', 'transport-check', '--jobs=2'], cwd=args.project, check=True)
+    executable = subprocess.check_output([*cabal, 'list-bin', 'transport-check'], cwd=args.project, text=True).strip()
+    plan = json.loads((build / 'cache/plan.json').read_text(encoding='utf-8'))
+    versions = {entry['pkg-name']: entry['pkg-version'] for entry in plan['install-plan']}
+    for name, version in args.pins.items():
+        if versions.get(name) != version:
+            raise SystemExit(f'HTTP dependency did not resolve {name} =={version}')
+    subprocess.run([*cabal, 'freeze'], cwd=args.project, check=True)
+    (build / 'resolution.project').write_bytes((project / 'cabal.project').read_bytes())
+    (build / 'resolution.freeze').write_bytes((project / 'cabal.project.freeze').read_bytes())
+    exercise(executable, args.project)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--project', type=Path, default=ROOT / 'integrations')
+    parser.add_argument('--profile', choices=['locked', 'lower', 'latest'], default='latest')
+    args = parser.parse_args()
+    compiler = subprocess.check_output(['ghc', '--numeric-version'], text=True).strip()
+    policy = {}
+    if args.profile != 'latest':
+        filename = f'http-locked-{compiler}.json' if args.profile == 'locked' else 'http-lower.json'
+        policy = json.loads((ROOT / 'dependencies' / filename).read_text(encoding='utf-8'))
+        if policy['compiler'] != compiler:
+            raise SystemExit('HTTP lower dependency profile requires its minimum compiler')
+    args.pins = policy.get('constraints', {})
+    scratch = os.environ.get('RUNNER_TEMP')
+    base = Path(os.environ.get('SLACKBLOCKS_HASKELL_HTTP_BUILD', ROOT / 'dist-http')).resolve()
+    if Path('/Volumes/Repos').is_dir():
+        for volume in ('Repos', 'Cache', 'Scratch'):
+            if not Path('/Volumes', volume).is_mount():
+                raise SystemExit(f'Required external volume unavailable: {volume}')
+        scratch = '/Volumes/Scratch'
+        if 'SLACKBLOCKS_HASKELL_HTTP_BUILD' not in os.environ:
+            base = Path('/Volumes/Cache/slackblocks-haskell/http-checks')
+    build = base / compiler / args.profile
+    inputs = (args.project / 'cabal.project').read_text(encoding='utf-8').strip()
+    if not inputs.startswith('packages: ') or '\n' in inputs:
+        raise SystemExit('HTTP consumer must declare only its two explicit package locations')
+    packages = [(args.project / path).resolve() for path in inputs.removeprefix('packages: ').split()]
+    if len(packages) != 2:
+        raise SystemExit('HTTP consumer must resolve exactly its application and slackblocks')
+    with tempfile.TemporaryDirectory(prefix='haskell-http-', dir=scratch) as directory:
+        project = Path(directory)
+        text = 'packages: ' + ' '.join(path.as_posix() for path in packages) + '\n'
+        if 'index_state' in policy:
+            text += f'index-state: {policy["index_state"]}\n'
+        if args.pins:
+            text += 'constraints: ' + ', '.join(f'any.{name} =={version}' for name, version in args.pins.items()) + '\n'
+        (project / 'cabal.project').write_text(text, encoding='utf-8')
+        check(args, project, build)
+
+
+def exercise(executable, project):
+    heading = {'type': 'header', 'text': {'type': 'plain_text', 'text': 'Hello 😀'}}
+    metadata = {'opaque': {'type': 'unmodeled', 'integer': 9007199254740993, 'flag': False, 'empty': {}}}
+    message = {'channel': 'C_TEST', 'blocks': [heading], 'metadata': metadata,
+               'text': '', 'mrkdwn': True,
+               'attachments': [{'blocks': [heading], 'color': '#8800ff'}]}
+    webhook = {'blocks': [heading], 'metadata': metadata}
+    expected = {
+        '/chat.postMessage': (message, True, 200, b'{"ok":true}'),
+        '/webhook': (webhook, False, 200, b'ok'),
+        '/response': ({'blocks': [heading], 'text': '', 'mrkdwn': True, 'replace_original': False, 'response_type': 'in_channel'}, False, 200, b'ok'),
+        '/views.open': ({'trigger_id': 'trigger-test', 'view': {'type': 'modal', 'title': heading['text'], 'blocks': [heading]}}, True, 200, b'{"ok":true}'),
+        '/views.publish': ({'user_id': 'U_TEST', 'view': {'type': 'home', 'blocks': [heading]}}, True, 200, b'{"ok":true}'),
+        '/api-error': (message, True, 200, b'{"ok":false,"error":"invalid_blocks"}'),
+        '/malformed': (message, True, 200, b'not json'),
+        '/rate-limited': (message, True, 429, b'{"ok":false}'),
+        '/server-error': (message, True, 500, b'{"ok":false}'),
+        '/redirect': (message, True, 302, b''),
+        '/webhook-error': (webhook, False, 200, b'invalid_payload'),
+    }
+    seen, failures = [], []
+
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, *args):
+            pass
+
+        def do_POST(self):
+            try:
+                payload, authenticated, status, response = expected[self.path]
+                body = self.rfile.read(int(self.headers['Content-Length']))
+                assert json.loads(body.decode('utf-8')) == payload, f'{self.path}: payload altered: {body!r}'
+                assert self.headers['Content-Type'] == 'application/json; charset=utf-8'
+                assert self.headers.get('Authorization') == ('Bearer test-token' if authenticated else None)
+                seen.append(self.path)
+            except Exception as error:
+                failures.append(str(error))
+                status, response = 400, b'bad request'
+            self.send_response(status)
+            self.send_header('Content-Length', str(len(response)))
+            if status == 302:
+                self.send_header('Location', '/must-not-follow')
+            self.end_headers()
+            self.wfile.write(response)
+
+    with ThreadingHTTPServer(('127.0.0.1', 0), Handler) as server:
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            result = subprocess.run([executable, f'http://127.0.0.1:{server.server_port}'], cwd=project, timeout=90)
+        finally:
+            server.shutdown()
+            thread.join()
+    if failures or sorted(seen) != sorted(expected):
+        raise SystemExit(f'HTTP wire parity failed: {failures}; observed paths: {seen}')
+    result.check_returncode()
+    print('Actual HTTP bytes: five payload surfaces, exact metadata/false/Unicode, authorization boundaries, six errors, no retries or redirects.')
+
+
+if __name__ == '__main__':
+    main()

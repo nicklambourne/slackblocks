@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+"""Independently resolve and execute locked, exact-lower or latest dependencies."""
+import argparse
+import json
+import os
+from pathlib import Path
+import subprocess
+import tempfile
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('profile', choices=['locked', 'lower', 'latest'])
+    parser.add_argument('--unordered-keymap', action='store_true')
+    args = parser.parse_args()
+    compiler = subprocess.check_output(['ghc', '--numeric-version'], text=True).strip()
+    policy = {}
+    if args.profile != 'latest':
+        filename = f'locked-{compiler}.json' if args.profile == 'locked' else 'lower.json'
+        policy = json.loads((ROOT / 'dependencies' / filename).read_text(encoding='utf-8'))
+        if policy['compiler'] != compiler:
+            raise SystemExit('Exact lower bounds must run on their declared minimum compiler')
+    scratch = os.environ.get('RUNNER_TEMP')
+    cache = Path(os.environ.get('SLACKBLOCKS_HASKELL_DEPENDENCIES', 'dist-dependencies')).resolve()
+    if Path('/Volumes/Repos').is_dir():
+        for volume in ('Repos', 'Cache', 'Scratch'):
+            if not Path('/Volumes', volume).is_mount():
+                raise SystemExit(f'Required external volume unavailable: {volume}')
+        scratch = '/Volumes/Scratch'
+        cache = Path('/Volumes/Cache/slackblocks-haskell/dependency-checks')
+    build = cache / compiler / (args.profile + ('-unordered' if args.unordered_keymap else '-ordered'))
+    with tempfile.TemporaryDirectory(prefix='haskell-resolution-', dir=scratch) as directory:
+        project = Path(directory)
+        text = f'packages: {ROOT.as_posix()}\ntests: True\n'
+        if 'index_state' in policy:
+            text += f'index-state: {policy["index_state"]}\n'
+        pins = policy.get('constraints', {})
+        if pins:
+            text += 'constraints: ' + ', '.join(f'any.{name} =={version}' for name, version in pins.items()) + '\n'
+        text += 'package aeson\n  flags: ' + ('-' if args.unordered_keymap else '+') + 'ordered-keymap\n'
+        (project / 'cabal.project').write_text(text, encoding='utf-8')
+        # A unique project and no inherited freeze file force an independent
+        # solver plan. Store/cache reuse does not replace execution of tests.
+        command = ['cabal', f'--project-dir={project}', f'--builddir={build}']
+        subprocess.run([*command, 'test', 'all', '--jobs=2', '--disable-optimization', '--test-show-details=direct'], cwd=ROOT, check=True)
+        plan = json.loads((build / 'cache/plan.json').read_text(encoding='utf-8'))
+        versions = {entry['pkg-name']: entry['pkg-version'] for entry in plan['install-plan']}
+        for name, version in pins.items():
+            if versions.get(name) != version:
+                raise SystemExit(f'{args.profile} did not actually resolve {name} =={version}')
+        aeson = [entry for entry in plan['install-plan'] if entry['pkg-name'] == 'aeson']
+        if len(aeson) != 1 or aeson[0]['flags']['ordered-keymap'] == args.unordered_keymap:
+            raise SystemExit('Aeson KeyMap variant was not actually selected')
+        subprocess.run([*command, 'freeze'], cwd=ROOT, check=True)
+        (build / 'resolution.project').write_text(text, encoding='utf-8')
+        (build / 'resolution.freeze').write_bytes((project / 'cabal.project.freeze').read_bytes())
+    print(f'{args.profile} GHC {compiler}: every native suite passed with verified dependency versions and KeyMap variant; receipts in {build}')
+
+
+if __name__ == '__main__':
+    main()
