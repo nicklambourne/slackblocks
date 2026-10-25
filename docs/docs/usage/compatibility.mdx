@@ -297,9 +297,11 @@ are decimal text; `decimalText` converts a `Scientific` value exactly.
 
 Checked values are immutable. Field records cannot be encoded directly. JSON
 ingress validates nested roles and contextual limits; `decode` additionally
-rejects duplicate keys, invalid UTF-8 and trailing data. Aeson parsing cannot
-recover duplicate keys an earlier parser has collapsed. Application metadata
-remains opaque JSON. The [semantics guide](/usage/language-semantics) compares
+rejects duplicate keys, invalid UTF-8, trailing data and numeric exponents that
+overflow Aeson’s `Scientific` representation (including in metadata). Decimal
+bounds supplied as strings retain arbitrary-exponent support. Already parsed
+Aeson values cannot recover duplicate keys or exponents an earlier parser lost.
+Application metadata remains opaque JSON. The [semantics guide](/usage/language-semantics) compares
 these choices across languages.
 
 </Haskell>

@@ -31,7 +31,8 @@ fromValue = fromSlackJSON
 decimalText :: Scientific -> Text
 decimalText = T.pack . formatScientific Generic Nothing
 
--- | Decode UTF-8 JSON bytes, rejecting duplicate keys, trailing input and invalid modeled values.
+-- | Decode UTF-8 JSON bytes, rejecting duplicate keys, trailing input, numeric
+-- exponent overflow in Aeson's Scientific representation and invalid modeled values.
 decode :: (FromSlackJSON a) => B.ByteString -> Result a
 decode input = parseJSONBytes input >>= fromSlackJSON
 
