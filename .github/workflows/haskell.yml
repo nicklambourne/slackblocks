@@ -1,0 +1,82 @@
+name: Haskell
+
+on:
+  push:
+    branches: [master]
+    paths: ["haskell/**", "spec/**", "docs/**", "README.md", ".github/workflows/haskell.yml"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: haskell-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect relevant Haskell changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.filter.outputs.relevant }}
+    steps:
+      - name: Check workflow scope
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo 'relevant=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate -q '.[] | .filename, (.previous_filename // empty)') || files=""
+          if [ -z "$files" ] || grep -qE '^(haskell/|spec/|docs/|README\.md$|\.github/workflows/haskell\.yml$)' <<<"$files"; then
+            echo 'relevant=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'relevant=false' >> "$GITHUB_OUTPUT"
+          fi
+
+  test:
+    needs: changes
+    name: Haskell tests (${{ matrix.os }}, GHC ${{ matrix.ghc }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        ghc: ["9.6.7", "9.14.1"]
+    defaults:
+      run:
+        shell: bash
+        working-directory: haskell
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - name: Align macOS SDK and linker
+        if: needs.changes.outputs.relevant == 'true' && runner.os == 'macOS'
+        run: |
+          # GHC's system libraries use the Command Line Tools SDK. Select its
+          # matching linker (runner-images#14940), keeping both compiler lanes.
+          sudo xcode-select --switch /Library/Developer/CommandLineTools
+          echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "$GITHUB_ENV"
+          xcode-select --print-path
+          xcrun clang --version
+          xcrun --find ld
+      - name: Install Haskell
+        if: needs.changes.outputs.relevant == 'true'
+        uses: haskell-actions/setup@7fd2bb5ca789761088fbc831406b2910e47e56f1 # v2
+        with:
+          ghc-version: ${{ matrix.ghc }}
+          cabal-version: "3.16.1.0"
+      - name: Install Python for package checks
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      - name: Resolve dependencies
+        if: needs.changes.outputs.relevant == 'true'
+        run: cabal update
+      - name: Check native API and package
+        if: needs.changes.outputs.relevant == 'true'
+        run: python bin/check
