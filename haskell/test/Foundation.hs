@@ -14,7 +14,7 @@ main = do
         label <- buildPlainText ((plainText "Open") {plainTextEmoji = Just False})
         action <- buildButtonElement ((buttonElement label) {buttonElementActionId = Just "open"})
         text <- buildMarkdownText (markdownText "*Hello*")
-        section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText text), sectionBlockAccessory = Just action})
+        section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText text), sectionBlockAccessory = Just (buttonElementAsElement action)})
         buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just [sectionBlockAsBlock section]})
   message <- either (fail . show) pure payload
   assert "typed complete payload" $ toJSON message == object

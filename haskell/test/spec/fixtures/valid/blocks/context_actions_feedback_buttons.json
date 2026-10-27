@@ -1,0 +1,26 @@
+{
+  "type": "context_actions",
+  "block_id": "fake_block_id",
+  "elements": [
+    {
+      "type": "feedback_buttons",
+      "positive_button": {
+        "text": {
+          "type": "plain_text",
+          "text": "Good"
+        },
+        "value": "positive_feedback",
+        "accessibility_label": "Mark this response as good"
+      },
+      "negative_button": {
+        "text": {
+          "type": "plain_text",
+          "text": "Bad"
+        },
+        "value": "negative_feedback",
+        "accessibility_label": "Mark this response as bad"
+      },
+      "action_id": "feedback_buttons_1"
+    }
+  ]
+}

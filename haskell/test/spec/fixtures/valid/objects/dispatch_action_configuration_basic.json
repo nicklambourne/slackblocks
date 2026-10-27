@@ -1,0 +1,5 @@
+{
+    "trigger_actions_on": [
+        "on_character_entered"
+    ]
+}

@@ -1,0 +1,9 @@
+{
+    "type": "button",
+    "text": {
+        "type": "plain_text",
+        "text": "Link!"
+    },
+    "action_id": "button",
+    "url": "https://ndl.im/"
+}

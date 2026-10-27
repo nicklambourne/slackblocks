@@ -1,0 +1,9 @@
+{
+    "type": "file_input",
+    "action_id": "file_input_action_id_1",
+    "filetypes": [
+        "jpg",
+        "png"
+    ],
+    "max_files": 5
+}

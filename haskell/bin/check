@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import subprocess
 import tempfile
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -22,6 +23,11 @@ def main():
         os.environ.setdefault("CABAL_DIR", "/Volumes/Cache/slackblocks-haskell/cabal")
     build = os.environ.get("SLACKBLOCKS_HASKELL_BUILD", "dist-newstyle")
     cabal = ["cabal", f"--builddir={build}"]
+    run(sys.executable, "generator/generate.py", "--check")
+    run(sys.executable, "generator/test_generate.py")
+    run(sys.executable, "bin/sync-spec", "--check")
+    if (ROOT / "conformance/skiplist.txt").read_text(encoding="utf-8").strip():
+        raise SystemExit("Haskell conformance skip list must be empty")
     run(*cabal, "test", "all", "--test-show-details=direct")
     run("cabal", "check")
     with tempfile.TemporaryDirectory(prefix="slackblocks-haskell-", dir=scratch) as tmp:
@@ -30,6 +36,15 @@ def main():
             ("unchecked", "import Slackblocks\nimport Data.Aeson\nmain = print (encode (plainText mempty))\n", "ToJSON PlainTextFields"),
             ("private", "import Slackblocks\nmain = print (CheckedPlainText (plainText mempty))\n", "CheckedPlainText"),
             ("wrong-role", "import Slackblocks\nf = buttonElement (markdownText mempty)\nmain = pure ()\n", "PlainText"),
+            ("context-invalid-element", "import Slackblocks\nf :: ButtonElement -> ContextBlockFields\nf button = contextBlock [buttonElementAsElement button]\nmain = pure ()\n", "ContextElement"),
+            ("input-invalid-element", "import Slackblocks\nf label block = inputBlock label (dividerBlockAsBlock block)\nmain = pure ()\n", "InputElement"),
+            ("workflow-button-missing-action-id", "import Slackblocks\nf label workflow = buildWorkflowButtonElement (workflowButtonElement label workflow)\nmain = pure ()\n", "WorkflowButtonElementFields"),
+            ("number-input-missing-decimal-flag", "import Slackblocks\nf = buildNumberInputElement numberInputElement\nmain = pure ()\n", "NumberInputElementFields"),
+            ("slack-icon-missing-name", "import Slackblocks\nf = buildSlackIcon slackIcon\nmain = pure ()\n", "SlackIconFields"),
+            ("plan-missing-tasks", "import Slackblocks\nf title = buildPlanBlock (planBlock title)\nmain = pure ()\n", "PlanBlockFields"),
+            ("task-card-missing-status", "import Slackblocks\nf identifier title = buildTaskCardBlock (taskCardBlock identifier title)\nmain = pure ()\n", "TaskCardBlockFields"),
+            ("attachment-missing-blocks", "import Slackblocks\nf = buildAttachment attachment\nmain = pure ()\n", "AttachmentFields"),
+            ("plan-task-as-block", "import Slackblocks\nf :: PlanTask -> Block\nf = taskCardBlockAsBlock\nmain = pure ()\n", "PlanTask"),
         ]:
             path = Path(tmp, name + ".hs")
             path.write_text(source)

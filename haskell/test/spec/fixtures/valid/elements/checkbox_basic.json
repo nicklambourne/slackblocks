@@ -1,0 +1,29 @@
+{
+    "type": "checkboxes",
+    "action_id": "and...action",
+    "options": [
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "A"
+            },
+            "value": "A"
+        },
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "B"
+            },
+            "value": "B"
+        }
+    ],
+    "initial_options": [
+        {
+            "text": {
+                "type": "plain_text",
+                "text": "A"
+            },
+            "value": "A"
+        }
+    ]
+}
