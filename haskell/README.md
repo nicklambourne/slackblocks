@@ -40,10 +40,14 @@ duplicate object keys (including escaped spellings and opaque metadata), invalid
 UTF-8 and trailing input. Aeson's `FromJSON` instances validate models too, but
 cannot recover duplicate keys already collapsed by an external Aeson parser.
 The byte decoder also rejects numeric exponent overflow before Aeson can narrow
-an exponent to `Int`, including numbers in metadata and extensions. This is a
+an exponent to `Int`. Checked native values and JSON ingress reject numbers whose
+normalized encoding would overflow or fail to round-trip, including numbers in
+metadata and extensions. This is a
 `Scientific` representation boundary, not a Slack magnitude limit; decimal bounds
 supplied as strings keep their arbitrary-exponent support. Already parsed Aeson
 values cannot recover an original exponent that an external parser truncated.
+Integer fields with shared bounds are range-checked before expanding exponents,
+so oversized inputs fail without first allocating an enormous integer.
 Use `Slackblocks.decode` when accepting untrusted JSON bytes. Typed child roles
 reject unsupported elements, while metadata and explicit unmodeled extension
 fields preserve arbitrary JSON. Extensions cannot override modeled fields or

@@ -1,6 +1,6 @@
 -- | Handwritten relationships and receiving-context validation. Only modeled
 -- child positions are traversed; arbitrary JSON metadata remains opaque.
-module Slackblocks.Internal.Rules (validateFields, standaloneTask) where
+module Slackblocks.Internal.Rules (validateFields, checkIntegerBounds, standaloneTask) where
 
 import Control.Monad (unless, when)
 import Data.Aeson (Value (..))
@@ -9,10 +9,12 @@ import Data.Aeson.KeyMap qualified as KM
 import Data.Char (isAscii, isAsciiUpper, isDigit, isHexDigit)
 import Data.List (nub)
 import Data.Maybe (isJust)
+import Data.Scientific (isInteger)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Vector qualified as V
 import Slackblocks.Internal.Decimal
+import Slackblocks.Internal.JsonSyntax (checkJSONNumbers)
 import Slackblocks.Internal.Schema
 import Slackblocks.Validation
 
@@ -45,8 +47,25 @@ limit key = case lookup key limits of
 check :: ErrorCategory -> [PathPiece] -> Text -> Bool -> Result ()
 check category path constraint ok = unless ok (failure category path constraint "constraint violated")
 
+-- Reject bounded integer fields while they are still compact Scientific values.
+-- Expanding 1e1000000000 into Integer just to compare it with 3000 can exhaust
+-- memory. Fractions still reach the ordinary integer type check below.
+checkIntegerBounds :: Text -> Value -> Result ()
+checkIntegerBounds owner value = mapM_ field (fieldConstraints owner)
+  where
+    field (key, kind, prefix, bounds, _) = when (kind `elem` ["int", "long"]) $ case at key value of
+      number@(Number x) -> do
+        atField key (checkJSONNumbers number)
+        when (isInteger x) $ mapM_ (bound key prefix x) bounds
+      _ -> pure ()
+    bound key prefix x (suffix, n) = case suffix of
+      "min" -> check OutOfRange [Field key] (prefix <> ".min") (x >= fromInteger n)
+      "max" -> check OutOfRange [Field key] (prefix <> ".max") (x <= fromInteger n)
+      _ -> pure ()
+
 validateFields :: Text -> Value -> Result ()
 validateFields owner value = do
+  checkJSONNumbers value
   mapM_ field (fieldConstraints owner)
   rules owner value
   where
