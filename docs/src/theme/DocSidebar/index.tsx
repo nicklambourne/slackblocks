@@ -110,6 +110,7 @@ function filterUsage(
         language === "rust" ||
         language === "php" ||
         language === "elixir" ||
+        language === "haskell" ||
         !child.docId ||
         !NON_PYTHON_HIDDEN_DOCS.has(child.docId),
     )
@@ -193,7 +194,8 @@ function filterReference(
       !isLanguageReference(child, "ruby") &&
       !isLanguageReference(child, "rust") &&
       !isLanguageReference(child, "php") &&
-      !isLanguageReference(child, "elixir"),
+      !isLanguageReference(child, "elixir") &&
+      !isLanguageReference(child, "haskell"),
   );
 
   return {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "487726fc4eb6bd59daec2525f602457c",
+    "content-hash": "92158ee3e88695ae1806a2603ae354f3",
     "packages": [
         {
             "name": "brick/math",
@@ -3196,11 +3196,11 @@
         },
         {
             "name": "nicklambourne/slackblocks",
-            "version": "3.0.0",
+            "version": "3.1.0",
             "dist": {
                 "type": "path",
                 "url": "..",
-                "reference": "36ac55d3a3cb13ab355b41a151577060747489e2"
+                "reference": "764f5a79c9510e3d732ee694e91f44910069d232"
             },
             "require": {
                 "ext-json": "*",

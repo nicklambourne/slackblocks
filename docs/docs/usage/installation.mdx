@@ -1,10 +1,12 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Installation
 
 Choose a language from the site navigation. The selection applies across the documentation and is preserved as you move between pages.
+
+Current source documentation prepares 3.1.0. The existing languages’ registry commands below continue to select available 3.0 releases; Haskell uses a source archive until its first publication. Frozen [3.0.0 documentation](/3.0.0/usage/installation) remains available.
 
 <LanguageContent>
 <Python>
@@ -393,4 +395,64 @@ and run `mix deps.clean slackblocks --unlock`. The library starts no processes
 and needs no supervision-tree entry. For Rebar3 projects, see [Erlang integration](erlang).
 
 </Elixir>
+<Haskell>
+
+## Haskell availability and toolchain
+
+Haskell joins the upcoming coordinated **3.1.0** release. It is not published on
+Hackage yet; a version in the source manifest is not a registry release. Use a
+reviewed checkout of the Haskell train until publication is verified.
+
+GHC 9.6.7+ within the [tested compiler series](/usage/compatibility) is required.
+Development uses Cabal 3.16.1.0; the package declares Cabal syntax 3.0 and GHC2021.
+
+In a source checkout, build an actual distributable:
+
+```sh
+cd haskell
+cabal build lib:slackblocks
+cabal sdist --output-directory=dist
+```
+
+In a separate application's `cabal.project`, list its package and the local
+archive, replacing the absolute path with your archive location:
+
+```cabal
+packages: . /absolute/path/slackblocks-3.1.0.tar.gz
+```
+
+Declare `slackblocks >= 3.1 && < 3.2`, `aeson` and `base` in the application's
+`build-depends`. Use `cabal build` or `cabal run` from that application. After the
+Hackage release is verified, remove the archive from `packages` and resolve the
+same dependency range from Hackage. Do not use `cabal install` to add a library
+into an application's dependency graph.
+
+The core depends on Aeson, text, bytestring, containers, scientific and vector.
+It does not depend on an HTTP client or Slack SDK. Development dependency locks
+are not imposed on applications. `OverloadedStrings` makes text literals usable
+without repetitive `Text.pack` calls.
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example :: Result MessagePayload
+example = do
+  text <- buildMarkdownText (markdownText "Hello, *Haskell*!")
+  section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText text)})
+  buildMessagePayload
+    ( (messagePayload "C0123456789")
+        { messagePayloadText = Just "Hello, Haskell!",
+          messagePayloadBlocks = Just [sectionBlockAsBlock section]
+        }
+    )
+```
+
+Handle `Left errors`; on `Right payload`, encode with Aeson. The [sending guide](/usage/sending_messages)
+shows the separately resolved HTTP integration.
+
+</Haskell>
 </LanguageContent>

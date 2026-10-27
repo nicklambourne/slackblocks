@@ -1,0 +1,121 @@
+# Language semantics
+
+The implementations share Slack wire types and validation fixtures. They do not
+promise identical object ownership, default values or editing APIs. When porting
+an application, check its native values and final wire payload separately: an
+omitted field, an explicit `false`, a zero and an empty collection need not mean
+the same thing to the implementation or to Slack.
+
+## Ownership and edits
+
+| Implementation | Native ownership and edit boundary | Practical consequence |
+| --- | --- | --- |
+| Python | Models are mutable. Collection coercion can retain the caller's list and nested model references. | Build a fresh model, or copy application inputs, when personalizing a reusable template. Mutating a source list can change a later serialization. |
+| TypeScript | Fluent builders retain nested objects/builders until `build()`. Factory serialization produces a wire snapshot. Collection methods append. | Mutate inputs before building deliberately; preserve built payloads as snapshots. To replace a collection, compose a new builder instead of appending to the old one. |
+| Go | Fluent builders are mutable and retain nested builders until `Build()`. Built modeled maps/lists are materialized afresh. Collection methods append. | Rebuild from application data for edits. Changing a nested builder changes the next build, while earlier modeled snapshots remain independent. Arbitrary custom values passed through escape hatches need their own ownership review. |
+| Java | Built values hold defensive snapshots and expose immutable collections. Builders remain mutable. | Compose the next value with native builders. Do not try to edit a getter collection or the exported map. |
+| C# | Models copy their collection inputs; properties are read-only and exported JSON nodes are independent copies. | Construct the replacement value using its properties and changed arguments. Editing an exported JSON node does not edit the model. |
+| Ruby | Native values freeze their copied nested content. `with` creates a changed value; `as_json` exports a fresh representation. | Use `with` for edits and retain the original value for comparisons. Component helpers return values/arrays rather than mutable fluent builders. |
+| Rust | Models own their data. Getters borrow values; `clone().into_builder()` starts an independent editable builder. | Clone before rebuilding when the old value is still needed. Use checked construction/parsing for the new value. |
+| PHP | Readonly native values and immutable nested values retain constructor state. `with` creates a replacement; exports are independent representations. | Use `with` or construct a new value, rather than mutating properties. |
+| Elixir | Structs, lists and maps are immutable. Model `change/2` validates a replacement and returns a tagged result; `change!/2` raises on failure. | Keep the original value for reuse. Validate the complete receiving payload with `Slackblocks.to_map/1`; direct struct updates are rechecked at wire boundaries. |
+
+These guarantees concern modeled fields. They are not a universal deep-copy
+promise for arbitrary foreign objects or unchecked extension values. Application
+state, callback revisions and database records remain application-owned.
+
+## Omission and defaults
+
+Leave an optional argument or setter unused to request omission. Do not assume
+that passing the native null value, an empty list or `false` is a portable way to
+remove a field. Required fields, defaults and normalization are field-specific.
+
+- Python generates omitted block IDs and has legacy truthiness normalization in
+  some serializers. For example, `DateTimePicker(initial_datetime=0)` omits
+  `initial_date_time`. That is a wire-preservation difference, even if the model's
+  attribute still equals zero. Pin block IDs in tests and inspect the serialized
+  value for fields where zero/false matters.
+- Go `NewPlainText().Text("Hi").Emoji(false)` preserves `emoji: false`; leaving
+  `Emoji` uncalled omits it. A supplied empty enum is invalid, and a typed nil
+  nested builder is a type error, not an omission request.
+- TypeScript fluent list methods append their arguments. On a fresh builder,
+  `.options([])` explicitly supplies an empty list and is rejected when built,
+  just like `staticSelect({options: []})`. After options have been added,
+  `.options([])` appends nothing and leaves those options intact. Leave the
+  setter unused to omit a field; other fields have their own empty-list behavior.
+- Java varargs collection methods append their arguments. Zero arguments leave
+  an unset field omitted and do not clear an existing collection. An explicit
+  empty array supplied through `wireField` is validated as a supplied list.
+- Elixir optional `nil` fields are omitted; explicit `false` and zero are retained
+  when valid for that field. Model `change/2` replaces supplied fields atomically
+  while leaving other fields unchanged. Use `Slackblocks.from_map/2` for checked
+  wire input and `Slackblocks.to_map/1` for complete output validation.
+- Java optional getters commonly return `Optional`, C# uses nullable properties,
+  Rust uses `Option`, and Ruby/PHP use `nil`/`null` for optional native fields.
+  An omitted wire field is not an explicit JSON null. Read the field signature
+  and generated documentation instead of applying a blanket null rule.
+
+[Validation boundaries](validation-boundary) records the shared checks and the
+remaining calendar-parser difference. Defaults are retained for compatibility;
+this guide does not make every serializer preserve every explicit false/zero.
+
+## Conditional getters
+
+Some Java getters use a required-field signature even where an alternative makes
+that field unnecessary. A URL-only `ButtonElement` can be valid without
+`action_id`, but `getActionId()` throws `IllegalStateException` in that case.
+Likewise, an `ImageBlock` constructed with a Slack file may omit `image_url`, so
+`getImageUrl()` throws. The corresponding C# `ActionId` and `ImageUrl` properties
+are nullable. Java's `SectionBlock.getText()` already returns `Optional<Text>`;
+a fields-only section is not the same getter case.
+
+Choose the getter for the alternative you constructed. Java callers that need
+to inspect presence dynamically can check the model's immutable `toMap()`
+before calling a required getter. This preserves the existing signatures; it
+does not change valid URL-only buttons or Slack-file images into invalid models.
+
+## Helpers
+
+Python currently has no native `Paginator` or `Accordion` helper; use its native
+blocks and application paging state. TypeScript, Go, Java, C#, Ruby, Rust, PHP
+and Elixir provide these helpers, but their signatures and returned shapes differ. For
+example, Go's `NewPaginator()` is a fluent group builder expanded by its parent;
+Ruby's `Paginator.create(...)` returns an array of native blocks. Ruby's
+`AccordionSection.create` returns a collapsible `ContainerBlock`, while Go's
+`NewAccordionSection()` is a builder. Elixir
+`Slackblocks.Components.Paginator.to_blocks/2` returns `{:ok, blocks}` or an
+error; `AccordionSection.new/1` returns a collapsible container in the same tagged
+form, and `Accordion.to_blocks/1` validates the list of sections. Their bang
+variants return the value or raise. Receiving surface limits still apply to the
+expanded blocks.
+
+Use the chosen language's helper reference rather than translating a method name
+literally. Helpers compose blocks and controls. They do not store pagination
+state, process callbacks, schedule work or grant Slack permissions. Recompose the
+next payload from application state and validate the receiving surface after
+helper expansion.
+
+## Exact numeric values in Go
+
+`RawNumberBuilder.Value(float64)` remains available. A floating-point conversion
+can round an integer such as `9007199254740993` before serialization. The native
+companion accepts Go's [`json.Number`](https://pkg.go.dev/encoding/json#Number)
+without that conversion:
+
+```go
+cell := slackblocks.NewRawNumber().
+    ValueNumber(json.Number("9007199254740993")).
+    Text("9,007,199,254,740,993")
+```
+
+Import `encoding/json` and `github.com/nicklambourne/slackblocks/go/v3` in the
+calling program. `Build` validates JSON number syntax, including rejecting an
+empty number, leading zeros, NaN and infinity. Integer, decimal and exponent
+lexemes remain numeric JSON values, not quoted strings. `Text` is the separate
+display label. This promises exact emitted JSON; it does not promise Slack's
+internal sorting arithmetic or client rendering uses arbitrary precision.
+
+Other languages retain their native numeric constraints: in particular,
+TypeScript's JavaScript `number` is not an arbitrary-precision integer type.
+Avoid introducing a float conversion into an exact-value application path, and
+check both the native input type and the serialized payload.

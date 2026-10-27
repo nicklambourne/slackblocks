@@ -21,6 +21,7 @@ const languageLabels: Record<Language, string> = {
   rust: "Rust",
   php: "PHP",
   elixir: "Elixir",
+  haskell: "Haskell",
 };
 
 function LanguageLogo({ language }: { language: Language }) {
@@ -110,7 +111,7 @@ function LanguageLogo({ language }: { language: Language }) {
   </>;
 
   // Official artwork and attribution: static/img/languages/README.md.
-  if (language === "ruby" || language === "rust" || language === "php") return (
+  if (language === "ruby" || language === "rust" || language === "php" || language === "haskell") return (
     <img
       alt=""
       aria-hidden="true"

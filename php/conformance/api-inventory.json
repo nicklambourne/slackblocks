@@ -7671,7 +7671,7 @@
         "properties": [],
         "methods": [],
         "constants": {
-            "PACKAGE": "3.0.0",
+            "PACKAGE": "3.1.0",
             "SPEC": "1.4.0"
         }
     },

@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const languages = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir"];
+const languages = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir", "haskell"];
 const source = await readFile(path.join(root, "docs/reference/index.mdx"), "utf8");
 const sharedIndex = source.split("<LanguageContent>")[0];
 const html = await readFile(path.join(root, "build/reference.html"), "utf8");
@@ -22,4 +22,4 @@ for (const recipe of ["multiselect-compatibility", "workflow-state", "reliable-d
 const phpObjects = await readFile(path.join(root, "build/reference/php/objects.html"), "utf8");
 assert.match(phpObjects, /id="richtextusergroup"/);
 assert.match(phpObjects, /userGroupId/);
-console.log("Current nine-language references and executable recipe routes are discoverable.");
+console.log("Current ten-language references and executable recipe routes are discoverable.");

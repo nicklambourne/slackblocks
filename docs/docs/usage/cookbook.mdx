@@ -1,4 +1,4 @@
-import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Recipe Book
 
@@ -1417,4 +1417,293 @@ Slackblocks.to_map!(updated)
 
 
 </Elixir>
+<Haskell>
+
+Each example exposes `example :: Result …`; handle errors and encode the successful value. None sends a request.
+
+## Build status notification
+
+![Illustrative build status notification layout](/img/usage/build_notification.png)
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example :: Result MessagePayload
+example = do
+  title <- buildPlainText (plainText "Build #482 passed")
+  heading <- buildHeaderBlock (headerBlock title)
+  branch <- buildMarkdownText (markdownText "*Branch*\n`main`")
+  tests <- buildMarkdownText (markdownText "*Tests*\n1,247 passed")
+  details <-
+    buildSectionBlock
+      ( sectionBlock
+          { sectionBlockFields = Just (map markdownTextAsText [branch, tests])
+          }
+      )
+  label <- buildPlainText (plainText "View build")
+  button <-
+    buildButtonElement
+      ( (buttonElement label)
+          { buttonElementActionId = Just "view",
+            buttonElementUrl = Just "https://ci.example.com/482"
+          }
+      )
+  actions <- buildActionsBlock (actionsBlock [buttonElementAsElement button])
+  buildMessagePayload
+    ( (messagePayload "C0123456789")
+        { messagePayloadText = Just "Build #482 passed",
+          messagePayloadBlocks = Just [headerBlockAsBlock heading, sectionBlockAsBlock details, actionsBlockAsBlock actions]
+        }
+    )
+```
+
+## Approval request with action buttons
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  question <- buildMarkdownText (markdownText "*Approve deployment?*")
+  section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText question)})
+  yes <- buildPlainText (plainText "Approve")
+  no <- buildPlainText (plainText "Reject")
+  approve <- buildButtonElement ((buttonElement yes) {buttonElementActionId = Just "approve", buttonElementValue = Just "482", buttonElementStyle = Just ButtonStylePrimary})
+  reject <- buildButtonElement ((buttonElement no) {buttonElementActionId = Just "reject", buttonElementValue = Just "482", buttonElementStyle = Just ButtonStyleDanger})
+  actions <- buildActionsBlock (actionsBlock [buttonElementAsElement approve, buttonElementAsElement reject])
+  buildMessagePayload ((messagePayload "C1") {messagePayloadText = Just "Approval requested", messagePayloadBlocks = Just [sectionBlockAsBlock section, actionsBlockAsBlock actions]})
+```
+
+## Rich-formatted alert
+
+![Illustrative rich-formatted alert layout](/img/usage/alert.png)
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  title <- buildPlainText (plainText "Deployment")
+  warning <- buildMarkdownText (markdownText "*Attention:* deployment paused")
+  alert <- buildAlertBlock ((alertBlock (markdownTextAsText warning)) {alertBlockLevel = Just AlertLevelWarning})
+  text <- buildRichTextText ((richTextText "Review the checks") {richTextTextStyle = Just (richTextStyle {styleBold = Just True})})
+  section <- buildRichTextSection (richTextSection [richTextTextAsRichTextSectionElement text])
+  rich <- buildRichTextBlock (richTextBlock [richTextSectionAsRichTextBlockElement section])
+  buildModalView (modalView title [alertBlockAsBlock alert, richTextBlockAsBlock rich])
+```
+
+## Confirmation modal
+
+![Illustrative confirmation modal layout](/img/usage/input.png)
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  title <- buildPlainText (plainText "Confirm deployment")
+  submit <- buildPlainText (plainText "Deploy")
+  label <- buildPlainText (plainText "Reason")
+  field <- buildPlainTextInputElement (plainTextInputElement {plainTextInputElementActionId = Just "reason_input"})
+  input <- buildInputBlock ((inputBlock label (plainTextInputElementAsInputElement field)) {inputBlockBlockId = Just "reason"})
+  buildModalView ((modalView title [inputBlockAsBlock input]) {modalViewSubmit = Just submit, modalViewCallbackId = Just "deploy"})
+```
+
+## Threaded reply
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Aeson
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example =
+  buildMessagePayload
+    ( (messagePayload "C1")
+        { messagePayloadText = Just "Deployment complete",
+          messagePayloadExtensions = Map.fromList [("thread_ts", Data.Aeson.String "1700000000.000001")]
+        }
+    )
+```
+
+`thread_ts` is an explicit unmodeled extension. It cannot override reserved or modeled keys; application-specific extension semantics are not validated.
+
+## Ephemeral interaction response
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example =
+  buildMessageResponse
+    ( messageResponse
+        { messageResponseText = Just "Only you can see this",
+          messageResponseResponseType = Just ResponseTypeEphemeral
+        }
+    )
+```
+
+## Multi-column status report (table)
+
+![Illustrative multi-column status report layout](/img/usage/table.png)
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  rows <-
+    traverse
+      (traverse (fmap rawTextAsTableCell . buildRawText . rawText))
+      [["Service", "Status"], ["API", "Healthy"], ["Worker", "Degraded"]]
+  table <- buildTableBlock (tableBlock rows)
+  buildMessagePayload ((messagePayload "C1") {messagePayloadText = Just "Service status", messagePayloadBlocks = Just [tableBlockAsBlock table]})
+```
+
+## Colored attachment
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  text <- buildMarkdownText (markdownText "All checks passed")
+  section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText text)})
+  notice <- buildAttachment ((attachment [sectionBlockAsBlock section]) {attachmentColor = Just (colorText (namedColor Good))})
+  buildMessagePayload ((messagePayload "C1") {messagePayloadText = Just "Checks passed", messagePayloadAttachments = Just [notice]})
+```
+
+## Preview in Block Kit Builder
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  text <- buildMarkdownText (markdownText "Preview *this*")
+  section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText text)})
+  pure (blockKitBuilderURL (BuilderBlocks [sectionBlockAsBlock section]) (Just "T123"))
+```
+
+The URL is produced locally; it does not prove Slack rendering acceptance.
+
+## Checked JSON and immutable edits
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example :: Result SectionBlock
+example = do
+  original <- decode "{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Before\"}}"
+  text <- buildMarkdownText (markdownText "After")
+  buildSectionBlock
+    ( (inspectSectionBlock original)
+        { sectionBlockText = Just (markdownTextAsText text),
+          sectionBlockBlockId = Just "edited"
+        }
+    )
+```
+
+## Workflow button
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  parameter <- buildInputParameter (inputParameter "ticket" "INC-42")
+  workflow <- workflowFromURL "https://slack.com/shortcuts/Ft123/abc" [parameter]
+  label <- buildPlainText (plainText "Open workflow")
+  buildWorkflowButtonElement (workflowButtonElement label workflow "workflow")
+```
+
+## Accordion and pagination
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example :: Result MessagePayload
+example = do
+  title <- buildPlainText (plainText "Details")
+  text <- buildMarkdownText (markdownText "Ready")
+  section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText text)})
+  container <- buildContainerBlock (accordionSection title [sectionBlockAsBlock section])
+  expanded <- accordion [container]
+  page <-
+    paginate
+      ((paginator "items") {paginatorPageSize = 1})
+      [sectionBlockAsBlock section, sectionBlockAsBlock section]
+  buildMessagePayload
+    ( (messagePayload "C1")
+        { messagePayloadText = Just "Items",
+          messagePayloadBlocks = Just (expanded <> page)
+        }
+    )
+```
+
+## Opaque metadata and safe edits
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Aeson
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  original <-
+    buildMessagePayload
+      ( (messagePayload "C1")
+          { messagePayloadMetadata =
+              Just
+                ( Map.fromList
+                    [ ("event_type", Data.Aeson.String "build"),
+                      ("event_payload", Data.Aeson.object ["count" Data.Aeson..= (0 :: Integer), "enabled" Data.Aeson..= False, "missing" Data.Aeson..= Data.Aeson.Null])
+                    ]
+                )
+          }
+      )
+  buildMessagePayload ((inspectMessagePayload original) {messagePayloadText = Just "Updated"})
+```
+
+</Haskell>
 </LanguageContent>

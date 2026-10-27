@@ -1,0 +1,441 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+
+# Migration
+
+## Upgrading to 3.0.0
+
+All nine implementations move to 3.0.0 together. Minimum supported language and runtime versions are unchanged; see [Compatibility](compatibility).
+
+For applications that construct ordinary messages and buttons with valid inputs,
+the main upgrade is the dependency version, plus the import-path change for Go.
+Review the specific cases below if you use number-input bounds, explicit response
+visibility or inputs that the earlier validation accepted. The new
+[Slackbot button prompt fields](agent-prompts) are optional and require no changes
+to existing buttons.
+
+- Number-input bounds now serialize and read back as strings. Numeric constructor and builder conveniences remain, but callers using numeric getters, C# constructor reflection, Elixir direct struct edits or numeric JSON bounds must migrate. See [number-input bounds](#number-input-bounds-in-spec-130) below.
+- Go imports move from `github.com/nicklambourne/slackblocks/go/v2` to `github.com/nicklambourne/slackblocks/go/v3`. Run `go get github.com/nicklambourne/slackblocks/go/v3@v3.0.0`, update imports, then run `go mod tidy` and your tests. Go 1.22 and the default slack-go v0.17.3 dependency remain supported; choosing the separately tested v0.23.1 SDK still requires Go 1.25.
+- Validation now rejects previously accepted invalid inputs, including explicit external-multiselect focus, inverted input bounds, malformed date/time shapes and more than two message charts (including attachments). Review the language changelog and test your final payloads.
+- Python callers passing `ephemeral=False` now explicitly request `in_channel`; omit the option to retain the wire default.
+
+The frozen 2.8.0 docs remain available in the version selector. The older migration notes below describe their named releases.
+
+<LanguageContent>
+<Python>
+
+## Upgrading Python from 1.x to 2.x
+
+`slackblocks 2.0` is a major version bump that focuses on cleaning up internal
+correctness issues, modernising the type-annotation surface, and adding several
+ergonomic helpers. The good news: **for almost all users, upgrading is a
+no-op** beyond changing the Python version pin.
+
+This page covers what actually changes for you and what's worth adopting once
+you've upgraded.
+
+## Quick checklist
+
+| Step | Action |
+| --- | --- |
+| 1 | Confirm you are on **Python 3.10 or newer**. If not, stay on `slackblocks ~= 1.2`. |
+| 2 | Bump your dependency pin to `slackblocks ~= 2.0` (or `>=2,<3`). |
+| 3 | Run your test suite. Existing code should continue to work unchanged. |
+| 4 | Optionally adopt the new conveniences below. |
+
+## Truly breaking changes
+
+There is exactly one breaking change you might trip over:
+
+### Python 3.8 and 3.9 are no longer supported
+
+Both reached upstream end of life
+([3.8 EOL Oct 2024](https://devguide.python.org/versions/),
+[3.9 EOL Oct 2025](https://devguide.python.org/versions/)) and are not
+receiving security patches.
+
+If you are still on either:
+
+- **Stay on the `1.x` line** until you can upgrade Python. The 1.x line is
+  maintained on a best-effort basis for bugfixes; see the
+  [Compatibility](compatibility) page.
+- Pin via your package manager:
+
+<Tabs>
+<TabItem value={"pip-requirements-txt"} label={"pip (`requirements.txt`)"}>
+
+```text
+slackblocks>=1,<2
+```
+
+
+</TabItem>
+<TabItem value={"poetry-pyproject-toml"} label={"poetry (`pyproject.toml`)"}>
+
+```toml
+slackblocks = "^1"
+```
+
+
+</TabItem>
+<TabItem value={"uv-pyproject-toml"} label={"uv (`pyproject.toml`)"}>
+
+```toml
+"slackblocks>=1,<2"
+```
+
+
+</TabItem>
+</Tabs>
+
+That's it for breaking changes. Nothing else in the public API was removed
+or renamed.
+
+## What's *not* breaking, but worth adopting
+
+### `PlainText` and `Markdown` instead of `Text(type_=...)`
+
+Before:
+
+```python
+from slackblocks import Text, TextType
+
+heading = Text("Welcome", type_=TextType.PLAINTEXT, emoji=True)
+body = Text("**bold**", type_=TextType.MARKDOWN, verbatim=True)
+```
+
+After:
+
+```python
+from slackblocks import PlainText, Markdown
+
+heading = PlainText("Welcome", emoji=True)
+body = Markdown("**bold**", verbatim=True)
+```
+
+`PlainText` and `Markdown` are subclasses of `Text`, so anywhere a `Text` or
+`TextLike` was accepted before still accepts the new types. The rendered
+JSON is byte-identical to the equivalent `Text` calls.
+
+### `Workflow.from_url(...)` instead of nested `Workflow(trigger=Trigger(...))`
+
+Before:
+
+```python
+from slackblocks import Workflow, Trigger, InputParameter
+
+workflow = Workflow(
+    trigger=Trigger(
+        url="https://slack.com/shortcuts/...",
+        customizable_input_parameters=[
+            InputParameter(name="env", value="prod"),
+            InputParameter(name="retries", value="3"),
+        ],
+    ),
+)
+```
+
+After:
+
+```python
+from slackblocks import Workflow
+
+workflow = Workflow.from_url(
+    "https://slack.com/shortcuts/...",
+    env="prod",
+    retries="3",
+)
+```
+
+The verbose form continues to work, so you do not have to migrate.
+
+### `block_kit_builder_url(...)` for browser preview
+
+New helper that turns any block, list of blocks, message, view, or raw dict
+into a [Block Kit Builder](https://app.slack.com/block-kit-builder) URL. Open
+the URL in your browser to see exactly what Slack will render before you
+ship.
+
+```python
+from slackblocks import SectionBlock, block_kit_builder_url
+
+print(block_kit_builder_url(SectionBlock("Hi")))
+# https://app.slack.com/block-kit-builder/#%7B%22blocks%22%3A%5B...%5D%7D
+```
+
+Pass `team_id="T0123ABCD"` for a workspace-specific URL.
+
+### Typed exceptions for finer-grained error handling
+
+`InvalidUsageError` now has five subclasses, raised in well-defined
+situations:
+
+| Subclass | Raised when |
+| --- | --- |
+| `LengthError` | A string or list violates a min/max-length constraint. |
+| `RangeError` | A numeric value violates a min/max-value constraint. |
+| `TypeMismatchError` | Wrong type or unexpected discrete value. |
+| `MutualExclusivityError` | Two args that must not both be set were both set. |
+| `MissingRequiredError` | At least one of a set of args was required. |
+
+```python
+from slackblocks import Button, LengthError
+
+try:
+    Button(text="x" * 100, action_id="b")
+except LengthError as e:
+    # specifically a length violation
+    handle_length(e)
+```
+
+**Existing `except InvalidUsageError` blocks continue to catch every
+subclass** — no change required to upgrade. The new subclasses are purely
+additive.
+
+### Round-tripping incoming Slack JSON with `from_dict`
+
+If your app receives Slack interactivity payloads or events and wants to
+inspect the blocks, you can now parse them back into `slackblocks` objects:
+
+```python
+import json
+from slackblocks import Block
+
+incoming = json.loads(slack_request_body)
+block = Block.from_dict(incoming["blocks"][0])
+print(block.text.text)  # for a SectionBlock, etc.
+```
+
+`Block.from_dict` dispatches by `type`; direct typed parsers also require the
+matching discriminator. This is a partial parser, not a general Slack JSON loader:
+
+| Parse support | Block types |
+| --- | --- |
+| Supported | Alert, Divider, File, Header, Image, Markdown, Video |
+| Supported subset | Section without accessory; Context with text elements only |
+| Raises `NotImplementedError` | Actions, Input, RichText, Table, Card, Carousel, Container, ContextActions, DataTable, DataVisualization, TaskCard, Plan; Section with accessory; Context with images |
+
+Unknown future fields are ignored, so this is not a lossless storage format.
+Keep the original JSON when forwarding or archiving unsupported or future fields.
+`Text`, `ConfirmationDialogue`, `Option`, `OptionGroup`,
+`DispatchActionConfiguration`, `ConversationFilter`, `InputParameter`, `SlackFile`,
+`Trigger`, and `Workflow` have composition-object parsers; check individual
+references rather than assuming every composition type is parseable.
+
+### Two new block types
+
+Slack added these in 2024; they're now available:
+
+```python
+from slackblocks import MarkdownBlock, VideoBlock
+
+# Slack's GitHub-flavored markdown block (richer than SectionBlock mrkdwn).
+MarkdownBlock(text="# Heading\n\n- item 1\n- item 2")
+
+# Embed a video from a Slack-supported provider.
+VideoBlock(
+    alt_text="Demo",
+    thumbnail_url="https://example.com/thumb.png",
+    title="Getting Started",
+    video_url="https://example.com/video.mp4",
+)
+```
+
+## Type-checking improvements
+
+The 2.x series ships with substantially tighter type signatures. If you
+type-check your code with mypy, pyright, or Pyre, expect that:
+
+- `Text.to_text("hi")` is now correctly typed as `Text` (was previously
+  `Text | None`). Code that did `assert text is not None` after `to_text`
+  calls can drop the assertion.
+- `Button(style="warning")` is now flagged at type-check time —
+  `style` is `Literal["primary", "danger"] | ButtonStyle | None`.
+- `ColumnSettings(align="LEFT")` is similarly flagged at type-check time.
+- `ConversationFilter(include=["bogus"])` is flagged.
+
+These constraints already existed at runtime; the difference is that mypy
+now agrees with the runtime behaviour.
+
+## Internal changes you might notice
+
+The `_resolve()` method on every block, element, and composition object was
+refactored to use a shared `slackblocks._core.resolve()` walker. This is
+strictly internal — JSON output is byte-identical to 1.x — but if you have
+been subclassing internal classes you may notice the `_resolve` bodies are
+much shorter.
+
+If you are extending `slackblocks` with custom classes:
+
+- If your custom class has a `_resolve` method that follows the existing
+  pattern (manual `if self.x is not None: out["x"] = self.x._resolve()`), it
+  continues to work in 2.x without modification.
+- If you want, you can switch to using the new `slackblocks._core.resolve`
+  / `omit_none` helpers; doing so guarantees recursion into nested
+  `_resolve` outputs and is much more concise.
+
+## Reporting issues
+
+If you hit a real upgrade problem, please [open an issue on
+GitHub](https://github.com/nicklambourne/slackblocks/issues/new) — include
+your Python version, your `slackblocks` version (old and new), and a
+minimal repro.
+
+</Python>
+<TypeScript>
+
+See [Installation](installation) and the [TypeScript API reference](../reference/typescript) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</TypeScript>
+<Go>
+
+See [Installation](installation) and the [Go API reference](../reference/go) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</Go>
+<Java>
+
+See [Installation](installation) and the [Java API reference](../reference/java) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</Java>
+<CSharp>
+
+See [Installation](installation) and the [C# API reference](../reference/csharp) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</CSharp>
+<Ruby>
+
+See [Installation](installation) and the [Ruby API reference](../reference/ruby) for supported versions and native conventions. This page's historical release-line discussion applies to Python.
+
+</Ruby>
+<Rust>
+
+## Moving to the Rust API
+
+Rust support starts in 2.6.0; there is no previous Rust package API to migrate.
+When porting code from another implementation:
+
+- Use consuming snake_case builders and handle `build()` with `?` or `match`.
+- Use `SelectOption`, `SelectOptionGroup` and `ConfirmationDialogue`; names avoid
+  colliding with Rust's `Option` and describe their Slack roles.
+- Getters borrow values. Use `clone().into_builder()` to edit a copy, or move the
+  value into its builder when the old value is no longer needed.
+- Use concrete values and `From` conversions into role enums; strings coerce only
+  in text fields. Typed markdown is rejected in plain-only fields at compile time.
+- Serialize with Serde. HTTP clients and async runtimes stay in the application.
+- Block IDs are omitted unless supplied. `MessageResponse` follows shared model
+  defaults, and parsing preserves absent optional fields. Use `clear_*()` to
+  remove defaults explicitly.
+- Python's deprecated attachment `Field` and historical aliases are not copied;
+  the Rust API implements the shared model and documented helper inventory.
+
+See [Quick Start](../quick-start), [Compatibility](compatibility), and the
+[Rust API reference](../reference/rust) for complete signatures and error behavior.
+
+</Rust>
+<PHP>
+
+## Adopting the PHP API
+
+There is no earlier Slackblocks PHP release to migrate from. Existing raw arrays
+can enter through `MessagePayload::fromArray()` or `fromJson()`; choose `fromJson()`
+when preserving empty JSON objects matters. Unknown fields become immutable
+`JsonObject` extensions. Modeled names and `type` cannot be overridden.
+
+From `slack-php/slack-php-block-kit`, replace mutable/fluent construction with
+named constructors and `with()`. These are separate packages with different APIs;
+objects are not interchangeable. Use JSON at the boundary. From Laravel's Slack
+notification builder, keep delivery and routing in Laravel and bridge validated
+blocks through `usingBlockKitTemplate()` as shown in [Sending Messages](sending_messages).
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$original = S\SectionBlock::fromJson('{"type":"section","text":{"type":"mrkdwn","text":"Original"}}');
+$edited = $original->with(text: 'Updated');
+assert($original->text->getText() === 'Original');
+echo $edited->toJson();
+```
+
+Construct typed children directly for new code. `PlainText` and `MarkdownText`
+are distinct classes; text parameters also accept strings with the field's
+native plain-text or mrkdwn default. Enums use cases such as
+`ButtonStyle::Primary`, not unchecked strings. Optional constructor `null` omits
+a field; explicit null inside a `JsonObject` is preserved.
+
+</PHP>
+<Elixir>
+
+## Starting with Elixir
+
+2.8.0 is the first planned Elixir release, so there is no older Elixir API to migrate.
+Use native constructors, lists and atom enums rather than translating another
+language's builder chains. Names use Slack's wire `snake_case`.
+
+```elixir
+alias Slackblocks.{Blocks.Section, Objects.MarkdownText}
+original = Section.new!(text: "Before")
+{:ok, updated} = Section.change(original, text: "After", block_id: "status")
+%MarkdownText{text: "Before"} = original.text
+%MarkdownText{text: "After"} = updated.text
+Slackblocks.to_map!(updated)
+```
+
+Constructor binaries are converted to the correct text object. Direct struct
+edits require the actual typed value and are checked on output. `change/2`
+retains unspecified fields and validates an edit atomically. Explicit `nil`
+clears optional fields; it cannot clear a required field.
+
+Parsing preserves absent optional fields as `nil`, while construction applies
+declared defaults. `Message` defaults to `text: ""` and `mrkdwn: true`;
+block IDs are never generated. Use checked `decode/2` for known model/role JSON.
+Arbitrary Slack event payloads belong to your application's event decoder.
+
+When adding slackblocks to an existing application, rebuild Jason's optional
+Decimal support as described in [Installation](installation). Keep application
+locks and recompile dependencies/protocols before producing an OTP release.
+
+</Elixir>
+</LanguageContent>
+
+## Number-input bounds in spec 1.3.0
+
+Slack's [number-input reference](https://docs.slack.dev/reference/block-kit/block-elements/number-input-element/)
+requires `min_value` and `max_value` to be JSON strings. Earlier packages emitted
+numbers, which ordinary Slack modal writes rejected. The native APIs now emit
+strings and compare the bounds numerically, rejecting inverted ranges, invalid
+strings, and nonfinite numeric values. Omitted bounds remain omitted.
+
+Numeric construction remains available: Python, TypeScript, Go, Ruby, PHP and Elixir
+accept a numeric convenience argument or a string; Java has string and numeric
+builder overloads; Rust setters accept a displayable numeric value or string.
+C# uses the public `NumberInputBound` scalar with implicit string, integer,
+double, nullable-double and decimal conversions. Existing ordinary numeric
+constructor calls still work. C# callers using reflection must account for the
+new parameter type. This scalar belongs to the `elements.number_input`
+capability and is exercised by its constructor and conformance tests.
+
+Getters and serialized values now expose strings in every language. In
+particular, Java's `getMinValue`/`getMaxValue` now return `Optional<String>`,
+C# properties return `string?`, and Rust getters return `Option<&str>`.
+Elixir struct fields contain `binary() | nil`; keyword constructors and `change/2` retain numeric conveniences, while parsed maps and direct struct edits must use strings. This is
+a deliberate source/wire contract correction: callers that inspect numeric
+getters or JSON numbers must migrate. Pass strings when decimal spelling or
+integer precision matters. This does not normalize `initial_value` or establish
+a trailing-zero prohibition; that separate Slack runtime discrepancy remains
+documented in [troubleshooting](./troubleshooting.mdx). These API changes ship in coordinated release 3.0.0.
+
+Bounds use signed ASCII decimal/scientific strings (for example `-1.25`, `.5`, `2.` or `1e-3`). Whitespace, underscores, hex and nonfinite spellings are rejected. Comparisons preserve precision beyond floating point, including long fractions and integers above 2^53. Equivalent strings such as `0.1000` and `1e-1` remain unchanged on the wire. The library accepts mathematically finite strings such as `1e309`; this does not establish Slack delivery support for every magnitude.
+
+Recorded `views.open` probes on 2026-10-13 rejected bound strings `1e2`, `1e309`, `+10`, `.5`, `0x10`, `1_0`, ` 10 ` and `1.`, although `blocks.validate` accepted them. For ordinary delivery, use conventional decimal strings such as `"0"`, `"12.5"` and `"100"`; the preserved scientific/alternate forms remain library inputs rather than a Slack delivery guarantee. Native numeric convenience conversions may also produce scientific notation for very large or small values. Applications targeting those magnitudes should test their final native payload against the receiving Slack API.
+
+### External multi-select focus
+
+Slack's [external-data multi-select field table](https://docs.slack.dev/reference/block-kit/block-elements/multi-select-menu-element/) does not support `focus_on_load`. Omit the parameter, including an explicit `false`, when constructing an external multi-select. The compatibility parameter remains callable but now raises `invalid-usage`; it is not silently ignored. This restriction does not apply to the other selector types whose Slack field tables include focus. Python's default changes from false to `None` so omission can be distinguished from an explicitly supplied false value.

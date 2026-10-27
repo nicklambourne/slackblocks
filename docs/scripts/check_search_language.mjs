@@ -143,7 +143,7 @@ assert.doesNotMatch(rustText, /Python 3\.10 or newer is required/);
 assert.ok(rustDocuments.some(({u}) => u.includes("/reference/rust")));
 assert.ok(rustDocuments.some(({u}) => u.endsWith("/usage/compatibility")));
 
-const allLanguages = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir"];
+const allLanguages = ["python", "typescript", "go", "java", "csharp", "ruby", "rust", "php", "elixir", "haskell"];
 for (const language of allLanguages) {
   const documents = await readDocuments(language);
   for (const other of allLanguages.filter((candidate) => candidate !== language)) {
@@ -165,3 +165,12 @@ for (const language of allLanguages) {
     assert.ok(documents.some(({ u }) => u.includes("/reference/php/blocks")));
   }
 }
+
+const haskellDocuments = await readDocuments("haskell");
+const haskellText = haskellDocuments.map(({ t }) => t).join("\n");
+assert.match(haskellText, /minimum is GHC 9\.6\.7/);
+assert.match(haskellText, /buildSectionBlock/);
+assert.ok(haskellDocuments.some(({ u }) => u.includes("/reference/haskell/blocks")));
+assert.ok(haskellDocuments.some(({ u }) => u.endsWith("/usage/compatibility")));
+assert.doesNotMatch(haskellText, /PHP 8\.2 or newer is required/);
+assert.doesNotMatch(haskellText, /Elixir 1\.16\.3 or newer/);

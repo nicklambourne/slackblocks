@@ -1,4 +1,4 @@
-import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # API reference
 
@@ -20,6 +20,7 @@ from another language or from a frozen versioned page.
 | Rust | [Rust consuming builders and role enums](/reference/rust) |
 | PHP | [PHP named constructors and readonly properties](/reference/php) |
 | Elixir | [Elixir structs, functions and typespecs](/reference/elixir) |
+| Haskell | [Haskell checked values, records and functions](/reference/haskell) |
 
 Use the [recipe index](/recipes) to find forms, response URLs, helpers and SDK
 handoff before reading implementation source. For example, PHP
@@ -91,4 +92,13 @@ and signatures come from compiled Elixir metadata, including functions with defa
 [HexDocs](https://hexdocs.pm/slackblocks) will become available after the first release.
 
 </Elixir>
+<Haskell>
+
+The [Haskell reference](/reference/haskell) combines GHC-discovered signatures
+with compiled Haddock comments. It includes every public model, field record,
+constructor, role conversion, matcher, helper and structured error. The build
+compares those exports with the independent API inventory and checks rendered
+anchors. Native Haddock is also built from the actual source archive.
+
+</Haskell>
 </LanguageContent>

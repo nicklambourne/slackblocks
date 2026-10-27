@@ -5,25 +5,33 @@ encoding. Requires GHC 9.6.7 or newer within the tested compiler range.
 
 This package is unreleased. The native API covers all 89 shared models, closed
 roles and enumerations in contract 1.4.0. It is not part of the active
-coordinated publisher. Packaging integrations and complete site documentation
-are being completed in the dependent PR train.
+coordinated publisher. The source archive and native HTTP integration are checked on supported
+compiler endpoints. Current site documentation targets this unreleased version.
 
 ```haskell
 {-# LANGUAGE OverloadedStrings #-}
+
 import Data.Aeson (encode)
 import Slackblocks
 
 example = do
   label <- buildPlainText (plainText "Open")
-  action <- buildButtonElement
-    ((buttonElement label) {buttonElementActionId = Just "open"})
+  action <-
+    buildButtonElement
+      ((buttonElement label) {buttonElementActionId = Just "open"})
   body <- buildMarkdownText (markdownText "*Hello*")
-  section <- buildSectionBlock
-    (sectionBlock {sectionBlockText = Just (markdownTextAsText body),
-                   sectionBlockAccessory = Just (buttonElementAsElement action)})
+  section <-
+    buildSectionBlock
+      ( sectionBlock
+          { sectionBlockText = Just (markdownTextAsText body),
+            sectionBlockAccessory = Just (buttonElementAsElement action)
+          }
+      )
   buildMessagePayload
-    ((messagePayload "C123")
-      {messagePayloadBlocks = Just [sectionBlockAsBlock section]})
+    ( (messagePayload "C123")
+        { messagePayloadBlocks = Just [sectionBlockAsBlock section]
+        }
+    )
 
 -- Handle Left errors or send encode payload on Right payload.
 ```

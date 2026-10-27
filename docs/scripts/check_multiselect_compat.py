@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run all nine native multi-select consumers; validate JSON without Slack traffic."""
+"""Run all ten native multi-select consumers; validate JSON without Slack traffic."""
 
 import os
 import subprocess
@@ -141,4 +141,36 @@ with tempfile.TemporaryDirectory(prefix="slackblocks-multiselect-", dir=scratch)
         cwd=ROOT / "elixir",
     )
 
-print("Executed all nine multi-select consumers: 135 payloads; no Slack acceptance inferred.")
+    haskell_build = os.environ.get("SLACKBLOCKS_HASKELL_BUILD", "dist-docs")
+    executable = directory / ("haskell-probe.exe" if os.name == "nt" else "haskell-probe")
+    run(
+        [
+            "cabal",
+            f"--builddir={haskell_build}",
+            "build",
+            "lib:slackblocks",
+            "--jobs=2",
+        ],
+        cwd=ROOT / "haskell",
+    )
+    run(
+        [
+            "cabal",
+            f"--builddir={haskell_build}",
+            "exec",
+            "--",
+            "ghc",
+            "-O0",
+            "-package",
+            "slackblocks",
+            "-outputdir",
+            directory,
+            EXAMPLES / "haskell.hs",
+            "-o",
+            executable,
+        ],
+        cwd=ROOT / "haskell",
+    )
+    probe("Haskell", [executable], directory)
+
+print("Executed all ten multi-select consumers: 150 payloads; no Slack acceptance inferred.")

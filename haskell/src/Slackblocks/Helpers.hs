@@ -59,12 +59,19 @@ accordion sections = do
 -- | Page numbers start at one. Navigation adds up to two blocks; the receiving
 -- message or view checks total counts after expansion. No fields encode directly.
 data PaginatorOptions = PaginatorOptions
-  { paginatorActionIdPrefix :: Text,
+  { -- | Nonempty prefix; navigation action IDs append .previous or .next.
+    paginatorActionIdPrefix :: Text,
+    -- | One-based requested page; defaults to 1.
     paginatorPage :: Integer,
+    -- | Positive number of content blocks per page; defaults to 5.
     paginatorPageSize :: Integer,
+    -- | Previous-button label; defaults to Previous.
     paginatorPreviousText :: Text,
+    -- | Next-button label; defaults to Next.
     paginatorNextText :: Text,
+    -- | Include a context block with the page number; defaults to True.
     paginatorShowPageIndicator :: Bool,
+    -- | Optional actions-block ID; absent by default.
     paginatorBlockId :: Maybe Text
   }
   deriving (Eq, Show)
@@ -73,6 +80,7 @@ data PaginatorOptions = PaginatorOptions
 paginator :: Text -> PaginatorOptions
 paginator prefix = PaginatorOptions prefix 1 5 "Previous" "Next" True Nothing
 
+-- | Select a one-based page, add navigation and optionally its indicator. Reject empty content, invalid page/size and empty action prefix.
 paginate :: PaginatorOptions -> [Block] -> Result [Block]
 paginate options blocks = do
   when (null blocks) $ failure MissingRequired [Field "blocks"] "paginator.blocks" "expected content"
@@ -120,15 +128,38 @@ workflowFromURL url parameters = do
   link <- buildTrigger ((trigger url) {triggerCustomizableInputParameters = if null parameters then Nothing else Just parameters})
   buildWorkflow (workflow link)
 
-data NamedColor = Good | Warning | Danger | Red | Blue | Yellow | Green | Orange | Purple | Black
+-- | Named attachment colors, including Slack semantic good, warning and danger values.
+data NamedColor
+  = -- | Slack attachment color @good@.
+    Good
+  | -- | Slack attachment color @warning@.
+    Warning
+  | -- | Slack attachment color @danger@.
+    Danger
+  | -- | Slack attachment color @#ff0000@.
+    Red
+  | -- | Slack attachment color @#0000ff@.
+    Blue
+  | -- | Slack attachment color @#ffff00@.
+    Yellow
+  | -- | Slack attachment color @#00ff00@.
+    Green
+  | -- | Slack attachment color @#ff8800@.
+    Orange
+  | -- | Slack attachment color @#8800ff@.
+    Purple
+  | -- | Slack attachment color @#000000@.
+    Black
   deriving (Eq, Ord, Show, Enum, Bounded)
 
 -- | Valid attachment color. Use 'colorText' with an attachment's color field.
 newtype Color = Color Text deriving (Eq, Ord, Show)
 
+-- | Return the exact Slack color string for a checked color.
 colorText :: Color -> Text
 colorText (Color value) = value
 
+-- | Resolve a named attachment color without network access.
 namedColor :: NamedColor -> Color
 namedColor color = Color $ case color of
   Good -> "good"
@@ -150,6 +181,7 @@ hexColor input =
         then Right (Color ("#" <> value))
         else failure TypeMismatch [Field "color"] "color.hex" "expected six hexadecimal digits"
 
+-- | Construct a lowercase hexadecimal color; each exact integer channel must be in 0..255.
 rgbColor :: Integer -> Integer -> Integer -> Result Color
 rgbColor red green blue = do
   mapM_
@@ -165,13 +197,20 @@ rgbColor red green blue = do
 -- | Explicit Builder input shapes. 'BuilderJSON' is a deliberate opaque-object
 -- escape hatch; it is not validation or typed support for a Block Kit feature.
 data BuilderPayload
-  = BuilderBlocks [Block]
-  | BuilderMessage MessagePayload
-  | BuilderWebhook WebhookMessage
-  | BuilderResponse MessageResponse
-  | BuilderModal ModalView
-  | BuilderHome HomeTabView
-  | BuilderJSON (Map Text Value)
+  = -- | A block list wrapped in a blocks object.
+    BuilderBlocks [Block]
+  | -- | A complete checked Web API message.
+    BuilderMessage MessagePayload
+  | -- | A checked incoming-webhook payload.
+    BuilderWebhook WebhookMessage
+  | -- | A checked interaction response.
+    BuilderResponse MessageResponse
+  | -- | A checked modal view.
+    BuilderModal ModalView
+  | -- | A checked App Home view.
+    BuilderHome HomeTabView
+  | -- | An explicit unchecked application object; modeled support does not rely on this escape hatch.
+    BuilderJSON (Map Text Value)
   deriving (Eq, Show)
 
 instance ToJSON BuilderPayload where

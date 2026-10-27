@@ -1,4 +1,4 @@
-import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Troubleshooting & FAQ
 
@@ -725,6 +725,48 @@ For missing modules or unconsolidated protocols in Rebar3 releases, use the
 [Erlang integration guide](erlang).
 
 </Elixir>
+<Haskell>
+
+## A field record has no ToJSON instance
+
+A factory such as `sectionBlock` returns construction fields. Complete it with
+`buildSectionBlock`, handle the `Result`, and encode the checked value. This
+prevents invalid intermediate records from escaping as payloads.
+
+## Expected TextObject, Element or Block
+
+Use the native role conversion: `markdownTextAsText`, `buttonElementAsElement`
+or `sectionBlockAsBlock`. A pending `PlanTask` belongs only in a plan. Do not
+replace a missing conversion with unchecked JSON.
+
+## decode is ambiguous
+
+Import only `encode` from `Data.Aeson`, and import `decode` from `Slackblocks`,
+or qualify one module. `Slackblocks.decode` rejects duplicates and validates
+modeled values; `Data.Aeson.decode` has a different error boundary.
+
+## Construction returned Left
+
+Inspect `errorCategory`, `errorPath` and `errorConstraint`. `renderPath` formats
+paths for logs; avoid depending on error-message prose. Validate a complete
+message/view after helpers expand its blocks, because surface limits belong to
+the receiving payload.
+
+## Cabal cannot find the package or solve dependencies
+
+Hackage publication is still pending. Use the reviewed source archive as shown
+in [Installation](/usage/installation). Check GHC and declared bounds against
+[Compatibility](/usage/compatibility); do not use `allow-newer` to hide an untested
+compiler or dependency. HTTP dependencies belong to the separate application
+example, not the core library.
+
+## A change to inspected fields did not affect the original
+
+Values are immutable. Rebuild the edited fields and use the returned value;
+keep handling validation failures. False and zero are meaningful, while `Nothing`
+clears an optional field.
+
+</Haskell>
 </LanguageContent>
 
 ## `submit_disabled` on ordinary modals

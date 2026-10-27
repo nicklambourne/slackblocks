@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-import LanguageContent, { Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { Haskell, Elixir, CSharp, Go, Java, Python, Ruby, Rust, PHP, TypeScript } from '@site/src/components/LanguageContent';
 
 # Migration
 
@@ -403,6 +403,30 @@ Decimal support as described in [Installation](installation). Keep application
 locks and recompile dependencies/protocols before producing an OTP release.
 
 </Elixir>
+<Haskell>
+
+## Starting with Haskell
+
+3.1.0 is the first planned Haskell package release; there is no earlier Haskell
+API to migrate. Examples from another language are behavioral references, not
+constructor syntax to translate mechanically.
+
+Use `plainText`/`markdownText`, build checked values, and explicitly convert them
+to allowed roles such as `markdownTextAsText` or `sectionBlockAsBlock`. Fields use
+namespaced record selectors to avoid ambiguous names. `TextObject`, `SelectOption`,
+`SelectOptionGroup` and `ConfirmationDialogue` avoid collisions with common types.
+
+Use `buildPlanTask` for a pending task inside a plan. `PlanTask` cannot enter the
+`Block` role. `buildTaskCardBlock` handles standalone cards and rejects pending.
+Number-input bounds are `Text`; use `decimalText` for an exact numeric convenience.
+
+`inspect…` gives editable fields; call `build…` again after changes. Handle
+`Result` with pattern matching or `Either` composition. Avoid `error` or partial
+pattern matches in production. The package has no legacy attachment `Field`
+alias: use typed section fields and the supported attachment API. See the
+[compiler support table](/usage/compatibility) and [native reference](/reference/haskell).
+
+</Haskell>
 </LanguageContent>
 
 ## Number-input bounds in spec 1.3.0

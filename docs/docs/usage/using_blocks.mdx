@@ -1,6 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, Elixir, TypeScript } from '@site/src/components/LanguageContent';
+import LanguageContent, { CSharp, Go, Java, Python, Ruby, Rust, PHP, Elixir, Haskell, TypeScript } from '@site/src/components/LanguageContent';
 
 # Using Blocks
 
@@ -60,6 +60,12 @@ Construct readonly values using named arguments and typed children. `toJson()` s
 Use native immutable structs, keyword options and atom enums. Every example below runs unchanged in CI and is compared with its JSON tab. See [Blocks](/reference/elixir/blocks), [Elements](/reference/elixir/elements) and [Composition Objects](/reference/elixir/objects).
 
 </Elixir>
+
+<Haskell>
+
+Use checked immutable values and typed child roles. Each complete program below constructs its payload through the public API and runs unchanged against the JSON tab in CI. See [Blocks](/reference/haskell/blocks), [Elements](/reference/haskell/elements) and [composition objects](/reference/haskell/objects). No block ID is invented.
+
+</Haskell>
 </LanguageContent>
 
 ## Section Block
@@ -263,6 +269,28 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("This is a section block with a checkbox accessory."))
+  markdownTextValue2 <- buildMarkdownText (markdownText ("*Your Only Option*"))
+  selectOptionValue1 <- buildSelectOption (selectOption ((markdownTextAsText markdownTextValue2)) ("option_one"))
+  checkboxesElementValue1 <- buildCheckboxesElement ((checkboxesElement ([selectOptionValue1])) {checkboxesElementActionId = Just ("checkboxes-action")})
+  sectionBlockValue1 <- buildSectionBlock ((sectionBlock) {sectionBlockText = Just ((markdownTextAsText markdownTextValue1)), sectionBlockAccessory = Just ((checkboxesElementAsElement checkboxesElementValue1)), sectionBlockBlockId = Just ("fake_block_id")})
+  pure sectionBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -543,6 +571,28 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  richTextTextValue1 <- buildRichTextText ((richTextText ("You 'bout to witness hip-hop in its most purest\n")) {richTextTextStyle = Just ((richTextStyle {styleBold = Just True}))})
+  richTextTextValue2 <- buildRichTextText ((richTextText ("Most rawest form, flow almost flawless\n")) {richTextTextStyle = Just ((richTextStyle {styleStrike = Just True}))})
+  richTextTextValue3 <- buildRichTextText ((richTextText ("Most hardest, most honest known artist\n")) {richTextTextStyle = Just ((richTextStyle {styleItalic = Just True}))})
+  richTextSectionValue1 <- buildRichTextSection (richTextSection ([(richTextTextAsRichTextSectionElement richTextTextValue1), (richTextTextAsRichTextSectionElement richTextTextValue2), (richTextTextAsRichTextSectionElement richTextTextValue3)]))
+  richTextBlockValue1 <- buildRichTextBlock ((richTextBlock ([(richTextSectionAsRichTextBlockElement richTextSectionValue1)])) {richTextBlockBlockId = Just ("fake_block_id")})
+  pure richTextBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -716,6 +766,25 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  plainTextValue1 <- buildPlainText (plainText ("This is a header block"))
+  headerBlockValue1 <- buildHeaderBlock ((headerBlock (plainTextValue1)) {headerBlockBlockId = Just ("fake_block_id")})
+  pure headerBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -868,6 +937,24 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownBlockValue1 <- buildMarkdownBlock ((markdownBlock ("**Hello!** Markdown blocks support _GitHub-flavored_ syntax.")) {markdownBlockBlockId = Just ("fake_block_id")})
+  pure markdownBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -1038,6 +1125,25 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  plainTextValue1 <- buildPlainText (plainText ("dog"))
+  imageBlockValue1 <- buildImageBlock ((imageBlock ("a beagle")) {imageBlockImageUrl = Just ("https://api.slack.com/img/blocks/bkb_template_images/beagle.png"), imageBlockTitle = Just (plainTextValue1), imageBlockBlockId = Just ("fake_block_id")})
+  pure imageBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -1230,6 +1336,27 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  plainTextValue1 <- buildPlainText ((plainText ("Label")) {plainTextEmoji = Just (True)})
+  plainTextInputElementValue1 <- buildPlainTextInputElement ((plainTextInputElement) {plainTextInputElementActionId = Just ("action")})
+  plainTextValue2 <- buildPlainText ((plainText ("Hint")) {plainTextEmoji = Just (True)})
+  inputBlockValue1 <- buildInputBlock ((inputBlock (plainTextValue1) ((plainTextInputElementAsInputElement plainTextInputElementValue1))) {inputBlockBlockId = Just ("fake_block_id"), inputBlockHint = Just (plainTextValue2), inputBlockOptional = Just (True)})
+  pure inputBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -1366,6 +1493,24 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  dividerBlockValue1 <- buildDividerBlock ((dividerBlock) {dividerBlockBlockId = Just ("fake_block_id")})
+  pure dividerBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -1508,6 +1653,24 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  fileBlockValue1 <- buildFileBlock ((fileBlock ("external_id") ("remote")) {fileBlockBlockId = Just ("fake_block_id")})
+  pure fileBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -1659,6 +1822,25 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("Hello, world!"))
+  contextBlockValue1 <- buildContextBlock ((contextBlock ([(markdownTextAsContextElement markdownTextValue1)])) {contextBlockBlockId = Just ("fake_block_id")})
+  pure contextBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -1948,6 +2130,34 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("*a*"))
+  plainTextValue1 <- buildPlainText (plainText ("*a*"))
+  selectOptionValue1 <- buildSelectOption ((selectOption ((markdownTextAsText markdownTextValue1)) ("a")) {selectOptionDescription = Just ((plainTextAsText plainTextValue1))})
+  markdownTextValue2 <- buildMarkdownText (markdownText ("*b*"))
+  plainTextValue2 <- buildPlainText (plainText ("*b*"))
+  selectOptionValue2 <- buildSelectOption ((selectOption ((markdownTextAsText markdownTextValue2)) ("b")) {selectOptionDescription = Just ((plainTextAsText plainTextValue2))})
+  markdownTextValue3 <- buildMarkdownText (markdownText ("*c*"))
+  plainTextValue3 <- buildPlainText (plainText ("*c*"))
+  selectOptionValue3 <- buildSelectOption ((selectOption ((markdownTextAsText markdownTextValue3)) ("c")) {selectOptionDescription = Just ((plainTextAsText plainTextValue3))})
+  checkboxesElementValue1 <- buildCheckboxesElement ((checkboxesElement ([selectOptionValue1, selectOptionValue2, selectOptionValue3])) {checkboxesElementActionId = Just ("actionId-0")})
+  actionsBlockValue1 <- buildActionsBlock ((actionsBlock ([(checkboxesElementAsElement checkboxesElementValue1)])) {actionsBlockBlockId = Just ("fake_block_id")})
+  pure actionsBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -2422,6 +2632,36 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  richTextTextValue1 <- buildRichTextText ((richTextText ("Header 1")) {richTextTextStyle = Just ((richTextStyle {styleBold = Just True}))})
+  richTextSectionValue1 <- buildRichTextSection (richTextSection ([(richTextTextAsRichTextSectionElement richTextTextValue1)]))
+  richTextBlockValue1 <- buildRichTextBlock (richTextBlock ([(richTextSectionAsRichTextBlockElement richTextSectionValue1)]))
+  richTextTextValue2 <- buildRichTextText ((richTextText ("Header 2")) {richTextTextStyle = Just ((richTextStyle {styleBold = Just True}))})
+  richTextSectionValue2 <- buildRichTextSection (richTextSection ([(richTextTextAsRichTextSectionElement richTextTextValue2)]))
+  richTextBlockValue2 <- buildRichTextBlock (richTextBlock ([(richTextSectionAsRichTextBlockElement richTextSectionValue2)]))
+  rawTextValue1 <- buildRawText (rawText ("Datum 1"))
+  richTextLinkValue1 <- buildRichTextLink ((richTextLink ("https://slack.com")) {richTextLinkText = Just ("Datum 2")})
+  richTextSectionValue3 <- buildRichTextSection (richTextSection ([(richTextLinkAsRichTextSectionElement richTextLinkValue1)]))
+  richTextBlockValue3 <- buildRichTextBlock (richTextBlock ([(richTextSectionAsRichTextBlockElement richTextSectionValue3)]))
+  columnSettingsValue1 <- buildColumnSettings ((columnSettings) {columnSettingsAlign = Just (ColumnAlignRight), columnSettingsIsWrapped = Just (True)})
+  columnSettingsValue2 <- buildColumnSettings ((columnSettings) {columnSettingsAlign = Just (ColumnAlignLeft)})
+  tableBlockValue1 <- buildTableBlock ((tableBlock ([[(richTextBlockAsTableCell richTextBlockValue1), (richTextBlockAsTableCell richTextBlockValue2)], [(rawTextAsTableCell rawTextValue1), (richTextBlockAsTableCell richTextBlockValue3)]])) {tableBlockColumnSettings = Just ([columnSettingsValue1, columnSettingsValue2]), tableBlockBlockId = Just ("fake_block_id")})
+  pure tableBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -2692,6 +2932,26 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  plainTextValue1 <- buildPlainText (plainText ("Use the Events API to create a dynamic App Home"))
+  plainTextValue2 <- buildPlainText (plainText ("Slack sure is nifty!"))
+  videoBlockValue1 <- buildVideoBlock ((videoBlock ("Use the Events API to create a dynamic App Home") ("https://i.ytimg.com/vi/8876OZV_Yy0/hqdefault.jpg") (plainTextValue1) ("https://www.youtube.com/embed/8876OZV_Yy0?feature=oembed&autoplay=1")) {videoBlockBlockId = Just ("fake_block_id"), videoBlockDescription = Just (plainTextValue2), videoBlockTitleUrl = Just ("https://www.youtube.com/watch?v=8876OZV_Yy0")})
+  pure videoBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -2867,6 +3127,25 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("The deployment needs attention."))
+  alertBlockValue1 <- buildAlertBlock ((alertBlock ((markdownTextAsText markdownTextValue1))) {alertBlockLevel = Just (AlertLevelWarning), alertBlockBlockId = Just ("fake_block_id")})
+  pure alertBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -3069,6 +3348,29 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("Build complete"))
+  markdownTextValue2 <- buildMarkdownText (markdownText ("Version 2.1.0 is ready to deploy."))
+  plainTextValue1 <- buildPlainText (plainText ("Open build"))
+  buttonElementValue1 <- buildButtonElement ((buttonElement (plainTextValue1)) {buttonElementActionId = Just ("open_build")})
+  slackIconValue1 <- buildSlackIcon (slackIcon ("rocket"))
+  cardBlockValue1 <- buildCardBlock ((cardBlock) {cardBlockTitle = Just ((markdownTextAsText markdownTextValue1)), cardBlockBody = Just ((markdownTextAsText markdownTextValue2)), cardBlockActions = Just ([buttonElementValue1]), cardBlockSlackIcon = Just (slackIconValue1), cardBlockBlockId = Just ("fake_block_id")})
+  pure cardBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -3282,6 +3584,28 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("First result"))
+  cardBlockValue1 <- buildCardBlock ((cardBlock) {cardBlockTitle = Just ((markdownTextAsText markdownTextValue1)), cardBlockBlockId = Just ("card_1")})
+  markdownTextValue2 <- buildMarkdownText (markdownText ("Second result"))
+  cardBlockValue2 <- buildCardBlock ((cardBlock) {cardBlockTitle = Just ((markdownTextAsText markdownTextValue2)), cardBlockBlockId = Just ("card_2")})
+  carouselBlockValue1 <- buildCarouselBlock ((carouselBlock ([cardBlockValue1, cardBlockValue2])) {carouselBlockBlockId = Just ("fake_block_id")})
+  pure carouselBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -3513,6 +3837,27 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  markdownTextValue1 <- buildMarkdownText (markdownText ("All systems operational."))
+  sectionBlockValue1 <- buildSectionBlock ((sectionBlock) {sectionBlockText = Just ((markdownTextAsText markdownTextValue1)), sectionBlockBlockId = Just ("child_1")})
+  plainTextValue1 <- buildPlainText (plainText ("Deployment summary"))
+  containerBlockValue1 <- buildContainerBlock ((containerBlock ([(sectionBlockAsBlock sectionBlockValue1)])) {containerBlockTitle = Just (plainTextValue1), containerBlockWidth = Just (ContainerWidthStandard), containerBlockIsCollapsible = Just (False), containerBlockDefaultCollapsed = Just (False), containerBlockHasHeaderDivider = Just (True), containerBlockBlockId = Just ("fake_block_id")})
+  pure containerBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -3748,6 +4093,29 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  plainTextValue1 <- buildPlainText (plainText ("Good"))
+  feedbackButtonValue1 <- buildFeedbackButton (feedbackButton (plainTextValue1) ("positive"))
+  plainTextValue2 <- buildPlainText (plainText ("Bad"))
+  feedbackButtonValue2 <- buildFeedbackButton (feedbackButton (plainTextValue2) ("negative"))
+  feedbackButtonsElementValue1 <- buildFeedbackButtonsElement ((feedbackButtonsElement (feedbackButtonValue1) (feedbackButtonValue2)) {feedbackButtonsElementActionId = Just ("response_feedback")})
+  contextActionsBlockValue1 <- buildContextActionsBlock ((contextActionsBlock ([(feedbackButtonsElementAsContextActionsElement feedbackButtonsElementValue1)])) {contextActionsBlockBlockId = Just ("fake_block_id")})
+  pure contextActionsBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -3973,6 +4341,28 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  rawTextValue1 <- buildRawText (rawText ("Name"))
+  rawTextValue2 <- buildRawText (rawText ("Score"))
+  rawTextValue3 <- buildRawText (rawText ("Alice"))
+  rawNumberValue1 <- buildRawNumber (rawNumber (42) ("42"))
+  dataTableBlockValue1 <- buildDataTableBlock ((dataTableBlock ([[(rawTextAsDataTableCell rawTextValue1), (rawTextAsDataTableCell rawTextValue2)], [(rawTextAsDataTableCell rawTextValue3), (rawNumberAsDataTableCell rawNumberValue1)]]) ("Team scores")) {dataTableBlockPageSize = Just (5), dataTableBlockRowHeaderColumnIndex = Just (0), dataTableBlockBlockId = Just ("fake_block_id")})
+  pure dataTableBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -4193,6 +4583,27 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  chartSegmentValue1 <- buildChartSegment (chartSegment ("High") (3))
+  chartSegmentValue2 <- buildChartSegment (chartSegment ("Low") (12))
+  pieChartValue1 <- buildPieChart (pieChart ([chartSegmentValue1, chartSegmentValue2]))
+  dataVisualizationBlockValue1 <- buildDataVisualizationBlock ((dataVisualizationBlock ("Incidents by severity") ((pieChartAsChart pieChartValue1))) {dataVisualizationBlockBlockId = Just ("fake_block_id")})
+  pure dataVisualizationBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -4389,6 +4800,25 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  urlSourceValue1 <- buildUrlSource (urlSource ("https://weather.com/") ("weather.com"))
+  taskCardBlockValue1 <- buildTaskCardBlock ((taskCardBlock ("weather_1") ("Fetch weather data") (TaskStatusComplete)) {taskCardBlockSources = Just ([urlSourceValue1]), taskCardBlockBlockId = Just ("fake_block_id")})
+  pure taskCardBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -4624,6 +5054,26 @@ Slackblocks.to_map!(block)
 ```
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+main :: IO ()
+main = either (fail . show) (LBS.putStrLn . encode) $ do
+  planTaskValue1 <- buildPlanTask (taskCardBlock ("test") ("Run the test suite") (TaskStatusComplete))
+  planTaskValue2 <- buildPlanTask (taskCardBlock ("deploy") ("Deploy the release") (TaskStatusPending))
+  planBlockValue1 <- buildPlanBlock ((planBlock ("Release plan") ([planTaskValue1, planTaskValue2])) {planBlockBlockId = Just ("fake_block_id")})
+  pure planBlockValue1
+```
+
+</Haskell>
 </LanguageContent>
 
 </TabItem>
@@ -4959,4 +5409,36 @@ Put expanded blocks in the final payload so aggregate limits are checked.
 See [Components](/reference/elixir/components) for all options and defaults.
 
 </Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example :: Result MessagePayload
+example = do
+  title <- buildPlainText (plainText "Details")
+  text <- buildMarkdownText (markdownText "Ready")
+  section <- buildSectionBlock (sectionBlock {sectionBlockText = Just (markdownTextAsText text)})
+  container <- buildContainerBlock (accordionSection title [sectionBlockAsBlock section])
+  expanded <- accordion [container]
+  page <-
+    paginate
+      ((paginator "items") {paginatorPageSize = 1})
+      [sectionBlockAsBlock section, sectionBlockAsBlock section]
+  buildMessagePayload
+    ( (messagePayload "C1")
+        { messagePayloadText = Just "Items",
+          messagePayloadBlocks = Just (expanded <> page)
+        }
+    )
+```
+
+Helpers return ordinary checked blocks. The application owns interaction state and delivery.
+
+</Haskell>
 </LanguageContent>
