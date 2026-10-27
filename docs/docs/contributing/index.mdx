@@ -18,7 +18,7 @@ slug: /contributing
 - `rust/` contains the Rust 2024 crate (MSRV 1.85), consuming builders, checked Serde integration, and independent API/conformance tooling. Rust support begins with 2.6.0.
 - `php/` contains PHP 8.2+ readonly values, backed enums, Composer packaging and isolated sending examples. PHP support begins with 2.7.0.
 - `elixir/` contains immutable structs, native typespecs, checked Jason integration, Erlang consumers and isolated sending examples. Elixir support begins with the Hex release in 2.8.0.
-- `haskell/` contains checked immutable values, explicit field records and Aeson JSON, with a separate HTTP application. Haskell is prepared for 3.1.0; registry publication remains disabled.
+- `haskell/` contains checked immutable values, explicit field records and Aeson JSON, with a separate HTTP application. Haskell joins the coordinated release in 3.1.0.
 - `docs/` contains this Docusaurus site and executable examples.
 
 ## Set up the workspace
@@ -180,6 +180,13 @@ consumers. CI covers GHC 9.6–9.14; endpoint matrices run Linux/macOS/Windows.
 `python3 docs/scripts/check_haskell_guide_snippets.py` from the repository root
 executes literal README and MDX examples. The site builds native GHC signatures
 and compiled Haddock comments and verifies every public reference anchor.
+
+Cabal is not in [Dependabot's supported ecosystems](https://docs.github.com/en/code-security/reference/supply-chain-security/supported-ecosystems-and-repositories).
+Review Hackage release notes when updating Haskell dependencies, retain the
+minimum compiler and declared lower bounds, and run both core and HTTP
+lower/locked/latest profiles. Refresh the corresponding committed resolution
+receipts in `haskell/dependencies/` only after those checks pass. The existing
+GitHub Actions updater still covers Haskell workflow actions.
 
 All ten conformance suites exercise every ID in `spec/manifest.json`. Released
 `conformance/skiplist.txt` files must be empty, and the harnesses assert this. A

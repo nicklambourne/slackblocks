@@ -51,8 +51,8 @@ your tests, rather than in production.
   pass Go block builders directly to [`slack-go/slack`](https://github.com/slack-go/slack),
   pass Java blocks directly to the [official Slack Java SDK](https://slack.dev/java-slack-sdk/),
   serialize C# values with `System.Text.Json`, call `to_json` on Ruby values, use Serde with Rust values, pass PHP JSON to JoliCode, cURL or Laravel, or send Elixir maps with Req or the community Slack client.
-- **One contract across nine implementations** — the same blocks, validation rules, and version
-  numbers in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, and Elixir. A shared conformance corpus keeps the implementations emitting the same Slack JSON.
+- **One contract across ten implementations** — the same blocks, validation rules, and version
+  numbers in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, Elixir, and Haskell. A shared conformance corpus keeps the implementations emitting the same Slack JSON. Haskell joins the coordinated 3.1.0 release.
 - **Everything Block Kit ships today** — all current blocks and elements, rich text,
   modals and Home tabs, and the 2025 block families (tables, cards, carousels, charts).
 - **Light** — zero runtime dependencies in Python, a self-contained ESM module on npm,
@@ -98,7 +98,7 @@ go get github.com/nicklambourne/slackblocks/go/v3
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>3.0.0</version>
+  <version>3.1.0</version>
 </dependency>
 ```
 
@@ -126,7 +126,7 @@ gem install slackblocks
 <summary>Rust (1.85+, edition 2024)</summary>
 
 ```bash
-cargo add slackblocks@3.0.0
+cargo add slackblocks@3.1.0
 cargo add serde_json
 ```
 
@@ -162,17 +162,9 @@ See the [Elixir package guide](elixir/README.md).
 <details>
 <summary>Haskell (GHC 9.6.7+, tested through 9.14)</summary>
 
-Haskell is prepared for coordinated 3.1.0; Hackage publication is not active.
-Use a reviewed checkout to build a source archive:
-
-```sh
-cd haskell
-cabal build lib:slackblocks
-cabal sdist --output-directory=dist
-```
-
-List that tarball in your application's `cabal.project` and add
-`slackblocks >= 3.1 && < 3.2` to `build-depends`. See the
+Add `slackblocks >= 3.1 && < 3.2` to your application's Cabal
+`build-depends`, run `cabal update`, then `cabal build`. Haskell joins the
+coordinated 3.1.0 release on [Hackage](https://hackage.haskell.org/package/slackblocks). See the
 [package guide](haskell/README.md) and [installation and compiler policy](https://nicklambourne.github.io/slackblocks/usage/installation).
 The pending badge is intentional; the shared download total excludes Hackage
 until publication and the dashboard collector are verified.
@@ -538,9 +530,9 @@ See the [native API](https://nicklambourne.github.io/slackblocks/reference/haske
 - [`rust/`](rust/) — the Rust crate (`slackblocks` on crates.io from 2.6.0).
 - [`php/`](php/) — native PHP values and Composer package (`nicklambourne/slackblocks` on Packagist from 2.7.0).
 - [`elixir/`](elixir/) — native Elixir values and Erlang integration (`slackblocks` on Hex from 2.8.0).
-- [`haskell/`](haskell/) — checked immutable Haskell values, native JSON and separate HTTP integration (3.1.0 preparation).
+- [`haskell/`](haskell/) — checked immutable Haskell values, native JSON and separate HTTP integration (introduced in 3.1.0).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
-  and capability coverage that all nine implementations are tested against.
+  and capability coverage that all ten implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.
 
 ## Download statistics

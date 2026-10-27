@@ -138,3 +138,6 @@ docs/docs/reference/php/
 /docs/docs/reference/elixir/
 
 /docs/docs/reference/haskell/
+
+# Prepared Hackage source/docs assets are CI artifacts.
+haskell/dist-release/
