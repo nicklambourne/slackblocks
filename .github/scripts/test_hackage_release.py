@@ -106,7 +106,6 @@ class HackageTests(unittest.TestCase):
     def response(self, path, **kwargs):
         return {
             "/users/account-management": "/user/maintainer/manage",
-            "/user/maintainer/enabled.json": b'{"enabled":true}',
             "/packages/uploaders/": b'{"members":[{"username":"maintainer"}]}',
             "/package/slackblocks.json": None,
             "/package/slackblocks/maintainers/": b'{"members":[{"username":"maintainer"}]}',
@@ -118,17 +117,16 @@ class HackageTests(unittest.TestCase):
             patch.object(hackage, "fetch", side_effect=self.response) as fetch,
         ):
             self.assertEqual(hackage.account(self.root), "fake123")
-            self.assertEqual(fetch.call_args_list[1].kwargs["token"], "fake123")
+            self.assertEqual(fetch.call_args_list[0].kwargs["token"], "fake123")
             self.policy["first_publication"] = False
             self.save()
             with self.assertRaisesRegex(ValueError, "first-publication"):
                 hackage.account(self.root)
 
-    def test_account_checks_use_canonical_group_http_resources(self):
+    def test_account_checks_use_non_admin_canonical_http_resources(self):
         # Hackage's /api lists slash-terminated group resources. The similarly
         # named /packages/uploaders.json route returns 404 on the live service.
         responses = {
-            "/user/maintainer/enabled.json": b'{"enabled":true}',
             "/packages/uploaders/": b'{"members":[{"username":"maintainer"}]}',
             "/package/slackblocks.json": b'{"3.0.0":"normal"}',
             "/package/slackblocks/maintainers/": b'{"members":[{"username":"maintainer"}]}',
@@ -140,6 +138,12 @@ class HackageTests(unittest.TestCase):
             self.assertEqual(request.get_header("Accept"), "application/json")
             path = request.selector
             observed.append(path)
+            if path == "/user/maintainer/enabled.json":
+                # Hackage restricts this endpoint to administrators, including
+                # when an enabled uploader requests their own account status.
+                raise urllib.error.HTTPError(
+                    request.full_url, 403, "Forbidden", {}, None
+                )
             if path == "/users/account-management":
                 self.assertEqual(
                     request.get_header("Authorization"), "X-ApiKey fake123"
@@ -164,7 +168,29 @@ class HackageTests(unittest.TestCase):
             self.assertEqual(hackage.account(self.root), "fake123")
         self.assertEqual(set(observed), {"/users/account-management", *responses})
 
-    def test_foreign_owner_disabled_account_permissions_and_errors_reject(self):
+    def test_disabled_account_invalid_token_and_auth_errors_reject(self):
+        # Token authentication rejects disabled/deleted users before returning
+        # the account-management redirect (Hackage Framework.Auth.getUserAuth).
+        for status in (401, 403, 429, 500):
+            observed = []
+
+            def fail(request, timeout):
+                observed.append(request.selector)
+                raise urllib.error.HTTPError(
+                    request.full_url, status, "Authentication failed", {}, None
+                )
+
+            with (
+                self.subTest(status=status),
+                patch.dict(os.environ, {"HACKAGE_TOKEN": "fake123"}),
+                patch.object(urllib.request.OpenerDirector, "open", side_effect=fail),
+                self.assertRaises(urllib.error.HTTPError) as failure,
+            ):
+                hackage.account(self.root)
+            self.assertEqual(failure.exception.code, status)
+            self.assertEqual(observed, ["/users/account-management"])
+
+    def test_foreign_owner_permissions_and_errors_reject(self):
         for path, response, message in [
             ("/users/account-management", "/user/foreign/manage", "Token owner"),
             (
@@ -172,7 +198,6 @@ class HackageTests(unittest.TestCase):
                 "https://evil.invalid/user/maintainer/manage",
                 "Token owner",
             ),
-            ("/user/maintainer/enabled.json", b'{"enabled":false}', "disabled"),
             ("/packages/uploaders/", b'{"members":[]}', "uploader"),
             (
                 "/package/slackblocks/maintainers/",
