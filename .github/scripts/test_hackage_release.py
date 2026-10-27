@@ -107,9 +107,9 @@ class HackageTests(unittest.TestCase):
         return {
             "/users/account-management": "/user/maintainer/manage",
             "/user/maintainer/enabled.json": b'{"enabled":true}',
-            "/packages/uploaders.json": b'{"members":[{"username":"maintainer"}]}',
+            "/packages/uploaders/": b'{"members":[{"username":"maintainer"}]}',
             "/package/slackblocks.json": None,
-            "/package/slackblocks/maintainers.json": b'{"members":[{"username":"maintainer"}]}',
+            "/package/slackblocks/maintainers/": b'{"members":[{"username":"maintainer"}]}',
         }[path]
 
     def test_read_only_owner_and_first_publish_checks(self):
@@ -124,6 +124,46 @@ class HackageTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "first-publication"):
                 hackage.account(self.root)
 
+    def test_account_checks_use_canonical_group_http_resources(self):
+        # Hackage's /api lists slash-terminated group resources. The similarly
+        # named /packages/uploaders.json route returns 404 on the live service.
+        responses = {
+            "/user/maintainer/enabled.json": b'{"enabled":true}',
+            "/packages/uploaders/": b'{"members":[{"username":"maintainer"}]}',
+            "/package/slackblocks.json": b'{"3.0.0":"normal"}',
+            "/package/slackblocks/maintainers/": b'{"members":[{"username":"maintainer"}]}',
+        }
+        observed = []
+
+        def respond(request, timeout):
+            self.assertEqual(request.get_method(), "GET")
+            self.assertEqual(request.get_header("Accept"), "application/json")
+            path = request.selector
+            observed.append(path)
+            if path == "/users/account-management":
+                self.assertEqual(
+                    request.get_header("Authorization"), "X-ApiKey fake123"
+                )
+                raise urllib.error.HTTPError(
+                    request.full_url,
+                    303,
+                    "See Other",
+                    {"Location": "/user/maintainer/manage"},
+                    None,
+                )
+            if path not in responses:
+                raise urllib.error.HTTPError(
+                    request.full_url, 404, "Not Found", {}, None
+                )
+            return io.BytesIO(responses[path])
+
+        with (
+            patch.dict(os.environ, {"HACKAGE_TOKEN": "fake123"}),
+            patch.object(urllib.request.OpenerDirector, "open", side_effect=respond),
+        ):
+            self.assertEqual(hackage.account(self.root), "fake123")
+        self.assertEqual(set(observed), {"/users/account-management", *responses})
+
     def test_foreign_owner_disabled_account_permissions_and_errors_reject(self):
         for path, response, message in [
             ("/users/account-management", "/user/foreign/manage", "Token owner"),
@@ -133,9 +173,9 @@ class HackageTests(unittest.TestCase):
                 "Token owner",
             ),
             ("/user/maintainer/enabled.json", b'{"enabled":false}', "disabled"),
-            ("/packages/uploaders.json", b'{"members":[]}', "uploader"),
+            ("/packages/uploaders/", b'{"members":[]}', "uploader"),
             (
-                "/package/slackblocks/maintainers.json",
+                "/package/slackblocks/maintainers/",
                 b'{"members":[]}',
                 "does not maintain",
             ),

@@ -274,7 +274,7 @@ def account(root):
     )
     enabled = json.loads(fetch(f"/user/{owner}/enabled.json", token=token))
     require(enabled.get("enabled") is True, "Hackage owner account is disabled")
-    uploaders = json.loads(fetch("/packages/uploaders.json"))
+    uploaders = json.loads(fetch("/packages/uploaders/"))
     require(
         owner in {entry["username"] for entry in uploaders["members"]},
         "Owner is not a Hackage uploader",
@@ -286,7 +286,7 @@ def account(root):
             "Package missing outside approved first-publication mode",
         )
     else:
-        maintainers = json.loads(fetch("/package/slackblocks/maintainers.json"))
+        maintainers = json.loads(fetch("/package/slackblocks/maintainers/"))
         require(
             owner in {entry["username"] for entry in maintainers["members"]},
             "Owner does not maintain slackblocks",

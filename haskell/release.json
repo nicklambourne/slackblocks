@@ -3,6 +3,6 @@
   "auth_mode": "api-token",
   "environment": "hackage",
   "package": "slackblocks",
-  "owner": null,
+  "owner": "nicklambourne",
   "first_publication": true
 }

@@ -9,8 +9,9 @@ number.
 
 **Release 3.1.0 is prepared, not published.** It adds Haskell as the tenth language.
 The 3.0.0 nine-language documentation is frozen with source/file hashes in
-`docs/release-snapshots/3.0.0.json`. Haskell activation is false and its owner is
-unset in `haskell/release.json`; every publisher refuses the incomplete train.
+`docs/release-snapshots/3.0.0.json`. Haskell activation is false; the verified
+uploader is `nicklambourne` in `haskell/release.json`. Every publisher refuses
+the incomplete train.
 
 **Release 3.0.0** ships the corrected number-input bound API, Go `/v3`
 module and native Slackbot button prompt fields in all nine languages while
@@ -479,9 +480,11 @@ compares existing asset checksums, and uploads only missing assets.
 ## Haskell activation, publication and recovery
 
 The prepared first Haskell version is **3.1.0**. Publication remains disabled.
-On 25 October 2026 the public package lookup returned 404; this does not reserve
-`slackblocks` or verify an account. No Hackage account, token, environment or
-registry upload has been created by this implementation.
+On 27 October 2026 Hackage's public uploader list and user profile confirmed
+`nicklambourne` as an uploader. The public package lookup still returned 404;
+this does not reserve `slackblocks`. Token authentication and the protected
+GitHub environment remain unverified. No registry upload has been performed by
+this implementation.
 
 1. Obtain a verified Hackage account and uploader membership. Confirm package-name
    availability again; after first publication, confirm the account appears in
