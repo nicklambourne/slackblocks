@@ -1,8 +1,8 @@
 -- | Preserve Aeson's exact numbers and UTF-8 checks while rejecting duplicate
 -- object keys before they can be discarded by a KeyMap, including in metadata.
-module Slackblocks.Internal.JsonSyntax (parseJSONBytes) where
+module Slackblocks.Internal.JsonSyntax (parseJSONBytes, checkJSONNumbers, encodableScientific) where
 
-import Control.Monad (when)
+import Control.Monad (unless, when)
 import Data.Aeson (Value (..))
 import Data.Aeson.Decoding.ByteString.Lazy (lbsToTokens)
 import Data.Aeson.Decoding.Tokens qualified as Token
@@ -11,6 +11,7 @@ import Data.Aeson.KeyMap qualified as KM
 import Data.ByteString.Lazy qualified as B
 import Data.ByteString.Lazy.Char8 qualified as C
 import Data.Char (isDigit)
+import Data.Scientific (Scientific, base10Exponent, coefficient)
 import Data.Text qualified as T
 import Data.Vector qualified as V
 import Slackblocks.Validation
@@ -22,9 +23,33 @@ parseJSONBytes :: B.ByteString -> Result Value
 parseJSONBytes bytes = do
   checkExponents bytes
   (value, rest) <- valueToken [] (lbsToTokens bytes)
+  checkJSONNumbers value
   if B.all (`elem` [9, 10, 13, 32]) rest
     then Right value
     else syntaxFailure [] "trailing input after JSON value"
+
+-- Scientific's formatter normalizes the coefficient using machine-sized
+-- exponent arithmetic. Check both its printed exponent and the exponent that
+-- parsing the printed fractional digits needs, without expanding any powers.
+encodableScientific :: Scientific -> Bool
+encodableScientific number
+  | coefficient number == 0 = True
+  | otherwise = printed <= toInteger (maxBound :: Int) && parsed >= toInteger (minBound :: Int)
+  where
+    digits = show (abs (coefficient number))
+    significant = reverse (dropWhile (== '0') (reverse digits))
+    printed = toInteger (base10Exponent number) + toInteger (length digits) - 1
+    parsed = printed - toInteger (max 1 (length significant - 1))
+
+-- Metadata stays opaque to Block Kit rules, but every number still has to
+-- survive the public Aeson encoder. This also covers native extension Values.
+checkJSONNumbers :: Value -> Result ()
+checkJSONNumbers (Number number) =
+  unless (encodableScientific number) $
+    failure TypeMismatch [] "json.number.exponent" "JSON number cannot round-trip through Scientific's encoder"
+checkJSONNumbers (Object fields) = mapM_ (\(key, value) -> atField (Key.toText key) (checkJSONNumbers value)) (KM.toList fields)
+checkJSONNumbers (Array values) = mapM_ (\(index, value) -> atIndex index (checkJSONNumbers value)) (zip [0 ..] (V.toList values))
+checkJSONNumbers _ = Right ()
 
 -- Aeson's lexer narrows exponents to Int without an overflow check. Inspect
 -- numeric lexemes first, including metadata, before their spelling is lost.

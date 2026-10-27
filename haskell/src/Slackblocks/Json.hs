@@ -10,11 +10,11 @@ import Data.Aeson.KeyMap qualified as KM
 import Data.ByteString.Lazy qualified as B
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
-import Data.Scientific (FPFormat (Generic), Scientific, floatingOrInteger, formatScientific)
+import Data.Scientific (FPFormat (Generic), Scientific, base10Exponent, coefficient, floatingOrInteger, formatScientific)
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Vector qualified as V
-import Slackblocks.Internal.JsonSyntax (parseJSONBytes)
+import Slackblocks.Internal.JsonSyntax (checkJSONNumbers, encodableScientific, parseJSONBytes)
 import Slackblocks.Validation
 
 class FromSlackJSON a where
@@ -26,7 +26,9 @@ fromValue = fromSlackJSON
 -- | Exact numeric convenience for a number-input bound. No binary floating-point
 -- conversion is performed; the wire representation remains a decimal string.
 decimalText :: Scientific -> Text
-decimalText = T.pack . formatScientific Generic Nothing
+decimalText value
+  | encodableScientific value = T.pack (formatScientific Generic Nothing value)
+  | otherwise = T.pack (show (coefficient value) <> "e" <> show (base10Exponent value))
 
 decode :: (FromSlackJSON a) => B.ByteString -> Result a
 decode input = parseJSONBytes input >>= fromSlackJSON
@@ -46,7 +48,7 @@ instance FromSlackJSON Integer where
   fromSlackJSON _ = failure TypeMismatch [] "type" "expected an integer"
 
 instance FromSlackJSON Scientific where
-  fromSlackJSON (Number value) = Right value
+  fromSlackJSON value@(Number number) = checkJSONNumbers value >> Right number
   fromSlackJSON _ = failure TypeMismatch [] "type" "expected a number"
 
 instance (FromSlackJSON a) => FromSlackJSON [a] where
@@ -54,5 +56,7 @@ instance (FromSlackJSON a) => FromSlackJSON [a] where
   fromSlackJSON _ = failure TypeMismatch [] "type" "expected an array"
 
 instance FromSlackJSON (Map Text Value) where
-  fromSlackJSON (Object fields) = Right (Map.fromList [(Key.toText key, value) | (key, value) <- KM.toList fields])
+  fromSlackJSON value@(Object fields) = do
+    checkJSONNumbers value
+    Right (Map.fromList [(Key.toText key, item) | (key, item) <- KM.toList fields])
   fromSlackJSON _ = failure TypeMismatch [] "type" "expected an object"
