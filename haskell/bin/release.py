@@ -267,13 +267,13 @@ def account(root):
         re.fullmatch(r"[a-zA-Z0-9]+", token) is not None,
         "Hackage API token is missing or malformed",
     )
+    # Hackage authenticates only enabled accounts before returning this owner
+    # redirect. The separate /user/:username/enabled.json resource is admin-only.
     location = fetch("/users/account-management", token=token, redirect=True)
     require(
         location in (f"/user/{owner}/manage", f"{API}/user/{owner}/manage"),
         "Token owner differs from release policy",
     )
-    enabled = json.loads(fetch(f"/user/{owner}/enabled.json", token=token))
-    require(enabled.get("enabled") is True, "Hackage owner account is disabled")
     uploaders = json.loads(fetch("/packages/uploaders/"))
     require(
         owner in {entry["username"] for entry in uploaders["members"]},

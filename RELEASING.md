@@ -507,6 +507,10 @@ No registry upload is implied by this activation change.
    packages always require explicit maintainer membership. Set it false after
    the first successful release. The shared guard blocks every publisher while
    disabled; the coordinator checks account identity and permissions before tags.
+   The authenticated account-management redirect proves both the expected owner
+   and an enabled account: Hackage rejects disabled accounts during token
+   authentication. Its separate account-status JSON resource requires server
+   administrator membership and must not be queried by an ordinary uploader.
 5. PR builds use GHC 9.6.7, Cabal 3.16.1.0 and the checked-in dependency receipt.
    They test the actual sdist's five suites, generate native Hackage-mode Haddock,
    reproduce the source archive, and retain both assets plus commit/tool/lock/
@@ -543,6 +547,7 @@ publication or live Slack acceptance evidence.
 Official contracts checked: [Cabal 3.16 upload and sdist](https://cabal.readthedocs.io/en/3.16/cabal-commands.html#cabal-upload),
 [Hackage API](https://hackage.haskell.org/api),
 [Hackage account identity and groups](https://github.com/haskell/hackage-server/blob/master/src/Distribution/Server/Features/Users.hs),
+[Hackage enabled-account authentication](https://github.com/haskell/hackage-server/blob/master/src/Distribution/Server/Framework/Auth.hs),
 [documentation storage](https://github.com/haskell/hackage-server/blob/master/src/Distribution/Server/Features/Documentation.hs),
 and [Cabal token configuration](https://github.com/haskell/cabal/blob/cabal-install-v3.16.1.0/cabal-install/src/Distribution/Client/Config.hs).
 
