@@ -480,14 +480,14 @@ compares existing asset checksums, and uploads only missing assets.
 
 ## Haskell activation, publication and recovery
 
-The authorized first Haskell version is **3.1.0**. Publication is enabled.
-On 27 October 2026 Hackage's public uploader list and user profile confirmed
-`nicklambourne` as an uploader. The public package lookup still returned 404;
-this does not reserve `slackblocks`. The protected
-GitHub environment permits master and `haskell/v*`, and its `HACKAGE_TOKEN`
-secret is configured. Token authentication is verified by the protected
-coordinator before tags; metadata presence alone does not prove authentication.
-No registry upload is implied by this activation change.
+Haskell first published in **3.1.0** on 28 October 2026. The protected
+coordinator authenticated `nicklambourne` before creating tags. The publisher
+verified the public source archive and native Haddock against its tested assets,
+and fresh minimum/current GHC registry consumers passed. `first_publication` is
+now false: subsequent releases require the existing package and maintainer
+membership. The protected `hackage` environment permits master readiness and
+`haskell/v*` publication using `HACKAGE_TOKEN`. Metadata presence alone does not
+prove authentication; every release repeats the protected account checks.
 
 1. Obtain a verified Hackage account and uploader membership. Confirm package-name
    availability again; after first publication, confirm the account appears in
@@ -507,6 +507,10 @@ No registry upload is implied by this activation change.
    packages always require explicit maintainer membership. Set it false after
    the first successful release. The shared guard blocks every publisher while
    disabled; the coordinator checks account identity and permissions before tags.
+   The authenticated account-management redirect proves both the expected owner
+   and an enabled account: Hackage rejects disabled accounts during token
+   authentication. Its separate account-status JSON resource requires server
+   administrator membership and must not be queried by an ordinary uploader.
 5. PR builds use GHC 9.6.7, Cabal 3.16.1.0 and the checked-in dependency receipt.
    They test the actual sdist's five suites, generate native Hackage-mode Haddock,
    reproduce the source archive, and retain both assets plus commit/tool/lock/
@@ -519,8 +523,8 @@ No registry upload is implied by this activation change.
    A source metadata revision must also match the tested Cabal descriptor. Fresh
    minimum/current registry consumers precede the exact-tag GitHub Release.
 7. Activate the Hackage dashboard collector and live registry badge only after the
-   public version and all-time download counter are verified. The companion keeps
-   `HACKAGE_ENABLED=false` until then and does not fabricate download totals.
+   public version and all-time download counter are verified. The companion enabled
+   Hackage as the eighth required source after 3.1.0; it never fabricates totals.
 
 Credential-free commands (no publication):
 
@@ -543,6 +547,7 @@ publication or live Slack acceptance evidence.
 Official contracts checked: [Cabal 3.16 upload and sdist](https://cabal.readthedocs.io/en/3.16/cabal-commands.html#cabal-upload),
 [Hackage API](https://hackage.haskell.org/api),
 [Hackage account identity and groups](https://github.com/haskell/hackage-server/blob/master/src/Distribution/Server/Features/Users.hs),
+[Hackage enabled-account authentication](https://github.com/haskell/hackage-server/blob/master/src/Distribution/Server/Framework/Auth.hs),
 [documentation storage](https://github.com/haskell/hackage-server/blob/master/src/Distribution/Server/Features/Documentation.hs),
 and [Cabal token configuration](https://github.com/haskell/cabal/blob/cabal-install-v3.16.1.0/cabal-install/src/Distribution/Client/Config.hs).
 
