@@ -1,0 +1,24 @@
+cabal-version: 3.0
+name: slackblocks-transport-check
+version: 0.0.0
+build-type: Simple
+license: MIT
+synopsis: Isolated HTTP consumer checks for slackblocks
+
+executable transport-check
+  main-is: Main.hs
+  other-modules: Send
+  hs-source-dirs: src
+  default-language: GHC2021
+  default-extensions: OverloadedStrings
+  ghc-options: -Wall -Wcompat
+  build-depends:
+    base >=4.18 && <4.23,
+    slackblocks ==3.1.0,
+    aeson >=2.2 && <2.4,
+    bytestring >=0.11.5.4 && <0.13,
+    containers >=0.6.7 && <0.9,
+    text >=2.0.2 && <2.2,
+    http-client >=0.7.17 && <0.8,
+    http-client-tls >=0.3.6.3 && <0.4,
+    http-types >=0.12.4 && <0.13

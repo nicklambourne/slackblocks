@@ -94,7 +94,39 @@ send messages or store page state. `workflowFromURL`, named/hex/RGB colors and
 `blockKitBuilderURL` are pure helpers. Builder links accept checked payloads or an
 explicit `BuilderJSON` object; they do not make network requests.
 
-CI runs native tests and archive consumers on both supported endpoint compilers
-across Linux, macOS and Windows. Its separate same-commit quality job owns source
-tools, export discovery and HPC; the aggregate native status requires both jobs.
-The default local `python bin/check` remains comprehensive.
+The supported compiler series are GHC 9.6 through 9.14. Compiler requirements
+belong to this package, not to unrelated Slack clients:
+
+| GHC | CI patch | Platforms | Checks |
+| --- | --- | --- | --- |
+| 9.6 | 9.6.7 (minimum) | Linux, macOS, Windows | Native, archive, transport; Linux dependency/quality gates |
+| 9.8 | 9.8.4 | Linux | Every native suite |
+| 9.10 | 9.10.3 | Linux | Every native suite |
+| 9.12 | 9.12.4 | Linux | Every native suite |
+| 9.14 | 9.14.1 | Linux, macOS, Windows | Native, archive, transport; Linux dependency gates |
+
+Cabal 3.16.1.0 is the pinned development tool. The package uses Cabal syntax 3.0
+and GHC2021. Tested lower dependency bounds are Aeson 2.2.0.0, bytestring
+0.11.5.4, text 2.0.2, containers 0.6.7, scientific 0.3.7.0 and vector 0.13.0.0.
+QuickCheck is test-only. Exact lower, committed locked and latest-within-bounds
+resolutions run independently; both Aeson ordered and unordered KeyMap modes
+execute every native suite. The library does not impose its development lock on
+downstream consumers. Resolution receipts record actual versions and flags.
+
+`python bin/package-check` extracts the actual source distribution outside the
+checkout, executes every bundled suite, builds Haddock, then builds two fresh
+consumers against the tarball. Neither consumer has a workspace override or
+access to the monorepo's spec. One checks the public API, encoding, validation
+and editing; the other checks real HTTP request bytes against a local server.
+Run `python bin/dependency-check locked`, `lower`, or `latest` to inspect a
+specific dependency profile; `--unordered-keymap` selects the alternative Aeson
+representation. `lower` uses GHC 9.6.7 and `locked` has endpoint compiler profiles.
+
+The separate same-commit quality job owns source tools, export discovery and HPC.
+The aggregate native status requires native, quality, dependency, intermediate
+compiler and sending jobs. The default local `python bin/check` executes all
+applicable profiles and archive/transport checks as well as the quality gates.
+
+For native sending, see [the runnable HTTP integration](integrations/README.md).
+HTTP and TLS packages remain outside the library's dependencies. This is an
+application example, not a credential store or an automatic retry service.

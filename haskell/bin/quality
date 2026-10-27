@@ -47,7 +47,7 @@ def main():
         if actual.split(",", 1)[0] != expected:
             raise SystemExit(f"Expected {expected}; found {actual}")
     run(sys.executable, "generator/generate.py", "--check")
-    sources = sorted((ROOT / "src").rglob("*.hs")) + sorted((ROOT / "test").glob("*.hs"))
+    sources = [p for folder in ('src', 'test', 'consumer', 'integrations/src') for p in sorted((ROOT / folder).rglob('*.hs'))]
     for source in sources:
         run("ormolu", "--mode", "check", str(source))
     # Generated code is checked by formatting, deterministic regeneration and

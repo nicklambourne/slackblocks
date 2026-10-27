@@ -16,7 +16,7 @@ def run(*args, **kwargs):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--ci-native', action='store_true', help='Native lane; source/API/coverage gates run in the same-commit Haskell quality job')
+    parser.add_argument('--ci-native', action='store_true', help='Native/archive lane; dedicated same-commit jobs own quality and additional dependency/transport profiles')
     args = parser.parse_args()
     scratch = os.environ.get("RUNNER_TEMP")
     if Path("/Volumes/Repos").is_dir():
@@ -63,13 +63,17 @@ def main():
                     raise SystemExit(result.stdout + result.stderr)
             elif not result.returncode or expected not in result.stderr:
                 raise SystemExit(f"Unexpected compiler result for {name}:\n{result.stdout}{result.stderr}")
-        run(*cabal, "sdist", f"--output-directory={tmp}")
-        consumer = Path(tmp, "consumer")
-        consumer.mkdir()
-        (consumer / "consumer.cabal").write_text("cabal-version: 3.0\nname: consumer\nversion: 0.0.0\nbuild-type: Simple\nexecutable consumer\n  main-is: Main.hs\n  default-language: GHC2021\n  build-depends: base, slackblocks ==3.1.0, aeson\n")
-        (consumer / "Main.hs").write_text('{\u002d# LANGUAGE OverloadedStrings #\u002d}\nimport Slackblocks\nimport Data.Aeson\nmain = either (fail . show) (print . encode) (buildPlainText (plainText "archive consumer"))\n')
-        (consumer / "cabal.project").write_text("packages: . ../slackblocks-3.1.0.tar.gz\n")
-        subprocess.run(["cabal", "run", "consumer"], cwd=consumer, check=True)
+    run(sys.executable, 'bin/package-check')
+    if not args.ci_native:
+        compiler = subprocess.check_output(['ghc', '--numeric-version'], text=True).strip()
+        if compiler in ('9.6.7', '9.14.1'):
+            run(sys.executable, 'bin/dependency-check', 'locked')
+        if compiler == '9.6.7':
+            run(sys.executable, 'bin/dependency-check', 'lower')
+        run(sys.executable, 'bin/dependency-check', 'latest')
+        run(sys.executable, 'bin/dependency-check', 'latest', '--unordered-keymap')
+        for profile in ('locked', 'lower', 'latest') if compiler == '9.6.7' else ('latest',):
+            run(sys.executable, 'bin/http-check', '--profile', profile)
     print("Package and public compilation boundaries passed.")
 
 

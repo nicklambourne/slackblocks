@@ -120,8 +120,110 @@ jobs:
           cabal build lib:slackblocks --builddir="$SLACKBLOCKS_HASKELL_BUILD"
           python bin/quality
 
+  dependencies:
+    needs: changes
+    name: Haskell dependencies (${{ matrix.ghc }}, ${{ matrix.profile }}, ${{ matrix.keymap }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {ghc: "9.6.7", profile: locked, keymap: ordered}
+          - {ghc: "9.6.7", profile: lower, keymap: ordered}
+          - {ghc: "9.6.7", profile: latest, keymap: unordered}
+          - {ghc: "9.14.1", profile: locked, keymap: ordered}
+          - {ghc: "9.14.1", profile: latest, keymap: unordered}
+    defaults:
+      run:
+        shell: bash
+        working-directory: haskell
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: haskell-actions/setup@7fd2bb5ca789761088fbc831406b2910e47e56f1 # v2
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          ghc-version: ${{ matrix.ghc }}
+          cabal-version: "3.16.1.0"
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Independently resolve and execute every suite
+        if: needs.changes.outputs.relevant == 'true'
+        env:
+          PROFILE: ${{ matrix.profile }}
+          KEYMAP: ${{ matrix.keymap }}
+        run: |
+          cabal update
+          args=()
+          if [ "$KEYMAP" = unordered ]; then args+=(--unordered-keymap); fi
+          python bin/dependency-check "$PROFILE" "${args[@]}"
+
+  compatibility:
+    needs: changes
+    name: Haskell compiler (GHC ${{ matrix.ghc }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc: ["9.8.4", "9.10.3", "9.12.4"]
+    defaults:
+      run:
+        shell: bash
+        working-directory: haskell
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: haskell-actions/setup@7fd2bb5ca789761088fbc831406b2910e47e56f1 # v2
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          ghc-version: ${{ matrix.ghc }}
+          cabal-version: "3.16.1.0"
+      - name: Execute every native suite on intermediate supported compilers
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          cabal update
+          cabal test all --jobs=2 --test-show-details=direct
+
+  sending:
+    needs: changes
+    name: Haskell HTTP (GHC ${{ matrix.ghc }}, ${{ matrix.profile }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {ghc: "9.6.7", profile: locked}
+          - {ghc: "9.6.7", profile: lower}
+          - {ghc: "9.6.7", profile: latest}
+          - {ghc: "9.14.1", profile: latest}
+    defaults:
+      run:
+        shell: bash
+        working-directory: haskell
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - uses: haskell-actions/setup@7fd2bb5ca789761088fbc831406b2910e47e56f1 # v2
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          ghc-version: ${{ matrix.ghc }}
+          cabal-version: "3.16.1.0"
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: needs.changes.outputs.relevant == 'true'
+        with:
+          python-version: "3.13"
+      - name: Resolve and test actual HTTP transport
+        if: needs.changes.outputs.relevant == 'true'
+        env:
+          PROFILE: ${{ matrix.profile }}
+        run: |
+          cabal update
+          python bin/http-check --profile "$PROFILE"
+
   native:
-    needs: [changes, test, quality]
+    needs: [changes, test, quality, dependencies, compatibility, sending]
     if: always()
     name: Haskell native checks
     runs-on: ubuntu-latest
@@ -131,7 +233,13 @@ jobs:
           CHANGES_RESULT: ${{ needs.changes.result }}
           NATIVE_RESULT: ${{ needs.test.result }}
           QUALITY_RESULT: ${{ needs.quality.result }}
+          DEPENDENCIES_RESULT: ${{ needs.dependencies.result }}
+          COMPATIBILITY_RESULT: ${{ needs.compatibility.result }}
+          SENDING_RESULT: ${{ needs.sending.result }}
         run: |
           test "$CHANGES_RESULT" = success
           test "$NATIVE_RESULT" = success
           test "$QUALITY_RESULT" = success
+          test "$DEPENDENCIES_RESULT" = success
+          test "$COMPATIBILITY_RESULT" = success
+          test "$SENDING_RESULT" = success
