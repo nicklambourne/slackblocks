@@ -5,6 +5,7 @@ module Main (main) where
 import Control.Exception (evaluate)
 import Control.Monad (forM_, unless)
 import Data.Aeson (ToJSON (..), Value (..), encode, object, (.=))
+import Data.Aeson qualified as A
 import Data.Aeson.KeyMap qualified as KM
 import Data.ByteString.Lazy qualified as L
 import Data.ByteString.Lazy.Char8 qualified as C
@@ -132,6 +133,40 @@ main = do
     let raw = "{\"n\":1e" <> C.pack power <> "}"
     parsed <- accept (decode raw :: Result (Map.Map T.Text Value))
     assert "representable exponent preserved" (decode (encode parsed) == Right parsed)
+  forM_ ["1e" <> show (minBound :: Int), "10e" <> show (maxBound :: Int), "-100e" <> show (toInteger (maxBound :: Int) - 1)] $ \literal -> do
+    let raw = C.pack literal
+    rejectExponent "encoder exponent overflow" (decode ("{\"n\":" <> raw <> "}") :: Result (Map.Map T.Text Value))
+    number <- accept (A.eitherDecode raw :: Either String Value)
+    let metadata = Map.singleton "nested" (toJSON [number])
+    rejectExponent "native metadata encoder overflow" (buildWebhookMessage (webhookMessage {webhookMessageMetadata = Just metadata}))
+    rejectExponent "native extension encoder overflow" (buildDividerBlock (dividerBlock {dividerBlockExtensions = metadata}))
+    rejectExponent "preparsed metadata encoder overflow" (fromValue (object ["metadata" .= metadata]) :: Result WebhookMessage)
+    rejectExponent "preparsed map encoder overflow" (fromValue (toJSON metadata) :: Result (Map.Map T.Text Value))
+    rejectExponent "Aeson model instance encoder overflow" (fromValue (object ["label" .= String "n", "value" .= number]) :: Result DataPoint)
+    assert "Aeson instance rejects encoder overflow" (case A.fromJSON (object ["metadata" .= metadata]) :: A.Result WebhookMessage of A.Error _ -> True; _ -> False)
+    case number of
+      Number value -> do
+        assert "decimal string conversion keeps exact representation" (decimalText value == T.pack literal)
+        _ <- accept (buildNumberInputElement ((numberInputElement True) {numberInputElementMinValue = Just (decimalText value)}))
+        pure ()
+      _ -> fail "numeric regression input was not a number"
+  forM_ ["12e" <> show (minBound :: Int), "10e" <> show (minBound :: Int), "0e" <> show (minBound :: Int), "10e" <> show (toInteger (maxBound :: Int) - 1), "1.2e" <> show (maxBound :: Int)] $ \literal -> do
+    let raw = "{\"n\":" <> C.pack literal <> "}"
+    parsed <- accept (decode raw :: Result (Map.Map T.Text Value))
+    assert "neighboring encodable exponent remains supported" (decode (encode parsed) == Right parsed)
+  forM_ ["1e1000000000", "-1e1000000000"] $ \literal -> do
+    let raw = "{\"type\":\"plain_text_input\",\"max_length\":" <> literal <> "}"
+    case decode raw :: Result PlainTextInputElement of
+      Left errors -> assert "huge bounded integer rejects before expansion" (all (\e -> errorCategory e == OutOfRange && errorPath e == [Field "max_length"]) errors)
+      Right _ -> fail "huge bounded integer accepted"
+    native <- accept (A.eitherDecode raw :: Either String Value)
+    assert "Aeson bounded integer rejects before expansion" (case A.fromJSON native :: A.Result PlainTextInputElement of A.Error _ -> True; _ -> False)
+  forM_ ["3e3", "30000e-1"] $ \literal -> do
+    value <- accept (decode ("{\"type\":\"plain_text_input\",\"max_length\":" <> literal <> "}") :: Result PlainTextInputElement)
+    assert "exact integer boundary accepted" (plainTextInputElementMaxLength (inspectPlainTextInputElement value) == Just 3000)
+  case decode "{\"type\":\"plain_text_input\",\"max_length\":3000.5}" :: Result PlainTextInputElement of
+    Left errors -> assert "fraction retains type category" (all ((== TypeMismatch) . errorCategory) errors)
+    Right _ -> fail "fractional integer accepted"
   let quoted = "escaped \\\" quote and \\ backslash; " <> T.pack overflow <> " \\\n"
   assert "number-looking string remains text" ((decode (encode quoted) :: Result T.Text) == Right quoted)
   forM_ ["1e+", "1e-", "1e1.5", "\"unterminated", "\"trailing\\"] $ \raw ->

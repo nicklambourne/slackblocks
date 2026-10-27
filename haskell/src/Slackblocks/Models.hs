@@ -669,7 +669,7 @@ import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
 import Data.Scientific (Scientific)
 import Data.Text (Text)
-import Slackblocks.Internal.Rules (standaloneTask, validateFields)
+import Slackblocks.Internal.Rules (checkIntegerBounds, standaloneTask, validateFields)
 import Slackblocks.Internal.Wire
 import Slackblocks.Json (FromSlackJSON (..))
 import Slackblocks.Style
@@ -1318,6 +1318,7 @@ instance ToJSON DataTableBlock where toJSON (CheckedDataTableBlock fields) = wir
 instance FromSlackJSON DataTableBlock where
   fromSlackJSON value = do
     fields <- wireObject "data_table" value
+    checkIntegerBounds "DataTableBlock" (Object fields)
     parsedRows <- required "rows" fields
     parsedCaption <- required "caption" fields
     parsedPageSize <- optionalField "page_size" fields
@@ -2168,6 +2169,7 @@ instance ToJSON ChannelMultiSelectElement where toJSON (CheckedChannelMultiSelec
 instance FromSlackJSON ChannelMultiSelectElement where
   fromSlackJSON value = do
     fields <- wireObject "multi_channels_select" value
+    checkIntegerBounds "ChannelMultiSelectElement" (Object fields)
     parsedActionId <- optionalField "action_id" fields
     parsedInitialChannels <- optionalField "initial_channels" fields
     parsedConfirm <- optionalField "confirm" fields
@@ -2352,6 +2354,7 @@ instance ToJSON ConversationMultiSelectElement where toJSON (CheckedConversation
 instance FromSlackJSON ConversationMultiSelectElement where
   fromSlackJSON value = do
     fields <- wireObject "multi_conversations_select" value
+    checkIntegerBounds "ConversationMultiSelectElement" (Object fields)
     parsedActionId <- optionalField "action_id" fields
     parsedInitialConversations <- optionalField "initial_conversations" fields
     parsedDefaultToCurrentConversation <- optionalField "default_to_current_conversation" fields
@@ -2657,6 +2660,7 @@ instance ToJSON ExternalMultiSelectElement where toJSON (CheckedExternalMultiSel
 instance FromSlackJSON ExternalMultiSelectElement where
   fromSlackJSON value = do
     fields <- wireObject "multi_external_select" value
+    checkIntegerBounds "ExternalMultiSelectElement" (Object fields)
     parsedActionId <- optionalField "action_id" fields
     parsedMinQueryLength <- optionalField "min_query_length" fields
     parsedInitialOptions <- optionalField "initial_options" fields
@@ -2719,6 +2723,7 @@ instance ToJSON ExternalSelectElement where toJSON (CheckedExternalSelectElement
 instance FromSlackJSON ExternalSelectElement where
   fromSlackJSON value = do
     fields <- wireObject "external_select" value
+    checkIntegerBounds "ExternalSelectElement" (Object fields)
     parsedActionId <- optionalField "action_id" fields
     parsedMinQueryLength <- optionalField "min_query_length" fields
     parsedInitialOption <- optionalField "initial_option" fields
@@ -2826,6 +2831,7 @@ instance ToJSON FileInputElement where toJSON (CheckedFileInputElement fields) =
 instance FromSlackJSON FileInputElement where
   fromSlackJSON value = do
     fields <- wireObject "file_input" value
+    checkIntegerBounds "FileInputElement" (Object fields)
     parsedActionId <- optionalField "action_id" fields
     parsedFiletypes <- optionalField "filetypes" fields
     parsedMaxFiles <- optionalField "max_files" fields
@@ -3126,6 +3132,7 @@ instance ToJSON PlainTextInputElement where toJSON (CheckedPlainTextInputElement
 instance FromSlackJSON PlainTextInputElement where
   fromSlackJSON value = do
     fields <- wireObject "plain_text_input" value
+    checkIntegerBounds "PlainTextInputElement" (Object fields)
     parsedActionId <- optionalField "action_id" fields
     parsedInitialValue <- optionalField "initial_value" fields
     parsedMultiline <- optionalField "multiline" fields
@@ -3249,6 +3256,7 @@ instance ToJSON RichTextInputElement where toJSON (CheckedRichTextInputElement f
 instance FromSlackJSON RichTextInputElement where
   fromSlackJSON value = do
     fields <- wireObject "rich_text_input" value
+    checkIntegerBounds "RichTextInputElement" (Object fields)
     parsedActionId <- required "action_id" fields
     parsedInitialValue <- optionalField "initial_value" fields
     parsedDispatchActionConfig <- optionalField "dispatch_action_config" fields
@@ -3316,6 +3324,7 @@ instance ToJSON StaticMultiSelectElement where toJSON (CheckedStaticMultiSelectE
 instance FromSlackJSON StaticMultiSelectElement where
   fromSlackJSON value = do
     fields <- wireObject "multi_static_select" value
+    checkIntegerBounds "StaticMultiSelectElement" (Object fields)
     parsedActionId <- optionalField "action_id" fields
     parsedOptions <- optionalField "options" fields
     parsedOptionGroups <- optionalField "option_groups" fields
@@ -3564,6 +3573,7 @@ instance ToJSON UserMultiSelectElement where toJSON (CheckedUserMultiSelectEleme
 instance FromSlackJSON UserMultiSelectElement where
   fromSlackJSON value = do
     fields <- wireObject "multi_users_select" value
+    checkIntegerBounds "UserMultiSelectElement" (Object fields)
     parsedActionId <- optionalField "action_id" fields
     parsedInitialUsers <- optionalField "initial_users" fields
     parsedConfirm <- optionalField "confirm" fields
@@ -4785,6 +4795,7 @@ instance ToJSON RichTextCodeBlock where toJSON (CheckedRichTextCodeBlock fields)
 instance FromSlackJSON RichTextCodeBlock where
   fromSlackJSON value = do
     fields <- wireObject "rich_text_preformatted" value
+    checkIntegerBounds "RichTextCodeBlock" (Object fields)
     parsedElements <- required "elements" fields
     parsedBorder <- optionalField "border" fields
     buildRichTextCodeBlock (RichTextCodeBlockFields parsedElements parsedBorder (remaining ["elements", "border"] fields))
@@ -4944,6 +4955,7 @@ instance ToJSON RichTextList where toJSON (CheckedRichTextList fields) = wireRic
 instance FromSlackJSON RichTextList where
   fromSlackJSON value = do
     fields <- wireObject "rich_text_list" value
+    checkIntegerBounds "RichTextList" (Object fields)
     parsedStyle <- required "style" fields
     parsedElements <- required "elements" fields
     parsedIndent <- optionalField "indent" fields
@@ -4996,6 +5008,7 @@ instance ToJSON RichTextQuote where toJSON (CheckedRichTextQuote fields) = wireR
 instance FromSlackJSON RichTextQuote where
   fromSlackJSON value = do
     fields <- wireObject "rich_text_quote" value
+    checkIntegerBounds "RichTextQuote" (Object fields)
     parsedElements <- required "elements" fields
     parsedBorder <- optionalField "border" fields
     buildRichTextQuote (RichTextQuoteFields parsedElements parsedBorder (remaining ["elements", "border"] fields))

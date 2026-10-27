@@ -128,3 +128,7 @@ model validation. A pre-parsed Aeson `Value` cannot recover collapsed duplicates
 Optional `Nothing` omits a key; explicit false, zero and allowed empty values
 remain. Metadata stays opaque. `Integer` and `Scientific` retain exact numbers,
 and `decimalText` provides textual number-input bounds without binary rounding.
+Checked values reject numbers that cannot round-trip through Aeson's numeric
+encoding, including in metadata. Integer fields with shared bounds reject
+out-of-range exponents before allocating the expanded integer. These numeric
+representation checks do not limit decimal bounds supplied as strings.
