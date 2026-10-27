@@ -3,15 +3,16 @@
 The Python (`slackblocks` on PyPI), TypeScript
 (`@nicklambourne/slackblocks` on npm), Go
 (`github.com/nicklambourne/slackblocks/go/v3`), Java
-(`io.github.nicklambourne:slackblocks` on Maven Central), C# (`Slackblocks` on NuGet), Ruby (`slackblocks` on RubyGems), Rust (`slackblocks` on crates.io), PHP (`nicklambourne/slackblocks` on Packagist), Elixir (`slackblocks` on Hex), and Haskell (`slackblocks` on Hackage; disabled until activation)
+(`io.github.nicklambourne:slackblocks` on Maven Central), C# (`Slackblocks` on NuGet), Ruby (`slackblocks` on RubyGems), Rust (`slackblocks` on crates.io), PHP (`nicklambourne/slackblocks` on Packagist), Elixir (`slackblocks` on Hex), and Haskell (`slackblocks` on Hackage)
 packages are released together and always carry the same version
 number.
 
-**Release 3.1.0 is prepared, not published.** It adds Haskell as the tenth language.
-The 3.0.0 nine-language documentation is frozen with source/file hashes in
-`docs/release-snapshots/3.0.0.json`. Haskell activation is false; the verified
-uploader is `nicklambourne` in `haskell/release.json`. Every publisher refuses
-the incomplete train.
+**Release 3.1.0 is authorized for publication.** It adds Haskell as the tenth
+language. The 3.0.0 nine-language documentation is frozen with source/file hashes
+in `docs/release-snapshots/3.0.0.json`. Haskell activation is enabled with verified
+uploader `nicklambourne`; the protected coordinator still authenticates the token
+and checks all registry prerequisites before creating any tags. Publication is
+complete only after all ten publishers and their registry checks succeed.
 
 **Release 3.0.0** ships the corrected number-input bound API, Go `/v3`
 module and native Slackbot button prompt fields in all nine languages while
@@ -479,12 +480,14 @@ compares existing asset checksums, and uploads only missing assets.
 
 ## Haskell activation, publication and recovery
 
-The prepared first Haskell version is **3.1.0**. Publication remains disabled.
+The authorized first Haskell version is **3.1.0**. Publication is enabled.
 On 27 October 2026 Hackage's public uploader list and user profile confirmed
 `nicklambourne` as an uploader. The public package lookup still returned 404;
-this does not reserve `slackblocks`. Token authentication and the protected
-GitHub environment remain unverified. No registry upload has been performed by
-this implementation.
+this does not reserve `slackblocks`. The protected
+GitHub environment permits master and `haskell/v*`, and its `HACKAGE_TOKEN`
+secret is configured. Token authentication is verified by the protected
+coordinator before tags; metadata presence alone does not prove authentication.
+No registry upload is implied by this activation change.
 
 1. Obtain a verified Hackage account and uploader membership. Confirm package-name
    availability again; after first publication, confirm the account appears in
