@@ -5,8 +5,8 @@ encoding. Requires GHC 9.6.7 or newer within the tested compiler range.
 
 This package is unreleased. The native API covers all 89 shared models, closed
 roles and enumerations in contract 1.4.0. It is not part of the active
-coordinated publisher; helpers, expanded quality checks and documentation are
-being completed in the dependent PR train.
+coordinated publisher. Packaging integrations and complete site documentation
+are being completed in the dependent PR train.
 
 ```haskell
 {-# LANGUAGE OverloadedStrings #-}
@@ -35,7 +35,20 @@ explicit `Just False` and empty text remain present where the contract allows
 them. Block IDs are omitted unless supplied. Validation reports a category,
 structured path, constraint and explanation without throwing exceptions.
 
-`fromValue` and `decode` check JSON at the ingress boundary. Typed child roles
+`fromValue` and `decode` check JSON at the ingress boundary. `decode` also rejects
+duplicate object keys (including escaped spellings and opaque metadata), invalid
+UTF-8 and trailing input. Aeson's `FromJSON` instances validate models too, but
+cannot recover duplicate keys already collapsed by an external Aeson parser.
+The byte decoder also rejects numeric exponent overflow before Aeson can narrow
+an exponent to `Int`. Checked native values and JSON ingress reject numbers whose
+normalized encoding would overflow or fail to round-trip, including numbers in
+metadata and extensions. This is a
+`Scientific` representation boundary, not a Slack magnitude limit; decimal bounds
+supplied as strings keep their arbitrary-exponent support. Already parsed Aeson
+values cannot recover an original exponent that an external parser truncated.
+Integer fields with shared bounds are range-checked before expanding exponents,
+so oversized inputs fail without first allocating an enormous integer.
+Use `Slackblocks.decode` when accepting untrusted JSON bytes. Typed child roles
 reject unsupported elements, while metadata and explicit unmodeled extension
 fields preserve arbitrary JSON. Extensions cannot override modeled fields or
 the `type` discriminator. Unknown enum values and receiving-element style flags
@@ -58,4 +71,30 @@ independently checks their wire objects. It also checks every invalid input at
 JSON ingress, native invalid constructions where representable, and compiler
 rejections where the type system prevents construction. `python bin/check`
 adds generated-source drift, bundled-spec parity, compilation boundaries,
-`cabal check`, a source archive and a fresh archive consumer.
+`cabal check`, a source archive and a fresh archive consumer. Install the source
+tools separately with `cabal install ormolu-0.7.7.0 --ignore-project` and
+`cabal install hlint-3.8 --ignore-project` before running the full checker.
+
+The full checker requires deterministic formatting and generation, HLint,
+independent compiled export discovery and at least **95% handwritten expression
+coverage** across validation, wire handling, strict JSON, decimal comparison,
+style and helpers. HPC reports branches and declarations separately; derived
+`Eq`/`Show` declarations do not stand in for behavior tests. The two generated
+modules remain in native/conformance and compiled API checks, but are excluded
+from the handwritten percentage. All other production modules are discovered
+from source and compiled coverage receipts; missing modules fail the gate.
+Negative controls prove that unclassified exports and missing/zero coverage fail.
+Five randomized properties each run 500 cases with a recorded reproducible seed.
+
+`accordionSection` returns editable container fields; build each section and use
+`accordion` to check and preserve their order. `paginate` uses an explicit action
+ID prefix and page settings, adds previous/next controls and an optional indicator,
+and leaves expanded surface limits to checked payload construction. It does not
+send messages or store page state. `workflowFromURL`, named/hex/RGB colors and
+`blockKitBuilderURL` are pure helpers. Builder links accept checked payloads or an
+explicit `BuilderJSON` object; they do not make network requests.
+
+CI runs native tests and archive consumers on both supported endpoint compilers
+across Linux, macOS and Windows. Its separate same-commit quality job owns source
+tools, export discovery and HPC; the aggregate native status requires both jobs.
+The default local `python bin/check` remains comprehensive.

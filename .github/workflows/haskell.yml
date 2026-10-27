@@ -79,4 +79,59 @@ jobs:
         run: cabal update
       - name: Check native API and package
         if: needs.changes.outputs.relevant == 'true'
-        run: python bin/check
+        run: python bin/check --ci-native
+
+  quality:
+    needs: changes
+    name: Haskell quality and coverage
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: haskell
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: needs.changes.outputs.relevant == 'true'
+      - name: Install Haskell
+        if: needs.changes.outputs.relevant == 'true'
+        uses: haskell-actions/setup@7fd2bb5ca789761088fbc831406b2910e47e56f1 # v2
+        with:
+          ghc-version: "9.6.7"
+          cabal-version: "3.16.1.0"
+      - name: Install Python
+        if: needs.changes.outputs.relevant == 'true'
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      - name: Install pinned source tools
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          cabal update
+          # Independent plans: these tools intentionally use different GHC
+          # parser libraries. Neither belongs in the consumer dependency graph.
+          cabal install ormolu-0.7.7.0 --ignore-project --jobs=2 --installdir="$RUNNER_TEMP/haskell-tools"
+          cabal install hlint-3.8 --ignore-project --jobs=2 --installdir="$RUNNER_TEMP/haskell-tools"
+          echo "$RUNNER_TEMP/haskell-tools" >> "$GITHUB_PATH"
+      - name: Check source, compiled API and handwritten coverage
+        if: needs.changes.outputs.relevant == 'true'
+        run: |
+          export SLACKBLOCKS_HASKELL_BUILD="$RUNNER_TEMP/haskell-quality-build"
+          export SLACKBLOCKS_HASKELL_COVERAGE="$RUNNER_TEMP/haskell-coverage"
+          cabal build lib:slackblocks --builddir="$SLACKBLOCKS_HASKELL_BUILD"
+          python bin/quality
+
+  native:
+    needs: [changes, test, quality]
+    if: always()
+    name: Haskell native checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every native and quality lane
+        env:
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          NATIVE_RESULT: ${{ needs.test.result }}
+          QUALITY_RESULT: ${{ needs.quality.result }}
+        run: |
+          test "$CHANGES_RESULT" = success
+          test "$NATIVE_RESULT" = success
+          test "$QUALITY_RESULT" = success

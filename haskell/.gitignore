@@ -1,4 +1,5 @@
 /dist-newstyle/
+/dist-coverage/
 /.hpc/
 /*.tix
 /cabal.project.local
