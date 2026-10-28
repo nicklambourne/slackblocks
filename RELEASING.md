@@ -3,9 +3,16 @@
 The Python (`slackblocks` on PyPI), TypeScript
 (`@nicklambourne/slackblocks` on npm), Go
 (`github.com/nicklambourne/slackblocks/go/v3`), Java
-(`io.github.nicklambourne:slackblocks` on Maven Central), C# (`Slackblocks` on NuGet), Ruby (`slackblocks` on RubyGems), Rust (`slackblocks` on crates.io), PHP (`nicklambourne/slackblocks` on Packagist), and Elixir (`slackblocks` on Hex)
+(`io.github.nicklambourne:slackblocks` on Maven Central), C# (`Slackblocks` on NuGet), Ruby (`slackblocks` on RubyGems), Rust (`slackblocks` on crates.io), PHP (`nicklambourne/slackblocks` on Packagist), Elixir (`slackblocks` on Hex), and Haskell (`slackblocks` on Hackage)
 packages are released together and always carry the same version
 number.
+
+**Release 3.1.0 is authorized for publication.** It adds Haskell as the tenth
+language. The 3.0.0 nine-language documentation is frozen with source/file hashes
+in `docs/release-snapshots/3.0.0.json`. Haskell activation is enabled with verified
+uploader `nicklambourne`; the protected coordinator still authenticates the token
+and checks all registry prerequisites before creating any tags. Publication is
+complete only after all ten publishers and their registry checks succeed.
 
 **Release 3.0.0** ships the corrected number-input bound API, Go `/v3`
 module and native Slackbot button prompt fields in all nine languages while
@@ -23,8 +30,8 @@ all eight previous implementations are publicly available at 2.7.0.
 
 The recommended entry point is the **Coordinated Release** workflow in GitHub
 Actions. Run it from `master` with one `X.Y.Z` input; it validates the shared
-version and changelogs, creates all nine annotated tags in one atomic push,
-dispatches each publisher at its tag, and waits for all nine runs.
+version and changelogs, creates all ten annotated tags in one atomic push,
+dispatches each publisher at its tag, and waits for all ten runs.
 
 When adding another language package, complete the
 [new language implementation workflow](docs/docs/contributing/adding-a-language.mdx) before
@@ -47,13 +54,15 @@ Releases are triggered by pushing tags:
 | `php/vX.Y.Z` | [`.github/workflows/publish-packagist.yml`](.github/workflows/publish-packagist.yml) | PHP-only release ZIP and monorepo `vX.Y.Z` tag, indexed by Packagist |
 | `elixir/vX.Y.Z` | [`.github/workflows/publish-hex.yml`](.github/workflows/publish-hex.yml) | `slackblocks` to Hex, HexDocs, verified registry consumers and GitHub assets |
 
+| `haskell/vX.Y.Z` | [`.github/workflows/publish-hackage.yml`](.github/workflows/publish-hackage.yml) | Tested Cabal source archive, native Haddock, registry consumers and GitHub assets |
+
 The PHP publisher creates an additional annotated `vX.Y.Z` tag at the same
 monorepo commit, after its downloadable archive is public. Composer recognizes
 this conventional version tag; it ignores `php/vX.Y.Z`. Plain `v*` tags do not
 trigger Actions workflows. Older pre-monorepo tags without a root
 `composer.json` are ignored by Packagist.
 
-The nine publisher workflows also accept a manual dispatch at an existing,
+The ten publisher workflows also accept a manual dispatch at an existing,
 matching language tag. The coordinator uses those entry points so each job
 retains its registry-specific publisher workflow identity.
 
@@ -61,8 +70,8 @@ The coordinator verifies that `python/pyproject.toml`,
 `typescript/package.json`, `java/pom.xml`,
 `csharp/src/Slackblocks/Slackblocks.csproj`,
 `ruby/lib/slackblocks/version.rb`, `rust/Cargo.toml`, and
-`php/src/Version.php`, and `elixir/mix.exs` agree (eight stored versions; Go is tag-derived). The shared guard
-also verifies the Python, Ruby, Cargo and PHP integration lockfiles, Elixir/Erlang consumer requirements, shared spec version and empty skip list, Go major module path, all nine
+`php/src/Version.php`, `elixir/mix.exs`, and `haskell/slackblocks.cabal` agree (nine stored versions; Go is tag-derived). The shared guard
+also verifies the Python, Ruby, Cargo and PHP integration lockfiles, Elixir/Erlang consumer requirements, shared spec version and empty skip list, Go major module path, all ten
 changelogs, clean checkout, master ancestry and the complete annotated tag set.
 Every publisher calls `.github/scripts/verify-release.py`; Ruby’s historical
 `ruby/bin/verify-release` command delegates to the same guard. Provider-specific
@@ -72,7 +81,7 @@ installed-package checks remain in their workflows.
 
 These must be in place before the workflows can publish:
 
-1. **GitHub environments** — create `pypi`, `npm`, `maven-central`, `nuget`, `rubygems`, `crates-io`, `packagist`, and `hex`
+1. **GitHub environments** — create `pypi`, `npm`, `maven-central`, `nuget`, `rubygems`, `crates-io`, `packagist`, `hex`, and `hackage`
    environments in the repository settings (Settings → Environments). The
    publish jobs run inside them; add required reviewers there if you want
    manual approval before publishing.
@@ -436,7 +445,7 @@ checklist below records the required setup and gates for the first publication.
    real relevant/unrelated runs and actual GitHub-provided runner metadata when
    changing this configuration.
 6. In a separate activation change, resolve any previous registry discrepancy,
-   date all nine changelogs together, align Java's output timestamp, populate the
+   date all ten changelogs together, align Java's output timestamp, populate the
    verified Hex owner and set `enabled: true`. Review the complete change before
    authorizing the release. No release dates or account settings are implied by
    the implementation PRs.
@@ -468,6 +477,79 @@ If package upload succeeds but docs fail, rerun the same tag to finish docs.
 Registry/docs visibility waits are bounded. An uncertain upload response causes
 an identity lookup, not another write. GitHub release recovery uses the exact tag,
 compares existing asset checksums, and uploads only missing assets.
+
+## Haskell activation, publication and recovery
+
+Haskell first published in **3.1.0** on 28 October 2026. The protected
+coordinator authenticated `nicklambourne` before creating tags. The publisher
+verified the public source archive and native Haddock against its tested assets,
+and fresh minimum/current GHC registry consumers passed. `first_publication` is
+now false: subsequent releases require the existing package and maintainer
+membership. The protected `hackage` environment permits master readiness and
+`haskell/v*` publication using `HACKAGE_TOKEN`. Metadata presence alone does not
+prove authentication; every release repeats the protected account checks.
+
+1. Obtain a verified Hackage account and uploader membership. Confirm package-name
+   availability again; after first publication, confirm the account appears in
+   the package's maintainers. Set the verified username in `haskell/release.json`.
+2. Create the protected GitHub environment **hackage** for repository
+   `nicklambourne/slackblocks`, allowing master readiness and `haskell/v*` tags.
+   Store a dedicated **HACKAGE_TOKEN** created in Hackage account management.
+   The documented API token is account-wide; do not describe it as package-scoped
+   or OIDC. Limit the account's package memberships and revoke/rotate the token
+   when no longer needed. No supported trusted-publishing flow is assumed.
+3. Require the Haskell native, quality, HTTP, dependency and package jobs, including
+   **Build and verify Hackage release**, before activation. Review actual runner
+   executions on minimum/current compilers; never replace existing required jobs.
+4. After owner approval, date all ten changelogs, set Java's output timestamp,
+   review `first_publication: true`, then set `enabled: true`. First-publication
+   mode permits an absent package only for an authenticated uploader. Existing
+   packages always require explicit maintainer membership. Set it false after
+   the first successful release. The shared guard blocks every publisher while
+   disabled; the coordinator checks account identity and permissions before tags.
+   The authenticated account-management redirect proves both the expected owner
+   and an enabled account: Hackage rejects disabled accounts during token
+   authentication. Its separate account-status JSON resource requires server
+   administrator membership and must not be queried by an ordinary uploader.
+5. PR builds use GHC 9.6.7, Cabal 3.16.1.0 and the checked-in dependency receipt.
+   They test the actual sdist's five suites, generate native Hackage-mode Haddock,
+   reproduce the source archive, and retain both assets plus commit/tool/lock/
+   resolved-dependency/checksum metadata. The native matrix separately exercises
+   extracted archives and fresh API/HTTP consumers. No credential is used on PRs.
+6. The tag-bound publisher verifies the tested assets and reproduced source before
+   using a token. Cabal receives it in a temporary mode-0600 `hackage-token` config,
+   never in command arguments. Only missing source/docs are uploaded, with explicit
+   `--publish`; the package bytes and documentation member contents must then match.
+   A source metadata revision must also match the tested Cabal descriptor. Fresh
+   minimum/current registry consumers precede the exact-tag GitHub Release.
+7. Activate the Hackage dashboard collector and live registry badge only after the
+   public version and all-time download counter are verified. The companion enabled
+   Hackage as the eighth required source after 3.1.0; it never fabricates totals.
+
+Credential-free commands (no publication):
+
+```sh
+python3 -m unittest discover -s .github/scripts -p 'test_*.py' -v
+python3 haskell/bin/release.py prepare
+python3 haskell/bin/release.py verify
+```
+
+If an upload fails or delivery is uncertain, stop and inspect the registry before
+retrying at the **same** tag. The tool does not automatically retry writes. Matching
+source is reused; missing docs can be completed. Conflicting source or documentation
+fails closed, and existing GitHub assets are compared, never overwritten. Hackage
+can generate docs independently; a differing existing docs archive needs maintainer
+review, not automatic replacement. Do not move tags, delete published versions, or
+silently revise dependency bounds to repair a bad release. Use the next coordinated
+patch version for a defective artifact. Authentication/readiness checks are not
+publication or live Slack acceptance evidence.
+
+Official contracts checked: [Cabal 3.16 upload and sdist](https://cabal.readthedocs.io/en/3.16/cabal-commands.html#cabal-upload),
+[Hackage API](https://hackage.haskell.org/api),
+[Hackage account identity and groups](https://github.com/haskell/hackage-server/blob/master/src/Distribution/Server/Features/Users.hs),
+[Hackage enabled-account authentication](https://github.com/haskell/hackage-server/blob/master/src/Distribution/Server/Framework/Auth.hs),
+[documentation storage](https://github.com/haskell/hackage-server/blob/master/src/Distribution/Server/Features/Documentation.hs),
+and [Cabal token configuration](https://github.com/haskell/cabal/blob/cabal-install-v3.16.1.0/cabal-install/src/Distribution/Client/Config.hs).
 
 ## Coordinated release procedure
 
@@ -511,10 +593,11 @@ panels. `docs/release-snapshots/2.7.0.json` records its language set and file ha
    - `csharp/src/Slackblocks/SlackblocksInfo.cs` (`Version`; the C# tests verify
      that it matches the project)
    - `ruby/lib/slackblocks/version.rb` (`VERSION`) and the own-gem entries in `ruby/Gemfile.lock`
-   - `rust/Cargo.toml` (`package.version`) and the own-crate entries in both
-     `rust/Cargo.lock` and `rust/integrations/Cargo.lock`. Refresh each Cargo
+   - `rust/Cargo.toml` (`package.version`) and the own-crate entries in
+     `rust/Cargo.lock`, `rust/integrations/Cargo.lock`, and
+     `docs/examples/multiselect-compat/rust/Cargo.lock`. Refresh each Cargo
      workspace after changing the version, then run its checks with `--locked`;
-     the shared preflight rejects a stale entry in either lockfile.
+     the shared preflight rejects a stale entry in any of these lockfiles.
    - `php/src/Version.php` (`PACKAGE`), `php/integrations/composer.json` (both
      the exact requirement and path repository version), and its own-package
      entry in `php/integrations/composer.lock`. Composer's library manifest must
@@ -522,6 +605,8 @@ panels. `docs/release-snapshots/2.7.0.json` records its language set and file ha
    - `elixir/mix.exs`, the exact path dependency requirement in
      `elixir/integrations/mix.exs`, and `elixir/erlang/rebar.config`. Mix path
      dependencies have no own-package lock entry; test the loaded version too.
+   - `haskell/slackblocks.cabal` (`version`); the shared guard also checks the
+     generated `specVersion` and empty conformance skip list.
    - the pinned versions in the installation examples of `README.md`,
      `java/README.md`, `docs/docs/quick-start.mdx`, and
      `docs/docs/usage/installation.mdx`
@@ -533,7 +618,7 @@ panels. `docs/release-snapshots/2.7.0.json` records its language set and file ha
    existing `/v2` path cannot publish `go/v3.0.0`.
 3. Add a `## [X.Y.Z] — YYYY-MM-DD` section to `python/CHANGELOG.md`,
    `typescript/CHANGELOG.md`, `go/CHANGELOG.md`, `java/CHANGELOG.md`,
-   `csharp/CHANGELOG.md`, `ruby/CHANGELOG.md`, `rust/CHANGELOG.md`, `php/CHANGELOG.md`, and `elixir/CHANGELOG.md`. The
+   `csharp/CHANGELOG.md`, `ruby/CHANGELOG.md`, `rust/CHANGELOG.md`, `php/CHANGELOG.md`, `elixir/CHANGELOG.md`, and `haskell/CHANGELOG.md`. The
    publish workflows extract the matching section for their GitHub Release
    notes. Pull requests may use `Unreleased` while the release is prepared, but
    replace it with the release date before dispatching: the coordinator rejects
@@ -552,9 +637,9 @@ panels. `docs/release-snapshots/2.7.0.json` records its language set and file ha
    ```
 
 7. The coordinator first verifies PHP registry/repository readiness inside the
-   protected `packagist` environment and authenticated Hex readiness in `hex`, before creating any tags. It then atomically pushes `python/vX.Y.Z`, `ts/vX.Y.Z`,
-   `go/vX.Y.Z`, `java/vX.Y.Z`, `csharp/vX.Y.Z`, `ruby/vX.Y.Z`, `rust/vX.Y.Z`, `php/vX.Y.Z`, and `elixir/vX.Y.Z`,
-   then dispatches and monitors all nine publishers.
+   protected `packagist` environment and authenticated Hex readiness in `hex` and Hackage owner/uploader/package readiness in `hackage`, before creating any tags. It then atomically pushes `python/vX.Y.Z`, `ts/vX.Y.Z`,
+   `go/vX.Y.Z`, `java/vX.Y.Z`, `csharp/vX.Y.Z`, `ruby/vX.Y.Z`, `rust/vX.Y.Z`, `php/vX.Y.Z`, `elixir/vX.Y.Z`, and `haskell/vX.Y.Z`,
+   then dispatches and monitors all ten publishers.
    PHP publishes verified GitHub release assets before exposing its Composer
    version tag and checking Packagist. The other publishers create their GitHub
    Releases after their registry steps succeed.
@@ -576,8 +661,8 @@ panels. `docs/release-snapshots/2.7.0.json` records its language set and file ha
 
 If the coordinator is unavailable, complete the same PHP readiness check with
 an authenticated maintainer account and verified Packagist registration, plus
-the authenticated Hex readiness check below,
-then create all nine signed tags at the same commit and push them atomically.
+the authenticated Hex and Hackage readiness checks below,
+then create all ten signed tags at the same commit and push them atomically.
 Leave `vX.Y.Z` creation to the PHP publisher after it verifies the public assets. GitHub does not generate tag-push workflow
 runs when more than three tags are pushed at once, so dispatch each publisher
 explicitly at its tag after the push:
@@ -589,6 +674,7 @@ gh auth setup-git --hostname github.com
 GITHUB_REF=refs/heads/master python3 php/bin/release.py readiness
 # With the approved HEX_API_KEY supplied securely in the environment:
 python3 elixir/tools/release.py readiness
+python3 haskell/bin/release.py readiness
 git tag -s python/vX.Y.Z -m "slackblocks X.Y.Z (Python)"
 git tag -s ts/vX.Y.Z -m "@nicklambourne/slackblocks X.Y.Z (TypeScript)"
 git tag -s go/vX.Y.Z -m "slackblocks X.Y.Z (Go)"
@@ -598,7 +684,8 @@ git tag -s ruby/vX.Y.Z -m "slackblocks X.Y.Z (Ruby)"
 git tag -s rust/vX.Y.Z -m "slackblocks X.Y.Z (Rust)"
 git tag -s php/vX.Y.Z -m "slackblocks X.Y.Z (PHP)"
 git tag -s elixir/vX.Y.Z -m "slackblocks X.Y.Z (Elixir)"
-git push --atomic origin python/vX.Y.Z ts/vX.Y.Z go/vX.Y.Z java/vX.Y.Z csharp/vX.Y.Z ruby/vX.Y.Z rust/vX.Y.Z php/vX.Y.Z elixir/vX.Y.Z
+git tag -s haskell/vX.Y.Z -m "slackblocks X.Y.Z (Haskell)"
+git push --atomic origin python/vX.Y.Z ts/vX.Y.Z go/vX.Y.Z java/vX.Y.Z csharp/vX.Y.Z ruby/vX.Y.Z rust/vX.Y.Z php/vX.Y.Z elixir/vX.Y.Z haskell/vX.Y.Z
 gh workflow run publish.yml --ref python/vX.Y.Z
 gh workflow run publish-npm.yml --ref ts/vX.Y.Z
 gh workflow run publish-go.yml --ref go/vX.Y.Z
@@ -608,6 +695,7 @@ gh workflow run publish-rubygems.yml --ref ruby/vX.Y.Z
 gh workflow run publish-crates.yml --ref rust/vX.Y.Z
 gh workflow run publish-packagist.yml --ref php/vX.Y.Z
 gh workflow run publish-hex.yml --ref elixir/vX.Y.Z
+gh workflow run publish-hackage.yml --ref haskell/vX.Y.Z
 ```
 
 Tags created by the coordinator are annotated as `github-actions[bot]` but
@@ -647,7 +735,7 @@ regard a locally built 2.7.0 package as a registry receipt.
 
 ## Partial-failure recovery
 
-The nine tags are created atomically, but nine publishing targets cannot be
+The ten tags are created atomically, but ten publishing targets cannot be
 updated as one transaction. If one publisher fails after another succeeds,
 re-run the failed publisher from its existing workflow run; never move the
 tags or republish an already released version.
@@ -712,8 +800,11 @@ After a failure, check:
 - Hex: the exact version/checksum, runtime and dependencies are visible at
   `https://hex.pm/packages/slackblocks`; versioned HexDocs and minimum/current
   production consumers succeed. The Elixir GitHub assets match the tested archive.
-- GitHub: a Release exists for each of the nine tags with the changelog notes.
+- Hackage: the source tarball SHA-256 and original Cabal descriptor match the
+  tested assets, native Haddock content matches, and minimum/current GHC consumers
+  resolve `slackblocks` from the public repository rather than a local archive.
+- GitHub: a Release exists for each of the ten tags with the changelog notes.
 
 If a bad artifact was published, do not delete and re-upload: registries
 reject reused file names and versions. Yank, deprecate, or unlist the broken
-version and release a new coordinated patch version of **all nine** packages.
+version and release a new coordinated patch version of **all ten** packages.
