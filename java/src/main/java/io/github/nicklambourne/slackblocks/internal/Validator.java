@@ -1368,8 +1368,9 @@ public final class Validator {
     int rank = a.rank().compareTo(b.rank());
     if (rank != 0) return rank * a.sign();
     int width = Math.max(a.digits().length(), b.digits().length());
-    return (a.digits() + "0".repeat(width - a.digits().length()))
-            .compareTo(b.digits() + "0".repeat(width - b.digits().length()))
+    return Integer.signum(
+            (a.digits() + "0".repeat(width - a.digits().length()))
+                .compareTo(b.digits() + "0".repeat(width - b.digits().length())))
         * a.sign();
   }
 

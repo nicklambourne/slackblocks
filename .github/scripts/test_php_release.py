@@ -616,7 +616,7 @@ class PHPReleaseTests(unittest.TestCase):
         coordinator = (
             fixtures.ROOT / ".github/workflows/coordinated-release.yml"
         ).read_text()
-        self.assertIn("needs: [validate, php-readiness, hex-readiness]", coordinator)
+        self.assertIn("needs: [validate, php-readiness, hex-readiness, hackage-readiness]", coordinator)
         self.assertIn("release.py readiness", coordinator)
         self.assertIn("workflow: publish-packagist.yml", coordinator)
         self.assertNotIn("secrets.PHP_DIST", coordinator)
