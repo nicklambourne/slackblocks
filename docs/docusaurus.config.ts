@@ -253,6 +253,7 @@ const config: Config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
+          beforeDefaultRemarkPlugins: [require("./plugins/recipe-book-links.cjs")],
           showLastUpdateTime: true,
           lastVersion: "current",
           versions: {
