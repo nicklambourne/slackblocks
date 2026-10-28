@@ -3,9 +3,9 @@
 All notable changes to the Java package are documented here. Java versions move
 in lockstep with the Python, TypeScript, and Go packages.
 
-## [3.1.0] — Unreleased
+## [3.1.0] — 2026-10-28
 
-- Coordinate the upcoming release with the new Haskell implementation and ten-language documentation. Existing runtime support remains unchanged.
+- Coordinate this release with the new Haskell implementation and ten-language documentation. Existing runtime support remains unchanged.
 
 ## [3.0.0] — 2026-10-24
 

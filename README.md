@@ -2,7 +2,7 @@
 
 [![License: MIT OR BSD-3-Clause](https://img.shields.io/badge/License-MIT_OR_BSD--3--Clause-2E8B57?style=flat&labelColor=555)](#licensing)
 [![Docs: read](https://img.shields.io/badge/Docs-read-4A154B?style=flat&labelColor=555)](https://nicklambourne.github.io/slackblocks)
-[![Downloads across PyPI, npm, NuGet, RubyGems, crates.io, Packagist and Hex](https://img.shields.io/endpoint?url=https%3A%2F%2Fwatch.ndl.au%2Fbadges%2Fslackblocks-downloads.json&style=flat&labelColor=555&label=Downloads)](#download-statistics)
+[![Downloads across PyPI, npm, NuGet, RubyGems, crates.io, Packagist, Hex and Hackage](https://img.shields.io/endpoint?url=https%3A%2F%2Fwatch.ndl.au%2Fbadges%2Fslackblocks-downloads.json&style=flat&labelColor=555&label=Downloads)](#download-statistics)
 
 [![PyPI version](https://img.shields.io/pypi/v/slackblocks?style=flat&labelColor=555&label=PyPI&color=3776AB&logo=python&logoColor=white)](https://pypi.org/project/slackblocks/)
 [![npm version](https://img.shields.io/npm/v/%40nicklambourne%2Fslackblocks?style=flat&labelColor=555&label=npm&color=3178C6&logo=npm&logoColor=white)](https://www.npmjs.com/package/@nicklambourne/slackblocks)
@@ -13,7 +13,7 @@
 [![crates.io version](https://img.shields.io/crates/v/slackblocks?style=flat&labelColor=555&label=crates.io&color=CE422B&logo=rust&logoColor=white)](https://crates.io/crates/slackblocks)
 [![Packagist version](https://img.shields.io/packagist/v/nicklambourne/slackblocks?style=flat&labelColor=555&label=Packagist&color=777BB4&logo=php&logoColor=white)](https://packagist.org/packages/nicklambourne/slackblocks)
 [![Hex version](https://img.shields.io/hexpm/v/slackblocks?style=flat&labelColor=555&label=Hex&color=8847B9&logo=elixir&logoColor=white)](https://hex.pm/packages/slackblocks)
-[![Haskell package preparation](https://img.shields.io/badge/Hackage-pending-5E5086?style=flat&labelColor=555&logo=haskell&logoColor=white)](haskell/README.md)
+[![Hackage](https://img.shields.io/hackage/v/slackblocks?style=flat&labelColor=555&color=5E5086&logo=haskell&logoColor=white)](https://hackage.haskell.org/package/slackblocks)
 
 [![Python CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/unit-tests.yml?style=flat&labelColor=555&branch=master&event=push&label=Python+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/unit-tests.yml?query=branch%3Amaster)
 [![TypeScript CI](https://img.shields.io/github/actions/workflow/status/nicklambourne/slackblocks/typescript.yml?style=flat&labelColor=555&branch=master&event=push&label=TypeScript+CI)](https://github.com/nicklambourne/slackblocks/actions/workflows/typescript.yml?query=branch%3Amaster)
@@ -51,8 +51,8 @@ your tests, rather than in production.
   pass Go block builders directly to [`slack-go/slack`](https://github.com/slack-go/slack),
   pass Java blocks directly to the [official Slack Java SDK](https://slack.dev/java-slack-sdk/),
   serialize C# values with `System.Text.Json`, call `to_json` on Ruby values, use Serde with Rust values, pass PHP JSON to JoliCode, cURL or Laravel, or send Elixir maps with Req or the community Slack client.
-- **One contract across nine implementations** — the same blocks, validation rules, and version
-  numbers in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, and Elixir. A shared conformance corpus keeps the implementations emitting the same Slack JSON.
+- **One contract across ten implementations** — the same blocks, validation rules, and version
+  numbers in Python, TypeScript, Go, Java, C#, Ruby, Rust, PHP, Elixir, and Haskell. A shared conformance corpus keeps the implementations emitting the same Slack JSON. Haskell joins the coordinated 3.1.0 release.
 - **Everything Block Kit ships today** — all current blocks and elements, rich text,
   modals and Home tabs, and the 2025 block families (tables, cards, carousels, charts).
 - **Light** — zero runtime dependencies in Python, a self-contained ESM module on npm,
@@ -98,7 +98,7 @@ go get github.com/nicklambourne/slackblocks/go/v3
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>3.0.0</version>
+  <version>3.1.0</version>
 </dependency>
 ```
 
@@ -126,7 +126,7 @@ gem install slackblocks
 <summary>Rust (1.85+, edition 2024)</summary>
 
 ```bash
-cargo add slackblocks@3.0.0
+cargo add slackblocks@3.1.0
 cargo add serde_json
 ```
 
@@ -162,20 +162,11 @@ See the [Elixir package guide](elixir/README.md).
 <details>
 <summary>Haskell (GHC 9.6.7+, tested through 9.14)</summary>
 
-Haskell is prepared for coordinated 3.1.0; Hackage publication is not active.
-Use a reviewed checkout to build a source archive:
-
-```sh
-cd haskell
-cabal build lib:slackblocks
-cabal sdist --output-directory=dist
-```
-
-List that tarball in your application's `cabal.project` and add
-`slackblocks >= 3.1 && < 3.2` to `build-depends`. See the
+Add `slackblocks >= 3.1 && < 3.2` to your application's Cabal
+`build-depends`, run `cabal update`, then `cabal build`. Haskell joins the
+coordinated 3.1.0 release on [Hackage](https://hackage.haskell.org/package/slackblocks). See the
 [package guide](haskell/README.md) and [installation and compiler policy](https://nicklambourne.github.io/slackblocks/usage/installation).
-The pending badge is intentional; the shared download total excludes Hackage
-until publication and the dashboard collector are verified.
+The shared download total includes Hackage's verified package-wide counter.
 
 </details>
 
@@ -538,15 +529,15 @@ See the [native API](https://nicklambourne.github.io/slackblocks/reference/haske
 - [`rust/`](rust/) — the Rust crate (`slackblocks` on crates.io from 2.6.0).
 - [`php/`](php/) — native PHP values and Composer package (`nicklambourne/slackblocks` on Packagist from 2.7.0).
 - [`elixir/`](elixir/) — native Elixir values and Erlang integration (`slackblocks` on Hex from 2.8.0).
-- [`haskell/`](haskell/) — checked immutable Haskell values, native JSON and separate HTTP integration (3.1.0 preparation).
+- [`haskell/`](haskell/) — checked immutable Haskell values, native JSON and separate HTTP integration (introduced in 3.1.0).
 - [`spec/`](spec/) — the shared conformance contract: fixtures, invalid cases, limits,
-  and capability coverage that all nine implementations are tested against.
+  and capability coverage that all ten implementations are tested against.
 - [`docs/`](docs/) — the Docusaurus documentation site.
 
 ## Download statistics
 
 The **Downloads** badge sums all-time counts from PyPI (via Pepy), npm,
-NuGet, RubyGems, crates.io, Packagist, and Hex. Go and Maven Central have no comparable public
+NuGet, RubyGems, crates.io, Packagist, Hex, and Hackage. Go and Maven Central have no comparable public
 all-time download counters and are excluded. Registry counting rules differ;
 these counts include automated downloads and do not represent unique users.
 The total refreshes hourly and shows unavailable if any contributing count is

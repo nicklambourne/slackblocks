@@ -6,7 +6,7 @@ title: Bounded delivery and uncertain writes
 
 Deduplicating an incoming Slack event prevents one class of repeated work. It does not guarantee one outgoing message: a server can accept a write before the client loses the connection, or a process can die before saving the receipt. Retrying that write can create a duplicate.
 
-The [SQLite outbox example](https://github.com/nicklambourne/slackblocks/tree/master/docs/examples/reliable-delivery) is an executable Python reference with native slackblocks messages, atomic event/operation enqueueing, immutable operation payloads, persisted attempt counts, and explicit uncertain-result reconciliation. It intentionally uses a small HTTP transport with no hidden retries. It is not nine native SDK clients, a production queue service, or an exactly-once guarantee.
+The [SQLite outbox example](https://github.com/nicklambourne/slackblocks/tree/master/docs/examples/reliable-delivery) is an executable Python reference with native slackblocks messages, atomic event/operation enqueueing, immutable operation payloads, persisted attempt counts, and explicit uncertain-result reconciliation. It intentionally uses a small HTTP transport with no hidden retries. It is not ten native SDK clients, a production queue service, or an exactly-once guarantee.
 
 ```sh
 python -m pip install slackblocks

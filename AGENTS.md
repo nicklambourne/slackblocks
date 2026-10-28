@@ -48,11 +48,12 @@ Current docs execute literal examples and render compiled native metadata.
 Keep Hex publication disabled until the protected environment, owner and scoped
 credential are verified and the maintainer approves activation; see `RELEASING.md`.
 
-Haskell is prepared for the coordinated 3.1.0 release. Include `haskell/` in
+Haskell joins the implementation set in 3.1.0. Include `haskell/` in
 shared changes. Use checked immutable values, native field records and closed
 roles; regenerate with Ormolu 0.7.7.0. `python bin/check` covers native fixtures,
 compiled public API inventory, compile-fail controls, 95% handwritten HPC
 coverage, independent dependency graphs, actual Cabal archives and fresh HTTP
 consumers. Docs use GHC signatures, compiled Haddock and literal executable
-snippets. Keep Hackage publication and dashboard download activation disabled
-until registry ownership, credentials and the complete release are verified.
+snippets. Hackage publication uses the protected `hackage` environment and the
+coordinated release gates; see `RELEASING.md`. Activate dashboard downloads only
+after the public package and actual Hackage download counter are verified.
