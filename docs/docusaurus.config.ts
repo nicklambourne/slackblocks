@@ -98,6 +98,7 @@ function routePath(prefix: string, route: string): string {
 }
 
 function currentRoute(route: string): string {
+  if (route === "/usage/cookbook") return "/usage/recipes";
   if (!route.startsWith("/reference/")) return route;
   const page = route.slice("/reference/".length);
   return `/reference/python/${page === "utils" ? "builder" : page}`;
@@ -329,6 +330,7 @@ const config: Config = {
       {
         redirects: [
           ...currentAliasRedirects,
+          { from: "/usage/cookbook", to: "/usage/recipes" },
           ...(legacyManifest.migration.aliases_enabled
             ? historicalAliasRedirects()
             : []),

@@ -21,6 +21,7 @@ function routePath(prefix, route) {
 }
 
 function currentRoute(route) {
+  if (route === "/usage/cookbook") return "/usage/recipes";
   if (!route.startsWith("/reference/")) return route;
   const page = route.slice("/reference/".length);
   return `/reference/python/${page === "utils" ? "builder" : page}`;
@@ -248,6 +249,7 @@ if (buildArgument >= 0) {
   const currentRoutes = Array.from(
     new Set(versions.flatMap(({ expected_routes }) => expected_routes)),
   );
+  assertRedirect(buildRoot, "/usage/cookbook", "/usage/recipes");
   for (const alias of ["latest", "master"]) {
     for (const route of currentRoutes) {
       assertRedirect(buildRoot, routePath(alias, route), currentRoute(route));

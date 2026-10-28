@@ -500,7 +500,7 @@ See the [native API](https://nicklambourne.github.io/slackblocks/reference/haske
 - [Using Blocks](https://nicklambourne.github.io/slackblocks/usage/using_blocks) — every
   block type with code in all ten languages, the JSON it produces, and screenshots.
 - [Sending Messages](https://nicklambourne.github.io/slackblocks/usage/sending_messages)
-- [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end
+- [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/recipes) — end-to-end
   recipes for build notifications, approval requests, modals, and more.
 - [API Reference](https://nicklambourne.github.io/slackblocks/reference) —
   [Python](https://nicklambourne.github.io/slackblocks/reference/python),
