@@ -754,8 +754,8 @@ the receiving payload.
 
 ## Cabal cannot find the package or solve dependencies
 
-Hackage publication is still pending. Use the reviewed source archive as shown
-in [Installation](/usage/installation). Check GHC and declared bounds against
+Run `cabal update` and check your application's `build-depends` as shown in
+[Installation](/usage/installation). Check GHC and declared bounds against
 [Compatibility](/usage/compatibility); do not use `allow-newer` to hide an untested
 compiler or dependency. HTTP dependencies belong to the separate application
 example, not the core library.

@@ -120,7 +120,7 @@ Java 17 or newer is required. Add slackblocks and the official Slack Java SDK cl
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>3.0.0</version>
+  <version>3.1.0</version>
 </dependency>
 <dependency>
   <groupId>com.slack.api</groupId>
@@ -220,7 +220,7 @@ puts message.to_json
 Rust 1.85 or newer is required; the crate uses edition 2024.
 
 ```sh
-cargo add slackblocks@3.0.0
+cargo add slackblocks@3.1.0
 cargo add serde_json
 ```
 
@@ -329,9 +329,9 @@ and tagged errors are covered in the [Recipe Book](usage/cookbook).
 
 ## Install
 
-Haskell support is prepared for 3.1.0 and is not yet published on Hackage.
-Use the reviewed source archive or local Cabal project described in
-[Installation](usage/installation). GHC 9.6.7 is the minimum tested compiler.
+Add `slackblocks >= 3.1 && < 3.2` to your application's Cabal `build-depends`,
+then run `cabal update` and `cabal build`. See [Installation](usage/installation).
+GHC 9.6.7 is the minimum tested compiler.
 
 ## Build a message
 

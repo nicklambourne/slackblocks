@@ -413,7 +413,7 @@ class ElixirWorkflowTests(unittest.TestCase):
         coordinator = (
             fixtures.ROOT / ".github/workflows/coordinated-release.yml"
         ).read_text()
-        self.assertIn("needs: [validate, php-readiness, hex-readiness]", coordinator)
+        self.assertIn("needs: [validate, php-readiness, hex-readiness, hackage-readiness]", coordinator)
         self.assertIn('"elixir/v$VERSION"', coordinator)
         native = (fixtures.ROOT / ".github/workflows/elixir.yml").read_text()
         self.assertIn("  pull_request:\n", native)
