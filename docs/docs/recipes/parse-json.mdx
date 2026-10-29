@@ -112,7 +112,7 @@ incoming = json.loads(slack_request_body)
 for raw_block in incoming.get("blocks", []):
     block = Block.from_dict(raw_block)
     if isinstance(block, SectionBlock):
-        print(json.dumps(block._resolve()))
+        print(block)
 ```
 
 `Block.from_dict` dispatches by `type`; direct typed parsers also require the
