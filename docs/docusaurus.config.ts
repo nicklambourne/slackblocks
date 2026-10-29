@@ -2,6 +2,7 @@ import type { Config } from "@docusaurus/types";
 import type { Options as ClassicPresetOptions } from "@docusaurus/preset-classic";
 import { themes as prismThemes } from "prism-react-renderer";
 import { readFileSync } from "node:fs";
+import sidebarItemsGenerator from "./plugins/recipe-book-sidebar";
 
 const pythonProject = readFileSync(
   new URL("../python/pyproject.toml", import.meta.url),
@@ -253,6 +254,7 @@ const config: Config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
+          sidebarItemsGenerator,
           beforeDefaultRemarkPlugins: [require("./plugins/recipe-book-links.cjs")],
           showLastUpdateTime: true,
           lastVersion: "current",
@@ -332,6 +334,11 @@ const config: Config = {
         redirects: [
           ...currentAliasRedirects,
           { from: "/usage/cookbook", to: "/usage/recipes" },
+          { from: "/recipes", to: "/usage/recipes" },
+          ...["multiselect-compatibility", "workflow-state", "reliable-delivery", "live-prerequisites"].map((recipe) => ({
+            from: `/recipes/${recipe}`,
+            to: `/usage/recipes/${recipe}`,
+          })),
           ...(legacyManifest.migration.aliases_enabled
             ? historicalAliasRedirects()
             : []),

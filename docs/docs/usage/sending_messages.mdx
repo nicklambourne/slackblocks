@@ -1169,7 +1169,7 @@ This transport makes one attempt: redirects and automatic retries are disabled.
 HTTP errors (including 429), malformed responses and Slack `ok: false` are
 failures. An application may implement bounded retries respecting `Retry-After`
 and idempotency, but this example does not silently resend a message. See
-[reliable delivery](/recipes/reliable-delivery) for that application boundary.
+[reliable delivery](/usage/recipes/reliable-delivery) for that application boundary.
 
 Run `python bin/http-check` from `haskell/` for actual request-byte, authentication,
 Unicode/metadata and error checks against an isolated local server. The archive

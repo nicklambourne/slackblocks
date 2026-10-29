@@ -100,7 +100,11 @@ function targetDoc(
         : null;
   const candidateIds =
     version.name === CURRENT_VERSION
-      ? [contributingId, currentReferenceId(activeDoc.id)]
+      ? [
+          activeDoc.id === "recipes/index" ? "usage/cookbook" : null,
+          contributingId,
+          currentReferenceId(activeDoc.id),
+        ]
       : [
           contributingId,
           historicalReferenceId(activeDoc.id),

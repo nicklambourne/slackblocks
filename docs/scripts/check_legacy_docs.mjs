@@ -250,6 +250,10 @@ if (buildArgument >= 0) {
     new Set(versions.flatMap(({ expected_routes }) => expected_routes)),
   );
   assertRedirect(buildRoot, "/usage/cookbook", "/usage/recipes");
+  assertRedirect(buildRoot, "/recipes", "/usage/recipes");
+  for (const recipe of ["multiselect-compatibility", "workflow-state", "reliable-delivery", "live-prerequisites"]) {
+    assertRedirect(buildRoot, `/recipes/${recipe}`, `/usage/recipes/${recipe}`);
+  }
   for (const alias of ["latest", "master"]) {
     for (const route of currentRoutes) {
       assertRedirect(buildRoot, routePath(alias, route), currentRoute(route));

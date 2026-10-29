@@ -101,6 +101,10 @@ function filterUsage(
   language: Language,
 ): PropSidebarItemCategory {
   const positions = new Map(USAGE_ORDER.map((docId, index) => [docId, index]));
+  const position = (child: PropSidebarItem): number => positions.get(
+    child.type === "link" ? child.docId ?? "" :
+      isCategory(child) && child.label === "Recipe Book" ? "usage/cookbook" : "",
+  ) ?? Number.MAX_SAFE_INTEGER;
   const items = item.items
     .filter(child => child.type !== "link" || child.docId !== "usage/erlang" || language === "elixir")
     .filter(
@@ -114,17 +118,7 @@ function filterUsage(
         !child.docId ||
         !NON_PYTHON_HIDDEN_DOCS.has(child.docId),
     )
-    .sort((left, right) => {
-      const leftPosition =
-        left.type === "link" && left.docId
-          ? (positions.get(left.docId) ?? Number.MAX_SAFE_INTEGER)
-          : Number.MAX_SAFE_INTEGER;
-      const rightPosition =
-        right.type === "link" && right.docId
-          ? (positions.get(right.docId) ?? Number.MAX_SAFE_INTEGER)
-          : Number.MAX_SAFE_INTEGER;
-      return leftPosition - rightPosition;
-    });
+    .sort((left, right) => position(left) - position(right));
 
   return {
     ...item,

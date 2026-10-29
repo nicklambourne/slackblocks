@@ -10,6 +10,27 @@ End-to-end recipes for common Slack messaging patterns. Each example produces a 
 
 The reference docs cover *what* each class does in isolation; this page is for *how* to combine them into something useful.
 
+## Choose a recipe
+
+Select your installed package's documentation version and language before copying
+an example. The message-building recipes below cover common notifications, forms
+and responses; the operational guides cover the application behavior around them.
+
+| Goal | Starting point | Executable coverage |
+| --- | --- | --- |
+| Install and construct a message | [Quick start](/quick-start) | Native examples for all ten languages |
+| Send through an SDK, webhook or response URL | [Sending messages](/usage/sending_messages) | Language-specific SDK/HTTP handoff |
+| Find helper names and signatures | [API reference](/reference) | Native components, pagination and composition APIs |
+| Compare multi-select parent compatibility | [Multi-select probes](/usage/recipes/multiselect-compatibility) | Ten executable consumers; 15 native payloads per language |
+| Implement task changes and guard callbacks | [Workflow state and effects](/usage/recipes/workflow-state) | One tested Python reference application; portable acceptance criteria |
+| Avoid blindly resending an uncertain write | [Bounded delivery](/usage/recipes/reliable-delivery) | One tested Python SQLite/HTTP example; no exactly-once claim |
+| Prepare media, workflow and second-user checks | [Live prerequisites](/usage/recipes/live-prerequisites) | Offline readiness inventory; no Slack writes or automatic live-pass claims |
+
+The [executable examples](https://github.com/nicklambourne/slackblocks/tree/master/docs/examples)
+include commands and assertions. A rendering example does not implement callbacks.
+Live tests additionally need an authorized app, genuine resources and interaction
+receipts; local success does not prove live acceptance.
+
 <LanguageContent>
 <Python>
 
