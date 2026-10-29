@@ -46,18 +46,10 @@ for (const [, asset] of guide.matchAll(/!\[[^\]]+\]\((\/img\/usage\/[^)]+)\)/g))
   await access(path.join(staticDirectory, asset));
 }
 
-const cookbook = sections(
-  await readFile(path.join(docsDirectory, "cookbook.mdx"), "utf8"),
-);
-for (const title of [
-  "Build status notification",
-  "Rich-formatted alert",
-  "Confirmation modal",
-  "Multi-column status report (table)",
-]) {
-  const body = cookbook.get(title);
-  assert.ok(body, `Recipe Book is missing ${title}`);
-  assert.match(body, /!\[[^\]]+\]\(\/img\/usage\/[^)]+\)/, `${title} lacks a preview`);
+const catalog = JSON.parse(await readFile(path.join(scriptsDirectory, "../examples/recipes/catalog.json"), "utf8"));
+for (const { id, title } of catalog) {
+  const source = await readFile(path.join(docsDirectory, `../recipes/${id}.mdx`), "utf8");
+  assert.ok(source.includes(`<RecipeOutput recipe="${id}" outputs={recipeOutputs} />`), `${title} lacks its executable output preview`);
 }
 
 console.log("Guide preview checks passed.");

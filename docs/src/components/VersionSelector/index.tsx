@@ -10,6 +10,7 @@ import {
 } from "@docusaurus/plugin-content-docs/client";
 import legacyManifest from "@site/legacy/manifest.json";
 import { useLanguage } from "@site/src/components/LanguageContext";
+import recipes from "@site/examples/recipes/catalog.json";
 
 type Props = {
   mobile?: boolean;
@@ -106,6 +107,7 @@ function targetDoc(
           currentReferenceId(activeDoc.id),
         ]
       : [
+          recipes.some(({ id }) => activeDoc.id === `recipes/${id}`) ? "usage/cookbook" : null,
           contributingId,
           historicalReferenceId(activeDoc.id),
           activeDoc.id === "quick-start" ? "usage/installation" : null,

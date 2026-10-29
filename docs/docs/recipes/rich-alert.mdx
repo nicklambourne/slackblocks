@@ -1,0 +1,552 @@
+---
+title: Rich-formatted alert
+slug: /usage/recipes/rich-alert
+sidebar_position: 3
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "blocks": [
+      {
+        "level": "warning",
+        "text": {
+          "text": "*Attention:* deployment paused",
+          "type": "mrkdwn"
+        },
+        "type": "alert"
+      },
+      {
+        "elements": [
+          {
+            "elements": [
+              {
+                "style": {
+                  "bold": true
+                },
+                "text": "Review the checks",
+                "type": "text"
+              }
+            ],
+            "type": "rich_text_section"
+          }
+        ],
+        "type": "rich_text"
+      }
+    ],
+    "title": {
+      "text": "Deployment",
+      "type": "plain_text"
+    },
+    "type": "modal"
+  },
+  "java": {
+    "mrkdwn": true,
+    "text": "Deployment needs attention",
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "rich_text",
+        "elements": [
+          {
+            "type": "rich_text_section",
+            "elements": [
+              {
+                "type": "text",
+                "text": "Deployment needs attention",
+                "style": {
+                  "bold": true
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "go": {
+    "blocks": [
+      {
+        "elements": [
+          {
+            "elements": [
+              {
+                "style": {
+                  "bold": true
+                },
+                "text": "Deployment needs attention",
+                "type": "text"
+              }
+            ],
+            "type": "rich_text_section"
+          }
+        ],
+        "type": "rich_text"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Deployment needs attention"
+  },
+  "ruby": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "rich_text",
+        "elements": [
+          {
+            "type": "rich_text_section",
+            "elements": [
+              {
+                "type": "text",
+                "text": "Deployment needs attention",
+                "style": {
+                  "bold": true
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "text": "Deployment needs attention",
+    "mrkdwn": true
+  },
+  "csharp": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "rich_text",
+        "elements": [
+          {
+            "type": "rich_text_section",
+            "elements": [
+              {
+                "type": "text",
+                "text": "Deployment needs attention",
+                "style": {
+                  "bold": true
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "text": "Deployment needs attention",
+    "mrkdwn": true
+  },
+  "php": {
+    "type": "modal",
+    "title": {
+      "type": "plain_text",
+      "text": "Deployment"
+    },
+    "blocks": [
+      {
+        "type": "alert",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*Attention:* deployment paused"
+        },
+        "level": "warning"
+      },
+      {
+        "type": "rich_text",
+        "elements": [
+          {
+            "type": "rich_text_section",
+            "elements": [
+              {
+                "type": "text",
+                "text": "Review the checks",
+                "style": {
+                  "bold": true
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "rust": {
+    "channel": "C01234567",
+    "blocks": [
+      {
+        "type": "rich_text",
+        "elements": [
+          {
+            "type": "rich_text_section",
+            "elements": [
+              {
+                "type": "text",
+                "text": "Deployment needs attention",
+                "style": {
+                  "bold": true
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "text": "Deployment needs attention",
+    "mrkdwn": true
+  },
+  "haskell": {
+    "blocks": [
+      {
+        "level": "warning",
+        "text": {
+          "text": "*Attention:* deployment paused",
+          "type": "mrkdwn"
+        },
+        "type": "alert"
+      },
+      {
+        "elements": [
+          {
+            "elements": [
+              {
+                "style": {
+                  "bold": true
+                },
+                "text": "Review the checks",
+                "type": "text"
+              }
+            ],
+            "type": "rich_text_section"
+          }
+        ],
+        "type": "rich_text"
+      }
+    ],
+    "title": {
+      "text": "Deployment",
+      "type": "plain_text"
+    },
+    "type": "modal"
+  },
+  "typescript": {
+    "mrkdwn": true,
+    "text": "Deployment needs attention",
+    "channel": "C1",
+    "blocks": [
+      {
+        "elements": [
+          {
+            "elements": [
+              {
+                "text": "Deployment needs attention",
+                "style": {
+                  "bold": true
+                },
+                "type": "text"
+              }
+            ],
+            "type": "rich_text_section"
+          }
+        ],
+        "type": "rich_text"
+      }
+    ]
+  },
+  "python": {
+    "channel": "C1",
+    "mrkdwn": true,
+    "blocks": [
+      {
+        "type": "rich_text",
+        "block_id": "<generated-block-id>",
+        "elements": [
+          {
+            "type": "rich_text_section",
+            "elements": [
+              {
+                "type": "text",
+                "text": "Deployed "
+              },
+              {
+                "type": "text",
+                "text": "api",
+                "style": {
+                  "bold": true
+                }
+              },
+              {
+                "type": "text",
+                "text": " version "
+              },
+              {
+                "type": "text",
+                "text": "3.1.0",
+                "style": {
+                  "code": true
+                }
+              },
+              {
+                "type": "text",
+                "text": ". "
+              },
+              {
+                "type": "link",
+                "url": "https://status.example.com",
+                "text": "View dashboard"
+              },
+              {
+                "type": "text",
+                "text": "."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "text": "Deployed api 3.1.0"
+  }
+};
+
+# Rich-formatted alert
+
+Use native rich-text values to emphasize an operational notice without constructing raw Block Kit JSON.
+
+<RecipeOutput recipe="rich-alert" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+Use `RichTextBlock` when you want inline bold/italic/code styling without writing markdown by hand.
+
+```python
+from slackblocks import (
+    Message,
+    RichText,
+    RichTextBlock,
+    RichTextLink,
+    RichTextSection,
+)
+
+
+def deploy_alert(*, channel: str, service: str, version: str, dashboard_url: str) -> Message:
+    return Message(
+        channel=channel,
+        text=f"Deployed {service} {version}",
+        blocks=[
+            RichTextBlock(
+                RichTextSection(
+                    elements=[
+                        RichText(text="Deployed "),
+                        RichText(text=service, bold=True),
+                        RichText(text=" version "),
+                        RichText(text=version, code=True),
+                        RichText(text=". "),
+                        RichTextLink(url=dashboard_url, text="View dashboard"),
+                        RichText(text="."),
+                    ],
+                ),
+            ),
+        ],
+    )
+print(deploy_alert(channel="C1", service="api", version="3.1.0", dashboard_url="https://status.example.com").json())
+```
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const message = S.Message().channel("C1").text("Deployment needs attention").blocks(
+  S.RichTextBlock().elements(S.RichTextSection().elements(
+    S.RichText().text("Deployment needs attention").style({bold: true}),
+  )),
+).build();
+console.log(JSON.stringify(message));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+	"encoding/json"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"os"
+)
+
+func main() {
+	value, err := s.NewMessage().Channel("C1").Text("Deployment needs attention").Blocks(
+		s.NewRichTextBlock().Elements(s.NewRichTextSection().Elements(
+			s.NewRichText().Text("Deployment needs attention").Style(s.RichTextStyle{"bold": true}),
+		)),
+	).Build()
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(value); err != nil {
+		panic(err)
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    var value = MessagePayload.builder().channel("C1").text("Deployment needs attention").blocks(
+    RichTextBlock.builder().elements(RichTextSection.builder().elements(
+    RichTextText.builder().text("Deployment needs attention").style(RichTextStyle.builder().bold(true).build()).build()
+    ).build()).build()).build();
+    System.out.println(value.toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+var value = new MessagePayload("C1", text: "Deployment needs attention", blocks: [
+    new RichTextBlock([new RichTextSection([new RichTextText("Deployment needs attention", style: new RichTextStyle(bold: true))])]),
+]);
+Console.WriteLine(value.ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+value = MessagePayload.new(channel: "C1", text: "Deployment needs attention", blocks: [
+  RichTextBlock.new(elements: [RichTextSection.new(elements: [
+    RichTextText.new(text: "Deployment needs attention", style: RichTextStyle.new(bold: true))
+  ])])
+])
+puts value.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let rich = RichTextBlock::builder()
+        .element(
+            RichTextSection::builder()
+                .element(
+                    RichTextText::builder()
+                        .text("Deployment needs attention")
+                        .style(RichTextStyle::new().bold(true))
+                        .build()?,
+                )
+                .build()?,
+        )
+        .build()?;
+    let message = MessagePayload::builder("C01234567")
+        .text("Deployment needs attention")
+        .block(rich)
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$view = new S\ModalView(title: 'Deployment', blocks: [
+    new S\AlertBlock(text: '*Attention:* deployment paused', level: S\AlertLevel::Warning),
+    new S\RichTextBlock(elements: [new S\RichTextSection(elements: [
+        new S\RichTextText(text: 'Review the checks', style: new S\RichTextStyle(bold: true)),
+    ])]),
+]);
+echo $view->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+alias Slackblocks.{Blocks, RichText, Views.Modal}
+Modal.new!(title: "Deployment", blocks: [
+  Blocks.Alert.new!(text: "*Attention:* deployment paused", level: :warning),
+  Blocks.RichText.new!(elements: [RichText.Section.new!(elements: [
+    RichText.Text.new!(text: "Review the checks", style: RichText.Style.new!(bold: true))
+  ])])
+]) |> Slackblocks.to_map!()
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  title <- buildPlainText (plainText "Deployment")
+  warning <- buildMarkdownText (markdownText "*Attention:* deployment paused")
+  alert <- buildAlertBlock ((alertBlock (markdownTextAsText warning)) {alertBlockLevel = Just AlertLevelWarning})
+  text <- buildRichTextText ((richTextText "Review the checks") {richTextTextStyle = Just (richTextStyle {styleBold = Just True})})
+  section <- buildRichTextSection (richTextSection [richTextTextAsRichTextSectionElement text])
+  rich <- buildRichTextBlock (richTextBlock [richTextSectionAsRichTextBlockElement section])
+  buildModalView (modalView title [alertBlockAsBlock alert, richTextBlockAsBlock rich])
+```
+
+</Haskell>
+
+</LanguageContent>

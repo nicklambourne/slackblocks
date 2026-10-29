@@ -19,7 +19,8 @@ for (const language of languages) {
 const recipeBook = await readFile(path.join(buildRoot, "usage/recipes.html"), "utf8");
 assert.match(recipeBook, /<h1[^>]*>Recipe Book<\/h1>/);
 assert.doesNotMatch(recipeBook, /Recipes and operational guides|Find a recipe/);
-for (const recipe of ["multiselect-compatibility", "workflow-state", "reliable-delivery", "live-prerequisites"]) {
+const recipes = JSON.parse(await readFile(path.join(root, "examples/recipes/catalog.json"), "utf8"));
+for (const recipe of [...recipes.map(({ id }) => id), "multiselect-compatibility", "workflow-state", "reliable-delivery", "live-prerequisites"]) {
   assert.ok(recipeBook.includes(`href="/slackblocks/usage/recipes/${recipe}"`), `${recipe}: missing Recipe Book link`);
   await readFile(path.join(buildRoot, `usage/recipes/${recipe}.html`), "utf8");
 }
@@ -27,6 +28,7 @@ for (const language of languages) {
   const indexes = JSON.parse(await readFile(path.join(buildRoot, `search-index-${language}.json`), "utf8"));
   const urls = indexes.flatMap(({ documents }) => documents.map(({ u }) => u));
   assert.ok(urls.includes("/slackblocks/usage/recipes"), `${language}: Recipe Book missing from search`);
+  for (const { id } of recipes) assert.ok(urls.includes(`/slackblocks/usage/recipes/${id}`), `${language}: ${id} missing from search`);
   assert.ok(!urls.some((url) => /^\/slackblocks\/(?:recipes|usage\/cookbook)(?:[\/#]|$)/.test(url)), `${language}: obsolete recipes route in current search`);
 }
 const phpObjects = await readFile(path.join(buildRoot, "reference/php/objects.html"), "utf8");
