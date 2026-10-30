@@ -328,6 +328,7 @@ const config: Config = {
       "@docusaurus/plugin-client-redirects",
       {
         redirects: [
+          { from: "/usage/language-semantics", to: "/usage/using_blocks" },
           ...currentAliasRedirects,
           ...(legacyManifest.migration.aliases_enabled
             ? historicalAliasRedirects()

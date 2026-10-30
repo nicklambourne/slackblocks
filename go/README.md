@@ -91,5 +91,5 @@ setter keeps its floating-point behavior. The separate `Text` field controls the
 displayed label, not the numeric value used for sorting.
 
 Builders retain nested builder references until `Build`, which produces an
-independent wire snapshot. See [language semantics](https://nicklambourne.github.io/slackblocks/usage/language-semantics)
-for ownership, omission, getters and helper differences across implementations.
+independent wire snapshot. See [ownership and edits](https://nicklambourne.github.io/slackblocks/usage/using_blocks?language=go#ownership-and-edits)
+for reusing builders, omitting optional fields and composing native helpers.
