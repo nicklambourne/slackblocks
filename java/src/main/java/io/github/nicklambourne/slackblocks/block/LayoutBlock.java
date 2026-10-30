@@ -25,7 +25,8 @@ import java.util.Optional;
  *   <li>Required: {@code label}, {@code rows}.
  *   <li>Children must be valid on the receiving surface.
  *   <li>Layout and container nesting is limited to two composite levels.
- *   <li>The label and nested blocks contribute to the receiving surface budgets.
+ *   <li>Existing message and view limits count top-level blocks; no unconfirmed nested-block
+ *       counting formula is imposed.
  * </ul>
  *
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/layout-block">Slack reference</a>

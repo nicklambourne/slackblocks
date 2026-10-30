@@ -1235,19 +1235,13 @@
       "id": "layout-message-budget",
       "category": "length-exceeded",
       "constraint": "layout.surface.message_blocks",
-      "description": "The documented layout budget counts nested message blocks"
+      "description": "A message rejects 51 top-level layout blocks."
     },
     {
       "id": "layout-view-budget",
       "category": "length-exceeded",
       "constraint": "layout.surface.view_blocks",
-      "description": "The documented layout budget counts nested view blocks"
-    },
-    {
-      "id": "layout-fallback-budget",
-      "category": "length-exceeded",
-      "constraint": "layout.surface.fallback_blocks",
-      "description": "Fallback replacement content must also fit the enclosing surface"
+      "description": "A view rejects 101 top-level layout blocks."
     }
   ]
 }

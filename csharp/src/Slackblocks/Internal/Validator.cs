@@ -1200,8 +1200,6 @@ internal static partial class Validator
 
     private static void ValidateSurface(IEnumerable<JsonNode?> blocks, string surface, string path)
     {
-        var maximum = surface == "message" ? SlackLimits.MessageBlocksMaxItems : SlackLimits.ViewBlocksMaxItems;
-        if (blocks.Sum(b => BlockCost(ObjectAt(b, path))) > maximum) Fail(ErrorCategory.LengthExceeded, path, "layout content exceeds the surface block budget");
         var allowed = SlackVocabulary.SurfaceBlockTypes[surface];
         var index = 0;
         foreach (var raw in blocks)
@@ -1481,18 +1479,5 @@ internal static partial class Validator
     }
 
     private static bool ContainsInput(JsonObject block) => ObjectType(block) == "input" || CompositeChildren(block, true).Any(child => ContainsInput(ObjectAt(child, "block")));
-
-    private static bool ContainsLayout(JsonObject block) => ObjectType(block) == "layout" || CompositeChildren(block, false).Any(b => ContainsLayout(ObjectAt(b, "block")));
-    private static int BlockCost(JsonObject block, bool nested = false)
-    {
-        var kind = ObjectType(block);
-        if (kind == "layout" || (kind == "container" && (nested || ContainsLayout(block))))
-        {
-            var total = 1 + CompositeChildren(block, false).Sum(b => BlockCost(ObjectAt(b, "block"), nested || kind == "layout"));
-            if (kind == "layout" && block["fallback"] is JsonArray fallback) return Math.Max(total, fallback.Sum(b => BlockCost(ObjectAt(b, "fallback"))));
-            return total;
-        }
-        return 1;
-    }
 
 }

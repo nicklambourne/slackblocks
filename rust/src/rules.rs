@@ -494,22 +494,6 @@ pub(crate) fn view(
 }
 
 fn surface(blocks: &[Block], name: &str, path: &str) -> Result<(), ValidationError> {
-    let maximum = limit(if name == "message" {
-        "message.blocks.max_items"
-    } else {
-        "view.blocks.max_items"
-    }) as usize;
-    let cost = blocks
-        .iter()
-        .map(|b| match b {
-            Block::Layout(_) | Block::Container(_) => block_cost(
-                &serde_json::to_value(b).expect("checked block serialization"),
-                false,
-            ),
-            _ => 1,
-        })
-        .sum();
-    length(cost, None, Some(maximum), path)?;
     let allowed = match name {
         "modal" => MODAL_BLOCKS,
         "home" => HOME_BLOCKS,
@@ -805,34 +789,5 @@ fn contains_input(block: &Block) -> bool {
                 _ => false,
             }),
         _ => false,
-    }
-}
-
-fn has_layout(value: &Value) -> bool {
-    value["type"] == "layout"
-        || (value["type"] == "container" && array(&value["child_blocks"]).iter().any(has_layout))
-}
-fn block_cost(value: &Value, nested: bool) -> usize {
-    match value["type"].as_str() {
-        Some("layout") => {
-            let primary = 1 + array(&value["rows"])
-                .iter()
-                .flat_map(|r| array(&r["items"]))
-                .map(|i| block_cost(&i["block"], true))
-                .sum::<usize>();
-            primary.max(
-                array(&value["fallback"])
-                    .iter()
-                    .map(|b| block_cost(b, false))
-                    .sum(),
-            )
-        }
-        Some("container") if nested || has_layout(value) => {
-            1 + array(&value["child_blocks"])
-                .iter()
-                .map(|b| block_cost(b, nested))
-                .sum::<usize>()
-        }
-        _ => 1,
     }
 }

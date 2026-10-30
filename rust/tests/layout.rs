@@ -18,13 +18,15 @@ fn grid() -> Result<LayoutBlock, ValidationError> {
 fn boundaries_fallback_and_native_editing() -> Result<(), ValidationError> {
     let g = grid()?;
     MessagePayload::builder("C123")
-        .blocks(vec![g.clone(); 25])
+        .blocks(vec![g.clone(); 50])
         .build()?;
-    HomeTabView::builder().blocks(vec![g.clone(); 50]).build()?;
+    HomeTabView::builder()
+        .blocks(vec![g.clone(); 100])
+        .build()?;
     let changed = g
         .clone()
         .into_builder()
-        .fallback(vec![DividerBlock::builder().build()?; 50])
+        .fallback(vec![DividerBlock::builder().build()?; 51])
         .is_label_visible(false)
         .grid_lines(LayoutGridLines::Rows)
         .build()?;
@@ -33,7 +35,7 @@ fn boundaries_fallback_and_native_editing() -> Result<(), ValidationError> {
         .build()?;
     assert_eq!(g.fallback(), None);
     assert_eq!(changed.is_label_visible(), Some(false));
-    assert_eq!(changed.fallback().unwrap().len(), 50);
+    assert_eq!(changed.fallback().unwrap().len(), 51);
     let existing = ContainerBlock::builder()
         .title("Existing")
         .child_blocks(vec![DividerBlock::builder().build()?; 10])

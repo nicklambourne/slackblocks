@@ -54,9 +54,9 @@ main = do
   item <- either (fail . show) pure $ buildLayoutItem ((layoutItem (dividerBlockAsLayoutChild divider)) {layoutItemWidth = Just LayoutWidthWide, layoutItemHorizontalAlignment = Just LayoutAlignmentEnd})
   row <- either (fail . show) pure $ buildLayoutRow (layoutRow [item])
   grid <- either (fail . show) pure $ buildLayoutBlock (layoutBlock "Grid" [row])
-  _ <- either (fail . show) pure $ buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just (replicate 25 (layoutBlockAsBlock grid))})
-  _ <- either (fail . show) pure $ buildHomeTabView (homeTabView (replicate 50 (layoutBlockAsBlock grid)))
-  changed <- either (fail . show) pure $ buildLayoutBlock ((inspectLayoutBlock grid) {layoutBlockFallback = Just (replicate 50 (dividerBlockAsLayoutFallback divider)), layoutBlockIsLabelVisible = Just False})
+  _ <- either (fail . show) pure $ buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just (replicate 50 (layoutBlockAsBlock grid))})
+  _ <- either (fail . show) pure $ buildHomeTabView (homeTabView (replicate 100 (layoutBlockAsBlock grid)))
+  changed <- either (fail . show) pure $ buildLayoutBlock ((inspectLayoutBlock grid) {layoutBlockFallback = Just (replicate 51 (dividerBlockAsLayoutFallback divider)), layoutBlockIsLabelVisible = Just False})
   _ <- either (fail . show) pure $ buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just [layoutBlockAsBlock changed]})
   assert "layout omission preserved by editing" $ isNothing (layoutBlockFallback (inspectLayoutBlock grid))
   assert "layout false preserved" $ layoutBlockIsLabelVisible (inspectLayoutBlock changed) == Just False

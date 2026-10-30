@@ -25,8 +25,8 @@
     "context": "Every nested child and fallback block must be permitted on the enclosing surface; existing aggregate chart and text limits still apply."
   },
   "library_policy": {
-    "block_budget": "Conservatively count one for each layout label/block and each nested block against the existing 50-message/100-view limits. Count containers on a layout-containing path, but preserve legacy container-only accounting. Check fallback as replacement content: use the greater primary/fallback cost, not their sum.",
-    "budget_caveat": "The documentation explicitly says nested content consumes the enclosing budget but gives no formula. The receiving message API accepted 50 layouts each containing a divider. The conservative library policy is not represented as a measured Slack rejection.",
+    "block_budget": "Retain the existing 50-message/100-view top-level block count, including layouts. Do not add nested child or fallback counts without a confirmed accounting formula. Existing per-field, chart and text aggregate limits remain.",
+    "budget_caveat": "Slack documentation says nested content consumes the enclosing budget but gives no formula. The actual message endpoint accepted 50 layouts each containing a divider. The owner explicitly selected confirmed top-level counting on 2026-10-30; this discrepancy remains documented.",
     "character_budget": "Retain existing field and message-wide markdown/data-table bounds. Do not invent a global character threshold or assign the label to unrelated text budgets.",
     "receiving_validation": "Prefer documented contextual restrictions over permissive schema-only validation. Real chat.update rejected nested markdown, a direct nested layout, three composite levels, message alert and a half-width chart; a 3:2 chart row succeeded."
   },

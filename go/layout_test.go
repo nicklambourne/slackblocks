@@ -12,9 +12,9 @@ func layoutGrid() *s.LayoutBlockBuilder {
 }
 func TestNativeLayoutBoundariesAndSdk(t *testing.T) {
 	for _, value := range []s.Buildable{
-		s.NewMessage().Channel("C123").Blocks(copies(25, func(int) s.Block { return layoutGrid() })...),
-		s.NewHomeTab().Blocks(copies(50, func(int) s.Block { return layoutGrid() })...),
-		s.NewMessage().Channel("C123").Blocks(layoutGrid().Fallback(copies(50, func(int) s.LayoutFallback { return s.NewDividerBlock() })...)),
+		s.NewMessage().Channel("C123").Blocks(copies(50, func(int) s.Block { return layoutGrid() })...),
+		s.NewHomeTab().Blocks(copies(100, func(int) s.Block { return layoutGrid() })...),
+		s.NewMessage().Channel("C123").Blocks(layoutGrid().Fallback(copies(51, func(int) s.LayoutFallback { return s.NewDividerBlock() })...)),
 		s.NewMessage().Channel("C123").Blocks(copies(50, func(int) s.Block {
 			return s.NewContainerBlock().Title("Existing").ChildBlocks(copies(10, func(int) s.Block { return s.NewDividerBlock() })...)
 		})...),

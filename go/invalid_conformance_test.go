@@ -99,16 +99,13 @@ func copies[T any](count int, factory func(int) T) []T {
 func invalidConstruction(id string) error {
 	switch id {
 	case "layout-message-budget":
-		return buildError(slackblocks.NewMessage().Channel("C123").Blocks(copies(26, func(int) slackblocks.Block {
+		return buildError(slackblocks.NewMessage().Channel("C123").Blocks(copies(51, func(int) slackblocks.Block {
 			return slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...)
 		})...))
 	case "layout-view-budget":
-		return buildError(slackblocks.NewHomeTab().Blocks(copies(51, func(int) slackblocks.Block {
+		return buildError(slackblocks.NewHomeTab().Blocks(copies(101, func(int) slackblocks.Block {
 			return slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...)
 		})...))
-	case "layout-fallback-budget":
-		return buildError(slackblocks.NewMessage().Channel("C123").Blocks([]slackblocks.Block{slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...).Fallback(copies(51, func(int) slackblocks.LayoutFallback { return slackblocks.NewDividerBlock() })...)}...))
-
 	case "layout-label-empty":
 		return buildError(slackblocks.NewLayoutBlock().Label("").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...))
 	case "layout-label-too-long":

@@ -82,12 +82,3 @@ export function compositeDescendants(blocks: readonly JsonValue[]): JsonObject[]
     return [block, ...compositeDescendants([...compositeChildren(block), ...fallback])];
   });
 }
-
-export function blockCost(block: JsonObject, nested = false): number {
-  const children = compositeChildren(block);
-  if (block.type === "layout") return Math.max(1 + children.reduce((n,b) => n + blockCost(b,true),0),
-    (Array.isArray(block.fallback) ? block.fallback : []).reduce<number>((n,b) => n + blockCost(object(b,"fallback")),0));
-  if (block.type === "container" && (nested || compositeDescendants(children).some(b => b.type === "layout")))
-    return 1 + children.reduce((n,b) => n + blockCost(b,nested),0);
-  return 1;
-}

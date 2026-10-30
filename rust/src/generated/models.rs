@@ -21557,7 +21557,7 @@ impl<'de> Deserialize<'de> for WebhookMessage {
 /// A visual grid of one to five rows on messages, modals, and App Home. Supply fallback content for older clients.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/layout-block).
-/// Children must be valid on the receiving surface. Layout and container nesting is limited to two composite levels. The label and nested blocks contribute to the receiving surface budgets.
+/// Children must be valid on the receiving surface. Layout and container nesting is limited to two composite levels. Existing message and view limits count top-level blocks; no unconfirmed nested-block counting formula is imposed.
 #[derive(Clone, Debug, PartialEq)]
 pub struct LayoutBlock {
     label: String,

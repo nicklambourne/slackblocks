@@ -29,13 +29,13 @@ pub const INVALID: &[InvalidCase] = &[
                             ])
                             .build()?
                     );
-                    26
+                    51
                 ])
                 .build()?;
             Ok(())
         },
         parse: || {
-            MessagePayload::try_from(serde_json::json!({"channel":"C123","blocks":vec![serde_json::json!({"type":"layout","label":"Layout","rows":[{"items":[{"block":serde_json::json!({"type":"divider"})}]}]});26]})).map(|_|())
+            MessagePayload::try_from(serde_json::json!({"channel":"C123","blocks":vec![serde_json::json!({"type":"layout","label":"Layout","rows":[{"items":[{"block":serde_json::json!({"type":"divider"})}]}]});51]})).map(|_|())
         },
     },
     InvalidCase {
@@ -59,42 +59,13 @@ pub const INVALID: &[InvalidCase] = &[
                             ])
                             .build()?
                     );
-                    51
+                    101
                 ])
                 .build()?;
             Ok(())
         },
         parse: || {
-            HomeTabView::try_from(serde_json::json!({"type":"home","blocks":vec![serde_json::json!({"type":"layout","label":"Layout","rows":[{"items":[{"block":serde_json::json!({"type":"divider"})}]}]});51]})).map(|_|())
-        },
-    },
-    InvalidCase {
-        id: "layout-fallback-budget",
-        build: || {
-            MessagePayload::builder("C123")
-                .blocks(vec![Block::from(
-                    LayoutBlock::builder()
-                        .label("Layout")
-                        .rows(vec![
-                            LayoutRow::builder()
-                                .items(vec![
-                                    LayoutItem::builder()
-                                        .block(LayoutChild::from(DividerBlock::builder().build()?))
-                                        .build()?,
-                                ])
-                                .build()?,
-                        ])
-                        .fallback(vec![
-                            LayoutFallback::from(DividerBlock::builder().build()?);
-                            51
-                        ])
-                        .build()?,
-                )])
-                .build()?;
-            Ok(())
-        },
-        parse: || {
-            MessagePayload::try_from(serde_json::json!({"channel":"C123","blocks":[{"type":"layout","label":"Layout","rows":[{"items":[{"block":serde_json::json!({"type":"divider"})}]}],"fallback":vec![serde_json::json!({"type":"divider"});51]}]})).map(|_|())
+            HomeTabView::try_from(serde_json::json!({"type":"home","blocks":vec![serde_json::json!({"type":"layout","label":"Layout","rows":[{"items":[{"block":serde_json::json!({"type":"divider"})}]}]});101]})).map(|_|())
         },
     },
     InvalidCase {

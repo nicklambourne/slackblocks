@@ -4,7 +4,6 @@ module InvalidCases
   IDS = %w[
     layout-message-budget
     layout-view-budget
-    layout-fallback-budget
 
     layout-label-empty
     layout-label-too-long
@@ -219,9 +218,8 @@ module InvalidCases
 
   def for(id)
     case id
-    when "layout-message-budget" then invalid_case("MessagePayload", map("channel", "C123", "blocks", copies(26, ->(index) { map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider")))))) })))
-    when "layout-view-budget" then invalid_case("HomeTabView", map("type", "home", "blocks", copies(51, ->(index) { map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider")))))) })))
-    when "layout-fallback-budget" then invalid_case("MessagePayload", map("channel", "C123", "blocks", items(map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider"))))), "fallback", copies(51, ->(index) { map("type", "divider") })))))
+    when "layout-message-budget" then invalid_case("MessagePayload", map("channel", "C123", "blocks", copies(51, ->(index) { map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider")))))) })))
+    when "layout-view-budget" then invalid_case("HomeTabView", map("type", "home", "blocks", copies(101, ->(index) { map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider")))))) })))
 
     when "layout-label-empty" then invalid_case("LayoutBlock", map("type", "layout", "label", "", "rows", items(map("items", items(map("block", map("type", "divider")))))))
     when "layout-label-too-long" then invalid_case("LayoutBlock", map("type", "layout", "label", "😀" * 151, "rows", items(map("items", items(map("block", map("type", "divider")))))))

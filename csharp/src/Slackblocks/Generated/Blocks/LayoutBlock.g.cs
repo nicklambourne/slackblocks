@@ -12,7 +12,7 @@ namespace Slackblocks.Blocks;
 /// <item><description>Required: <c>label</c>, <c>rows</c>.</description></item>
 /// <item><description>Children must be valid on the receiving surface.</description></item>
 /// <item><description>Layout and container nesting is limited to two composite levels.</description></item>
-/// <item><description>The label and nested blocks contribute to the receiving surface budgets.</description></item>
+/// <item><description>Existing message and view limits count top-level blocks; no unconfirmed nested-block counting formula is imposed.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/layout-block">Slack reference</see>.</para>
 /// </remarks>

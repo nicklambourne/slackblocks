@@ -5,9 +5,8 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from ._core import resolve
-from ._layout import block_cost, descendants
-from ._limits import MESSAGE_BLOCKS_MAX_ITEMS, VIEW_BLOCKS_MAX_ITEMS
-from .errors import LengthError, TypeMismatchError
+from ._layout import descendants
+from .errors import TypeMismatchError
 
 BlockSurface = Literal["home", "message", "modal"]
 
@@ -87,9 +86,6 @@ def block_type(block: Any) -> str | None:
 
 def validate_surface_blocks(blocks: list[Any], surface: BlockSurface) -> None:
     """Reject block types that Slack does not support on ``surface``."""
-    maximum = MESSAGE_BLOCKS_MAX_ITEMS if surface == "message" else VIEW_BLOCKS_MAX_ITEMS
-    if sum(block_cost(resolve(b)) for b in blocks) > maximum:
-        raise LengthError("Layout content exceeds the enclosing surface block budget.")
     allowed = _BLOCK_TYPES_BY_SURFACE[surface]
     for index, block in enumerate(descendants([resolve(block) for block in blocks])):
         type_ = block_type(block)

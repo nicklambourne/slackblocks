@@ -14,9 +14,9 @@ describe("native layout construction", () => {
     expect(before.rows).toEqual(after.rows);
   });
   it("accepts the surface boundaries and replacement fallback", () => {
-    expect(s.message({channel:"C123",blocks:Array.from({length:25},grid)}).blocks).toHaveLength(25);
-    expect(s.homeTab({blocks:Array.from({length:50},grid)}).blocks).toHaveLength(50);
-    s.message({channel:"C123", blocks:[s.layoutBlock({label:"Grid",rows:[s.layoutRow({items:[s.layoutItem({block:s.dividerBlock()})]})],fallback:Array.from({length:50},()=>s.dividerBlock())})]});
+    expect(s.message({channel:"C123",blocks:Array.from({length:50},grid)}).blocks).toHaveLength(50);
+    expect(s.homeTab({blocks:Array.from({length:100},grid)}).blocks).toHaveLength(100);
+    s.message({channel:"C123", blocks:[s.layoutBlock({label:"Grid",rows:[s.layoutRow({items:[s.layoutItem({block:s.dividerBlock()})]})],fallback:Array.from({length:51},()=>s.dividerBlock())})]});
     s.message({channel:"C123",blocks:Array.from({length:50},()=>s.containerBlock({title:"Existing",childBlocks:Array.from({length:10},()=>s.dividerBlock())}))});
   });
   it("rejects row and item extension fields through checked input", () => {

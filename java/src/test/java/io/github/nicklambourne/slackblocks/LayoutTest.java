@@ -28,17 +28,17 @@ final class LayoutTest {
   void acceptsBoundariesAndReplacementFallback() {
     var g = grid();
     assertEquals(
-        25,
+        50,
         MessagePayload.builder()
             .channel("C123")
-            .blocks(Collections.nCopies(25, g).toArray(Block[]::new))
+            .blocks(Collections.nCopies(50, g).toArray(Block[]::new))
             .build()
             .getBlocks()
             .size());
     assertEquals(
-        50,
+        100,
         HomeTabView.builder()
-            .blocks(Collections.nCopies(50, g).toArray(Block[]::new))
+            .blocks(Collections.nCopies(100, g).toArray(Block[]::new))
             .build()
             .getBlocks()
             .size());
@@ -47,7 +47,7 @@ final class LayoutTest {
             .label("Grid")
             .rows(g.getRows().toArray(LayoutRow[]::new))
             .fallback(
-                Collections.nCopies(50, DividerBlock.builder().build())
+                Collections.nCopies(51, DividerBlock.builder().build())
                     .toArray(LayoutFallback[]::new))
             .build();
     MessagePayload.builder().channel("C123").blocks(fallback).build();

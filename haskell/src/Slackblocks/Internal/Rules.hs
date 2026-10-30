@@ -195,7 +195,6 @@ standaloneTask value
 
 surface :: Text -> [PathPiece] -> [Value] -> Result ()
 surface name path blocks = do
-  check LengthExceeded path "layout.surface.blocks" (fromIntegral (sum (map (blockCost False) blocks)) <= limit (if name == "message" then "message.blocks.max_items" else "view.blocks.max_items"))
   mapM_
     ( \(i, block) -> do
         surface name (path <> [Index i, Field "children"]) (compositeChildren False block)
@@ -284,12 +283,3 @@ chart value = do
     )
     (zip [0 ..] series)
   check InvalidUsage [Field "series"] "data_visualization.series.unique" (unique (map (at "name") series))
-
-blockCost :: Bool -> Value -> Int
-blockCost nested block
-  | kind == "layout" = max (1 + sum (map (blockCost True) children)) (sum (map (blockCost False) (array (at "fallback" block))))
-  | kind == "container" && (nested || any (any ((== "layout") . text . at "type") . descendants) children) = 1 + sum (map (blockCost nested) children)
-  | otherwise = 1
-  where
-    kind = text (at "type" block)
-    children = compositeChildren False block

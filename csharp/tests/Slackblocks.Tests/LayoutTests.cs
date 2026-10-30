@@ -14,9 +14,9 @@ public sealed class LayoutTests
     public void AcceptsBoundariesAndReplacementFallback()
     {
         var grid = Grid();
-        Assert.Equal(25, new MessagePayload("C123", blocks: Enumerable.Repeat(grid, 25)).Blocks.Count);
-        Assert.Equal(50, new HomeTabView(Enumerable.Repeat(grid, 50)).Blocks.Count);
-        _ = new MessagePayload("C123", blocks: [new LayoutBlock("Grid", grid.Rows, fallback: Enumerable.Repeat(new DividerBlock(), 50))]);
+        Assert.Equal(50, new MessagePayload("C123", blocks: Enumerable.Repeat(grid, 50)).Blocks.Count);
+        Assert.Equal(100, new HomeTabView(Enumerable.Repeat(grid, 100)).Blocks.Count);
+        _ = new MessagePayload("C123", blocks: [new LayoutBlock("Grid", grid.Rows, fallback: Enumerable.Repeat(new DividerBlock(), 51))]);
         _ = new MessagePayload("C123", blocks: Enumerable.Repeat(new ContainerBlock(Enumerable.Repeat(new DividerBlock(), 10), title: "Existing"), 50));
     }
     [Fact]

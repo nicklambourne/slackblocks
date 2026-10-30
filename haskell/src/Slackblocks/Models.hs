@@ -5990,7 +5990,7 @@ instance FromJSON WebhookMessage where parseJSON = checkedParser
 -- <https://docs.slack.dev/reference/block-kit/blocks/layout-block>
 -- Children must be valid on the receiving surface.
 -- Layout and container nesting is limited to two composite levels.
--- The label and nested blocks contribute to the receiving surface budgets.
+-- Existing message and view limits count top-level blocks; no unconfirmed nested-block counting formula is imposed.
 newtype LayoutBlock = CheckedLayoutBlock LayoutBlockFields deriving (Eq, Show)
 
 -- | Editable construction input. Call 'buildLayoutBlock' before encoding.

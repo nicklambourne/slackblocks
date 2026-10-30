@@ -359,10 +359,6 @@ final class Rules
     /** @param list<S\Block> $blocks */
     private static function surface(array $blocks, string $surface, string $path): void
     {
-        $maximum = Schema::LIMITS[$surface === "message" ? "message.blocks.max_items" : "view.blocks.max_items"];
-        if (array_sum(array_map(static fn(S\Block $b): int => self::blockCost($b), $blocks)) > $maximum) {
-            Validator::fail(C::LengthExceeded, $path, "layout content exceeds the surface block budget");
-        }
         foreach ($blocks as $i => $block) {
             assert($block instanceof S\Value);
             self::surface(self::compositeChildren($block, false), $surface, $path . "[" . $i . "].children");
@@ -487,16 +483,4 @@ final class Rules
             }
         }
     }
-    private static function blockCost(S\Block $block, bool $nested = false): int
-    {
-        $children = self::compositeChildren($block, false);
-        if ($block instanceof S\LayoutBlock) {
-            return max(1 + array_sum(array_map(static fn(S\Block $b): int => self::blockCost($b, true), $children)), array_sum(array_map(static fn(S\Block $b): int => self::blockCost($b), $block->fallback ?? [])));
-        }
-        if ($block instanceof S\ContainerBlock && ($nested || array_filter(self::descendants($children), static fn(S\Block $b): bool => $b instanceof S\LayoutBlock) !== [])) {
-            return 1 + array_sum(array_map(static fn(S\Block $b): int => self::blockCost($b, $nested), $children));
-        }
-        return 1;
-    }
-
 }

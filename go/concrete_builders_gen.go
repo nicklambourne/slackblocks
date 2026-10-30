@@ -2477,7 +2477,7 @@ func (b *InputParameterBuilder) Value(value string) *InputParameterBuilder {
 //   - Required: Label and Rows.
 //   - Children must be valid on the receiving surface.
 //   - Layout and container nesting is limited to two composite levels.
-//   - The label and nested blocks contribute to the receiving surface budgets.
+//   - Existing message and view limits count top-level blocks; no unconfirmed nested-block counting formula is imposed.
 //
 // See https://docs.slack.dev/reference/block-kit/blocks/layout-block for Slack's reference.
 type LayoutBlockBuilder struct{ *slackBlockBuilder }

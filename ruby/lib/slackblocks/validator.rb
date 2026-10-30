@@ -220,21 +220,8 @@ module Slackblocks
       blocks.flat_map { |block| [block] + descendants(composite_children(block)) }
     end
 
-    def self.block_cost(block, nested = false)
-      children = composite_children(block, fallback: false)
-      if block["type"] == "layout"
-        [1 + children.sum { |b| block_cost(b, true) }, block.fetch("fallback", []).sum { |b| block_cost(b) }].max
-      elsif block["type"] == "container" && (nested || descendants(children).any? { |b| b["type"] == "layout" })
-        1 + children.sum { |b| block_cost(b, nested) }
-      else
-        1
-      end
-    end
-
     def self.surface(blocks, name, path)
       empty = [] # : Array[Hash[String, untyped]]
-      maximum = limit((name == "message") ? "message.blocks.max_items" : "view.blocks.max_items")
-      fail!("length-exceeded", path, "layout content exceeds the surface block budget") if blocks.sum { |b| block_cost(b) } > maximum
       allowed = Vocabulary::SURFACE_BLOCK_TYPES.fetch(name)
       blocks.each_with_index do |block, index|
         type = block["type"]

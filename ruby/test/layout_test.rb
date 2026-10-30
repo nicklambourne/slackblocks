@@ -6,11 +6,11 @@ class LayoutTest < Minitest::Test
   end
 
   def test_surface_boundaries_and_replacement_fallback
-    Slackblocks::MessagePayload.new(channel: "C123", blocks: Array.new(25) { grid })
-    Slackblocks::HomeTabView.new(blocks: Array.new(50) { grid })
-    Slackblocks::MessagePayload.new(channel: "C123", blocks: [grid(fallback: Array.new(50) { Slackblocks::DividerBlock.new })])
+    Slackblocks::MessagePayload.new(channel: "C123", blocks: Array.new(50) { grid })
+    Slackblocks::HomeTabView.new(blocks: Array.new(100) { grid })
+    Slackblocks::MessagePayload.new(channel: "C123", blocks: [grid(fallback: Array.new(51) { Slackblocks::DividerBlock.new })])
     Slackblocks::MessagePayload.new(channel: "C123", blocks: Array.new(50) { Slackblocks::ContainerBlock.new(title: "Existing", child_blocks: Array.new(10) { Slackblocks::DividerBlock.new }) })
-    assert_equal 25, Slackblocks::MessagePayload.new(channel: "C123", blocks: Array.new(25) { grid }).blocks.length
+    assert_equal 50, Slackblocks::MessagePayload.new(channel: "C123", blocks: Array.new(50) { grid }).blocks.length
   end
 
   def test_checked_immutable_editing_and_enums

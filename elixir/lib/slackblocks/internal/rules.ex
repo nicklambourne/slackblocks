@@ -300,30 +300,7 @@ defmodule Slackblocks.Internal.Rules do
   defp descendants(blocks),
     do: Enum.flat_map(blocks, fn b -> [b | descendants(composite_children(b))] end)
 
-  defp block_cost(block, nested \\ false) do
-    children = composite_children(block, false)
-
-    cond do
-      block["type"] == "layout" ->
-        max(
-          1 + Enum.sum(Enum.map(children, &block_cost(&1, true))),
-          Enum.sum(Enum.map(block["fallback"] || [], &block_cost/1))
-        )
-
-      block["type"] == "container" and
-          (nested or Enum.any?(descendants(children), &(&1["type"] == "layout"))) ->
-        1 + Enum.sum(Enum.map(children, &block_cost(&1, nested)))
-
-      true ->
-        1
-    end
-  end
-
   defp surface(blocks, surface, path) do
-    maximum =
-      if surface == "message", do: "message.blocks.max_items", else: "view.blocks.max_items"
-
-    max_size(Enum.sum(Enum.map(blocks || [], &block_cost/1)), maximum, path)
     allowed = Schema.vocabulary()["surface_block_types"][surface]
 
     each(blocks, fn block, i ->

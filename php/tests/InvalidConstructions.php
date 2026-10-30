@@ -13,10 +13,8 @@ final class InvalidConstructions
     public static function all(): array
     {
         return [
-            "layout-message-budget" => static fn(): S\Value => new S\MessagePayload(channel: "C123", blocks: array_fill(0, 26, new S\LayoutBlock(label: "Layout", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DividerBlock())])]))),
-            "layout-view-budget" => static fn(): S\Value => new S\HomeTabView(blocks: array_fill(0, 51, new S\LayoutBlock(label: "Layout", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DividerBlock())])]))),
-            "layout-fallback-budget" => static fn(): S\Value => new S\MessagePayload(channel: "C123", blocks: [new S\LayoutBlock(label: "Layout", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DividerBlock())])], fallback: array_fill(0, 51, new S\DividerBlock()))]),
-
+            "layout-message-budget" => static fn(): S\Value => new S\MessagePayload(channel: "C123", blocks: array_fill(0, 51, new S\LayoutBlock(label: "Layout", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DividerBlock())])]))),
+            "layout-view-budget" => static fn(): S\Value => new S\HomeTabView(blocks: array_fill(0, 101, new S\LayoutBlock(label: "Layout", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DividerBlock())])]))),
             "layout-label-empty" => static fn(): S\Value => new S\LayoutBlock(label: "", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DividerBlock())])]),
             "layout-label-too-long" => static fn(): S\Value => new S\LayoutBlock(label: str_repeat("😀", 151), rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DividerBlock())])]),
             "layout-rows-empty" => static fn(): S\Value => new S\LayoutBlock(label: "Layout", rows: []),

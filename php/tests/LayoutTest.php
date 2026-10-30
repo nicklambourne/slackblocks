@@ -16,9 +16,9 @@ final class LayoutTest extends TestCase
     public function testBoundariesAndReplacementFallback(): void
     {
         $g = $this->grid();
-        self::assertCount(25, (new S\MessagePayload('C123', blocks: array_fill(0, 25, $g)))->blocks);
-        self::assertCount(50, (new S\HomeTabView(array_fill(0, 50, $g)))->blocks);
-        new S\MessagePayload('C123', blocks: [new S\LayoutBlock('Grid', $g->rows, fallback: array_fill(0, 50, new S\DividerBlock()))]);
+        self::assertCount(50, (new S\MessagePayload('C123', blocks: array_fill(0, 50, $g)))->blocks);
+        self::assertCount(100, (new S\HomeTabView(array_fill(0, 100, $g)))->blocks);
+        new S\MessagePayload('C123', blocks: [new S\LayoutBlock('Grid', $g->rows, fallback: array_fill(0, 51, new S\DividerBlock()))]);
         new S\MessagePayload('C123', blocks: array_fill(0, 50, new S\ContainerBlock(array_fill(0, 10, new S\DividerBlock()), title: 'Existing')));
     }
     public function testEnumsAndDetachedInput(): void

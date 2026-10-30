@@ -18,7 +18,7 @@ defmodule Slackblocks.Test.InvalidConstructions do
                    )
                  ]
                ),
-               26
+               51
              )
          )
        end},
@@ -35,25 +35,8 @@ defmodule Slackblocks.Test.InvalidConstructions do
                    )
                  ]
                ),
-               51
+               101
              )
-         )
-       end},
-      {"layout-fallback-budget",
-       fn ->
-         Slackblocks.Message.new!(
-           channel: "C123",
-           blocks: [
-             Blocks.Layout.new!(
-               label: "Layout",
-               rows: [
-                 Objects.LayoutRow.new!(
-                   items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
-                 )
-               ],
-               fallback: List.duplicate(Blocks.Divider.new!(), 51)
-             )
-           ]
          )
        end},
       {"layout-label-empty",

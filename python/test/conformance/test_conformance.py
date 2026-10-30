@@ -209,23 +209,13 @@ INVALID_CASES: dict[str, Callable[[], object]] = {
         blocks=[
             LayoutBlock(label="Layout", rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])])
         ]
-        * 26,
+        * 51,
     ),
     "layout-view-budget": lambda: HomeTabView(
         blocks=[
             LayoutBlock(label="Layout", rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])])
         ]
-        * 51
-    ),
-    "layout-fallback-budget": lambda: Message(
-        channel="C123",
-        blocks=[
-            LayoutBlock(
-                label="Layout",
-                rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])],
-                fallback=[DividerBlock()] * 51,
-            )
-        ],
+        * 101
     ),
     "layout-label-empty": lambda: LayoutBlock(
         label="", rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])]

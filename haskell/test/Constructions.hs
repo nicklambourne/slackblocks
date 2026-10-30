@@ -2151,9 +2151,8 @@ invalid188 = do
 
 invalidCases :: [(String, Maybe (Result ()), Result ())]
 invalidCases =
-  [ ("layout-message-budget", Just layoutMessageBudget, void (fromValue (object ["channel" .= String "C123", "blocks" .= replicate 26 layoutBudgetWire]) :: Result MessagePayload)),
-    ("layout-view-budget", Just layoutViewBudget, void (fromValue (object ["type" .= String "home", "blocks" .= replicate 51 layoutBudgetWire]) :: Result HomeTabView)),
-    ("layout-fallback-budget", Just layoutFallbackBudget, void (fromValue (object ["channel" .= String "C123", "blocks" .= [object ["type" .= String "layout", "label" .= String "Layout", "rows" .= [object ["items" .= [object ["block" .= object ["type" .= String "divider"]]]]], "fallback" .= replicate 51 (object ["type" .= String "divider"])]]]) :: Result MessagePayload)),
+  [ ("layout-message-budget", Just layoutMessageBudget, void (fromValue (object ["channel" .= String "C123", "blocks" .= replicate 51 layoutBudgetWire]) :: Result MessagePayload)),
+    ("layout-view-budget", Just layoutViewBudget, void (fromValue (object ["type" .= String "home", "blocks" .= replicate 101 layoutBudgetWire]) :: Result HomeTabView)),
     ("layout-label-empty", Just invalidLayout0, void (fromValue (object ["type" .= String "layout", "label" .= String "", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])]] :: [Value])]) :: Result LayoutBlock)),
     ("layout-label-too-long", Just invalidLayout1, void (fromValue (object ["type" .= String "layout", "label" .= String (T.replicate 151 "😀"), "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])]] :: [Value])]) :: Result LayoutBlock)),
     ("layout-rows-empty", Just invalidLayout2, void (fromValue (object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([] :: [Value])]) :: Result LayoutBlock)),
@@ -2602,19 +2601,12 @@ layoutBudgetBlock = do
 layoutMessageBudget :: Result ()
 layoutMessageBudget = do
   l <- layoutBudgetBlock
-  void (buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just (replicate 26 (layoutBlockAsBlock l))}))
+  void (buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just (replicate 51 (layoutBlockAsBlock l))}))
 
 layoutViewBudget :: Result ()
 layoutViewBudget = do
   l <- layoutBudgetBlock
-  void (buildHomeTabView (homeTabView (replicate 51 (layoutBlockAsBlock l))))
-
-layoutFallbackBudget :: Result ()
-layoutFallbackBudget = do
-  l <- layoutBudgetBlock
-  d <- buildDividerBlock dividerBlock
-  expanded <- buildLayoutBlock ((inspectLayoutBlock l) {layoutBlockFallback = Just (replicate 51 (dividerBlockAsLayoutFallback d))})
-  void (buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just [layoutBlockAsBlock expanded]}))
+  void (buildHomeTabView (homeTabView (replicate 101 (layoutBlockAsBlock l))))
 
 layoutBudgetWire :: Value
 layoutBudgetWire = object ["type" .= String "layout", "label" .= String "Layout", "rows" .= [object ["items" .= [object ["block" .= object ["type" .= String "divider"]]]]]]

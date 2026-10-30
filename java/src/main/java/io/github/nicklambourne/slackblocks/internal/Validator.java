@@ -1187,14 +1187,6 @@ public final class Validator {
   }
 
   private static void validateSurface(List<?> blocks, String surface, String path) {
-    int cost = 0;
-    for (Object block : blocks) cost += blockCost(objectAt(block, path), false);
-    int maximum =
-        surface.equals("message")
-            ? SlackLimits.MESSAGE_BLOCKS_MAX_ITEMS
-            : SlackLimits.VIEW_BLOCKS_MAX_ITEMS;
-    if (cost > maximum)
-      fail(ErrorCategory.LENGTH_EXCEEDED, path, "layout content exceeds the surface block budget");
     Set<String> allowed =
         Objects.requireNonNull(SlackVocabulary.SURFACE_BLOCK_TYPES.get(surface), surface);
     for (int index = 0; index < blocks.size(); index++) {
@@ -1548,29 +1540,5 @@ public final class Validator {
     for (Object child : compositeChildren(block, true))
       if (containsInput(objectAt(child, "block"))) return true;
     return false;
-  }
-
-  private static boolean containsLayout(Map<String, Object> block) {
-    if ("layout".equals(objectType(block))) return true;
-    for (Object child : compositeChildren(block, false))
-      if (containsLayout(objectAt(child, "block"))) return true;
-    return false;
-  }
-
-  private static int blockCost(Map<String, Object> block, boolean nested) {
-    String kind = objectType(block);
-    if (kind.equals("layout") || (kind.equals("container") && (nested || containsLayout(block)))) {
-      int total = 1;
-      for (Object child : compositeChildren(block, false))
-        total += blockCost(objectAt(child, "block"), nested || kind.equals("layout"));
-      if (kind.equals("layout") && block.containsKey("fallback")) {
-        int fallback = 0;
-        for (Object child : listAt(block.get("fallback"), "fallback"))
-          fallback += blockCost(objectAt(child, "block"), false);
-        return Math.max(total, fallback);
-      }
-      return total;
-    }
-    return 1;
   }
 }

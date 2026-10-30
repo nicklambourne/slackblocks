@@ -13,12 +13,12 @@ defmodule Slackblocks.LayoutTest do
 
   test "surface boundaries and replacement fallback preserve valid payloads" do
     assert %Slackblocks.Message{} =
-             Slackblocks.Message.new!(channel: "C123", blocks: List.duplicate(grid(), 25))
+             Slackblocks.Message.new!(channel: "C123", blocks: List.duplicate(grid(), 50))
 
     assert %Home{} =
-             Home.new!(blocks: List.duplicate(grid(), 50))
+             Home.new!(blocks: List.duplicate(grid(), 100))
 
-    fallback = Layout.change!(grid(), fallback: List.duplicate(Divider.new!(), 50))
+    fallback = Layout.change!(grid(), fallback: List.duplicate(Divider.new!(), 51))
     assert %Slackblocks.Message{} = Slackblocks.Message.new!(channel: "C123", blocks: [fallback])
     existing = Container.new!(title: "Existing", child_blocks: List.duplicate(Divider.new!(), 10))
 

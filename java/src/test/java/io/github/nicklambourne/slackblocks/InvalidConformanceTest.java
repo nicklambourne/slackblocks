@@ -81,7 +81,7 @@ final class InvalidConformanceTest {
                   "C123",
                   "blocks",
                   copies(
-                      26,
+                      51,
                       index ->
                           map(
                               "type",
@@ -99,7 +99,7 @@ final class InvalidConformanceTest {
                   "home",
                   "blocks",
                   copies(
-                      51,
+                      101,
                       index ->
                           map(
                               "type",
@@ -109,24 +109,6 @@ final class InvalidConformanceTest {
                               "rows",
                               List.of(
                                   map("items", List.of(map("block", map("type", "divider")))))))));
-      case "layout-fallback-budget" ->
-          invalid(
-              "MessagePayload",
-              map(
-                  "channel",
-                  "C123",
-                  "blocks",
-                  List.of(
-                      map(
-                          "type",
-                          "layout",
-                          "label",
-                          "Layout",
-                          "rows",
-                          List.of(map("items", List.of(map("block", map("type", "divider"))))),
-                          "fallback",
-                          copies(51, index -> map("type", "divider"))))));
-
       case "layout-label-empty" ->
           invalid(
               "LayoutBlock",

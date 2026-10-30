@@ -1374,19 +1374,6 @@ func numberBetween(object Object, field, path string, minimum, maximum int) erro
 }
 
 func validateSurface(blocks []any, surface, path string) error {
-	total := 0
-	for _, raw := range blocks {
-		if b, ok := raw.(Object); ok {
-			total += blockCost(b, false)
-		}
-	}
-	maximum := limitViewBlocksMaxItems
-	if surface == "message" {
-		maximum = limitMessageBlocksMaxItems
-	}
-	if total > maximum {
-		return validationError(LengthExceeded, path, "layout content exceeds the surface block budget")
-	}
 	allowed := surfaceBlocks[surface]
 	for index, raw := range blocks {
 		block, err := objectAt(raw, fmt.Sprintf("%s[%d]", path, index))

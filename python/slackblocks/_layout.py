@@ -35,18 +35,3 @@ def descendants(blocks: list[dict[str, Any]]) -> list[dict[str, Any]]:
         if block.get("type") == "layout":
             result.extend(descendants(block.get("fallback", [])))
     return result
-
-
-def block_cost(block: dict[str, Any], nested: bool = False) -> int:
-    """Conservative documented layout budget; fallback replaces, not accompanies, the grid."""
-    children = child_blocks(block)
-    if block.get("type") == "layout":
-        return max(
-            1 + sum(block_cost(b, True) for b in children),
-            sum(block_cost(b) for b in block.get("fallback", [])),
-        )
-    if block.get("type") == "container" and (
-        nested or any(b.get("type") == "layout" for b in descendants(children))
-    ):
-        return 1 + sum(block_cost(b, nested) for b in children)
-    return 1

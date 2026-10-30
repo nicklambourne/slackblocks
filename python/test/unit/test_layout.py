@@ -17,10 +17,10 @@ def layout(**kwargs):
 
 
 def test_surface_boundaries_and_fallback_alternative():
-    Message(channel="C123", blocks=[layout() for _ in range(25)])
-    HomeTabView(blocks=[layout() for _ in range(50)])
+    Message(channel="C123", blocks=[layout() for _ in range(50)])
+    HomeTabView(blocks=[layout() for _ in range(100)])
     # A fallback replaces the grid; the two alternatives are not added together.
-    Message(channel="C123", blocks=[layout(fallback=[DividerBlock() for _ in range(50)])])
+    Message(channel="C123", blocks=[layout(fallback=[DividerBlock() for _ in range(51)])])
     # Existing container-only content keeps its pre-layout budget behavior.
     Message(
         channel="C123",

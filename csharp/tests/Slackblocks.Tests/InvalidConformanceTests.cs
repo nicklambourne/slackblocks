@@ -66,9 +66,8 @@ public sealed class InvalidConformanceTests
     private static Invalid InvalidValue(string id) =>
         id switch
         {
-            "layout-message-budget" => Case("MessagePayload", Map("channel", "C123", "blocks", Copies(26, index => Map("type", "layout", "label", "Layout", "rows", Items(Map("items", Items(Map("block", Map("type", "divider"))))))))),
-            "layout-view-budget" => Case("HomeTabView", Map("type", "home", "blocks", Copies(51, index => Map("type", "layout", "label", "Layout", "rows", Items(Map("items", Items(Map("block", Map("type", "divider"))))))))),
-            "layout-fallback-budget" => Case("MessagePayload", Map("channel", "C123", "blocks", Items(Map("type", "layout", "label", "Layout", "rows", Items(Map("items", Items(Map("block", Map("type", "divider"))))), "fallback", Copies(51, index => Map("type", "divider")))))),
+            "layout-message-budget" => Case("MessagePayload", Map("channel", "C123", "blocks", Copies(51, index => Map("type", "layout", "label", "Layout", "rows", Items(Map("items", Items(Map("block", Map("type", "divider"))))))))),
+            "layout-view-budget" => Case("HomeTabView", Map("type", "home", "blocks", Copies(101, index => Map("type", "layout", "label", "Layout", "rows", Items(Map("items", Items(Map("block", Map("type", "divider"))))))))),
             "layout-label-empty" => Case("LayoutBlock", Map("type", "layout", "label", "", "rows", Items(Map("items", Items(Map("block", Map("type", "divider"))))))),
             "layout-label-too-long" => Case("LayoutBlock", Map("type", "layout", "label", Repeated("😀", 151), "rows", Items(Map("items", Items(Map("block", Map("type", "divider"))))))),
             "layout-rows-empty" => Case("LayoutBlock", Map("type", "layout", "label", "Layout", "rows", Items())),

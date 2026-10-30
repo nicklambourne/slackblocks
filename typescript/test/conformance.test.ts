@@ -458,9 +458,8 @@ const listItem = () => richTextSection([richText("Item")]);
 const validImageUrl = "https://example.com/image.png";
 
 const invalidCases: Record<string, () => unknown> = {
-  "layout-message-budget": () => message({channel: "C123", blocks: Array.from({length:26}, () => layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}))}),
-  "layout-view-budget": () => homeTab({blocks: Array.from({length:51}, () => layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}))}),
-  "layout-fallback-budget": () => message({channel: "C123", blocks: [layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})], fallback: Array.from({length:51}, () => dividerBlock({}))})]}),
+  "layout-message-budget": () => message({channel: "C123", blocks: Array.from({length:51}, () => layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}))}),
+  "layout-view-budget": () => homeTab({blocks: Array.from({length:101}, () => layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}))}),
   "layout-label-empty": () => layoutBlock({label: "", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}),
   "layout-label-too-long": () => layoutBlock({label: "😀".repeat(151), rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}),
   "layout-rows-empty": () => layoutBlock({label: "Layout", rows: []}),
