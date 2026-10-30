@@ -307,7 +307,7 @@ final class Rules
     private static function layoutWeight(S\LayoutItem $item): int
     {
         return match ($item->width) {
-            S\LayoutWidth::Narrow => 1, S\LayoutWidth::Wide => 3, default => 2
+            S\LayoutWidth::Narrow => 1, S\LayoutWidth::Wide => 3, default => 2,
         };
     }
 
