@@ -9,6 +9,186 @@ pub struct InvalidCase {
 }
 pub const INVALID: &[InvalidCase] = &[
     InvalidCase {
+        id: "layout-home-alert",
+        build: || {
+            HomeTabView::builder()
+                .blocks(vec![Block::from(
+                    LayoutBlock::builder()
+                        .label("Layout")
+                        .rows(vec![
+                            LayoutRow::builder()
+                                .items(vec![
+                                    LayoutItem::builder()
+                                        .block(LayoutChild::from(
+                                            AlertBlock::builder()
+                                                .text(Text::from(
+                                                    PlainText::builder()
+                                                        .text("Modal only")
+                                                        .build()?,
+                                                ))
+                                                .build()?,
+                                        ))
+                                        .build()?,
+                                ])
+                                .build()?,
+                        ])
+                        .build()?,
+                )])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            HomeTabView::try_from(serde_json::json!({"type": "home", "blocks": [{"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "alert", "text": {"type": "plain_text", "text": "Modal only"}}}]}]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-modal-fallback-table",
+        build: || {
+            ModalView::builder()
+                .title(PlainText::builder().text("Grid").build()?)
+                .blocks(vec![Block::from(
+                    LayoutBlock::builder()
+                        .label("Layout")
+                        .rows(vec![
+                            LayoutRow::builder()
+                                .items(vec![
+                                    LayoutItem::builder()
+                                        .block(LayoutChild::from(DividerBlock::builder().build()?))
+                                        .build()?,
+                                ])
+                                .build()?,
+                        ])
+                        .fallback(vec![LayoutFallback::from(
+                            TableBlock::builder()
+                                .rows(vec![vec![TableCell::from(
+                                    RawText::builder().text("Cell").build()?,
+                                )]])
+                                .build()?,
+                        )])
+                        .build()?,
+                )])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            ModalView::try_from(serde_json::json!({"type": "modal", "title": {"type": "plain_text", "text": "Grid"}, "blocks": [{"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "divider"}}]}], "fallback": [{"type": "table", "rows": [[{"type": "raw_text", "text": "Cell"}]]}]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-chart-three-items",
+        build: || {
+            LayoutRow::builder()
+                .items(vec![
+                    LayoutItem::builder()
+                        .block(LayoutChild::from(DividerBlock::builder().build()?))
+                        .build()?,
+                    LayoutItem::builder()
+                        .block(LayoutChild::from(
+                            DataVisualizationBlock::builder()
+                                .title("Chart")
+                                .chart(Chart::from(
+                                    PieChart::builder()
+                                        .segments(vec![
+                                            ChartSegment::builder()
+                                                .label("One")
+                                                .value(1)
+                                                .build()?,
+                                        ])
+                                        .build()?,
+                                ))
+                                .build()?,
+                        ))
+                        .build()?,
+                    LayoutItem::builder()
+                        .block(LayoutChild::from(DividerBlock::builder().build()?))
+                        .build()?,
+                ])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            LayoutRow::try_from(serde_json::json!({"items": [{"block": {"type": "divider"}}, {"block": {"type": "data_visualization", "title": "Chart", "chart": {"type": "pie", "segments": [{"label": "One", "value": 1}]}}}, {"block": {"type": "divider"}}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-nested-table-total",
+        build: || {
+            MessagePayload::builder("C123")
+                .blocks(vec![Block::from(
+                    ContainerBlock::builder()
+                        .title(PlainText::builder().text("Group").build()?)
+                        .child_blocks(vec![
+                            Block::from(
+                                LayoutBlock::builder()
+                                    .label("Layout")
+                                    .rows(vec![
+                                        LayoutRow::builder()
+                                            .items(vec![
+                                                LayoutItem::builder()
+                                                    .block(LayoutChild::from(
+                                                        DataTableBlock::builder()
+                                                            .rows(vec![
+                                                                vec![DataTableCell::from(
+                                                                    RawText::builder()
+                                                                        .text("H")
+                                                                        .build()?,
+                                                                )],
+                                                                vec![DataTableCell::from(
+                                                                    RawText::builder()
+                                                                        .text("x".repeat(10000))
+                                                                        .build()?,
+                                                                )],
+                                                            ])
+                                                            .caption("Data")
+                                                            .build()?,
+                                                    ))
+                                                    .build()?,
+                                            ])
+                                            .build()?,
+                                    ])
+                                    .build()?,
+                            ),
+                            Block::from(
+                                LayoutBlock::builder()
+                                    .label("Layout")
+                                    .rows(vec![
+                                        LayoutRow::builder()
+                                            .items(vec![
+                                                LayoutItem::builder()
+                                                    .block(LayoutChild::from(
+                                                        DataTableBlock::builder()
+                                                            .rows(vec![
+                                                                vec![DataTableCell::from(
+                                                                    RawText::builder()
+                                                                        .text("H")
+                                                                        .build()?,
+                                                                )],
+                                                                vec![DataTableCell::from(
+                                                                    RawText::builder()
+                                                                        .text("x".repeat(10000))
+                                                                        .build()?,
+                                                                )],
+                                                            ])
+                                                            .caption("Data")
+                                                            .build()?,
+                                                    ))
+                                                    .build()?,
+                                            ])
+                                            .build()?,
+                                    ])
+                                    .build()?,
+                            ),
+                        ])
+                        .build()?,
+                )])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            MessagePayload::try_from(serde_json::json!({"channel": "C123", "blocks": [{"type": "container", "title": {"type": "plain_text", "text": "Group"}, "child_blocks": [{"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "data_table", "rows": [[{"type": "raw_text", "text": "H"}], [{"type": "raw_text", "text": "x".repeat(10000)}]], "caption": "Data"}}]}]}, {"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "data_table", "rows": [[{"type": "raw_text", "text": "H"}], [{"type": "raw_text", "text": "x".repeat(10000)}]], "caption": "Data"}}]}]}]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
         id: "layout-message-budget",
         build: || {
             MessagePayload::builder("C123")
