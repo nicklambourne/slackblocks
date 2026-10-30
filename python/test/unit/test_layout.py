@@ -1,6 +1,7 @@
 import pytest
 
 from slackblocks import (
+    Block,
     ContainerBlock,
     DividerBlock,
     HomeTabView,
@@ -50,3 +51,10 @@ def test_unknown_grid_and_nonboolean_visibility():
     for kwargs in ({"grid_lines": "columns"}, {"is_label_visible": 1}):
         with pytest.raises(TypeMismatchError):
             layout(**kwargs)
+
+
+def test_generic_parser_recognizes_layout_and_reports_the_explicit_limitation():
+    # Composite parsing remains unsupported, but layout is a known block type.
+    for parser in (Block.from_dict, LayoutBlock.from_dict):
+        with pytest.raises(NotImplementedError, match="nested block parsing"):
+            parser(layout()._resolve())

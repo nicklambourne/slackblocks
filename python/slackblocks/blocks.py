@@ -245,7 +245,7 @@ class Block(RenderableMixin, ABC):
                 containing nested elements, cards, tasks, charts, or
                 rich text -- ``ActionsBlock``, ``InputBlock``,
                 ``TableBlock``, ``CardBlock``, ``CarouselBlock``,
-                ``ContainerBlock``, ``ContextActionsBlock``,
+                ``ContainerBlock``, ``LayoutBlock``, ``ContextActionsBlock``,
                 ``DataTableBlock``, ``DataVisualizationBlock``,
                 ``TaskCardBlock``, and ``PlanBlock`` -- see Phase 7.4b
                 and 7.4c).
@@ -286,6 +286,7 @@ def _block_from_dict_registry() -> dict[str, Any]:
         BlockType.HEADER.value: HeaderBlock.from_dict,
         BlockType.IMAGE.value: ImageBlock.from_dict,
         BlockType.INPUT.value: InputBlock.from_dict,
+        BlockType.LAYOUT.value: LayoutBlock.from_dict,
         BlockType.MARKDOWN.value: MarkdownBlock.from_dict,
         BlockType.PLAN.value: PlanBlock.from_dict,
         BlockType.RICH_TEXT.value: RichTextBlock.from_dict,
