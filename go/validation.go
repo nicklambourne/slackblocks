@@ -751,7 +751,9 @@ func validateObject(object Object, path string) error {
 			}
 		}
 	case "layout":
-		return validateLayout(object, path)
+		if err := validateLayout(object, path); err != nil {
+			return err
+		}
 	case "container":
 		if err := validateCompositeDepth(object, path, 0, false); err != nil {
 			return err
