@@ -274,7 +274,12 @@ func (b *builder) Element(value any) *builder { return b.set("element", value) }
 func (b *builder) ExternalID(value string) *builder { return b.set("external_id", value) }
 
 // Fallback sets attachment fallback text.
-func (b *builder) Fallback(value string) *builder { return b.set("fallback", value) }
+func (b *builder) Fallback(values ...any) *builder {
+	if b.name == "LayoutBlock" {
+		return b.append("fallback", values...)
+	}
+	return b.set("fallback", values[0])
+}
 
 // Filetypes appends allowed file extensions.
 func (b *builder) Filetypes(values ...string) *builder {
@@ -483,7 +488,12 @@ func (b *builder) RowHeaderColumnIndex(value int) *builder {
 }
 
 // Rows appends table rows. Each argument should be a slice of cells.
-func (b *builder) Rows(values ...any) *builder { return b.appendNested("rows", values...) }
+func (b *builder) Rows(values ...any) *builder {
+	if b.name == "LayoutBlock" {
+		return b.append("rows", values...)
+	}
+	return b.appendNested("rows", values...)
+}
 
 // Sender sets card sender information.
 func (b *builder) Sender(value any) *builder { return b.set("sender", value) }
@@ -582,4 +592,21 @@ func (b *builder) numberBound(field string, value any) *builder {
 		}
 		return b
 	}
+}
+
+// Items appends layout items in source order.
+func (b *builder) Items(values ...any) *builder { return b.append("items", values...) }
+
+// Block sets a layout item's child block.
+func (b *builder) Block(value any) *builder { return b.set("block", value) }
+
+// IsLabelVisible controls whether a layout label is displayed.
+func (b *builder) IsLabelVisible(value bool) *builder { return b.set("is_label_visible", value) }
+
+// GridLines selects layout borders and horizontal dividers.
+func (b *builder) GridLines(value string) *builder { return b.set("grid_lines", value) }
+
+// HorizontalAlignment aligns content within a layout item.
+func (b *builder) HorizontalAlignment(value string) *builder {
+	return b.set("horizontal_alignment", value)
 }

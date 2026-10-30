@@ -421,7 +421,7 @@ def class_source(model, names: Names, spec: dict) -> str:
 
 def interface_source(model: dict, names: Names, spec: dict) -> str:
     name, package = spec["name"], spec["package"]
-    parent = names.qualified("Element") if name == "InputElement" else "global::Slackblocks.ISlackObject"
+    parent = names.qualified("Block") if name in {"LayoutChild", "LayoutFallback"} else names.qualified("Element") if name == "InputElement" else "global::Slackblocks.ISlackObject"
     implemented = ", ".join(f'<see cref="{names.qualified(item)}"/>' for item in implementers(model, name))
     lines = [HEADER, f"namespace Slackblocks.{NAMESPACES[package]};", ""]
     lines += doc_lines(spec["description"], [f"Implemented by {implemented}."])

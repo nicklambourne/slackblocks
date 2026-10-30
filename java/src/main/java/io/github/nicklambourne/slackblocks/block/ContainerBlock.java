@@ -25,13 +25,15 @@ import java.util.Optional;
  * <ul>
  *   <li>Required: {@code childBlocks}.
  *   <li>Provide a title or a rich text title.
+ *   <li>When a layout is nested, the combined layout/container depth cannot exceed two composite
+ *       levels.
  * </ul>
  *
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/container-block">Slack
  *     reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class ContainerBlock implements Block {
+public final class ContainerBlock implements Block, LayoutChild {
   private final Map<String, Object> values;
   private final Map<String, Object> fields;
   private final int hash;

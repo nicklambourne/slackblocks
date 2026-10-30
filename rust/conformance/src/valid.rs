@@ -10,6 +10,289 @@ pub struct ValidCase {
 
 pub const VALID: &[ValidCase] = &[
     ValidCase {
+        id: "blocks/layout_chart_majority",
+        build: || {
+            Ok(serde_json::to_value(
+                LayoutBlock::builder()
+                    .label("Chart summary")
+                    .block_id("layout")
+                    .rows(vec![
+                        LayoutRow::builder()
+                            .items(vec![
+                                LayoutItem::builder()
+                                    .block(LayoutChild::from(
+                                        DataVisualizationBlock::builder()
+                                            .title("Chart")
+                                            .block_id("chart")
+                                            .chart(Chart::from(
+                                                PieChart::builder()
+                                                    .segments(vec![
+                                                        ChartSegment::builder()
+                                                            .label("One")
+                                                            .value(1)
+                                                            .build()?,
+                                                    ])
+                                                    .build()?,
+                                            ))
+                                            .build()?,
+                                    ))
+                                    .width(LayoutWidth::Wide)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(LayoutChild::from(
+                                        DividerBlock::builder().block_id("child").build()?,
+                                    ))
+                                    .width(LayoutWidth::Standard)
+                                    .build()?,
+                            ])
+                            .build()?,
+                    ])
+                    .build()?,
+            )
+            .unwrap())
+        },
+        parse: |v| LayoutBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "blocks/layout_block",
+        build: || {
+            Ok(serde_json::to_value(
+                LayoutBlock::builder()
+                    .label("Layout")
+                    .rows(vec![
+                        LayoutRow::builder()
+                            .items(vec![
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child").build()?)
+                                    .build()?,
+                            ])
+                            .build()?,
+                    ])
+                    .block_id("layout")
+                    .build()?,
+            )
+            .unwrap())
+        },
+        parse: |v| LayoutBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "blocks/layout_styled",
+        build: || {
+            Ok(serde_json::to_value(
+                LayoutBlock::builder()
+                    .label("Status")
+                    .rows(vec![
+                        LayoutRow::builder()
+                            .items(vec![
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("0").build()?)
+                                    .width(LayoutWidth::Narrow)
+                                    .horizontal_alignment(LayoutAlignment::Start)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("1").build()?)
+                                    .width(LayoutWidth::Standard)
+                                    .horizontal_alignment(LayoutAlignment::Center)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("2").build()?)
+                                    .width(LayoutWidth::Wide)
+                                    .horizontal_alignment(LayoutAlignment::End)
+                                    .build()?,
+                            ])
+                            .build()?,
+                    ])
+                    .block_id("layout")
+                    .is_label_visible(true)
+                    .grid_lines(LayoutGridLines::Rows)
+                    .fallback(vec![LayoutFallback::from(
+                        DividerBlock::builder().block_id("fallback").build()?,
+                    )])
+                    .build()?,
+            )
+            .unwrap())
+        },
+        parse: |v| LayoutBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "blocks/layout_empty_fallback",
+        build: || {
+            Ok(serde_json::to_value(
+                LayoutBlock::builder()
+                    .label("Layout")
+                    .rows(vec![
+                        LayoutRow::builder()
+                            .items(vec![
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child").build()?)
+                                    .build()?,
+                            ])
+                            .build()?,
+                    ])
+                    .block_id("layout")
+                    .is_label_visible(false)
+                    .grid_lines(LayoutGridLines::None)
+                    .fallback(Vec::<LayoutFallback>::new())
+                    .build()?,
+            )
+            .unwrap())
+        },
+        parse: |v| LayoutBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "blocks/layout_limits",
+        build: || {
+            Ok(serde_json::to_value(
+                LayoutBlock::builder()
+                    .label("😀".repeat(150))
+                    .rows(vec![
+                        LayoutRow::builder()
+                            .items(vec![
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_0_0").build()?)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_0_1").build()?)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_0_2").build()?)
+                                    .build()?,
+                            ])
+                            .build()?,
+                        LayoutRow::builder()
+                            .items(vec![
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_1_0").build()?)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_1_1").build()?)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_1_2").build()?)
+                                    .build()?,
+                            ])
+                            .build()?,
+                        LayoutRow::builder()
+                            .items(vec![
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_2_0").build()?)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_2_1").build()?)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_2_2").build()?)
+                                    .build()?,
+                            ])
+                            .build()?,
+                        LayoutRow::builder()
+                            .items(vec![
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_3_0").build()?)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_3_1").build()?)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_3_2").build()?)
+                                    .build()?,
+                            ])
+                            .build()?,
+                        LayoutRow::builder()
+                            .items(vec![
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_4_0").build()?)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_4_1").build()?)
+                                    .build()?,
+                                LayoutItem::builder()
+                                    .block(DividerBlock::builder().block_id("child_4_2").build()?)
+                                    .build()?,
+                            ])
+                            .build()?,
+                    ])
+                    .block_id("layout")
+                    .grid_lines(LayoutGridLines::Outer)
+                    .build()?,
+            )
+            .unwrap())
+        },
+        parse: |v| LayoutBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "blocks/layout_container",
+        build: || {
+            Ok(serde_json::to_value(
+                LayoutBlock::builder()
+                    .label("Layout")
+                    .rows(vec![
+                        LayoutRow::builder()
+                            .items(vec![
+                                LayoutItem::builder()
+                                    .block(
+                                        ContainerBlock::builder()
+                                            .title(PlainText::builder().text("Container").build()?)
+                                            .child_blocks(vec![Block::from(
+                                                DividerBlock::builder()
+                                                    .block_id("child")
+                                                    .build()?,
+                                            )])
+                                            .width(ContainerWidth::Standard)
+                                            .is_collapsible(false)
+                                            .default_collapsed(false)
+                                            .has_header_divider(false)
+                                            .block_id("container")
+                                            .build()?,
+                                    )
+                                    .build()?,
+                            ])
+                            .build()?,
+                    ])
+                    .block_id("layout")
+                    .build()?,
+            )
+            .unwrap())
+        },
+        parse: |v| LayoutBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
+        id: "blocks/container_layout",
+        build: || {
+            Ok(serde_json::to_value(
+                ContainerBlock::builder()
+                    .title(PlainText::builder().text("Container").build()?)
+                    .child_blocks(vec![Block::from(
+                        LayoutBlock::builder()
+                            .label("Layout")
+                            .rows(vec![
+                                LayoutRow::builder()
+                                    .items(vec![
+                                        LayoutItem::builder()
+                                            .block(
+                                                DividerBlock::builder()
+                                                    .block_id("child")
+                                                    .build()?,
+                                            )
+                                            .build()?,
+                                    ])
+                                    .build()?,
+                            ])
+                            .block_id("layout")
+                            .build()?,
+                    )])
+                    .width(ContainerWidth::Standard)
+                    .is_collapsible(false)
+                    .default_collapsed(false)
+                    .has_header_divider(false)
+                    .block_id("container")
+                    .build()?,
+            )
+            .unwrap())
+        },
+        parse: |v| ContainerBlock::try_from(v).map(|v| serde_json::to_value(v).unwrap()),
+    },
+    ValidCase {
         id: "attachments/attachment_multi_block",
         build: || {
             let value = Attachment::builder()

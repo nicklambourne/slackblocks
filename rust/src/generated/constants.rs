@@ -1,6 +1,6 @@
 // Generated from the shared limits, vocabulary and manifest.
 /// Shared specification implemented by this crate.
-pub(crate) const SPEC_VERSION: &str = "1.4.0";
+pub(crate) const SPEC_VERSION: &str = "1.5.0";
 pub(crate) const LIMITS: &[(&str, i64)] = &[
     ("action_id.max_length", 255),
     ("actions.elements.max_items", 25),
@@ -82,6 +82,12 @@ pub(crate) const LIMITS: &[(&str, i64)] = &[
     ("image_element.image_url.max_length", 3000),
     ("input.hint.max_length", 2000),
     ("input.label.max_length", 2000),
+    ("layout.items.max_items", 3),
+    ("layout.items.min_items", 1),
+    ("layout.label.max_length", 150),
+    ("layout.label.min_length", 1),
+    ("layout.rows.max_items", 5),
+    ("layout.rows.min_items", 1),
     ("markdown.text.max_length", 12000),
     ("markdown.total_text.max_length", 12000),
     ("message.attachments.max_items", 100),
@@ -224,6 +230,7 @@ pub(crate) const HOME_BLOCKS: &[&str] = &[
     "header",
     "image",
     "input",
+    "layout",
     "rich_text",
     "section",
     "table",
@@ -243,6 +250,7 @@ pub(crate) const MESSAGE_BLOCKS: &[&str] = &[
     "header",
     "image",
     "input",
+    "layout",
     "markdown",
     "plan",
     "rich_text",
@@ -260,6 +268,7 @@ pub(crate) const MODAL_BLOCKS: &[&str] = &[
     "header",
     "image",
     "input",
+    "layout",
     "rich_text",
     "section",
     "video",

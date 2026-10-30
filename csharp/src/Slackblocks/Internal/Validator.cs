@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
@@ -154,6 +155,8 @@ internal static partial class Validator
     {
         switch (name)
         {
+            case "LayoutRow": ValidateLayoutRow(value, name); break;
+            case "LayoutItem": ValidateLayoutItem(value, name); break;
             case "Confirmation":
                 ValidateConfirmation(value, name);
                 break;
@@ -448,7 +451,9 @@ internal static partial class Validator
             case "carousel":
                 ValidateCarousel(value, path);
                 break;
+            case "layout": ValidateLayout(value, path); break;
             case "container":
+                ValidateCompositeDepth(value, path, 0, false);
                 ValidateContainer(value, path);
                 break;
             case "context_actions":
@@ -849,7 +854,7 @@ internal static partial class Validator
                 for (var index = 0; index < blocks.Count; index++)
                 {
                     var blockPath = $"{Child(path, "blocks")}[{index}]";
-                    if (ObjectType(ObjectAt(blocks[index], blockPath)) == "input")
+                    if (ContainsInput(ObjectAt(blocks[index], blockPath)))
                     {
                         Fail(
                             ErrorCategory.MissingRequired,
@@ -1159,7 +1164,7 @@ internal static partial class Validator
         if (value is JsonObject obj)
         {
             if (ObjectType(obj) == "data_visualization") return 1;
-            if (ObjectType(obj) == "container") return ChartCount(obj["child_blocks"]);
+            if (ObjectType(obj) is "container" or "layout") return CompositeChildren(obj, true).Sum(ChartCount);
         }
         if (value is JsonArray array)
         {
@@ -1180,8 +1185,8 @@ internal static partial class Validator
             case JsonObject obj when ObjectType(obj) == "data_table":
                 dataTableTotal += TextCharacterCount(obj["rows"]);
                 break;
-            case JsonObject obj when ObjectType(obj) == "container":
-                AddMessageTotals(obj["child_blocks"], ref markdownTotal, ref dataTableTotal);
+            case JsonObject obj when ObjectType(obj) is "container" or "layout":
+                foreach (var nested in CompositeChildren(obj, true)) AddMessageTotals(nested, ref markdownTotal, ref dataTableTotal);
                 break;
             case JsonArray array:
                 foreach (var item in array)
@@ -1193,13 +1198,19 @@ internal static partial class Validator
         }
     }
 
-    private static void ValidateSurface(JsonArray blocks, string surface, string path)
+    private static void ValidateSurface(IEnumerable<JsonNode?> blocks, string surface, string path)
     {
+        var maximum = surface == "message" ? SlackLimits.MessageBlocksMaxItems : SlackLimits.ViewBlocksMaxItems;
+        if (blocks.Sum(b => BlockCost(ObjectAt(b, path))) > maximum) Fail(ErrorCategory.LengthExceeded, path, "layout content exceeds the surface block budget");
         var allowed = SlackVocabulary.SurfaceBlockTypes[surface];
-        for (var index = 0; index < blocks.Count; index++)
+        var index = 0;
+        foreach (var raw in blocks)
         {
-            var blockPath = $"{path}[{index}]";
-            var type = ObjectType(ObjectAt(blocks[index], blockPath));
+            var blockPath = $"{path}[{index++}]";
+            var block = ObjectAt(raw, blockPath);
+            var type = ObjectType(block);
+            ValidateSurface(CompositeChildren(block, false), surface, Child(blockPath, "children"));
+            if (type == "layout" && block["fallback"] is JsonArray fallback) ValidateSurface(fallback, surface, Child(blockPath, "fallback"));
             if (!allowed.Contains(type))
             {
                 Fail(ErrorCategory.TypeMismatch, blockPath + ".type", $"block type {type} is not supported on {surface} surfaces");
@@ -1402,6 +1413,86 @@ internal static partial class Validator
         if (!JsonValues.IsString(value, out var text) || !Regex.IsMatch(text, @"\A[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?\z"))
         { Fail(ErrorCategory.TypeMismatch, path, "expected a decimal string"); return null; }
         return text;
+    }
+
+    private static readonly FrozenSet<string> LayoutChildren = Set("actions", "alert", "card", "carousel", "container", "context", "data_table", "data_visualization", "divider", "file", "header", "image", "input", "rich_text", "section", "table", "video");
+    private static readonly FrozenSet<string> LayoutFallback = Set("context", "divider", "header", "image", "rich_text", "section", "table", "video");
+    private static void LayoutKeys(JsonObject value, string path, params string[] keys)
+    {
+        foreach (var pair in value) if (!keys.Contains(pair.Key)) Fail(ErrorCategory.TypeMismatch, Child(path, pair.Key), "unsupported property");
+    }
+    private static void LayoutChoice(JsonObject value, string field, string path, params string[] choices)
+    {
+        if (value.ContainsKey(field) && !choices.Contains(StringAt(value[field], Child(path, field)))) Fail(ErrorCategory.TypeMismatch, Child(path, field), "unsupported value");
+    }
+    private static void ValidateLayoutItem(JsonObject value, string path)
+    {
+        LayoutKeys(value, path, "block", "width", "horizontal_alignment"); Require(value, "block", path);
+        if (!LayoutChildren.Contains(ObjectType(ObjectAt(value["block"], Child(path, "block"))))) Fail(ErrorCategory.TypeMismatch, Child(path, "block"), "unsupported layout child");
+        LayoutChoice(value, "width", path, "narrow", "standard", "wide");
+        LayoutChoice(value, "horizontal_alignment", path, "start", "center", "end");
+    }
+    private static void ValidateLayoutRow(JsonObject value, string path)
+    {
+        LayoutKeys(value, path, "items"); Require(value, "items", path);
+        var items = ListAt(value["items"], Child(path, "items"));
+        SliceLength(items, Child(path, "items"), SlackLimits.LayoutItemsMinItems, SlackLimits.LayoutItemsMaxItems);
+        var total = 0; var chart = 0; var wide = 0;
+        for (var i = 0; i < items.Count; i++)
+        {
+            var itemPath = $"{path}.items[{i}]"; var item = ObjectAt(items[i], itemPath); ValidateLayoutItem(item, itemPath);
+            var width = item["width"]?.GetValue<string>(); var weight = width == "narrow" ? 1 : width == "wide" ? 3 : 2; total += weight;
+            var type = ObjectType(ObjectAt(item["block"], Child(itemPath, "block")));
+            if (type is "carousel" or "data_table" or "data_visualization") wide++;
+            if (type == "data_visualization") chart = weight;
+        }
+        if (wide > 1) Fail(ErrorCategory.InvalidUsage, path, "at most one carousel, data table, or data visualization per row");
+        if (chart > 0 && chart * 2 <= total) Fail(ErrorCategory.InvalidUsage, path, "a data visualization requires more than half the row weight");
+    }
+    private static void ValidateLayout(JsonObject value, string path)
+    {
+        Require(value, "label", path); Require(value, "rows", path);
+        StringLength(StringAt(value["label"], Child(path, "label")), Child(path, "label"), SlackLimits.LayoutLabelMinLength, SlackLimits.LayoutLabelMaxLength);
+        var rows = ListAt(value["rows"], Child(path, "rows")); SliceLength(rows, Child(path, "rows"), SlackLimits.LayoutRowsMinItems, SlackLimits.LayoutRowsMaxItems);
+        for (var i = 0; i < rows.Count; i++) ValidateLayoutRow(ObjectAt(rows[i], $"{path}.rows[{i}]"), $"{path}.rows[{i}]");
+        if (value.ContainsKey("is_label_visible") && (value["is_label_visible"] is not JsonValue visible || !visible.TryGetValue<bool>(out _))) Fail(ErrorCategory.TypeMismatch, Child(path, "is_label_visible"), "expected a boolean");
+        LayoutChoice(value, "grid_lines", path, "none", "rows", "outer");
+        if (value.ContainsKey("fallback"))
+        {
+            var blocks = ListAt(value["fallback"], Child(path, "fallback"));
+            for (var i = 0; i < blocks.Count; i++) if (!LayoutFallback.Contains(ObjectType(ObjectAt(blocks[i], $"{path}.fallback[{i}]")))) Fail(ErrorCategory.TypeMismatch, $"{path}.fallback[{i}]", "unsupported fallback block");
+        }
+        ValidateCompositeDepth(value, path, 0, false);
+    }
+    private static IEnumerable<JsonNode?> CompositeChildren(JsonObject value, bool includeFallback)
+    {
+        var type = ObjectType(value);
+        if (type == "container") { foreach (var b in ListAt(value["child_blocks"], "child_blocks")) yield return b; }
+        if (type != "layout") yield break;
+        foreach (var row in ListAt(value["rows"], "rows")) foreach (var item in ListAt(ObjectAt(row, "row")["items"], "items")) yield return ObjectAt(item, "item")["block"];
+        if (includeFallback && value.ContainsKey("fallback")) foreach (var b in ListAt(value["fallback"], "fallback")) yield return b;
+    }
+    private static void ValidateCompositeDepth(JsonObject value, string path, int depth, bool hasLayout)
+    {
+        var type = ObjectType(value); hasLayout = hasLayout || type == "layout";
+        if (type is "layout" or "container") depth++;
+        if (hasLayout && depth > 2) Fail(ErrorCategory.InvalidUsage, path, "layout/container nesting exceeds two composite levels");
+        foreach (var b in CompositeChildren(value, false)) ValidateCompositeDepth(ObjectAt(b, path), path, depth, hasLayout);
+    }
+
+    private static bool ContainsInput(JsonObject block) => ObjectType(block) == "input" || CompositeChildren(block, true).Any(child => ContainsInput(ObjectAt(child, "block")));
+
+    private static bool ContainsLayout(JsonObject block) => ObjectType(block) == "layout" || CompositeChildren(block, false).Any(b => ContainsLayout(ObjectAt(b, "block")));
+    private static int BlockCost(JsonObject block, bool nested = false)
+    {
+        var kind = ObjectType(block);
+        if (kind == "layout" || (kind == "container" && (nested || ContainsLayout(block))))
+        {
+            var total = 1 + CompositeChildren(block, false).Sum(b => BlockCost(ObjectAt(b, "block"), nested || kind == "layout"));
+            if (kind == "layout" && block["fallback"] is JsonArray fallback) return Math.Max(total, fallback.Sum(b => BlockCost(ObjectAt(b, "fallback"))));
+            return total;
+        }
+        return 1;
     }
 
 }

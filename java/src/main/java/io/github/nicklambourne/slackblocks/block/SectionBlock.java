@@ -29,7 +29,7 @@ import java.util.Optional;
  *     reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class SectionBlock implements Block {
+public final class SectionBlock implements Block, LayoutChild, LayoutFallback {
   private final Map<String, Object> values;
   private final Map<String, Object> fields;
   private final int hash;

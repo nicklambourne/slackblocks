@@ -94,7 +94,7 @@ def generate(model, limits, vocab, spec_version):
     output = {}
     for interface in model["interfaces"]:
         name = interface["name"]
-        parent = "Element" if name == "InputElement" else "\\JsonSerializable"
+        parent = "Block" if name in {"LayoutChild", "LayoutFallback"} else "Element" if name == "InputElement" else "\\JsonSerializable"
         description = interface["description"].replace(
             " accepted directly by Slack's official Java SDK", ""
         )

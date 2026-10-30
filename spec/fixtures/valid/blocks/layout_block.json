@@ -1,0 +1,17 @@
+{
+  "type": "layout",
+  "label": "Layout",
+  "rows": [
+    {
+      "items": [
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child"
+          }
+        }
+      ]
+    }
+  ],
+  "block_id": "layout"
+}

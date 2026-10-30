@@ -7,5 +7,5 @@ public static class SlackblocksInfo
     public const string Version = "3.1.0";
 
     /// <summary>The shared language-neutral specification this package implements.</summary>
-    public const string SpecVersion = "1.4.0";
+    public const string SpecVersion = "1.5.0";
 }

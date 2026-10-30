@@ -84,6 +84,32 @@ final class Rules
                 Validator::fail(C::MutuallyExclusive, $path, 'image and Slack icons cannot coexist');
             }
         }
+        if ($value instanceof S\LayoutBlock || $value instanceof S\ContainerBlock) {
+            self::compositeDepth($value, $path, 0, false);
+        }
+        if ($value instanceof S\LayoutItem && $value->extensions !== null && $value->extensions->toArray() !== []) {
+            Validator::fail(C::TypeMismatch, $path, 'unsupported layout item property');
+        }
+        if ($value instanceof S\LayoutRow) {
+            if ($value->extensions !== null && $value->extensions->toArray() !== []) {
+                Validator::fail(C::TypeMismatch, $path, 'a row only supports items');
+            }
+            $total = $wide = 0;
+            foreach ($value->items as $item) {
+                $total += self::layoutWeight($item);
+                if ($item->block instanceof S\CarouselBlock || $item->block instanceof S\DataTableBlock || $item->block instanceof S\DataVisualizationBlock) {
+                    $wide++;
+                }
+            }
+            if ($wide > 1) {
+                Validator::fail(C::InvalidUsage, $path, 'at most one wide-content block per row');
+            }
+            foreach ($value->items as $item) {
+                if ($item->block instanceof S\DataVisualizationBlock && self::layoutWeight($item) * 2 <= $total) {
+                    Validator::fail(C::InvalidUsage, $path, 'a data visualization requires more than half the row weight');
+                }
+            }
+        }
         if ($value instanceof S\ContainerBlock) {
             if ($value->title === null && $value->richTextTitle === null) {
                 Validator::fail(C::MissingRequired, $path, 'container requires a title');
@@ -196,7 +222,7 @@ final class Rules
         if ($value instanceof S\ModalView || $value instanceof S\HomeTabView) {
             self::surface($value->blocks, $value instanceof S\ModalView ? 'modal' : 'home', $path . '.blocks');
             if ($value instanceof S\ModalView && $value->submit === null) {
-                foreach ($value->blocks as $block) {
+                foreach (self::descendants($value->blocks) as $block) {
                     if ($block instanceof S\InputBlock) {
                         Validator::fail(C::MissingRequired, $path . '.submit', 'required when modal contains an input');
                     }
@@ -278,11 +304,71 @@ final class Rules
         return $result === '' ? '0' : ($leftNegative ? '-' : '') . $result;
     }
 
+    private static function layoutWeight(S\LayoutItem $item): int
+    {
+        return match ($item->width) {
+            S\LayoutWidth::Narrow => 1, S\LayoutWidth::Wide => 3, default => 2
+        };
+    }
+
+    /** @return list<S\Block> */
+    private static function compositeChildren(S\Block $block, bool $fallback = true): array
+    {
+        if ($block instanceof S\ContainerBlock) {
+            return $block->childBlocks;
+        }
+        if (!$block instanceof S\LayoutBlock) {
+            return [];
+        }
+        $children = [];
+        foreach ($block->rows as $row) {
+            foreach ($row->items as $item) {
+                $children[] = $item->block;
+            }
+        }
+        return array_merge($children, $fallback ? ($block->fallback ?? []) : []);
+    }
+
+    private static function compositeDepth(S\Block $block, string $path, int $depth, bool $seen): void
+    {
+        $seen = $seen || $block instanceof S\LayoutBlock;
+        if ($block instanceof S\LayoutBlock || $block instanceof S\ContainerBlock) {
+            $depth++;
+        }
+        if ($seen && $depth > 2) {
+            Validator::fail(C::InvalidUsage, $path, 'layout/container nesting exceeds two composite levels');
+        }
+        foreach (self::compositeChildren($block, false) as $child) {
+            self::compositeDepth($child, $path, $depth, $seen);
+        }
+    }
+
+    /** @param list<S\Block> $blocks
+     * @return list<S\Block>
+     */
+    private static function descendants(array $blocks): array
+    {
+        $result = [];
+        foreach ($blocks as $block) {
+            $result[] = $block;
+            array_push($result, ...self::descendants(self::compositeChildren($block)));
+        }
+        return $result;
+    }
+
     /** @param list<S\Block> $blocks */
     private static function surface(array $blocks, string $surface, string $path): void
     {
+        $maximum = Schema::LIMITS[$surface === "message" ? "message.blocks.max_items" : "view.blocks.max_items"];
+        if (array_sum(array_map(static fn(S\Block $b): int => self::blockCost($b), $blocks)) > $maximum) {
+            Validator::fail(C::LengthExceeded, $path, "layout content exceeds the surface block budget");
+        }
         foreach ($blocks as $i => $block) {
             assert($block instanceof S\Value);
+            self::surface(self::compositeChildren($block, false), $surface, $path . "[" . $i . "].children");
+            if ($block instanceof S\LayoutBlock) {
+                self::surface($block->fallback ?? [], $surface, $path . "[" . $i . "].fallback");
+            }
             if (!in_array(Schema::TYPES[Codec::name($block)]['wireType'], Schema::VOCABULARY['surface_block_types'][$surface], true)) {
                 Validator::fail(C::TypeMismatch, $path . '[' . $i . '].type', 'unsupported block on ' . $surface . ' surface');
             }
@@ -299,8 +385,8 @@ final class Rules
             if ($block instanceof S\DataVisualizationBlock) {
                 $count++;
             }
-            if ($block instanceof S\ContainerBlock) {
-                $count += self::chartCount($block->childBlocks);
+            if ($block instanceof S\ContainerBlock || $block instanceof S\LayoutBlock) {
+                $count += self::chartCount(self::compositeChildren($block));
             }
         }
         return $count;
@@ -320,8 +406,8 @@ final class Rules
             if ($block instanceof S\DataTableBlock) {
                 $table += self::tableCharacters($block);
             }
-            if ($block instanceof S\ContainerBlock) {
-                [$a, $b] = self::totals($block->childBlocks);
+            if ($block instanceof S\ContainerBlock || $block instanceof S\LayoutBlock) {
+                [$a, $b] = self::totals(self::compositeChildren($block));
                 $markdown += $a;
                 $table += $b;
             }
@@ -401,4 +487,16 @@ final class Rules
             }
         }
     }
+    private static function blockCost(S\Block $block, bool $nested = false): int
+    {
+        $children = self::compositeChildren($block, false);
+        if ($block instanceof S\LayoutBlock) {
+            return max(1 + array_sum(array_map(static fn(S\Block $b): int => self::blockCost($b, true), $children)), array_sum(array_map(static fn(S\Block $b): int => self::blockCost($b), $block->fallback ?? [])));
+        }
+        if ($block instanceof S\ContainerBlock && ($nested || array_filter(self::descendants($children), static fn(S\Block $b): bool => $b instanceof S\LayoutBlock) !== [])) {
+            return 1 + array_sum(array_map(static fn(S\Block $b): int => self::blockCost($b, $nested), $children));
+        }
+        return 1;
+    }
+
 }

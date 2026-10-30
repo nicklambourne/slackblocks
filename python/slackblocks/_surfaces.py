@@ -5,7 +5,9 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from ._core import resolve
-from .errors import TypeMismatchError
+from ._layout import block_cost, descendants
+from ._limits import MESSAGE_BLOCKS_MAX_ITEMS, VIEW_BLOCKS_MAX_ITEMS
+from .errors import LengthError, TypeMismatchError
 
 BlockSurface = Literal["home", "message", "modal"]
 
@@ -25,6 +27,7 @@ _BLOCK_TYPES_BY_SURFACE: dict[BlockSurface, frozenset[str]] = {
             "header",
             "image",
             "input",
+            "layout",
             "markdown",
             "plan",
             "rich_text",
@@ -44,6 +47,7 @@ _BLOCK_TYPES_BY_SURFACE: dict[BlockSurface, frozenset[str]] = {
             "header",
             "image",
             "input",
+            "layout",
             "rich_text",
             "section",
             "video",
@@ -62,6 +66,7 @@ _BLOCK_TYPES_BY_SURFACE: dict[BlockSurface, frozenset[str]] = {
             "header",
             "image",
             "input",
+            "layout",
             "rich_text",
             "section",
             "table",
@@ -82,8 +87,11 @@ def block_type(block: Any) -> str | None:
 
 def validate_surface_blocks(blocks: list[Any], surface: BlockSurface) -> None:
     """Reject block types that Slack does not support on ``surface``."""
+    maximum = MESSAGE_BLOCKS_MAX_ITEMS if surface == "message" else VIEW_BLOCKS_MAX_ITEMS
+    if sum(block_cost(resolve(b)) for b in blocks) > maximum:
+        raise LengthError("Layout content exceeds the enclosing surface block budget.")
     allowed = _BLOCK_TYPES_BY_SURFACE[surface]
-    for index, block in enumerate(blocks):
+    for index, block in enumerate(descendants([resolve(block) for block in blocks])):
         type_ = block_type(block)
         if type_ not in allowed:
             raise TypeMismatchError(

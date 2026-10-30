@@ -1,4 +1,6 @@
-import { TypeMismatchError } from "./errors.js";
+import limits from "../../spec/limits.json" with { type: "json" };
+import { LengthError, TypeMismatchError } from "./errors.js";
+import { blockCost, compositeDescendants } from "./layout.js";
 import { requireArray } from "./internal.js";
 import type { JsonValue } from "./types.js";
 
@@ -19,6 +21,7 @@ const BLOCK_TYPES_BY_SURFACE: Record<BlockSurface, ReadonlySet<string>> = {
     "header",
     "image",
     "input",
+    "layout",
     "markdown",
     "plan",
     "rich_text",
@@ -36,6 +39,7 @@ const BLOCK_TYPES_BY_SURFACE: Record<BlockSurface, ReadonlySet<string>> = {
     "header",
     "image",
     "input",
+    "layout",
     "rich_text",
     "section",
     "video",
@@ -52,6 +56,7 @@ const BLOCK_TYPES_BY_SURFACE: Record<BlockSurface, ReadonlySet<string>> = {
     "header",
     "image",
     "input",
+    "layout",
     "rich_text",
     "section",
     "table",
@@ -66,7 +71,10 @@ export function validateSurfaceBlocks(
 ): void {
   requireArray(blocks, path);
   const allowed = BLOCK_TYPES_BY_SURFACE[surface];
-  blocks.forEach((block, index) => {
+  const maximum = surface === "message" ? limits.message.blocks.max_items : limits.view.blocks.max_items;
+  const cost = blocks.reduce<number>((n,b) => n + (b !== null && typeof b === "object" && !Array.isArray(b) ? blockCost(b) : 1),0);
+  if (cost > maximum) throw new LengthError(path,"layout content exceeds the surface block budget");
+  compositeDescendants(blocks).forEach((block, index) => {
     if (block === null || Array.isArray(block) || typeof block !== "object") {
       throw new TypeMismatchError(`${path}[${index}]`, "expected a block object");
     }

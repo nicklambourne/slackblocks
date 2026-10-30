@@ -11,7 +11,7 @@ namespace Slackblocks;
  * @see https://docs.slack.dev/reference/block-kit/blocks/section-block
  * Provide text, fields, or both.
  */
-final readonly class SectionBlock extends Value implements Block
+final readonly class SectionBlock extends Value implements Block, LayoutChild, LayoutFallback
 {
     /** Sets the main text of the section.
      * @var Text|null

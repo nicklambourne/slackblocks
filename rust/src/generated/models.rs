@@ -472,6 +472,183 @@ impl std::str::FromStr for ResponseType {
         Self::try_from(Value::String(s.into()))
     }
 }
+/// Relative layout item weights: narrow is 1, standard is 2, and wide is 3.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
+#[non_exhaustive]
+pub enum LayoutWidth {
+    /// Weight 1.
+    Narrow,
+    /// Weight 2 (the default).
+    Standard,
+    /// Weight 3.
+    Wide,
+}
+impl LayoutWidth {
+    /// Returns the Slack wire spelling.
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Narrow => "narrow",
+            Self::Standard => "standard",
+            Self::Wide => "wide",
+        }
+    }
+}
+impl FromWire for LayoutWidth {
+    fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
+        match value.as_str() {
+            Some("narrow") => Ok(Self::Narrow),
+            Some("standard") => Ok(Self::Standard),
+            Some("wide") => Ok(Self::Wide),
+            _ => Err(wire::mismatch(path, "LayoutWidth")),
+        }
+    }
+}
+impl Serialize for LayoutWidth {
+    fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        s.serialize_str(self.as_str())
+    }
+}
+impl TryFrom<Value> for LayoutWidth {
+    type Error = ValidationError;
+    fn try_from(value: Value) -> Result<Self, ValidationError> {
+        Self::from_wire(value, "LayoutWidth")
+    }
+}
+impl<'de> Deserialize<'de> for LayoutWidth {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        Self::try_from(Value::deserialize(deserializer)?).map_err(serde::de::Error::custom)
+    }
+}
+
+impl std::fmt::Display for LayoutWidth {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl std::str::FromStr for LayoutWidth {
+    type Err = ValidationError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::try_from(Value::String(s.into()))
+    }
+}
+/// Direction-aware alignment within a layout item. Omit for fill behavior.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
+#[non_exhaustive]
+pub enum LayoutAlignment {
+    /// Align to the leading edge.
+    Start,
+    /// Center the content.
+    Center,
+    /// Align to the trailing edge.
+    End,
+}
+impl LayoutAlignment {
+    /// Returns the Slack wire spelling.
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Start => "start",
+            Self::Center => "center",
+            Self::End => "end",
+        }
+    }
+}
+impl FromWire for LayoutAlignment {
+    fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
+        match value.as_str() {
+            Some("start") => Ok(Self::Start),
+            Some("center") => Ok(Self::Center),
+            Some("end") => Ok(Self::End),
+            _ => Err(wire::mismatch(path, "LayoutAlignment")),
+        }
+    }
+}
+impl Serialize for LayoutAlignment {
+    fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        s.serialize_str(self.as_str())
+    }
+}
+impl TryFrom<Value> for LayoutAlignment {
+    type Error = ValidationError;
+    fn try_from(value: Value) -> Result<Self, ValidationError> {
+        Self::from_wire(value, "LayoutAlignment")
+    }
+}
+impl<'de> Deserialize<'de> for LayoutAlignment {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        Self::try_from(Value::deserialize(deserializer)?).map_err(serde::de::Error::custom)
+    }
+}
+
+impl std::fmt::Display for LayoutAlignment {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl std::str::FromStr for LayoutAlignment {
+    type Err = ValidationError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::try_from(Value::String(s.into()))
+    }
+}
+/// Layout borders: none, outer border with horizontal row dividers, or outer border only.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
+#[non_exhaustive]
+pub enum LayoutGridLines {
+    /// No borders (the default).
+    None,
+    /// Outer border and horizontal row dividers.
+    Rows,
+    /// Outer border only.
+    Outer,
+}
+impl LayoutGridLines {
+    /// Returns the Slack wire spelling.
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::None => "none",
+            Self::Rows => "rows",
+            Self::Outer => "outer",
+        }
+    }
+}
+impl FromWire for LayoutGridLines {
+    fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
+        match value.as_str() {
+            Some("none") => Ok(Self::None),
+            Some("rows") => Ok(Self::Rows),
+            Some("outer") => Ok(Self::Outer),
+            _ => Err(wire::mismatch(path, "LayoutGridLines")),
+        }
+    }
+}
+impl Serialize for LayoutGridLines {
+    fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        s.serialize_str(self.as_str())
+    }
+}
+impl TryFrom<Value> for LayoutGridLines {
+    type Error = ValidationError;
+    fn try_from(value: Value) -> Result<Self, ValidationError> {
+        Self::from_wire(value, "LayoutGridLines")
+    }
+}
+impl<'de> Deserialize<'de> for LayoutGridLines {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        Self::try_from(Value::deserialize(deserializer)?).map_err(serde::de::Error::custom)
+    }
+}
+
+impl std::fmt::Display for LayoutGridLines {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl std::str::FromStr for LayoutGridLines {
+    type Err = ValidationError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::try_from(Value::String(s.into()))
+    }
+}
 /// A validated Slack layout block accepted directly by a JSON transport.
 #[derive(Clone, Debug, PartialEq)]
 #[non_exhaustive]
@@ -518,6 +695,8 @@ pub enum Block {
     TaskCard(Box<TaskCardBlock>),
     /// An embedded video player.
     Video(Box<VideoBlock>),
+    /// A visual grid of one to five rows on messages, modals, and App Home. Supply fallback content for older clients.
+    Layout(Box<LayoutBlock>),
 }
 impl Serialize for Block {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
@@ -543,6 +722,7 @@ impl Serialize for Block {
             Self::Table(v) => v.serialize(s),
             Self::TaskCard(v) => v.serialize(s),
             Self::Video(v) => v.serialize(s),
+            Self::Layout(v) => v.serialize(s),
         }
     }
 }
@@ -572,6 +752,7 @@ impl FromWire for Block {
             Some("table") => TableBlock::from_wire(value, path).map(Into::into),
             Some("task_card") => TaskCardBlock::from_wire(value, path).map(Into::into),
             Some("video") => VideoBlock::from_wire(value, path).map(Into::into),
+            Some("layout") => LayoutBlock::from_wire(value, path).map(Into::into),
             _ => Err(wire::mismatch(
                 &format!("{path}.type"),
                 "a Block discriminator",
@@ -615,6 +796,7 @@ impl Block {
             Self::Table(_) => "table",
             Self::TaskCard(_) => "task_card",
             Self::Video(_) => "video",
+            Self::Layout(_) => "layout",
         }
     }
 }
@@ -721,6 +903,11 @@ impl From<TaskCardBlock> for Block {
 impl From<VideoBlock> for Block {
     fn from(value: VideoBlock) -> Self {
         Self::Video(Box::new(value))
+    }
+}
+impl From<LayoutBlock> for Block {
+    fn from(value: LayoutBlock) -> Self {
+        Self::Layout(Box::new(value))
     }
 }
 /// A value that can appear in a context block: an image element or a text object.
@@ -1759,6 +1946,336 @@ impl From<RichTextUserGroup> for RichTextSectionElement {
         Self::UserGroup(value)
     }
 }
+/// A block that can occupy a layout item; it must also be valid on the enclosing surface.
+#[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
+pub enum LayoutChild {
+    /// A block that holds interactive elements such as buttons and menus.
+    ActionsBlock(Box<ActionsBlock>),
+    /// A severity-labelled alert, available in modals.
+    AlertBlock(Box<AlertBlock>),
+    /// A compact card with an image, text, and up to three buttons.
+    CardBlock(Box<CardBlock>),
+    /// A horizontally scrolling set of cards, available in messages and App Home.
+    CarouselBlock(Box<CarouselBlock>),
+    /// A titled group of blocks that can optionally collapse.
+    ContainerBlock(Box<ContainerBlock>),
+    /// A block of small, secondary images and text.
+    ContextBlock(Box<ContextBlock>),
+    /// A sortable, paginated table of raw text, numbers, and rich text.
+    DataTableBlock(Box<DataTableBlock>),
+    /// A titled pie, bar, area, or line chart.
+    DataVisualizationBlock(Box<DataVisualizationBlock>),
+    /// A horizontal rule that separates blocks.
+    DividerBlock(Box<DividerBlock>),
+    /// A remote file previously added with the files.remote API.
+    FileBlock(Box<FileBlock>),
+    /// Large, bold plain text that introduces a group of blocks.
+    HeaderBlock(Box<HeaderBlock>),
+    /// A standalone image with alternative text and an optional title.
+    ImageBlock(Box<ImageBlock>),
+    /// A labelled input that collects a value in a modal, App Home, or message.
+    InputBlock(Box<InputBlock>),
+    /// Formatted text built from sections, lists, preformatted blocks, and quotes.
+    RichTextBlock(Box<RichTextBlock>),
+    /// Text, a grid of fields, or both, with an optional accessory element.
+    SectionBlock(Box<SectionBlock>),
+    /// A simple table of raw text and rich text cells.
+    TableBlock(Box<TableBlock>),
+    /// An embedded video player.
+    VideoBlock(Box<VideoBlock>),
+}
+impl Serialize for LayoutChild {
+    fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        match self {
+            Self::ActionsBlock(v) => v.serialize(s),
+            Self::AlertBlock(v) => v.serialize(s),
+            Self::CardBlock(v) => v.serialize(s),
+            Self::CarouselBlock(v) => v.serialize(s),
+            Self::ContainerBlock(v) => v.serialize(s),
+            Self::ContextBlock(v) => v.serialize(s),
+            Self::DataTableBlock(v) => v.serialize(s),
+            Self::DataVisualizationBlock(v) => v.serialize(s),
+            Self::DividerBlock(v) => v.serialize(s),
+            Self::FileBlock(v) => v.serialize(s),
+            Self::HeaderBlock(v) => v.serialize(s),
+            Self::ImageBlock(v) => v.serialize(s),
+            Self::InputBlock(v) => v.serialize(s),
+            Self::RichTextBlock(v) => v.serialize(s),
+            Self::SectionBlock(v) => v.serialize(s),
+            Self::TableBlock(v) => v.serialize(s),
+            Self::VideoBlock(v) => v.serialize(s),
+        }
+    }
+}
+impl FromWire for LayoutChild {
+    fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
+        match value.get("type").and_then(Value::as_str) {
+            Some("actions") => ActionsBlock::from_wire(value, path).map(Into::into),
+            Some("alert") => AlertBlock::from_wire(value, path).map(Into::into),
+            Some("card") => CardBlock::from_wire(value, path).map(Into::into),
+            Some("carousel") => CarouselBlock::from_wire(value, path).map(Into::into),
+            Some("container") => ContainerBlock::from_wire(value, path).map(Into::into),
+            Some("context") => ContextBlock::from_wire(value, path).map(Into::into),
+            Some("data_table") => DataTableBlock::from_wire(value, path).map(Into::into),
+            Some("data_visualization") => {
+                DataVisualizationBlock::from_wire(value, path).map(Into::into)
+            }
+            Some("divider") => DividerBlock::from_wire(value, path).map(Into::into),
+            Some("file") => FileBlock::from_wire(value, path).map(Into::into),
+            Some("header") => HeaderBlock::from_wire(value, path).map(Into::into),
+            Some("image") => ImageBlock::from_wire(value, path).map(Into::into),
+            Some("input") => InputBlock::from_wire(value, path).map(Into::into),
+            Some("rich_text") => RichTextBlock::from_wire(value, path).map(Into::into),
+            Some("section") => SectionBlock::from_wire(value, path).map(Into::into),
+            Some("table") => TableBlock::from_wire(value, path).map(Into::into),
+            Some("video") => VideoBlock::from_wire(value, path).map(Into::into),
+            _ => Err(wire::mismatch(
+                &format!("{path}.type"),
+                "a LayoutChild discriminator",
+            )),
+        }
+    }
+}
+impl TryFrom<Value> for LayoutChild {
+    type Error = ValidationError;
+    fn try_from(value: Value) -> Result<Self, ValidationError> {
+        Self::from_wire(value, "LayoutChild")
+    }
+}
+impl<'de> Deserialize<'de> for LayoutChild {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        Self::try_from(Value::deserialize(deserializer)?).map_err(serde::de::Error::custom)
+    }
+}
+
+impl LayoutChild {
+    pub(crate) fn wire_type(&self) -> &'static str {
+        match self {
+            Self::ActionsBlock(_) => "actions",
+            Self::AlertBlock(_) => "alert",
+            Self::CardBlock(_) => "card",
+            Self::CarouselBlock(_) => "carousel",
+            Self::ContainerBlock(_) => "container",
+            Self::ContextBlock(_) => "context",
+            Self::DataTableBlock(_) => "data_table",
+            Self::DataVisualizationBlock(_) => "data_visualization",
+            Self::DividerBlock(_) => "divider",
+            Self::FileBlock(_) => "file",
+            Self::HeaderBlock(_) => "header",
+            Self::ImageBlock(_) => "image",
+            Self::InputBlock(_) => "input",
+            Self::RichTextBlock(_) => "rich_text",
+            Self::SectionBlock(_) => "section",
+            Self::TableBlock(_) => "table",
+            Self::VideoBlock(_) => "video",
+        }
+    }
+}
+impl From<ActionsBlock> for LayoutChild {
+    fn from(value: ActionsBlock) -> Self {
+        Self::ActionsBlock(Box::new(value))
+    }
+}
+impl From<AlertBlock> for LayoutChild {
+    fn from(value: AlertBlock) -> Self {
+        Self::AlertBlock(Box::new(value))
+    }
+}
+impl From<CardBlock> for LayoutChild {
+    fn from(value: CardBlock) -> Self {
+        Self::CardBlock(Box::new(value))
+    }
+}
+impl From<CarouselBlock> for LayoutChild {
+    fn from(value: CarouselBlock) -> Self {
+        Self::CarouselBlock(Box::new(value))
+    }
+}
+impl From<ContainerBlock> for LayoutChild {
+    fn from(value: ContainerBlock) -> Self {
+        Self::ContainerBlock(Box::new(value))
+    }
+}
+impl From<ContextBlock> for LayoutChild {
+    fn from(value: ContextBlock) -> Self {
+        Self::ContextBlock(Box::new(value))
+    }
+}
+impl From<DataTableBlock> for LayoutChild {
+    fn from(value: DataTableBlock) -> Self {
+        Self::DataTableBlock(Box::new(value))
+    }
+}
+impl From<DataVisualizationBlock> for LayoutChild {
+    fn from(value: DataVisualizationBlock) -> Self {
+        Self::DataVisualizationBlock(Box::new(value))
+    }
+}
+impl From<DividerBlock> for LayoutChild {
+    fn from(value: DividerBlock) -> Self {
+        Self::DividerBlock(Box::new(value))
+    }
+}
+impl From<FileBlock> for LayoutChild {
+    fn from(value: FileBlock) -> Self {
+        Self::FileBlock(Box::new(value))
+    }
+}
+impl From<HeaderBlock> for LayoutChild {
+    fn from(value: HeaderBlock) -> Self {
+        Self::HeaderBlock(Box::new(value))
+    }
+}
+impl From<ImageBlock> for LayoutChild {
+    fn from(value: ImageBlock) -> Self {
+        Self::ImageBlock(Box::new(value))
+    }
+}
+impl From<InputBlock> for LayoutChild {
+    fn from(value: InputBlock) -> Self {
+        Self::InputBlock(Box::new(value))
+    }
+}
+impl From<RichTextBlock> for LayoutChild {
+    fn from(value: RichTextBlock) -> Self {
+        Self::RichTextBlock(Box::new(value))
+    }
+}
+impl From<SectionBlock> for LayoutChild {
+    fn from(value: SectionBlock) -> Self {
+        Self::SectionBlock(Box::new(value))
+    }
+}
+impl From<TableBlock> for LayoutChild {
+    fn from(value: TableBlock) -> Self {
+        Self::TableBlock(Box::new(value))
+    }
+}
+impl From<VideoBlock> for LayoutChild {
+    fn from(value: VideoBlock) -> Self {
+        Self::VideoBlock(Box::new(value))
+    }
+}
+/// A stable block that older clients render in place of a layout.
+#[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
+pub enum LayoutFallback {
+    /// A block of small, secondary images and text.
+    ContextBlock(Box<ContextBlock>),
+    /// A horizontal rule that separates blocks.
+    DividerBlock(Box<DividerBlock>),
+    /// Large, bold plain text that introduces a group of blocks.
+    HeaderBlock(Box<HeaderBlock>),
+    /// A standalone image with alternative text and an optional title.
+    ImageBlock(Box<ImageBlock>),
+    /// Formatted text built from sections, lists, preformatted blocks, and quotes.
+    RichTextBlock(Box<RichTextBlock>),
+    /// Text, a grid of fields, or both, with an optional accessory element.
+    SectionBlock(Box<SectionBlock>),
+    /// A simple table of raw text and rich text cells.
+    TableBlock(Box<TableBlock>),
+    /// An embedded video player.
+    VideoBlock(Box<VideoBlock>),
+}
+impl Serialize for LayoutFallback {
+    fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        match self {
+            Self::ContextBlock(v) => v.serialize(s),
+            Self::DividerBlock(v) => v.serialize(s),
+            Self::HeaderBlock(v) => v.serialize(s),
+            Self::ImageBlock(v) => v.serialize(s),
+            Self::RichTextBlock(v) => v.serialize(s),
+            Self::SectionBlock(v) => v.serialize(s),
+            Self::TableBlock(v) => v.serialize(s),
+            Self::VideoBlock(v) => v.serialize(s),
+        }
+    }
+}
+impl FromWire for LayoutFallback {
+    fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
+        match value.get("type").and_then(Value::as_str) {
+            Some("context") => ContextBlock::from_wire(value, path).map(Into::into),
+            Some("divider") => DividerBlock::from_wire(value, path).map(Into::into),
+            Some("header") => HeaderBlock::from_wire(value, path).map(Into::into),
+            Some("image") => ImageBlock::from_wire(value, path).map(Into::into),
+            Some("rich_text") => RichTextBlock::from_wire(value, path).map(Into::into),
+            Some("section") => SectionBlock::from_wire(value, path).map(Into::into),
+            Some("table") => TableBlock::from_wire(value, path).map(Into::into),
+            Some("video") => VideoBlock::from_wire(value, path).map(Into::into),
+            _ => Err(wire::mismatch(
+                &format!("{path}.type"),
+                "a LayoutFallback discriminator",
+            )),
+        }
+    }
+}
+impl TryFrom<Value> for LayoutFallback {
+    type Error = ValidationError;
+    fn try_from(value: Value) -> Result<Self, ValidationError> {
+        Self::from_wire(value, "LayoutFallback")
+    }
+}
+impl<'de> Deserialize<'de> for LayoutFallback {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        Self::try_from(Value::deserialize(deserializer)?).map_err(serde::de::Error::custom)
+    }
+}
+
+impl LayoutFallback {
+    pub(crate) fn wire_type(&self) -> &'static str {
+        match self {
+            Self::ContextBlock(_) => "context",
+            Self::DividerBlock(_) => "divider",
+            Self::HeaderBlock(_) => "header",
+            Self::ImageBlock(_) => "image",
+            Self::RichTextBlock(_) => "rich_text",
+            Self::SectionBlock(_) => "section",
+            Self::TableBlock(_) => "table",
+            Self::VideoBlock(_) => "video",
+        }
+    }
+}
+impl From<ContextBlock> for LayoutFallback {
+    fn from(value: ContextBlock) -> Self {
+        Self::ContextBlock(Box::new(value))
+    }
+}
+impl From<DividerBlock> for LayoutFallback {
+    fn from(value: DividerBlock) -> Self {
+        Self::DividerBlock(Box::new(value))
+    }
+}
+impl From<HeaderBlock> for LayoutFallback {
+    fn from(value: HeaderBlock) -> Self {
+        Self::HeaderBlock(Box::new(value))
+    }
+}
+impl From<ImageBlock> for LayoutFallback {
+    fn from(value: ImageBlock) -> Self {
+        Self::ImageBlock(Box::new(value))
+    }
+}
+impl From<RichTextBlock> for LayoutFallback {
+    fn from(value: RichTextBlock) -> Self {
+        Self::RichTextBlock(Box::new(value))
+    }
+}
+impl From<SectionBlock> for LayoutFallback {
+    fn from(value: SectionBlock) -> Self {
+        Self::SectionBlock(Box::new(value))
+    }
+}
+impl From<TableBlock> for LayoutFallback {
+    fn from(value: TableBlock) -> Self {
+        Self::TableBlock(Box::new(value))
+    }
+}
+impl From<VideoBlock> for LayoutFallback {
+    fn from(value: VideoBlock) -> Self {
+        Self::VideoBlock(Box::new(value))
+    }
+}
 /// A block that holds interactive elements such as buttons and menus.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/actions-block).
@@ -2638,7 +3155,7 @@ impl<'de> Deserialize<'de> for CarouselBlock {
 /// A titled group of blocks that can optionally collapse.
 ///
 /// [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/container-block).
-/// Provide a title or a rich text title.
+/// Provide a title or a rich text title. When a layout is nested, the combined layout/container depth cannot exceed two composite levels.
 #[derive(Clone, Debug, PartialEq)]
 pub struct ContainerBlock {
     child_blocks: Vec<Block>,
@@ -21032,6 +21549,571 @@ impl TryFrom<Value> for WebhookMessage {
     }
 }
 impl<'de> Deserialize<'de> for WebhookMessage {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        Self::try_from(Value::deserialize(deserializer)?).map_err(serde::de::Error::custom)
+    }
+}
+
+/// A visual grid of one to five rows on messages, modals, and App Home. Supply fallback content for older clients.
+///
+/// [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/layout-block).
+/// Children must be valid on the receiving surface. Layout and container nesting is limited to two composite levels. The label and nested blocks contribute to the receiving surface budgets.
+#[derive(Clone, Debug, PartialEq)]
+pub struct LayoutBlock {
+    label: String,
+    rows: Vec<LayoutRow>,
+    is_label_visible: Option<bool>,
+    grid_lines: Option<LayoutGridLines>,
+    fallback: Option<Vec<LayoutFallback>>,
+    block_id: Option<String>,
+    extensions: Map<String, Value>,
+}
+/// Consuming builder for [`LayoutBlock`]. Validation runs in [`Self::build`].
+#[derive(Clone, Debug)]
+pub struct LayoutBlockBuilder {
+    label: Option<String>,
+    rows: Option<Vec<LayoutRow>>,
+    is_label_visible: Option<bool>,
+    grid_lines: Option<LayoutGridLines>,
+    fallback: Option<Vec<LayoutFallback>>,
+    block_id: Option<String>,
+    extensions: Map<String, Value>,
+}
+impl Default for LayoutBlockBuilder {
+    fn default() -> Self {
+        Self {
+            label: None,
+            rows: None,
+            is_label_visible: None,
+            grid_lines: None,
+            fallback: None,
+            block_id: None,
+            extensions: Map::new(),
+        }
+    }
+}
+impl LayoutBlock {
+    /// Starts a builder with the documented model defaults.
+    pub fn builder() -> LayoutBlockBuilder {
+        LayoutBlockBuilder::default()
+    }
+    /// Moves every field into an editable builder, preserving explicit omissions.
+    pub fn into_builder(self) -> LayoutBlockBuilder {
+        LayoutBlockBuilder {
+            label: Some(self.label),
+            rows: Some(self.rows),
+            is_label_visible: self.is_label_visible,
+            grid_lines: self.grid_lines,
+            fallback: self.fallback,
+            block_id: self.block_id,
+            extensions: self.extensions,
+        }
+    }
+    /// Borrows or copies `label`. Describes the layout. A visible label is bold text, not a semantic heading.
+    pub fn label(&self) -> &str {
+        &self.label
+    }
+    /// Borrows or copies `rows`. Adds one to five rows in source and reading order.
+    pub fn rows(&self) -> &[LayoutRow] {
+        &self.rows
+    }
+    /// Borrows or copies `is_label_visible`. Shows the label above the grid. Slack defaults to false; hidden labels are not exposed to screen readers.
+    pub fn is_label_visible(&self) -> Option<bool> {
+        self.is_label_visible
+    }
+    /// Borrows or copies `grid_lines`. Sets outer borders and horizontal row dividers. Slack defaults to none; there are no vertical dividers.
+    pub fn grid_lines(&self) -> Option<LayoutGridLines> {
+        self.grid_lines
+    }
+    /// Borrows or copies `fallback`. Adds stable blocks rendered in place of the layout on older clients. Omission is allowed; Slack normalizes it to an empty array and does not synthesize content.
+    pub fn fallback(&self) -> Option<&[LayoutFallback]> {
+        self.fallback.as_deref()
+    }
+    /// Borrows or copies `block_id`. Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+    pub fn block_id(&self) -> Option<&str> {
+        self.block_id.as_deref()
+    }
+    /// Borrows checked, unmodeled JSON extension fields.
+    pub fn extensions(&self) -> &Map<String, Value> {
+        &self.extensions
+    }
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        let mut map = serializer.serialize_map(None)?;
+        map.serialize_entry("type", "layout")?;
+        map.serialize_entry("label", &self.label)?;
+        map.serialize_entry("rows", &self.rows)?;
+        if let Some(value) = &self.is_label_visible {
+            map.serialize_entry("is_label_visible", value)?;
+        }
+        if let Some(value) = &self.grid_lines {
+            map.serialize_entry("grid_lines", value)?;
+        }
+        if let Some(value) = &self.fallback {
+            map.serialize_entry("fallback", value)?;
+        }
+        if let Some(value) = &self.block_id {
+            map.serialize_entry("block_id", value)?;
+        }
+        for (key, value) in &self.extensions {
+            map.serialize_entry(key, value)?;
+        }
+        map.end()
+    }
+}
+impl LayoutBlockBuilder {
+    /// Describes the layout. A visible label is bold text, not a semantic heading.
+    pub fn label(mut self, value: impl Into<String>) -> Self {
+        self.label = Some(value.into());
+        self
+    }
+    /// Adds one to five rows in source and reading order.
+    /// Replaces the collection; order is preserved.
+    pub fn rows<I, T>(mut self, values: I) -> Self
+    where
+        I: IntoIterator<Item = T>,
+        T: Into<LayoutRow>,
+    {
+        self.rows = Some(values.into_iter().map(Into::into).collect());
+        self
+    }
+    /// Appends one item to the collection.
+    pub fn row(mut self, value: impl Into<LayoutRow>) -> Self {
+        self.rows.get_or_insert_with(Vec::new).push(value.into());
+        self
+    }
+    /// Shows the label above the grid. Slack defaults to false; hidden labels are not exposed to screen readers.
+    pub fn is_label_visible(mut self, value: bool) -> Self {
+        self.is_label_visible = Some(value);
+        self
+    }
+    /// Omits `is_label_visible`, including any model default.
+    pub fn clear_is_label_visible(mut self) -> Self {
+        self.is_label_visible = None;
+        self
+    }
+    /// Sets outer borders and horizontal row dividers. Slack defaults to none; there are no vertical dividers.
+    pub fn grid_lines(mut self, value: LayoutGridLines) -> Self {
+        self.grid_lines = Some(value);
+        self
+    }
+    /// Omits `grid_lines`, including any model default.
+    pub fn clear_grid_lines(mut self) -> Self {
+        self.grid_lines = None;
+        self
+    }
+    /// Adds stable blocks rendered in place of the layout on older clients. Omission is allowed; Slack normalizes it to an empty array and does not synthesize content.
+    /// Replaces the collection; order is preserved.
+    pub fn fallback<I, T>(mut self, values: I) -> Self
+    where
+        I: IntoIterator<Item = T>,
+        T: Into<LayoutFallback>,
+    {
+        self.fallback = Some(values.into_iter().map(Into::into).collect());
+        self
+    }
+    /// Appends one item to the collection.
+    pub fn add_fallback(mut self, value: impl Into<LayoutFallback>) -> Self {
+        self.fallback
+            .get_or_insert_with(Vec::new)
+            .push(value.into());
+        self
+    }
+    /// Omits `fallback`, including any model default.
+    pub fn clear_fallback(mut self) -> Self {
+        self.fallback = None;
+        self
+    }
+    /// Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.
+    pub fn block_id(mut self, value: impl Into<String>) -> Self {
+        self.block_id = Some(value.into());
+        self
+    }
+    /// Omits `block_id`, including any model default.
+    pub fn clear_block_id(mut self) -> Self {
+        self.block_id = None;
+        self
+    }
+    /// Adds or replaces an unmodeled extension; reserved names fail at build time.
+    pub fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self {
+        self.extensions.insert(key.into(), value.into());
+        self
+    }
+    /// Validates all fields and their receiving context.
+    ///
+    /// # Errors
+    /// Returns a [`ValidationError`] for missing fields, invalid values, reserved
+    /// extension names, or unsupported field combinations and child contexts.
+    pub fn build(self) -> Result<LayoutBlock, ValidationError> {
+        let label = wire::required(self.label, "LayoutBlock.label")?;
+        let rows = wire::required(self.rows, "LayoutBlock.rows")?;
+        let is_label_visible = self.is_label_visible;
+        let grid_lines = self.grid_lines;
+        let fallback = self.fallback;
+        let block_id = self.block_id;
+        wire::extensions(
+            &self.extensions,
+            &[
+                "label",
+                "rows",
+                "is_label_visible",
+                "grid_lines",
+                "fallback",
+                "block_id",
+            ],
+            "LayoutBlock",
+        )?;
+        let value = LayoutBlock {
+            label,
+            rows,
+            is_label_visible,
+            grid_lines,
+            fallback,
+            block_id,
+            extensions: self.extensions,
+        };
+        {
+            let v = &value.label;
+            crate::rules::length(v.chars().count(), Some(1), Some(150), "LayoutBlock.label")?;
+        }
+        {
+            let v = &value.rows;
+            crate::rules::length(v.len(), Some(1), Some(5), "LayoutBlock.rows")?;
+        }
+        if let Some(v) = &value.block_id {
+            crate::rules::length(v.chars().count(), None, Some(255), "LayoutBlock.block_id")?;
+        }
+        let wire = serde_json::to_value(&value).map_err(|e| {
+            ValidationError::new(ErrorCategory::TypeMismatch, "LayoutBlock", e.to_string())
+        })?;
+        crate::rules::validate("LayoutBlock", &wire, "LayoutBlock")?;
+        Ok(value)
+    }
+}
+impl Serialize for LayoutBlock {
+    fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        self.serialize_value(s)
+    }
+}
+impl FromWire for LayoutBlock {
+    fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
+        let mut map = wire::object(value, "layout", path)?;
+        let label = wire::field::<String>(&mut map, "label", path)?;
+        let rows = wire::field::<Vec<LayoutRow>>(&mut map, "rows", path)?;
+        let is_label_visible = wire::field::<bool>(&mut map, "is_label_visible", path)?;
+        let grid_lines = wire::field::<LayoutGridLines>(&mut map, "grid_lines", path)?;
+        let fallback = wire::field::<Vec<LayoutFallback>>(&mut map, "fallback", path)?;
+        let block_id = wire::field::<String>(&mut map, "block_id", path)?;
+        LayoutBlockBuilder {
+            label,
+            rows,
+            is_label_visible,
+            grid_lines,
+            fallback,
+            block_id,
+            extensions: map,
+        }
+        .build()
+        .map_err(|e| e.at(path))
+    }
+}
+impl TryFrom<Value> for LayoutBlock {
+    type Error = ValidationError;
+    fn try_from(value: Value) -> Result<Self, ValidationError> {
+        Self::from_wire(value, "LayoutBlock")
+    }
+}
+impl<'de> Deserialize<'de> for LayoutBlock {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        Self::try_from(Value::deserialize(deserializer)?).map_err(serde::de::Error::custom)
+    }
+}
+
+/// One to three layout items in reading order. A row has no alignment or discriminator.
+///
+/// [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/layout-block).
+/// At most one carousel, data table, or data visualization may occupy a row. A data visualization must have more than half of the total row weight.
+#[derive(Clone, Debug, PartialEq)]
+pub struct LayoutRow {
+    items: Vec<LayoutItem>,
+    extensions: Map<String, Value>,
+}
+/// Consuming builder for [`LayoutRow`]. Validation runs in [`Self::build`].
+#[derive(Clone, Debug)]
+pub struct LayoutRowBuilder {
+    items: Option<Vec<LayoutItem>>,
+    extensions: Map<String, Value>,
+}
+impl Default for LayoutRowBuilder {
+    fn default() -> Self {
+        Self {
+            items: None,
+            extensions: Map::new(),
+        }
+    }
+}
+impl LayoutRow {
+    /// Starts a builder with the documented model defaults.
+    pub fn builder() -> LayoutRowBuilder {
+        LayoutRowBuilder::default()
+    }
+    /// Moves every field into an editable builder, preserving explicit omissions.
+    pub fn into_builder(self) -> LayoutRowBuilder {
+        LayoutRowBuilder {
+            items: Some(self.items),
+            extensions: self.extensions,
+        }
+    }
+    /// Borrows or copies `items`. Adds one to three items in source order.
+    pub fn items(&self) -> &[LayoutItem] {
+        &self.items
+    }
+    /// Borrows checked, unmodeled JSON extension fields.
+    pub fn extensions(&self) -> &Map<String, Value> {
+        &self.extensions
+    }
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        let mut map = serializer.serialize_map(None)?;
+        map.serialize_entry("items", &self.items)?;
+        for (key, value) in &self.extensions {
+            map.serialize_entry(key, value)?;
+        }
+        map.end()
+    }
+}
+impl LayoutRowBuilder {
+    /// Adds one to three items in source order.
+    /// Replaces the collection; order is preserved.
+    pub fn items<I, T>(mut self, values: I) -> Self
+    where
+        I: IntoIterator<Item = T>,
+        T: Into<LayoutItem>,
+    {
+        self.items = Some(values.into_iter().map(Into::into).collect());
+        self
+    }
+    /// Appends one item to the collection.
+    pub fn item(mut self, value: impl Into<LayoutItem>) -> Self {
+        self.items.get_or_insert_with(Vec::new).push(value.into());
+        self
+    }
+    /// Adds or replaces an unmodeled extension; reserved names fail at build time.
+    pub fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self {
+        self.extensions.insert(key.into(), value.into());
+        self
+    }
+    /// Validates all fields and their receiving context.
+    ///
+    /// # Errors
+    /// Returns a [`ValidationError`] for missing fields, invalid values, reserved
+    /// extension names, or unsupported field combinations and child contexts.
+    pub fn build(self) -> Result<LayoutRow, ValidationError> {
+        let items = wire::required(self.items, "LayoutRow.items")?;
+        wire::extensions(&self.extensions, &["items"], "LayoutRow")?;
+        let value = LayoutRow {
+            items,
+            extensions: self.extensions,
+        };
+        {
+            let v = &value.items;
+            crate::rules::length(v.len(), Some(1), Some(3), "LayoutRow.items")?;
+        }
+        let wire = serde_json::to_value(&value).map_err(|e| {
+            ValidationError::new(ErrorCategory::TypeMismatch, "LayoutRow", e.to_string())
+        })?;
+        crate::rules::validate("LayoutRow", &wire, "LayoutRow")?;
+        Ok(value)
+    }
+}
+impl Serialize for LayoutRow {
+    fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        self.serialize_value(s)
+    }
+}
+impl FromWire for LayoutRow {
+    fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
+        let mut map = wire::object(value, "", path)?;
+        let items = wire::field::<Vec<LayoutItem>>(&mut map, "items", path)?;
+        LayoutRowBuilder {
+            items,
+            extensions: map,
+        }
+        .build()
+        .map_err(|e| e.at(path))
+    }
+}
+impl TryFrom<Value> for LayoutRow {
+    type Error = ValidationError;
+    fn try_from(value: Value) -> Result<Self, ValidationError> {
+        Self::from_wire(value, "LayoutRow")
+    }
+}
+impl<'de> Deserialize<'de> for LayoutRow {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        Self::try_from(Value::deserialize(deserializer)?).map_err(serde::de::Error::custom)
+    }
+}
+
+/// One supported child block with a proportional width and optional direction-aware alignment.
+///
+/// [Slack reference](https://docs.slack.dev/reference/block-kit/blocks/layout-block).
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct LayoutItem {
+    block: LayoutChild,
+    width: Option<LayoutWidth>,
+    horizontal_alignment: Option<LayoutAlignment>,
+    extensions: Map<String, Value>,
+}
+/// Consuming builder for [`LayoutItem`]. Validation runs in [`Self::build`].
+#[derive(Clone, Debug)]
+pub struct LayoutItemBuilder {
+    block: Option<LayoutChild>,
+    width: Option<LayoutWidth>,
+    horizontal_alignment: Option<LayoutAlignment>,
+    extensions: Map<String, Value>,
+}
+impl Default for LayoutItemBuilder {
+    fn default() -> Self {
+        Self {
+            block: None,
+            width: None,
+            horizontal_alignment: None,
+            extensions: Map::new(),
+        }
+    }
+}
+impl LayoutItem {
+    /// Starts a builder with the documented model defaults.
+    pub fn builder() -> LayoutItemBuilder {
+        LayoutItemBuilder::default()
+    }
+    /// Moves every field into an editable builder, preserving explicit omissions.
+    pub fn into_builder(self) -> LayoutItemBuilder {
+        LayoutItemBuilder {
+            block: Some(self.block),
+            width: self.width,
+            horizontal_alignment: self.horizontal_alignment,
+            extensions: self.extensions,
+        }
+    }
+    /// Borrows or copies `block`. Sets the child block. Direct nested layouts and markdown blocks are not supported.
+    pub fn block(&self) -> &LayoutChild {
+        &self.block
+    }
+    /// Borrows or copies `width`. Sets the relative row weight: narrow 1, standard 2 (default), wide 3. Full is not supported.
+    pub fn width(&self) -> Option<LayoutWidth> {
+        self.width
+    }
+    /// Borrows or copies `horizontal_alignment`. Aligns content within the cell. Omission fills the cell; start and end follow text direction.
+    pub fn horizontal_alignment(&self) -> Option<LayoutAlignment> {
+        self.horizontal_alignment
+    }
+    /// Borrows checked, unmodeled JSON extension fields.
+    pub fn extensions(&self) -> &Map<String, Value> {
+        &self.extensions
+    }
+    fn serialize_value<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        let mut map = serializer.serialize_map(None)?;
+        map.serialize_entry("block", &self.block)?;
+        if let Some(value) = &self.width {
+            map.serialize_entry("width", value)?;
+        }
+        if let Some(value) = &self.horizontal_alignment {
+            map.serialize_entry("horizontal_alignment", value)?;
+        }
+        for (key, value) in &self.extensions {
+            map.serialize_entry(key, value)?;
+        }
+        map.end()
+    }
+}
+impl LayoutItemBuilder {
+    /// Sets the child block. Direct nested layouts and markdown blocks are not supported.
+    pub fn block(mut self, value: impl Into<LayoutChild>) -> Self {
+        self.block = Some(value.into());
+        self
+    }
+    /// Sets the relative row weight: narrow 1, standard 2 (default), wide 3. Full is not supported.
+    pub fn width(mut self, value: LayoutWidth) -> Self {
+        self.width = Some(value);
+        self
+    }
+    /// Omits `width`, including any model default.
+    pub fn clear_width(mut self) -> Self {
+        self.width = None;
+        self
+    }
+    /// Aligns content within the cell. Omission fills the cell; start and end follow text direction.
+    pub fn horizontal_alignment(mut self, value: LayoutAlignment) -> Self {
+        self.horizontal_alignment = Some(value);
+        self
+    }
+    /// Omits `horizontal_alignment`, including any model default.
+    pub fn clear_horizontal_alignment(mut self) -> Self {
+        self.horizontal_alignment = None;
+        self
+    }
+    /// Adds or replaces an unmodeled extension; reserved names fail at build time.
+    pub fn extension(mut self, key: impl Into<String>, value: impl Into<Value>) -> Self {
+        self.extensions.insert(key.into(), value.into());
+        self
+    }
+    /// Validates all fields and their receiving context.
+    ///
+    /// # Errors
+    /// Returns a [`ValidationError`] for missing fields, invalid values, reserved
+    /// extension names, or unsupported field combinations and child contexts.
+    pub fn build(self) -> Result<LayoutItem, ValidationError> {
+        let block = wire::required(self.block, "LayoutItem.block")?;
+        let width = self.width;
+        let horizontal_alignment = self.horizontal_alignment;
+        wire::extensions(
+            &self.extensions,
+            &["block", "width", "horizontal_alignment"],
+            "LayoutItem",
+        )?;
+        let value = LayoutItem {
+            block,
+            width,
+            horizontal_alignment,
+            extensions: self.extensions,
+        };
+        let wire = serde_json::to_value(&value).map_err(|e| {
+            ValidationError::new(ErrorCategory::TypeMismatch, "LayoutItem", e.to_string())
+        })?;
+        crate::rules::validate("LayoutItem", &wire, "LayoutItem")?;
+        Ok(value)
+    }
+}
+impl Serialize for LayoutItem {
+    fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        self.serialize_value(s)
+    }
+}
+impl FromWire for LayoutItem {
+    fn from_wire(value: Value, path: &str) -> Result<Self, ValidationError> {
+        let mut map = wire::object(value, "", path)?;
+        let block = wire::field::<LayoutChild>(&mut map, "block", path)?;
+        let width = wire::field::<LayoutWidth>(&mut map, "width", path)?;
+        let horizontal_alignment =
+            wire::field::<LayoutAlignment>(&mut map, "horizontal_alignment", path)?;
+        LayoutItemBuilder {
+            block,
+            width,
+            horizontal_alignment,
+            extensions: map,
+        }
+        .build()
+        .map_err(|e| e.at(path))
+    }
+}
+impl TryFrom<Value> for LayoutItem {
+    type Error = ValidationError;
+    fn try_from(value: Value) -> Result<Self, ValidationError> {
+        Self::from_wire(value, "LayoutItem")
+    }
+}
+impl<'de> Deserialize<'de> for LayoutItem {
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         Self::try_from(Value::deserialize(deserializer)?).map_err(serde::de::Error::custom)
     }

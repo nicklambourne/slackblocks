@@ -4,6 +4,319 @@ defmodule Slackblocks.Test.InvalidConstructions do
   # Explicit native attempts, maintained independently of the fixture JSON and API generator.
   def all do
     [
+      {"layout-message-budget",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks:
+             List.duplicate(
+               Blocks.Layout.new!(
+                 label: "Layout",
+                 rows: [
+                   Objects.LayoutRow.new!(
+                     items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+                   )
+                 ]
+               ),
+               26
+             )
+         )
+       end},
+      {"layout-view-budget",
+       fn ->
+         Views.Home.new!(
+           blocks:
+             List.duplicate(
+               Blocks.Layout.new!(
+                 label: "Layout",
+                 rows: [
+                   Objects.LayoutRow.new!(
+                     items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+                   )
+                 ]
+               ),
+               51
+             )
+         )
+       end},
+      {"layout-fallback-budget",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks: [
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+                 )
+               ],
+               fallback: List.duplicate(Blocks.Divider.new!(), 51)
+             )
+           ]
+         )
+       end},
+      {"layout-label-empty",
+       fn ->
+         Blocks.Layout.new!(
+           label: "",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             )
+           ]
+         )
+       end},
+      {"layout-label-too-long",
+       fn ->
+         Blocks.Layout.new!(
+           label: String.duplicate("😀", 151),
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             )
+           ]
+         )
+       end},
+      {"layout-rows-empty", fn -> Blocks.Layout.new!(label: "Layout", rows: []) end},
+      {"layout-too-many-rows",
+       fn ->
+         Blocks.Layout.new!(
+           label: "Layout",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             ),
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             ),
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             ),
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             ),
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             ),
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             )
+           ]
+         )
+       end},
+      {"layout-items-empty", fn -> Objects.LayoutRow.new!(items: []) end},
+      {"layout-too-many-items",
+       fn ->
+         Objects.LayoutRow.new!(
+           items: [
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!()),
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!()),
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!()),
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!())
+           ]
+         )
+       end},
+      {"layout-markdown-child",
+       fn -> Objects.LayoutItem.new!(block: Blocks.Markdown.new!(text: "No")) end},
+      {"layout-direct-child",
+       fn ->
+         Objects.LayoutItem.new!(
+           block:
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+                 )
+               ]
+             )
+         )
+       end},
+      {"layout-fallback-actions",
+       fn ->
+         Blocks.Layout.new!(
+           label: "Layout",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+             )
+           ],
+           fallback: [
+             Blocks.Actions.new!(
+               elements: [Elements.Button.new!(text: Objects.PlainText.new!(text: "Go"))]
+             )
+           ]
+         )
+       end},
+      {"layout-wide-siblings",
+       fn ->
+         Objects.LayoutRow.new!(
+           items: [
+             Objects.LayoutItem.new!(
+               block:
+                 Blocks.Carousel.new!(
+                   elements: [Blocks.Card.new!(title: Objects.PlainText.new!(text: "Card"))]
+                 )
+             ),
+             Objects.LayoutItem.new!(
+               block:
+                 Blocks.DataVisualization.new!(
+                   title: "Chart",
+                   chart:
+                     Objects.PieChart.new!(
+                       segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                     )
+                 )
+             )
+           ]
+         )
+       end},
+      {"layout-chart-half",
+       fn ->
+         Objects.LayoutRow.new!(
+           items: [
+             Objects.LayoutItem.new!(
+               block:
+                 Blocks.DataVisualization.new!(
+                   title: "Chart",
+                   chart:
+                     Objects.PieChart.new!(
+                       segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                     )
+                 )
+             ),
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!())
+           ]
+         )
+       end},
+      {"layout-depth-three",
+       fn ->
+         Blocks.Layout.new!(
+           label: "Layout",
+           rows: [
+             Objects.LayoutRow.new!(
+               items: [
+                 Objects.LayoutItem.new!(
+                   block:
+                     Blocks.Container.new!(
+                       title: Objects.PlainText.new!(text: "Container"),
+                       child_blocks: [
+                         Blocks.Layout.new!(
+                           label: "Layout",
+                           rows: [
+                             Objects.LayoutRow.new!(
+                               items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+                             )
+                           ]
+                         )
+                       ]
+                     )
+                 )
+               ]
+             )
+           ]
+         )
+       end},
+      {"layout-message-alert",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks: [
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block: Blocks.Alert.new!(text: Objects.PlainText.new!(text: "Modal only"))
+                     )
+                   ]
+                 )
+               ]
+             )
+           ]
+         )
+       end},
+      {"layout-modal-input-submit",
+       fn ->
+         Views.Modal.new!(
+           title: Objects.PlainText.new!(text: "Input"),
+           blocks: [
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block:
+                         Blocks.Input.new!(
+                           label: Objects.PlainText.new!(text: "Name"),
+                           element: Elements.PlainTextInput.new!(action_id: "name")
+                         )
+                     )
+                   ]
+                 )
+               ]
+             )
+           ]
+         )
+       end},
+      {"layout-three-charts",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks: [
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block:
+                         Blocks.DataVisualization.new!(
+                           title: "Chart",
+                           chart:
+                             Objects.PieChart.new!(
+                               segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                             )
+                         )
+                     )
+                   ]
+                 ),
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block:
+                         Blocks.DataVisualization.new!(
+                           title: "Chart",
+                           chart:
+                             Objects.PieChart.new!(
+                               segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                             )
+                         )
+                     )
+                   ]
+                 ),
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block:
+                         Blocks.DataVisualization.new!(
+                           title: "Chart",
+                           chart:
+                             Objects.PieChart.new!(
+                               segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                             )
+                         )
+                     )
+                   ]
+                 )
+               ]
+             )
+           ]
+         )
+       end},
       {"plain-text-input-inverted-range",
        fn -> Elements.PlainTextInput.new!(min_length: 20, max_length: 10) end},
       {"external-query-negative", fn -> Elements.ExternalSelect.new!(min_query_length: -1) end},

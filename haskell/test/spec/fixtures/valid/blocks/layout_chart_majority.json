@@ -1,0 +1,35 @@
+{
+  "type": "layout",
+  "label": "Chart summary",
+  "block_id": "layout",
+  "rows": [
+    {
+      "items": [
+        {
+          "block": {
+            "type": "data_visualization",
+            "title": "Chart",
+            "block_id": "chart",
+            "chart": {
+              "type": "pie",
+              "segments": [
+                {
+                  "label": "One",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          "width": "wide"
+        },
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child"
+          },
+          "width": "standard"
+        }
+      ]
+    }
+  ]
+}

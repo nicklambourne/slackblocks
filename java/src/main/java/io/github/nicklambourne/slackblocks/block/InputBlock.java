@@ -27,7 +27,7 @@ import java.util.Optional;
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/input-block">Slack reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class InputBlock implements Block {
+public final class InputBlock implements Block, LayoutChild {
   private final Map<String, Object> values;
   private final Map<String, Object> fields;
   private final int hash;

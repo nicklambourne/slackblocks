@@ -33,6 +33,12 @@ module Slackblocks
   module RichTextSectionElement
   end
 
+  module LayoutChild
+  end
+
+  module LayoutFallback
+  end
+
   module AlertLevel
     DEFAULT: :default
     INFO: :info
@@ -80,9 +86,28 @@ module Slackblocks
     EPHEMERAL: :ephemeral
   end
 
+  module LayoutWidth
+    NARROW: :narrow
+    STANDARD: :standard
+    WIDE: :wide
+  end
+
+  module LayoutAlignment
+    START: :start
+    CENTER: :center
+    END_: :end
+  end
+
+  module LayoutGridLines
+    NONE: :none
+    ROWS: :rows
+    OUTER: :outer
+  end
+
   class ActionsBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader elements: Array[Element]
     attr_reader block_id: (String)?
     attr_reader additional_fields: Hash[String, untyped]
@@ -94,6 +119,7 @@ module Slackblocks
   class AlertBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader text: Text
     attr_reader level: (:default | :info | :warning | :error | :success)?
     attr_reader block_id: (String)?
@@ -106,6 +132,7 @@ module Slackblocks
   class CardBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader hero_image: (ImageElement)?
     attr_reader icon: (ImageElement)?
     attr_reader title: (Text)?
@@ -124,6 +151,7 @@ module Slackblocks
   class CarouselBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader elements: Array[CardBlock]
     attr_reader block_id: (String)?
     attr_reader additional_fields: Hash[String, untyped]
@@ -135,6 +163,7 @@ module Slackblocks
   class ContainerBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader child_blocks: Array[Block]
     attr_reader title: (PlainText)?
     attr_reader rich_text_title: (RichTextBlock)?
@@ -165,6 +194,8 @@ module Slackblocks
   class ContextBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader elements: Array[ContextElement]
     attr_reader block_id: (String)?
     attr_reader additional_fields: Hash[String, untyped]
@@ -176,6 +207,7 @@ module Slackblocks
   class DataTableBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader rows: Array[Array[DataTableCell]]
     attr_reader caption: String
     attr_reader page_size: (Integer)?
@@ -190,6 +222,7 @@ module Slackblocks
   class DataVisualizationBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader title: String
     attr_reader chart: Chart
     attr_reader block_id: (String)?
@@ -202,6 +235,8 @@ module Slackblocks
   class DividerBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader block_id: (String)?
     attr_reader additional_fields: Hash[String, untyped]
     def initialize: (?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
@@ -212,6 +247,7 @@ module Slackblocks
   class FileBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader external_id: String
     attr_reader source: (String)?
     attr_reader block_id: (String)?
@@ -224,6 +260,8 @@ module Slackblocks
   class HeaderBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader text: PlainText
     attr_reader block_id: (String)?
     attr_reader additional_fields: Hash[String, untyped]
@@ -235,6 +273,8 @@ module Slackblocks
   class ImageBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader image_url: (String)?
     attr_reader slack_file: (SlackFile)?
     attr_reader alt_text: String
@@ -249,6 +289,7 @@ module Slackblocks
   class InputBlock
     include Value
     include Block
+    include LayoutChild
     attr_reader label: PlainText
     attr_reader element: InputElement
     attr_reader dispatch_action: (bool)?
@@ -288,6 +329,8 @@ module Slackblocks
     include Value
     include Block
     include DataTableCell
+    include LayoutChild
+    include LayoutFallback
     include TableCell
     attr_reader elements: Array[RichTextBlockElement]
     attr_reader block_id: (String)?
@@ -300,6 +343,8 @@ module Slackblocks
   class SectionBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader text: (Text)?
     attr_reader fields: (Array[Text])?
     attr_reader accessory: (Element)?
@@ -313,6 +358,8 @@ module Slackblocks
   class TableBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader rows: Array[Array[TableCell]]
     attr_reader column_settings: (Array[ColumnSettings])?
     attr_reader block_id: (String)?
@@ -341,6 +388,8 @@ module Slackblocks
   class VideoBlock
     include Value
     include Block
+    include LayoutChild
+    include LayoutFallback
     attr_reader alt_text: String
     attr_reader thumbnail_url: String
     attr_reader title: PlainText
@@ -1247,6 +1296,41 @@ module Slackblocks
     def initialize: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?response_type: (:in_channel | :ephemeral)?, ?replace_original: (bool)?, ?delete_original: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
     def self.new: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?response_type: (:in_channel | :ephemeral)?, ?replace_original: (bool)?, ?delete_original: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> WebhookMessage
     def self.[]: (?blocks: (Array[Block])?, ?attachments: (Array[Attachment])?, ?text: (String)?, ?response_type: (:in_channel | :ephemeral)?, ?replace_original: (bool)?, ?delete_original: (bool)?, ?unfurl_links: (bool)?, ?unfurl_media: (bool)?, ?metadata: (Hash[String | Symbol, untyped])?, ?additional_fields: Hash[String | Symbol, untyped]?) -> WebhookMessage
+  end
+
+  class LayoutBlock
+    include Value
+    include Block
+    attr_reader label: String
+    attr_reader rows: Array[LayoutRow]
+    attr_reader is_label_visible: (bool)?
+    attr_reader grid_lines: (:none | :rows | :outer)?
+    attr_reader fallback: (Array[LayoutFallback])?
+    attr_reader block_id: (String)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (label: String, rows: Array[LayoutRow], ?is_label_visible: (bool)?, ?grid_lines: (:none | :rows | :outer)?, ?fallback: (Array[LayoutFallback])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (label: String, rows: Array[LayoutRow], ?is_label_visible: (bool)?, ?grid_lines: (:none | :rows | :outer)?, ?fallback: (Array[LayoutFallback])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> LayoutBlock
+    def self.[]: (label: String, rows: Array[LayoutRow], ?is_label_visible: (bool)?, ?grid_lines: (:none | :rows | :outer)?, ?fallback: (Array[LayoutFallback])?, ?block_id: (String)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> LayoutBlock
+  end
+
+  class LayoutRow
+    include Value
+    attr_reader items: Array[LayoutItem]
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (items: Array[LayoutItem], ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (items: Array[LayoutItem], ?additional_fields: Hash[String | Symbol, untyped]?) -> LayoutRow
+    def self.[]: (items: Array[LayoutItem], ?additional_fields: Hash[String | Symbol, untyped]?) -> LayoutRow
+  end
+
+  class LayoutItem
+    include Value
+    attr_reader block: LayoutChild
+    attr_reader width: (:narrow | :standard | :wide)?
+    attr_reader horizontal_alignment: (:start | :center | :end)?
+    attr_reader additional_fields: Hash[String, untyped]
+    def initialize: (block: LayoutChild, ?width: (:narrow | :standard | :wide)?, ?horizontal_alignment: (:start | :center | :end)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> void
+    def self.new: (block: LayoutChild, ?width: (:narrow | :standard | :wide)?, ?horizontal_alignment: (:start | :center | :end)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> LayoutItem
+    def self.[]: (block: LayoutChild, ?width: (:narrow | :standard | :wide)?, ?horizontal_alignment: (:start | :center | :end)?, ?additional_fields: Hash[String | Symbol, untyped]?) -> LayoutItem
   end
 
   module StyleFlags

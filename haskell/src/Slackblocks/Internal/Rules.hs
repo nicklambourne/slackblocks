@@ -111,7 +111,17 @@ rules owner value = case owner of
   "CardBlock" -> do
     check MissingRequired [] "card.content" (any present ["hero_image", "title", "actions", "body"])
     check MutuallyExclusive [] "card.icon" (not (present "icon" && present "slack_icon"))
+  "LayoutBlock" -> compositeDepth value 0 False
+  "LayoutItem" -> allowedKeys value ["block", "width", "horizontal_alignment"]
+  "LayoutRow" -> do
+    allowedKeys value ["items"]
+    let items = array (get "items")
+        wide = filter ((`elem` [String "carousel", String "data_table", String "data_visualization"]) . at "type" . at "block") items
+        total = sum (map layoutWeight items)
+    check InvalidUsage [] "layout.row.wide_blocks" (length wide <= 1)
+    mapM_ (\item -> when (at "type" (at "block" item) == String "data_visualization") (check InvalidUsage [] "layout.row.chart_width" (layoutWeight item * 2 > total))) items
   "ContainerBlock" -> do
+    compositeDepth value 0 False
     check MissingRequired [] "container.title" (present "title" || present "rich_text_title")
     check InvalidUsage [Field "default_collapsed"] "container.default_collapsed" (get "default_collapsed" /= Bool True || get "is_collapsible" == Bool True)
     check InvalidUsage [Field "has_header_divider"] "container.has_header_divider" (get "has_header_divider" /= Bool True || get "is_collapsible" /= Bool True)
@@ -154,7 +164,7 @@ rules owner value = case owner of
   "WebhookMessage" -> message value
   "ModalView" -> do
     surface "modal" [Field "blocks"] (array (get "blocks"))
-    check MissingRequired [Field "submit"] "view.submit.required" (present "submit" || not (any ((== String "input") . at "type") (array (get "blocks"))))
+    check MissingRequired [Field "submit"] "view.submit.required" (present "submit" || not (any (any ((== String "input") . at "type") . descendants) (array (get "blocks"))))
   "HomeTabView" -> surface "home" [Field "blocks"] (array (get "blocks"))
   _ -> Right ()
   where
@@ -184,18 +194,41 @@ standaloneTask value
   | otherwise = Right ()
 
 surface :: Text -> [PathPiece] -> [Value] -> Result ()
-surface name path =
+surface name path blocks = do
+  check LengthExceeded path "layout.surface.blocks" (fromIntegral (sum (map (blockCost False) blocks)) <= limit (if name == "message" then "message.blocks.max_items" else "view.blocks.max_items"))
   mapM_
     ( \(i, block) -> do
+        surface name (path <> [Index i, Field "children"]) (compositeChildren False block)
+        when (at "type" block == String "layout") (surface name (path <> [Index i, Field "fallback"]) (array (at "fallback" block)))
         check TypeMismatch (path <> [Index i, Field "type"]) "surface_block_types" (text (at "type" block) `elem` surfaceBlocks name)
         either (Left . fmap (\e -> e {errorPath = path <> [Index i] <> errorPath e})) Right (standaloneTask block)
     )
-    . zip [0 ..]
+    (zip [0 ..] blocks)
 
 -- Traverse only modeled nested blocks. Metadata values with a "type" key do
 -- not count as blocks, charts, markdown or tables.
 descendants :: Value -> [Value]
-descendants block = block : if at "type" block == String "container" then concatMap descendants (array (at "child_blocks" block)) else []
+descendants block = block : concatMap descendants (compositeChildren True block)
+
+layoutWeight :: Value -> Int
+layoutWeight item = case at "width" item of String "narrow" -> 1; String "wide" -> 3; _ -> 2
+
+allowedKeys :: Value -> [Text] -> Result ()
+allowedKeys (Object fields) keys = mapM_ (\key -> check TypeMismatch [Field (K.toText key)] "layout.properties" (K.toText key `elem` keys)) (KM.keys fields)
+allowedKeys _ _ = Right ()
+
+compositeChildren :: Bool -> Value -> [Value]
+compositeChildren includeFallback block = case at "type" block of
+  String "container" -> array (at "child_blocks" block)
+  String "layout" -> [at "block" item | row <- array (at "rows" block), item <- array (at "items" row)] <> if includeFallback then array (at "fallback" block) else []
+  _ -> []
+
+compositeDepth :: Value -> Int -> Bool -> Result ()
+compositeDepth block depth seen = do
+  let hasLayout = seen || at "type" block == String "layout"
+      next = depth + if at "type" block `elem` [String "layout", String "container"] then 1 else 0
+  check InvalidUsage [] "layout.nesting" (not hasLayout || next <= 2)
+  mapM_ (\child -> compositeDepth child next hasLayout) (compositeChildren False block)
 
 message :: Value -> Result ()
 message value = do
@@ -251,3 +284,12 @@ chart value = do
     )
     (zip [0 ..] series)
   check InvalidUsage [Field "series"] "data_visualization.series.unique" (unique (map (at "name") series))
+
+blockCost :: Bool -> Value -> Int
+blockCost nested block
+  | kind == "layout" = max (1 + sum (map (blockCost True) children)) (sum (map (blockCost False) (array (at "fallback" block))))
+  | kind == "container" && (nested || any (any ((== "layout") . text . at "type") . descendants) children) = 1 + sum (map (blockCost nested) children)
+  | otherwise = 1
+  where
+    kind = text (at "type" block)
+    children = compositeChildren False block

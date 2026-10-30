@@ -1,6 +1,6 @@
 # slackblocks conformance specification
 
-Version 1.4.0 defines the language-neutral contract for slackblocks implementations.
+Version 1.5.0 defines the language-neutral contract for slackblocks implementations.
 
 For the end-to-end maintenance workflow, follow
 [Adding New Block Kit Features](../docs/docs/contributing/maintaining-block-kit.mdx),

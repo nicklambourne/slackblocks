@@ -15,7 +15,7 @@ namespace Slackblocks.Blocks;
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/image-block">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
-public sealed partial class ImageBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock
+public sealed partial class ImageBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock, global::Slackblocks.Blocks.ILayoutChild, global::Slackblocks.Blocks.ILayoutFallback
 {
     /// <summary>Creates and validates a <see cref="ImageBlock"/>.</summary>
     /// <param name="imageUrl">The publicly accessible URL of the image. Cannot be combined with a Slack file. Slack allows at most 3000 characters.</param>

@@ -14,7 +14,7 @@ namespace Slackblocks.Blocks;
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/context-block">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
-public sealed partial class ContextBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock
+public sealed partial class ContextBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock, global::Slackblocks.Blocks.ILayoutChild, global::Slackblocks.Blocks.ILayoutFallback
 {
     /// <summary>Creates and validates a <see cref="ContextBlock"/>.</summary>
     /// <param name="elements">Images and text in display order. Required. Slack allows at most 10 items.</param>

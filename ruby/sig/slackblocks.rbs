@@ -38,6 +38,11 @@ module Slackblocks
   end
 
   module Validator
+    def self.layout_weight: (Hash[String, untyped] item) -> Integer
+    def self.composite_children: (Hash[String, untyped] block, ?fallback: bool) -> Array[Hash[String, untyped]]
+    def self.composite_depth: (Hash[String, untyped] block, String path, ?Integer depth, ?bool has_layout) -> untyped
+    def self.descendants: (Array[Hash[String, untyped]] blocks) -> Array[Hash[String, untyped]]
+    def self.block_cost: (Hash[String, untyped] block, ?bool nested) -> Integer
     def self.validate: (untyped klass, Hash[Symbol, untyped] values) -> untyped
     def self.limit: (String key) -> Integer
     def self.fail!: (String category, String path, String message) -> bot

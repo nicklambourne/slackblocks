@@ -4,6 +4,9 @@
  * @module blocks
  */
 import {
+  layoutBlock as createLayoutBlock,
+  layoutRow as createLayoutRow,
+  layoutItem as createLayoutItem,
   actionsBlock as createActionsBlock,
   alertBlock as createAlertBlock,
   cardBlock as createCardBlock,
@@ -350,4 +353,17 @@ export function VideoBlock(): FluentBuilder<
   Output<typeof createVideoBlock>
 > {
   return createFluentBuilder(createVideoBlock);
+}
+
+/** Builds a visual grid, retaining explicit older-client fallback content. */
+export function LayoutBlock(): FluentBuilder<FirstInput<typeof createLayoutBlock>, Output<typeof createLayoutBlock>> {
+  return createFluentBuilder(createLayoutBlock, { collections: { rows: "flat", fallback: "flat" } });
+}
+/** Builds one to three cells in source and reading order. */
+export function LayoutRow(): FluentBuilder<FirstInput<typeof createLayoutRow>, Output<typeof createLayoutRow>> {
+  return createFluentBuilder(createLayoutRow, { collections: { items: "flat" } });
+}
+/** Builds a supported child cell with proportional width and optional alignment. */
+export function LayoutItem(): FluentBuilder<FirstInput<typeof createLayoutItem>, Output<typeof createLayoutItem>> {
+  return createFluentBuilder(createLayoutItem);
 }

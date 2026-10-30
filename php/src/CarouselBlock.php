@@ -10,7 +10,7 @@ namespace Slackblocks;
  * A horizontally scrolling set of cards, available in messages and App Home.
  * @see https://docs.slack.dev/reference/block-kit/blocks/carousel-block
  */
-final readonly class CarouselBlock extends Value implements Block
+final readonly class CarouselBlock extends Value implements Block, LayoutChild
 {
     /** Adds the cards in display order.
      * @var list<CardBlock>

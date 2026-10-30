@@ -11,7 +11,7 @@ namespace Slackblocks;
  * @see https://docs.slack.dev/reference/block-kit/blocks/image-block
  * Provide exactly one of an image URL or a Slack file.
  */
-final readonly class ImageBlock extends Value implements Block
+final readonly class ImageBlock extends Value implements Block, LayoutChild, LayoutFallback
 {
     /** Sets the publicly accessible URL of the image. Cannot be combined with a Slack file.
      * @var string|null

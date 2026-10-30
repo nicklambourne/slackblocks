@@ -18,6 +18,8 @@ type marker struct {
 // markers maps shared model role names to their Go interfaces. The model's "Text" role is
 // TextObject in Go, where Text is already the name of the fluent method.
 var markers = map[string]marker{
+	"LayoutChild":            {name: "LayoutChild", method: "slackblocksLayoutChild", embeds: "Block", description: "LayoutChild is a supported layout item block."},
+	"LayoutFallback":         {name: "LayoutFallback", method: "slackblocksLayoutFallback", embeds: "Block", description: "LayoutFallback is a stable older-client layout fallback block."},
 	"Block":                  {name: "Block", method: "slackblocksBlock", description: "Block is a layout block, or a component that expands to layout blocks, accepted by message, modal, App Home, attachment, and container block collections."},
 	"Element":                {name: "Element", method: "slackblocksElement", description: "Element is an interactive, visual, or input element that can appear in an actions block or as a section accessory."},
 	"InputElement":           {name: "InputElement", method: "slackblocksInputElement", embeds: "Element", description: "InputElement is an element that can be placed in an input block."},

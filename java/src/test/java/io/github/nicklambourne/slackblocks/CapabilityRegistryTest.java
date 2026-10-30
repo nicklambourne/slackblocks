@@ -22,6 +22,7 @@ import io.github.nicklambourne.slackblocks.block.FileBlock;
 import io.github.nicklambourne.slackblocks.block.HeaderBlock;
 import io.github.nicklambourne.slackblocks.block.ImageBlock;
 import io.github.nicklambourne.slackblocks.block.InputBlock;
+import io.github.nicklambourne.slackblocks.block.LayoutBlock;
 import io.github.nicklambourne.slackblocks.block.MarkdownBlock;
 import io.github.nicklambourne.slackblocks.block.PlanBlock;
 import io.github.nicklambourne.slackblocks.block.RichTextBlock;
@@ -72,6 +73,8 @@ import io.github.nicklambourne.slackblocks.object.DataSeries;
 import io.github.nicklambourne.slackblocks.object.DispatchActionConfiguration;
 import io.github.nicklambourne.slackblocks.object.FeedbackButton;
 import io.github.nicklambourne.slackblocks.object.InputParameter;
+import io.github.nicklambourne.slackblocks.object.LayoutItem;
+import io.github.nicklambourne.slackblocks.object.LayoutRow;
 import io.github.nicklambourne.slackblocks.object.LineChart;
 import io.github.nicklambourne.slackblocks.object.MarkdownText;
 import io.github.nicklambourne.slackblocks.object.Option;
@@ -142,6 +145,9 @@ final class CapabilityRegistryTest {
           Map.entry(ColumnSettings.class, "objects.column_settings"),
           Map.entry(Confirmation.class, "objects.confirmation"),
           Map.entry(ContainerBlock.class, "blocks.container"),
+          Map.entry(LayoutBlock.class, "blocks.layout"),
+          Map.entry(LayoutRow.class, "objects.layout_row"),
+          Map.entry(LayoutItem.class, "objects.layout_item"),
           Map.entry(ContextActionsBlock.class, "blocks.context_actions"),
           Map.entry(ContextBlock.class, "blocks.context"),
           Map.entry(ConversationFilter.class, "objects.conversation_filter"),
@@ -224,6 +230,8 @@ final class CapabilityRegistryTest {
           // Abstract bases: interfaces naming the values accepted in a position. Their concrete
           // implementations are mapped above.
           Block.class,
+          io.github.nicklambourne.slackblocks.block.LayoutChild.class,
+          io.github.nicklambourne.slackblocks.block.LayoutFallback.class,
           Element.class,
           InputElement.class,
           ContextElement.class,

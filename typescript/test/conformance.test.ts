@@ -25,6 +25,7 @@ import {
   columnSettings,
   confirmation,
   containerBlock,
+  layoutBlock, layoutRow, layoutItem,
   contextBlock,
   contextActionsBlock,
   conversationFilter,
@@ -223,6 +224,8 @@ function constructBlock(payload: FixtureInput): unknown {
         ...value,
         elements: value.elements.map((card: FixtureInput) => constructCard(card)),
       });
+    case "layout":
+      return layoutBlock({ ...value, rows: value.rows.map((row: FixtureInput) => layoutRow({ items: row.items.map((item: FixtureInput) => layoutItem({ ...item, block: constructBlock(item.block) })) })), fallback: value.fallback?.map((block: FixtureInput) => constructBlock(block)) });
     case "container":
       return containerBlock({
         ...value,
@@ -455,6 +458,24 @@ const listItem = () => richTextSection([richText("Item")]);
 const validImageUrl = "https://example.com/image.png";
 
 const invalidCases: Record<string, () => unknown> = {
+  "layout-message-budget": () => message({channel: "C123", blocks: Array.from({length:26}, () => layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}))}),
+  "layout-view-budget": () => homeTab({blocks: Array.from({length:51}, () => layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}))}),
+  "layout-fallback-budget": () => message({channel: "C123", blocks: [layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})], fallback: Array.from({length:51}, () => dividerBlock({}))})]}),
+  "layout-label-empty": () => layoutBlock({label: "", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}),
+  "layout-label-too-long": () => layoutBlock({label: "😀".repeat(151), rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}),
+  "layout-rows-empty": () => layoutBlock({label: "Layout", rows: []}),
+  "layout-too-many-rows": () => layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]}), layoutRow({items: [layoutItem({block: dividerBlock({})})]}), layoutRow({items: [layoutItem({block: dividerBlock({})})]}), layoutRow({items: [layoutItem({block: dividerBlock({})})]}), layoutRow({items: [layoutItem({block: dividerBlock({})})]}), layoutRow({items: [layoutItem({block: dividerBlock({})})]})]}),
+  "layout-items-empty": () => layoutRow({items: []}),
+  "layout-too-many-items": () => layoutRow({items: [layoutItem({block: dividerBlock({})}), layoutItem({block: dividerBlock({})}), layoutItem({block: dividerBlock({})}), layoutItem({block: dividerBlock({})})]}),
+  "layout-markdown-child": () => layoutItem({block: markdownBlock({text:"No"}) as FixtureInput}),
+  "layout-direct-child": () => layoutItem({block: layoutBlock({label:"Nested",rows:[layoutRow({items:[layoutItem({block:dividerBlock()})]})]}) as FixtureInput}),
+  "layout-fallback-actions": () => layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock()})]})], fallback: [actionsBlock({elements:[button({text:"Go"})]})] as FixtureInput}),
+  "layout-wide-siblings": () => layoutRow({items: [layoutItem({block: carouselBlock({elements: [cardBlock({title: plainText("Card")})]})}), layoutItem({block: dataVisualizationBlock({title: "Chart", chart: pieChart([chartSegment({label: "One", value: 1})])})})]}),
+  "layout-chart-half": () => layoutRow({items: [layoutItem({block: dataVisualizationBlock({title: "Chart", chart: pieChart([chartSegment({label: "One", value: 1})])})}), layoutItem({block: dividerBlock({})})]}),
+  "layout-depth-three": () => layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: containerBlock({title: "Container", childBlocks: [layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dividerBlock({})})]})]})]})})]})]}),
+  "layout-message-alert": () => message({channel: "C123", blocks: [layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: alertBlock({text: plainText("Modal only")})})]})]})]}),
+  "layout-modal-input-submit": () => modal({title: plainText("Input"), blocks: [layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: inputBlock({label: plainText("Name"), element: plainTextInput({actionId: "name"})})})]})]})]}),
+  "layout-three-charts": () => message({channel: "C123", blocks: [layoutBlock({label: "Layout", rows: [layoutRow({items: [layoutItem({block: dataVisualizationBlock({title: "Chart", chart: pieChart([chartSegment({label: "One", value: 1})])})})]}), layoutRow({items: [layoutItem({block: dataVisualizationBlock({title: "Chart", chart: pieChart([chartSegment({label: "One", value: 1})])})})]}), layoutRow({items: [layoutItem({block: dataVisualizationBlock({title: "Chart", chart: pieChart([chartSegment({label: "One", value: 1})])})})]})]})]}),
   "text-empty": () => plainText(""),
   "text-too-long": () => plainText("x".repeat(3001)),
   "button-agent-prompt-too-long": () => api.Button().text("A").agentPrompt("😀".repeat(4001)).build(),
@@ -1182,6 +1203,9 @@ const CAPABILITY_BY_FACTORY: Record<string, string> = {
   cardBlock: "blocks.card",
   carouselBlock: "blocks.carousel",
   containerBlock: "blocks.container",
+    layoutBlock: "blocks.layout",
+    layoutRow: "objects.layout_row",
+    layoutItem: "objects.layout_item",
   contextActionsBlock: "blocks.context_actions",
   contextBlock: "blocks.context",
   dataTableBlock: "blocks.data_table",

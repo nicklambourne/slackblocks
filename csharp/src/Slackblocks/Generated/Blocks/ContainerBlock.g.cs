@@ -11,11 +11,12 @@ namespace Slackblocks.Blocks;
 /// <list type="bullet">
 /// <item><description>Required: <c>childBlocks</c>.</description></item>
 /// <item><description>Provide a title or a rich text title.</description></item>
+/// <item><description>When a layout is nested, the combined layout/container depth cannot exceed two composite levels.</description></item>
 /// </list>
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/container-block">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
-public sealed partial class ContainerBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock
+public sealed partial class ContainerBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock, global::Slackblocks.Blocks.ILayoutChild
 {
     /// <summary>Creates and validates a <see cref="ContainerBlock"/>.</summary>
     /// <param name="childBlocks">The blocks grouped inside the container, in display order. Required. Must contain between 1 and 10 items.</param>

@@ -26,6 +26,8 @@ import io.github.nicklambourne.slackblocks.object.DataSeries;
 import io.github.nicklambourne.slackblocks.object.DispatchActionConfiguration;
 import io.github.nicklambourne.slackblocks.object.FeedbackButton;
 import io.github.nicklambourne.slackblocks.object.InputParameter;
+import io.github.nicklambourne.slackblocks.object.LayoutItem;
+import io.github.nicklambourne.slackblocks.object.LayoutRow;
 import io.github.nicklambourne.slackblocks.object.MarkdownText;
 import io.github.nicklambourne.slackblocks.object.Option;
 import io.github.nicklambourne.slackblocks.object.OptionGroup;
@@ -142,6 +144,15 @@ final class BuilderMethodsTest {
                 .build());
     sample("InputParameter", () -> InputParameter.builder().name("x").value("v").build());
     sample("Attachment", () -> Attachment.builder().blocks(DividerBlock.create()).build());
+    sample("LayoutChild", () -> DividerBlock.create());
+    sample("LayoutFallback", () -> DividerBlock.create());
+    sample("LayoutItem", () -> LayoutItem.builder().block(DividerBlock.create()).build());
+    sample(
+        "LayoutRow",
+        () ->
+            LayoutRow.builder()
+                .items(LayoutItem.builder().block(DividerBlock.create()).build())
+                .build());
     sample("RichTextStyle", () -> RichTextStyle.builder().bold(true).build());
   }
 

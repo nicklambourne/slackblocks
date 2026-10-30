@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.4.0",
+  "spec_version": "1.5.0",
   "cases": [
     {
       "id": "text-empty",
@@ -1140,6 +1140,114 @@
       "category": "missing-required",
       "constraint": "button.agent_prompt.required_with_display",
       "description": "A supplied prompt display, including an empty string, requires an agent prompt"
+    },
+    {
+      "id": "layout-label-empty",
+      "category": "length-exceeded",
+      "constraint": "layout.label.min_length",
+      "description": "Layout labels must not be empty"
+    },
+    {
+      "id": "layout-label-too-long",
+      "category": "length-exceeded",
+      "constraint": "layout.label.max_length",
+      "description": "Layout labels cannot exceed 150 Unicode code points"
+    },
+    {
+      "id": "layout-rows-empty",
+      "category": "length-exceeded",
+      "constraint": "layout.rows.min_items",
+      "description": "A layout requires at least one row"
+    },
+    {
+      "id": "layout-too-many-rows",
+      "category": "length-exceeded",
+      "constraint": "layout.rows.max_items",
+      "description": "A layout cannot have more than five rows"
+    },
+    {
+      "id": "layout-items-empty",
+      "category": "length-exceeded",
+      "constraint": "layout.items.min_items",
+      "description": "A layout row requires at least one item"
+    },
+    {
+      "id": "layout-too-many-items",
+      "category": "length-exceeded",
+      "constraint": "layout.items.max_items",
+      "description": "A layout row cannot have more than three items"
+    },
+    {
+      "id": "layout-markdown-child",
+      "category": "type-mismatch",
+      "constraint": "layout.child.role",
+      "description": "Markdown is not a layout child"
+    },
+    {
+      "id": "layout-direct-child",
+      "category": "type-mismatch",
+      "constraint": "layout.child.nested_layout",
+      "description": "A layout cannot directly contain a layout"
+    },
+    {
+      "id": "layout-fallback-actions",
+      "category": "type-mismatch",
+      "constraint": "layout.fallback.role",
+      "description": "Actions are not a stable fallback block"
+    },
+    {
+      "id": "layout-wide-siblings",
+      "category": "invalid-usage",
+      "constraint": "layout.row.wide_blocks",
+      "description": "A row has at most one carousel, data table or data visualization"
+    },
+    {
+      "id": "layout-chart-half",
+      "category": "invalid-usage",
+      "constraint": "layout.row.chart_weight",
+      "description": "A chart requires strictly more than half the row weight"
+    },
+    {
+      "id": "layout-depth-three",
+      "category": "invalid-usage",
+      "constraint": "layout.depth",
+      "description": "Layout/container nesting cannot exceed two composite levels"
+    },
+    {
+      "id": "layout-message-alert",
+      "category": "type-mismatch",
+      "constraint": "layout.child.surface",
+      "description": "A layout preserves the receiving surface restriction of its children"
+    },
+    {
+      "id": "layout-modal-input-submit",
+      "category": "missing-required",
+      "constraint": "modal.input.submit",
+      "description": "An input nested in a modal layout still requires a submit label"
+    },
+    {
+      "id": "layout-three-charts",
+      "category": "length-exceeded",
+      "constraint": "layout.message.chart_total",
+      "description": "Nested layout charts count toward the existing two-chart message limit"
+    },
+    {
+      "id": "layout-message-budget",
+      "category": "length-exceeded",
+      "constraint": "layout.surface.message_blocks",
+      "description": "The documented layout budget counts nested message blocks"
+    },
+    {
+      "id": "layout-view-budget",
+      "category": "length-exceeded",
+      "constraint": "layout.surface.view_blocks",
+      "description": "The documented layout budget counts nested view blocks"
+    },
+    {
+      "id": "layout-fallback-budget",
+      "category": "length-exceeded",
+      "constraint": "layout.surface.fallback_blocks",
+      "description": "Fallback replacement content must also fit the enclosing surface"
     }
   ]
 }

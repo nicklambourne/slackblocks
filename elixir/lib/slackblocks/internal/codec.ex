@@ -9,6 +9,8 @@ defmodule Slackblocks.Internal.Codec do
     element: "Element",
     text: "Text",
     input_element: "InputElement",
+    layout_child: "LayoutChild",
+    layout_fallback: "LayoutFallback",
     context_element: "ContextElement",
     context_actions_element: "ContextActionsElement",
     table_cell: "TableCell",

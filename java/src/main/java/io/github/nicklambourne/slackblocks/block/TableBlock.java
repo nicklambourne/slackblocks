@@ -25,7 +25,7 @@ import java.util.Map;
  * @see <a href="https://docs.slack.dev/reference/block-kit/blocks/table-block">Slack reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class TableBlock implements Block {
+public final class TableBlock implements Block, LayoutChild, LayoutFallback {
   private final Map<String, Object> values;
   private final Map<String, Object> fields;
   private final int hash;

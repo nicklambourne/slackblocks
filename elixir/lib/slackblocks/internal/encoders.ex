@@ -89,7 +89,10 @@ defimpl Jason.Encoder,
     Slackblocks.Message,
     Slackblocks.MessageResponse,
     Slackblocks.Views.Modal,
-    Slackblocks.WebhookMessage
+    Slackblocks.WebhookMessage,
+    Slackblocks.Blocks.Layout,
+    Slackblocks.Objects.LayoutRow,
+    Slackblocks.Objects.LayoutItem
   ] do
   def encode(value, opts), do: Jason.Encode.map(Slackblocks.to_map!(value), opts)
 end

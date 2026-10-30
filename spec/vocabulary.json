@@ -69,6 +69,7 @@
       "header",
       "image",
       "input",
+      "layout",
       "rich_text",
       "section",
       "table",
@@ -88,6 +89,7 @@
       "header",
       "image",
       "input",
+      "layout",
       "markdown",
       "plan",
       "rich_text",
@@ -105,6 +107,7 @@
       "header",
       "image",
       "input",
+      "layout",
       "rich_text",
       "section",
       "video"

@@ -72,7 +72,7 @@ defmodule Slackblocks.Internal.Rules do
     surface(w["blocks"], if(name == "ModalView", do: "modal", else: "home"), p ++ ["blocks"])
 
     if name == "ModalView" and not Map.has_key?(w, "submit") and
-         Enum.any?(w["blocks"], &(&1["type"] == "input")),
+         Enum.any?(descendants(w["blocks"]), &(&1["type"] == "input")),
        do: fail(:missing_required, p ++ ["submit"], "required for a modal containing input")
   end
 
@@ -91,7 +91,29 @@ defmodule Slackblocks.Internal.Rules do
     exclusive(w, "icon", "slack_icon", p)
   end
 
+  defp local("LayoutBlock", w, p), do: composite_depth(w, p, 0, false)
+
+  defp local("LayoutRow", w, p) do
+    if Map.keys(w) -- ["items"] != [], do: fail(:type_mismatch, p, "a row only supports items")
+    items = w["items"]
+    wide = Enum.count(items, &(&1["block"]["type"] in ~w(carousel data_table data_visualization)))
+    if wide > 1, do: fail(:invalid_usage, p, "at most one wide-content block per row")
+    total = Enum.sum(Enum.map(items, &layout_weight/1))
+
+    Enum.each(items, fn item ->
+      if item["block"]["type"] == "data_visualization" and layout_weight(item) * 2 <= total,
+        do: fail(:invalid_usage, p, "a data visualization requires more than half the row weight")
+    end)
+  end
+
+  defp local("LayoutItem", w, p) do
+    if Map.keys(w) -- ~w(block width horizontal_alignment) != [],
+      do: fail(:type_mismatch, p, "unsupported layout item property")
+  end
+
   defp local("ContainerBlock", w, p) do
+    composite_depth(w, p, 0, false)
+
     unless Map.has_key?(w, "title") or Map.has_key?(w, "rich_text_title"),
       do: fail(:missing_required, p, "container needs a title")
 
@@ -251,10 +273,65 @@ defmodule Slackblocks.Internal.Rules do
       do: fail(:length_exceeded, path, "exceeds #{limit}")
   end
 
+  defp layout_weight(%{"width" => "narrow"}), do: 1
+  defp layout_weight(%{"width" => "wide"}), do: 3
+  defp layout_weight(_), do: 2
+
+  defp composite_children(block, include_fallback \\ true)
+  defp composite_children(%{"type" => "container", "child_blocks" => blocks}, _), do: blocks
+
+  defp composite_children(%{"type" => "layout"} = block, include_fallback) do
+    Enum.flat_map(block["rows"], fn row -> Enum.map(row["items"], & &1["block"]) end) ++
+      if(include_fallback, do: Map.get(block, "fallback", []), else: [])
+  end
+
+  defp composite_children(_, _), do: []
+
+  defp composite_depth(block, p, depth, has_layout) do
+    has_layout = has_layout or block["type"] == "layout"
+    depth = depth + if(block["type"] in ~w(layout container), do: 1, else: 0)
+
+    if has_layout and depth > 2,
+      do: fail(:invalid_usage, p, "layout/container nesting exceeds two composite levels")
+
+    Enum.each(composite_children(block, false), &composite_depth(&1, p, depth, has_layout))
+  end
+
+  defp descendants(blocks),
+    do: Enum.flat_map(blocks, fn b -> [b | descendants(composite_children(b))] end)
+
+  defp block_cost(block, nested \\ false) do
+    children = composite_children(block, false)
+
+    cond do
+      block["type"] == "layout" ->
+        max(
+          1 + Enum.sum(Enum.map(children, &block_cost(&1, true))),
+          Enum.sum(Enum.map(block["fallback"] || [], &block_cost/1))
+        )
+
+      block["type"] == "container" and
+          (nested or Enum.any?(descendants(children), &(&1["type"] == "layout"))) ->
+        1 + Enum.sum(Enum.map(children, &block_cost(&1, nested)))
+
+      true ->
+        1
+    end
+  end
+
   defp surface(blocks, surface, path) do
+    maximum =
+      if surface == "message", do: "message.blocks.max_items", else: "view.blocks.max_items"
+
+    max_size(Enum.sum(Enum.map(blocks || [], &block_cost/1)), maximum, path)
     allowed = Schema.vocabulary()["surface_block_types"][surface]
 
     each(blocks, fn block, i ->
+      surface(composite_children(block, false), surface, path ++ [i, "children"])
+
+      if block["type"] == "layout",
+        do: surface(block["fallback"] || [], surface, path ++ [i, "fallback"])
+
       unless block["type"] in allowed,
         do: fail(:type_mismatch, path ++ [i, "type"], "unsupported block on #{surface} surface")
     end)
@@ -303,7 +380,7 @@ defmodule Slackblocks.Internal.Rules do
     Enum.reduce(blocks, 0, fn block, count ->
       case block["type"] do
         "data_visualization" -> count + 1
-        "container" -> count + chart_count(block["child_blocks"])
+        kind when kind in ~w(container layout) -> count + chart_count(composite_children(block))
         _ -> count
       end
     end)
@@ -318,8 +395,8 @@ defmodule Slackblocks.Internal.Rules do
         "data_table" ->
           {markdown, table + table_characters(block)}
 
-        "container" ->
-          {m, t} = totals(block["child_blocks"])
+        kind when kind in ~w(container layout) ->
+          {m, t} = totals(composite_children(block))
           {markdown + m, table + t}
 
         _ ->

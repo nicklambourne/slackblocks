@@ -9,6 +9,540 @@ pub struct InvalidCase {
 }
 pub const INVALID: &[InvalidCase] = &[
     InvalidCase {
+        id: "layout-message-budget",
+        build: || {
+            MessagePayload::builder("C123")
+                .blocks(vec![
+                    Block::from(
+                        LayoutBlock::builder()
+                            .label("Layout")
+                            .rows(vec![
+                                LayoutRow::builder()
+                                    .items(vec![
+                                        LayoutItem::builder()
+                                            .block(LayoutChild::from(
+                                                DividerBlock::builder().build()?
+                                            ))
+                                            .build()?
+                                    ])
+                                    .build()?
+                            ])
+                            .build()?
+                    );
+                    26
+                ])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            MessagePayload::try_from(serde_json::json!({"channel":"C123","blocks":vec![serde_json::json!({"type":"layout","label":"Layout","rows":[{"items":[{"block":serde_json::json!({"type":"divider"})}]}]});26]})).map(|_|())
+        },
+    },
+    InvalidCase {
+        id: "layout-view-budget",
+        build: || {
+            HomeTabView::builder()
+                .blocks(vec![
+                    Block::from(
+                        LayoutBlock::builder()
+                            .label("Layout")
+                            .rows(vec![
+                                LayoutRow::builder()
+                                    .items(vec![
+                                        LayoutItem::builder()
+                                            .block(LayoutChild::from(
+                                                DividerBlock::builder().build()?
+                                            ))
+                                            .build()?
+                                    ])
+                                    .build()?
+                            ])
+                            .build()?
+                    );
+                    51
+                ])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            HomeTabView::try_from(serde_json::json!({"type":"home","blocks":vec![serde_json::json!({"type":"layout","label":"Layout","rows":[{"items":[{"block":serde_json::json!({"type":"divider"})}]}]});51]})).map(|_|())
+        },
+    },
+    InvalidCase {
+        id: "layout-fallback-budget",
+        build: || {
+            MessagePayload::builder("C123")
+                .blocks(vec![Block::from(
+                    LayoutBlock::builder()
+                        .label("Layout")
+                        .rows(vec![
+                            LayoutRow::builder()
+                                .items(vec![
+                                    LayoutItem::builder()
+                                        .block(LayoutChild::from(DividerBlock::builder().build()?))
+                                        .build()?,
+                                ])
+                                .build()?,
+                        ])
+                        .fallback(vec![
+                            LayoutFallback::from(DividerBlock::builder().build()?);
+                            51
+                        ])
+                        .build()?,
+                )])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            MessagePayload::try_from(serde_json::json!({"channel":"C123","blocks":[{"type":"layout","label":"Layout","rows":[{"items":[{"block":serde_json::json!({"type":"divider"})}]}],"fallback":vec![serde_json::json!({"type":"divider"});51]}]})).map(|_|())
+        },
+    },
+    InvalidCase {
+        id: "layout-label-empty",
+        build: || {
+            LayoutBlock::builder()
+                .label("")
+                .rows(vec![
+                    LayoutRow::builder()
+                        .items(vec![
+                            LayoutItem::builder()
+                                .block(LayoutChild::from(DividerBlock::builder().build()?))
+                                .build()?,
+                        ])
+                        .build()?,
+                ])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            LayoutBlock::try_from(serde_json::json!({"type": "layout", "label": "", "rows": [{"items": [{"block": {"type": "divider"}}]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-label-too-long",
+        build: || {
+            LayoutBlock::builder()
+                .label("😀".repeat(151))
+                .rows(vec![
+                    LayoutRow::builder()
+                        .items(vec![
+                            LayoutItem::builder()
+                                .block(LayoutChild::from(DividerBlock::builder().build()?))
+                                .build()?,
+                        ])
+                        .build()?,
+                ])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            LayoutBlock::try_from(serde_json::json!({"type": "layout", "label": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀", "rows": [{"items": [{"block": {"type": "divider"}}]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-rows-empty",
+        build: || {
+            LayoutBlock::builder()
+                .label("Layout")
+                .rows(Vec::<LayoutRow>::new())
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            LayoutBlock::try_from(
+                serde_json::json!({"type": "layout", "label": "Layout", "rows": []}),
+            )
+            .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-too-many-rows",
+        build: || {
+            LayoutBlock::builder()
+                .label("Layout")
+                .rows(vec![
+                    LayoutRow::builder()
+                        .items(vec![
+                            LayoutItem::builder()
+                                .block(LayoutChild::from(DividerBlock::builder().build()?))
+                                .build()?,
+                        ])
+                        .build()?,
+                    LayoutRow::builder()
+                        .items(vec![
+                            LayoutItem::builder()
+                                .block(LayoutChild::from(DividerBlock::builder().build()?))
+                                .build()?,
+                        ])
+                        .build()?,
+                    LayoutRow::builder()
+                        .items(vec![
+                            LayoutItem::builder()
+                                .block(LayoutChild::from(DividerBlock::builder().build()?))
+                                .build()?,
+                        ])
+                        .build()?,
+                    LayoutRow::builder()
+                        .items(vec![
+                            LayoutItem::builder()
+                                .block(LayoutChild::from(DividerBlock::builder().build()?))
+                                .build()?,
+                        ])
+                        .build()?,
+                    LayoutRow::builder()
+                        .items(vec![
+                            LayoutItem::builder()
+                                .block(LayoutChild::from(DividerBlock::builder().build()?))
+                                .build()?,
+                        ])
+                        .build()?,
+                    LayoutRow::builder()
+                        .items(vec![
+                            LayoutItem::builder()
+                                .block(LayoutChild::from(DividerBlock::builder().build()?))
+                                .build()?,
+                        ])
+                        .build()?,
+                ])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            LayoutBlock::try_from(serde_json::json!({"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "divider"}}]}, {"items": [{"block": {"type": "divider"}}]}, {"items": [{"block": {"type": "divider"}}]}, {"items": [{"block": {"type": "divider"}}]}, {"items": [{"block": {"type": "divider"}}]}, {"items": [{"block": {"type": "divider"}}]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-items-empty",
+        build: || {
+            LayoutRow::builder()
+                .items(Vec::<LayoutItem>::new())
+                .build()?;
+            Ok(())
+        },
+        parse: || LayoutRow::try_from(serde_json::json!({"items": []})).map(|_| ()),
+    },
+    InvalidCase {
+        id: "layout-too-many-items",
+        build: || {
+            LayoutRow::builder()
+                .items(vec![
+                    LayoutItem::builder()
+                        .block(LayoutChild::from(DividerBlock::builder().build()?))
+                        .build()?,
+                    LayoutItem::builder()
+                        .block(LayoutChild::from(DividerBlock::builder().build()?))
+                        .build()?,
+                    LayoutItem::builder()
+                        .block(LayoutChild::from(DividerBlock::builder().build()?))
+                        .build()?,
+                    LayoutItem::builder()
+                        .block(LayoutChild::from(DividerBlock::builder().build()?))
+                        .build()?,
+                ])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            LayoutRow::try_from(serde_json::json!({"items": [{"block": {"type": "divider"}}, {"block": {"type": "divider"}}, {"block": {"type": "divider"}}, {"block": {"type": "divider"}}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-markdown-child",
+        build: || {
+            LayoutItem::try_from(serde_json::json!({"block": {"type": "markdown", "text": "No"}}))
+                .map(|_| ())
+        },
+        parse: || {
+            LayoutItem::try_from(serde_json::json!({"block": {"type": "markdown", "text": "No"}}))
+                .map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-direct-child",
+        build: || {
+            LayoutItem::try_from(serde_json::json!({"block": {"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "divider"}}]}]}})).map(|_| ())
+        },
+        parse: || {
+            LayoutItem::try_from(serde_json::json!({"block": {"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "divider"}}]}]}})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-fallback-actions",
+        build: || {
+            LayoutBlock::try_from(serde_json::json!({"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "divider"}}]}], "fallback": [{"type": "actions", "elements": [{"type": "button", "text": {"type": "plain_text", "text": "Go"}}]}]})).map(|_| ())
+        },
+        parse: || {
+            LayoutBlock::try_from(serde_json::json!({"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "divider"}}]}], "fallback": [{"type": "actions", "elements": [{"type": "button", "text": {"type": "plain_text", "text": "Go"}}]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-wide-siblings",
+        build: || {
+            LayoutRow::builder()
+                .items(vec![
+                    LayoutItem::builder()
+                        .block(LayoutChild::from(
+                            CarouselBlock::builder()
+                                .elements(vec![
+                                    CardBlock::builder()
+                                        .title(Text::from(
+                                            PlainText::builder().text("Card").build()?,
+                                        ))
+                                        .build()?,
+                                ])
+                                .build()?,
+                        ))
+                        .build()?,
+                    LayoutItem::builder()
+                        .block(LayoutChild::from(
+                            DataVisualizationBlock::builder()
+                                .title("Chart")
+                                .chart(Chart::from(
+                                    PieChart::builder()
+                                        .segments(vec![
+                                            ChartSegment::builder()
+                                                .label("One")
+                                                .value(1)
+                                                .build()?,
+                                        ])
+                                        .build()?,
+                                ))
+                                .build()?,
+                        ))
+                        .build()?,
+                ])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            LayoutRow::try_from(serde_json::json!({"items": [{"block": {"type": "carousel", "elements": [{"type": "card", "title": {"type": "plain_text", "text": "Card"}}]}}, {"block": {"type": "data_visualization", "title": "Chart", "chart": {"type": "pie", "segments": [{"label": "One", "value": 1}]}}}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-chart-half",
+        build: || {
+            LayoutRow::builder()
+                .items(vec![
+                    LayoutItem::builder()
+                        .block(LayoutChild::from(
+                            DataVisualizationBlock::builder()
+                                .title("Chart")
+                                .chart(Chart::from(
+                                    PieChart::builder()
+                                        .segments(vec![
+                                            ChartSegment::builder()
+                                                .label("One")
+                                                .value(1)
+                                                .build()?,
+                                        ])
+                                        .build()?,
+                                ))
+                                .build()?,
+                        ))
+                        .build()?,
+                    LayoutItem::builder()
+                        .block(LayoutChild::from(DividerBlock::builder().build()?))
+                        .build()?,
+                ])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            LayoutRow::try_from(serde_json::json!({"items": [{"block": {"type": "data_visualization", "title": "Chart", "chart": {"type": "pie", "segments": [{"label": "One", "value": 1}]}}}, {"block": {"type": "divider"}}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-depth-three",
+        build: || {
+            LayoutBlock::builder()
+                .label("Layout")
+                .rows(vec![
+                    LayoutRow::builder()
+                        .items(vec![
+                            LayoutItem::builder()
+                                .block(LayoutChild::from(
+                                    ContainerBlock::builder()
+                                        .title(PlainText::builder().text("Container").build()?)
+                                        .child_blocks(vec![Block::from(
+                                            LayoutBlock::builder()
+                                                .label("Layout")
+                                                .rows(vec![
+                                                    LayoutRow::builder()
+                                                        .items(vec![
+                                                            LayoutItem::builder()
+                                                                .block(LayoutChild::from(
+                                                                    DividerBlock::builder()
+                                                                        .build()?,
+                                                                ))
+                                                                .build()?,
+                                                        ])
+                                                        .build()?,
+                                                ])
+                                                .build()?,
+                                        )])
+                                        .build()?,
+                                ))
+                                .build()?,
+                        ])
+                        .build()?,
+                ])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            LayoutBlock::try_from(serde_json::json!({"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "container", "title": {"type":"plain_text","text":"Container"}, "child_blocks": [{"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "divider"}}]}]}]}}]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-message-alert",
+        build: || {
+            MessagePayload::builder("C123")
+                .blocks(vec![Block::from(
+                    LayoutBlock::builder()
+                        .label("Layout")
+                        .rows(vec![
+                            LayoutRow::builder()
+                                .items(vec![
+                                    LayoutItem::builder()
+                                        .block(LayoutChild::from(
+                                            AlertBlock::builder()
+                                                .text(Text::from(
+                                                    PlainText::builder()
+                                                        .text("Modal only")
+                                                        .build()?,
+                                                ))
+                                                .build()?,
+                                        ))
+                                        .build()?,
+                                ])
+                                .build()?,
+                        ])
+                        .build()?,
+                )])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            MessagePayload::try_from(serde_json::json!({"channel": "C123", "blocks": [{"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "alert", "text": {"type": "plain_text", "text": "Modal only"}}}]}]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-modal-input-submit",
+        build: || {
+            ModalView::builder()
+                .title(PlainText::builder().text("Input").build()?)
+                .blocks(vec![Block::from(
+                    LayoutBlock::builder()
+                        .label("Layout")
+                        .rows(vec![
+                            LayoutRow::builder()
+                                .items(vec![
+                                    LayoutItem::builder()
+                                        .block(LayoutChild::from(
+                                            InputBlock::builder()
+                                                .label(PlainText::builder().text("Name").build()?)
+                                                .element(InputElement::from(
+                                                    PlainTextInputElement::builder()
+                                                        .action_id("name")
+                                                        .build()?,
+                                                ))
+                                                .build()?,
+                                        ))
+                                        .build()?,
+                                ])
+                                .build()?,
+                        ])
+                        .build()?,
+                )])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            ModalView::try_from(serde_json::json!({"type": "modal", "title": {"type": "plain_text", "text": "Input"}, "blocks": [{"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "input", "label": {"type": "plain_text", "text": "Name"}, "element": {"type": "plain_text_input", "action_id": "name"}}}]}]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
+        id: "layout-three-charts",
+        build: || {
+            MessagePayload::builder("C123")
+                .blocks(vec![Block::from(
+                    LayoutBlock::builder()
+                        .label("Layout")
+                        .rows(vec![
+                            LayoutRow::builder()
+                                .items(vec![
+                                    LayoutItem::builder()
+                                        .block(LayoutChild::from(
+                                            DataVisualizationBlock::builder()
+                                                .title("Chart")
+                                                .chart(Chart::from(
+                                                    PieChart::builder()
+                                                        .segments(vec![
+                                                            ChartSegment::builder()
+                                                                .label("One")
+                                                                .value(1)
+                                                                .build()?,
+                                                        ])
+                                                        .build()?,
+                                                ))
+                                                .build()?,
+                                        ))
+                                        .build()?,
+                                ])
+                                .build()?,
+                            LayoutRow::builder()
+                                .items(vec![
+                                    LayoutItem::builder()
+                                        .block(LayoutChild::from(
+                                            DataVisualizationBlock::builder()
+                                                .title("Chart")
+                                                .chart(Chart::from(
+                                                    PieChart::builder()
+                                                        .segments(vec![
+                                                            ChartSegment::builder()
+                                                                .label("One")
+                                                                .value(1)
+                                                                .build()?,
+                                                        ])
+                                                        .build()?,
+                                                ))
+                                                .build()?,
+                                        ))
+                                        .build()?,
+                                ])
+                                .build()?,
+                            LayoutRow::builder()
+                                .items(vec![
+                                    LayoutItem::builder()
+                                        .block(LayoutChild::from(
+                                            DataVisualizationBlock::builder()
+                                                .title("Chart")
+                                                .chart(Chart::from(
+                                                    PieChart::builder()
+                                                        .segments(vec![
+                                                            ChartSegment::builder()
+                                                                .label("One")
+                                                                .value(1)
+                                                                .build()?,
+                                                        ])
+                                                        .build()?,
+                                                ))
+                                                .build()?,
+                                        ))
+                                        .build()?,
+                                ])
+                                .build()?,
+                        ])
+                        .build()?,
+                )])
+                .build()?;
+            Ok(())
+        },
+        parse: || {
+            MessagePayload::try_from(serde_json::json!({"channel": "C123", "blocks": [{"type": "layout", "label": "Layout", "rows": [{"items": [{"block": {"type": "data_visualization", "title": "Chart", "chart": {"type": "pie", "segments": [{"label": "One", "value": 1}]}}}]}, {"items": [{"block": {"type": "data_visualization", "title": "Chart", "chart": {"type": "pie", "segments": [{"label": "One", "value": 1}]}}}]}, {"items": [{"block": {"type": "data_visualization", "title": "Chart", "chart": {"type": "pie", "segments": [{"label": "One", "value": 1}]}}}]}]}]})).map(|_| ())
+        },
+    },
+    InvalidCase {
         id: "external-query-negative",
         build: || {
             ExternalSelectElement::builder()

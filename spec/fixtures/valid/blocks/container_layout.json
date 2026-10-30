@@ -1,0 +1,31 @@
+{
+  "type": "container",
+  "child_blocks": [
+    {
+      "type": "layout",
+      "label": "Layout",
+      "rows": [
+        {
+          "items": [
+            {
+              "block": {
+                "type": "divider",
+                "block_id": "child"
+              }
+            }
+          ]
+        }
+      ],
+      "block_id": "layout"
+    }
+  ],
+  "width": "standard",
+  "is_collapsible": false,
+  "default_collapsed": false,
+  "has_header_divider": false,
+  "block_id": "container",
+  "title": {
+    "type": "plain_text",
+    "text": "Container"
+  }
+}

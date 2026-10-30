@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.4.0",
+  "spec_version": "1.5.0",
   "types": [
     {
       "name": "ActionsBlock",
@@ -8,7 +8,9 @@
       "wireType": "actions",
       "description": "A block that holds interactive elements such as buttons and menus.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/actions-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -39,7 +41,9 @@
       "wireType": "alert",
       "description": "A severity-labelled alert, available in modals.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/alert-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -79,7 +83,9 @@
       "wireType": "card",
       "description": "A compact card with an image, text, and up to three buttons.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/card-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -176,7 +182,9 @@
       "wireType": "carousel",
       "description": "A horizontally scrolling set of cards, available in messages and App Home.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/carousel-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -207,7 +215,9 @@
       "wireType": "container",
       "description": "A titled group of blocks that can optionally collapse.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/container-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -295,7 +305,8 @@
         }
       ],
       "rules": [
-        "Provide a title or a rich text title."
+        "Provide a title or a rich text title.",
+        "When a layout is nested, the combined layout/container depth cannot exceed two composite levels."
       ]
     },
     {
@@ -336,7 +347,10 @@
       "wireType": "context",
       "description": "A block of small, secondary images and text.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/context-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild",
+        "LayoutFallback"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -367,7 +381,9 @@
       "wireType": "data_table",
       "description": "A sortable, paginated table of raw text, numbers, and rich text.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-table-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild"
+      ],
       "defaults": {
         "page_size": 5,
         "row_header_column_index": 0
@@ -428,7 +444,9 @@
       "wireType": "data_visualization",
       "description": "A titled pie, bar, area, or line chart.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/data-visualization-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -467,7 +485,10 @@
       "wireType": "divider",
       "description": "A horizontal rule that separates blocks.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/divider-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild",
+        "LayoutFallback"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -488,7 +509,9 @@
       "wireType": "file",
       "description": "A remote file previously added with the files.remote API.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/file-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild"
+      ],
       "defaults": {
         "source": "remote"
       },
@@ -527,7 +550,10 @@
       "wireType": "header",
       "description": "Large, bold plain text that introduces a group of blocks.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/header-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild",
+        "LayoutFallback"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -559,7 +585,10 @@
       "wireType": "image",
       "description": "A standalone image with alternative text and an optional title.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/image-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild",
+        "LayoutFallback"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -617,7 +646,9 @@
       "wireType": "input",
       "description": "A labelled input that collects a value in a modal, App Home, or message.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/input-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -755,7 +786,9 @@
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/rich-text-block",
       "implements": [
         "TableCell",
-        "DataTableCell"
+        "DataTableCell",
+        "LayoutChild",
+        "LayoutFallback"
       ],
       "defaults": {},
       "fields": [
@@ -786,7 +819,10 @@
       "wireType": "section",
       "description": "Text, a grid of fields, or both, with an optional accessory element.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/section-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild",
+        "LayoutFallback"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -837,7 +873,10 @@
       "wireType": "table",
       "description": "A simple table of raw text and rich text cells.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/table-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild",
+        "LayoutFallback"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -949,7 +988,10 @@
       "wireType": "video",
       "description": "An embedded video player.",
       "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/video-block",
-      "implements": [],
+      "implements": [
+        "LayoutChild",
+        "LayoutFallback"
+      ],
       "defaults": {},
       "fields": [
         {
@@ -4369,6 +4411,137 @@
         "Markdown block text is limited to 12,000 characters, and data table cell text to 20,000 characters, across the whole message.",
         "At most two data visualization blocks may be sent per message, across blocks and attachments after helper expansion (message.data_visualizations.max_items)."
       ]
+    },
+    {
+      "name": "LayoutBlock",
+      "package": "block",
+      "goConstructor": "NewLayoutBlock",
+      "wireType": "layout",
+      "description": "A visual grid of one to five rows on messages, modals, and App Home. Supply fallback content for older clients.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "label",
+          "goMethod": "Label",
+          "wire": "label",
+          "kind": "string",
+          "description": "Describes the layout. A visible label is bold text, not a semantic heading.",
+          "required": true,
+          "limits": "layout.label"
+        },
+        {
+          "method": "rows",
+          "goMethod": "Rows",
+          "wire": "rows",
+          "kind": "list",
+          "description": "Adds one to five rows in source and reading order.",
+          "type": "LayoutRow",
+          "required": true,
+          "limits": "layout.rows"
+        },
+        {
+          "method": "isLabelVisible",
+          "goMethod": "IsLabelVisible",
+          "wire": "is_label_visible",
+          "kind": "boolean",
+          "description": "Shows the label above the grid. Slack defaults to false; hidden labels are not exposed to screen readers."
+        },
+        {
+          "method": "gridLines",
+          "goMethod": "GridLines",
+          "wire": "grid_lines",
+          "kind": "enum",
+          "description": "Sets outer borders and horizontal row dividers. Slack defaults to none; there are no vertical dividers.",
+          "type": "LayoutGridLines"
+        },
+        {
+          "method": "fallback",
+          "goMethod": "Fallback",
+          "wire": "fallback",
+          "kind": "list",
+          "description": "Adds stable blocks rendered in place of the layout on older clients. Omission is allowed; Slack normalizes it to an empty array and does not synthesize content.",
+          "type": "LayoutFallback"
+        },
+        {
+          "method": "blockId",
+          "goMethod": "BlockID",
+          "wire": "block_id",
+          "kind": "string",
+          "description": "Sets a unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again.",
+          "limits": "block_id"
+        }
+      ],
+      "rules": [
+        "Children must be valid on the receiving surface.",
+        "Layout and container nesting is limited to two composite levels.",
+        "The label and nested blocks contribute to the receiving surface budgets."
+      ]
+    },
+    {
+      "name": "LayoutRow",
+      "package": "object",
+      "goConstructor": "NewLayoutRow",
+      "wireType": "",
+      "description": "One to three layout items in reading order. A row has no alignment or discriminator.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "items",
+          "goMethod": "Items",
+          "wire": "items",
+          "kind": "list",
+          "description": "Adds one to three items in source order.",
+          "type": "LayoutItem",
+          "required": true,
+          "limits": "layout.items"
+        }
+      ],
+      "rules": [
+        "At most one carousel, data table, or data visualization may occupy a row.",
+        "A data visualization must have more than half of the total row weight."
+      ]
+    },
+    {
+      "name": "LayoutItem",
+      "package": "object",
+      "goConstructor": "NewLayoutItem",
+      "wireType": "",
+      "description": "One supported child block with a proportional width and optional direction-aware alignment.",
+      "docUrl": "https://docs.slack.dev/reference/block-kit/blocks/layout-block",
+      "implements": [],
+      "defaults": {},
+      "fields": [
+        {
+          "method": "block",
+          "goMethod": "Block",
+          "wire": "block",
+          "kind": "object",
+          "description": "Sets the child block. Direct nested layouts and markdown blocks are not supported.",
+          "type": "LayoutChild",
+          "required": true
+        },
+        {
+          "method": "width",
+          "goMethod": "Width",
+          "wire": "width",
+          "kind": "enum",
+          "description": "Sets the relative row weight: narrow 1, standard 2 (default), wide 3. Full is not supported.",
+          "type": "LayoutWidth"
+        },
+        {
+          "method": "horizontalAlignment",
+          "goMethod": "HorizontalAlignment",
+          "wire": "horizontal_alignment",
+          "kind": "enum",
+          "description": "Aligns content within the cell. Omission fills the cell; start and end follow text direction.",
+          "type": "LayoutAlignment"
+        }
+      ],
+      "rules": []
     }
   ],
   "interfaces": [
@@ -4426,6 +4599,16 @@
       "package": "object",
       "name": "RichTextSectionElement",
       "description": "An inline rich text element: text, a link, an emoji, or a channel, user, or user group mention."
+    },
+    {
+      "package": "block",
+      "name": "LayoutChild",
+      "description": "A block that can occupy a layout item; it must also be valid on the enclosing surface."
+    },
+    {
+      "package": "block",
+      "name": "LayoutFallback",
+      "description": "A stable block that older clients render in place of a layout."
     }
   ],
   "enums": [
@@ -4597,6 +4780,72 @@
           "name": "EPHEMERAL",
           "wire": "ephemeral",
           "description": "Visible only to the user who triggered the response."
+        }
+      ]
+    },
+    {
+      "package": "block",
+      "name": "LayoutWidth",
+      "description": "Relative layout item weights: narrow is 1, standard is 2, and wide is 3.",
+      "constants": [
+        {
+          "name": "NARROW",
+          "wire": "narrow",
+          "description": "Weight 1."
+        },
+        {
+          "name": "STANDARD",
+          "wire": "standard",
+          "description": "Weight 2 (the default)."
+        },
+        {
+          "name": "WIDE",
+          "wire": "wide",
+          "description": "Weight 3."
+        }
+      ]
+    },
+    {
+      "package": "block",
+      "name": "LayoutAlignment",
+      "description": "Direction-aware alignment within a layout item. Omit for fill behavior.",
+      "constants": [
+        {
+          "name": "START",
+          "wire": "start",
+          "description": "Align to the leading edge."
+        },
+        {
+          "name": "CENTER",
+          "wire": "center",
+          "description": "Center the content."
+        },
+        {
+          "name": "END",
+          "wire": "end",
+          "description": "Align to the trailing edge."
+        }
+      ]
+    },
+    {
+      "package": "block",
+      "name": "LayoutGridLines",
+      "description": "Layout borders: none, outer border with horizontal row dividers, or outer border only.",
+      "constants": [
+        {
+          "name": "NONE",
+          "wire": "none",
+          "description": "No borders (the default)."
+        },
+        {
+          "name": "ROWS",
+          "wire": "rows",
+          "description": "Outer border and horizontal row dividers."
+        },
+        {
+          "name": "OUTER",
+          "wire": "outer",
+          "description": "Outer border only."
         }
       ]
     }

@@ -41,6 +41,9 @@ from slackblocks import (
     Image,
     ImageBlock,
     InputBlock,
+    LayoutBlock,
+    LayoutItem,
+    LayoutRow,
     LengthError,
     LineChart,
     MarkdownBlock,
@@ -201,6 +204,180 @@ def data_table_with_content(length: int) -> DataTableBlock:
 
 
 INVALID_CASES: dict[str, Callable[[], object]] = {
+    "layout-message-budget": lambda: Message(
+        channel="C123",
+        blocks=[
+            LayoutBlock(label="Layout", rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])])
+        ]
+        * 26,
+    ),
+    "layout-view-budget": lambda: HomeTabView(
+        blocks=[
+            LayoutBlock(label="Layout", rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])])
+        ]
+        * 51
+    ),
+    "layout-fallback-budget": lambda: Message(
+        channel="C123",
+        blocks=[
+            LayoutBlock(
+                label="Layout",
+                rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])],
+                fallback=[DividerBlock()] * 51,
+            )
+        ],
+    ),
+    "layout-label-empty": lambda: LayoutBlock(
+        label="", rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])]
+    ),
+    "layout-label-too-long": lambda: LayoutBlock(
+        label="😀" * 151, rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])]
+    ),
+    "layout-rows-empty": lambda: LayoutBlock(label="Layout", rows=[]),
+    "layout-too-many-rows": lambda: LayoutBlock(
+        label="Layout",
+        rows=[
+            LayoutRow(items=[LayoutItem(block=DividerBlock())]),
+            LayoutRow(items=[LayoutItem(block=DividerBlock())]),
+            LayoutRow(items=[LayoutItem(block=DividerBlock())]),
+            LayoutRow(items=[LayoutItem(block=DividerBlock())]),
+            LayoutRow(items=[LayoutItem(block=DividerBlock())]),
+            LayoutRow(items=[LayoutItem(block=DividerBlock())]),
+        ],
+    ),
+    "layout-items-empty": lambda: LayoutRow(items=[]),
+    "layout-too-many-items": lambda: LayoutRow(
+        items=[
+            LayoutItem(block=DividerBlock()),
+            LayoutItem(block=DividerBlock()),
+            LayoutItem(block=DividerBlock()),
+            LayoutItem(block=DividerBlock()),
+        ]
+    ),
+    "layout-markdown-child": lambda: LayoutItem(block=MarkdownBlock(text="No")),
+    "layout-direct-child": lambda: LayoutItem(
+        block=LayoutBlock(
+            label="Layout", rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])]
+        )
+    ),
+    "layout-fallback-actions": lambda: LayoutBlock(
+        label="Layout",
+        rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])],
+        fallback=[ActionsBlock(elements=[Button(text=PlainText(text="Go"))])],
+    ),
+    "layout-wide-siblings": lambda: LayoutRow(
+        items=[
+            LayoutItem(block=CarouselBlock(elements=[CardBlock(title=PlainText(text="Card"))])),
+            LayoutItem(
+                block=DataVisualizationBlock(
+                    title="Chart", chart=PieChart(segments=[ChartSegment(label="One", value=1)])
+                )
+            ),
+        ]
+    ),
+    "layout-chart-half": lambda: LayoutRow(
+        items=[
+            LayoutItem(
+                block=DataVisualizationBlock(
+                    title="Chart", chart=PieChart(segments=[ChartSegment(label="One", value=1)])
+                )
+            ),
+            LayoutItem(block=DividerBlock()),
+        ]
+    ),
+    "layout-depth-three": lambda: LayoutBlock(
+        label="Layout",
+        rows=[
+            LayoutRow(
+                items=[
+                    LayoutItem(
+                        block=ContainerBlock(
+                            title=PlainText("Container"),
+                            child_blocks=[
+                                LayoutBlock(
+                                    label="Layout",
+                                    rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])],
+                                )
+                            ],
+                        )
+                    )
+                ]
+            )
+        ],
+    ),
+    "layout-message-alert": lambda: Message(
+        channel="C123",
+        blocks=[
+            LayoutBlock(
+                label="Layout",
+                rows=[
+                    LayoutRow(
+                        items=[LayoutItem(block=AlertBlock(text=PlainText(text="Modal only")))]
+                    )
+                ],
+            )
+        ],
+    ),
+    "layout-modal-input-submit": lambda: ModalView(
+        title=PlainText(text="Input"),
+        blocks=[
+            LayoutBlock(
+                label="Layout",
+                rows=[
+                    LayoutRow(
+                        items=[
+                            LayoutItem(
+                                block=InputBlock(
+                                    label=PlainText(text="Name"),
+                                    element=PlainTextInput(action_id="name"),
+                                )
+                            )
+                        ]
+                    )
+                ],
+            )
+        ],
+    ),
+    "layout-three-charts": lambda: Message(
+        channel="C123",
+        blocks=[
+            LayoutBlock(
+                label="Layout",
+                rows=[
+                    LayoutRow(
+                        items=[
+                            LayoutItem(
+                                block=DataVisualizationBlock(
+                                    title="Chart",
+                                    chart=PieChart(segments=[ChartSegment(label="One", value=1)]),
+                                )
+                            )
+                        ]
+                    ),
+                    LayoutRow(
+                        items=[
+                            LayoutItem(
+                                block=DataVisualizationBlock(
+                                    title="Chart",
+                                    chart=PieChart(segments=[ChartSegment(label="One", value=1)]),
+                                )
+                            )
+                        ]
+                    ),
+                    LayoutRow(
+                        items=[
+                            LayoutItem(
+                                block=DataVisualizationBlock(
+                                    title="Chart",
+                                    chart=PieChart(segments=[ChartSegment(label="One", value=1)]),
+                                )
+                            )
+                        ]
+                    ),
+                ],
+            )
+        ],
+    ),
     "text-empty": lambda: Text(""),
     "text-too-long": lambda: Text("x" * 3001),
     "button-agent-prompt-too-long": lambda: Button(text="A", agent_prompt="😀" * 4001),

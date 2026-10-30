@@ -10,7 +10,7 @@ namespace Slackblocks;
  * A block of small, secondary images and text.
  * @see https://docs.slack.dev/reference/block-kit/blocks/context-block
  */
-final readonly class ContextBlock extends Value implements Block
+final readonly class ContextBlock extends Value implements Block, LayoutChild, LayoutFallback
 {
     /** Adds images and text in display order.
      * @var list<ContextElement>

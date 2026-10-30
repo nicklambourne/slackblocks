@@ -32,7 +32,7 @@ NAMES = {
     "OptionGroup": "SelectOptionGroup",
     "Confirmation": "ConfirmationDialogue",
 }
-BOXED = {"Block", "Element", "InputElement", "ContextActionsElement"}
+BOXED = {"Block", "Element", "InputElement", "ContextActionsElement", "LayoutChild", "LayoutFallback"}
 SINGULAR = {
     "series": "series_entry",
     "data": "point",
@@ -582,6 +582,9 @@ def emit_model(t, registry):
         "StaticMultiSelectElement",
         "CardBlock",
         "ContainerBlock",
+        "LayoutBlock",
+        "LayoutRow",
+        "LayoutItem",
         "ImageBlock",
         "ImageElement",
         "SlackFile",
@@ -720,8 +723,8 @@ def generate(model, registry=None):
             "}}}",
             serde_ingress(role),
         ]
-        if role == "Block":
-            s.append("impl Block { pub(crate) fn wire_type(&self) -> &'static str { match self {")
+        if role in {"Block", "LayoutChild", "LayoutFallback"}:
+            s.append(f"impl {role} {{ pub(crate) fn wire_type(&self) -> &'static str {{ match self {{")
             s += [f'Self::{variant(t["name"], role)}(_) => "{t["wireType"]}",' for t in members]
             s.append("}}}")
         for t in members:

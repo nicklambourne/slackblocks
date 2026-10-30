@@ -51,6 +51,7 @@ class HaskellTrainTests(unittest.TestCase):
         self.assertEqual(before, self.git("show-ref"))
 
     def test_haskell_skip_spec_version_and_owner_fail_closed(self):
+        spec_version = json.loads((self.root / "spec/manifest.json").read_text())["spec_version"]
         for file, old, new, error in [
             (
                 "haskell/slackblocks.cabal",
@@ -60,7 +61,7 @@ class HaskellTrainTests(unittest.TestCase):
             ),
             (
                 "haskell/src/Slackblocks/Models.hs",
-                'specVersion = "1.4.0"',
+                f'specVersion = "{spec_version}"',
                 'specVersion = "0.0.0"',
                 "spec version",
             ),

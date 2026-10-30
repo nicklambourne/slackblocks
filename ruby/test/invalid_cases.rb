@@ -2,6 +2,26 @@
 # Each case is constructed through the public Ruby API by FixtureDriver.
 module InvalidCases
   IDS = %w[
+    layout-message-budget
+    layout-view-budget
+    layout-fallback-budget
+
+    layout-label-empty
+    layout-label-too-long
+    layout-rows-empty
+    layout-too-many-rows
+    layout-items-empty
+    layout-too-many-items
+    layout-markdown-child
+    layout-direct-child
+    layout-fallback-actions
+    layout-wide-siblings
+    layout-chart-half
+    layout-depth-three
+    layout-message-alert
+    layout-modal-input-submit
+    layout-three-charts
+
     external-query-negative
     external-multi-query-negative
     date-picker-invalid-format
@@ -199,6 +219,26 @@ module InvalidCases
 
   def for(id)
     case id
+    when "layout-message-budget" then invalid_case("MessagePayload", map("channel", "C123", "blocks", copies(26, ->(index) { map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider")))))) })))
+    when "layout-view-budget" then invalid_case("HomeTabView", map("type", "home", "blocks", copies(51, ->(index) { map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider")))))) })))
+    when "layout-fallback-budget" then invalid_case("MessagePayload", map("channel", "C123", "blocks", items(map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider"))))), "fallback", copies(51, ->(index) { map("type", "divider") })))))
+
+    when "layout-label-empty" then invalid_case("LayoutBlock", map("type", "layout", "label", "", "rows", items(map("items", items(map("block", map("type", "divider")))))))
+    when "layout-label-too-long" then invalid_case("LayoutBlock", map("type", "layout", "label", "😀" * 151, "rows", items(map("items", items(map("block", map("type", "divider")))))))
+    when "layout-rows-empty" then invalid_case("LayoutBlock", map("type", "layout", "label", "Layout", "rows", items))
+    when "layout-too-many-rows" then invalid_case("LayoutBlock", map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider")))), map("items", items(map("block", map("type", "divider")))), map("items", items(map("block", map("type", "divider")))), map("items", items(map("block", map("type", "divider")))), map("items", items(map("block", map("type", "divider")))), map("items", items(map("block", map("type", "divider")))))))
+    when "layout-items-empty" then invalid_case("LayoutRow", map("items", items))
+    when "layout-too-many-items" then invalid_case("LayoutRow", map("items", items(map("block", map("type", "divider")), map("block", map("type", "divider")), map("block", map("type", "divider")), map("block", map("type", "divider")))))
+    when "layout-markdown-child" then invalid_case("LayoutItem", map("block", map("type", "markdown", "text", "No")))
+    when "layout-direct-child" then invalid_case("LayoutItem", map("block", map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider"))))))))
+    when "layout-fallback-actions" then invalid_case("LayoutBlock", map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider"))))), "fallback", items(map("type", "actions", "elements", items(map("type", "button", "text", map("type", "plain_text", "text", "Go")))))))
+    when "layout-wide-siblings" then invalid_case("LayoutRow", map("items", items(map("block", map("type", "carousel", "elements", items(map("type", "card", "title", map("type", "plain_text", "text", "Card"))))), map("block", map("type", "data_visualization", "title", "Chart", "chart", map("type", "pie", "segments", items(map("label", "One", "value", 1))))))))
+    when "layout-chart-half" then invalid_case("LayoutRow", map("items", items(map("block", map("type", "data_visualization", "title", "Chart", "chart", map("type", "pie", "segments", items(map("label", "One", "value", 1))))), map("block", map("type", "divider")))))
+    when "layout-depth-three" then invalid_case("LayoutBlock", map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "container", "title", plain("Container"), "child_blocks", items(map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "divider"))))))))))))))
+    when "layout-message-alert" then invalid_case("MessagePayload", map("channel", "C123", "blocks", items(map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "alert", "text", map("type", "plain_text", "text", "Modal only"))))))))))
+    when "layout-modal-input-submit" then invalid_case("ModalView", map("type", "modal", "title", map("type", "plain_text", "text", "Input"), "blocks", items(map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "input", "label", map("type", "plain_text", "text", "Name"), "element", map("type", "plain_text_input", "action_id", "name"))))))))))
+    when "layout-three-charts" then invalid_case("MessagePayload", map("channel", "C123", "blocks", items(map("type", "layout", "label", "Layout", "rows", items(map("items", items(map("block", map("type", "data_visualization", "title", "Chart", "chart", map("type", "pie", "segments", items(map("label", "One", "value", 1))))))), map("items", items(map("block", map("type", "data_visualization", "title", "Chart", "chart", map("type", "pie", "segments", items(map("label", "One", "value", 1))))))), map("items", items(map("block", map("type", "data_visualization", "title", "Chart", "chart", map("type", "pie", "segments", items(map("label", "One", "value", 1))))))))))))
+
     when "text-empty" then invalid_case("PlainText", text_object("plain_text", ""))
     when "text-too-long" then invalid_case("PlainText", text_object("plain_text", repeated("x", 3001)))
     when "button-agent-prompt-too-long" then typed("Button", "button", "text", plain("A"), "agent_prompt", repeated("😀", 4001))

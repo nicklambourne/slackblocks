@@ -11,7 +11,7 @@ namespace Slackblocks.Blocks;
 /// <para>See the <see href="https://docs.slack.dev/reference/block-kit/blocks/divider-block">Slack reference</see>.</para>
 /// </remarks>
 [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Slackblocks.Internal.SlackObjectJsonConverterFactory))]
-public sealed partial class DividerBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock
+public sealed partial class DividerBlock : global::Slackblocks.SlackObject, global::Slackblocks.Blocks.IBlock, global::Slackblocks.Blocks.ILayoutChild, global::Slackblocks.Blocks.ILayoutFallback
 {
     /// <summary>Creates and validates a <see cref="DividerBlock"/>.</summary>
     /// <param name="blockId">A unique identifier for this block. Slack returns it in interaction payloads, so use a stable value when you need to find the block again. Slack allows at most 255 characters.</param>

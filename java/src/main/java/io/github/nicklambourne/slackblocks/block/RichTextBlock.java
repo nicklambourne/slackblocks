@@ -26,7 +26,8 @@ import java.util.Map;
  *     reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class RichTextBlock implements Block, TableCell, DataTableCell {
+public final class RichTextBlock
+    implements Block, TableCell, DataTableCell, LayoutChild, LayoutFallback {
   private final Map<String, Object> values;
   private final Map<String, Object> fields;
   private final int hash;

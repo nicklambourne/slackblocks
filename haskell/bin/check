@@ -53,6 +53,10 @@ def main():
             ("plan-missing-tasks", "import Slackblocks\nf title = buildPlanBlock (planBlock title)\nmain = pure ()\n", "PlanBlockFields"),
             ("task-card-missing-status", "import Slackblocks\nf identifier title = buildTaskCardBlock (taskCardBlock identifier title)\nmain = pure ()\n", "TaskCardBlockFields"),
             ("attachment-missing-blocks", "import Slackblocks\nf = buildAttachment attachment\nmain = pure ()\n", "AttachmentFields"),
+            ("layout-direct-child", "import Slackblocks\nf :: LayoutBlock -> LayoutItemFields\nf b = layoutItem (layoutBlockAsBlock b)\nmain = pure ()\n", "LayoutChild"),
+            ("layout-markdown-child", "import Slackblocks\nf :: MarkdownBlock -> LayoutItemFields\nf b = layoutItem (markdownBlockAsBlock b)\nmain = pure ()\n", "LayoutChild"),
+            ("layout-actions-fallback", "import Slackblocks\nf :: ActionsBlock -> LayoutBlockFields -> LayoutBlockFields\nf b f = f {layoutBlockFallback = Just [actionsBlockAsBlock b]}\nmain = pure ()\n", "LayoutFallback"),
+            ("layout-full-width", "import Slackblocks\nf x = x {layoutItemWidth = Just ContainerWidthFull}\nmain = pure ()\n", "LayoutWidth"),
             ("plan-task-as-block", "import Slackblocks\nf :: PlanTask -> Block\nf = taskCardBlockAsBlock\nmain = pure ()\n", "PlanTask"),
         ]:
             path = Path(tmp, name + ".hs")

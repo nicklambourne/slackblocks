@@ -10,7 +10,7 @@ namespace Slackblocks;
  * Formatted text built from sections, lists, preformatted blocks, and quotes.
  * @see https://docs.slack.dev/reference/block-kit/blocks/rich-text-block
  */
-final readonly class RichTextBlock extends Value implements Block, TableCell, DataTableCell
+final readonly class RichTextBlock extends Value implements Block, TableCell, DataTableCell, LayoutChild, LayoutFallback
 {
     /** Adds sections, lists, preformatted blocks, and quotes in display order.
      * @var list<RichTextBlockElement>

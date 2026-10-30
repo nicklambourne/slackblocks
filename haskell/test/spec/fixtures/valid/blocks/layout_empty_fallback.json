@@ -1,0 +1,20 @@
+{
+  "type": "layout",
+  "label": "Layout",
+  "rows": [
+    {
+      "items": [
+        {
+          "block": {
+            "type": "divider",
+            "block_id": "child"
+          }
+        }
+      ]
+    }
+  ],
+  "block_id": "layout",
+  "is_label_visible": false,
+  "grid_lines": "none",
+  "fallback": []
+}

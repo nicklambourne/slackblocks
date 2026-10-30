@@ -18,6 +18,13 @@ func TestMarkerInterfacesAcceptOnlyTheirRoles(t *testing.T) {
 		value   any
 		allowed bool
 	}{
+		{interfaceType[slackblocks.LayoutChild](), slackblocks.NewDividerBlock(), true},
+		{interfaceType[slackblocks.LayoutChild](), slackblocks.NewContainerBlock(), true},
+		{interfaceType[slackblocks.LayoutChild](), slackblocks.NewLayoutBlock(), false},
+		{interfaceType[slackblocks.LayoutChild](), slackblocks.NewMarkdownBlock(), false},
+		{interfaceType[slackblocks.LayoutFallback](), slackblocks.NewDividerBlock(), true},
+		{interfaceType[slackblocks.LayoutFallback](), slackblocks.NewTableBlock(), true},
+		{interfaceType[slackblocks.LayoutFallback](), slackblocks.NewActionsBlock(), false},
 		{interfaceType[slackblocks.Element](), slackblocks.NewButton(), true},
 		{interfaceType[slackblocks.Element](), slackblocks.NewDividerBlock(), false},
 		{interfaceType[slackblocks.InputElement](), slackblocks.NewPlainTextInput(), true},

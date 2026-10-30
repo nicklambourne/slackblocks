@@ -80,6 +80,7 @@ public final class SlackVocabulary {
                   "header",
                   "image",
                   "input",
+                  "layout",
                   "rich_text",
                   "section",
                   "table",
@@ -99,6 +100,7 @@ public final class SlackVocabulary {
                   "header",
                   "image",
                   "input",
+                  "layout",
                   "markdown",
                   "plan",
                   "rich_text",
@@ -116,6 +118,7 @@ public final class SlackVocabulary {
                   "header",
                   "image",
                   "input",
+                  "layout",
                   "rich_text",
                   "section",
                   "video"));

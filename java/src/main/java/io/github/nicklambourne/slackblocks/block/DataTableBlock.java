@@ -29,7 +29,7 @@ import java.util.OptionalInt;
  *     reference</a>
  */
 @JsonAdapter(SlackObjectJsonAdapter.class)
-public final class DataTableBlock implements Block {
+public final class DataTableBlock implements Block, LayoutChild {
   private final Map<String, Object> values;
   private final Map<String, Object> fields;
   private final int hash;

@@ -830,7 +830,14 @@ valid112 = do
 
 validCases :: [(String, Result Value, Value -> Result Value)]
 validCases =
-  [ ("attachments/attachment_multi_block", valid0, \value -> toJSON <$> (fromValue value :: Result Attachment)),
+  [ ("blocks/layout_chart_majority", validLayoutChartMajority, \value -> toJSON <$> (fromValue value :: Result LayoutBlock)),
+    ("blocks/layout_block", validLayout0, \value -> toJSON <$> (fromValue value :: Result LayoutBlock)),
+    ("blocks/layout_styled", validLayout1, \value -> toJSON <$> (fromValue value :: Result LayoutBlock)),
+    ("blocks/layout_empty_fallback", validLayout2, \value -> toJSON <$> (fromValue value :: Result LayoutBlock)),
+    ("blocks/layout_limits", validLayout3, \value -> toJSON <$> (fromValue value :: Result LayoutBlock)),
+    ("blocks/layout_container", validLayout4, \value -> toJSON <$> (fromValue value :: Result LayoutBlock)),
+    ("blocks/container_layout", validLayout5, \value -> toJSON <$> (fromValue value :: Result ContainerBlock)),
+    ("attachments/attachment_multi_block", valid0, \value -> toJSON <$> (fromValue value :: Result Attachment)),
     ("attachments/attachment_simple", valid1, \value -> toJSON <$> (fromValue value :: Result Attachment)),
     ("blocks/actions_block_checkboxes", valid2, \value -> toJSON <$> (fromValue value :: Result ActionsBlock)),
     ("blocks/alert_block", valid3, \value -> toJSON <$> (fromValue value :: Result AlertBlock)),
@@ -2144,7 +2151,25 @@ invalid188 = do
 
 invalidCases :: [(String, Maybe (Result ()), Result ())]
 invalidCases =
-  [ ("external-query-negative", Just invalid0, void (fromValue (object ["type" .= String "external_select", "min_query_length" .= Number (-1)]) :: Result ExternalSelectElement)),
+  [ ("layout-message-budget", Just layoutMessageBudget, void (fromValue (object ["channel" .= String "C123", "blocks" .= replicate 26 layoutBudgetWire]) :: Result MessagePayload)),
+    ("layout-view-budget", Just layoutViewBudget, void (fromValue (object ["type" .= String "home", "blocks" .= replicate 51 layoutBudgetWire]) :: Result HomeTabView)),
+    ("layout-fallback-budget", Just layoutFallbackBudget, void (fromValue (object ["channel" .= String "C123", "blocks" .= [object ["type" .= String "layout", "label" .= String "Layout", "rows" .= [object ["items" .= [object ["block" .= object ["type" .= String "divider"]]]]], "fallback" .= replicate 51 (object ["type" .= String "divider"])]]]) :: Result MessagePayload)),
+    ("layout-label-empty", Just invalidLayout0, void (fromValue (object ["type" .= String "layout", "label" .= String "", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])]] :: [Value])]) :: Result LayoutBlock)),
+    ("layout-label-too-long", Just invalidLayout1, void (fromValue (object ["type" .= String "layout", "label" .= String (T.replicate 151 "😀"), "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])]] :: [Value])]) :: Result LayoutBlock)),
+    ("layout-rows-empty", Just invalidLayout2, void (fromValue (object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([] :: [Value])]) :: Result LayoutBlock)),
+    ("layout-too-many-rows", Just invalidLayout3, void (fromValue (object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])], object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])], object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])], object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])], object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])], object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])]] :: [Value])]) :: Result LayoutBlock)),
+    ("layout-items-empty", Just invalidLayout4, void (fromValue (object ["items" .= toJSON ([] :: [Value])]) :: Result LayoutRow)),
+    ("layout-too-many-items", Just invalidLayout5, void (fromValue (object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]], object ["block" .= object ["type" .= String "divider"]], object ["block" .= object ["type" .= String "divider"]], object ["block" .= object ["type" .= String "divider"]]] :: [Value])]) :: Result LayoutRow)),
+    ("layout-markdown-child", Nothing, void (fromValue (object ["block" .= object ["type" .= String "markdown", "text" .= String "No"]]) :: Result LayoutItem)),
+    ("layout-direct-child", Nothing, void (fromValue (object ["block" .= object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])]] :: [Value])]]) :: Result LayoutItem)),
+    ("layout-fallback-actions", Nothing, void (fromValue (object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])]] :: [Value]), "fallback" .= toJSON ([object ["type" .= String "actions", "elements" .= toJSON ([object ["type" .= String "button", "text" .= object ["type" .= String "plain_text", "text" .= String "Go"]]] :: [Value])]] :: [Value])]) :: Result LayoutBlock)),
+    ("layout-wide-siblings", Just invalidLayout9, void (fromValue (object ["items" .= toJSON ([object ["block" .= object ["type" .= String "carousel", "elements" .= toJSON ([object ["type" .= String "card", "title" .= object ["type" .= String "plain_text", "text" .= String "Card"]]] :: [Value])]], object ["block" .= object ["type" .= String "data_visualization", "title" .= String "Chart", "chart" .= object ["type" .= String "pie", "segments" .= toJSON ([object ["label" .= String "One", "value" .= Number 1]] :: [Value])]]]] :: [Value])]) :: Result LayoutRow)),
+    ("layout-chart-half", Just invalidLayout10, void (fromValue (object ["items" .= toJSON ([object ["block" .= object ["type" .= String "data_visualization", "title" .= String "Chart", "chart" .= object ["type" .= String "pie", "segments" .= toJSON ([object ["label" .= String "One", "value" .= Number 1]] :: [Value])]]], object ["block" .= object ["type" .= String "divider"]]] :: [Value])]) :: Result LayoutRow)),
+    ("layout-depth-three", Just invalidLayout11, void (fromValue (object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "container", "title" .= object ["type" .= String "plain_text", "text" .= String "Container"], "child_blocks" .= toJSON ([object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])]] :: [Value])]] :: [Value])]]] :: [Value])]] :: [Value])]) :: Result LayoutBlock)),
+    ("layout-message-alert", Just invalidLayout12, void (fromValue (object ["channel" .= String "C123", "blocks" .= toJSON ([object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "alert", "text" .= object ["type" .= String "plain_text", "text" .= String "Modal only"]]]] :: [Value])]] :: [Value])]] :: [Value])]) :: Result MessagePayload)),
+    ("layout-modal-input-submit", Just invalidLayout13, void (fromValue (object ["type" .= String "modal", "title" .= object ["type" .= String "plain_text", "text" .= String "Input"], "blocks" .= toJSON ([object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "input", "label" .= object ["type" .= String "plain_text", "text" .= String "Name"], "element" .= object ["type" .= String "plain_text_input", "action_id" .= String "name"]]]] :: [Value])]] :: [Value])]] :: [Value])]) :: Result ModalView)),
+    ("layout-three-charts", Just invalidLayout14, void (fromValue (object ["channel" .= String "C123", "blocks" .= toJSON ([object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "data_visualization", "title" .= String "Chart", "chart" .= object ["type" .= String "pie", "segments" .= toJSON ([object ["label" .= String "One", "value" .= Number 1]] :: [Value])]]]] :: [Value])], object ["items" .= toJSON ([object ["block" .= object ["type" .= String "data_visualization", "title" .= String "Chart", "chart" .= object ["type" .= String "pie", "segments" .= toJSON ([object ["label" .= String "One", "value" .= Number 1]] :: [Value])]]]] :: [Value])], object ["items" .= toJSON ([object ["block" .= object ["type" .= String "data_visualization", "title" .= String "Chart", "chart" .= object ["type" .= String "pie", "segments" .= toJSON ([object ["label" .= String "One", "value" .= Number 1]] :: [Value])]]]] :: [Value])]] :: [Value])]] :: [Value])]) :: Result MessagePayload)),
+    ("external-query-negative", Just invalid0, void (fromValue (object ["type" .= String "external_select", "min_query_length" .= Number (-1)]) :: Result ExternalSelectElement)),
     ("external-multi-query-negative", Just invalid1, void (fromValue (object ["type" .= String "multi_external_select", "min_query_length" .= Number (-1)]) :: Result ExternalMultiSelectElement)),
     ("date-picker-invalid-format", Just invalid2, void (fromValue (object ["type" .= String "datepicker", "initial_date" .= String "February 29, 2028"]) :: Result DatePickerElement)),
     ("time-picker-invalid-format", Just invalid3, void (fromValue (object ["type" .= String "timepicker", "initial_time" .= String "9:00"]) :: Result TimePickerElement)),
@@ -2335,3 +2360,273 @@ invalidCases =
     ("view-external-id-too-long", Just invalid188, void (fromValue (object ["type" .= String "home", "blocks" .= toJSON ([object ["type" .= String "divider"]] :: [Value]), "external_id" .= String (T.replicate 256 "x")]) :: Result HomeTabView)),
     ("attachment-missing-blocks", Nothing, void (fromValue (object ["fallback" .= String "Summary"]) :: Result Attachment))
   ]
+
+validLayout0 :: Result Value
+validLayout0 = do
+  v0 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child"})
+  v1 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v0))
+  v2 <- buildLayoutRow (layoutRow [v1])
+  v3 <- buildLayoutBlock ((layoutBlock "Layout" [v2]) {layoutBlockBlockId = Just "layout"})
+  pure (toJSON v3)
+
+validLayout1 :: Result Value
+validLayout1 = do
+  v0 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "0"})
+  v1 <- buildLayoutItem ((layoutItem (dividerBlockAsLayoutChild v0)) {layoutItemWidth = Just LayoutWidthNarrow, layoutItemHorizontalAlignment = Just LayoutAlignmentStart})
+  v2 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "1"})
+  v3 <- buildLayoutItem ((layoutItem (dividerBlockAsLayoutChild v2)) {layoutItemWidth = Just LayoutWidthStandard, layoutItemHorizontalAlignment = Just LayoutAlignmentCenter})
+  v4 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "2"})
+  v5 <- buildLayoutItem ((layoutItem (dividerBlockAsLayoutChild v4)) {layoutItemWidth = Just LayoutWidthWide, layoutItemHorizontalAlignment = Just LayoutAlignmentEnd})
+  v6 <- buildLayoutRow (layoutRow [v1, v3, v5])
+  v7 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "fallback"})
+  v8 <- buildLayoutBlock ((layoutBlock "Status" [v6]) {layoutBlockBlockId = Just "layout", layoutBlockIsLabelVisible = Just True, layoutBlockGridLines = Just LayoutGridLinesRows, layoutBlockFallback = Just [dividerBlockAsLayoutFallback v7]})
+  pure (toJSON v8)
+
+validLayout2 :: Result Value
+validLayout2 = do
+  v0 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child"})
+  v1 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v0))
+  v2 <- buildLayoutRow (layoutRow [v1])
+  v3 <- buildLayoutBlock ((layoutBlock "Layout" [v2]) {layoutBlockBlockId = Just "layout", layoutBlockIsLabelVisible = Just False, layoutBlockGridLines = Just LayoutGridLinesNone, layoutBlockFallback = Just []})
+  pure (toJSON v3)
+
+validLayout3 :: Result Value
+validLayout3 = do
+  v0 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_0_0"})
+  v1 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v0))
+  v2 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_0_1"})
+  v3 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v2))
+  v4 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_0_2"})
+  v5 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v4))
+  v6 <- buildLayoutRow (layoutRow [v1, v3, v5])
+  v7 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_1_0"})
+  v8 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v7))
+  v9 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_1_1"})
+  v10 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v9))
+  v11 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_1_2"})
+  v12 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v11))
+  v13 <- buildLayoutRow (layoutRow [v8, v10, v12])
+  v14 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_2_0"})
+  v15 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v14))
+  v16 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_2_1"})
+  v17 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v16))
+  v18 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_2_2"})
+  v19 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v18))
+  v20 <- buildLayoutRow (layoutRow [v15, v17, v19])
+  v21 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_3_0"})
+  v22 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v21))
+  v23 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_3_1"})
+  v24 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v23))
+  v25 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_3_2"})
+  v26 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v25))
+  v27 <- buildLayoutRow (layoutRow [v22, v24, v26])
+  v28 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_4_0"})
+  v29 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v28))
+  v30 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_4_1"})
+  v31 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v30))
+  v32 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child_4_2"})
+  v33 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v32))
+  v34 <- buildLayoutRow (layoutRow [v29, v31, v33])
+  v35 <- buildLayoutBlock ((layoutBlock (T.replicate 150 "😀") [v6, v13, v20, v27, v34]) {layoutBlockBlockId = Just "layout", layoutBlockGridLines = Just LayoutGridLinesOuter})
+  pure (toJSON v35)
+
+validLayout4 :: Result Value
+validLayout4 = do
+  v0 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child"})
+  containerTitle <- buildPlainText (plainText "Container")
+  v1 <- buildContainerBlock ((containerBlock [dividerBlockAsBlock v0]) {containerBlockTitle = Just containerTitle, containerBlockWidth = Just ContainerWidthStandard, containerBlockIsCollapsible = Just False, containerBlockDefaultCollapsed = Just False, containerBlockHasHeaderDivider = Just False, containerBlockBlockId = Just "container"})
+  v2 <- buildLayoutItem (layoutItem (containerBlockAsLayoutChild v1))
+  v3 <- buildLayoutRow (layoutRow [v2])
+  v4 <- buildLayoutBlock ((layoutBlock "Layout" [v3]) {layoutBlockBlockId = Just "layout"})
+  pure (toJSON v4)
+
+validLayout5 :: Result Value
+validLayout5 = do
+  v0 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child"})
+  v1 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v0))
+  v2 <- buildLayoutRow (layoutRow [v1])
+  v3 <- buildLayoutBlock ((layoutBlock "Layout" [v2]) {layoutBlockBlockId = Just "layout"})
+  containerTitle <- buildPlainText (plainText "Container")
+  v4 <- buildContainerBlock ((containerBlock [layoutBlockAsBlock v3]) {containerBlockTitle = Just containerTitle, containerBlockWidth = Just ContainerWidthStandard, containerBlockIsCollapsible = Just False, containerBlockDefaultCollapsed = Just False, containerBlockHasHeaderDivider = Just False, containerBlockBlockId = Just "container"})
+  pure (toJSON v4)
+
+invalidLayout0 :: Result ()
+invalidLayout0 = do
+  v0 <- buildDividerBlock dividerBlock
+  v1 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v0))
+  v2 <- buildLayoutRow (layoutRow [v1])
+  v3 <- buildLayoutBlock (layoutBlock "" [v2])
+  v3 `seq` pure ()
+
+invalidLayout1 :: Result ()
+invalidLayout1 = do
+  v0 <- buildDividerBlock dividerBlock
+  v1 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v0))
+  v2 <- buildLayoutRow (layoutRow [v1])
+  v3 <- buildLayoutBlock (layoutBlock (T.replicate 151 "😀") [v2])
+  v3 `seq` pure ()
+
+invalidLayout2 :: Result ()
+invalidLayout2 = do
+  v0 <- buildLayoutBlock (layoutBlock "Layout" [])
+  v0 `seq` pure ()
+
+invalidLayout3 :: Result ()
+invalidLayout3 = do
+  v0 <- buildDividerBlock dividerBlock
+  v1 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v0))
+  v2 <- buildLayoutRow (layoutRow [v1])
+  v3 <- buildDividerBlock dividerBlock
+  v4 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v3))
+  v5 <- buildLayoutRow (layoutRow [v4])
+  v6 <- buildDividerBlock dividerBlock
+  v7 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v6))
+  v8 <- buildLayoutRow (layoutRow [v7])
+  v9 <- buildDividerBlock dividerBlock
+  v10 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v9))
+  v11 <- buildLayoutRow (layoutRow [v10])
+  v12 <- buildDividerBlock dividerBlock
+  v13 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v12))
+  v14 <- buildLayoutRow (layoutRow [v13])
+  v15 <- buildDividerBlock dividerBlock
+  v16 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v15))
+  v17 <- buildLayoutRow (layoutRow [v16])
+  v18 <- buildLayoutBlock (layoutBlock "Layout" [v2, v5, v8, v11, v14, v17])
+  v18 `seq` pure ()
+
+invalidLayout4 :: Result ()
+invalidLayout4 = do
+  v0 <- buildLayoutRow (layoutRow [])
+  v0 `seq` pure ()
+
+invalidLayout5 :: Result ()
+invalidLayout5 = do
+  v0 <- buildDividerBlock dividerBlock
+  v1 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v0))
+  v2 <- buildDividerBlock dividerBlock
+  v3 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v2))
+  v4 <- buildDividerBlock dividerBlock
+  v5 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v4))
+  v6 <- buildDividerBlock dividerBlock
+  v7 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v6))
+  v8 <- buildLayoutRow (layoutRow [v1, v3, v5, v7])
+  v8 `seq` pure ()
+
+invalidLayout9 :: Result ()
+invalidLayout9 = do
+  v0 <- buildPlainText (plainText "Card")
+  v1 <- buildCardBlock (cardBlock {cardBlockTitle = Just (plainTextAsText v0)})
+  v2 <- buildCarouselBlock (carouselBlock [v1])
+  v3 <- buildLayoutItem (layoutItem (carouselBlockAsLayoutChild v2))
+  v5 <- buildChartSegment (chartSegment "One" 1)
+  v6 <- buildPieChart (pieChart [v5])
+  v7 <- buildDataVisualizationBlock (dataVisualizationBlock "Chart" (pieChartAsChart v6))
+  v8 <- buildLayoutItem (layoutItem (dataVisualizationBlockAsLayoutChild v7))
+  v9 <- buildLayoutRow (layoutRow [v3, v8])
+  v9 `seq` pure ()
+
+invalidLayout10 :: Result ()
+invalidLayout10 = do
+  v1 <- buildChartSegment (chartSegment "One" 1)
+  v2 <- buildPieChart (pieChart [v1])
+  v3 <- buildDataVisualizationBlock (dataVisualizationBlock "Chart" (pieChartAsChart v2))
+  v4 <- buildLayoutItem (layoutItem (dataVisualizationBlockAsLayoutChild v3))
+  v5 <- buildDividerBlock dividerBlock
+  v6 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v5))
+  v7 <- buildLayoutRow (layoutRow [v4, v6])
+  v7 `seq` pure ()
+
+invalidLayout11 :: Result ()
+invalidLayout11 = do
+  v0 <- buildDividerBlock dividerBlock
+  v1 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v0))
+  v2 <- buildLayoutRow (layoutRow [v1])
+  v3 <- buildLayoutBlock (layoutBlock "Layout" [v2])
+  containerTitle <- buildPlainText (plainText "Container")
+  v4 <- buildContainerBlock ((containerBlock [layoutBlockAsBlock v3]) {containerBlockTitle = Just containerTitle})
+  v5 <- buildLayoutItem (layoutItem (containerBlockAsLayoutChild v4))
+  v6 <- buildLayoutRow (layoutRow [v5])
+  v7 <- buildLayoutBlock (layoutBlock "Layout" [v6])
+  v7 `seq` pure ()
+
+invalidLayout12 :: Result ()
+invalidLayout12 = do
+  v0 <- buildPlainText (plainText "Modal only")
+  v1 <- buildAlertBlock (alertBlock (plainTextAsText v0))
+  v2 <- buildLayoutItem (layoutItem (alertBlockAsLayoutChild v1))
+  v3 <- buildLayoutRow (layoutRow [v2])
+  v4 <- buildLayoutBlock (layoutBlock "Layout" [v3])
+  v5 <- buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just [layoutBlockAsBlock v4]})
+  v5 `seq` pure ()
+
+invalidLayout13 :: Result ()
+invalidLayout13 = do
+  v0 <- buildPlainText (plainText "Input")
+  v1 <- buildPlainText (plainText "Name")
+  v2 <- buildPlainTextInputElement (plainTextInputElement {plainTextInputElementActionId = Just "name"})
+  v3 <- buildInputBlock (inputBlock v1 (plainTextInputElementAsInputElement v2))
+  v4 <- buildLayoutItem (layoutItem (inputBlockAsLayoutChild v3))
+  v5 <- buildLayoutRow (layoutRow [v4])
+  v6 <- buildLayoutBlock (layoutBlock "Layout" [v5])
+  v7 <- buildModalView (modalView v0 [layoutBlockAsBlock v6])
+  v7 `seq` pure ()
+
+invalidLayout14 :: Result ()
+invalidLayout14 = do
+  v1 <- buildChartSegment (chartSegment "One" 1)
+  v2 <- buildPieChart (pieChart [v1])
+  v3 <- buildDataVisualizationBlock (dataVisualizationBlock "Chart" (pieChartAsChart v2))
+  v4 <- buildLayoutItem (layoutItem (dataVisualizationBlockAsLayoutChild v3))
+  v5 <- buildLayoutRow (layoutRow [v4])
+  v7 <- buildChartSegment (chartSegment "One" 1)
+  v8 <- buildPieChart (pieChart [v7])
+  v9 <- buildDataVisualizationBlock (dataVisualizationBlock "Chart" (pieChartAsChart v8))
+  v10 <- buildLayoutItem (layoutItem (dataVisualizationBlockAsLayoutChild v9))
+  v11 <- buildLayoutRow (layoutRow [v10])
+  v13 <- buildChartSegment (chartSegment "One" 1)
+  v14 <- buildPieChart (pieChart [v13])
+  v15 <- buildDataVisualizationBlock (dataVisualizationBlock "Chart" (pieChartAsChart v14))
+  v16 <- buildLayoutItem (layoutItem (dataVisualizationBlockAsLayoutChild v15))
+  v17 <- buildLayoutRow (layoutRow [v16])
+  v18 <- buildLayoutBlock (layoutBlock "Layout" [v5, v11, v17])
+  v19 <- buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just [layoutBlockAsBlock v18]})
+  v19 `seq` pure ()
+
+layoutBudgetBlock :: Result LayoutBlock
+layoutBudgetBlock = do
+  d <- buildDividerBlock dividerBlock
+  i <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild d))
+  r <- buildLayoutRow (layoutRow [i])
+  buildLayoutBlock (layoutBlock "Layout" [r])
+
+layoutMessageBudget :: Result ()
+layoutMessageBudget = do
+  l <- layoutBudgetBlock
+  void (buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just (replicate 26 (layoutBlockAsBlock l))}))
+
+layoutViewBudget :: Result ()
+layoutViewBudget = do
+  l <- layoutBudgetBlock
+  void (buildHomeTabView (homeTabView (replicate 51 (layoutBlockAsBlock l))))
+
+layoutFallbackBudget :: Result ()
+layoutFallbackBudget = do
+  l <- layoutBudgetBlock
+  d <- buildDividerBlock dividerBlock
+  expanded <- buildLayoutBlock ((inspectLayoutBlock l) {layoutBlockFallback = Just (replicate 51 (dividerBlockAsLayoutFallback d))})
+  void (buildMessagePayload ((messagePayload "C123") {messagePayloadBlocks = Just [layoutBlockAsBlock expanded]}))
+
+layoutBudgetWire :: Value
+layoutBudgetWire = object ["type" .= String "layout", "label" .= String "Layout", "rows" .= [object ["items" .= [object ["block" .= object ["type" .= String "divider"]]]]]]
+
+validLayoutChartMajority :: Result Value
+validLayoutChartMajority = do
+  v0 <- buildChartSegment (chartSegment "One" 1)
+  v1 <- buildPieChart (pieChart [v0])
+  v2 <- buildDataVisualizationBlock ((dataVisualizationBlock "Chart" (pieChartAsChart v1)) {dataVisualizationBlockBlockId = Just "chart"})
+  v3 <- buildLayoutItem ((layoutItem (dataVisualizationBlockAsLayoutChild v2)) {layoutItemWidth = Just LayoutWidthWide})
+  v4 <- buildDividerBlock (dividerBlock {dividerBlockBlockId = Just "child"})
+  v5 <- buildLayoutItem ((layoutItem (dividerBlockAsLayoutChild v4)) {layoutItemWidth = Just LayoutWidthStandard})
+  v6 <- buildLayoutRow (layoutRow [v3, v5])
+  v7 <- buildLayoutBlock ((layoutBlock "Chart summary" [v6]) {layoutBlockBlockId = Just "layout"})
+  pure (toJSON v7)
