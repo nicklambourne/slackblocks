@@ -1,0 +1,332 @@
+---
+title: Parse incoming modeled JSON
+slug: /usage/recipes/parse-json
+sidebar_position: 10
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "block_id": "edited",
+    "text": {
+      "text": "After",
+      "type": "mrkdwn"
+    },
+    "type": "section"
+  },
+  "java": {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "Checked input"
+    }
+  },
+  "go": {
+    "text": {
+      "text": "Checked input",
+      "type": "mrkdwn"
+    },
+    "type": "section"
+  },
+  "ruby": {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "Checked input"
+    }
+  },
+  "csharp": {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "Checked input"
+    }
+  },
+  "php": {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "Hello"
+    },
+    "block_id": "welcome",
+    "future_field": {
+      "enabled": false
+    }
+  },
+  "rust": {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "Checked input"
+    }
+  },
+  "haskell": {
+    "block_id": "edited",
+    "text": {
+      "text": "After",
+      "type": "mrkdwn"
+    },
+    "type": "section"
+  },
+  "typescript": {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "Checked input"
+    }
+  },
+  "python": {
+    "type": "section",
+    "block_id": "incoming",
+    "text": {
+      "type": "mrkdwn",
+      "text": "Checked input"
+    }
+  }
+};
+
+# Parse incoming modeled JSON
+
+Read a known modeled section and validate or reconstruct it with the native API. These examples do not parse arbitrary Slack event or interaction envelopes; language-specific limitations are stated below.
+
+<RecipeOutput recipe="parse-json" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+If your app handles Slack interactivity payloads or events, you can parse the JSON back into `slackblocks` objects with `Block.from_dict`:
+
+```python
+import json
+from slackblocks import Block, SectionBlock
+
+slack_request_body = '{"blocks":[{"type":"section","block_id":"incoming","text":{"type":"mrkdwn","text":"Checked input"}}]}'
+incoming = json.loads(slack_request_body)
+
+for raw_block in incoming.get("blocks", []):
+    block = Block.from_dict(raw_block)
+    if isinstance(block, SectionBlock):
+        print(block)
+```
+
+`Block.from_dict` dispatches by `type`; direct typed parsers also require the
+matching discriminator. This is a partial parser, not a general Slack JSON loader:
+
+| Parse support | Block types |
+| --- | --- |
+| Supported | Alert, Divider, File, Header, Image, Markdown, Video |
+| Supported subset | Section without accessory; Context with text elements only |
+| Raises `NotImplementedError` | Actions, Input, RichText, Table, Card, Carousel, Container, ContextActions, DataTable, DataVisualization, TaskCard, Plan; Section with accessory; Context with images |
+
+Unknown future fields are ignored, so this is not a lossless storage format.
+Keep the original JSON when forwarding or archiving unsupported or future fields.
+`Text`, `ConfirmationDialogue`, `Option`, `OptionGroup`,
+`DispatchActionConfiguration`, `ConversationFilter`, `InputParameter`, `SlackFile`,
+`Trigger`, and `Workflow` have composition-object parsers; check individual
+references rather than assuming every composition type is parseable.
+
+For workflow button styles, use `"primary"`, `"danger"`, a `ButtonStyle` member
+(imported from `slackblocks.elements`), or `None` (default). Uppercase enum-name
+strings remain accepted for compatibility.
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const incoming: unknown = JSON.parse('{"type":"section","text":{"type":"mrkdwn","text":"Checked input"}}');
+if (!S.validate(incoming)) throw new Error("Invalid modeled Block Kit input");
+console.log(JSON.stringify(incoming));
+```
+
+</TypeScript>
+
+<Go>
+
+Go does not expose a general model parser. This application adapter reads a known section shape and reconstructs it through the checked native builder. It intentionally does not preserve unknown fields.
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"os"
+)
+
+func main() {
+	// Deliberately parse only a mrkdwn section without an accessory.
+	var incoming struct {
+		Type string `json:"type"`
+		Text struct {
+			Type string `json:"type"`
+			Text string `json:"text"`
+		} `json:"text"`
+	}
+	err := json.Unmarshal([]byte(`{"type":"section","text":{"type":"mrkdwn","text":"Checked input"}}`), &incoming)
+	if err != nil {
+		panic(err)
+	}
+	if incoming.Type != "section" || incoming.Text.Type != "mrkdwn" {
+		panic("Unsupported input")
+	}
+	value, err := s.NewSectionBlock().Text(incoming.Text.Text).Build()
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(value); err != nil {
+		panic(fmt.Errorf("encode: %w", err))
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    // This adapter accepts only a known mrkdwn section; it is not a general model parser.
+    var input = com.google.gson.JsonParser.parseString("{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Checked input\"}}").getAsJsonObject();
+    var text = input.getAsJsonObject("text");
+    if (!input.get("type").getAsString().equals("section") || !text.get("type").getAsString().equals("mrkdwn")) throw new IllegalArgumentException("Unsupported input");
+    var value = SectionBlock.builder().markdownText(text.get("text").getAsString()).build();
+    System.out.println(value.toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+// This adapter accepts only a known mrkdwn section, not arbitrary Slack events.
+using var input = System.Text.Json.JsonDocument.Parse("{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Checked input\"}}");
+var root = input.RootElement;
+var text = root.GetProperty("text");
+if (root.GetProperty("type").GetString() != "section" || text.GetProperty("type").GetString() != "mrkdwn") throw new ArgumentException("Unsupported input");
+var value = new SectionBlock(text: text.GetProperty("text").GetString()!);
+Console.WriteLine(value.ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+Ruby does not offer a general inbound model decoder. This narrow application adapter validates the reconstructed section; unknown input fields are not retained.
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+# Reconstruct only the known mrkdwn section shape; preserve the input separately if needed.
+input = JSON.parse('{"type":"section","text":{"type":"mrkdwn","text":"Checked input"}}')
+raise "Unsupported input" unless input["type"] == "section" && input.fetch("text")["type"] == "mrkdwn"
+value = SectionBlock.new(text: input.fetch("text").fetch("text"))
+puts value.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+Use `TryFrom<Value>` for structured validation errors. This parses modeled outbound shapes, not arbitrary inbound event envelopes.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let input =
+        serde_json::json!({"type":"section","text":{"type":"mrkdwn","text":"Checked input"}});
+    let block = Block::try_from(input)?;
+    match &block {
+        Block::Section(section) => assert!(section.text().is_some()),
+        _ => panic!("expected a section"),
+    }
+    println!("{}", serde_json::to_string(&block)?);
+    Ok(())
+}
+```
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$section = S\SectionBlock::fromJson('{"type":"section","text":{"type":"mrkdwn","text":"Hello"},"future_field":{"enabled":false}}');
+echo $section->with(blockId: 'welcome')->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+alias Slackblocks.Blocks.Section
+original = Slackblocks.decode!(Section, ~s({"type":"section","text":{"type":"mrkdwn","text":"Before"}}))
+updated = Section.change!(original, text: "After", block_id: "edited")
+Slackblocks.to_map!(updated)
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example :: Result SectionBlock
+example = do
+  original <- decode "{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Before\"}}"
+  text <- buildMarkdownText (markdownText "After")
+  buildSectionBlock
+    ( (inspectSectionBlock original)
+        { sectionBlockText = Just (markdownTextAsText text),
+          sectionBlockBlockId = Just "edited"
+        }
+    )
+```
+
+</Haskell>
+
+</LanguageContent>

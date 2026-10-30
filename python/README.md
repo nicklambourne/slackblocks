@@ -117,7 +117,7 @@ Existing 1.x code continues to work unchanged; see the [Migration Guide](https:/
 - [Compatibility](https://nicklambourne.github.io/slackblocks/usage/compatibility) — which Python versions each release line supports.
 - [Using Blocks](https://nicklambourne.github.io/slackblocks/usage/using_blocks) — every block type with code, JSON, and screenshots.
 - [Sending Messages](https://nicklambourne.github.io/slackblocks/usage/sending_messages)
-- [Cookbook](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end recipes for build notifications, approval requests, modals, and more.
+- [Cookbook](https://nicklambourne.github.io/slackblocks/usage/recipes) — end-to-end recipes for build notifications, approval requests, modals, and more.
 - [Migrating from 1.x](https://nicklambourne.github.io/slackblocks/usage/migration) — upgrade guide for `1.x` users.
 - [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/usage/troubleshooting)
 - [Changelog](https://github.com/nicklambourne/slackblocks/blob/master/python/CHANGELOG.md)
