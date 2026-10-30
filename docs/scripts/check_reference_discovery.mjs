@@ -20,6 +20,10 @@ const recipeBook = await readFile(path.join(buildRoot, "usage/recipes.html"), "u
 assert.match(recipeBook, /<h1[^>]*>Recipe Book<\/h1>/);
 assert.doesNotMatch(recipeBook, /Recipes and operational guides|Find a recipe/);
 const recipes = JSON.parse(await readFile(path.join(root, "examples/recipes/catalog.json"), "utf8"));
+const recipeCells = [...recipeBook.matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/g)].map((match) => match[1]);
+for (const { id } of recipes) {
+  assert.ok(recipeCells.some((cell) => cell.includes(`href="/slackblocks/usage/recipes/${id}"`)), `${id}: recipe link must be inside the root table`);
+}
 for (const recipe of [...recipes.map(({ id }) => id), "multiselect-compatibility", "workflow-state", "reliable-delivery", "live-prerequisites"]) {
   assert.ok(recipeBook.includes(`href="/slackblocks/usage/recipes/${recipe}"`), `${recipe}: missing Recipe Book link`);
   await readFile(path.join(buildRoot, `usage/recipes/${recipe}.html`), "utf8");
