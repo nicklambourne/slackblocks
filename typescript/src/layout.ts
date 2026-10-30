@@ -75,10 +75,35 @@ export function validateCompositeDepth(block: JsonObject, path: string, depth = 
   compositeChildren(block).forEach((b) => validateCompositeDepth(b, path, depth, hasLayout));
 }
 
+export function compositeDescendantEntries(
+  blocks: readonly JsonValue[],
+  path: string,
+): { block: JsonObject; path: string }[] {
+  const result: { block: JsonObject; path: string }[] = [];
+  function visit(value: JsonValue | undefined, blockPath: string): void {
+    const block = object(value, blockPath);
+    result.push({ block, path: blockPath });
+    if (block.type === "container") {
+      (Array.isArray(block.child_blocks) ? block.child_blocks : []).forEach((child, i) =>
+        visit(child, `${blockPath}.child_blocks[${i}]`),
+      );
+    } else if (block.type === "layout") {
+      (Array.isArray(block.rows) ? block.rows : []).forEach((row, rowIndex) => {
+        const rowPath = `${blockPath}.rows[${rowIndex}]`;
+        array(object(row, rowPath).items, `${rowPath}.items`, 1).forEach((item, itemIndex) => {
+          const itemPath = `${rowPath}.items[${itemIndex}]`;
+          visit(object(item, itemPath).block, `${itemPath}.block`);
+        });
+      });
+      (Array.isArray(block.fallback) ? block.fallback : []).forEach((child, i) =>
+        visit(child, `${blockPath}.fallback[${i}]`),
+      );
+    }
+  }
+  blocks.forEach((block, index) => visit(block, `${path}[${index}]`));
+  return result;
+}
+
 export function compositeDescendants(blocks: readonly JsonValue[]): JsonObject[] {
-  return blocks.flatMap((value) => {
-    const block = object(value, "block");
-    const fallback = block.type === "layout" && Array.isArray(block.fallback) ? block.fallback : [];
-    return [block, ...compositeDescendants([...compositeChildren(block), ...fallback])];
-  });
+  return compositeDescendantEntries(blocks, "blocks").map(({ block }) => block);
 }
