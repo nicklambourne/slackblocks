@@ -1,6 +1,7 @@
 import pytest
 
 from slackblocks import (
+    AlertBlock,
     Block,
     ContainerBlock,
     DividerBlock,
@@ -9,6 +10,9 @@ from slackblocks import (
     LayoutItem,
     LayoutRow,
     Message,
+    ModalView,
+    RawText,
+    TableBlock,
     TypeMismatchError,
 )
 
@@ -58,3 +62,43 @@ def test_generic_parser_recognizes_layout_and_reports_the_explicit_limitation():
     for parser in (Block.from_dict, LayoutBlock.from_dict):
         with pytest.raises(NotImplementedError, match="nested block parsing"):
             parser(layout()._resolve())
+
+
+@pytest.mark.parametrize("surface", ["message", "home"])
+@pytest.mark.parametrize("position", ["layout", "container-layout", "top-level-sibling"])
+def test_surface_error_retains_the_actual_nested_path(surface, position):
+    bad = AlertBlock("Modal only")
+    nested = LayoutBlock(
+        "Grid",
+        [
+            LayoutRow([LayoutItem(DividerBlock())]),
+            LayoutRow([LayoutItem(DividerBlock()), LayoutItem(bad)]),
+        ],
+    )
+    if position == "layout":
+        blocks = [DividerBlock(), nested]
+        path = "blocks[1].rows[1].items[1].block"
+    elif position == "container-layout":
+        blocks = [
+            DividerBlock(),
+            ContainerBlock(title="Group", child_blocks=[DividerBlock(), nested]),
+        ]
+        path = "blocks[1].child_blocks[1].rows[1].items[1].block"
+    else:
+        blocks = [layout(fallback=[DividerBlock()]), bad]
+        path = "blocks[1]"
+    with pytest.raises(TypeMismatchError) as caught:
+        if surface == "message":
+            Message(channel="C123", blocks=blocks)
+        else:
+            HomeTabView(blocks=blocks)
+    assert str(caught.value) == f"{path} type 'alert' is not supported on {surface} surfaces"
+
+
+def test_surface_error_retains_the_fallback_path():
+    blocks = [DividerBlock(), layout(fallback=[DividerBlock(), TableBlock([[RawText("Cell")]])])]
+    with pytest.raises(TypeMismatchError) as caught:
+        ModalView(title="Test", blocks=blocks)
+    assert str(caught.value) == (
+        "blocks[1].fallback[1] type 'table' is not supported on modal surfaces"
+    )

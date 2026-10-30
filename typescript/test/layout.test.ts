@@ -37,3 +37,39 @@ function rejectedRoles() {
   s.layoutItem({block:s.dividerBlock(),width:"full"});
 }
 void rejectedRoles;
+
+describe("layout surface error paths", () => {
+  it.each(["message", "home"] as const)("retains nested paths on %s", (surface) => {
+    const bad = s.alertBlock({text: "Modal only"});
+    const nested = s.layoutBlock({label: "Grid", rows: [
+      s.layoutRow({items: [s.layoutItem({block: s.dividerBlock()})]}),
+      s.layoutRow({items: [s.layoutItem({block: s.dividerBlock()}), s.layoutItem({block: bad})]}),
+    ]});
+    const cases = [
+      {blocks: [s.dividerBlock(), nested], path: "blocks[1].rows[1].items[1].block.type"},
+      {blocks: [s.dividerBlock(), s.containerBlock({title: "Group", childBlocks: [s.dividerBlock(), nested]})], path: "blocks[1].child_blocks[1].rows[1].items[1].block.type"},
+      {blocks: [grid(), bad], path: "blocks[1].type"},
+    ];
+    for (const {blocks, path} of cases) {
+      for (const fluent of [false, true]) {
+        const build = () => surface === "message"
+          ? fluent ? s.Message().channel("C123").blocks(blocks).build() : s.message({channel: "C123", blocks})
+          : fluent ? s.HomeTab().blocks(blocks).build() : s.homeTab({blocks});
+        expect(build).toThrow(s.TypeMismatchError);
+        try { build(); } catch (error) {
+          expect((error as s.TypeMismatchError).path).toMatch(new RegExp(`(?:^|\\.)${path.replace(/[.[\]]/g, "\\$&")}$`));
+          expect((error as Error).message).toContain(`not supported on ${surface} surfaces`);
+        }
+      }
+    }
+  });
+  it("retains fallback paths on modal surfaces", () => {
+    const blocks = [s.dividerBlock(), s.layoutBlock({label: "Grid", rows: [s.layoutRow({items: [s.layoutItem({block: s.dividerBlock()})]})], fallback: [s.dividerBlock(), s.tableBlock({rows: [[s.rawText("Cell")]]})]})];
+    for (const build of [() => s.modal({title: "Test", blocks}), () => s.Modal().title("Test").blocks(blocks).build()]) {
+      expect(build).toThrow(s.TypeMismatchError);
+      try { build(); } catch (error) {
+        expect((error as s.TypeMismatchError).path).toMatch(/(?:^|\.)blocks\[1\]\.fallback\[1\]\.type$/);
+      }
+    }
+  });
+});
