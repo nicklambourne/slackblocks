@@ -77,7 +77,7 @@ defmodule Slackblocks.Test.InvalidConstructions do
                              Blocks.DataTable.new!(
                                rows: [
                                  [Objects.RawText.new!(text: "H")],
-                                 [Objects.RawText.new!(text: String.duplicate("x", 10000))]
+                                 [Objects.RawText.new!(text: String.duplicate("x", 10_000))]
                                ],
                                caption: "Data"
                              )
@@ -96,7 +96,7 @@ defmodule Slackblocks.Test.InvalidConstructions do
                              Blocks.DataTable.new!(
                                rows: [
                                  [Objects.RawText.new!(text: "H")],
-                                 [Objects.RawText.new!(text: String.duplicate("x", 10000))]
+                                 [Objects.RawText.new!(text: String.duplicate("x", 10_000))]
                                ],
                                caption: "Data"
                              )
