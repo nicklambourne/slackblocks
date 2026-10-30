@@ -219,7 +219,7 @@ def main():
             )
         (directory / f"{slug}.mdx").write_text(text, encoding="utf-8")
     (directory / "index.mdx").write_text(
-        "---\nsidebar_position: 0\n---\n\n# Haskell API reference\n\nIntroduced in the upcoming coordinated 3.1.0 release; Hackage publication is not active yet. See [installation](/usage/installation) and the [compiler support table](/usage/compatibility). These pages cover every compiled public type, constructor, field, role conversion and helper.\n\n"
+        "---\nsidebar_position: 0\n---\n\n# Haskell API reference\n\nIntroduced in the coordinated 3.1.0 release. See [installation](/usage/installation) and the [compiler support table](/usage/compatibility). These pages cover every compiled public type, constructor, field, role conversion and helper.\n\n"
         + "\n".join(f"- [{title}](/reference/haskell/{slug})" for slug, title in DOMAINS.items())
         + "\n",
         encoding="utf-8",
