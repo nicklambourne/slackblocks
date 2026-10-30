@@ -2,6 +2,7 @@ import type { Config } from "@docusaurus/types";
 import type { Options as ClassicPresetOptions } from "@docusaurus/preset-classic";
 import { themes as prismThemes } from "prism-react-renderer";
 import { readFileSync } from "node:fs";
+import sidebarItemsGenerator from "./plugins/recipe-book-sidebar";
 
 const pythonProject = readFileSync(
   new URL("../python/pyproject.toml", import.meta.url),
@@ -98,6 +99,7 @@ function routePath(prefix: string, route: string): string {
 }
 
 function currentRoute(route: string): string {
+  if (route === "/usage/cookbook") return "/usage/recipes";
   if (!route.startsWith("/reference/")) return route;
   const page = route.slice("/reference/".length);
   return `/reference/python/${page === "utils" ? "builder" : page}`;
@@ -252,6 +254,8 @@ const config: Config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
+          sidebarItemsGenerator,
+          beforeDefaultRemarkPlugins: [require("./plugins/recipe-book-links.cjs")],
           showLastUpdateTime: true,
           lastVersion: "current",
           versions: {
@@ -329,6 +333,12 @@ const config: Config = {
       {
         redirects: [
           ...currentAliasRedirects,
+          { from: "/usage/cookbook", to: "/usage/recipes" },
+          { from: "/recipes", to: "/usage/recipes" },
+          ...["multiselect-compatibility", "workflow-state", "reliable-delivery", "live-prerequisites"].map((recipe) => ({
+            from: `/recipes/${recipe}`,
+            to: `/usage/recipes/${recipe}`,
+          })),
           ...(legacyManifest.migration.aliases_enabled
             ? historicalAliasRedirects()
             : []),

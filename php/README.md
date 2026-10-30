@@ -41,7 +41,7 @@ Properties are readonly. `$section->with(text: 'Updated')` creates a validated c
 
 - [PHP API reference](https://nicklambourne.github.io/slackblocks/reference/php)
 - [Installation and support](https://nicklambourne.github.io/slackblocks/usage/installation?language=php)
-- [Recipes](https://nicklambourne.github.io/slackblocks/usage/cookbook?language=php)
+- [Recipes](https://nicklambourne.github.io/slackblocks/usage/recipes?language=php)
 - [Tested JoliCode, native cURL and Laravel adapters](https://github.com/nicklambourne/slackblocks/tree/master/php/integrations)
 
 The package is [nicklambourne/slackblocks on Packagist](https://packagist.org/packages/nicklambourne/slackblocks).

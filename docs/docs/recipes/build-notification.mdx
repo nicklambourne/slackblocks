@@ -1,0 +1,842 @@
+---
+title: Build status notification
+slug: /usage/recipes/build-notification
+sidebar_position: 1
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "blocks": [
+      {
+        "text": {
+          "text": "Build #482 passed",
+          "type": "plain_text"
+        },
+        "type": "header"
+      },
+      {
+        "fields": [
+          {
+            "text": "*Branch*\n`main`",
+            "type": "mrkdwn"
+          },
+          {
+            "text": "*Tests*\n1,247 passed",
+            "type": "mrkdwn"
+          }
+        ],
+        "type": "section"
+      },
+      {
+        "elements": [
+          {
+            "action_id": "view",
+            "text": {
+              "text": "View build",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "url": "https://ci.example.com/482"
+          }
+        ],
+        "type": "actions"
+      }
+    ],
+    "channel": "C0123456789",
+    "mrkdwn": true,
+    "text": "Build #482 passed"
+  },
+  "java": {
+    "mrkdwn": true,
+    "text": "Build passed for example@main",
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": ":white_check_mark: example build passed"
+        }
+      },
+      {
+        "type": "section",
+        "fields": [
+          {
+            "type": "mrkdwn",
+            "text": "*Branch*\n`main`"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Commit*\n`abc1234`"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Author*\nNick"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Duration*\n3m 12s"
+          }
+        ]
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": ":calendar: Triggered by push to `main`"
+          }
+        ]
+      }
+    ]
+  },
+  "go": {
+    "blocks": [
+      {
+        "text": {
+          "text": ":white_check_mark: example build passed",
+          "type": "plain_text"
+        },
+        "type": "header"
+      },
+      {
+        "fields": [
+          {
+            "text": "*Branch*\n`main`",
+            "type": "mrkdwn"
+          },
+          {
+            "text": "*Commit*\n`abc1234`",
+            "type": "mrkdwn"
+          },
+          {
+            "text": "*Author*\nNick",
+            "type": "mrkdwn"
+          },
+          {
+            "text": "*Duration*\n3m 12s",
+            "type": "mrkdwn"
+          }
+        ],
+        "type": "section"
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "elements": [
+          {
+            "text": ":calendar: Triggered by push to `main`",
+            "type": "mrkdwn"
+          }
+        ],
+        "type": "context"
+      }
+    ],
+    "channel": "C1",
+    "mrkdwn": true,
+    "text": "Build passed for example@main"
+  },
+  "ruby": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": "Build passed"
+        }
+      },
+      {
+        "type": "section",
+        "fields": [
+          {
+            "type": "mrkdwn",
+            "text": "*Branch*\n`main`"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Status*\nPassed"
+          }
+        ]
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "Triggered by a push"
+          }
+        ]
+      }
+    ],
+    "text": "Build passed",
+    "mrkdwn": true
+  },
+  "csharp": {
+    "channel": "C1",
+    "blocks": [
+      {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": ":white_check_mark: example build passed"
+        }
+      },
+      {
+        "type": "section",
+        "fields": [
+          {
+            "type": "mrkdwn",
+            "text": "*Branch*\n`main`"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Commit*\n`abc1234`"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Author*\nNick"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Duration*\n3m 12s"
+          }
+        ]
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": ":calendar: Triggered by push to `main`"
+          }
+        ]
+      }
+    ],
+    "text": "Build passed for example@main",
+    "mrkdwn": true
+  },
+  "php": {
+    "channel": "C0123456789",
+    "blocks": [
+      {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": "Build #482 passed"
+        }
+      },
+      {
+        "type": "section",
+        "fields": [
+          {
+            "type": "mrkdwn",
+            "text": "*Branch*\n`main`"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Tests*\n1,247 passed"
+          }
+        ]
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "View build"
+            },
+            "action_id": "view",
+            "url": "https://ci.example.com/482"
+          }
+        ]
+      }
+    ],
+    "text": "Build #482 passed",
+    "mrkdwn": true
+  },
+  "rust": {
+    "channel": "C01234567",
+    "blocks": [
+      {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": "Build passed"
+        }
+      },
+      {
+        "type": "section",
+        "fields": [
+          {
+            "type": "mrkdwn",
+            "text": "*Branch*\n`main`"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Status*\nPassed"
+          }
+        ]
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "Triggered by a push"
+          }
+        ]
+      }
+    ],
+    "text": "Build passed for example/main",
+    "mrkdwn": true
+  },
+  "haskell": {
+    "blocks": [
+      {
+        "text": {
+          "text": "Build #482 passed",
+          "type": "plain_text"
+        },
+        "type": "header"
+      },
+      {
+        "fields": [
+          {
+            "text": "*Branch*\n`main`",
+            "type": "mrkdwn"
+          },
+          {
+            "text": "*Tests*\n1,247 passed",
+            "type": "mrkdwn"
+          }
+        ],
+        "type": "section"
+      },
+      {
+        "elements": [
+          {
+            "action_id": "view",
+            "text": {
+              "text": "View build",
+              "type": "plain_text"
+            },
+            "type": "button",
+            "url": "https://ci.example.com/482"
+          }
+        ],
+        "type": "actions"
+      }
+    ],
+    "channel": "C0123456789",
+    "mrkdwn": true,
+    "text": "Build #482 passed"
+  },
+  "typescript": {
+    "mrkdwn": true,
+    "text": "Build passed for example@main",
+    "channel": "C1",
+    "blocks": [
+      {
+        "text": {
+          "text": ":white_check_mark: example build passed",
+          "type": "plain_text"
+        },
+        "type": "header"
+      },
+      {
+        "fields": [
+          {
+            "text": "*Branch*\n`main`",
+            "type": "mrkdwn"
+          },
+          {
+            "text": "*Commit*\n`abc1234`",
+            "type": "mrkdwn"
+          },
+          {
+            "text": "*Author*\nNick",
+            "type": "mrkdwn"
+          },
+          {
+            "text": "*Duration*\n3m 12s",
+            "type": "mrkdwn"
+          }
+        ],
+        "type": "section"
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "elements": [
+          {
+            "text": ":calendar: Triggered by push to `main`",
+            "type": "mrkdwn"
+          }
+        ],
+        "type": "context"
+      }
+    ]
+  },
+  "python": {
+    "channel": "C1",
+    "mrkdwn": true,
+    "blocks": [
+      {
+        "type": "header",
+        "block_id": "<generated-block-id>",
+        "text": {
+          "type": "plain_text",
+          "text": ":white_check_mark: example build passed"
+        }
+      },
+      {
+        "type": "section",
+        "block_id": "<generated-block-id>",
+        "fields": [
+          {
+            "type": "mrkdwn",
+            "text": "*Branch*\n`main`"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Commit*\n`abc1234`"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Author*\nNick"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Duration*\n3m 12s"
+          }
+        ]
+      },
+      {
+        "type": "divider",
+        "block_id": "<generated-block-id>"
+      },
+      {
+        "type": "context",
+        "block_id": "<generated-block-id>",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": ":calendar: Triggered by push to `main`"
+          }
+        ]
+      }
+    ],
+    "text": "Build passed for example@main"
+  }
+};
+
+# Build status notification
+
+Summarize a build with a plain-text notification fallback, status fields and contextual detail.
+
+<RecipeOutput recipe="build-notification" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+A CI notification with summary fields and a contextual footer.
+
+
+```python
+from slackblocks import (
+    ContextBlock,
+    DividerBlock,
+    HeaderBlock,
+    Message,
+    SectionBlock,
+    Text,
+)
+
+
+def build_status_message(
+    *,
+    channel: str,
+    project: str,
+    branch: str,
+    commit: str,
+    author: str,
+    duration: str,
+    passed: bool,
+) -> Message:
+    icon = ":white_check_mark:" if passed else ":x:"
+    status = "passed" if passed else "failed"
+
+    return Message(
+        channel=channel,
+        text=f"Build {status} for {project}@{branch}",  # plain-text fallback
+        blocks=[
+            HeaderBlock(f"{icon} {project} build {status}"),
+            SectionBlock(
+                fields=[
+                    f"*Branch*\n`{branch}`",
+                    f"*Commit*\n`{commit[:7]}`",
+                    f"*Author*\n{author}",
+                    f"*Duration*\n{duration}",
+                ],
+            ),
+            DividerBlock(),
+            ContextBlock(
+                elements=[
+                    Text(f":calendar: Triggered by push to `{branch}`"),
+                ],
+            ),
+        ],
+    )
+print(build_status_message(channel="C1", project="example", branch="main", commit="abc1234", author="Nick", duration="3m 12s", passed=True).json())
+```
+
+
+
+
+
+Tips:
+
+- Always pass a `text=` fallback to `Message` — Slack uses it for desktop and mobile push notifications.
+- `SectionBlock` accepts up to 10 `fields`, each up to 2,000 characters.
+
+</Python>
+
+<TypeScript>
+
+```ts
+import {
+  ContextBlock,
+  DividerBlock,
+  HeaderBlock,
+  Markdown,
+  Message,
+  SectionBlock,
+} from "@nicklambourne/slackblocks";
+
+function buildStatusMessage(input: {
+  channel: string;
+  project: string;
+  branch: string;
+  commit: string;
+  author: string;
+  duration: string;
+  passed: boolean;
+}) {
+  const icon = input.passed ? ":white_check_mark:" : ":x:";
+  const status = input.passed ? "passed" : "failed";
+
+  return Message()
+    .channel(input.channel)
+    .text(`Build ${status} for ${input.project}@${input.branch}`)
+    .blocks(
+      HeaderBlock().text(`${icon} ${input.project} build ${status}`),
+      SectionBlock().fields(
+        `*Branch*\n\`${input.branch}\``,
+        `*Commit*\n\`${input.commit.slice(0, 7)}\``,
+        `*Author*\n${input.author}`,
+        `*Duration*\n${input.duration}`,
+      ),
+      DividerBlock(),
+      ContextBlock().elements(
+        Markdown().text(`:calendar: Triggered by push to \`${input.branch}\``),
+      ),
+    )
+    .build();
+}
+console.log(JSON.stringify(buildStatusMessage({channel: "C1", project: "example", branch: "main", commit: "abc1234", author: "Nick", duration: "3m 12s", passed: true})));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+
+	slackblocks "github.com/nicklambourne/slackblocks/go/v3"
+)
+
+func BuildStatusMessage(channel, project, branch, commit, author, duration string, passed bool) (slackblocks.Object, error) {
+	icon, status := ":x:", "failed"
+	if passed {
+		icon, status = ":white_check_mark:", "passed"
+	}
+
+	return slackblocks.NewMessage().
+		Channel(channel).
+		Text(fmt.Sprintf("Build %s for %s@%s", status, project, branch)).
+		Blocks(
+			slackblocks.NewHeaderBlock().Text(fmt.Sprintf("%s %s build %s", icon, project, status)),
+			slackblocks.NewSectionBlock().Fields(
+				fmt.Sprintf("*Branch*\n`%s`", branch),
+				fmt.Sprintf("*Commit*\n`%.7s`", commit),
+				fmt.Sprintf("*Author*\n%s", author),
+				fmt.Sprintf("*Duration*\n%s", duration),
+			),
+			slackblocks.NewDividerBlock(),
+			slackblocks.NewContextBlock().Elements(
+				slackblocks.NewMarkdown().Text(fmt.Sprintf(":calendar: Triggered by push to `%s`", branch)),
+			),
+		).
+		Build()
+}
+
+func main() {
+	value, err := BuildStatusMessage("C1", "example", "main", "abc1234", "Nick", "3m 12s", true)
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(value); err != nil {
+		panic(err)
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.block.ContextBlock;
+import io.github.nicklambourne.slackblocks.block.DividerBlock;
+import io.github.nicklambourne.slackblocks.block.HeaderBlock;
+import io.github.nicklambourne.slackblocks.block.SectionBlock;
+import io.github.nicklambourne.slackblocks.object.MarkdownText;
+import io.github.nicklambourne.slackblocks.payload.MessagePayload;
+
+public final class Recipe {
+
+  static MessagePayload buildStatusMessage(
+  String channel,
+  String project,
+  String branch,
+  String commit,
+  String author,
+  String duration,
+  boolean passed) {
+    String icon = passed ? ":white_check_mark:" : ":x:";
+    String status = passed ? "passed" : "failed";
+
+    return MessagePayload.builder()
+    .channel(channel)
+    .text("Build " + status + " for " + project + "@" + branch)
+    .blocks(
+    HeaderBlock.builder().text(icon + " " + project + " build " + status).build(),
+    SectionBlock.builder().markdownFields(
+    "*Branch*\n`" + branch + "`",
+    "*Commit*\n`" + commit.substring(0, Math.min(7, commit.length())) + "`",
+    "*Author*\n" + author,
+    "*Duration*\n" + duration).build(),
+    DividerBlock.builder().build(),
+    ContextBlock.builder().elements(
+    MarkdownText.of(":calendar: Triggered by push to `" + branch + "`")).build())
+    .build();
+  }
+  public static void main(String[] args) {
+    System.out.println(buildStatusMessage("C1", "example", "main", "abc1234", "Nick", "3m 12s", true).toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using Slackblocks.Blocks;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+static MessagePayload BuildStatusMessage(
+    string channel,
+    string project,
+    string branch,
+    string commit,
+    string author,
+    string duration,
+    bool passed)
+{
+    var icon = passed ? ":white_check_mark:" : ":x:";
+    var status = passed ? "passed" : "failed";
+
+    return new MessagePayload(
+        channel,
+        text: $"Build {status} for {project}@{branch}",
+        blocks:
+        [
+            new HeaderBlock($"{icon} {project} build {status}"),
+            new SectionBlock(fields:
+            [
+                $"*Branch*\n`{branch}`",
+                $"*Commit*\n`{commit[..Math.Min(7, commit.Length)]}`",
+                $"*Author*\n{author}",
+                $"*Duration*\n{duration}",
+            ]),
+            new DividerBlock(),
+            new ContextBlock([new MarkdownText($":calendar: Triggered by push to `{branch}`")]),
+        ]);
+}
+Console.WriteLine(BuildStatusMessage("C1", "example", "main", "abc1234", "Nick", "3m 12s", true).ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+value = MessagePayload.new(channel: "C1", text: "Build passed", blocks: [
+  HeaderBlock.new(text: "Build passed"),
+  SectionBlock.new(fields: ["*Branch*\n`main`", "*Status*\nPassed"]),
+  ContextBlock.new(elements: [MarkdownText.new(text: "Triggered by a push")])
+])
+puts value.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+```rust
+use slackblocks::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let message = MessagePayload::builder("C01234567")
+        .text("Build passed for example/main")
+        .block(HeaderBlock::builder().text("Build passed").build()?)
+        .block(
+            SectionBlock::builder()
+                .fields(["*Branch*\n`main`", "*Status*\nPassed"])
+                .build()?,
+        )
+        .block(DividerBlock::builder().build()?)
+        .block(
+            ContextBlock::builder()
+                .element(MarkdownText::new("Triggered by a push")?)
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&message)?);
+    Ok(())
+}
+```
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$message = new S\MessagePayload(
+    channel: 'C0123456789',
+    text: 'Build #482 passed',
+    blocks: [
+        new S\HeaderBlock('Build #482 passed'),
+        new S\SectionBlock(fields: ["*Branch*\n`main`", "*Tests*\n1,247 passed"]),
+        new S\ActionsBlock(elements: [
+            new S\ButtonElement(text: 'View build', actionId: 'view', url: 'https://ci.example.com/482'),
+        ]),
+    ],
+);
+echo $message->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+alias Slackblocks.{Message, Blocks, Elements}
+message = Message.new!(
+  channel: "C0123456789",
+  text: "Build #482 passed",
+  blocks: [
+    Blocks.Header.new!(text: "Build #482 passed"),
+    Blocks.Section.new!(fields: ["*Branch*\n`main`", "*Tests*\n1,247 passed"]),
+    Blocks.Actions.new!(elements: [
+      Elements.Button.new!(text: "View build", action_id: "view", url: "https://ci.example.com/482")
+    ])
+  ]
+)
+Slackblocks.to_map!(message)
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example :: Result MessagePayload
+example = do
+  title <- buildPlainText (plainText "Build #482 passed")
+  heading <- buildHeaderBlock (headerBlock title)
+  branch <- buildMarkdownText (markdownText "*Branch*\n`main`")
+  tests <- buildMarkdownText (markdownText "*Tests*\n1,247 passed")
+  details <-
+    buildSectionBlock
+      ( sectionBlock
+          { sectionBlockFields = Just (map markdownTextAsText [branch, tests])
+          }
+      )
+  label <- buildPlainText (plainText "View build")
+  button <-
+    buildButtonElement
+      ( (buttonElement label)
+          { buttonElementActionId = Just "view",
+            buttonElementUrl = Just "https://ci.example.com/482"
+          }
+      )
+  actions <- buildActionsBlock (actionsBlock [buttonElementAsElement button])
+  buildMessagePayload
+    ( (messagePayload "C0123456789")
+        { messagePayloadText = Just "Build #482 passed",
+          messagePayloadBlocks = Just [headerBlockAsBlock heading, sectionBlockAsBlock details, actionsBlockAsBlock actions]
+        }
+    )
+```
+
+</Haskell>
+
+</LanguageContent>

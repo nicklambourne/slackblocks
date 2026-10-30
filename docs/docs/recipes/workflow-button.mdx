@@ -1,0 +1,463 @@
+---
+title: Workflow button
+slug: /usage/recipes/workflow-button
+sidebar_position: 11
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "action_id": "workflow",
+    "text": {
+      "text": "Open workflow",
+      "type": "plain_text"
+    },
+    "type": "workflow_button",
+    "workflow": {
+      "trigger": {
+        "customizable_input_parameters": [
+          {
+            "name": "ticket",
+            "value": "INC-42"
+          }
+        ],
+        "url": "https://slack.com/shortcuts/Ft123/abc"
+      }
+    }
+  },
+  "java": {
+    "type": "workflow_button",
+    "text": {
+      "type": "plain_text",
+      "text": "Release"
+    },
+    "action_id": "release",
+    "workflow": {
+      "trigger": {
+        "url": "https://slack.com/shortcuts/Ft123/example",
+        "customizable_input_parameters": [
+          {
+            "name": "env",
+            "value": "prod"
+          }
+        ]
+      }
+    }
+  },
+  "go": {
+    "action_id": "release",
+    "text": {
+      "text": "Release",
+      "type": "plain_text"
+    },
+    "type": "workflow_button",
+    "workflow": {
+      "trigger": {
+        "customizable_input_parameters": [
+          {
+            "name": "env",
+            "value": "prod"
+          }
+        ],
+        "url": "https://slack.com/shortcuts/Ft123/example"
+      }
+    }
+  },
+  "ruby": {
+    "type": "workflow_button",
+    "text": {
+      "type": "plain_text",
+      "text": "Release"
+    },
+    "workflow": {
+      "trigger": {
+        "url": "https://slack.com/shortcuts/Ft123/example",
+        "customizable_input_parameters": [
+          {
+            "name": "env",
+            "value": "prod"
+          }
+        ]
+      }
+    },
+    "action_id": "release"
+  },
+  "csharp": {
+    "type": "workflow_button",
+    "text": {
+      "type": "plain_text",
+      "text": "Release"
+    },
+    "workflow": {
+      "trigger": {
+        "url": "https://slack.com/shortcuts/Ft123/example",
+        "customizable_input_parameters": [
+          {
+            "name": "env",
+            "value": "prod"
+          }
+        ]
+      }
+    },
+    "action_id": "release"
+  },
+  "php": {
+    "type": "workflow_button",
+    "text": {
+      "type": "plain_text",
+      "text": "Release"
+    },
+    "workflow": {
+      "trigger": {
+        "url": "https://slack.com/shortcuts/Ft123",
+        "customizable_input_parameters": [
+          {
+            "name": "deployment",
+            "value": "482"
+          }
+        ]
+      }
+    },
+    "action_id": "release"
+  },
+  "rust": {
+    "type": "workflow_button",
+    "text": {
+      "type": "plain_text",
+      "text": "Release"
+    },
+    "workflow": {
+      "trigger": {
+        "url": "https://slack.com/shortcuts/Ft012KXZK1MZ/example",
+        "customizable_input_parameters": [
+          {
+            "name": "env",
+            "value": "prod"
+          },
+          {
+            "name": "retries",
+            "value": "3"
+          }
+        ]
+      }
+    },
+    "action_id": "release"
+  },
+  "haskell": {
+    "action_id": "workflow",
+    "text": {
+      "text": "Open workflow",
+      "type": "plain_text"
+    },
+    "type": "workflow_button",
+    "workflow": {
+      "trigger": {
+        "customizable_input_parameters": [
+          {
+            "name": "ticket",
+            "value": "INC-42"
+          }
+        ],
+        "url": "https://slack.com/shortcuts/Ft123/abc"
+      }
+    }
+  },
+  "typescript": {
+    "text": {
+      "text": "Release",
+      "type": "plain_text"
+    },
+    "action_id": "release",
+    "workflow": {
+      "trigger": {
+        "url": "https://slack.com/shortcuts/Ft123/example",
+        "customizable_input_parameters": [
+          {
+            "name": "env",
+            "value": "prod"
+          }
+        ]
+      }
+    },
+    "type": "workflow_button"
+  },
+  "python": {
+    "channel": "#release",
+    "mrkdwn": true,
+    "blocks": [
+      {
+        "type": "section",
+        "block_id": "<generated-block-id>",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Run the release workflow with the parameters below."
+        }
+      },
+      {
+        "type": "actions",
+        "block_id": "<generated-block-id>",
+        "elements": [
+          {
+            "type": "workflow_button",
+            "text": {
+              "type": "plain_text",
+              "text": "Release"
+            },
+            "action_id": "release",
+            "workflow": {
+              "trigger": {
+                "url": "https://slack.com/shortcuts/Ft012KXZK1MZ/...",
+                "customizable_input_parameters": [
+                  {
+                    "name": "env",
+                    "value": "prod"
+                  },
+                  {
+                    "name": "retries",
+                    "value": "3"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "text": ""
+  }
+};
+
+# Workflow button
+
+Build a workflow trigger with named input parameters. Replace the example URL with your real link trigger; this example does not activate a workflow.
+
+<RecipeOutput recipe="workflow-button" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+`Workflow.from_url` collapses the most common workflow construction:
+
+```python
+from slackblocks import (
+    ActionsBlock,
+    Message,
+    SectionBlock,
+    Workflow,
+    WorkflowButton,
+)
+
+msg = Message(
+    channel="#release",
+    blocks=[
+        SectionBlock("Run the release workflow with the parameters below."),
+        ActionsBlock(
+            elements=[
+                WorkflowButton(
+                    text="Release",
+                    action_id="release",
+                    workflow=Workflow.from_url(
+                        "https://slack.com/shortcuts/Ft012KXZK1MZ/...",
+                        env="prod",
+                        retries="3",
+                    ),
+                ),
+            ],
+        ),
+    ],
+)
+print(msg.json())
+```
+
+Each keyword pair becomes one `InputParameter` on the underlying `Trigger`. Calling `Workflow.from_url(url)` with no parameters omits the `customizable_input_parameters` field.
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const workflow = S.Workflow().trigger(S.Trigger().url("https://slack.com/shortcuts/Ft123/example")
+  .customizableInputParameters(S.InputParameter().name("env").value("prod")));
+const button = S.WorkflowButton().text("Release").actionId("release").workflow(workflow).build();
+console.log(JSON.stringify(button));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+	"encoding/json"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"os"
+)
+
+func main() {
+	value, err := s.NewWorkflowButton().Text("Release").ActionID("release").Workflow(
+		s.NewWorkflow().Trigger(s.NewTrigger().URL("https://slack.com/shortcuts/Ft123/example").CustomizableInputParameters(
+			s.NewInputParameter().Name("env").Value("prod"),
+		)),
+	).Build()
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(value); err != nil {
+		panic(err)
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    var workflow = Workflow.builder().trigger(Trigger.builder().url("https://slack.com/shortcuts/Ft123/example")
+    .customizableInputParameters(InputParameter.builder().name("env").value("prod").build()).build()).build();
+    var value = WorkflowButtonElement.builder().text("Release").actionId("release").workflow(workflow).build();
+    System.out.println(value.toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+var workflow = new Workflow(new Trigger("https://slack.com/shortcuts/Ft123/example",
+    customizableInputParameters: [new InputParameter("env", "prod")]));
+var value = new WorkflowButtonElement("Release", workflow, "release");
+Console.WriteLine(value.ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+workflow = Workflow.new(trigger: Trigger.new(url: "https://slack.com/shortcuts/Ft123/example",
+  customizable_input_parameters: [InputParameter.new(name: "env", value: "prod")]))
+value = WorkflowButtonElement.new(text: "Release", workflow: workflow, action_id: "release")
+puts value.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+Input parameters retain iterator order. An empty iterator omits the parameter list.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let workflow = Workflow::from_url(
+        "https://slack.com/shortcuts/Ft012KXZK1MZ/example",
+        [
+            InputParameter::builder()
+                .name("env")
+                .value("prod")
+                .build()?,
+            InputParameter::builder()
+                .name("retries")
+                .value("3")
+                .build()?,
+        ],
+    )?;
+    let button = WorkflowButtonElement::builder()
+        .text("Release")
+        .action_id("release")
+        .workflow(workflow)
+        .build()?;
+    println!("{}", serde_json::to_string(&button)?);
+    Ok(())
+}
+```
+
+See [Troubleshooting](/usage/troubleshooting) for typed error handling, omission rules and safe editing.
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$workflow = S\Workflow::fromUrl('https://slack.com/shortcuts/Ft123', [new S\InputParameter(name: 'deployment', value: '482')]);
+echo (new S\WorkflowButtonElement(text: 'Release', workflow: $workflow, actionId: 'release'))->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+alias Slackblocks.{Elements.WorkflowButton, Objects.Workflow, Objects.InputParameter}
+workflow = Workflow.from_url!("https://slack.com/shortcuts/Ft123/abc", [
+  InputParameter.new!(name: "ticket", value: "INC-42")
+])
+WorkflowButton.new!(text: "Open workflow", workflow: workflow, action_id: "workflow")
+|> Slackblocks.to_map!()
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example = do
+  parameter <- buildInputParameter (inputParameter "ticket" "INC-42")
+  workflow <- workflowFromURL "https://slack.com/shortcuts/Ft123/abc" [parameter]
+  label <- buildPlainText (plainText "Open workflow")
+  buildWorkflowButtonElement (workflowButtonElement label workflow "workflow")
+```
+
+</Haskell>
+
+</LanguageContent>

@@ -1,0 +1,274 @@
+---
+title: Ephemeral slash-command response
+slug: /usage/recipes/ephemeral-response
+sidebar_position: 6
+---
+
+
+import LanguageContent, { Python, TypeScript, Go, Java, CSharp, Ruby, Rust, PHP, Elixir, Haskell } from '@site/src/components/LanguageContent';
+import RecipeOutput from '@site/src/components/RecipeOutput';
+
+export const recipeOutputs = {
+  "elixir": {
+    "mrkdwn": true,
+    "replace_original": false,
+    "response_type": "ephemeral",
+    "text": "Only you can see this"
+  },
+  "java": {
+    "mrkdwn": true,
+    "text": "Only you can see this",
+    "replace_original": false,
+    "response_type": "ephemeral"
+  },
+  "go": {
+    "mrkdwn": true,
+    "replace_original": false,
+    "response_type": "ephemeral",
+    "text": "Only you can see this"
+  },
+  "ruby": {
+    "text": "Only you can see this",
+    "mrkdwn": true,
+    "replace_original": false,
+    "response_type": "ephemeral"
+  },
+  "csharp": {
+    "text": "Only you can see this",
+    "mrkdwn": true,
+    "replace_original": false,
+    "response_type": "ephemeral"
+  },
+  "php": {
+    "text": "Only you can see this",
+    "mrkdwn": true,
+    "replace_original": false,
+    "response_type": "ephemeral"
+  },
+  "rust": {
+    "blocks": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Searching... I will DM you when done."
+        }
+      }
+    ],
+    "text": "",
+    "mrkdwn": true,
+    "replace_original": false,
+    "response_type": "ephemeral"
+  },
+  "haskell": {
+    "mrkdwn": true,
+    "replace_original": false,
+    "response_type": "ephemeral",
+    "text": "Only you can see this"
+  },
+  "typescript": {
+    "mrkdwn": true,
+    "text": "Only you can see this",
+    "replace_original": false,
+    "response_type": "ephemeral"
+  },
+  "python": {
+    "mrkdwn": true,
+    "blocks": [
+      {
+        "type": "section",
+        "block_id": "<generated-block-id>",
+        "text": {
+          "type": "mrkdwn",
+          "text": ":mag: Searching... I'll DM you when I'm done."
+        }
+      }
+    ],
+    "text": "",
+    "replace_original": false,
+    "response_type": "ephemeral"
+  }
+};
+
+# Ephemeral slash-command response
+
+Explicitly request a private response for the invoking user. Return the serialized body from the relevant slash-command or interaction handler.
+
+<RecipeOutput recipe="ephemeral-response" outputs={recipeOutputs} />
+
+## Code
+
+<LanguageContent>
+
+<Python>
+
+Reply to a slash command with a message only the invoking user sees:
+
+```python
+from slackblocks import MessageResponse, SectionBlock
+
+body = MessageResponse(
+    blocks=SectionBlock(":mag: Searching... I'll DM you when I'm done."),
+    ephemeral=True,
+).json()
+print(body)  # return this body from your slash-command handler
+```
+
+</Python>
+
+<TypeScript>
+
+```ts
+import * as S from "@nicklambourne/slackblocks";
+
+const response = S.MessageResponse().text("Only you can see this").responseType("ephemeral").build();
+console.log(JSON.stringify(response));
+```
+
+</TypeScript>
+
+<Go>
+
+```go
+package main
+
+import (
+	"encoding/json"
+	s "github.com/nicklambourne/slackblocks/go/v3"
+	"os"
+)
+
+func main() {
+	value, err := s.NewMessageResponse().Text("Only you can see this").ResponseType("ephemeral").Build()
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(value); err != nil {
+		panic(err)
+	}
+}
+```
+
+</Go>
+
+<Java>
+
+```java
+import io.github.nicklambourne.slackblocks.*;
+import io.github.nicklambourne.slackblocks.block.*;
+import io.github.nicklambourne.slackblocks.component.*;
+import io.github.nicklambourne.slackblocks.element.*;
+import io.github.nicklambourne.slackblocks.object.*;
+import io.github.nicklambourne.slackblocks.payload.*;
+import java.util.List;
+import java.util.Map;
+
+public final class Recipe {
+  public static void main(String[] args) throws Exception {
+    var value = MessageResponse.builder().text("Only you can see this").responseType(ResponseType.EPHEMERAL).build();
+    System.out.println(value.toJson());
+  }
+}
+```
+
+</Java>
+
+<CSharp>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Slackblocks;
+using Slackblocks.Blocks;
+using Slackblocks.Components;
+using Slackblocks.Elements;
+using Slackblocks.Objects;
+using Slackblocks.Payloads;
+
+var value = new MessageResponse(text: "Only you can see this", responseType: ResponseType.Ephemeral);
+Console.WriteLine(value.ToJson());
+```
+
+</CSharp>
+
+<Ruby>
+
+```ruby
+require "slackblocks"
+include Slackblocks
+
+value = MessageResponse.new(text: "Only you can see this", response_type: ResponseType::EPHEMERAL)
+puts value.to_json
+```
+
+</Ruby>
+
+<Rust>
+
+Set response visibility explicitly when it matters; return this JSON in your interaction handler.
+
+```rust
+use slackblocks::*;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let response = MessageResponse::builder()
+        .response_type(ResponseType::Ephemeral)
+        .block(
+            SectionBlock::builder()
+                .text("Searching... I will DM you when done.")
+                .build()?,
+        )
+        .build()?;
+    println!("{}", serde_json::to_string(&response)?);
+    Ok(())
+}
+```
+
+</Rust>
+
+<PHP>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
+use Slackblocks as S;
+
+$response = new S\MessageResponse(text: 'Only you can see this', responseType: S\ResponseType::Ephemeral);
+echo $response->toJson();
+```
+
+</PHP>
+
+<Elixir>
+
+```elixir
+Slackblocks.MessageResponse.new!(text: "Only you can see this", response_type: :ephemeral)
+|> Slackblocks.to_map!()
+```
+
+</Elixir>
+
+<Haskell>
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as Map
+import Slackblocks
+
+example =
+  buildMessageResponse
+    ( messageResponse
+        { messageResponseText = Just "Only you can see this",
+          messageResponseResponseType = Just ResponseTypeEphemeral
+        }
+    )
+```
+
+</Haskell>
+
+</LanguageContent>

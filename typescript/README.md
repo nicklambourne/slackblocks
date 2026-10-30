@@ -102,7 +102,7 @@ package's limits registry.
 - [Using Blocks](https://nicklambourne.github.io/slackblocks/usage/using_blocks) — every
   block type with code in both languages, the JSON it produces, and screenshots.
 - [Sending Messages](https://nicklambourne.github.io/slackblocks/usage/sending_messages)
-- [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/cookbook) — end-to-end
+- [Recipe Book](https://nicklambourne.github.io/slackblocks/usage/recipes) — end-to-end
   recipes for build notifications, approval requests, modals, and more.
 - [TypeScript API Reference](https://nicklambourne.github.io/slackblocks/reference/typescript)
 - [Troubleshooting & FAQ](https://nicklambourne.github.io/slackblocks/usage/troubleshooting)
