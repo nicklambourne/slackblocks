@@ -1242,6 +1242,30 @@
       "category": "length-exceeded",
       "constraint": "layout.surface.view_blocks",
       "description": "A view rejects 101 top-level layout blocks."
+    },
+    {
+      "id": "layout-home-alert",
+      "category": "type-mismatch",
+      "constraint": "layout.home.child_surface",
+      "description": "A layout must not hide a modal-only alert on Home."
+    },
+    {
+      "id": "layout-modal-fallback-table",
+      "category": "type-mismatch",
+      "constraint": "layout.fallback.surface",
+      "description": "A layout fallback preserves the receiving modal surface restriction on tables."
+    },
+    {
+      "id": "layout-chart-three-items",
+      "category": "invalid-usage",
+      "constraint": "layout.row.three_item_chart_weight",
+      "description": "A middle chart with omitted standard width has no strict majority over two standard siblings."
+    },
+    {
+      "id": "layout-nested-table-total",
+      "category": "length-exceeded",
+      "constraint": "layout.message.nested_table_total",
+      "description": "Data tables inside layouts inside a container still count toward the existing message aggregate text limit."
     }
   ]
 }

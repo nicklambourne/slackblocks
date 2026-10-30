@@ -122,7 +122,7 @@ matching discriminator. This is a partial parser, not a general Slack JSON loade
 | --- | --- |
 | Supported | Alert, Divider, File, Header, Image, Markdown, Video |
 | Supported subset | Section without accessory; Context with text elements only |
-| Raises `NotImplementedError` | Actions, Input, RichText, Table, Card, Carousel, Container, ContextActions, DataTable, DataVisualization, TaskCard, Plan; Section with accessory; Context with images |
+| Raises `NotImplementedError` | Actions, Input, RichText, Table, Card, Carousel, Container, Layout (3.2.0+), ContextActions, DataTable, DataVisualization, TaskCard, Plan; Section with accessory; Context with images |
 
 Unknown future fields are ignored, so this is not a lossless storage format.
 Keep the original JSON when forwarding or archiving unsupported or future fields.
