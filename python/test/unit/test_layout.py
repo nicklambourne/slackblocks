@@ -1,16 +1,22 @@
+from itertools import product
+
 import pytest
 
 from slackblocks import (
     AlertBlock,
     Block,
+    ChartSegment,
     ContainerBlock,
+    DataVisualizationBlock,
     DividerBlock,
     HomeTabView,
+    InvalidUsageError,
     LayoutBlock,
     LayoutItem,
     LayoutRow,
     Message,
     ModalView,
+    PieChart,
     RawText,
     TableBlock,
     TypeMismatchError,
@@ -102,3 +108,31 @@ def test_surface_error_retains_the_fallback_path():
     assert str(caught.value) == (
         "blocks[1].fallback[1] type 'table' is not supported on modal surfaces"
     )
+
+
+@pytest.mark.parametrize(
+    ("widths", "chart_position"),
+    [
+        (widths, position)
+        for count in range(1, 4)
+        for widths in product((None, "narrow", "standard", "wide"), repeat=count)
+        for position in range(count)
+    ],
+)
+def test_chart_requires_a_strict_majority_in_every_position(widths, chart_position):
+    chart = DataVisualizationBlock("Chart", PieChart([ChartSegment("One", 1)]))
+    items = [
+        LayoutItem(
+            chart if index == chart_position else DividerBlock(),
+            **({"width": width} if width is not None else {}),
+        )
+        for index, width in enumerate(widths)
+    ]
+    weights = [{None: 2, "narrow": 1, "standard": 2, "wide": 3}[width] for width in widths]
+    if weights[chart_position] > sum(weights) - weights[chart_position]:
+        row = LayoutRow(items)._resolve()
+        for value, width in zip(row["items"], widths, strict=True):
+            assert value.get("width") == width
+    else:
+        with pytest.raises(InvalidUsageError, match="more than half"):
+            LayoutRow(items)

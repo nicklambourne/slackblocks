@@ -98,6 +98,24 @@ func copies[T any](count int, factory func(int) T) []T {
 
 func invalidConstruction(id string) error {
 	switch id {
+	case "layout-home-alert":
+		return buildError(slackblocks.NewHomeTab().Blocks(slackblocks.NewLayoutBlock().Label("Layout").Rows(slackblocks.NewLayoutRow().Items(slackblocks.NewLayoutItem().Block(slackblocks.NewAlertBlock().Text("Modal only"))))))
+	case "layout-modal-fallback-table":
+		return buildError(slackblocks.NewModal().Title("Grid").Blocks(layoutGrid().Fallback(slackblocks.NewTableBlock().Rows([]slackblocks.TableCell{rawText("Cell")}))))
+	case "layout-chart-three-items":
+		return buildError(slackblocks.NewLayoutRow().Items(
+			slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock()),
+			slackblocks.NewLayoutItem().Block(slackblocks.NewDataVisualizationBlock().Title("Chart").Chart(slackblocks.NewPieChart().Segments(slackblocks.NewChartSegment().Label("One").Value(1)))),
+			slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock()),
+		))
+	case "layout-nested-table-total":
+		nested := func() slackblocks.Block {
+			return slackblocks.NewLayoutBlock().Label("Layout").Rows(slackblocks.NewLayoutRow().Items(slackblocks.NewLayoutItem().Block(
+				slackblocks.NewDataTableBlock().Caption("Data").Rows([]slackblocks.DataTableCell{rawText("H")}, []slackblocks.DataTableCell{rawText(strings.Repeat("x", 10000))}),
+			)))
+		}
+		return buildError(slackblocks.NewMessage().Channel("C123").Blocks(slackblocks.NewContainerBlock().Title("Group").ChildBlocks(nested(), nested())))
+
 	case "layout-message-budget":
 		return buildError(slackblocks.NewMessage().Channel("C123").Blocks(copies(51, func(int) slackblocks.Block {
 			return slackblocks.NewLayoutBlock().Label("Layout").Rows([]*slackblocks.LayoutRowBuilder{slackblocks.NewLayoutRow().Items([]*slackblocks.LayoutItemBuilder{slackblocks.NewLayoutItem().Block(slackblocks.NewDividerBlock())}...)}...)

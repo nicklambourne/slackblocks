@@ -4,6 +4,112 @@ defmodule Slackblocks.Test.InvalidConstructions do
   # Explicit native attempts, maintained independently of the fixture JSON and API generator.
   def all do
     [
+      {"layout-home-alert",
+       fn ->
+         Views.Home.new!(
+           blocks: [
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [
+                     Objects.LayoutItem.new!(
+                       block: Blocks.Alert.new!(text: Objects.PlainText.new!(text: "Modal only"))
+                     )
+                   ]
+                 )
+               ]
+             )
+           ]
+         )
+       end},
+      {"layout-modal-fallback-table",
+       fn ->
+         Views.Modal.new!(
+           title: Objects.PlainText.new!(text: "Grid"),
+           blocks: [
+             Blocks.Layout.new!(
+               label: "Layout",
+               rows: [
+                 Objects.LayoutRow.new!(
+                   items: [Objects.LayoutItem.new!(block: Blocks.Divider.new!())]
+                 )
+               ],
+               fallback: [Blocks.Table.new!(rows: [[Objects.RawText.new!(text: "Cell")]])]
+             )
+           ]
+         )
+       end},
+      {"layout-chart-three-items",
+       fn ->
+         Objects.LayoutRow.new!(
+           items: [
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!()),
+             Objects.LayoutItem.new!(
+               block:
+                 Blocks.DataVisualization.new!(
+                   title: "Chart",
+                   chart:
+                     Objects.PieChart.new!(
+                       segments: [Objects.ChartSegment.new!(label: "One", value: 1)]
+                     )
+                 )
+             ),
+             Objects.LayoutItem.new!(block: Blocks.Divider.new!())
+           ]
+         )
+       end},
+      {"layout-nested-table-total",
+       fn ->
+         Slackblocks.Message.new!(
+           channel: "C123",
+           blocks: [
+             Blocks.Container.new!(
+               title: Objects.PlainText.new!(text: "Group"),
+               child_blocks: [
+                 Blocks.Layout.new!(
+                   label: "Layout",
+                   rows: [
+                     Objects.LayoutRow.new!(
+                       items: [
+                         Objects.LayoutItem.new!(
+                           block:
+                             Blocks.DataTable.new!(
+                               rows: [
+                                 [Objects.RawText.new!(text: "H")],
+                                 [Objects.RawText.new!(text: String.duplicate("x", 10000))]
+                               ],
+                               caption: "Data"
+                             )
+                         )
+                       ]
+                     )
+                   ]
+                 ),
+                 Blocks.Layout.new!(
+                   label: "Layout",
+                   rows: [
+                     Objects.LayoutRow.new!(
+                       items: [
+                         Objects.LayoutItem.new!(
+                           block:
+                             Blocks.DataTable.new!(
+                               rows: [
+                                 [Objects.RawText.new!(text: "H")],
+                                 [Objects.RawText.new!(text: String.duplicate("x", 10000))]
+                               ],
+                               caption: "Data"
+                             )
+                         )
+                       ]
+                     )
+                   ]
+                 )
+               ]
+             )
+           ]
+         )
+       end},
       {"layout-message-budget",
        fn ->
          Slackblocks.Message.new!(

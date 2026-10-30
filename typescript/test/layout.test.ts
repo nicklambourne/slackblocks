@@ -73,3 +73,28 @@ describe("layout surface error paths", () => {
     }
   });
 });
+
+
+describe("chart width allocation", () => {
+  const widths = [undefined, "narrow", "standard", "wide"] as const;
+  const weight = (width: typeof widths[number]) => width === "narrow" ? 1 : width === "wide" ? 3 : 2;
+  for (const count of [1, 2, 3]) {
+    const combinations = widths.flatMap(a => count === 1 ? [[a]] : widths.flatMap(b => count === 2 ? [[a, b]] : widths.map(c => [a, b, c])));
+    for (const allocation of combinations) {
+      for (let chartPosition = 0; chartPosition < count; chartPosition++) {
+        it(`requires a strict majority: ${allocation.map(w => w ?? "omitted").join("/")}, chart ${chartPosition}`, () => {
+          const chart = s.dataVisualizationBlock({title: "Chart", chart: s.pieChart([s.chartSegment({label: "One", value: 1})])});
+          const items = allocation.map((width, index) => s.layoutItem({block: index === chartPosition ? chart : s.dividerBlock(), ...(width === undefined ? {} : {width})}));
+          const chartWeight = weight(allocation[chartPosition]);
+          const totalWeight = allocation.reduce((total, width) => total + weight(width), 0);
+          if (chartWeight > totalWeight - chartWeight) {
+            const row = s.layoutRow({items});
+            expect(row.items.map(item => item.width)).toEqual(allocation);
+          } else {
+            expect(() => s.layoutRow({items})).toThrow(s.InvalidUsageError);
+          }
+        });
+      }
+    }
+  }
+});

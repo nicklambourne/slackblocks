@@ -204,6 +204,79 @@ def data_table_with_content(length: int) -> DataTableBlock:
 
 
 INVALID_CASES: dict[str, Callable[[], object]] = {
+    "layout-home-alert": lambda: HomeTabView(
+        blocks=[
+            LayoutBlock(
+                label="Layout",
+                rows=[
+                    LayoutRow(
+                        items=[LayoutItem(block=AlertBlock(text=PlainText(text="Modal only")))]
+                    )
+                ],
+            )
+        ]
+    ),
+    "layout-modal-fallback-table": lambda: ModalView(
+        title=PlainText(text="Grid"),
+        blocks=[
+            LayoutBlock(
+                label="Layout",
+                rows=[LayoutRow(items=[LayoutItem(block=DividerBlock())])],
+                fallback=[TableBlock(rows=[[RawText(text="Cell")]])],
+            )
+        ],
+    ),
+    "layout-chart-three-items": lambda: LayoutRow(
+        items=[
+            LayoutItem(block=DividerBlock()),
+            LayoutItem(
+                block=DataVisualizationBlock(
+                    title="Chart", chart=PieChart(segments=[ChartSegment(label="One", value=1)])
+                )
+            ),
+            LayoutItem(block=DividerBlock()),
+        ]
+    ),
+    "layout-nested-table-total": lambda: Message(
+        channel="C123",
+        blocks=[
+            ContainerBlock(
+                title=PlainText(text="Group"),
+                child_blocks=[
+                    LayoutBlock(
+                        label="Layout",
+                        rows=[
+                            LayoutRow(
+                                items=[
+                                    LayoutItem(
+                                        block=DataTableBlock(
+                                            rows=[[RawText(text="H")], [RawText(text="x" * 10000)]],
+                                            caption="Data",
+                                        )
+                                    )
+                                ]
+                            )
+                        ],
+                    ),
+                    LayoutBlock(
+                        label="Layout",
+                        rows=[
+                            LayoutRow(
+                                items=[
+                                    LayoutItem(
+                                        block=DataTableBlock(
+                                            rows=[[RawText(text="H")], [RawText(text="x" * 10000)]],
+                                            caption="Data",
+                                        )
+                                    )
+                                ]
+                            )
+                        ],
+                    ),
+                ],
+            )
+        ],
+    ),
     "layout-message-budget": lambda: Message(
         channel="C123",
         blocks=[

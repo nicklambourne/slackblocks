@@ -2151,7 +2151,11 @@ invalid188 = do
 
 invalidCases :: [(String, Maybe (Result ()), Result ())]
 invalidCases =
-  [ ("layout-message-budget", Just layoutMessageBudget, void (fromValue (object ["channel" .= String "C123", "blocks" .= replicate 51 layoutBudgetWire]) :: Result MessagePayload)),
+  [ ("layout-home-alert", Just invalidLayoutAudit0, void (fromValue (object ["type" .= String "home", "blocks" .= toJSON ([object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "alert", "text" .= object ["type" .= String "plain_text", "text" .= String "Modal only"]]]] :: [Value])]] :: [Value])]] :: [Value])]) :: Result HomeTabView)),
+    ("layout-modal-fallback-table", Just invalidLayoutAudit1, void (fromValue (object ["type" .= String "modal", "title" .= object ["type" .= String "plain_text", "text" .= String "Grid"], "blocks" .= toJSON ([object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])]] :: [Value]), "fallback" .= toJSON ([object ["type" .= String "table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "Cell"]] :: [Value])] :: [Value])]] :: [Value])]] :: [Value])]) :: Result ModalView)),
+    ("layout-chart-three-items", Just invalidLayoutAudit2, void (fromValue (object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]], object ["block" .= object ["type" .= String "data_visualization", "title" .= String "Chart", "chart" .= object ["type" .= String "pie", "segments" .= toJSON ([object ["label" .= String "One", "value" .= Number 1]] :: [Value])]]], object ["block" .= object ["type" .= String "divider"]]] :: [Value])]) :: Result LayoutRow)),
+    ("layout-nested-table-total", Just invalidLayoutAudit3, void (fromValue (object ["channel" .= String "C123", "blocks" .= toJSON ([object ["type" .= String "container", "title" .= object ["type" .= String "plain_text", "text" .= String "Group"], "child_blocks" .= toJSON ([object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "data_table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "H"]] :: [Value]), toJSON ([object ["type" .= String "raw_text", "text" .= String (T.replicate 10000 "x")]] :: [Value])] :: [Value]), "caption" .= String "Data"]]] :: [Value])]] :: [Value])], object ["type" .= String "layout", "label" .= String "Layout", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "data_table", "rows" .= toJSON ([toJSON ([object ["type" .= String "raw_text", "text" .= String "H"]] :: [Value]), toJSON ([object ["type" .= String "raw_text", "text" .= String (T.replicate 10000 "x")]] :: [Value])] :: [Value]), "caption" .= String "Data"]]] :: [Value])]] :: [Value])]] :: [Value])]] :: [Value])]) :: Result MessagePayload)),
+    ("layout-message-budget", Just layoutMessageBudget, void (fromValue (object ["channel" .= String "C123", "blocks" .= replicate 51 layoutBudgetWire]) :: Result MessagePayload)),
     ("layout-view-budget", Just layoutViewBudget, void (fromValue (object ["type" .= String "home", "blocks" .= replicate 101 layoutBudgetWire]) :: Result HomeTabView)),
     ("layout-label-empty", Just invalidLayout0, void (fromValue (object ["type" .= String "layout", "label" .= String "", "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])]] :: [Value])]) :: Result LayoutBlock)),
     ("layout-label-too-long", Just invalidLayout1, void (fromValue (object ["type" .= String "layout", "label" .= String (T.replicate 151 "😀"), "rows" .= toJSON ([object ["items" .= toJSON ([object ["block" .= object ["type" .= String "divider"]]] :: [Value])]] :: [Value])]) :: Result LayoutBlock)),
@@ -2622,3 +2626,57 @@ validLayoutChartMajority = do
   v6 <- buildLayoutRow (layoutRow [v3, v5])
   v7 <- buildLayoutBlock ((layoutBlock "Chart summary" [v6]) {layoutBlockBlockId = Just "layout"})
   pure (toJSON v7)
+
+invalidLayoutAudit0 :: Result ()
+invalidLayoutAudit0 = do
+  v0 <- buildPlainText (plainText ("Modal only"))
+  v1 <- buildAlertBlock (alertBlock (plainTextAsText v0))
+  v2 <- buildLayoutItem (layoutItem (alertBlockAsLayoutChild v1))
+  v3 <- buildLayoutRow (layoutRow ([v2]))
+  v4 <- buildLayoutBlock (layoutBlock ("Layout") ([v3]))
+  v5 <- buildHomeTabView (homeTabView ([layoutBlockAsBlock v4]))
+  v5 `seq` pure ()
+
+invalidLayoutAudit1 :: Result ()
+invalidLayoutAudit1 = do
+  v0 <- buildPlainText (plainText ("Grid"))
+  v1 <- buildDividerBlock (dividerBlock)
+  v2 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v1))
+  v3 <- buildLayoutRow (layoutRow ([v2]))
+  v4 <- buildRawText (rawText ("Cell"))
+  v5 <- buildTableBlock (tableBlock ([[rawTextAsTableCell v4]]))
+  v6 <- buildLayoutBlock ((layoutBlock ("Layout") ([v3])) {layoutBlockFallback = Just ([tableBlockAsLayoutFallback v5])})
+  v7 <- buildModalView (modalView (v0) ([layoutBlockAsBlock v6]))
+  v7 `seq` pure ()
+
+invalidLayoutAudit2 :: Result ()
+invalidLayoutAudit2 = do
+  v0 <- buildDividerBlock (dividerBlock)
+  v1 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v0))
+  v2 <- buildChartSegment (chartSegment ("One") (1))
+  v3 <- buildPieChart (pieChart ([v2]))
+  v4 <- buildDataVisualizationBlock (dataVisualizationBlock ("Chart") (pieChartAsChart v3))
+  v5 <- buildLayoutItem (layoutItem (dataVisualizationBlockAsLayoutChild v4))
+  v6 <- buildDividerBlock (dividerBlock)
+  v7 <- buildLayoutItem (layoutItem (dividerBlockAsLayoutChild v6))
+  v8 <- buildLayoutRow (layoutRow ([v1, v5, v7]))
+  v8 `seq` pure ()
+
+invalidLayoutAudit3 :: Result ()
+invalidLayoutAudit3 = do
+  v0 <- buildPlainText (plainText ("Group"))
+  v1 <- buildRawText (rawText ("H"))
+  v2 <- buildRawText (rawText ((T.replicate 10000 "x")))
+  v3 <- buildDataTableBlock (dataTableBlock ([[rawTextAsDataTableCell v1], [rawTextAsDataTableCell v2]]) ("Data"))
+  v4 <- buildLayoutItem (layoutItem (dataTableBlockAsLayoutChild v3))
+  v5 <- buildLayoutRow (layoutRow ([v4]))
+  v6 <- buildLayoutBlock (layoutBlock ("Layout") ([v5]))
+  v7 <- buildRawText (rawText ("H"))
+  v8 <- buildRawText (rawText ((T.replicate 10000 "x")))
+  v9 <- buildDataTableBlock (dataTableBlock ([[rawTextAsDataTableCell v7], [rawTextAsDataTableCell v8]]) ("Data"))
+  v10 <- buildLayoutItem (layoutItem (dataTableBlockAsLayoutChild v9))
+  v11 <- buildLayoutRow (layoutRow ([v10]))
+  v12 <- buildLayoutBlock (layoutBlock ("Layout") ([v11]))
+  v13 <- buildContainerBlock ((containerBlock ([layoutBlockAsBlock v6, layoutBlockAsBlock v12])) {containerBlockTitle = Just (v0)})
+  v14 <- buildMessagePayload ((messagePayload ("C123")) {messagePayloadBlocks = Just ([containerBlockAsBlock v13])})
+  v14 `seq` pure ()

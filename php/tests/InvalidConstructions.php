@@ -13,6 +13,11 @@ final class InvalidConstructions
     public static function all(): array
     {
         return [
+            "layout-home-alert" => static fn(): S\Value => new S\HomeTabView(blocks: [new S\LayoutBlock(label: "Layout", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\AlertBlock(text: new S\PlainText(text: "Modal only")))])])]),
+            "layout-modal-fallback-table" => static fn(): S\Value => new S\ModalView(title: new S\PlainText(text: "Grid"), blocks: [new S\LayoutBlock(label: "Layout", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DividerBlock())])], fallback: [new S\TableBlock(rows: [[new S\RawText(text: "Cell")]])])]),
+            "layout-chart-three-items" => static fn(): S\Value => new S\LayoutRow(items: [new S\LayoutItem(block: new S\DividerBlock()), new S\LayoutItem(block: new S\DataVisualizationBlock(title: "Chart", chart: new S\PieChart(segments: [new S\ChartSegment(label: "One", value: 1)]))), new S\LayoutItem(block: new S\DividerBlock())]),
+            "layout-nested-table-total" => static fn(): S\Value => new S\MessagePayload(channel: "C123", blocks: [new S\ContainerBlock(title: new S\PlainText(text: "Group"), childBlocks: [new S\LayoutBlock(label: "Layout", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DataTableBlock(rows: [[new S\RawText(text: "H")], [new S\RawText(text: str_repeat("x",10000))]], caption: "Data"))])]), new S\LayoutBlock(label: "Layout", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DataTableBlock(rows: [[new S\RawText(text: "H")], [new S\RawText(text: str_repeat("x",10000))]], caption: "Data"))])])])]),
+
             "layout-message-budget" => static fn(): S\Value => new S\MessagePayload(channel: "C123", blocks: array_fill(0, 51, new S\LayoutBlock(label: "Layout", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DividerBlock())])]))),
             "layout-view-budget" => static fn(): S\Value => new S\HomeTabView(blocks: array_fill(0, 101, new S\LayoutBlock(label: "Layout", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DividerBlock())])]))),
             "layout-label-empty" => static fn(): S\Value => new S\LayoutBlock(label: "", rows: [new S\LayoutRow(items: [new S\LayoutItem(block: new S\DividerBlock())])]),
