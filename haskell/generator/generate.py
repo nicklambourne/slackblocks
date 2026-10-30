@@ -191,7 +191,7 @@ def generate(model):
               'import Data.Aeson (FromJSON(..), ToJSON(..), Value(..), object, (.=))','import Data.Map.Strict (Map)','import qualified Data.Map.Strict as Map',
               'import Data.Scientific (Scientific)','import Data.Text (Text)','import Slackblocks.Validation','import Slackblocks.Json (FromSlackJSON(..))','import Slackblocks.Internal.Wire',
               'import Slackblocks.Internal.Rules (validateFields, checkIntegerBounds, standaloneTask)','import Slackblocks.Style',
-              '-- | Coordinated package version, distinct from the shared contract.', 'packageVersion :: Text', '-- | Shared Block Kit contract version implemented by this package.', 'specVersion :: Text','packageVersion = "3.1.0"', 'specVersion = '+string(json.loads((ROOT/'spec/manifest.json').read_text(encoding="utf-8"))['spec_version']),'']
+              '-- | Coordinated package version, distinct from the shared contract.', 'packageVersion :: Text', '-- | Shared Block Kit contract version implemented by this package.', 'specVersion :: Text','packageVersion = "3.2.0"', 'specVersion = '+string(json.loads((ROOT/'spec/manifest.json').read_text(encoding="utf-8"))['spec_version']),'']
     return '\n'.join(header+lines)+'\n'
 
 

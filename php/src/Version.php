@@ -8,7 +8,7 @@ namespace Slackblocks;
 final class Version
 {
     /** Coordinated Composer package version, pending first publication. */
-    public const PACKAGE = '3.1.0';
+    public const PACKAGE = '3.2.0';
     /** Shared Block Kit contract version implemented by this package. */
     public const SPEC = '1.5.0';
 }

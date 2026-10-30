@@ -7,6 +7,13 @@ The Python (`slackblocks` on PyPI), TypeScript
 packages are released together and always carry the same version
 number.
 
+**Release 3.2.0 is prepared for review; publication is not authorized.** It adds
+layout blocks across all ten implementations under spec 1.5.0. The outgoing
+3.1.0 docs are frozen from pre-layout source, with provenance and file hashes in
+`docs/release-snapshots/3.1.0.json`. Supported runtime floors and existing
+publication prerequisites remain unchanged. Merge, tagging and coordinated
+publication require the maintainer's separate approval.
+
 **Release 3.1.0 is authorized for publication.** It adds Haskell as the tenth
 language. The 3.0.0 nine-language documentation is frozen with source/file hashes
 in `docs/release-snapshots/3.0.0.json`. Haskell activation is enabled with verified

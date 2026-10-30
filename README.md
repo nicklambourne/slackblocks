@@ -98,7 +98,7 @@ go get github.com/nicklambourne/slackblocks/go/v3
 <dependency>
   <groupId>io.github.nicklambourne</groupId>
   <artifactId>slackblocks</artifactId>
-  <version>3.1.0</version>
+  <version>3.2.0</version>
 </dependency>
 ```
 
@@ -126,7 +126,7 @@ gem install slackblocks
 <summary>Rust (1.85+, edition 2024)</summary>
 
 ```bash
-cargo add slackblocks@3.1.0
+cargo add slackblocks@3.2.0
 cargo add serde_json
 ```
 
